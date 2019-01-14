@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "0.0.8-beta"
+  s.version      = "0.0.9-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMCommon"
   s.description  = <<-DESC
                    Qunar QIMCommon解决方案
@@ -78,7 +78,6 @@ Pod::Spec.new do |s|
         mrc.public_header_files = non_arc_files
         mrc.source_files = non_arc_files
 
-        mrc.dependency 'QIMUIKit/NOARC'
         mrc.dependency 'QIMUIKit/QIMCells'
         mrc.dependency 'QIMUIKit/ImagePicker'
         mrc.dependency 'QIMUIKit/QIMMWPhotoBrowser'
