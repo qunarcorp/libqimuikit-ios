@@ -27,7 +27,7 @@
 #import "MBProgressHUD.h"
 #import "QIMVoiceTimeRemindView.h"
 #import "QIMOriginMessageParser.h"
-#import "TextCellCaChe.h"
+//#import "TextCellCaChe.h"
 #import "QIMCommonUIFramework.h"
 #import <AVFoundation/AVFoundation.h>
 #import "NSBundle+QIMLibrary.h"

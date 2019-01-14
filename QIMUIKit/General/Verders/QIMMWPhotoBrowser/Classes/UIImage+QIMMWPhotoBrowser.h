@@ -6,7 +6,7 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
+#import <UIKit/UIKit.h>
 
 @interface UIImage (QIMMWPhotoBrowser)
 

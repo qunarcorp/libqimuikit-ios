@@ -9,7 +9,7 @@
 #import "QIMSingleChatCell.h"
 #import <QuartzCore/QuartzCore.h>
 #import "QIMMsgBaloonBaseCell.h"
-#import "NSAttributedString+Attributes.h"
+//#import "NSAttributedString+Attributes.h"
 #import "QIMWebView.h"
 #import "QIMAttributedLabel.h"
 #import "QIMMessageParser.h"

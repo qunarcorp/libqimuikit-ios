@@ -10,7 +10,7 @@
 #import "UIImageView+WebCache.h"
 #import "QIMWebView.h"
 #import "QIMJSONSerializer.h"
-#import "NSAttributedString+Attributes.h"
+//#import "NSAttributedString+Attributes.h"
 #define kTextLabelTop       10
 #define kTextLableLeft      10
 #define kTextLableBottom    10

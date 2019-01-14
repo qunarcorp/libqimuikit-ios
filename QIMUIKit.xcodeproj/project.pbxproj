@@ -218,9 +218,6 @@
 		2C8AFC2720B1D51B00CF98EB /* QIMProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF8E920B1D51900CF98EB /* QIMProgressHUD.m */; };
 		2C8AFC2820B1D51B00CF98EB /* QIMProgressHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF8EA20B1D51900CF98EB /* QIMProgressHUD.h */; };
 		2C8AFC2A20B1D51B00CF98EB /* QIMMessageParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF8EE20B1D51900CF98EB /* QIMMessageParser.h */; };
-		2C8AFC2B20B1D51B00CF98EB /* CallPhoneTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF8EF20B1D51900CF98EB /* CallPhoneTool.m */; };
-		2C8AFC2C20B1D51B00CF98EB /* CTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF8F020B1D51900CF98EB /* CTLabel.m */; };
-		2C8AFC2D20B1D51B00CF98EB /* TextCellCaChe.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF8F120B1D51900CF98EB /* TextCellCaChe.m */; };
 		2C8AFC2E20B1D51B00CF98EB /* QIMMessageCellCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF8F220B1D51900CF98EB /* QIMMessageCellCache.m */; };
 		2C8AFC2F20B1D51B00CF98EB /* QIMPhoneNumberTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF8F420B1D51900CF98EB /* QIMPhoneNumberTextStorage.m */; };
 		2C8AFC3020B1D51B00CF98EB /* QIMAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF8F520B1D51900CF98EB /* QIMAttributedLabel.m */; };
@@ -244,13 +241,8 @@
 		2C8AFC4220B1D51B00CF98EB /* QIMViewStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF90720B1D51900CF98EB /* QIMViewStorage.h */; };
 		2C8AFC4320B1D51B00CF98EB /* QIMDrawStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF90820B1D51900CF98EB /* QIMDrawStorage.h */; };
 		2C8AFC4420B1D51B00CF98EB /* NSMutableAttributedString+QCTY.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF90920B1D51900CF98EB /* NSMutableAttributedString+QCTY.m */; };
-		2C8AFC4520B1D51B00CF98EB /* NSAttributedString+Attributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF90A20B1D51900CF98EB /* NSAttributedString+Attributes.h */; };
 		2C8AFC4620B1D51B00CF98EB /* QIMMessageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF90B20B1D51900CF98EB /* QIMMessageParser.m */; };
-		2C8AFC4820B1D51B00CF98EB /* CallPhoneTool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF90D20B1D51900CF98EB /* CallPhoneTool.h */; };
-		2C8AFC4920B1D51B00CF98EB /* CTLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF90E20B1D51900CF98EB /* CTLabel.h */; };
-		2C8AFC4A20B1D51B00CF98EB /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF90F20B1D51900CF98EB /* NSAttributedString+Attributes.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		2C8AFC4B20B1D51B00CF98EB /* QIMMessageCellCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF91020B1D51900CF98EB /* QIMMessageCellCache.h */; };
-		2C8AFC4C20B1D51B00CF98EB /* TextCellCaChe.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF91120B1D51900CF98EB /* TextCellCaChe.h */; };
 		2C8AFC6120B1D51B00CF98EB /* QIMLocalLogTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF92F20B1D51900CF98EB /* QIMLocalLogTableViewCell.h */; };
 		2C8AFC6220B1D51B00CF98EB /* QIMLocalLogTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AF93020B1D51900CF98EB /* QIMLocalLogTableViewCell.m */; };
 		2C8AFC6320B1D51B00CF98EB /* QIMLocalLogViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF93220B1D51900CF98EB /* QIMLocalLogViewController.h */; };
@@ -1156,9 +1148,6 @@
 		2C8AF8E920B1D51900CF98EB /* QIMProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMProgressHUD.m; sourceTree = "<group>"; };
 		2C8AF8EA20B1D51900CF98EB /* QIMProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMProgressHUD.h; sourceTree = "<group>"; };
 		2C8AF8EE20B1D51900CF98EB /* QIMMessageParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMMessageParser.h; sourceTree = "<group>"; };
-		2C8AF8EF20B1D51900CF98EB /* CallPhoneTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallPhoneTool.m; sourceTree = "<group>"; };
-		2C8AF8F020B1D51900CF98EB /* CTLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTLabel.m; sourceTree = "<group>"; };
-		2C8AF8F120B1D51900CF98EB /* TextCellCaChe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextCellCaChe.m; sourceTree = "<group>"; };
 		2C8AF8F220B1D51900CF98EB /* QIMMessageCellCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMMessageCellCache.m; sourceTree = "<group>"; };
 		2C8AF8F420B1D51900CF98EB /* QIMPhoneNumberTextStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMPhoneNumberTextStorage.m; sourceTree = "<group>"; };
 		2C8AF8F520B1D51900CF98EB /* QIMAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMAttributedLabel.m; sourceTree = "<group>"; };
@@ -1182,13 +1171,8 @@
 		2C8AF90720B1D51900CF98EB /* QIMViewStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMViewStorage.h; sourceTree = "<group>"; };
 		2C8AF90820B1D51900CF98EB /* QIMDrawStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMDrawStorage.h; sourceTree = "<group>"; };
 		2C8AF90920B1D51900CF98EB /* NSMutableAttributedString+QCTY.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableAttributedString+QCTY.m"; sourceTree = "<group>"; };
-		2C8AF90A20B1D51900CF98EB /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
 		2C8AF90B20B1D51900CF98EB /* QIMMessageParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMMessageParser.m; sourceTree = "<group>"; };
-		2C8AF90D20B1D51900CF98EB /* CallPhoneTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallPhoneTool.h; sourceTree = "<group>"; };
-		2C8AF90E20B1D51900CF98EB /* CTLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTLabel.h; sourceTree = "<group>"; };
-		2C8AF90F20B1D51900CF98EB /* NSAttributedString+Attributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Attributes.m"; sourceTree = "<group>"; };
 		2C8AF91020B1D51900CF98EB /* QIMMessageCellCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMMessageCellCache.h; sourceTree = "<group>"; };
-		2C8AF91120B1D51900CF98EB /* TextCellCaChe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextCellCaChe.h; sourceTree = "<group>"; };
 		2C8AF92F20B1D51900CF98EB /* QIMLocalLogTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMLocalLogTableViewCell.h; sourceTree = "<group>"; };
 		2C8AF93020B1D51900CF98EB /* QIMLocalLogTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMLocalLogTableViewCell.m; sourceTree = "<group>"; };
 		2C8AF93220B1D51900CF98EB /* QIMLocalLogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMLocalLogViewController.h; sourceTree = "<group>"; };
@@ -2405,18 +2389,10 @@
 		2C8AF8EC20B1D51900CF98EB /* CoretText */ = {
 			isa = PBXGroup;
 			children = (
-				2C8AF90D20B1D51900CF98EB /* CallPhoneTool.h */,
-				2C8AF8EF20B1D51900CF98EB /* CallPhoneTool.m */,
-				2C8AF90E20B1D51900CF98EB /* CTLabel.h */,
-				2C8AF8F020B1D51900CF98EB /* CTLabel.m */,
-				2C8AF90A20B1D51900CF98EB /* NSAttributedString+Attributes.h */,
-				2C8AF90F20B1D51900CF98EB /* NSAttributedString+Attributes.m */,
 				2C8AF91020B1D51900CF98EB /* QIMMessageCellCache.h */,
 				2C8AF8F220B1D51900CF98EB /* QIMMessageCellCache.m */,
 				2C8AF8EE20B1D51900CF98EB /* QIMMessageParser.h */,
 				2C8AF90B20B1D51900CF98EB /* QIMMessageParser.m */,
-				2C8AF91120B1D51900CF98EB /* TextCellCaChe.h */,
-				2C8AF8F120B1D51900CF98EB /* TextCellCaChe.m */,
 				2C8AF8F320B1D51900CF98EB /* TYAttributedLabel */,
 			);
 			path = CoretText;
@@ -3941,7 +3917,6 @@
 				2CC93B9D21EC33C800EEC47D /* QIMArrowCellTableViewCell.h in Headers */,
 				2C8AFCE920B1D51B00CF98EB /* QIMOrganizationalVC.h in Headers */,
 				2C8AFCDA20B1D51B00CF98EB /* QIMFriendNodeItem.h in Headers */,
-				2C8AFC4520B1D51B00CF98EB /* NSAttributedString+Attributes.h in Headers */,
 				2C8AFDF820B1D51C00CF98EB /* QIMContactSelectVC.h in Headers */,
 				2C8AFCA920B1D51B00CF98EB /* UIImage+QIMButtonIcon.h in Headers */,
 				2C8AFC3D20B1D51B00CF98EB /* QIMTextStorageProtocol.h in Headers */,
@@ -4042,7 +4017,6 @@
 				2C8AFD4020B1D51C00CF98EB /* QIMHistoryMsgManager.h in Headers */,
 				2C8AFC0B20B1D51B00CF98EB /* ShareLocationUserImageView.h in Headers */,
 				2C8AFD0620B1D51B00CF98EB /* QIMMyEmotionsManagerCell.h in Headers */,
-				2C8AFC4920B1D51B00CF98EB /* CTLabel.h in Headers */,
 				2C8AFC3420B1D51B00CF98EB /* QIMImageCache.h in Headers */,
 				2C8AFD9720B1D51C00CF98EB /* QIMInputPopView.h in Headers */,
 				2C8AFC0920B1D51B00CF98EB /* QIMAnnotation.h in Headers */,
@@ -4059,7 +4033,6 @@
 				2C0F605F20E3C59F007FFD45 /* QIMMWZoomingScrollView.h in Headers */,
 				2C8AFCD320B1D51B00CF98EB /* QIMFriendNotifyViewController.h in Headers */,
 				2C8AFCBC20B1D51B00CF98EB /* QIMMineTableView.h in Headers */,
-				2C8AFC4C20B1D51B00CF98EB /* TextCellCaChe.h in Headers */,
 				2C8AFF2220B1D8AA00CF98EB /* QTImageAlbumCell.h in Headers */,
 				2C8AFF4F20B1D8AB00CF98EB /* QIMFileCell.h in Headers */,
 				2C8AFDEC20B1D51C00CF98EB /* QIMFileManagerViewController.h in Headers */,
@@ -4148,7 +4121,6 @@
 				2C8AFD6420B1D51C00CF98EB /* QIMGroupMemberManagerCell.h in Headers */,
 				2C8AFF1E20B1D8AA00CF98EB /* QTImageAssetTapView.h in Headers */,
 				2CC93B6521EC33C800EEC47D /* PwdBoxSecuritySettingVc.h in Headers */,
-				2C8AFC4820B1D51B00CF98EB /* CallPhoneTool.h in Headers */,
 				2C8AFF7520B1D8AB00CF98EB /* QIMSingleChatImageTools.h in Headers */,
 				2C8AFE0320B1D51C00CF98EB /* QIMServiceStatusViewController.h in Headers */,
 				2C8AFF2120B1D8AA00CF98EB /* QTImageAssetViewController.h in Headers */,
@@ -4639,7 +4611,6 @@
 				2C8AFD5220B1D51C00CF98EB /* QIMImageEditViewController.m in Sources */,
 				2C8AFD5A20B1D51C00CF98EB /* QIMMessageBrowserVC.m in Sources */,
 				2C8AFD0420B1D51B00CF98EB /* QIMFaceViewFlowLayout.m in Sources */,
-				2C8AFC4A20B1D51B00CF98EB /* NSAttributedString+Attributes.m in Sources */,
 				2C8AFDBB20B1D51C00CF98EB /* QIMBusiNoticeMemberCell.m in Sources */,
 				2C8AFE9220B1D51C00CF98EB /* QIMLoginViewController.m in Sources */,
 				2C8AFF5D20B1D8AB00CF98EB /* QIMSingleChatVoiceCell.m in Sources */,
@@ -4704,7 +4675,6 @@
 				2C0F606420E3C59F007FFD45 /* UIImage+QIMMWPhotoBrowser.m in Sources */,
 				2C14835F213D626F009D4AE3 /* UINavigationController+QIMOrientation.m in Sources */,
 				2C8AFC6420B1D51B00CF98EB /* QIMLocalLogViewController.m in Sources */,
-				2C8AFC2D20B1D51B00CF98EB /* TextCellCaChe.m in Sources */,
 				2CC93B8421EC33C800EEC47D /* TodoListMainVc.m in Sources */,
 				2C8AFDBF20B1D51C00CF98EB /* QIMBusiManagerViewController.m in Sources */,
 				2C8AFE2420B1D51C00CF98EB /* QIMPGroupSelectionView.m in Sources */,
@@ -4931,7 +4901,6 @@
 				2CC93B5821EC33C800EEC47D /* PasswordHistoryViewController.m in Sources */,
 				2C8AFBEF20B1D51B00CF98EB /* SkinManager.m in Sources */,
 				2C8AFBD320B1D51B00CF98EB /* QIMVideoURLAssetResourceLoader.m in Sources */,
-				2C8AFC2C20B1D51B00CF98EB /* CTLabel.m in Sources */,
 				2C8AFDCA20B1D51C00CF98EB /* QIMGroupNameCell.m in Sources */,
 				2C8AFD0920B1D51B00CF98EB /* QIMEmotionsDownloadCell.m in Sources */,
 				2C8AFF7D20B1D8AB00CF98EB /* QIMForecastCell.m in Sources */,
@@ -5041,7 +5010,6 @@
 				2C8AFDE720B1D51C00CF98EB /* QIMQRCodeCell.m in Sources */,
 				2C8AFCC820B1D51B00CF98EB /* QIMCommonTableViewCellData.m in Sources */,
 				2C8AFE7020B1D51C00CF98EB /* QIMPublicNumberVC.m in Sources */,
-				2C8AFC2B20B1D51B00CF98EB /* CallPhoneTool.m in Sources */,
 				2C8AFCB320B1D51B00CF98EB /* QIMMineTableView.m in Sources */,
 				2CC93BA021EC33C800EEC47D /* QIMGDPerformanceMonitor.m in Sources */,
 				2C8AFF8620B1D8AB00CF98EB /* QIMSingleChatImageCell.m in Sources */,

@@ -18,7 +18,7 @@
 
 #import "QIMVoiceTimeRemindView.h"
 
-#import "TextCellCaChe.h"
+//#import "TextCellCaChe.h"
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -620,6 +620,7 @@ static CGPoint tableOffsetPoint;
 //获取大图展示数组
 
 - (void)addImageToImageList {
+    /*
     [_photos removeAllObjects];
     
     NSInteger imageIndex = 0;
@@ -644,6 +645,7 @@ static CGPoint tableOffsetPoint;
         }
         cellIndex++;
     }
+    */
 }
 
 #pragma mark - QTalkMessageTableScrollViewDelegate

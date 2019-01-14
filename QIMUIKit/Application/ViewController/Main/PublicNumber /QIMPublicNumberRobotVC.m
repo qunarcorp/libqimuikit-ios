@@ -25,7 +25,7 @@
 #import "QIMMenuImageView.h"
 #import "QIMVoiceRecordingView.h"
 #import "QIMVoiceTimeRemindView.h"
-#import "TextCellCaChe.h" 
+//#import "TextCellCaChe.h" 
 #import <AVFoundation/AVFoundation.h>
 #import "QIMMessageRefreshHeader.h"
 #import "QIMRemoteAudioPlayer.h"
@@ -1802,6 +1802,7 @@ static CGPoint tableOffsetPoint;
 
 - (void)addImageToImageList
 {
+    /*
     [_photos removeAllObjects];
     
     NSInteger imageIndex = 0;
@@ -1828,6 +1829,7 @@ static CGPoint tableOffsetPoint;
         }
         cellIndex++;
     }
+    */
 }
 #pragma mark -IMTextBarDelegate voice record operator about -add by dan.zheng 15/4/24
 

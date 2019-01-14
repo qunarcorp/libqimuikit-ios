@@ -9,7 +9,7 @@
 #import "QIMProductInfoCell.h"
 #import "UIImageView+WebCache.h"
 #import "QIMWebView.h"
-#import "NSAttributedString+Attributes.h"
+//#import "NSAttributedString+Attributes.h"
 #import "QIMIconInfo.h"
 
 #define QIMProductInfoWidth 245

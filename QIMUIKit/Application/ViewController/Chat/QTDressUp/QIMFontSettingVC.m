@@ -11,7 +11,7 @@
 #import "QIMFontSettingVC.h"
 #import "QIMJSONSerializer.h"
 #import "QIMGroupChatCell.h"
-#import "TextCellCaChe.h"
+//#import "TextCellCaChe.h"
 #import "QIMUUIDTools.h"
 #import "QIMSliderView.h"
 #import "QTalkSessionCell.h"

@@ -8,9 +8,6 @@
 
 #import "QIMPreviewMsgVC.h"
 #import "QIMMessageBrowserVC.h"
-
-#import "NSAttributedString+Attributes.h"
-
 #import "QIMAttributedLabel.h"
 #import "QIMTextContainer.h"
 #import "QIMMessageParser.h"

@@ -6,7 +6,7 @@
 //  Copyright 2009 d3i. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import <UIKit/UIKit.h>
 
 @protocol QIMMWTapDetectingImageViewDelegate;
 

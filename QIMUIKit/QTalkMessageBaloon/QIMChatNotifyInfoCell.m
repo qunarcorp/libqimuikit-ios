@@ -8,7 +8,7 @@
 
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMChatNotifyInfoCell.h"
-#import "NSAttributedString+Attributes.h"
+//#import "NSAttributedString+Attributes.h"
 #import "QIMWebView.h"
 #import "QIMAttributedLabel.h"
 #import "QIMJSONSerializer.h"

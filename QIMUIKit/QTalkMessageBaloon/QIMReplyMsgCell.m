@@ -8,7 +8,7 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMReplyMsgCell.h"
 #import "QIMGroupChatCell.h"
-#import "NSAttributedString+Attributes.h"
+//#import "NSAttributedString+Attributes.h"
 #import "QIMGroupNickNameHelper.h"
 #import "QIMAttributedLabel.h"
 #import "QIMMessageParser.h"

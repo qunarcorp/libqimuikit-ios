@@ -8,7 +8,7 @@
 
 #import "QIMMessageBrowserVC.h"
 
-#import "NSAttributedString+Attributes.h"
+//#import "NSAttributedString+Attributes.h"
 
 #import "QIMSingleChatVoiceCell.h"
 

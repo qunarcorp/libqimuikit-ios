@@ -9,7 +9,7 @@
 #import "QIMGroupChatCell.h"
 #import <QuartzCore/QuartzCore.h>
 
-#import "NSAttributedString+Attributes.h"
+//#import "NSAttributedString+Attributes.h"
 #import "QIMMenuImageView.h"
 
 #import "QIMAttributedLabel.h"
