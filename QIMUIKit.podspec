@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "0.0.10-beta"
+  s.version      = "0.0.11-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMCommon"
   s.description  = <<-DESC
                    Qunar QIMCommon解决方案
@@ -126,9 +126,8 @@ Pod::Spec.new do |s|
     s.dependency 'SCLAlertView-Objective-C'
     s.dependency 'MMMarkdown'
     s.dependency 'Toast'
-    s.dependency 'QIMCommon', '~> 1.0.0-beta'
-    s.dependency 'QIMGeneralModule', '~> 0.0.9-beta'
-
+    s.dependency 'QIMCommon'
+    s.dependency 'QIMGeneralModule'
     s.frameworks = 'UIKit','MessageUI', 'Foundation', 'JavaScriptCore', 'AVFoundation', 'OpenGLES', 'MobileCoreServices', 'AssetsLibrary', 'QuartzCore', 'CoreMotion', 'CoreText'
     s.libraries = 'stdc++', 'bz2', 'resolv', 'icucore', 'xml2'
 
