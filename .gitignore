@@ -6,8 +6,12 @@
 build/
 DerivedData/
 Pods/
+Podfile.lock
+QIMNoteUI/.DS_Store
 
 ## Various settings
+.DS_Store
+/**/*.DS_Store
 *.pbxuser
 !default.pbxuser
 *.mode1v3

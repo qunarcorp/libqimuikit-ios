@@ -10,7 +10,7 @@
 #import "QIMPasswordGenerate.h"
 #import "QIMNoteManager.h"
 #import "AESCrypt.h"
-#import "AES256.h"
+#import "QIMAES256.h"
 #import "QIMNoteModel.h"
 #import "QIMNoteUICommonFramework.h"
 
@@ -143,7 +143,7 @@
         NSString *pwd = [[QIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id];
         NSString *contentJson = [AESCrypt decrypt:_noteModel.qs_content password:pwd];
         if (!contentJson) {
-            contentJson = [AES256 decryptForBase64:_noteModel.qs_content password:pwd];
+            contentJson = [QIMAES256 decryptForBase64:_noteModel.qs_content password:pwd];
         }
         NSDictionary *contentDic = [[QIMJSONSerializer sharedInstance] deserializeObject:contentJson error:nil];
         self.contentDic = [NSMutableDictionary dictionaryWithDictionary:contentDic];
@@ -518,7 +518,7 @@
 //    [self.contentDic setObject:self.passwordValue ? self.passwordValue : @"" forKey:@"P"];
     NSString *contentJson = [[QIMJSONSerializer sharedInstance] serializeObject:self.contentDic];
 //    NSString *content = [AESCrypt encrypt:contentJson password:[[QIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id]];
-    NSString *content = [AES256 encryptForBase64:contentJson password:[[QIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id]];
+    NSString *content = [QIMAES256 encryptForBase64:contentJson password:[[QIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id]];
     if (!self.noteModel.qs_title) {
         self.noteModel.qs_title = [NSBundle qim_localizedStringForKey:@"Password"];
     }

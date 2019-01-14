@@ -45,6 +45,7 @@
     #import "IPAD_RemoteLoginVC.h"
 #endif
 #import "QIMWatchDog.h"
+#import "QIMUUIDTools.h"
 #import "QIMPublicRedefineHeader.h"
 #import "QIMMWPhotoBrowser.h"
 #import "QIMFilePreviewVC.h"

@@ -1,6 +1,6 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, '9.0'
-source 'https://github.com/Lidalu/QIMOpenSSL.git'
+source 'git@gitlab.corp.qunar.com:qchat/libQIMKit-iOS-Cook.git'
 source 'git@github.com:CocoaPods/Specs.git'
 
 target 'QIMUIKit' do
@@ -8,12 +8,19 @@ target 'QIMUIKit' do
   # use_frameworks!
 	
   # Pods for QIMUIKit
-    pod 'QIMDataBase', path: './../QIMDataBase'
-    pod 'QIMKitVendor', path: './../QIMKitVendor'
-    pod 'QIMCommon', path: './../QIMCommon'
-    pod 'QIMCommonCategories', path: './../QIMCommonCategories'
-    pod 'QIMUIVendorKit', path: './../QIMUIVendorKit'
-    pod 'QIMPublicRedefineHeader', path: './../QIMPublicRedefineHeader'
+    pod 'QIMDataBase', '~> 1.0.0-beta'
+    pod 'QIMKitVendor', '~> 1.1.4-beta'
+    pod 'QIMCommon', '~> 1.0.0-beta'
+    pod 'QIMCommonCategories', '~> 1.0.1-beta'
+    pod 'QIMPublicRedefineHeader', '~> 0.0.2-beta'
+    pod 'QIMGeneralModule', '~> 0.0.9-beta'
+#    pod 'QIMDataBase', path: './../QIMDataBase'
+#    pod 'QIMKitVendor', path: './../QIMKitVendor'
+#    pod 'QIMCommon', path: './../QIMCommon'
+#    pod 'QIMCommonCategories', path: './../QIMCommonCategories'
+#    pod 'QIMUIVendorKit', path: './../QIMUIVendorKit'
+#    pod 'QIMPublicRedefineHeader', path: './../QIMPublicRedefineHeader'
+#
     pod 'MJRefresh'
     pod 'YLGIFImage'
     pod 'SwipeBack'

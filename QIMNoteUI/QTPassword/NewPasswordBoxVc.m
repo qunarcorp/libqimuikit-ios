@@ -9,7 +9,7 @@
 #import "NewPasswordBoxVc.h"
 #import "QIMNoteModel.h"
 #import "AESCrypt.h"
-#import "AES256.h"
+#import "QIMAES256.h"
 #import "QIMNoteUICommonFramework.h"
 
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
@@ -132,7 +132,7 @@
         model.q_type = QIMNoteTypePassword;
         model.q_state = QIMNoteStateNormal;
 //        NSString *encryptStr = [AESCrypt encrypt:model.q_title password:model.privateKey];
-        NSString *encryptStr = [AES256 encryptForBase64:model.q_title password:model.privateKey];
+        NSString *encryptStr = [QIMAES256 encryptForBase64:model.q_title password:model.privateKey];
         model.q_content = encryptStr;
         model.q_time = [[NSDate date] timeIntervalSince1970] * 1000;
         [[QIMNoteManager sharedInstance] saveNewQTNoteMainItem:model];

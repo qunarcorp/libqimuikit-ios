@@ -13,7 +13,11 @@
 #import "PasswordCell.h"
 #import "QIMNoteModel.h"
 #import "AESCrypt.h"
-#import "AES256.h"
+#import "AES.h"
+#import "QIMAES256.h"
+#import "AESTools.h"
+#import "Base64.h"
+#import <QIMGeneralModule/AES.h>
 #import "QIMNoteUICommonFramework.h"
 
 @interface PasswordListViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
@@ -76,7 +80,7 @@
 - (void)touchVerification {
     NSString *str = [AESCrypt decrypt:self.model.q_content password:self.pwdTextField.text];
     if (!str) {
-        str = [AES256 decryptForBase64:self.model.q_content password:self.pwdTextField.text];
+        str = [QIMAES256 decryptForBase64:self.model.q_content password:self.pwdTextField.text];
     }
     if (str.length > 0) {
         [self.pwdVerficationView removeAllSubviews];

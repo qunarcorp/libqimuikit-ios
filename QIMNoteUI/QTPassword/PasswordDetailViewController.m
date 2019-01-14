@@ -13,7 +13,7 @@
 #import "QIMNoteModel.h"
 //#import "QIMMenuImageView.h"
 #import "AESCrypt.h"
-#import "AES256.h"
+#import "QIMAES256.h"
 #import "QIMMenuView.h"
 
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
@@ -59,7 +59,7 @@
         NSString *pwd = [[QIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id];
         NSString *contentJson = [AESCrypt decrypt:self.noteModel.qs_content password:pwd];
         if (!contentJson) {
-            contentJson = [AES256 decryptForBase64:self.noteModel.qs_content password:pwd];
+            contentJson = [QIMAES256 decryptForBase64:self.noteModel.qs_content password:pwd];
         }
         NSDictionary *contentDic = [[QIMJSONSerializer sharedInstance] deserializeObject:contentJson error:nil];
         self.pwdValue = [contentDic objectForKey:@"P"];

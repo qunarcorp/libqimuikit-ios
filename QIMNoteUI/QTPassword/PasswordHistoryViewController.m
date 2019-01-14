@@ -9,7 +9,7 @@
 #import "PasswordHistoryViewController.h"
 #import "QIMNoteModel.h"
 #import "AESCrypt.h"
-#import "AES256.h"
+#import "QIMAES256.h"
 #import "QIMNoteUICommonFramework.h"
 
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
@@ -98,7 +98,7 @@
     UITextView *showPwdTextView = [[UITextView alloc] initWithFrame:CGRectMake(originX, pwdLabel.bottom + topMargin, originWidth, originHeight + 15)];
     NSString *content = [AESCrypt decrypt:noteModel.qs_content password:self.pk];
     if (!content) {
-        content = [AES256 decryptForBase64:noteModel.qs_content password:self.pk];
+        content = [QIMAES256 decryptForBase64:noteModel.qs_content password:self.pk];
     }
     showPwdTextView.text = content;
     showPwdTextView.textColor = [UIColor qtalkTextLightColor];

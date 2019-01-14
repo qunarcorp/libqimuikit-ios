@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "0.0.1-beta.1"
+  s.version      = "0.0.1-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMCommon"
   s.description  = <<-DESC
                    Qunar QIMCommon解决方案
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "9.0"
 
-  s.public_header_files = "QIMUIKit/**/*"
+  s.public_header_files = "QIMUIKit/**/*.{h}"
 # s.prefix_header_file = "QIMUIKit/QIMUIKit.pch"
 
   s.source_files = "QIMUIKit/Application/**/*.{h,m,c}", "QIMUIKit/General/**/*.{h,m,c}", "QIMUIKit/Me/**/*.{h,m,c}", "QIMUIKit/QIMNotificationManager.*", "QIMUIKit/QIMJumpURLHandle.*", "QIMUIKit/QIMFastEntrance.*", "QIMUIKit/QIMAppWindowManager.*", "QIMUIKit/QIMCommonUIFramework.h", "QIMUIKit/QIMRemoteNotificationManager.*", "QIMUIKit/QIMMWPhotoTableViewController.*"
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'DEBUGLOG=1'}
   s.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Private/QIMUIKit/**\" \"${PODS_ROOT}/Headers/Public/**\""}
 
-  non_arc_files = 'QIMUIKit/General/Verders/CoretText/NSAttributedString+Attributes.*{h,m}'
+  non_arc_files = 'QIMUIKit/General/Verders/CoretText/NSAttributedString+Attributes.*{h}'
   mwphoto_files = 'QIMUIKit/General/Verders/QIMMWPhotoBrowser/**/*'
   s.exclude_files = non_arc_files
   s.exclude_files = mwphoto_files
@@ -42,13 +42,13 @@ Pod::Spec.new do |s|
     end
     
     s.subspec 'QIMCells' do |cells|
-        cells.public_header_files = "QIMUIKit/QTalkMessageBaloon/**/*.{h,m,c}"
+        cells.public_header_files = "QIMUIKit/QTalkMessageBaloon/**/*.{h}"
         cells.source_files = "QIMUIKit/QTalkMessageBaloon/**/*.{h,m,c}"
         cells.resource_bundles = {'QIMSourceCode' => ['QIMUIKit/QTalkMessageBaloon/**/*.{html,js,css}']}
     end
   
     s.subspec 'ImagePicker' do |imagePicker|
-        imagePicker.public_header_files = "QIMUIKit/QTalkImagePicker/**/*{h,m,c}"
+        imagePicker.public_header_files = "QIMUIKit/QTalkImagePicker/**/*{h}"
         imagePicker.source_files = "QIMUIKit/QTalkImagePicker/**/*{h,m,c}"
     end
 
@@ -94,6 +94,8 @@ Pod::Spec.new do |s|
     s.dependency 'LCActionSheet'
     s.dependency 'MDHTMLLabel'
     s.dependency 'Toast'
+    s.dependency 'QIMCommon', '~> 1.0.0-beta'
+    s.dependency 'QIMGeneralModule', '~> 0.0.9-beta'
 
     s.frameworks = 'UIKit','MessageUI', 'Foundation', 'JavaScriptCore', 'AVFoundation', 'OpenGLES', 'MobileCoreServices', 'AssetsLibrary', 'QuartzCore', 'CoreMotion', 'CoreText'
     s.libraries = 'stdc++', 'bz2', 'resolv', 'icucore', 'xml2'
