@@ -126,8 +126,8 @@ Pod::Spec.new do |s|
     s.dependency 'SCLAlertView-Objective-C'
     s.dependency 'MMMarkdown'
     s.dependency 'Toast'
-    s.dependency 'QIMCommon', '>= 0'
-    s.dependency 'QIMGeneralModule', '>= 0'
+    s.dependency 'QIMCommon', '~> 1.1.6-beta'
+    s.dependency 'QIMGeneralModule', '~> 0.0.9-beta'
     s.frameworks = 'UIKit','MessageUI', 'Foundation', 'JavaScriptCore', 'AVFoundation', 'OpenGLES', 'MobileCoreServices', 'AssetsLibrary', 'QuartzCore', 'CoreMotion', 'CoreText'
     s.libraries = 'stdc++', 'bz2', 'resolv', 'icucore', 'xml2'
 
