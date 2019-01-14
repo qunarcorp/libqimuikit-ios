@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "0.0.3-beta"
+  s.version      = "0.0.7-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMCommon"
   s.description  = <<-DESC
                    Qunar QIMCommon解决方案
@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   # s.public_header_files = "QIMUIKit/**/*.{h}"
 # s.prefix_header_file = "QIMUIKit/QIMUIKit.pch"
 
-  s.source_files = "QIMUIKit/Application/**/*.{h,m,c}", "QIMUIKit/General/**/*.{h,m,c}", "QIMUIKit/Me/**/*.{h,m,c}", "QIMUIKit/QIMNotificationManager.*", "QIMUIKit/QIMJumpURLHandle.*", "QIMUIKit/QIMFastEntrance.*", "QIMUIKit/QIMAppWindowManager.*", "QIMUIKit/QIMCommonUIFramework.h", "QIMUIKit/QIMRemoteNotificationManager.*", "QIMUIKit/QIMMWPhotoTableViewController.*"
+  s.source_files = "QIMUIKit/Application/**/*.{h,m,c}", "QIMUIKit/General/**/*.{h,m,c}", "QIMUIKit/Me/**/*.{h,m,c}", "QIMUIKit/QIMNotificationManager.*", "QIMUIKit/QIMJumpURLHandle.*", "QIMUIKit/QIMFastEntrance.*", "QIMUIKit/QIMAppWindowManager.*", "QIMUIKit/QIMCommonUIFramework.*", "QIMUIKit/QIMRemoteNotificationManager.*", "QIMUIKit/QIMMWPhotoTableViewController.*"
   s.vendored_libraries = "QIMCommon/QIMSDKUI/opencore-amr/lib/*.a"
   s.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMUIKit.xcassets", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle"
   s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'DEBUGLOG=1'}
@@ -67,7 +67,7 @@ Pod::Spec.new do |s|
         photoBrowser.resource = ['QIMUIKit/General/Verders/QIMMWPhotoBrowser/Assets']
     end
 
-    s.subspec 'QIMNot' do |note|
+    s.subspec 'QIMNote' do |note|
       note.public_header_files = "QIMNoteUI/QTalkTodoList/**/*.{h}", "QIMNoteUI/QTEvernotes/**/*.{h}", "QIMNoteUI/QTPassword/**/*.{h}"
       note.source_files = "QIMNoteUI/**/*.{h,m,c}"
       note.resource = ["QIMNoteUI/CKEditor5.bundle", "QIMNoteUI/QTPassword/EditPasswordView.xib"]
@@ -82,20 +82,28 @@ Pod::Spec.new do |s|
     
     s.dependency 'MJRefresh'
     s.dependency 'YLGIFImage'
-    s.dependency 'FDFullscreenPopGesture'
+    s.dependency 'SwipeTableView'
+    s.dependency 'LCActionSheet'
+    s.dependency 'MDHTMLLabel'
+    s.dependency 'MMMarkdown'
     s.dependency 'MGSwipeTableCell'
     s.dependency 'NJKWebViewProgress'
+    s.dependency 'FDFullscreenPopGesture'
     s.dependency 'AMapSearch'
     s.dependency 'AMapLocation'
     s.dependency 'AMap3DMap'
     s.dependency 'MMPickerView'
     s.dependency 'SCLAlertView-Objective-C'
     s.dependency 'MMMarkdown'
-    s.dependency 'LCActionSheet'
-    s.dependency 'MDHTMLLabel'
     s.dependency 'Toast'
     s.dependency 'QIMCommon', '~> 1.0.0-beta'
     s.dependency 'QIMGeneralModule', '~> 0.0.9-beta'
+    s.dependency 'QIMUIKit/NOARC'
+    s.dependency 'QIMUIKit/QIMCells'
+    s.dependency 'QIMUIKit/ImagePicker'
+    s.dependency 'QIMUIKit/QIMMWPhotoBrowser'
+    s.dependency 'QIMUIKit/QIMNote'
+    s.dependency 'QIMUIKit/QIMUIVendorKit'
 
     s.frameworks = 'UIKit','MessageUI', 'Foundation', 'JavaScriptCore', 'AVFoundation', 'OpenGLES', 'MobileCoreServices', 'AssetsLibrary', 'QuartzCore', 'CoreMotion', 'CoreText'
     s.libraries = 'stdc++', 'bz2', 'resolv', 'icucore', 'xml2'
