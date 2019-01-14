@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "1.0.1-beta"
+  s.version      = "1.0.2-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMCommon"
   s.description  = <<-DESC
                    Qunar QIMCommon解决方案
@@ -27,6 +27,7 @@ Pod::Spec.new do |s|
   s.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMUIKit.xcassets", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle"
   s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'DEBUGLOG=1'}
   s.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Private/QIMUIKit/**\" \"${PODS_ROOT}/Headers/Public/**\""}
+  $debug = ENV['debug']
 
   # non_arc_files = 'QIMUIKit/General/Verders/CoretText/NSAttributedString+Attributes.*{h}'
   # s.exclude_files = non_arc_files
@@ -126,8 +127,17 @@ Pod::Spec.new do |s|
     s.dependency 'SCLAlertView-Objective-C'
     s.dependency 'MMMarkdown'
     s.dependency 'Toast'
+
+   if $debug
+    puts 'debug QIMUIKit'
+
+  else
+
+    puts '线上release QIMUIKit'
     s.dependency 'QIMCommon', '~> 1.beta'
     s.dependency 'QIMGeneralModule', '~> 1.beta'
+  end
+
     s.frameworks = 'UIKit','MessageUI', 'Foundation', 'JavaScriptCore', 'AVFoundation', 'OpenGLES', 'MobileCoreServices', 'AssetsLibrary', 'QuartzCore', 'CoreMotion', 'CoreText'
     s.libraries = 'stdc++', 'bz2', 'resolv', 'icucore', 'xml2'
 
