@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "0.0.7-beta"
+  s.version      = "0.0.8-beta"
   s.summary      = "Qunar chat App 6.0+ version QIMCommon"
   s.description  = <<-DESC
                    Qunar QIMCommon解决方案
@@ -32,14 +32,6 @@ Pod::Spec.new do |s|
   mwphoto_files = 'QIMUIKit/General/Verders/QIMMWPhotoBrowser/**/*'
   s.exclude_files = non_arc_files
   s.exclude_files = mwphoto_files
-
-
-  # 需要创建一个subspec,将mrc的文件添加到subspec中,注意如果需要的话在主spec中设置exclude_files来排除一下,不要让两个Spec都包含 mrc 的文件。
-    s.subspec 'NOARC' do |mrc|
-        mrc.requires_arc = false
-        mrc.public_header_files = non_arc_files
-        mrc.source_files = non_arc_files
-    end
     
     s.subspec 'QIMCells' do |cells|
         cells.public_header_files = "QIMUIKit/QTalkMessageBaloon/**/*.{h}"
@@ -79,6 +71,20 @@ Pod::Spec.new do |s|
       vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}']
       vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib']
     end
+
+      # 需要创建一个subspec,将mrc的文件添加到subspec中,注意如果需要的话在主spec中设置exclude_files来排除一下,不要让两个Spec都包含 mrc 的文件。
+    s.subspec 'NOARC' do |mrc|
+        mrc.requires_arc = false
+        mrc.public_header_files = non_arc_files
+        mrc.source_files = non_arc_files
+
+        mrc.dependency 'QIMUIKit/NOARC'
+        mrc.dependency 'QIMUIKit/QIMCells'
+        mrc.dependency 'QIMUIKit/ImagePicker'
+        mrc.dependency 'QIMUIKit/QIMMWPhotoBrowser'
+        mrc.dependency 'QIMUIKit/QIMNote'
+        mrc.dependency 'QIMUIKit/QIMUIVendorKit'
+    end
     
     s.dependency 'MJRefresh'
     s.dependency 'YLGIFImage'
@@ -98,12 +104,6 @@ Pod::Spec.new do |s|
     s.dependency 'Toast'
     s.dependency 'QIMCommon', '~> 1.0.0-beta'
     s.dependency 'QIMGeneralModule', '~> 0.0.9-beta'
-    s.dependency 'QIMUIKit/NOARC'
-    s.dependency 'QIMUIKit/QIMCells'
-    s.dependency 'QIMUIKit/ImagePicker'
-    s.dependency 'QIMUIKit/QIMMWPhotoBrowser'
-    s.dependency 'QIMUIKit/QIMNote'
-    s.dependency 'QIMUIKit/QIMUIVendorKit'
 
     s.frameworks = 'UIKit','MessageUI', 'Foundation', 'JavaScriptCore', 'AVFoundation', 'OpenGLES', 'MobileCoreServices', 'AssetsLibrary', 'QuartzCore', 'CoreMotion', 'CoreText'
     s.libraries = 'stdc++', 'bz2', 'resolv', 'icucore', 'xml2'
