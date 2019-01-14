@@ -936,8 +936,6 @@
 		2CC93BB821EC33C800EEC47D /* HSV.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CC93B4921EC33C800EEC47D /* HSV.h */; };
 		2CC93BB921EC33C800EEC47D /* KZUnitSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC93B4A21EC33C800EEC47D /* KZUnitSlider.m */; };
 		2CC93BBA21EC33C800EEC47D /* KZColorPickerHSWheel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC93B4B21EC33C800EEC47D /* KZColorPickerHSWheel.m */; };
-		2CD7314D216DE3780011873E /* QIMDeviceManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CD7314B216DE3780011873E /* QIMDeviceManager.h */; };
-		2CD7314E216DE3780011873E /* QIMDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD7314C216DE3780011873E /* QIMDeviceManager.m */; };
 		2CE738D521343855007D164D /* UIImageView+QIMImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE738D321343855007D164D /* UIImageView+QIMImageCache.h */; };
 		2CE738D621343855007D164D /* UIImageView+QIMImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE738D421343855007D164D /* UIImageView+QIMImageCache.m */; };
 		2CE738D921343876007D164D /* QIMImageManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE738D721343876007D164D /* QIMImageManager.h */; };
@@ -1866,8 +1864,6 @@
 		2CC93B4921EC33C800EEC47D /* HSV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSV.h; sourceTree = "<group>"; };
 		2CC93B4A21EC33C800EEC47D /* KZUnitSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KZUnitSlider.m; sourceTree = "<group>"; };
 		2CC93B4B21EC33C800EEC47D /* KZColorPickerHSWheel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KZColorPickerHSWheel.m; sourceTree = "<group>"; };
-		2CD7314B216DE3780011873E /* QIMDeviceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMDeviceManager.h; sourceTree = "<group>"; };
-		2CD7314C216DE3780011873E /* QIMDeviceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMDeviceManager.m; sourceTree = "<group>"; };
 		2CE738D321343855007D164D /* UIImageView+QIMImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImageView+QIMImageCache.h"; sourceTree = "<group>"; };
 		2CE738D421343855007D164D /* UIImageView+QIMImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+QIMImageCache.m"; sourceTree = "<group>"; };
 		2CE738D721343876007D164D /* QIMImageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMImageManager.h; sourceTree = "<group>"; };
@@ -2468,7 +2464,6 @@
 		2C8AF97420B1D51900CF98EB /* Helper */ = {
 			isa = PBXGroup;
 			children = (
-				2CD7314A216DE3660011873E /* QIMDeviceManager */,
 				2C8AF97F20B1D51900CF98EB /* QIMIconFont */,
 				2C8AF97A20B1D51900CF98EB /* QIMMessageHelper */,
 				2C8AF97720B1D51900CF98EB /* QIMViewHelper */,
@@ -3827,15 +3822,6 @@
 			path = QIMColorPicker;
 			sourceTree = "<group>";
 		};
-		2CD7314A216DE3660011873E /* QIMDeviceManager */ = {
-			isa = PBXGroup;
-			children = (
-				2CD7314B216DE3780011873E /* QIMDeviceManager.h */,
-				2CD7314C216DE3780011873E /* QIMDeviceManager.m */,
-			);
-			path = QIMDeviceManager;
-			sourceTree = "<group>";
-		};
 		2CE738D221343824007D164D /* UIImageView */ = {
 			isa = PBXGroup;
 			children = (
@@ -4265,7 +4251,6 @@
 				2C8AFD9C20B1D51C00CF98EB /* QIMExtensibleProductCell.h in Headers */,
 				2C8AFE2020B1D51C00CF98EB /* QIMJoinGroupVC.h in Headers */,
 				2C6109BB21490A8D00C30923 /* QIMRobotQuestionCell.h in Headers */,
-				2CD7314D216DE3780011873E /* QIMDeviceManager.h in Headers */,
 				2C8AFC3A20B1D51B00CF98EB /* QIMAttributedLabel.h in Headers */,
 				2CC93B6F21EC33C800EEC47D /* PasswordBoxListVc.h in Headers */,
 				2CC93BA221EC33C800EEC47D /* QIMGDPerformanceMonitorProtocol.h in Headers */,
@@ -4625,7 +4610,6 @@
 				2C8AFCA620B1D51B00CF98EB /* QIMIconFont.m in Sources */,
 				2C8AFC3720B1D51B00CF98EB /* QIMDrawStorage.m in Sources */,
 				2C8AFE1120B1D51C00CF98EB /* QIMGroupNickNameHelper.m in Sources */,
-				2CD7314E216DE3780011873E /* QIMDeviceManager.m in Sources */,
 				2C8AFC2F20B1D51B00CF98EB /* QIMPhoneNumberTextStorage.m in Sources */,
 				2C8AFE8C20B1D51C00CF98EB /* QTalkSessionView.m in Sources */,
 				2C8AFC4620B1D51B00CF98EB /* QIMMessageParser.m in Sources */,
