@@ -182,8 +182,6 @@ static NSString *__default_ua = nil;
     
     NSURL * tempUrl = _requestUrl;
     {
-        //
-        // 给appstore帐号审核用
         if (tempUrl == nil) {
             tempUrl = [NSURL URLWithString:@"https://dujia.qunar.com"];
         }
