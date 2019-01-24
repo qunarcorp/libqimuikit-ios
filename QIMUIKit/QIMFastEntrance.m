@@ -102,7 +102,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 - (void)launchMainControllerWithWindow:(UIWindow *)window {
     QIMVerboseLog(@"开始加载主界面");
-    [[QIMWatchDog sharedInstance] start];
+    CFAbsoluteTime startTime = [[QIMWatchDog sharedInstance] startTime];
     if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
 #if defined (QIMIPadEnable) && QIMIPadEnable == 1
         IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
@@ -135,7 +135,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             }
         }
     }
-    QIMVerboseLog(@"加载主界面VC耗时 : %lld", [[QIMWatchDog sharedInstance] escapedTime]);
+    QIMVerboseLog(@"加载主界面VC耗时 : %lf", [[QIMWatchDog sharedInstance] escapedTimewithStartTime:startTime]);
 }
 
 - (void)launchMainAdvertWindow {
