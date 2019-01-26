@@ -24,9 +24,6 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Private/QIMUIKit/**\" \"${PODS_ROOT}/Headers/Public/**\""}
   $debug = ENV['debug']
 
-  # non_arc_files = 'QIMUIKit/General/Verders/CoretText/NSAttributedString+Attributes.*{h}'
-  # s.exclude_files = non_arc_files
-
   s.subspec 'PublicUIHeader'  do |ph|
     ph.public_header_files = "QIMUIKit/QIMNotificationManager*.{h}", "QIMUIKit/QIMJumpURLHandle*.{h}", "QIMUIKit/QIMFastEntrance*.{h}", "QIMUIKit/QIMAppWindowManager*.{h}", "QIMUIKit/QIMCommonUIFramework*.*{h}", "QIMUIKit/QIMRemoteNotificationManager*.{h}"
     ph.source_files = "QIMUIKit/QIMNotificationManager*.{h,m,c,mm}", "QIMUIKit/QIMJumpURLHandle*.{h,m,c,mm}", "QIMUIKit/QIMFastEntrance*.{h,m,c,mm}", "QIMUIKit/QIMAppWindowManager*.{h,m,c,mm}", "QIMUIKit/QIMCommonUIFramework*.*{h,m,c,mm}", "QIMUIKit/QIMRemoteNotificationManager*.{h,m,c,mm}"
