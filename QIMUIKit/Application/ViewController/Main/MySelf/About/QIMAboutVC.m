@@ -69,7 +69,7 @@
     if (!_versionLabel) {
         
         _versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kLoginViewSpaceToTop - 75 + _writingLayer.bounds.size.height + 20, self.view.width, 45)];
-        NSString * appBundleName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"] ;
+        NSString * appBundleName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
         
         NSString *appVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
         NSString *appBuildVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
@@ -111,7 +111,7 @@
 
 - (void)initWritingAnimations{
     if (_writingLayer == nil) {
-        UIBezierPath *bezierPath = [self transformToBezierPath:[QIMKit getQIMProjectType] == QIMProjectTypeQChat ? @"QChat" : @"QTalk"];
+        UIBezierPath *bezierPath = [self transformToBezierPath:[QIMKit getQIMProjectTitleName]];
         CGSize size= CGPathGetBoundingBox(bezierPath.CGPath).size;
         _writingLayer = [CAShapeLayer layer];
         _writingLayer.bounds = CGPathGetBoundingBox(bezierPath.CGPath);

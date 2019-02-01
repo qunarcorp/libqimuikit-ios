@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "1.0.0"
+  s.version      = "2.0.0"
   s.summary      = "QIM App UI 9.0+ version"
   s.description  = <<-DESC
                    QIM UI
@@ -113,7 +113,7 @@ Pod::Spec.new do |s|
 else
 
   puts '线上release QIMUIKit'
-  s.dependency 'QIMCommon', '~> 1.beta'
+  s.dependency 'QIMCommon', '~> 2.0.0'
   s.dependency 'QIMGeneralModule', '~> 1.beta'
 end
 

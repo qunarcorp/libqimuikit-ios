@@ -150,7 +150,7 @@
     //        [self peQTalkSuggestRNJumpManagerrformSelector:@selector(autoLogin) withObject:nil afterDelay:0.3];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
     //    }
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && self.skipLogin) {
+    if (([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) && self.skipLogin) {
         [self autoLogin];
     }
 #if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
@@ -179,7 +179,7 @@
 
 - (NSString *)navTitle {
     if (!_navTitle) {
-        NSString *title = [QIMKit getQIMProjectType] == QIMProjectTypeQChat ? @"QChat" : @"QTalk";
+        NSString *title = [QIMKit getQIMProjectTitleName];
         _navTitle = title;
     }
     return _navTitle;
@@ -245,7 +245,7 @@
                 weakSelf.navTitle = nil;
                 [[QIMNavBackBtn sharedInstance] updateNotReadCount:0];
             } else {
-                NSString *appName = [QIMKit getQIMProjectType] == QIMProjectTypeQChat ? @"QChat" : @"QTalk";
+                NSString *appName = [QIMKit getQIMProjectTitleName];
                 weakSelf.navTitle = [NSString stringWithFormat:@"%@(%ld)", appName, (long)appCount];
                 [[QIMNavBackBtn sharedInstance] updateNotReadCount:appCount];
             }
@@ -779,15 +779,20 @@
     QIMVerboseLog(@"autoLogin lastUserName : %@, userFullJid : %@, userToken : %@", lastUserName, userFullJid, userToken);
     QIMVerboseLog(@"autoLogin UserDict : %@", [[QIMKit sharedInstance] userObjectForKey:@"Users"]);
     if ([lastUserName length] > 0 && [userToken length] > 0) {
-        if ([[QIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeSms) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSString *pwd = [NSString stringWithFormat:@"%@@%@", [QIMUUIDTools deviceUUID], userToken];
-                [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
-                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
-            });
+        if ([lastUserName isEqualToString:@"appstore"]) {
+            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
         } else {
-            [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
-            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:userToken];
+            if ([[QIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeSms) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSString *pwd = [NSString stringWithFormat:@"%@@%@", [QIMUUIDTools deviceUUID], userToken];
+                    [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
+                    [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
+                });
+            } else {
+                [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:userToken];
+            }
         }
     } else {
         QIMVerboseLog(@"lastUserName或userToken为空,回到登录页面");

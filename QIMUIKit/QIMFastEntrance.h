@@ -137,4 +137,8 @@
 
 - (void)openLocalSearchWithXmppId:(NSString *)xmppId withRealJid:(NSString *)realJid withChatType:(NSInteger)chatType;
 
+- (void)openWorkFeedViewController;
+
+- (void)openUserWorkWorldWithParam:(NSDictionary *)param;
+
 @end

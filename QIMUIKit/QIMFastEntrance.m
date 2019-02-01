@@ -50,6 +50,7 @@
 #import "QIMMWPhotoBrowser.h"
 #import "QIMFilePreviewVC.h"
 #import "QIMMWPhotoSectionBrowserVC.h"
+#import "QIMWorkFeedViewController.h"
 
 @interface QIMFastEntrance () <MFMailComposeViewControllerDelegate>
 
@@ -135,7 +136,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             }
         }
     }
-    QIMVerboseLog(@"加载主界面VC耗时 : %lf", [[QIMWatchDog sharedInstance] escapedTimewithStartTime:startTime]);
+    QIMVerboseLog(@"加载主界面VC耗时 : %llf", [[QIMWatchDog sharedInstance] escapedTimewithStartTime:startTime]);
 }
 
 - (void)launchMainAdvertWindow {
@@ -1311,6 +1312,35 @@ static QIMFastEntrance *_sharedInstance = nil;
             [RunC performSelector:sel withObject:param];
         }
 #endif
+    });
+}
+
+- (void)openWorkFeedViewController {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMWorkFeedViewController *workfeedVc = [[QIMWorkFeedViewController alloc] init];
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        [navVC pushViewController:workfeedVc animated:YES];
+    });
+}
+
+- (void)openUserWorkWorldWithParam:(NSDictionary *)param {
+    NSLog(@"param : %@", param);
+    if (![param objectForKey:@"UserId"]) {
+        return;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMWorkFeedViewController *userWorkFeedVc = [[QIMWorkFeedViewController alloc] init];
+        userWorkFeedVc.userId = [param objectForKey:@"UserId"];
+        
+        //        userWorkFeedVc.title = [NSString stringWithFormat:@"%@的动态", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:[param objectForKey:@"UserId"]]];
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        [navVC pushViewController:userWorkFeedVc animated:YES];
     });
 }
 
