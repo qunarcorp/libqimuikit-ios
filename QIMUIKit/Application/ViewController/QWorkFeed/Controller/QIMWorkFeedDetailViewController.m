@@ -23,6 +23,7 @@
 #import "YYKeyboardManager.h"
 #import <Toast/Toast.h>
 #import "QIMWorkMomentView.h"
+#import "UIApplication+QIMApplication.h"
 
 @interface QIMWorkFeedDetailViewController () <UITableViewDelegate, UITableViewDataSource, QIMWorkCommentTableViewDelegate, QIMWorkCommentInputBarDelegate, UIGestureRecognizerDelegate, MomentCellDelegate, YYKeyboardObserver, MomentViewDelegate>
 

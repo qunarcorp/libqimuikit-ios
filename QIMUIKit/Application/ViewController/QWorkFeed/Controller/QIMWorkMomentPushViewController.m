@@ -17,7 +17,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "QIMCollectionEmotionPanView.h"
 #import "QIMWorkMomentPanelModel.h"
-#import "UITextView+QIMPlaceHolder.h"
+//#import "UITextView+QIMPlaceHolder.h"
 #import "QIMImageUtil.h"
 #import "QIMStringTransformTools.h"
 #import "QIMWorkMomentPushCell.h"
