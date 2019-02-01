@@ -74,6 +74,18 @@ static QIMQRCodeLoginManager *__qrcodeLoginManager = nil;
     } failure:^(NSError *error) {
         
     }];
+    
+    /*
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:confirmURL]];
+    [request setRequestMethod:@"POST"];
+    [request setPostBody:postData];
+    [request setUseCookiePersistence:NO];
+
+    [request setRequestHeaders:cookieProperties];
+    [request startSynchronous];
+    if ([request responseStatusCode] == 200 && ![request error]) {
+        QIMVerboseLog(@"确认扫码操作 : %@", request.responseString);
+    } */
 }
 
 - (void)confirmQRCodeLogin {

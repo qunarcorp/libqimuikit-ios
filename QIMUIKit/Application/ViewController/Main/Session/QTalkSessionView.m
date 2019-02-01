@@ -710,55 +710,6 @@
     return nil;
 }
 
-/*
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView.contentOffset.y < -50) {
-        if (_canWrite) {
-            _canWrite = NO;
-            if (_writingLayer == nil) {
-                UIBezierPath *bezierPath = [self transformToBezierPath:[QIMKit getQIMProjectType] == QIMProjectTypeQChat ? @"QChat" : @"QTalk"];
-                CGSize size = CGPathGetBoundingBox(bezierPath.CGPath).size;
-                _writingLayer = [CAShapeLayer layer];
-                _writingLayer.bounds = CGPathGetBoundingBox(bezierPath.CGPath);
-                _writingLayer.position = CGPointMake(size.width / 2, size.height / 2);
-                _writingLayer.geometryFlipped = YES;
-                _writingLayer.path = bezierPath.CGPath;
-                _writingLayer.fillColor = [UIColor clearColor].CGColor;
-                _writingLayer.lineWidth = 1;
-                _writingLayer.strokeColor = [UIColor qim_colorWithHex:0x11cd6e alpha:1.0].CGColor;
-                
-            } else {
-                [_writingLayer removeAllAnimations];
-            }
-            if (_writingAnimation == nil) {
-                CGSize size = _writingLayer.bounds.size;
-                _gradLayer = [CAGradientLayer layer];
-                _gradLayer.frame = CGRectMake((_tableView.width - size.width) / 2 - 5, -size.height - 40 - 5, size.width + 10, size.height + 10);
-                _gradLayer.colors = @[(__bridge id) [UIColor redColor].CGColor, (__bridge id) [UIColor orangeColor].CGColor, (__bridge id) [UIColor yellowColor].CGColor, (__bridge id) [UIColor greenColor].CGColor, (__bridge id) [UIColor cyanColor].CGColor, (__bridge id) [UIColor blueColor].CGColor, (__bridge id) [UIColor purpleColor].CGColor];
-                _gradLayer.startPoint = CGPointMake(0.7, 0);//(x,y) 左上角（0，0）右下角（1，1）
-                _gradLayer.endPoint = CGPointMake(0.3, 1);
-                
-                //Using arc as a mask instead of adding it as a sublayer.
-                //[self.view.layer addSublayer:arc];
-                _gradLayer.mask = _writingLayer;
-            }
-            [_tableView.tableHeaderView.layer addSublayer:_gradLayer];
-            
-            if (_writingAnimation == nil) {
-                _writingAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-                _writingAnimation.fromValue = @(0);
-                _writingAnimation.toValue = @(1);
-                _writingAnimation.duration = _writingLayer.bounds.size.width / 40;
-            }
-            [_writingLayer addAnimation:_writingAnimation forKey:nil];
-        }
-    } else {
-        _canWrite = YES;
-        [_writingLayer removeAllAnimations];
-    }
-}
-*/
-
 - (UIBezierPath *)transformToBezierPath:(NSString *)string {
     CGMutablePathRef paths = CGPathCreateMutable();
     CFStringRef fontNameRef = CFSTR("Zapfino");

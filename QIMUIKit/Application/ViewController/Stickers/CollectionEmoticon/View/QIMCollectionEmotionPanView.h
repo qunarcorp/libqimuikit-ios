@@ -56,8 +56,8 @@
 
 @interface QIMCollectionEmotionPanView : UICollectionView
 
-@property (nonatomic, assign) id<QIMDragCellCollectionViewDelegate> delegate;
-@property (nonatomic, assign) id<QIMDragCellCollectionViewDataSource> dataSource;
+@property (nonatomic, assign) id<QIMDragCellCollectionViewDelegate> qimDragDelegate;
+@property (nonatomic, assign) id<QIMDragCellCollectionViewDataSource> qimDragDataSource;
 
 @property (nonatomic, assign) BOOL isOpenMove;
 

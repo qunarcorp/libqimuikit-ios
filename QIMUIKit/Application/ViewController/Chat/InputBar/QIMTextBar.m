@@ -916,17 +916,19 @@ static QIMTextBar *__publicNumberTextBar = nil;
     } else {
         _referDelCount = 0;
         //输入
-        if ([text isEqualToString:@"@"] && self.expandViewType == QIMTextBarExpandViewTypeGroup && ![[QIMKit sharedInstance] getIsIpad]) {
+        if ([text isEqualToString:@"@"] && self.expandViewType == QIMTextBarExpandViewTypeGroup) {
             //@ 弹出联系人
             QIMGroupATNotifyVC * qNoticeVC = [[QIMGroupATNotifyVC alloc] init];
             [qNoticeVC setGroupID:self.chatId];
-//            self.chatToolBar.chatToolTextViewShow = NO;
             __weak __typeof(&*self) weakSelf = self;
             [qNoticeVC selectMember:^(NSDictionary *memberInfoDic) {
                 if (memberInfoDic.count > 0) {
                     NSString *name = [memberInfoDic objectForKey:@"name"];
                     NSString *jid = [memberInfoDic objectForKey:@"jid"];
                     NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+                    if ([[QIMKit sharedInstance] getIsIpad]) {
+                        memberName = [NSString stringWithFormat:@"%@ ", name];
+                    }
 
                     QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
                     atTextAttachment.groupMemberName = name;
@@ -946,10 +948,17 @@ static QIMTextBar *__publicNumberTextBar = nil;
                     weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(weakSelf.chatToolBar.textView.selectedRange.location + _myTextView.selectedRange.length + 1, 0);
                     [weakSelf resetTextStyle];
                 }
-            }];
-//            self.chatToolBar.chatToolTextViewShow = NO;
-            QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
-            [(UIViewController *)weakSelf.delegate presentViewController:qtalNav animated:YES completion:nil];
+            }];            
+            if ([[QIMKit sharedInstance] getIsIpad]) {
+                Class RunC = NSClassFromString(@"QIMIPadWindowManager");
+                SEL sel = NSSelectorFromString(@"detaiPushViewController:");
+                if ([RunC respondsToSelector:sel]) {
+                    [RunC performSelector:sel withObject:qNoticeVC];
+                }
+            } else {
+                QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+                [(UIViewController *)weakSelf.delegate presentViewController:qtalNav animated:YES completion:nil];
+            }
         }
     }
 }
@@ -1778,14 +1787,6 @@ static QIMTextBar *__publicNumberTextBar = nil;
      QIMNavController * nav = [[QIMNavController alloc] initWithRootViewController:cameraVC];
      [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
      */
-}
-
-- (void)sendImageUrlClick:(NSString *)url {
-    if ([url length] > 0) {
-        if ([self delegate] && [[self delegate] respondsToSelector:@selector(sendImageUrl:)]) {
-            [[self delegate] sendImageUrl:url];
-        }
-    }
 }
 
 //判断内容是否全部为空格  YES 全部为空格

@@ -180,8 +180,11 @@ static NSString *__default_ua = nil;
 
 - (void)onMoreClick{
     
-    NSURL * tempUrl = _requestUrl;
+    NSURL * tempUrl = _webView.request.URL;
+    QIMVerboseLog(@"onMoreClick webView Url : %@", _webView.request.URL);
     {
+        //
+        // 给appstore帐号审核用
         if (tempUrl == nil) {
             tempUrl = [NSURL URLWithString:@"https://dujia.qunar.com"];
         }
@@ -820,7 +823,7 @@ static NSString *__default_ua = nil;
     if (navigationType==UIWebViewNavigationTypeBackForward) {
         [self goBack];
     }
-    _requestUrl = [request URL];
+//    _requestUrl = [request URL];
     NSString *urlStr = [[request URL] absoluteString];
     NSArray * components = [urlStr componentsSeparatedByString:@":"];
     if ([urlStr hasPrefix:@"qchatiphone://"] && components.count > 1) {
