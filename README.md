@@ -92,6 +92,9 @@ pod 'QIMUIKit'
     * QIMKitVendor
     * QIMCommonCategories
     
+## Changelog
+   我们的master分支默认都是最新代码，如果你当前的服务器不支持该功能，请使用对应的[QIMUIKit](https://github.com/qunarcorp/libqimuikit-ios/wiki)版本
+    
 ## 问题反馈
 
 -   qchat@qunar.com（邮件）
