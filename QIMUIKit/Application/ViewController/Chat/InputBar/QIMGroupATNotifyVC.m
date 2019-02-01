@@ -150,7 +150,6 @@
 
 - (void)initWithNav{
     [self.navigationItem setTitle:@"选择提醒的人"];
-    
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(goBack:)];
     [self.navigationItem setLeftBarButtonItem:leftItem];
 }
@@ -208,10 +207,6 @@
         });
     });
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadGroup:) name:kGroupNickNameChanged object:nil];
-    /*
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadGroupData) name:kChatRoomResgisterInviteUser object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadGroupData) name:kChatRoomMemberChange object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadGroupData) name:kChatRoomRemoveMember object:nil]; */
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -339,18 +334,27 @@
     NSDictionary *memberInfoDic = @{@"name":name.length?name:@"", @"jid":jid.length?jid:@""};
     if (_funBlock!=nil) {
         
-        [self dismissViewControllerAnimated:YES completion:^{ 
+        if (self.presentingViewController) {
+            [self dismissViewControllerAnimated:YES completion:^{
+                _funBlock(memberInfoDic);
+            }];
+        } else {
             _funBlock(memberInfoDic);
-        }];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
 }
 
 - (void)atAllAction:(UIButton *)sender {
     if (_funBlock!=nil) {
-        
-        [self dismissViewControllerAnimated:YES completion:^{
+        if (self.presentingViewController) {
+            [self dismissViewControllerAnimated:YES completion:^{
+                _funBlock(@{@"name":@"all"});
+            }];
+        } else {
             _funBlock(@{@"name":@"all"});
-        }];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
 }
 
@@ -359,9 +363,15 @@
 }
 
 -(void)goBack:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:^{
+    if (self.presentingViewController) {
+        [self dismissViewControllerAnimated:YES completion:^{
+            _funBlock(@{});
+        }];
+    } else {
+        //适配iPad Push进来
         _funBlock(@{});
-    }];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 @end

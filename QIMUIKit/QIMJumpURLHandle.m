@@ -93,7 +93,7 @@
                 if (loginType.length > 0) {
                     qrcodeLoginVc.platForm = [NSString stringWithFormat:@"%@ ", loginType];
                 } else {
-                    qrcodeLoginVc.platForm = [NSString stringWithFormat:@"%@ ", ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) ? @"QChat" : @"QTalk"];
+                    qrcodeLoginVc.platForm = [NSString stringWithFormat:@"%@ ", [QIMKit getQIMProjectTitleName]];
                 }
                 if (loginType.length > 0) {
                     qrcodeLoginVc.type = loginType;

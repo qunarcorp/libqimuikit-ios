@@ -203,7 +203,8 @@
     if (!clientNavServerConfigs.count) {
         
         clientNavServerConfigs = [NSMutableArray arrayWithCapacity:5];
-        NSDictionary *qtalkNav = @{QIMNavNameKey:@"QTalk导航", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
+        NSString *tempNavName = [NSString stringWithFormat:@"%@导航", [QIMKit getQIMProjectTitleName]];
+        NSDictionary *qtalkNav = @{QIMNavNameKey:tempNavName, QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
         NSDictionary *publicQTalkNav = @{QIMNavNameKey:@"Qunar公共域导航", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/publicnav?c=qunar.com"};
         NSDictionary *qchatNav = @{QIMNavNameKey:@"QChat导航", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qchat/nav"};
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
@@ -241,7 +242,6 @@
         {
             if (buttonIndex == 1) {
                 [[QIMKit sharedInstance] setUserObject:@(![QIMKit sharedInstance].qimNav_Debug) forKey:@"QC_Debug"];
-//                [[QIMKit sharedInstance] userObjectForKey:@"QC_Debug"];
                 [self onSave];
             }
         }
