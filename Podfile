@@ -32,5 +32,6 @@ target 'QIMUIKit' do
     pod 'Toast'
     pod 'MMPickerView'
     pod 'SCLAlertView-Objective-C'
+    pod 'YYKeyboardManager'
     
 end
