@@ -1403,10 +1403,10 @@
             image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:@"chatBGImageFor_Common"]];
         }
         if (image) {
-            _chatBGImageView.image = image;
-            [self.view insertSubview:_chatBGImageView belowSubview:_tableView];
+            self.chatBGImageView.image = image;
+            [self.view insertSubview:self.chatBGImageView belowSubview:_tableView];
         } else {
-            [_chatBGImageView removeFromSuperview];
+            [self.chatBGImageView removeFromSuperview];
         }
     } else {
         [_tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
@@ -1873,13 +1873,13 @@
         QIMVerboseLog(@"我是 单人红包，点我 干哈？");
         
         QIMWebView *webView = [[QIMWebView alloc] init];
-        webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&user_id=%@&rk=%@", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey]];
+        webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
         //        webView.navBarHidden = YES;
         [webView setFromRegPackage:YES];
         [self.navigationController pushViewController:webView animated:YES];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_AACollection]) {
         QIMWebView *webView = [[QIMWebView alloc] init];
-        webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&user_id=%@&rk=%@", [[QIMKit sharedInstance] aaCollectionUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey]];
+        webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] aaCollectionUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
         webView.navBarHidden = YES;
         [webView setFromRegPackage:YES];
         [self.navigationController pushViewController:webView animated:YES];
@@ -2817,16 +2817,6 @@
     
 }
 
-- (void)sendImageUrl:(NSString *)imageUrl {
-    
-    [[self view] setFrame:_rootViewFrame];
-    
-    if ([imageUrl length] > 0) {
-        
-        //        [[IMXmppManager sharedInstance] sendImageUrl:imageUrl ToUserId:[[self chatSession] userId]];
-    }
-}
-
 - (void)willSendImageData:(NSData *)imageData {
     _willSendImageData = imageData;
 }
@@ -3590,7 +3580,7 @@ static CGPoint tableOffsetPoint;
         }
     } else {
         if (buttonIndex == 1) {
-            QIMChatBGImageSelectController *chatBGImageSelectVC = [[QIMChatBGImageSelectController alloc] initWithCurrentBGImage:_chatBGImageView.image];
+            QIMChatBGImageSelectController *chatBGImageSelectVC = [[QIMChatBGImageSelectController alloc] initWithCurrentBGImage:self.chatBGImageView.image];
             chatBGImageSelectVC.userID = self.chatId;
             chatBGImageSelectVC.delegate = self;
             chatBGImageSelectVC.isFromChat = YES;

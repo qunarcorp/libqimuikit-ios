@@ -543,10 +543,6 @@
     }
 }
 
-- (void)sendImageUrl:(NSString *)imageUrl {
-    
-}
-
 - (void)sendImageData:(NSData *)imageData {
     if (imageData) {
 //        [self getStringFromAttributedString:imageData];

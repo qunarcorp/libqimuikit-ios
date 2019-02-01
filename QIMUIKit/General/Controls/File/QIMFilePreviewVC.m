@@ -529,7 +529,7 @@
     [infoLabel setFont:[UIFont systemFontOfSize:12]];
     [infoLabel setNumberOfLines:0];
     [infoLabel setTextAlignment:NSTextAlignmentCenter];
-    [infoLabel setText:[NSString stringWithFormat:@"%@%@", ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) ? @"QChat" : @"QTalk", @"暂不支持打开此类文件 \n 可使用前其他应用打开并预览"]];
+    [infoLabel setText:[NSString stringWithFormat:@"%@%@", [QIMKit getQIMProjectTitleName], @"暂不支持打开此类文件 \n 可使用前其他应用打开并预览"]];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showUI)];
     [_downloadView addGestureRecognizer:tap];
     [_downloadView addSubview:infoLabel];
