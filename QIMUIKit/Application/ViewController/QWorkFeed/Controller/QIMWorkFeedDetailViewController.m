@@ -210,9 +210,7 @@
             self.commentInputBar.frame = CGRectMake(0, self.commentListView.bottom, self.view.width, 55 + [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]);
             [self.commentInputBar resignFirstInputBar:NO];
             [self.view sendSubviewToBack:self.maskView];
-            
         } completion:nil];
-        [self.commentListView scrollTheTableViewForCommentWithKeyboardHeight:0];
     } else {
         //键盘弹起
         [UIView animateWithDuration:0.25 animations:^{
@@ -223,6 +221,7 @@
             [self.view addSubview:self.maskView];
             [self.view bringSubviewToFront:self.maskView];
         }];
+        [self.commentListView scrollTheTableViewForCommentWithKeyboardHeight:CGRectGetHeight(kbFrame)];
     }
 }
 
