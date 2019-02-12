@@ -192,7 +192,7 @@ CGFloat maxLimitHeight = 0;
     [self.contentView addSubview:_commentBtn];
     
     // 最大高度限制
-    maxLimitHeight = (_contentLabel.font.lineHeight + 1.0f) * 6.0F;
+    maxLimitHeight = (_contentLabel.font.lineHeight) * 6;
 }
 
 - (void)setMoment:(QIMWorkMomentModel *)moment {
