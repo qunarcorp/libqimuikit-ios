@@ -247,9 +247,11 @@
 }
 
 - (void)sendComment {
-    [self.delegate didaddCommentWithStr:self.commentTextView.text];
-    self.commentTextView.text = nil;
-    [self.commentTextView resignFirstResponder];
+    if (self.commentTextView.text.length > 0) {
+        [self.delegate didaddCommentWithStr:self.commentTextView.text];
+        self.commentTextView.text = nil;
+        [self.commentTextView resignFirstResponder];
+    }
 }
 
 @end
