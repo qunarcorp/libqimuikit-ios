@@ -17,7 +17,6 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "QIMCollectionEmotionPanView.h"
 #import "QIMWorkMomentPanelModel.h"
-//#import "UITextView+QIMPlaceHolder.h"
 #import "QIMImageUtil.h"
 #import "QIMStringTransformTools.h"
 #import "QIMWorkMomentPushCell.h"
@@ -87,6 +86,8 @@
 @property (nonatomic, strong) NSMutableArray *selectPhotos;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
+
+@property (nonatomic, strong) NSString *momentId;
 
 @end
 
@@ -298,6 +299,7 @@
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
     [self setupNav];
     [self setupUI];
+    self.momentId = [NSString stringWithFormat:@"0-%@", [QIMUUIDTools UUID]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -353,7 +355,7 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self showProgressHUDWithMessage:@"动态上传中..."];
             NSMutableDictionary *momentDic = [NSMutableDictionary dictionaryWithCapacity:3];
-            [momentDic setObject:[NSString stringWithFormat:@"0-%@", [QIMUUIDTools UUID]] forKey:@"uuid"];
+            [momentDic setObject:self.momentId forKey:@"uuid"];
             [momentDic setObject:[QIMKit getLastUserName] forKey:@"owner"];
             [momentDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"ownerHost"];
             [momentDic setObject:@([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) forKey:@"isAnonymous"];
@@ -547,6 +549,7 @@
     NSString *modelId = model.title;
     if ([modelId isEqualToString:@"发帖身份"]) {
         QIMWorkMomentUserIdentityVC *identityVc = [[QIMWorkMomentUserIdentityVC alloc] init];
+        identityVc.momentId = self.momentId;
         [self.navigationController pushViewController:identityVc animated:YES];
     } else if ([modelId isEqualToString:@""]) {
         

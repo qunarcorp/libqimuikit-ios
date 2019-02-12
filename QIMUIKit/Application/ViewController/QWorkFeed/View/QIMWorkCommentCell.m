@@ -9,6 +9,7 @@
 #import "QIMWorkCommentCell.h"
 #import "QIMWorkMomentLabel.h"
 #import "QIMMessageParser.h"
+#import "QIMMarginLabel.h"
 #import "QIMWorkCommentModel.h"
 
 @implementation QIMWorkCommentCell
@@ -31,7 +32,7 @@
     _headImageView.contentMode = UIViewContentModeScaleAspectFill;
     _headImageView.userInteractionEnabled = YES;
     _headImageView.layer.masksToBounds = YES;
-    _headImageView.layer.cornerRadius = 20.0f;
+    _headImageView.layer.cornerRadius = _headImageView.width / 2.0f;
     _headImageView.backgroundColor = [UIColor qim_colorWithHex:0xFFFFFF];
     _headImageView.layer.borderColor = [UIColor qim_colorWithHex:0xDFDFDF].CGColor;
     _headImageView.layer.borderWidth = 0.5f;
@@ -50,20 +51,21 @@
     [_nameLab addGestureRecognizer:tapGesture2];
     
     //组织架构视图
-    _organLab = [[UILabel alloc] init];
+    _organLab = [[QIMMarginLabel alloc] init];
     _organLab.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F3];
     _organLab.font = [UIFont systemFontOfSize:11];
     _organLab.textColor = [UIColor qim_colorWithHex:0x999999];
     _organLab.textAlignment = NSTextAlignmentCenter;
     _organLab.layer.cornerRadius = 2.0f;
     _organLab.layer.masksToBounds = YES;
+    _organLab.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:_organLab];
     
     //点赞按钮
     _likeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_likeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0e7" size:24 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
     [_likeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0cd" size:24 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateSelected];
-    [_likeBtn setTitle:@"赞同" forState:UIControlStateNormal];
+    [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
     [_likeBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
     [_likeBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateSelected];
     _likeBtn.layer.cornerRadius = 13.5f;
@@ -107,11 +109,12 @@
         NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
         NSString *lastDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
         if(lastDp.length > 0) {
-            _organLab.text = [NSString stringWithFormat:@" %@ ", lastDp];
+            _organLab.text = [NSString stringWithFormat:@"%@", lastDp];
         } else {
             _organLab.hidden = YES;
         }
         [_organLab sizeToFit];
+        [_organLab sizeThatFits:CGSizeMake(_organLab.width, _organLab.height)];
         _organLab.height = 20;
     } else {
         //匿名评论
@@ -122,6 +125,7 @@
         }
         [self.headImageView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
         self.nameLab.text = anonymousName;
+        self.nameLab.textColor = [UIColor qim_colorWithHex:0x999999];
         self.organLab.hidden = YES;
     }
     CGFloat rowHeight = 0;
@@ -170,7 +174,7 @@
         if (likeNum > 0) {
             [_likeBtn setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
         } else {
-            [_likeBtn setTitle:@"赞同" forState:UIControlStateNormal];
+            [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
         }
     }
     _likeBtn.centerY = self.headImageView.centerY;
@@ -193,7 +197,7 @@
                 if (likeNum > 0) {
                     [sender setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
                 } else {
-                    [sender setTitle:@"赞同" forState:UIControlStateNormal];
+                    [sender setTitle:@"顶" forState:UIControlStateNormal];
                 }
             }
         } else {

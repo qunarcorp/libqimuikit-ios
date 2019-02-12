@@ -52,7 +52,7 @@ static CGPoint tableOffsetPoint;
         _commentTableView.estimatedSectionFooterHeight = 0;
         _commentTableView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8 alpha:1.0];
         _commentTableView.tableFooterView = [UIView new];
-        _commentTableView.separatorInset = UIEdgeInsetsMake(0,0, 0, 0);           //top left bottom right 左右边距相同
+        _commentTableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);           //top left bottom right 左右边距相同
         _commentTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _commentTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewComments)];
         _commentTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreComments)];
@@ -138,9 +138,6 @@ static CGPoint tableOffsetPoint;
     [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     _commentHeaderView.hidden = NO;
     [self.commentTableView setTableHeaderView:_commentHeaderView];
-    NSLog(@"commentHeaderView : %@", _commentHeaderView);
-    NSLog(@"commentHeaderView2 : %@", self.commentTableView.tableHeaderView);
-//    [self.commentTableView setTableHeaderView:_commentHeaderView];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -222,7 +219,7 @@ static CGPoint tableOffsetPoint;
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
     view.backgroundColor = [UIColor whiteColor];
     
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 0, SCREEN_WIDTH - 30, 0.5f)];
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 0, SCREEN_WIDTH - 30, 0.25f)];
     lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
     [view addSubview:lineView];
     

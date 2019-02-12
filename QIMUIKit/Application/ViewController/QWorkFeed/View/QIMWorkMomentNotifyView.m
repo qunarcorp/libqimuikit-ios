@@ -19,7 +19,7 @@
 @implementation QIMWorkMomentNotifyView
 
 - (instancetype)initWithNewMsgCount:(NSInteger)msgCount {
-    self = [super initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
+    self = [super initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 54)];
     if (self) {
         self.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F9];
         
@@ -53,6 +53,7 @@
         
         [self addSubview:self.notifyBgView];
         self.notifyBgView.center = self.center;
+        self.notifyBgView.centerY = self.centerY;
     }
     return self;
 }
