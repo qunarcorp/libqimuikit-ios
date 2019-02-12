@@ -7,6 +7,7 @@
 //
 
 #import "QIMCommonUIFramework.h"
+#import "QIMMarginLabel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -41,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 // 名称
 @property (nonatomic, strong) UILabel *nameLab;
 //组织架构Label
-@property (nonatomic, strong) UILabel *organLab;
+@property (nonatomic, strong) QIMMarginLabel *organLab;
 //服务器IdLabel
 @property (nonatomic, strong) UILabel *rIdLabe;
 // 时间

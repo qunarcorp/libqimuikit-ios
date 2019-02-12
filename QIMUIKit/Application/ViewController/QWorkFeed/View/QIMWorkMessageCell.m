@@ -7,6 +7,7 @@
 //
 
 #import "QIMWorkMessageCell.h"
+#import "QIMMarginLabel.h"
 
 @interface QIMWorkMessageCell ()
 
@@ -14,7 +15,7 @@
 
 @property (nonatomic, strong) UILabel *nameLabel;
 
-@property (nonatomic, strong) UILabel *organLabel;
+@property (nonatomic, strong) QIMMarginLabel *organLabel;
 
 @property (nonatomic, strong) UILabel *contentLabel;
 
@@ -57,14 +58,9 @@
     _nameLabel.textColor = [UIColor qim_colorWithHex:0x00CABE];
     _nameLabel.backgroundColor = [UIColor clearColor];
     [self.contentView addSubview:_nameLabel];
-//    [_nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.mas_equalTo(self.headerImageView.right + 10);
-//        make.centerY.mas_equalTo(self.headerImageView.mas_centerY);
-//        make.height.mas_equalTo(20);
-//    }];
     
     //组织架构视图
-    _organLabel = [[UILabel alloc] init];
+    _organLabel = [[QIMMarginLabel alloc] init];
     _organLabel.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F3];
     _organLabel.font = [UIFont systemFontOfSize:11];
     _organLabel.textColor = [UIColor qim_colorWithHex:0x999999];
@@ -166,8 +162,9 @@
             NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
             NSString *lastDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
             if(lastDp.length > 0) {
-                self.organLabel.text = [NSString stringWithFormat:@" %@ ", lastDp];
+                self.organLabel.text = [NSString stringWithFormat:@"%@", lastDp];
                 [self.organLabel sizeToFit];
+                [self.organLabel sizeThatFits:CGSizeMake(self.organLabel.width, self.organLabel.height)];
                 self.organLabel.frame = CGRectMake(self.nameLabel.right + 8, 0, 66, 20);
                 self.organLabel.centerY = self.headerImageView.centerY;
             } else {

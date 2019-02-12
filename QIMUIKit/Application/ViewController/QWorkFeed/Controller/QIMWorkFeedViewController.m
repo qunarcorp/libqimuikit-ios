@@ -72,6 +72,8 @@
         _mainTableView.tableHeaderView = [[UIView alloc] initWithFrame:tableHeaderViewFrame];
         _mainTableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);           //top left bottom right 左右边距相同
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _mainTableView.separatorColor = [UIColor qim_colorWithHex:0xdddddd];
+        
         _mainTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(reloadRemoteRecenteMoments)];
         _mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreMoment)];
         _mainTableView.mj_footer.automaticallyHidden = YES;
@@ -109,7 +111,7 @@
 
 - (QIMWorkMomentNotifyView *)notifyView {
     if (!_notifyView) {
-        _notifyView = [[QIMWorkMomentNotifyView alloc] initWithNewMsgCount:99];
+        _notifyView = [[QIMWorkMomentNotifyView alloc] initWithNewMsgCount:1];
         _notifyView.delegate = self;
     }
     _notifyView.msgCount = self.notReadNoticeMsgCount;
@@ -175,7 +177,7 @@
 
 //加载本地最近的帖子
 - (void)reloadLocalRecenteMoments:(BOOL)notNeedReloadMomentView {
-    if (notNeedReloadMomentView == NO) {
+    if (notNeedReloadMomentView == NO && self.workMomentList.count <= 0) {
         __weak typeof(self) weakSelf = self;
         [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WihtLimit:10 WithOffset:0 withFirstLocalMoment:YES WihtComplete:^(NSArray * _Nonnull array) {
             if (array.count) {
@@ -272,14 +274,12 @@
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.mainTableView reloadData];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+            [UIView animateWithDuration:0.2 animations:^{
+                [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+            } completion:nil];
         });
     }
-    /*
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.notNeedReloadMomentView = NO;
-        [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
-    });
-    */
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

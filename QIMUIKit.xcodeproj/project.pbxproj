@@ -149,6 +149,8 @@
 		2C14835F213D626F009D4AE3 /* UINavigationController+QIMOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C14835D213D626F009D4AE3 /* UINavigationController+QIMOrientation.m */; };
 		2C21D5F320C671F900DEC74C /* QIMMWCodeActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C21D5F120C671F900DEC74C /* QIMMWCodeActivity.m */; };
 		2C21D5F420C671F900DEC74C /* QIMMWCodeActivity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C21D5F220C671F900DEC74C /* QIMMWCodeActivity.h */; };
+		2C2A797A221275A000AF2153 /* QIMMarginLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C2A7978221275A000AF2153 /* QIMMarginLabel.h */; };
+		2C2A797B221275A000AF2153 /* QIMMarginLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2A7979221275A000AF2153 /* QIMMarginLabel.m */; };
 		2C363B2E215E12C7003BA9FF /* QIMCommonUIFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C363B2D215E12C7003BA9FF /* QIMCommonUIFramework.h */; };
 		2C4AA84B20D0BED90022B023 /* QIMAppWindowManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4AA84920D0BED90022B023 /* QIMAppWindowManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2C4AA84C20D0BED90022B023 /* QIMAppWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4AA84A20D0BED90022B023 /* QIMAppWindowManager.m */; };
@@ -1133,6 +1135,8 @@
 		2C14835D213D626F009D4AE3 /* UINavigationController+QIMOrientation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+QIMOrientation.m"; sourceTree = "<group>"; };
 		2C21D5F120C671F900DEC74C /* QIMMWCodeActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMMWCodeActivity.m; sourceTree = "<group>"; };
 		2C21D5F220C671F900DEC74C /* QIMMWCodeActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMMWCodeActivity.h; sourceTree = "<group>"; };
+		2C2A7978221275A000AF2153 /* QIMMarginLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMMarginLabel.h; sourceTree = "<group>"; };
+		2C2A7979221275A000AF2153 /* QIMMarginLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMMarginLabel.m; sourceTree = "<group>"; };
 		2C363B2D215E12C7003BA9FF /* QIMCommonUIFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMCommonUIFramework.h; sourceTree = "<group>"; };
 		2C4AA84920D0BED90022B023 /* QIMAppWindowManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMAppWindowManager.h; sourceTree = "<group>"; };
 		2C4AA84A20D0BED90022B023 /* QIMAppWindowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMAppWindowManager.m; sourceTree = "<group>"; };
@@ -2084,6 +2088,8 @@
 				2C06A04522045DE8000CAF37 /* QIMWorkCommentCell.m */,
 				2C06A03622045DE8000CAF37 /* QIMWorkCommentInputBar.h */,
 				2C06A03E22045DE8000CAF37 /* QIMWorkCommentInputBar.m */,
+				2C2A7978221275A000AF2153 /* QIMMarginLabel.h */,
+				2C2A7979221275A000AF2153 /* QIMMarginLabel.m */,
 				2C06A03222045DE8000CAF37 /* QIMWorkCommentTableView.h */,
 				2C06A04222045DE8000CAF37 /* QIMWorkCommentTableView.m */,
 				2C06A03322045DE8000CAF37 /* QIMWorkCommentTextView.h */,
@@ -4495,6 +4501,7 @@
 				2C06A07922045DE8000CAF37 /* QIMWorkMomentNotifyView.h in Headers */,
 				2C21D5F420C671F900DEC74C /* QIMMWCodeActivity.h in Headers */,
 				2CC93BA321EC33C800EEC47D /* QIMGDMarginLabel.h in Headers */,
+				2C2A797A221275A000AF2153 /* QIMMarginLabel.h in Headers */,
 				2C8AFC1720B1D51B00CF98EB /* PlaceAnnotation.h in Headers */,
 				2C8AFF8020B1D8AB00CF98EB /* QTalkMessageManager.h in Headers */,
 				2CC93BA121EC33C800EEC47D /* QIMGDPerformanceView.h in Headers */,
@@ -5005,6 +5012,7 @@
 				2C8AFBEB20B1D51B00CF98EB /* QIMFilePreviewVC.m in Sources */,
 				2C8AFBF720B1D51B00CF98EB /* QIMAudioPlayer.m in Sources */,
 				2C8AFCFA20B1D51B00CF98EB /* QIMEmotionManager.m in Sources */,
+				2C2A797B221275A000AF2153 /* QIMMarginLabel.m in Sources */,
 				2C8AFF6620B1D8AB00CF98EB /* QIMMessageTableViewManager.m in Sources */,
 				2C8AFDEB20B1D51C00CF98EB /* QIMGroupChangeTopicVC.m in Sources */,
 				2C7F92F121C7E45A0087BD04 /* QIMRedMindView.m in Sources */,

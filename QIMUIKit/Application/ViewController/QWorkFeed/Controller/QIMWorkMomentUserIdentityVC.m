@@ -66,7 +66,7 @@
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
     [self.view addSubview:self.userIdentityListView];
     __weak __typeof(self) weakSelf = self;
-    [[QIMKit sharedInstance] getAnonyMouseDicWithCallBack:^(NSDictionary *anonymousDic) {
+    [[QIMKit sharedInstance] getAnonyMouseDicWithMomentId:self.momentId WithCallBack:^(NSDictionary *anonymousDic) {
         NSLog(@"anonymousDic : %@", anonymousDic);
         if (anonymousDic.count > 0) {
             NSString *anonymousName = [anonymousDic objectForKey:@"anonymous"];
@@ -79,7 +79,7 @@
             model.anonymousPhoto = anonymousPhoto;
             [weakSelf.userIdentityList addObject:model];
             dispatch_async(dispatch_get_main_queue(), ^{
-               [weakSelf.userIdentityListView reloadData];
+                [weakSelf.userIdentityListView reloadData];
             });
         }
     }];

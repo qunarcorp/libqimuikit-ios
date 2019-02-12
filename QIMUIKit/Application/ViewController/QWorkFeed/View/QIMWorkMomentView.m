@@ -9,6 +9,7 @@
 #import "QIMWorkMomentView.h"
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkMomentLabel.h"
+#import "QIMMarginLabel.h"
 
 CGFloat maxFullContentHeight = 0;
 
@@ -19,7 +20,7 @@ CGFloat maxFullContentHeight = 0;
 // 名称
 @property (nonatomic, strong) UILabel *nameLab;
 //组织架构Label
-@property (nonatomic, strong) UILabel *organLab;
+@property (nonatomic, strong) QIMMarginLabel *organLab;
 //服务器IdLabel
 @property (nonatomic, strong) UILabel *rIdLabe;
 // 时间
@@ -48,11 +49,11 @@ CGFloat maxFullContentHeight = 0;
 
 - (void)setupUI {
     // 头像视图
-    _headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 43, 43)];
+    _headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 43, 43)];
     _headImageView.contentMode = UIViewContentModeScaleAspectFill;
     _headImageView.userInteractionEnabled = YES;
     _headImageView.layer.masksToBounds = YES;
-    _headImageView.layer.cornerRadius = 20.0f;
+    _headImageView.layer.cornerRadius = _headImageView.width / 2.0f;
     _headImageView.backgroundColor = [UIColor qim_colorWithHex:0xFFFFFF];
     _headImageView.layer.borderColor = [UIColor qim_colorWithHex:0xDFDFDF].CGColor;
     _headImageView.layer.borderWidth = 0.5f;
@@ -71,13 +72,14 @@ CGFloat maxFullContentHeight = 0;
     [_nameLab addGestureRecognizer:nameTapGesture];
     
     //组织架构视图
-    _organLab = [[UILabel alloc] init];
+    _organLab = [[QIMMarginLabel alloc] init];
     _organLab.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F3];
     _organLab.font = [UIFont systemFontOfSize:11];
     _organLab.textColor = [UIColor qim_colorWithHex:0x999999];
     _organLab.textAlignment = NSTextAlignmentCenter;
     _organLab.layer.cornerRadius = 2.0f;
     _organLab.layer.masksToBounds = YES;
+    _organLab.textAlignment = NSTextAlignmentCenter;
     [_organLab sizeToFit];
     [self addSubview:_organLab];
     
@@ -93,6 +95,7 @@ CGFloat maxFullContentHeight = 0;
     _contentLabel = [[QIMWorkMomentLabel alloc] init];
     _contentLabel.font = [UIFont systemFontOfSize:15];
     _contentLabel.linesSpacing = 1.0f;
+    _contentLabel.characterSpacing = 0.0f;
     _contentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
     [self addSubview:_contentLabel];
 
@@ -120,8 +123,9 @@ CGFloat maxFullContentHeight = 0;
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
         NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
         NSString *showDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
-        _organLab.text = showDp ? [NSString stringWithFormat:@" %@ ", showDp] : @" 未知 ";
+        _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @" 未知 ";
         [_organLab sizeToFit];
+        [_organLab sizeThatFits:CGSizeMake(_organLab.width, _organLab.height)];
         _organLab.height = 20;
         
         _rIdLabe.frame = CGRectMake(self.organLab.right + 5, self.nameLab.top, 20, 20);
@@ -135,6 +139,7 @@ CGFloat maxFullContentHeight = 0;
         }
         [_headImageView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
         _nameLab.text = anonymousName;
+        _nameLab.textColor = [UIColor qim_colorWithHex:0x999999];
         [_nameLab sizeToFit];
         
         _organLab.hidden = YES;

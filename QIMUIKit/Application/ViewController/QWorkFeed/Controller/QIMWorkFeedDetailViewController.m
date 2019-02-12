@@ -154,12 +154,10 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         __weak typeof(self) weakSelf = self;
         [[QIMKit sharedInstance] getWorkCommentWithLastCommentRId:0 withMomentId:self.momentId WihtLimit:20 WithOffset:0 withFirstLocalComment:YES WihtComplete:^(NSArray * comments) {
-//            QIMVerboseLog(@"Comments : %@", comments);
             if (comments.count) {
                 [weakSelf.commentListView.commentModels removeAllObjects];
                 for (NSDictionary *commentDic in comments) {
                     QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
-//                    NSLog(@"QIMWorkCommentModel Local: %@", model);
                     [weakSelf.commentListView.commentModels addObject:model];
                 }
                 [weakSelf.commentListView reloadCommentsData];
@@ -173,24 +171,20 @@
 
     __weak typeof(self) weakSelf = self;
     [[QIMKit sharedInstance] getRemoteRecentNewCommentsWithMomentId:self.momentId withNewCommentCallBack:^(NSArray *comments) {
-//        QIMVerboseLog(@"newComments : %@", comments);
         if (comments.count) {
             [weakSelf.commentListView.commentModels removeAllObjects];
             for (NSDictionary *commentDic in comments) {
                 QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
-//                NSLog(@"QIMWorkCommentModel New: %@", model);
                 [weakSelf.commentListView.commentModels addObject:model];
             }
             [weakSelf.commentListView reloadCommentsData];
         }
     }];
     [[QIMKit sharedInstance] getRemoteRecentHotCommentsWithMomentId:self.momentId withHotCommentCallBack:^(NSArray *hotComments) {
-//        QIMVerboseLog(@"hotComments : %@", hotComments);
         if ([hotComments isKindOfClass:[NSArray class]]) {
             [weakSelf.commentListView.hotCommentModels removeAllObjects];
             for (NSDictionary *commentDic in hotComments) {
                 QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
-//                NSLog(@"QIMWorkCommentModel : %@", model);
                 [weakSelf.commentListView.hotCommentModels addObject:model];
             }
             [weakSelf.commentListView reloadCommentsData];
@@ -201,7 +195,6 @@
 - (QIMWorkCommentModel *)getCommentModelWithDic:(NSDictionary *)momentDic {
     
     QIMWorkCommentModel *model = [QIMWorkCommentModel yy_modelWithDictionary:momentDic];
-//    NSLog(@"QIMWorkCommentModel *model : %@", model);
     return model;
 }
 
@@ -262,7 +255,7 @@
     if ([self.commentInputBar isInputBarFirstResponder] == NO) {
         
         NSString *fromUserId = [NSString stringWithFormat:@"%@@%@", commentModel.fromUser, commentModel.fromHost];
-        if ([fromUserId isEqualToString:[[QIMKit sharedInstance] getLastJid]] && commentModel.isAnonymous == NO) {
+        if ([fromUserId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
             //自己实名发的评论
             NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
             [indexSet addIndex:1];
@@ -438,6 +431,7 @@
 
 - (void)didOpenUserIdentifierVC {
     QIMWorkMomentUserIdentityVC *identityVc = [[QIMWorkMomentUserIdentityVC alloc] init];
+    identityVc.momentId = self.momentId;
     [self.navigationController pushViewController:identityVc animated:YES];
 }
 
