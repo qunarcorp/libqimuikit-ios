@@ -228,18 +228,17 @@ static NSString *__default_ua = nil;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
-    UIView *leftItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
-    UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
-    [backButton setTitle:[NSBundle qim_localizedStringForKey:@"common_back"] forState:UIControlStateNormal];
-    [backButton setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
-    [backButton setImage:[UIImage imageNamed:@"barbuttonicon_back"] forState:UIControlStateNormal];
-    [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-    [leftItem addSubview:backButton];
-    UIBarButtonItem *leftBarItem = [[UIBarButtonItem alloc] initWithCustomView:leftItem];
-    [self.navigationController.navigationItem setLeftBarButtonItem:leftBarItem];
+    self.navigationController.navigationBar.translucent = NO;
     if (![[QIMKit sharedInstance] getIsIpad] && self.fromRegPackage == NO) {
+        UIView *leftItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
+        UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
+        [backButton setTitle:[NSBundle qim_localizedStringForKey:@"common_back"] forState:UIControlStateNormal];
+        [backButton setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
+        [backButton setImage:[UIImage imageNamed:@"barbuttonicon_back"] forState:UIControlStateNormal];
+        [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+        [leftItem addSubview:backButton];
+        UIBarButtonItem *leftBarItem = [[UIBarButtonItem alloc] initWithCustomView:leftItem];
+        [self.navigationController.navigationItem setLeftBarButtonItem:leftBarItem];
         UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
         [self.navigationItem setRightBarButtonItem:rightItem];
     }
@@ -258,19 +257,7 @@ static NSString *__default_ua = nil;
     _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
     _webView.delegate = _progressProxy;
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        if (self.fromRegPackage) {
-//            float webViewWidth = ([[UIScreen mainScreen] height] - self.navigationController.navigationBar.height - 20) * 2 / 3;
-            float webViewWidth = [[UIScreen mainScreen] width] ;
-            _webView.frame = CGRectMake(([[UIScreen mainScreen] width] - webViewWidth) / 2, self.navigationController.navigationBar.height + 20, webViewWidth, ([[UIScreen mainScreen] height] - self.navigationController.navigationBar.height - 20 - 64));
-            _webView.scrollView.contentInset = UIEdgeInsetsMake(-64, 0, 0, 0);
-            _webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-        }
-        UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
-        [backButton setTitle:[NSBundle qim_localizedStringForKey:@"common_back"] forState:UIControlStateNormal];
-        [backButton setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
-        [backButton setImage:[UIImage imageNamed:@"barbuttonicon_back"] forState:UIControlStateNormal];
-        [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-        [self.navigationController.navigationBar addSubview:backButton];
+        _webView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], self.view.height);
     }
     if (self.needAuth) {
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
@@ -292,7 +279,9 @@ static NSString *__default_ua = nil;
             }
         }
     }
-    [_webView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
+    if (![[QIMKit sharedInstance] getIsIpad]) {
+        [_webView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
+    }
     [_webView setScalesPageToFit:YES];
     [_webView setMultipleTouchEnabled:YES];
     [self.view addSubview:_webView];
@@ -519,6 +508,7 @@ static NSString *__default_ua = nil;
         [_webView loadRequest:request];
     }
     QIMVerboseLog(@"WebView LoadRequest : %@ \n Cookie : %@", _requestUrl, [NSHTTPCookieStorage sharedHTTPCookieStorage].cookies);
+    self.view.backgroundColor = [UIColor yellowColor];
 }
     
 - (void)clearLoginCookie{
@@ -528,8 +518,7 @@ static NSString *__default_ua = nil;
     }
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
+-(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if (self.navBarHidden) {
         [self.navigationController setNavigationBarHidden:YES animated:YES];
