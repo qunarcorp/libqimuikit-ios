@@ -355,8 +355,8 @@ CGFloat maxLimitHeight = 0;
 //点击全文/收起
 - (void)fullTextClicked:(UIButton *)sender {
     self.moment.isFullText = !self.moment.isFullText;
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectFullText:)]) {
-        [self.delegate didSelectFullText:self];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectFullText:withFullText:)]) {
+        [self.delegate didSelectFullText:self withFullText:self.moment.isFullText];
     }
 }
 

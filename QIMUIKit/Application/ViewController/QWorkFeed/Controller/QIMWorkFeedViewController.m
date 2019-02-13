@@ -475,9 +475,18 @@
 }
 
 // 查看全文/收起
-- (void)didSelectFullText:(QIMWorkMomentCell *)cell {
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cell.tag inSection:0];
-    [self.mainTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+- (void)didSelectFullText:(QIMWorkMomentCell *)cell withFullText:(BOOL)isFullText {
+    if (isFullText == YES) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cell.tag inSection:0];
+        [self.mainTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    } else {
+        //收起
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cell.tag inSection:0];
+            [self.mainTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+        });
+    }
 }
 
 #pragma mark - QIMWorkMomentNotifyViewDelegtae
