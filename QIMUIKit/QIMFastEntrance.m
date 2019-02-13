@@ -293,7 +293,11 @@ static QIMFastEntrance *_sharedInstance = nil;
         //打开用户名片页
         //导航返回的RNUserCardView 为YES时，默认打开RN 名片页
         if ([[QIMKit sharedInstance] getIsIpad]) {
-            
+            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
+            SEL sel = NSSelectorFromString(@"openSingleChatByJid:");
+            if ([RunC respondsToSelector:sel]) {
+                [RunC performSelector:sel withObject:userId];
+            }
         } else {
 #if defined (QIMRNEnable) && QIMRNEnable == 1
             
@@ -515,12 +519,20 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)openGroupChatVCByGroupId:(NSString *)groupId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIViewController *chatGroupVC = [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:groupId];
-        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-        if (!navVC) {
-            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
+            SEL sel = NSSelectorFromString(@"openGrouChatByGroupId:");
+            if ([RunC respondsToSelector:sel]) {
+                [RunC performSelector:sel withObject:groupId];
+            }
+        } else {
+            UIViewController *chatGroupVC = [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:groupId];
+            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+            if (!navVC) {
+                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            }
+            [navVC pushViewController:chatGroupVC animated:YES];
         }
-        [navVC pushViewController:chatGroupVC animated:YES];
     });
 }
 

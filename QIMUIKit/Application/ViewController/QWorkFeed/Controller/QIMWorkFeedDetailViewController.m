@@ -154,7 +154,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         __weak typeof(self) weakSelf = self;
         [[QIMKit sharedInstance] getWorkCommentWithLastCommentRId:0 withMomentId:self.momentId WihtLimit:20 WithOffset:0 withFirstLocalComment:YES WihtComplete:^(NSArray * comments) {
-            if (comments.count) {
+            if (comments) {
                 [weakSelf.commentListView.commentModels removeAllObjects];
                 for (NSDictionary *commentDic in comments) {
                     QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
@@ -382,7 +382,7 @@
         [commentDic setObject:[QIMKit getLastUserName] forKey:@"fromUser"];
         [commentDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
         [commentDic setObject:self.staticCommentModel.fromUser forKey:@"toUser"];
-        [commentDic setObject:self.staticCommentModel.fromHost forKey:@"toUserHost"];
+        [commentDic setObject:self.staticCommentModel.fromHost forKey:@"toHost"];
         [commentDic setObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
         [commentDic setObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
         [commentDic setObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
@@ -406,7 +406,7 @@
         [commentDic setObject:[QIMKit getLastUserName] forKey:@"fromUser"];
         [commentDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
         [commentDic setObject:@"" forKey:@"toUser"];
-        [commentDic setObject:@"" forKey:@"toUserHost"];
+        [commentDic setObject:@"" forKey:@"toHost"];
         [commentDic setObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
         [commentDic setObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
         [commentDic setObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
@@ -435,7 +435,7 @@
 }
 
 // 查看全文/收起
-- (void)didSelectFullText:(QIMWorkMomentCell *)cell {
+- (void)didSelectFullText:(QIMWorkMomentCell *)cell withFullText:(BOOL)isFullText {
     
 }
 

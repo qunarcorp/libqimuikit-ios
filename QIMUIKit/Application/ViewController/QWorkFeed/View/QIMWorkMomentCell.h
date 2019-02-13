@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 // 评论
 - (void)didAddComment:(QIMWorkMomentCell *)cell;
 // 查看全文/收起
-- (void)didSelectFullText:(QIMWorkMomentCell *)cell;
+- (void)didSelectFullText:(QIMWorkMomentCell *)cell withFullText:(BOOL)isFullText;
 
 - (void)didClickSmallImage:(QIMWorkMomentModel *)model WithCurrentTag:(NSInteger)tag;
 // 点击高亮文字
