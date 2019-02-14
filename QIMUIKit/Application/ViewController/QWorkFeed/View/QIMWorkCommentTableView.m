@@ -106,6 +106,10 @@ static CGPoint tableOffsetPoint;
     return self;
 }
 
+- (void)setCommentNum:(NSInteger)commentNum {
+    _commentNum = commentNum;
+}
+
 - (void)reloadCommentsData {
     [self.commentTableView reloadData];
 }

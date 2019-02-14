@@ -175,6 +175,10 @@
     });
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 //加载本地最近的帖子
 - (void)reloadLocalRecenteMoments:(BOOL)notNeedReloadMomentView {
     if (notNeedReloadMomentView == NO && self.workMomentList.count <= 0) {

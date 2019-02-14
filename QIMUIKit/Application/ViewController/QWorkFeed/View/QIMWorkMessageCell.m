@@ -139,7 +139,7 @@
                 self.contentLabel.text = [NSString stringWithFormat:@"回复 %@：%@", toAnonymousName, noticeMsgModel.content];
             } else {
                 //给实名用户评论
-                NSString *toUserId = [NSString stringWithFormat:@"%@@%@", noticeMsgModel.userTo, noticeMsgModel.userToHost];
+                NSString *toUserId = [NSString stringWithFormat:@"%@@%@", noticeMsgModel.userTo, noticeMsgModel.userToHost ? noticeMsgModel.userToHost : [[QIMKit sharedInstance] getDomain]];
                 NSString *userName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:toUserId];
                 if ([toUserId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
                     userName = @"我";
@@ -182,7 +182,7 @@
                 self.contentLabel.text = [NSString stringWithFormat:@"回复 %@：%@", toAnonymousName, noticeMsgModel.content];
             } else {
                 //给实名用户评论
-                NSString *toUserId = [NSString stringWithFormat:@"%@@%@", noticeMsgModel.userTo, noticeMsgModel.userToHost];
+                NSString *toUserId = [NSString stringWithFormat:@"%@@%@", noticeMsgModel.userTo, noticeMsgModel.userToHost ? noticeMsgModel.userToHost : [[QIMKit sharedInstance] getDomain]];
                 NSString *userName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:toUserId];
                 if ([toUserId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
                     userName = @"我";
