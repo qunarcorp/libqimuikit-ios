@@ -324,7 +324,7 @@ CGFloat maxLimitHeight = 0;
     if (self.moment.commentsNum > 0) {
         [_commentBtn setTitle:[NSString stringWithFormat:@"%ld", self.moment.commentsNum] forState:UIControlStateNormal];
     } else {
-        
+        [_commentBtn setTitle:@"评论" forState:UIControlStateNormal];
     }
 }
 
