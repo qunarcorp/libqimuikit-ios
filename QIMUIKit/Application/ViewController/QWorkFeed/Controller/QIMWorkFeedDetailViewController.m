@@ -138,7 +138,8 @@
     [[YYKeyboardManager defaultManager] addObserver:self];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadLocalComments) name:kNotifyReloadWorkComment object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMomentCommentNum:) name:kNotifyReloadWorkFeedCommentNum object:nil];
+
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3cd" size:20 color:[UIColor qim_colorWithHex:0x333333]]] style:UIBarButtonItemStylePlain target:self action:@selector(backBtnClick:)];
 
     [self.view addSubview:self.commentListView];
@@ -148,6 +149,17 @@
 
 - (void)backBtnClick:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)updateMomentCommentNum:(NSNotification *)notify {
+    NSDictionary *data = notify.object;
+    NSString *postId = [data objectForKey:@"postId"];
+    if ([postId isEqualToString:self.momentId]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.momentModel.commentsNum = [[data objectForKey:@"postCommentNum"] integerValue];
+            [self.commentListView reloadCommentsData];
+        });
+    }
 }
 
 - (void)loadLocalComments {
@@ -426,6 +438,7 @@
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
     [[YYKeyboardManager defaultManager] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didOpenUserIdentifierVC {

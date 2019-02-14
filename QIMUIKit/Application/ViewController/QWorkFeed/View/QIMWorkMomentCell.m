@@ -41,12 +41,17 @@ CGFloat maxLimitHeight = 0;
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)updateMomentDetail:(NSNotification *)notify {
     NSDictionary *momentDic = notify.object;
     QIMWorkMomentModel *momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
     NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
     QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
     momentModel.content = conModel;
+    momentModel.isFullText = self.moment.isFullText;
     if ([momentModel.momentId isEqualToString:self.moment.momentId]) {
         [self setMoment:momentModel];
     }
@@ -192,7 +197,7 @@ CGFloat maxLimitHeight = 0;
     [self.contentView addSubview:_commentBtn];
     
     // 最大高度限制
-    maxLimitHeight = (_contentLabel.font.lineHeight) * 6;
+    maxLimitHeight = (_contentLabel.font.lineHeight) * 6 - 1.0;
 }
 
 - (void)setMoment:(QIMWorkMomentModel *)moment {

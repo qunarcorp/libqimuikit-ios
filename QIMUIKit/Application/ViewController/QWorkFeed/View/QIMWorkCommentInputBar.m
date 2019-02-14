@@ -161,6 +161,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)setLikeNum:(NSInteger)likeNum withISLike:(BOOL)isLike {
     _likeNum = likeNum;
     _isLike = isLike;
