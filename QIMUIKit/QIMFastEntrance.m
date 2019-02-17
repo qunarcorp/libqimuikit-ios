@@ -35,6 +35,7 @@
 #import "QIMZBarViewController.h"
 #import "QIMJumpURLHandle.h"
 #import "QIMLoginVC.h"
+#import "QIMPublicLogin.h"
 #import "QIMMainVC.h"
 #import "QIMLoginViewController.h"
 #import "QIMWebLoginVC.h"
@@ -130,7 +131,8 @@ static QIMFastEntrance *_sharedInstance = nil;
                 QIMNavController *navController = [[QIMNavController alloc] initWithRootViewController:mainVc];
                 [window setRootViewController:navController];
             } else {
-                QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+//                QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
                 [window setRootViewController:nav];
             }
