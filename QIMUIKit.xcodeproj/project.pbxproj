@@ -157,6 +157,8 @@
 		2C2A79A32215A80700AF2153 /* QIMConfirmPWDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2A799B2215A80700AF2153 /* QIMConfirmPWDViewController.m */; };
 		2C2A79A62215A89E00AF2153 /* QIMPublicCompanyModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C2A79A42215A89E00AF2153 /* QIMPublicCompanyModel.h */; };
 		2C2A79A72215A89E00AF2153 /* QIMPublicCompanyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2A79A52215A89E00AF2153 /* QIMPublicCompanyModel.m */; };
+		2C2A79BB2216C6F000AF2153 /* QIMPublicLogin.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C2A79B12216C6EF00AF2153 /* QIMPublicLogin.h */; };
+		2C2A79BE2216C6F000AF2153 /* QIMPublicLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2A79B42216C6EF00AF2153 /* QIMPublicLogin.m */; };
 		2C363B2E215E12C7003BA9FF /* QIMCommonUIFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C363B2D215E12C7003BA9FF /* QIMCommonUIFramework.h */; };
 		2C4AA84B20D0BED90022B023 /* QIMAppWindowManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4AA84920D0BED90022B023 /* QIMAppWindowManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2C4AA84C20D0BED90022B023 /* QIMAppWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4AA84A20D0BED90022B023 /* QIMAppWindowManager.m */; };
@@ -1149,6 +1151,8 @@
 		2C2A799B2215A80700AF2153 /* QIMConfirmPWDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMConfirmPWDViewController.m; sourceTree = "<group>"; };
 		2C2A79A42215A89E00AF2153 /* QIMPublicCompanyModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMPublicCompanyModel.h; sourceTree = "<group>"; };
 		2C2A79A52215A89E00AF2153 /* QIMPublicCompanyModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMPublicCompanyModel.m; sourceTree = "<group>"; };
+		2C2A79B12216C6EF00AF2153 /* QIMPublicLogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMPublicLogin.h; sourceTree = "<group>"; };
+		2C2A79B42216C6EF00AF2153 /* QIMPublicLogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMPublicLogin.m; sourceTree = "<group>"; };
 		2C363B2D215E12C7003BA9FF /* QIMCommonUIFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMCommonUIFramework.h; sourceTree = "<group>"; };
 		2C4AA84920D0BED90022B023 /* QIMAppWindowManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMAppWindowManager.h; sourceTree = "<group>"; };
 		2C4AA84A20D0BED90022B023 /* QIMAppWindowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMAppWindowManager.m; sourceTree = "<group>"; };
@@ -2294,6 +2298,39 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		2C2A79AD2216C6EF00AF2153 /* PublicNavUser */ = {
+			isa = PBXGroup;
+			children = (
+				2C2A79AE2216C6EF00AF2153 /* Controller */,
+				2C2A79B52216C6EF00AF2153 /* Model */,
+				2C2A79B82216C6EF00AF2153 /* View */,
+			);
+			path = PublicNavUser;
+			sourceTree = "<group>";
+		};
+		2C2A79AE2216C6EF00AF2153 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				2C2A79B12216C6EF00AF2153 /* QIMPublicLogin.h */,
+				2C2A79B42216C6EF00AF2153 /* QIMPublicLogin.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		2C2A79B52216C6EF00AF2153 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		2C2A79B82216C6EF00AF2153 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		2C53B16D20B2A3DB00F1253C /* UIColor */ = {
 			isa = PBXGroup;
 			children = (
@@ -2883,6 +2920,7 @@
 		2C8AF9BA20B1D51A00CF98EB /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				2C2A79AD2216C6EF00AF2153 /* PublicNavUser */,
 				2C2A79802215699600AF2153 /* ResetPWD */,
 				2C06A00C22045DE8000CAF37 /* QWorkFeed */,
 				2C8AFAA220B1D51A00CF98EB /* Advert */,
@@ -4275,6 +4313,7 @@
 				2C8AFD0620B1D51B00CF98EB /* QIMMyEmotionsManagerCell.h in Headers */,
 				2C8AFC3420B1D51B00CF98EB /* QIMImageCache.h in Headers */,
 				2C06A06222045DE8000CAF37 /* QIMWorkMomentPhotoItemViewModel.h in Headers */,
+				2C2A79BB2216C6F000AF2153 /* QIMPublicLogin.h in Headers */,
 				2C8AFD9720B1D51C00CF98EB /* QIMInputPopView.h in Headers */,
 				2C8AFC0920B1D51B00CF98EB /* QIMAnnotation.h in Headers */,
 				2C8AFCBF20B1D51B00CF98EB /* QIMMySettingController.h in Headers */,
@@ -5070,6 +5109,7 @@
 				2C8AFCFA20B1D51B00CF98EB /* QIMEmotionManager.m in Sources */,
 				2C2A797B221275A000AF2153 /* QIMMarginLabel.m in Sources */,
 				2C8AFF6620B1D8AB00CF98EB /* QIMMessageTableViewManager.m in Sources */,
+				2C2A79BE2216C6F000AF2153 /* QIMPublicLogin.m in Sources */,
 				2C8AFDEB20B1D51C00CF98EB /* QIMGroupChangeTopicVC.m in Sources */,
 				2C7F92F121C7E45A0087BD04 /* QIMRedMindView.m in Sources */,
 				2C8AFD2920B1D51C00CF98EB /* QIMExportMsgManager.m in Sources */,
