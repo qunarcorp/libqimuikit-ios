@@ -733,6 +733,9 @@
     if ([userName isEqualToString:@"appstore"]) {
         [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
         [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
+    } else if ([[userName lowercaseString] isEqualToString:@"qtalktest"]) {
+        [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
+        [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
     } else {
         __weak id weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

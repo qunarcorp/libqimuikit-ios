@@ -431,7 +431,7 @@
     _rootView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
     [_rootView setAutoresizesSubviews:YES];
     [_rootView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];
-    [_rootView setBackgroundColor:[UIColor clearColor]];
+    [_rootView setBackgroundColor:[UIColor qim_colorWithHex:0xfafafa alpha:1.0]];
     [_rootView setContentMode:UIViewContentModeScaleToFill];
     [self.view addSubview:_rootView];
 }
@@ -476,6 +476,7 @@
     _contentView = [[UIView alloc] initWithFrame:frame];
     [_contentView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin];
     [_contentView setContentMode:UIViewContentModeScaleToFill];
+    [_contentView setBackgroundColor:[UIColor qim_colorWithHex:0xfafafa alpha:1.0]];
     [_rootView addSubview:_contentView];
     [self initTotalTabBarArray];
 }
@@ -782,6 +783,9 @@
         if ([lastUserName isEqualToString:@"appstore"]) {
             [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
+        } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
+            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
         } else {
             if ([[QIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeSms) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
