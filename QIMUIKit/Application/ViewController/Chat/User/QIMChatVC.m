@@ -3243,6 +3243,8 @@ static CGPoint tableOffsetPoint;
                         //标记已读
                         [weakSelf markReadFlag];
                     });
+                } else {
+                    [weakSelf.tableView.mj_header endRefreshing];
                 }
             }];
         } else {
@@ -3264,10 +3266,13 @@ static CGPoint tableOffsetPoint;
                         //标记已读
                         [weakSelf markReadFlag];
                     });
+                } else {
+                    [weakSelf.tableView.mj_header endRefreshing];
                 }
             }];
         }
     });
+#if defined (QIMRNEnable) && QIMRNEnable == 1
     if (self.loadCount >= 3 && !self.reloadSearchRemindView) {
         NSString *userId = nil;
         NSString *realJid = nil;
@@ -3285,6 +3290,7 @@ static CGPoint tableOffsetPoint;
         [self.searchRemindView addGestureRecognizer:tap];
         [self.view addSubview:self.searchRemindView];
     }
+#endif
 }
 
 - (void)jumpToConverstaionSearch {

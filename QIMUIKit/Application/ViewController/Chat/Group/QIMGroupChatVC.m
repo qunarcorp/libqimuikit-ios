@@ -2896,12 +2896,14 @@ static CGPoint tableOffsetPoint;
                                            });
                                        }];
     });
+#if defined (QIMRNEnable) && QIMRNEnable == 1
     if (self.loadCount >= 3 && !self.reloadSearchRemindView) {
         self.searchRemindView = [[QIMSearchRemindView alloc] initWithChatId:self.chatId withRealJid:nil withChatType:self.chatType];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToConverstaionSearch)];
         [self.searchRemindView addGestureRecognizer:tap];
         [self.view addSubview:self.searchRemindView];
     }
+#endif
 }
 
 - (void)jumpToConverstaionSearch {
