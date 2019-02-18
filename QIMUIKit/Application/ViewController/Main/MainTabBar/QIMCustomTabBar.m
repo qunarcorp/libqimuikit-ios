@@ -63,7 +63,7 @@
         for (int i = 0 ; i < _itemCount ; i++ ) {
             
             UIView *tapView = [[UIView alloc] initWithFrame:CGRectMake(buttonWidth*i, 2, buttonWidth, self.height)];
-            [tapView setBackgroundColor:[UIColor clearColor]];
+            [tapView setBackgroundColor:[UIColor qim_colorWithHex:0xfafafa alpha:1.0]];
             [tapView setTag:kItemViewPirex+i];
             [self addSubview:tapView];
             
