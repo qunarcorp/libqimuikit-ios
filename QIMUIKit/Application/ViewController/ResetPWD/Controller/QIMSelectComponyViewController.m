@@ -36,6 +36,7 @@
         _companyTextField = [[UITextField alloc] init];
         _companyTextField.placeholder = @"请输入公司名";
         _companyTextField.delegate = self;
+        _companyTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         _companyTextField.backgroundColor = [UIColor whiteColor];
         [_companyTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     }
@@ -112,7 +113,7 @@
     [[YYKeyboardManager defaultManager] addObserver:self];
     UIImage *image = [UIImage qim_imageWithColor:[UIColor whiteColor]];
     [self.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
-    self.navigationItem.title = @"忘记密码";
+    self.navigationItem.title = @"选择公司";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
     
     [self setupUI];
@@ -140,6 +141,7 @@
         make.height.mas_equalTo(0.5);
     }];
     
+    /*
     [self.view addSubview:self.nextButton];
     [self.nextButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.companyTextField.mas_bottom).mas_offset(44);
@@ -147,6 +149,7 @@
         make.right.mas_offset(-40);
         make.height.mas_equalTo(48);
     }];
+    */
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -225,6 +228,18 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    QIMPublicCompanyModel *companyModel = [self.companies objectAtIndex:indexPath.row];
+    if (companyModel) {
+        [self.navigationController popViewControllerAnimated:YES];
+        if (self.companyBlock) {
+            self.companyBlock(companyModel);
+        }
+        /*
+        [UIView animateWithDuration:0.8 animations:^{
+            [self.companyListView setHidden:YES];
+        }];
+         */
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

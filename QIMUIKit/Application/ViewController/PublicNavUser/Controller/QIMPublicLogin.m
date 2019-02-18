@@ -11,6 +11,9 @@
 #import "QIMPublicCompanyModel.h"
 #import "QIMNavConfigManagerVC.h"
 #import "YYModel.h"
+#import "QIMSelectComponyViewController.h"
+
+static const int companyTag = 10001;
 
 @interface QIMPublicLogin () <UITextFieldDelegate, YYKeyboardObserver, UITableViewDelegate, UITableViewDataSource>
 
@@ -37,10 +40,6 @@
 @property (nonatomic, strong) UIButton *loginBtn;   //登录按钮
 
 @property (nonatomic, strong) UIButton *forgotBtn;  //忘记密码
-
-@property (nonatomic, strong) UITableView *companyListView;     //搜索公司结果listView
-
-@property (nonatomic, strong) NSMutableArray *companies;        //搜索公司结果Result
 
 @property (nonatomic, strong) UIButton *settingBtn;             //设置Btn
 
@@ -119,7 +118,8 @@
         _companyTextField.placeholder = @"请输入公司名";
         _companyTextField.delegate = self;
         _companyTextField.backgroundColor = [UIColor whiteColor];
-        [_companyTextField addTarget:self action:@selector(startSearchCompany:) forControlEvents:UIControlEventEditingChanged];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gotoSelectCompany:)];
+        [_companyTextField addGestureRecognizer:tap];
     }
     return _companyTextField;
 }
@@ -136,6 +136,7 @@
     if (!_forgotBtn) {
         _forgotBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_forgotBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
+        [_forgotBtn.titleLabel setTextAlignment:NSTextAlignmentRight];
         [_forgotBtn setTitle:@"忘记密码" forState:UIControlStateNormal];
         [_forgotBtn.titleLabel setFont:[UIFont systemFontOfSize:15]];
     }
@@ -165,48 +166,17 @@
     if (!_loginBtn) {
         _loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_loginBtn setTitle:@"登录" forState:UIControlStateNormal];
-        [_loginBtn setBackgroundColor:[UIColor qim_colorWithHex:0x00CABE]];
+        UIImage *disableImage = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0xABE9E5]];
+        [_loginBtn setBackgroundImage:disableImage forState:UIControlStateDisabled];
+        UIImage *normalImage = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0x00CABE]];
+        [_loginBtn setBackgroundImage:normalImage forState:UIControlStateNormal];
         [_loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _loginBtn.layer.cornerRadius = 24.0f;
+        _loginBtn.layer.masksToBounds = YES;
         [_loginBtn addTarget:self action:@selector(clickLogin:) forControlEvents:UIControlEventTouchUpInside];
+        _loginBtn.enabled = NO;
     }
     return _loginBtn;
-}
-
-- (UITableView *)companyListView {
-    if (!_companyListView) {
-        _companyListView = [[UITableView alloc] init];
-        _companyListView.delegate = self;
-        _companyListView.dataSource = self;
-        _companyListView.backgroundColor = [UIColor whiteColor];
-        _companyListView.showsVerticalScrollIndicator = YES;
-        _companyListView.estimatedRowHeight = 0;
-        _companyListView.estimatedSectionHeaderHeight = 0;
-        CGRect tableHeaderViewFrame = CGRectMake(0, 0, 0, 0.0001f);
-        _companyListView.tableHeaderView = [[UIView alloc] initWithFrame:tableHeaderViewFrame];
-        _companyListView.tableFooterView = [UIView new];
-        
-        _companyListView.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);           //top left bottom right 左右边距相同
-        _companyListView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        _companyListView.separatorColor = [UIColor qim_colorWithHex:0xE4E4E4];
-        _companyListView.layer.cornerRadius = 3.0f;
-        _companyListView.layer.borderColor = [UIColor qim_colorWithHex:0xE4E4E4].CGColor;
-        _companyListView.layer.borderWidth = 1.0f;
-        
-        _companyListView.layer.shadowColor = [UIColor qim_colorWithHex:0x000000 alpha:0.08].CGColor;
-        _companyListView.layer.shadowOffset = CGSizeMake(0, 5);
-        _companyListView.layer.shadowOpacity = 1;
-        _companyListView.layer.shadowRadius = 12.5;
-        
-        [self.view addSubview:_companyListView];
-        [_companyListView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.companyLineView.mas_bottom).mas_offset(15);
-            make.left.mas_equalTo(self.companyLineView.mas_left);
-            make.right.mas_equalTo(self.companyLineView.mas_right);
-            make.height.mas_equalTo(self.keyboardOriginY - self.companyLineView.bottom - 40);
-        }];
-    }
-    return _companyListView;
 }
 
 - (UIButton *)settingBtn {
@@ -222,28 +192,38 @@
     return _settingBtn;
 }
 
-- (NSMutableArray *)companies {
-    if (!_companies) {
-        _companies = [NSMutableArray arrayWithCapacity:3];
-    }
-    return _companies;
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    [[YYKeyboardManager defaultManager] addObserver:self];
     [self setupUI];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
-    [self.companyListView setHidden:YES];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if (self.userNameTextField.text.length > 0 && self.userPwdTextField.text.length > 0) {
+        [self.loginBtn setEnabled:YES];
+    } else {
+        [self.loginBtn setEnabled:NO];
+    }
+    return YES;
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    self.loginBtn.enabled = NO;
+    return YES;
 }
 
 - (void)setupUI {
@@ -262,7 +242,6 @@
         make.width.mas_equalTo(40);
         make.height.mas_equalTo(18);
     }];
-    
     
     [self.view addSubview:self.userNameTextField];
     [self.userNameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -315,7 +294,7 @@
     [self.view addSubview:self.forgotBtn];
     [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.companyLineView.mas_bottom).mas_offset(31);
-        make.right.mas_equalTo(self.companyTextField.mas_right);
+        make.right.mas_equalTo(self.companyLineView.mas_right);
         make.height.mas_equalTo(16);
         make.width.mas_equalTo(80);
     }];
@@ -363,59 +342,20 @@
 #pragma mark - Action
 
 - (void)clickLogin:(id)sender {
-    /*
+    
     NSString *userName = [[self.userNameTextField text] lowercaseString];
     userName = [userName stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSString *validCode = self.userPwdTextField.text;
 #warning 报错即将登陆的用户名 并请求导航
     [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
-    [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithCheck:YES];
-    if ([userName isEqualToString:@"appstore"]) {
-        [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
-        [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
-    } else {
-        __weak id weakSelf = self;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if (self.loginType != QTLoginTypePwd) {
-                NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-                if (token.length <= 0) {
-                    NSDictionary *tokenDic = [QIMKit getUserTokenWithUserName:userName
-                                                               WihtVerifyCode:validCode];
-                    int statusId = (tokenDic && [[tokenDic allKeys] containsObject:@"status_id"]) ?
-                    [[tokenDic objectForKey:@"status_id"] intValue] : -1;
-                    
-                    if (statusId == 0) {
-                        token = [[tokenDic objectForKey:@"data"] objectForKey:@"token"];
-                        [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
-                    } else {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            NSString *error = [tokenDic objectForKey:@"msg"];
-                            if (error) {
-                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
-                                                                                    message:error ? error : @"发生未知错误"
-                                                                                   delegate:nil
-                                                                          cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_got_it"]
-                                                                          otherButtonTitles:nil];
-                                [alertView show];
-                                [weakSelf stopLoginAnimation];
-                            } else {
-                                [weakSelf showNetWorkUnableAlert];
-                            }
-                        });
-                        return;
-                    }
-                }
-                [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
-                NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
-                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
-            } else {
-                NSString *pwd = _validCodeInputView.text;
-                [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
-                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
-            }
-        });
-    }
-    */
+    NSDictionary *publicQTalkNav = @{QIMNavNameKey:@"Qunar公共域导航", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/publicnav?c=qunar.com"};
+    [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:publicQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
+    __weak id weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *pwd = self.userPwdTextField.text;
+        [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
+        [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
+    });
 }
 
 - (void)onSettingClick:(UIButton *)sender{
@@ -424,88 +364,40 @@
     [self presentViewController:navURLsSettingNav animated:YES completion:nil];
 }
 
-- (QIMPublicCompanyModel *)getCompanyModelWithDic:(NSDictionary *)modelDic {
-    QIMPublicCompanyModel *model = [QIMPublicCompanyModel yy_modelWithDictionary:modelDic];
-    return model;
+- (void)gotoSelectCompany:(UITapGestureRecognizer *)tap {
+    QIMSelectComponyViewController *companyVC = [[QIMSelectComponyViewController alloc] init];
+    [companyVC setCompanyBlock:^(QIMPublicCompanyModel * _Nonnull companyModel) {
+        NSString *companyName = companyModel.name;
+        QIMVerboseLog(@"companyName : %@", companyName);
+        if (companyName.length > 0) {
+            [self.companyTextField setText:companyName];
+        } else {
+            NSString *companyDomain = companyModel.domain;
+            [self.companyTextField setText:companyDomain];
+        }
+    }];
+    [self.navigationController pushViewController:companyVC animated:YES];
 }
 
-- (void)startSearchCompany:(UITextField *)textField {
-    //搜索公司
-    if (textField.text.length > 0) {
-        self.companyLineView.backgroundColor = [UIColor qim_colorWithHex:0x00CABE];
-    } else {
-        self.companyLineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
-    }
-    if (textField.text.length > 0) {
-        [[QIMKit sharedInstance] getPublicNavCompanyWithKeyword:textField.text withCallBack:^(NSArray *companies) {
-            QIMVerboseLog(@"companies : %@", companies);
-            [self.companies removeAllObjects];
-            for (NSDictionary *companyDic in companies) {
-                if ([companyDic isKindOfClass:[NSDictionary class]]) {
-                    QIMPublicCompanyModel *model = [self getCompanyModelWithDic:companyDic];
-                    [self.companies addObject:model];
-                }
-            }
-            [self.companyListView setHidden:NO];
-            [self.companyListView reloadData];
-        }];
-    }
-}
+#pragma mark - NSNotification
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    if (textField.text.length > 0) {
-        [[QIMKit sharedInstance] getPublicNavCompanyWithKeyword:textField.text withCallBack:^(NSArray *companies) {
-            QIMVerboseLog(@"companies : %@", companies);
-            [self.companies removeAllObjects];
-            for (NSDictionary *companyDic in companies) {
-                if ([companyDic isKindOfClass:[NSDictionary class]]) {
-                    QIMPublicCompanyModel *model = [self getCompanyModelWithDic:companyDic];
-                    [self.companies addObject:model];
-                }
-            }
-            [self.companyListView setHidden:NO];
-            [self.companyListView reloadData];
-        }];
-    }
-    return YES;
-}
+- (void)loginNotify:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([notify.object boolValue]) {
 
-#pragma mark - UITableView
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.companies.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    QIMPublicCompanyModel *companyModel = [self.companies objectAtIndex:indexPath.row];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellId"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cellId"];
-    }
-    cell.textLabel.text = (companyModel.name.length > 0) ? companyModel.name : companyModel.domain;
-    cell.textLabel.textColor = [UIColor qim_colorWithHex:0x333333];
-    cell.textLabel.font = [UIFont systemFontOfSize:17];
-    return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    QIMPublicCompanyModel *companyModel = [self.companies objectAtIndex:indexPath.row];
-    if (companyModel) {
-        
-        [UIView animateWithDuration:0.8 animations:^{
-           [self.companyListView setHidden:YES];
-        }];
-    }
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 48.0f;
+            NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+            [[QIMKit sharedInstance] setUserObject:[infoDictionary objectForKey:@"CFBundleVersion"] forKey:@"QTalkApplicationLastVersion"];
+            [QIMFastEntrance showMainVc];
+        } else {
+            __weak __typeof(self) weakSelf = self;
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"登录失败" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [alert addAction:action];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    });
 }
 
 @end

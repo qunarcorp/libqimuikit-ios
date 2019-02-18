@@ -7,10 +7,15 @@
 //
 
 #import "QIMCommonUIFramework.h"
+@class QIMPublicCompanyModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void(^onSelectCompanyBlock)(QIMPublicCompanyModel * companyModel);
+
 @interface QIMSelectComponyViewController : QTalkViewController
+
+@property (nonatomic, copy) onSelectCompanyBlock companyBlock;
 
 @end
 
