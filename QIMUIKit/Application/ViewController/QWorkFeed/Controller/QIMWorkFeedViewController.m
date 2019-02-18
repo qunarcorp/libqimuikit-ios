@@ -179,6 +179,17 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (NSInteger)getIndexOfMoments:(QIMWorkMomentModel *)model {
+    NSInteger index = 0;
+    for (NSInteger i = 0; i < self.workMomentList.count; i++) {
+        QIMWorkMomentModel *tempMomentModel = [self.workMomentList objectAtIndex:i];
+        if ([tempMomentModel.momentId isEqualToString:model.momentId]) {
+            index = i;
+        }
+    }
+    return index;
+}
+
 //加载本地最近的帖子
 - (void)reloadLocalRecenteMoments:(BOOL)notNeedReloadMomentView {
     if (notNeedReloadMomentView == NO && self.workMomentList.count <= 0) {
@@ -372,8 +383,9 @@
                                                            }
                                                            if (buttonIndex == 1) {
                                                                [[QIMKit sharedInstance] deleteRemoteMomentWithMomentId:cell.moment.momentId];
-                                                               NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cell.tag inSection:0];
-                                                               [strongSelf.workMomentList removeObjectAtIndex:cell.tag];
+                                                               NSInteger index = [strongSelf getIndexOfMoments:cell.moment];
+                                                               NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                                                               [strongSelf.workMomentList removeObjectAtIndex:index];
                                                                [strongSelf.mainTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                                                            } else if (buttonIndex == 2) {
                                                                [strongSelf didAddComment:cell];

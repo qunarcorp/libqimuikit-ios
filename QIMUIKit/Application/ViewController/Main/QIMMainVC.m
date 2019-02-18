@@ -440,7 +440,7 @@
     //这里用Id做tabBar的唯一标示，可以防止PM突然让改个顺序，加个tab
     self.totalTabBarArray = [NSMutableArray arrayWithCapacity:4];
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_chat"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f3" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3e4" size:28 color:[UIColor qtalkIconSelectColor]]]}];
-    if ([[QIMKit sharedInstance] qimNav_ShowOA]) {
+    if ([[QIMKit sharedInstance] qimNav_ShowOA] && ![[[QIMKit getLastUserName] lowercaseString]  isEqualToString:@"appstore"]) {
         [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_travel"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e403" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e402" size:28 color:[UIColor qtalkIconSelectColor]]]}];
     }
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_contact"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3e3" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4d8" size:28 color:[UIColor qtalkIconSelectColor]]]}];
