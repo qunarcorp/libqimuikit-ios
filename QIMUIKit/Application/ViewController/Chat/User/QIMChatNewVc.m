@@ -167,7 +167,7 @@
     [cardButton setAccessibilityIdentifier:@"rightUserCardBtn"];
     [cardButton addTarget:self action:@selector(onCardClick) forControlEvents:UIControlEventTouchUpInside];
     [rightItemView addSubview:cardButton];
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         UIButton *encryptBtn = nil;
         NSString *qCloudHost = [[QIMKit sharedInstance] qimNav_QCloudHost];

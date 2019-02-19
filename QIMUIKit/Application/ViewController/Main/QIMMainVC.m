@@ -150,7 +150,7 @@
     //        [self peQTalkSuggestRNJumpManagerrformSelector:@selector(autoLogin) withObject:nil afterDelay:0.3];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
     //    }
-    if (([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) && self.skipLogin) {
+    if (([QIMKit getQIMProjectType] != QIMProjectTypeQChat) && self.skipLogin) {
         [self autoLogin];
     }
 #if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
@@ -325,7 +325,7 @@
     QIMVerboseLog(@"收到通知中心updateExploreNotReadCount通知 : ", notify);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         __block BOOL count = NO;
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             if (notify) {
                 count = [notify.object boolValue];
             }
@@ -333,7 +333,7 @@
             count = [[QIMKit sharedInstance] getLeaveMsgNotReaderCount];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQTalk) {
                 // 移动小红点 到 第三页
                 [_tabBar setBadgeNumber:count ByItemIndex:3 showNumber:NO];
             } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant) {
@@ -419,7 +419,7 @@
         default:
             break;
     }
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk || ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant)) {
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk || [QIMKit getQIMProjectType] == QIMProjectTypeStartalk || ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant)) {
         [self updateExploreNotReadCount:nil];
     }
 }
@@ -625,7 +625,7 @@
 #pragma mark - Custom Tabbar Delegate
 
 - (void)customTabBar:(QIMCustomTabBar *)tabBar longPressAtIndex:(NSUInteger)index {
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         switch (index) {
             case 0:
                 if (tabBar.selectedIndex != 0) {

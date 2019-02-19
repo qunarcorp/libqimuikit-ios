@@ -260,7 +260,7 @@ static NSString *__default_ua = nil;
         _webView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], self.view.height);
     }
     if (self.needAuth) {
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:@" qunartalk-ios-client"];
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : ua, @"User-Agent":ua}];
         } else {
