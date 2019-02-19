@@ -141,6 +141,7 @@ CGFloat maxLimitHeight = 0;
     _contentLabel.linesSpacing = 1.0f;
     _contentLabel.characterSpacing = 0.0f;
     _contentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
+    _contentLabel.verticalAlignment = QCVerticalAlignmentBottom;
     [self.contentView addSubview:_contentLabel];
 
     // 查看'全文'按钮
@@ -263,15 +264,19 @@ CGFloat maxLimitHeight = 0;
         if (textH > maxLimitHeight) {
             if (!moment.isFullText) {
                 textH = maxLimitHeight;
+                [self.contentLabel setNumberOfLines:6];
                 [self.showAllBtn setTitle:@"全文" forState:UIControlStateNormal];
             } else {
+                [self.contentLabel setNumberOfLines:0];
                 [self.showAllBtn setTitle:@"收起" forState:UIControlStateNormal];
             }
             _showAllBtn.hidden = NO;
+        } else {
+            [self.contentLabel setNumberOfLines:0];
         }
     }
     [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
-    self.contentLabel.height = textH;
+//    self.contentLabel.height = textH;
     _showAllBtn.frame = CGRectMake(self.nameLab.left, _contentLabel.bottom + 5, 60, 20);
     if (_showAllBtn.hidden) {
         bottom = _contentLabel.bottom + 8;
