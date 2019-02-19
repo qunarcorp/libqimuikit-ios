@@ -26,6 +26,13 @@
 "tab_title_explore" = "Explore";
 "tab_title_myself" = "Me";
 
+"add_to_blacklist" = "Add To Blacklist";
+"remove_to_blacklist" = "Remove the blacklist";
+"add_friend" = "Add Friend";
+"delete_friend" = "Delete Friend";
+"send_message" = "Send Message";
+"Complaint" = "Complaint";
+
 //Navigation server
 "nav_title_configManager" = "Navigation Server Management";
 "nav_title_debug_configManager" = "Debug Navigation Server";
