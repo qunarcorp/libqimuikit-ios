@@ -1107,9 +1107,10 @@ static QIMFastEntrance *_sharedInstance = nil;
         [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-                QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
+//                QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
+                QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-                [remoteVC quit];
+//                [remoteVC quit];
                 [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
             } else {
                 if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
@@ -1144,9 +1145,10 @@ static QIMFastEntrance *_sharedInstance = nil;
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-                    QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
+//                    QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
+                    QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
                     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-                    [remoteVC quit];
+//                    [remoteVC quit];
                     [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
                 } else {
                     if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
@@ -1177,8 +1179,10 @@ static QIMFastEntrance *_sharedInstance = nil;
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
             [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
-            QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
-            [remoteVC quit];
+//            QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
+            QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+//            [remoteVC quit];
             [[[[UIApplication sharedApplication] delegate] window] setRootViewController:remoteVC];
         } else {
             if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
