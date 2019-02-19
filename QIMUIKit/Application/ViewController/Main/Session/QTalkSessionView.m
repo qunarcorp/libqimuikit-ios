@@ -230,7 +230,7 @@
     NSString *wikiHost = [[QIMKit sharedInstance] qimNav_WikiUrl];
     self.moreActionArray = [[NSMutableArray alloc] initWithCapacity:3];
     NSArray *moreActionImages = nil;
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         if (qCloudHost.length > 0 && wikiHost.length > 0) {
             self.moreActionArray = @[@"扫一扫", @"发起聊天", @"一键已读", @"随记", @"Wiki"];
             moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e23f" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1b7" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e455" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
@@ -876,37 +876,7 @@
             case ChatType_Consult:
             {
                 NSString *xmppId = [infoDic objectForKey:@"XmppId"];
-                /*
-                NSString *uId = [xmppId componentsSeparatedByString:@"@"].firstObject;
-                NSString *realJid = [infoDic objectForKey:@"RealJid"];
-                if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-                    NSString *getRealJid = [[QIMKit sharedInstance] getRealJidForVirtual:xmppId];
-                    if (getRealJid.length) {
-                        realJid = getRealJid;
-                    }
-                } else {
-                    if ([[[QIMKit sharedInstance] getVirtualList] containsObject:uId]) {
-                        realJid = [[QIMKit sharedInstance] getRealJidForVirtual:uId];
-                        realJid = [NSString stringWithFormat:@"%@@%@",realJid,[[QIMKit sharedInstance] getDomain]];
-                    }
-                    if (realJid == nil) {
-                        realJid = [infoDic objectForKey:@"RealJid"];
-                    }
-                    if (realJid == nil) {
-                        realJid = xmppId;
-                    }
-                }
-                */
                 QIMChatVC *chatSingleVC = (QIMChatVC *)[[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
-                /*
-                QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
-                [chatSingleVC setStype:kSessionType_Chat];
-                [chatSingleVC setChatId:xmppId];
-                [chatSingleVC setVirtualJid:xmppId];
-                [chatSingleVC setName:name];
-                [chatSingleVC setChatInfoDict:infoDic];
-                [chatSingleVC setChatType:chatType];
-                */
                 //备注
                 NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
                 [chatSingleVC setTitle:remarkName ? remarkName : name];

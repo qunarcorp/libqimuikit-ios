@@ -59,7 +59,7 @@
     
 
     NSArray<QIMCommonTableViewCellData *> *section3 = @[];
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         section3 =  @[
                       [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"explore_tab_sign_in_check"] iconName:@"\U0000f1b7" cellDataType:QIMCommonTableViewCellDataTypeAttendance],[[QIMCommonTableViewCellData alloc] initWithTitle:@"QTalk Token" iconName:@"\U0000f1b7" cellDataType:QIMCommonTableViewCellDataTypeTotpToken],
                       [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"explore_tab_my_file"] iconName:@"\U0000e213" cellDataType:QIMCommonTableViewCellDataTypeMyFile],
@@ -71,7 +71,7 @@
                                                  ];
     [_dataSource addObject:section0];
     [_dataSource addObject:section1];
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && [[QIMKit sharedInstance] qimNav_ShowOA]) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat && [[QIMKit sharedInstance] qimNav_ShowOA]) {
         [_dataSource addObject:section2];
     }
     [_dataSource addObject:section3];

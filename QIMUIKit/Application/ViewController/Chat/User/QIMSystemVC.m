@@ -187,7 +187,7 @@
 {
     [self.messageManager.dataSource removeAllObjects];
     __weak typeof(self) weakSelf = self;
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         NSString *domain = [[QIMKit sharedInstance] getDomain];
         [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
@@ -556,7 +556,7 @@ static CGPoint tableOffsetPoint;
 
 - (void)loadNewSystemMsgList {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
                 CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
                 NSRange range = NSMakeRange(0, [list count]);

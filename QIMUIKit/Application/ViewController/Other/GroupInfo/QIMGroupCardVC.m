@@ -86,7 +86,7 @@
     [_dataSource addObject:@"Cap"];
     [_dataSource addObject:@"QRCode"];
     [_dataSource addObject:@"Cap"];
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         [_dataSource addObject:@"PUSH"];
         [_dataSource addObject:@"Cap"];
     }
