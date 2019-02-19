@@ -812,7 +812,6 @@ static NSString *__default_ua = nil;
     if (navigationType==UIWebViewNavigationTypeBackForward) {
         [self goBack];
     }
-//    _requestUrl = [request URL];
     NSString *urlStr = [[request URL] absoluteString];
     NSArray * components = [urlStr componentsSeparatedByString:@":"];
     if ([urlStr hasPrefix:@"qchatiphone://"] && components.count > 1) {
@@ -859,6 +858,9 @@ static NSString *__default_ua = nil;
     } else if ([urlStr hasPrefix:@"qim://"]) {
         if ([[[components objectAtIndex:1] lowercaseString] hasPrefix:@"//close"]) {
             [self quitItemHandle:nil];
+            return NO;
+        } else if ([[[components objectAtIndex:1] lowercaseString] hasPrefix:@"//publicNav/resetpwdSuccessed"]) {
+            [QIMFastEntrance reloginAccount];
             return NO;
         }
     } else if ([urlStr hasPrefix:@"qtalkaphone://"]  && components.count > 1) {

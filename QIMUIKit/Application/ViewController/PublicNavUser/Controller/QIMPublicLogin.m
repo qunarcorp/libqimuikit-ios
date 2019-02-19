@@ -11,6 +11,7 @@
 #import "QIMPublicCompanyModel.h"
 #import "QIMNavConfigManagerVC.h"
 #import "YYModel.h"
+#import "QIMUUIDTools.h"
 #import "QIMSelectComponyViewController.h"
 
 static const int companyTag = 10001;
@@ -20,6 +21,10 @@ static const int companyTag = 10001;
 @property (nonatomic, strong) UILabel *loginTitleLabel;  //登录Label
 
 @property (nonatomic, strong) UIButton *registerBtn;  //注册按钮
+
+@property (nonatomic, strong) UILabel *companyShowLabel; //二次登录公司名
+
+@property (nonatomic, strong) UIButton *switchCompanyBtn; //二次登录公司切换名按钮
 
 @property (nonatomic, strong) UITextField *userNameTextField;   //用户名TextField
 
@@ -45,6 +50,8 @@ static const int companyTag = 10001;
 
 @property (nonatomic, assign) CGFloat keyboardOriginY;
 
+@property (nonatomic, strong) QIMPublicCompanyModel *companyModel;
+
 @end
 
 @implementation QIMPublicLogin
@@ -69,6 +76,27 @@ static const int companyTag = 10001;
         [_registerBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
     }
     return _registerBtn;
+}
+
+- (UILabel *)companyShowLabel {
+    if (!_companyShowLabel) {
+        _companyShowLabel = [[UILabel alloc] init];
+        _companyShowLabel.text = @"去哪儿网";
+        _companyShowLabel.textColor = [UIColor qim_colorWithHex:0x999999];
+        _companyShowLabel.font = [UIFont systemFontOfSize:15];
+        [_companyShowLabel sizeToFit];
+    }
+    return _companyShowLabel;
+}
+
+- (UIButton *)switchCompanyBtn {
+    if (!_switchCompanyBtn) {
+        _switchCompanyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_switchCompanyBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e31f" size:12 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateNormal];
+        [_switchCompanyBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e31f" size:12 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateSelected];
+        [_switchCompanyBtn addTarget:self action:@selector(gotoSelectCompany:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _switchCompanyBtn;
 }
 
 - (UITextField *)userNameTextField {
@@ -199,9 +227,21 @@ static const int companyTag = 10001;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
     self.view.backgroundColor = [UIColor whiteColor];
     [self setupUI];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
+    NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+    NSString *lastUserName = [QIMKit getLastUserName];
+    if (userToken && lastUserName) {
+        
+        [self autoLogin];
+        
+    } else if (lastUserName && !userToken) {
+        //如果本地还有用户名，自动输入
+        _userNameTextField.text = lastUserName;
+    } else {
+
+    }
 }
 
 - (void)dealloc {
@@ -241,6 +281,21 @@ static const int companyTag = 10001;
         make.top.mas_offset(55);
         make.width.mas_equalTo(40);
         make.height.mas_equalTo(18);
+    }];
+    
+    [self.view addSubview:self.companyShowLabel];
+    [self.companyShowLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.loginTitleLabel.mas_left);
+        make.height.mas_equalTo(15);
+        make.top.mas_equalTo(self.loginTitleLabel.mas_bottom).mas_offset(16);
+    }];
+    
+    [self.view addSubview:self.switchCompanyBtn];
+    [self.switchCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.companyShowLabel.mas_right).mas_offset(5);
+        make.width.mas_equalTo(12);
+        make.height.mas_equalTo(12);
+        make.centerY.mas_equalTo(self.companyShowLabel.mas_centerY);
     }];
     
     [self.view addSubview:self.userNameTextField];
@@ -341,6 +396,32 @@ static const int companyTag = 10001;
 
 #pragma mark - Action
 
+- (void)autoLogin {
+    // 增加 appstore 验证通过能力
+    // 修正偶尔无法登录的问题
+    NSString *lastUserName = [QIMKit getLastUserName];
+    _userNameTextField.text = lastUserName;
+    _userPwdTextField.text = @"......";
+    
+    if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
+        });
+    } else {
+        NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+        if ([lastUserName length] > 0 && [token length] > 0) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
+                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
+            });
+        } else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
+            });
+        }
+    }
+}
+
 - (void)clickLogin:(id)sender {
     
     NSString *userName = [[self.userNameTextField text] lowercaseString];
@@ -348,11 +429,12 @@ static const int companyTag = 10001;
     NSString *validCode = self.userPwdTextField.text;
 #warning 报错即将登陆的用户名 并请求导航
     [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
-    NSDictionary *publicQTalkNav = @{QIMNavNameKey:@"Qunar公共域导航", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/publicnav?c=qunar.com"};
+    
+    NSDictionary *publicQTalkNav = @{QIMNavNameKey:(self.companyModel.name.length > 0) ? self.companyModel.name : self.companyModel.domain, QIMNavUrlKey:self.companyModel.nav};
     [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:publicQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
     __weak id weakSelf = self;
+    NSString *pwd = self.userPwdTextField.text;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *pwd = self.userPwdTextField.text;
         [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
         [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
     });
@@ -366,7 +448,9 @@ static const int companyTag = 10001;
 
 - (void)gotoSelectCompany:(UITapGestureRecognizer *)tap {
     QIMSelectComponyViewController *companyVC = [[QIMSelectComponyViewController alloc] init];
+    __weak __typeof(self) weakSelf = self;
     [companyVC setCompanyBlock:^(QIMPublicCompanyModel * _Nonnull companyModel) {
+        weakSelf.companyModel = companyModel;
         NSString *companyName = companyModel.name;
         QIMVerboseLog(@"companyName : %@", companyName);
         if (companyName.length > 0) {
