@@ -207,11 +207,13 @@
         NSDictionary *qtalkNav = @{QIMNavNameKey:tempNavName, QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
         NSDictionary *publicQTalkNav = @{QIMNavNameKey:@"Qunar公共域导航", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/publicnav?c=qunar.com"};
         NSDictionary *qchatNav = @{QIMNavNameKey:@"QChat导航", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qchat/nav"};
-        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
             [clientNavServerConfigs addObject:qtalkNav];
             [clientNavServerConfigs addObject:publicQTalkNav];
-        } else {
+        } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
             [clientNavServerConfigs addObject:qchatNav];
+        } else {
+            
         }
     }
     return clientNavServerConfigs;

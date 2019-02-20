@@ -131,10 +131,16 @@ static QIMFastEntrance *_sharedInstance = nil;
                 QIMNavController *navController = [[QIMNavController alloc] initWithRootViewController:mainVc];
                 [window setRootViewController:navController];
             } else {
-                QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
-//                QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-                [window setRootViewController:nav];
+                if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                    QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [window setRootViewController:nav];
+                } else {
+                    QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [window setRootViewController:nav];
+
+                }
             }
         }
     }
@@ -1107,11 +1113,15 @@ static QIMFastEntrance *_sharedInstance = nil;
         [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-//                QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
-                QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-//                [remoteVC quit];
-                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                    QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                } else {
+                    QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                }
             } else {
                 if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
                     QIMLoginViewController *loginViewController = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
@@ -1145,11 +1155,15 @@ static QIMFastEntrance *_sharedInstance = nil;
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-//                    QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
-                    QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
-                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-//                    [remoteVC quit];
-                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                    if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                        QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                    } else {
+                        QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                    }
                 } else {
                     if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
                         QIMLoginViewController *loginViewController = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
@@ -1179,11 +1193,15 @@ static QIMFastEntrance *_sharedInstance = nil;
         if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
-//            QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
-            QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-//            [remoteVC quit];
-            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:remoteVC];
+            if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+            } else {
+                QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+            }
         } else {
             if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
                 QIMLoginViewController *loginVC = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];

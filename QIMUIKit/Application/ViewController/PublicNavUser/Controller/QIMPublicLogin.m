@@ -22,6 +22,8 @@ static const int companyTag = 10001;
 
 @property (nonatomic, strong) UIButton *registerBtn;  //注册按钮
 
+@property (nonatomic, assign) BOOL multipleLogin;  //是否为多次登录
+
 @property (nonatomic, strong) UILabel *companyShowLabel; //二次登录公司名
 
 @property (nonatomic, strong) UIButton *switchCompanyBtn; //二次登录公司切换名按钮
@@ -81,7 +83,6 @@ static const int companyTag = 10001;
 - (UILabel *)companyShowLabel {
     if (!_companyShowLabel) {
         _companyShowLabel = [[UILabel alloc] init];
-        _companyShowLabel.text = @"去哪儿网";
         _companyShowLabel.textColor = [UIColor qim_colorWithHex:0x999999];
         _companyShowLabel.font = [UIFont systemFontOfSize:15];
         [_companyShowLabel sizeToFit];
@@ -229,6 +230,15 @@ static const int companyTag = 10001;
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
+    QIMVerboseLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
+    if (oldNavConfigUrlDict.count) {
+        self.multipleLogin = YES;
+    } else {
+        self.multipleLogin = NO;
+    }
+    
     [self setupUI];
     NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
     NSString *lastUserName = [QIMKit getLastUserName];
@@ -283,35 +293,61 @@ static const int companyTag = 10001;
         make.height.mas_equalTo(18);
     }];
     
-    [self.view addSubview:self.companyShowLabel];
-    [self.companyShowLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.loginTitleLabel.mas_left);
-        make.height.mas_equalTo(15);
-        make.top.mas_equalTo(self.loginTitleLabel.mas_bottom).mas_offset(16);
-    }];
-    
-    [self.view addSubview:self.switchCompanyBtn];
-    [self.switchCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.companyShowLabel.mas_right).mas_offset(5);
-        make.width.mas_equalTo(12);
-        make.height.mas_equalTo(12);
-        make.centerY.mas_equalTo(self.companyShowLabel.mas_centerY);
-    }];
-    
-    [self.view addSubview:self.userNameTextField];
-    [self.userNameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(_loginTitleLabel.mas_bottom).offset(50);
-        make.left.mas_offset(33);
-        make.right.mas_offset(-33);
-        make.height.mas_equalTo(35);
-    }];
-    [self.view addSubview:self.userNameLineView];
-    [self.userNameLineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.userNameTextField.mas_bottom).mas_offset(5);
-        make.left.mas_equalTo(self.userNameTextField.mas_left);
-        make.right.mas_equalTo(self.userNameTextField.mas_right);
-        make.height.mas_equalTo(1);
-    }];
+    if (self.multipleLogin) {
+        //多次登录，展示切换公司按钮，不展示公司TextField
+        
+        NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
+        QIMVerboseLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
+        NSString *navTitle = [oldNavConfigUrlDict objectForKey:@"title"];
+        [self.companyShowLabel setText:navTitle];
+        [self.view addSubview:self.companyShowLabel];
+        [self.companyShowLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.loginTitleLabel.mas_left);
+            make.height.mas_equalTo(18);
+            make.top.mas_equalTo(self.loginTitleLabel.mas_bottom).mas_offset(16);
+        }];
+        
+        [self.view addSubview:self.switchCompanyBtn];
+        [self.switchCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.companyShowLabel.mas_right).mas_offset(5);
+            make.width.mas_equalTo(12);
+            make.height.mas_equalTo(12);
+            make.centerY.mas_equalTo(self.companyShowLabel.mas_centerY);
+        }];
+        
+        [self.view addSubview:self.userNameTextField];
+        [self.userNameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.companyShowLabel.mas_bottom).offset(50);
+            make.left.mas_offset(33);
+            make.right.mas_offset(-33);
+            make.height.mas_equalTo(35);
+        }];
+        [self.view addSubview:self.userNameLineView];
+        [self.userNameLineView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.userNameTextField.mas_bottom).mas_offset(5);
+            make.left.mas_equalTo(self.userNameTextField.mas_left);
+            make.right.mas_equalTo(self.userNameTextField.mas_right);
+            make.height.mas_equalTo(1);
+        }];
+    } else {
+        
+        //第一次登录，展示公司TextField，不展示切换公司按钮
+        [self.view addSubview:self.userNameTextField];
+        [self.userNameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(_loginTitleLabel.mas_bottom).offset(50);
+            make.left.mas_offset(33);
+            make.right.mas_offset(-33);
+            make.height.mas_equalTo(35);
+        }];
+        [self.view addSubview:self.userNameLineView];
+        [self.userNameLineView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.userNameTextField.mas_bottom).mas_offset(5);
+            make.left.mas_equalTo(self.userNameTextField.mas_left);
+            make.right.mas_equalTo(self.userNameTextField.mas_right);
+            make.height.mas_equalTo(1);
+        }];
+    }
+
     
     
     [self.view addSubview:self.userPwdTextField];
@@ -329,39 +365,59 @@ static const int companyTag = 10001;
         make.height.mas_equalTo(1);
     }];
     
-    
-    [self.view addSubview:self.companyTextField];
-    [self.companyTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(30);
-        make.left.mas_equalTo(self.userPwdLineView.mas_left);
-        make.right.mas_equalTo(self.userPwdLineView.mas_right);
-        make.height.mas_equalTo(35);
-    }];
-    [self.view addSubview:self.companyLineView];
-    [self.companyLineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.companyTextField.mas_bottom).mas_offset(5);
-        make.left.mas_equalTo(self.companyTextField.mas_left);
-        make.right.mas_equalTo(self.companyTextField.mas_right);
-        make.height.mas_equalTo(1);
-    }];
-    
-    
-    [self.view addSubview:self.forgotBtn];
-    [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.companyLineView.mas_bottom).mas_offset(31);
-        make.right.mas_equalTo(self.companyLineView.mas_right);
-        make.height.mas_equalTo(16);
-        make.width.mas_equalTo(80);
-    }];
-    
-    
-    [self.view addSubview:self.checkBtn];
-    [self.checkBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.companyLineView.mas_bottom).mas_offset(31);
-        make.left.mas_equalTo(self.companyTextField.mas_left);
-        make.height.mas_equalTo(17);
-        make.width.mas_equalTo(17);
-    }];
+    if (self.multipleLogin) {
+        
+        [self.view addSubview:self.forgotBtn];
+        [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(31);
+            make.right.mas_equalTo(self.userPwdLineView.mas_right);
+            make.height.mas_equalTo(16);
+            make.width.mas_equalTo(80);
+        }];
+        
+        
+        [self.view addSubview:self.checkBtn];
+        [self.checkBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(31);
+            make.left.mas_equalTo(self.userPwdTextField.mas_left);
+            make.height.mas_equalTo(17);
+            make.width.mas_equalTo(17);
+        }];
+        
+    } else {
+        
+        [self.view addSubview:self.companyTextField];
+        [self.companyTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(30);
+            make.left.mas_equalTo(self.userPwdLineView.mas_left);
+            make.right.mas_equalTo(self.userPwdLineView.mas_right);
+            make.height.mas_equalTo(35);
+        }];
+        [self.view addSubview:self.companyLineView];
+        [self.companyLineView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.companyTextField.mas_bottom).mas_offset(5);
+            make.left.mas_equalTo(self.companyTextField.mas_left);
+            make.right.mas_equalTo(self.companyTextField.mas_right);
+            make.height.mas_equalTo(1);
+        }];
+        
+        [self.view addSubview:self.forgotBtn];
+        [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.companyLineView.mas_bottom).mas_offset(31);
+            make.right.mas_equalTo(self.companyLineView.mas_right);
+            make.height.mas_equalTo(16);
+            make.width.mas_equalTo(80);
+        }];
+        
+        
+        [self.view addSubview:self.checkBtn];
+        [self.checkBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.companyLineView.mas_bottom).mas_offset(31);
+            make.left.mas_equalTo(self.companyTextField.mas_left);
+            make.height.mas_equalTo(17);
+            make.width.mas_equalTo(17);
+        }];
+    }
     
     
     [self.view addSubview:self.textLabel];
@@ -455,9 +511,11 @@ static const int companyTag = 10001;
         QIMVerboseLog(@"companyName : %@", companyName);
         if (companyName.length > 0) {
             [self.companyTextField setText:companyName];
+            [self.companyShowLabel setText:companyName];
         } else {
             NSString *companyDomain = companyModel.domain;
             [self.companyTextField setText:companyDomain];
+            [self.companyShowLabel setText:companyDomain];
         }
     }];
     [self.navigationController pushViewController:companyVC animated:YES];
