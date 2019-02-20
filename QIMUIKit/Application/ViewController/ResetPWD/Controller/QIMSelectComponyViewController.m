@@ -107,6 +107,14 @@
     return _companies;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+
+- (void)backBtnClick:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
@@ -115,6 +123,9 @@
     [self.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
     self.navigationItem.title = @"选择公司";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
+    UIBarButtonItem *barItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3cd" size:20 color:[UIColor qim_colorWithHex:0x333333]]] style:UIBarButtonItemStylePlain target:self action:@selector(backBtnClick:)];
+    [barItem setTintColor:[UIColor qim_colorWithHex:0x333333]];
+    self.navigationItem.leftBarButtonItem = barItem;
     
     [self setupUI];
 }
@@ -234,11 +245,6 @@
         if (self.companyBlock) {
             self.companyBlock(companyModel);
         }
-        /*
-        [UIView animateWithDuration:0.8 animations:^{
-            [self.companyListView setHidden:YES];
-        }];
-         */
     }
 }
 
