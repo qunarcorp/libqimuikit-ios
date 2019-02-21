@@ -29,6 +29,6 @@
 
 - (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder;
 
-- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletionBlock)completedBlock;
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDExternalCompletionBlock)completedBlock;
 
 @end
