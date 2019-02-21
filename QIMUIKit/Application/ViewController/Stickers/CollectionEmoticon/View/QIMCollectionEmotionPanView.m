@@ -135,8 +135,8 @@ typedef NS_ENUM(NSUInteger, QIMDragCellCollectionViewScrollDirection) {
     }
     _lastPoint = [longPressGesture locationOfTouch:0 inView:longPressGesture.view];
     //通知代理
-    if ([self.delegate respondsToSelector:@selector(dragCellCollectionView:cellWillBeginMoveAtIndexPath:)]) {
-        [self.delegate dragCellCollectionView:self cellWillBeginMoveAtIndexPath:_originalIndexPath];
+    if ([self.qimDragDelegate respondsToSelector:@selector(dragCellCollectionView:cellWillBeginMoveAtIndexPath:)]) {
+        [self.qimDragDelegate dragCellCollectionView:self cellWillBeginMoveAtIndexPath:_originalIndexPath];
     }
 }
 /**
@@ -144,8 +144,8 @@ typedef NS_ENUM(NSUInteger, QIMDragCellCollectionViewScrollDirection) {
  */
 - (void)QIM_gestureChange:(UILongPressGestureRecognizer *)longPressGesture{
     //通知代理
-    if ([self.delegate respondsToSelector:@selector(dragCellCollectionViewCellisMoving:)]) {
-        [self.delegate dragCellCollectionViewCellisMoving:self];
+    if ([self.qimDragDelegate respondsToSelector:@selector(dragCellCollectionViewCellisMoving:)]) {
+        [self.qimDragDelegate dragCellCollectionViewCellisMoving:self];
     }
     CGFloat tranX = [longPressGesture locationOfTouch:0 inView:longPressGesture.view].x - _lastPoint.x;
     CGFloat tranY = [longPressGesture locationOfTouch:0 inView:longPressGesture.view].y - _lastPoint.y;
@@ -162,8 +162,8 @@ typedef NS_ENUM(NSUInteger, QIMDragCellCollectionViewScrollDirection) {
     self.userInteractionEnabled = NO;
     [self QIM_stopEdgeTimer];
     //通知代理
-    if ([self.delegate respondsToSelector:@selector(dragCellCollectionViewCellEndMoving:)]) {
-        [self.delegate dragCellCollectionViewCellEndMoving:self];
+    if ([self.qimDragDelegate respondsToSelector:@selector(dragCellCollectionViewCellEndMoving:)]) {
+        [self.qimDragDelegate dragCellCollectionViewCellEndMoving:self];
     }
     [UIView animateWithDuration:0.25 animations:^{
         _tempMoveCell.center = cell.center;
@@ -221,8 +221,8 @@ typedef NS_ENUM(NSUInteger, QIMDragCellCollectionViewScrollDirection) {
             //移动
             [self moveItemAtIndexPath:_originalIndexPath toIndexPath:_moveIndexPath];
             //通知代理
-            if ([self.delegate respondsToSelector:@selector(dragCellCollectionView:moveCellFromIndexPath:toIndexPath:)]) {
-                [self.delegate dragCellCollectionView:self moveCellFromIndexPath:_originalIndexPath toIndexPath:_moveIndexPath];
+            if ([self.qimDragDelegate respondsToSelector:@selector(dragCellCollectionView:moveCellFromIndexPath:toIndexPath:)]) {
+                [self.qimDragDelegate dragCellCollectionView:self moveCellFromIndexPath:_originalIndexPath toIndexPath:_moveIndexPath];
             }
             //设置移动后的起始indexPath
             _originalIndexPath = _moveIndexPath;
@@ -237,8 +237,8 @@ typedef NS_ENUM(NSUInteger, QIMDragCellCollectionViewScrollDirection) {
 - (void)QIM_updateDataSource{
     NSMutableArray *temp = @[].mutableCopy;
     //获取数据源
-    if ([self.dataSource respondsToSelector:@selector(dataSourceArrayOfCollectionView:)]) {
-        [temp addObjectsFromArray:[self.dataSource dataSourceArrayOfCollectionView:self]];
+    if ([self.qimDragDataSource respondsToSelector:@selector(dataSourceArrayOfCollectionView:)]) {
+        [temp addObjectsFromArray:[self.qimDragDataSource dataSourceArrayOfCollectionView:self]];
     }
     //判断数据源是单个数组还是数组套数组的多section形式，YES表示数组套数组
     BOOL dataTypeCheck = ([self numberOfSections] != 1 || ([self numberOfSections] == 1 && [temp[0] isKindOfClass:[NSArray class]]));
@@ -265,8 +265,8 @@ typedef NS_ENUM(NSUInteger, QIMDragCellCollectionViewScrollDirection) {
         [orignalSection removeObject:orignalSection[_originalIndexPath.item]];
     }
     //将重排好的数据传递给外部
-    if ([self.delegate respondsToSelector:@selector(dragCellCollectionView:newDataArrayAfterMove:)]) {
-        [self.delegate dragCellCollectionView:self newDataArrayAfterMove:temp.copy];
+    if ([self.qimDragDelegate respondsToSelector:@selector(dragCellCollectionView:newDataArrayAfterMove:)]) {
+        [self.qimDragDelegate dragCellCollectionView:self newDataArrayAfterMove:temp.copy];
     }
 }
 

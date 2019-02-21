@@ -83,9 +83,9 @@ pod 'QIMUIKit'
     * SCLAlertView-Objective-C
     * MMMarkdown'
     * Toast
-    * SDWebImage', '~> 3.7', '!= 3.7.2'
-    * MBProgressHUD', '~> 0.9'
-    * DACircularProgress', '~> 2.3'
+    * SDWebImage'
+    * MBProgressHUD'
+    * DACircularProgress'
 6. 链接QIMSDK依赖项
     * QIMCommon
     * QIMOpenSSL

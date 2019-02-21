@@ -798,11 +798,14 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         }
             break;
     }
-    if (self.msgState == MessageState_Faild) {
-        content = [NSString stringWithFormat:@"[obj type=\"faild\" value=\"\"]%@", content];
-    } else if (self.msgState == MessageState_Waiting) {
-        content = [NSString stringWithFormat:@"[obj type=\"waiting\" value=\"\"]%@", content];
+    if (self.msgDirection == MessageDirection_Sent) {
+        if (self.msgState == MessageState_Faild) {
+            content = [NSString stringWithFormat:@"[obj type=\"faild\" value=\"\"]%@", content];
+        } else if (self.msgState == MessageState_Waiting) {
+            content = [NSString stringWithFormat:@"[obj type=\"waiting\" value=\"\"]%@", content];
+        }
     }
+ 
     NSDictionary *notSendDic = [[QIMKit sharedInstance] getNotSendTextByJid:self.jid];
     NSString *draftStr = notSendDic[@"text"];
     if (draftStr.length > 0) {
@@ -1155,7 +1158,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 }
 
 - (NSAttributedString *)decodeMsg:(NSString *)msg {
-    
     NSMutableAttributedString *attStr = nil;
     if (msg) {
         

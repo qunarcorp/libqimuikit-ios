@@ -57,7 +57,7 @@
 {
     if (![self canRecord]) {
         [[[UIAlertView alloc] initWithTitle:nil
-                                    message:[NSString stringWithFormat:@"%@需要访问您的麦克风。\n请启用麦克风-设置/隐私/麦克风", [QIMKit getQIMProjectType] == QIMProjectTypeQTalk ? @"QTalk" : @"QChat"]
+                                    message:[NSString stringWithFormat:@"%@需要访问您的麦克风。\n请启用麦克风-设置/隐私/麦克风", [QIMKit getQIMProjectTitleName]]
                                    delegate:nil
                           cancelButtonTitle:@"好"
                           otherButtonTitles:nil] show];

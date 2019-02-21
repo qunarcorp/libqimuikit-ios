@@ -150,7 +150,7 @@
     //        [self peQTalkSuggestRNJumpManagerrformSelector:@selector(autoLogin) withObject:nil afterDelay:0.3];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
     //    }
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && self.skipLogin) {
+    if (([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) && self.skipLogin) {
         [self autoLogin];
     }
 #if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
@@ -179,7 +179,7 @@
 
 - (NSString *)navTitle {
     if (!_navTitle) {
-        NSString *title = [QIMKit getQIMProjectType] == QIMProjectTypeQChat ? @"QChat" : @"QTalk";
+        NSString *title = [QIMKit getQIMProjectTitleName];
         _navTitle = title;
     }
     return _navTitle;
@@ -245,7 +245,7 @@
                 weakSelf.navTitle = nil;
                 [[QIMNavBackBtn sharedInstance] updateNotReadCount:0];
             } else {
-                NSString *appName = [QIMKit getQIMProjectType] == QIMProjectTypeQChat ? @"QChat" : @"QTalk";
+                NSString *appName = [QIMKit getQIMProjectTitleName];
                 weakSelf.navTitle = [NSString stringWithFormat:@"%@(%ld)", appName, (long)appCount];
                 [[QIMNavBackBtn sharedInstance] updateNotReadCount:appCount];
             }
@@ -431,7 +431,7 @@
     _rootView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
     [_rootView setAutoresizesSubviews:YES];
     [_rootView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];
-    [_rootView setBackgroundColor:[UIColor clearColor]];
+    [_rootView setBackgroundColor:[UIColor qim_colorWithHex:0xfafafa alpha:1.0]];
     [_rootView setContentMode:UIViewContentModeScaleToFill];
     [self.view addSubview:_rootView];
 }
@@ -440,7 +440,7 @@
     //这里用Id做tabBar的唯一标示，可以防止PM突然让改个顺序，加个tab
     self.totalTabBarArray = [NSMutableArray arrayWithCapacity:4];
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_chat"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f3" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3e4" size:28 color:[UIColor qtalkIconSelectColor]]]}];
-    if ([[QIMKit sharedInstance] qimNav_ShowOA]) {
+    if ([[QIMKit sharedInstance] qimNav_ShowOA] && ![[[QIMKit getLastUserName] lowercaseString]  isEqualToString:@"appstore"]) {
         [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_travel"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e403" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e402" size:28 color:[UIColor qtalkIconSelectColor]]]}];
     }
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_contact"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3e3" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4d8" size:28 color:[UIColor qtalkIconSelectColor]]]}];
@@ -476,6 +476,7 @@
     _contentView = [[UIView alloc] initWithFrame:frame];
     [_contentView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin];
     [_contentView setContentMode:UIViewContentModeScaleToFill];
+    [_contentView setBackgroundColor:[UIColor qim_colorWithHex:0xfafafa alpha:1.0]];
     [_rootView addSubview:_contentView];
     [self initTotalTabBarArray];
 }
@@ -779,15 +780,23 @@
     QIMVerboseLog(@"autoLogin lastUserName : %@, userFullJid : %@, userToken : %@", lastUserName, userFullJid, userToken);
     QIMVerboseLog(@"autoLogin UserDict : %@", [[QIMKit sharedInstance] userObjectForKey:@"Users"]);
     if ([lastUserName length] > 0 && [userToken length] > 0) {
-        if ([[QIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeSms) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSString *pwd = [NSString stringWithFormat:@"%@@%@", [QIMUUIDTools deviceUUID], userToken];
-                [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
-                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
-            });
+        if ([lastUserName isEqualToString:@"appstore"]) {
+            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
+        } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
+            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
         } else {
-            [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
-            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:userToken];
+            if ([[QIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeSms) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSString *pwd = [NSString stringWithFormat:@"%@@%@", [QIMUUIDTools deviceUUID], userToken];
+                    [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
+                    [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
+                });
+            } else {
+                [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:userToken];
+            }
         }
     } else {
         QIMVerboseLog(@"lastUserName或userToken为空,回到登录页面");

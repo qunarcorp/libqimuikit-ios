@@ -128,16 +128,22 @@
     [self resetAutoUIFrame];
     [self startLoginAnimation];
     
-    NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-    if ([lastUserName length] > 0 && [token length] > 0 && self.loginType == QTLoginTypeSms) {
+    if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
-            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
+            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
         });
     } else {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
-        });
+        NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+        if ([lastUserName length] > 0 && [token length] > 0 && self.loginType == QTLoginTypeSms) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
+                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
+            });
+        } else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
+            });
+        }
     }
 }
 
@@ -555,7 +561,8 @@
 
 - (void)initWritingAnimations{
     if (_writingLayer == nil) {
-        UIBezierPath *bezierPath = [self transformToBezierPath:[QIMKit getQIMProjectType] == QIMProjectTypeQChat ? @"QChat" : @"QTalk"];
+        UIBezierPath *bezierPath = [self transformToBezierPath:[QIMKit getQIMProjectTitleName]];
+       
         CGSize size= CGPathGetBoundingBox(bezierPath.CGPath).size;
         _writingLayer = [CAShapeLayer layer];
         _writingLayer.bounds = CGPathGetBoundingBox(bezierPath.CGPath);
@@ -723,46 +730,54 @@
 #warning 报错即将登陆的用户名 并请求导航
     [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
     [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithCheck:YES];
-    __weak id weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (self.loginType != QTLoginTypePwd) {
-            NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-            if (token.length <= 0) {
-                NSDictionary *tokenDic = [QIMKit getUserTokenWithUserName:userName
-                                                              WihtVerifyCode:validCode];
-                int statusId = (tokenDic && [[tokenDic allKeys] containsObject:@"status_id"]) ?
-                [[tokenDic objectForKey:@"status_id"] intValue] : -1;
-                
-                if (statusId == 0) {
-                    token = [[tokenDic objectForKey:@"data"] objectForKey:@"token"];
-                    [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSString *error = [tokenDic objectForKey:@"msg"];
-                        if (error) {
-                            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
-                                                                                message:error ? error : @"发生未知错误"
-                                                                               delegate:nil
-                                                                      cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_got_it"]
-                                                                      otherButtonTitles:nil];
-                            [alertView show];
-                            [weakSelf stopLoginAnimation];
-                        } else {
-                            [weakSelf showNetWorkUnableAlert];
-                        }
-                    });
-                    return;
+    if ([userName isEqualToString:@"appstore"]) {
+        [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
+        [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
+    } else if ([[userName lowercaseString] isEqualToString:@"qtalktest"]) {
+        [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
+        [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
+    } else {
+        __weak id weakSelf = self;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if (self.loginType != QTLoginTypePwd) {
+                NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+                if (token.length <= 0) {
+                    NSDictionary *tokenDic = [QIMKit getUserTokenWithUserName:userName
+                                                                  WihtVerifyCode:validCode];
+                    int statusId = (tokenDic && [[tokenDic allKeys] containsObject:@"status_id"]) ?
+                    [[tokenDic objectForKey:@"status_id"] intValue] : -1;
+                    
+                    if (statusId == 0) {
+                        token = [[tokenDic objectForKey:@"data"] objectForKey:@"token"];
+                        [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            NSString *error = [tokenDic objectForKey:@"msg"];
+                            if (error) {
+                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
+                                                                                    message:error ? error : @"发生未知错误"
+                                                                                   delegate:nil
+                                                                          cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_got_it"]
+                                                                          otherButtonTitles:nil];
+                                [alertView show];
+                                [weakSelf stopLoginAnimation];
+                            } else {
+                                [weakSelf showNetWorkUnableAlert];
+                            }
+                        });
+                        return;
+                    }
                 }
+                [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
+                NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
+                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
+            } else {
+                NSString *pwd = _validCodeInputView.text;
+                [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
             }
-            [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
-            NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
-            [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
-        } else {
-            NSString *pwd = _validCodeInputView.text;
-            [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
-            [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
-        }
-    });
+        });
+    }
 }
 
 - (void)showNetWorkUnableAlert {
