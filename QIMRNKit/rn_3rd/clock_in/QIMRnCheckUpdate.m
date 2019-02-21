@@ -7,7 +7,6 @@
 
 #import "QIMRnCheckUpdate.h"
 #import "QimRNBModule.h"
-#import "QTalkPatchDownloadHelper.h"
 
 @implementation QIMRnCheckUpdate
 
