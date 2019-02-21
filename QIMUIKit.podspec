@@ -65,13 +65,13 @@ Pod::Spec.new do |s|
       photoBrowser.frameworks = 'ImageIO', 'QuartzCore', 'AssetsLibrary', 'MediaPlayer'
       photoBrowser.weak_frameworks = 'Photos'
 
-      photoBrowser.dependency 'MBProgressHUD', '~> 0.9'
-      photoBrowser.dependency 'DACircularProgress', '~> 2.3'
+      photoBrowser.dependency 'MBProgressHUD'
+      photoBrowser.dependency 'DACircularProgress'
 
       # SDWebImage
       # 3.7.2 contains bugs downloading local files
       # https://github.com/rs/SDWebImage/issues/1109
-      photoBrowser.dependency 'SDWebImage', '~> 3.7', '!= 3.7.2'
+      photoBrowser.dependency 'SDWebImage'
       photoBrowser.dependency 'QIMUIKit/PublicUIHeader'
       photoBrowser.resource = ['QIMUIKit/General/Verders/QIMMWPhotoBrowser/Assets']
   end
@@ -90,6 +90,30 @@ Pod::Spec.new do |s|
     note.dependency 'QIMUIKit/PublicUIHeader'
   end
 
+  s.subspec 'QIMUIKit-NORN' do |norn|
+    norn.dependency 'QIMUIKit/PublicUIHeader'
+    norn.dependency 'QIMUIKit/QIMAppUI'
+    norn.dependency 'QIMUIKit/QIMGeneralUI'
+    norn.dependency 'QIMUIKit/QIMMeUI'
+    norn.dependency 'QIMUIKit/QIMCells'
+    norn.dependency 'QIMUIKit/ImagePicker'
+    norn.dependency 'QIMUIKit/QIMMWPhotoBrowser'
+    norn.dependency 'QIMUIKit/QIMUIVendorKit'
+    norn.dependency 'QIMUIKit/QIMNote'
+  end
+  
+  s.subspec 'QIMUIKit-FULL' do |full|
+    full.dependency 'QIMUIKit/PublicUIHeader'
+    full.dependency 'QIMUIKit/QIMAppUI'
+    full.dependency 'QIMUIKit/QIMGeneralUI'
+    full.dependency 'QIMUIKit/QIMMeUI'
+    full.dependency 'QIMUIKit/QIMCells'
+    full.dependency 'QIMUIKit/ImagePicker'
+    full.dependency 'QIMUIKit/QIMMWPhotoBrowser'
+    full.dependency 'QIMUIKit/QIMUIVendorKit'
+    full.dependency 'QIMUIKit/QIMNote'
+  end
+  
   s.dependency 'MJRefresh'
   s.dependency 'YLGIFImage'
   s.dependency 'SwipeTableView'
@@ -120,5 +144,6 @@ end
 
   s.frameworks = 'UIKit','MessageUI', 'Foundation', 'JavaScriptCore', 'AVFoundation', 'OpenGLES', 'MobileCoreServices', 'AssetsLibrary', 'QuartzCore', 'CoreMotion', 'CoreText'
   s.libraries = 'stdc++', 'bz2', 'resolv', 'icucore', 'xml2'
+  s.default_subspec = 'QIMUIKit-FULL'
 
 end
