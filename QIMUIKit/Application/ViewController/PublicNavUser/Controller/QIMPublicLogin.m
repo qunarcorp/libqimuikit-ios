@@ -76,6 +76,7 @@ static const int companyTag = 10001;
         _registerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_registerBtn setTitle:@"注册" forState:UIControlStateNormal];
         [_registerBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
+        [_registerBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _registerBtn;
 }
@@ -168,6 +169,7 @@ static const int companyTag = 10001;
         [_forgotBtn.titleLabel setTextAlignment:NSTextAlignmentRight];
         [_forgotBtn setTitle:@"忘记密码" forState:UIControlStateNormal];
         [_forgotBtn.titleLabel setFont:[UIFont systemFontOfSize:15]];
+        [_forgotBtn addTarget:self action:@selector(forgotPWD:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _forgotBtn;
 }
@@ -451,6 +453,14 @@ static const int companyTag = 10001;
 }
 
 #pragma mark - Action
+
+- (void)registerNew:(id)sender {
+    [QIMFastEntrance openWebViewForUrl:@"https://im.qunar.com/#/register" showNavBar:YES];
+}
+
+- (void)forgotPWD:(id)sender {
+    [QIMFastEntrance openWebViewForUrl:@"https://im.qunar.com/reterievePassword#/" showNavBar:NO];
+}
 
 - (void)autoLogin {
     // 增加 appstore 验证通过能力

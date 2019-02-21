@@ -285,8 +285,6 @@ static NSString *__default_ua = nil;
     [_webView setScalesPageToFit:YES];
     [_webView setMultipleTouchEnabled:YES];
     [self.view addSubview:_webView];
-//    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"CKEditor5Edit" ofType:@"html"];
-//    self.htmlString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
     if (self.htmlString) {
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
