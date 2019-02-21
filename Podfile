@@ -22,9 +22,9 @@ target 'QIMUIKit' do
     pod 'MDHTMLLabel'
     pod 'MMMarkdown'
     pod 'MGSwipeTableCell'
-    pod 'MBProgressHUD', '~> 0.9'
-    pod 'DACircularProgress', '~> 2.3'
-    pod 'SDWebImage', '~> 3.7', '!= 3.7.2'
+    pod 'MBProgressHUD'
+    pod 'DACircularProgress'
+    pod 'SDWebImage'
     pod 'NJKWebViewProgress'
     pod 'AMapSearch'
     pod 'AMapLocation'
@@ -32,5 +32,6 @@ target 'QIMUIKit' do
     pod 'Toast'
     pod 'MMPickerView'
     pod 'SCLAlertView-Objective-C'
+    pod 'YYKeyboardManager'
     
 end

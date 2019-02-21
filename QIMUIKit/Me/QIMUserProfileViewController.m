@@ -183,7 +183,6 @@
 - (void)registerObserver {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(markNameUpdate) name:kMarkNameUpdate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMyHeader) name:kMyHeaderImgaeUpdateSuccess object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onReceiveFriendPresence:) name:kFriendPresence object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFont:) name:kNotificationCurrentFontUpdate object:nil];
 }
 
@@ -223,6 +222,12 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onReceiveFriendPresence:) name:kFriendPresence object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFriendPresence object:nil];
 }
 
 - (void)registerNSNotifications {
@@ -256,10 +261,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -335,29 +336,6 @@
 
 - (void)openChatSession {
     [QIMFastEntrance openSingleChatVCByUserId:self.userId];
-    /*
-    ChatType chatType = [[QIMKit sharedInstance] openChatSessionByUserId:self.userId];
-    
-    QIMChatVC *chatVC  = [[QIMChatVC alloc] init];
-    [chatVC setStype:kSessionType_Chat];
-    [chatVC setChatId:self.userId];
-    [chatVC setName:self.model.name];
-    */
-    /*
-    if (chatType == ChatType_Consult || chatType == ChatType_ConsultServer) {
-        NSString *realJid = [[QIMKit sharedInstance] getRealJidForVirtual:[self.userId componentsSeparatedByString:@"@"].firstObject];
-        realJid = [realJid stringByAppendingString:[NSString stringWithFormat:@"@%@", [[QIMKit sharedInstance] qimNav_Domain]]];
-        [chatVC setVirtualJid:self.userId];
-        [chatVC setChatId:realJid];
-    }
-    */
-    /*
-    [chatVC setChatType:chatType];
-    NSString * remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.userId];
-    [chatVC setTitle:remarkName?remarkName:self.model.name];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-    [self.navigationController popToRootVCThenPush:chatVC animated:YES];
-    */
 }
 
 #pragma mark - NSNotification

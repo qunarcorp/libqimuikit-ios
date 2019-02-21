@@ -17,6 +17,7 @@
 #import "QTalkVideoAssetViewController.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 #import "MBProgressHUD.h"
+#import "QTPHImagePickerManager.h"
 
 //Helper methods
 @implementation NSIndexSet (Convenience)
@@ -332,7 +333,12 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
         }
         [_photoTypeButton setEnabled:YES];
         [_sendButton setEnabled:YES];
-        [_sendButton setTitle:[NSString stringWithFormat:@"确定(%ld/%@)",(long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
+        NSInteger maxNumber = [[QTPHImagePickerManager sharedInstance] maximumNumberOfSelection];
+        if (maxNumber > 0) {
+            [_sendButton setTitle:[NSString stringWithFormat:@"确定(%ld/%@)",(long)indexPaths.count,@(maxNumber)] forState:UIControlStateNormal];
+        } else {
+            [_sendButton setTitle:[NSString stringWithFormat:@"确定(%ld/%@)",(long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
+        }
     } else {
         [_previewButton setEnabled:NO];
         [_editButton setEnabled:NO];
@@ -552,23 +558,37 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     }
     
     if (asset.mediaType == PHAssetMediaTypeVideo) {
-        [self.picker.selectedAssets insertObject:asset atIndex:self.picker.selectedAssets.count];
-        int duration = (int)asset.duration;
-        [_imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                QTalkVideoAssetViewController *vc = [[QTalkVideoAssetViewController alloc]  init];
-                [vc setVideoAsset:asset];
-                vc.picker = self.picker;
-                vc.videoDuration = duration;
-                [self.navigationController pushViewController:vc animated:YES];
-            });
-        }];
+        BOOL notAllowSelectVideo = [[QTPHImagePickerManager sharedInstance] notAllowSelectVideo];
+        if (notAllowSelectVideo == YES) {
+            //不允许选择视频
+            [QTalkTipsView showTips:[NSString stringWithFormat:@"当前不支持上传视频到驼圈"] InView:self.view];
+        } else {
+            [self.picker.selectedAssets insertObject:asset atIndex:self.picker.selectedAssets.count];
+            int duration = (int)asset.duration;
+            [_imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    QTalkVideoAssetViewController *vc = [[QTalkVideoAssetViewController alloc]  init];
+                    [vc setVideoAsset:asset];
+                    vc.picker = self.picker;
+                    vc.videoDuration = duration;
+                    [self.navigationController pushViewController:vc animated:YES];
+                });
+            }];
+        }
         return NO;
     }
     
-    if (self.picker.selectedAssets.count >= kMaximumNumberOfSelection) {
-        [QTalkTipsView showTips:[NSString stringWithFormat:@"最多只能选择%d张照片",kMaximumNumberOfSelection] InView:self.view];
-        return NO;
+    NSInteger maxNumber = [[QTPHImagePickerManager sharedInstance] maximumNumberOfSelection];
+    if (maxNumber > 0) {
+        if (self.picker.selectedAssets.count >= maxNumber) {
+            [QTalkTipsView showTips:[NSString stringWithFormat:@"最多只能选择%d张照片",maxNumber] InView:self.view];
+            return NO;
+        }
+    } else {
+        if (self.picker.selectedAssets.count >= kMaximumNumberOfSelection) {
+            [QTalkTipsView showTips:[NSString stringWithFormat:@"最多只能选择%d张照片",kMaximumNumberOfSelection] InView:self.view];
+            return NO;
+        }
     }
     
     QTPHGridViewCell *cell = (QTPHGridViewCell *)[collectionView cellForItemAtIndexPath:indexPath];

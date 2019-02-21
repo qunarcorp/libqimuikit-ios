@@ -31,6 +31,15 @@ static double _global_message_cell_width = 0;
 
 @implementation QIMChatNotifyInfoCell
 + (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType {
+    
+    UILabel *label = [[UILabel alloc] init];
+    label.text = message.message;
+    label.width = kCellWidth * 4/5;
+    label.numberOfLines = 0;
+    label.font = [UIFont systemFontOfSize:12];
+    [label sizeToFit];
+    return label.height + 20;
+    //去特么的第三方，算的高度是错的
     return [MDHTMLLabel sizeThatFitsHTMLString:message.message withFont:[UIFont systemFontOfSize:12] constraints:CGSizeZero limitedToNumberOfLines:0] + 20;
 }
 

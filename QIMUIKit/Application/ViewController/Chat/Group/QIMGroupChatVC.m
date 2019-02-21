@@ -487,7 +487,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 //    }
     [self refreshChatBGImageView];
     
-    //    添加整个view的点击事件，当点击页面空白地方时，输入框收回
+//    添加整个view的点击事件，当点击页面空白地方时，输入框收回
     UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandler:)];
     gesture.delegate = self;
     gesture.numberOfTapsRequired = 1;
@@ -1246,8 +1246,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)onFileDidUpload:(NSNotification *)notify {
-//    Comment by lilulucas.li
-//    [self refreshCellForMsg:notify.object];
 }
 
 - (void)collectionEmotionNotFoundNotificationHandle:(NSNotification *)notify {
@@ -1382,7 +1380,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         QIMVerboseLog(@"我是 群红包，点我 干哈？");
         if ([[QIMKit sharedInstance] redPackageUrlHost]) {
             QIMWebView *webView = [[QIMWebView alloc] init];
-            webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey]];
+            webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
             //        webView.navBarHidden = YES;
             [webView setFromRegPackage:YES];
             [self.navigationController pushViewController:webView animated:YES];
@@ -1393,7 +1391,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         
         if ([[QIMKit sharedInstance] aaCollectionUrlHost]) {
             QIMWebView *webView = [[QIMWebView alloc] init];
-            webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@", [[QIMKit sharedInstance] aaCollectionUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey]];
+            webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] aaCollectionUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
             webView.navBarHidden = YES;
             [webView setFromRegPackage:YES];
             [self.navigationController pushViewController:webView animated:YES];
@@ -2663,14 +2661,6 @@ static CGPoint tableOffsetPoint;
     //    [self presentViewController:emptyTextVc animated:YES completion:nil];
 }
 
-- (void)sendImageUrl:(NSString *)imageUrl {
-    
-    [[self view] setFrame:_rootViewFrame];
-    if ([imageUrl length] > 0) {
-    }
-}
-
-
 - (void)sendImageData:(NSData *)imageData {
     if (imageData) {
         [self getStringFromAttributedString:imageData];
@@ -2906,12 +2896,14 @@ static CGPoint tableOffsetPoint;
                                            });
                                        }];
     });
+#if defined (QIMRNEnable) && QIMRNEnable == 1
     if (self.loadCount >= 3 && !self.reloadSearchRemindView) {
         self.searchRemindView = [[QIMSearchRemindView alloc] initWithChatId:self.chatId withRealJid:nil withChatType:self.chatType];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToConverstaionSearch)];
         [self.searchRemindView addGestureRecognizer:tap];
         [self.view addSubview:self.searchRemindView];
     }
+#endif
 }
 
 - (void)jumpToConverstaionSearch {

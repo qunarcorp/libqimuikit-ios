@@ -8,6 +8,7 @@
 
 #import "QIMRemoteNotificationManager.h"
 #import "QIMCommonUIFramework.h"
+#import "UIApplication+QIMApplication.h"
 #import "QIMGroupChatVC.h"
 #import "QIMChatVC.h"
 
@@ -25,7 +26,10 @@
 //前往回话列表
 + (void)openChatSessionWithInfoDic:(NSDictionary *)userInfo
 {
-    if (userInfo.count) {
+    UIViewController *rootViewController = [[UIApplication sharedApplication] visibleViewController];
+    NSLog(@"rootViewController : %@", rootViewController);
+    Class QIMMainVCClass = NSClassFromString(@"QIMMainVC");
+    if (userInfo.count && [rootViewController isKindOfClass:QIMMainVCClass]) {
         NSString * userId = userInfo[@"userid"];
         if (userId.length) {
             UINavigationController * navC = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
