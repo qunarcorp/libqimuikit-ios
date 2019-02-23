@@ -122,7 +122,7 @@
     _sizeLabel.text = fileSize;
     _descLabel.text = [NSString stringWithFormat:@"%@ %@",date,peopleStr];
     _statusLabel.text = fileState;
-    _fileIcon.image = [QIMFileIconTools getFileIconWihtExtension:fileName.pathExtension];
+    _fileIcon.image = [QIMFileIconTools getFileIconWithExtension:fileName.pathExtension];
 }
 
 -(void)layoutSubviews

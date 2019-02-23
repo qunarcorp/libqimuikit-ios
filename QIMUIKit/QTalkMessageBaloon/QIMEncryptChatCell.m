@@ -32,7 +32,7 @@
 @implementation QIMEncryptChatCell
 
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
 {
     return kEncryptChatCellHeight + ((message.messageDirection == MessageDirection_Received) ? 40 : 20);
 }
@@ -62,7 +62,7 @@
     
     float backWidth = kEncryptChatCellWidth;
     float backHeight = kEncryptChatCellHeight;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     switch (self.message.messageDirection) {
         case MessageDirection_Received:

@@ -56,7 +56,7 @@
     CGFloat backHeight = self.messageLabel.textContainer.textHeight + 20;
     [self.backView setText:self.message.message];
     self.backView.message = self.message;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
 }
 

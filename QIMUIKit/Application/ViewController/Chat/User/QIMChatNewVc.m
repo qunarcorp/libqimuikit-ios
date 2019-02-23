@@ -249,7 +249,7 @@
                 });
             }];
         } else {
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:0 WihtComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.messageManager.dataSource removeAllObjects];
                     [self.messageManager.dataSource addObjectsFromArray:list];
@@ -320,7 +320,7 @@
         } else {
             
             if (self.fastMsgTimeStamp > 0) {
-                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid FromTimeStamp:self.fastMsgTimeStamp WihtComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid FromTimeStamp:self.fastMsgTimeStamp WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
                         CGFloat offsetY = self.tableView.contentSize.height - self.tableView.contentOffset.y;
@@ -338,7 +338,7 @@
                     });
                 }];
             } else {
-                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count WihtComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
                         CGFloat offsetY = self.tableView.contentSize.height - self.tableView.contentOffset.y;

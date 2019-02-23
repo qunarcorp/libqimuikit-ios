@@ -33,7 +33,7 @@
 }
 
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
     return kCellHeight + 20 + 20;
 }
 
@@ -126,10 +126,10 @@
     self.backView.message = self.message;
     float backWidth = kCellWidth + kBackViewCap + 2;
     float backHeight = kCellHeight + 1;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     
-    UIImage *image = [QIMFileIconTools getFileIconWihtExtension:@"txt"];
+    UIImage *image = [QIMFileIconTools getFileIconWithExtension:@"txt"];
     [_iconImageView setImage:image];
     
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.extendInformation error:nil];

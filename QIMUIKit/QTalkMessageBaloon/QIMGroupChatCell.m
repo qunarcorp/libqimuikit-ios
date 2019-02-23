@@ -201,7 +201,7 @@
         self.backView.image = [UIImage new];
         self.backView.backgroundColor = [UIColor clearColor];
     }
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
 
     _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (self.message.propress / 100.0f));

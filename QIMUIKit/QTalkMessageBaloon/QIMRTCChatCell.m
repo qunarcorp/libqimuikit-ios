@@ -29,7 +29,7 @@
 
 @implementation QIMRTCChatCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
 {
     return kRTCCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == MessageDirection_Received) ? 40 : 20);
 }
@@ -71,7 +71,7 @@
     
     float backWidth = kRTCCellWidth;
     float backHeight = kRTCCellHeight;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
 
     switch (self.message.messageDirection) {

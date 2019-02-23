@@ -1724,7 +1724,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                     
                 }];
             } else {
-                NSString *fileName = [QIMKit updateLoadFile:photo.photoData WithMsgId:nil WithMsgType:QIMMessageType_ImageNew WihtPathExtension:nil];
+                NSString *fileName = [QIMKit updateLoadFile:photo.photoData WithMsgId:nil WithMsgType:QIMMessageType_ImageNew WithPathExtension:nil];
                 NSString *fileUrl = @"";
                 if ([fileName qim_hasPrefixHttpHeader]) {
                     fileUrl = fileName;

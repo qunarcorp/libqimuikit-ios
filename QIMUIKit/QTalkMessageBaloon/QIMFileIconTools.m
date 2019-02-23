@@ -43,7 +43,7 @@
     return FileType_Unknow;
 
 }
-+ (UIImage *)getFileIconWihtExtension:(NSString *)pathExtension{
++ (UIImage *)getFileIconWithExtension:(NSString *)pathExtension{
     switch ([self getFileTypeByFileExtension:pathExtension]) {
         case FileType_Audio:
         {

@@ -194,7 +194,7 @@
 - (void)reloadLocalRecenteMoments:(BOOL)notNeedReloadMomentView {
     if (notNeedReloadMomentView == NO && self.workMomentList.count <= 0) {
         __weak typeof(self) weakSelf = self;
-        [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WihtLimit:10 WithOffset:0 withFirstLocalMoment:YES WihtComplete:^(NSArray * _Nonnull array) {
+        [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WithLimit:10 WithOffset:0 withFirstLocalMoment:YES WithComplete:^(NSArray * _Nonnull array) {
             if (array.count) {
                 [weakSelf.workMomentList removeAllObjects];
                 for (NSDictionary *momentDic in array) {
@@ -217,7 +217,7 @@
     
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WihtLimit:20 WithOffset:0 withFirstLocalMoment:NO WihtComplete:^(NSArray * _Nonnull moments) {
+        [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WithLimit:20 WithOffset:0 withFirstLocalMoment:NO WithComplete:^(NSArray * _Nonnull moments) {
             if (moments.count > 0) {
                 [weakSelf.workMomentList removeAllObjects];
                 for (NSDictionary *momentDic in moments) {
@@ -241,7 +241,7 @@
     QIMWorkMomentModel *lastModel = [self.workMomentList lastObject];
     QIMVerboseLog(@"lastModel : %@", lastModel);
     
-    [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:[lastModel.createTime longLongValue] withUserXmppId:self.userId WihtLimit:20 WithOffset:self.workMomentList.count withFirstLocalMoment:NO WihtComplete:^(NSArray * _Nonnull array) {
+    [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:[lastModel.createTime longLongValue] withUserXmppId:self.userId WithLimit:20 WithOffset:self.workMomentList.count withFirstLocalMoment:NO WithComplete:^(NSArray * _Nonnull array) {
         if (array.count) {
             for (NSDictionary *momentDic in array) {
                 QIMWorkMomentModel *model = [weakSelf getMomentModelWithDic:momentDic];

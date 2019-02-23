@@ -1196,7 +1196,7 @@
     } else {
         userId = self.chatId;
     }
-    [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:realJid FromTimeStamp:_readedMsgTimeStamp WihtComplete:^(NSArray *list) {
+    [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:realJid FromTimeStamp:_readedMsgTimeStamp WithComplete:^(NSArray *list) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.messageManager.dataSource removeAllObjects];
             [self.messageManager.dataSource addObjectsFromArray:list];
@@ -1241,7 +1241,7 @@
             userId = self.chatId;
         }
         if (self.fastMsgTimeStamp > 0) {
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid FromTimeStamp:self.fastMsgTimeStamp WihtComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid FromTimeStamp:self.fastMsgTimeStamp WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     CGFloat offsetY = _tableView.contentSize.height - _tableView.contentOffset.y;
@@ -1276,7 +1276,7 @@
                     });
                 }];
             } else {
-                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:0 WihtComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.messageManager.dataSource removeAllObjects];
                         [self.messageManager.dataSource addObjectsFromArray:list];
@@ -1755,7 +1755,7 @@
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
                     else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                         NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:msgText WithOriginExtendInfo:nil WithUserId:self.chatId];
-                        msg = [[QIMKit sharedInstance] sendMessage:@"[加密收藏表情消息iOS]" WithInfo:content ToUserId:self.chatId WihtMsgType:QIMMessageType_Encrypt];
+                        msg = [[QIMKit sharedInstance] sendMessage:@"[加密收藏表情消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
                     }
 #endif
                     else {
@@ -1795,7 +1795,7 @@
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
                                 else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                                     NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:msgText WithOriginExtendInfo:nil WithUserId:self.chatId];
-                                    msg = [[QIMKit sharedInstance] sendMessage:@"[加密收藏表情消息iOS]" WithInfo:content ToUserId:self.chatId WihtMsgType:QIMMessageType_Encrypt];
+                                    msg = [[QIMKit sharedInstance] sendMessage:@"[加密收藏表情消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
                                 }
 #endif
                                 else {
@@ -2160,7 +2160,7 @@
                 });
             }];
         } else {
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:0 WihtComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.messageManager.dataSource removeAllObjects];
                     [self.messageManager.dataSource addObjectsFromArray:list];
@@ -2487,7 +2487,7 @@
     NSString *thumbFilePath = [videoPath stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@", pathExtension] withString:@"_thumb.jpg"];
     [thumbData writeToFile:thumbFilePath atomically:YES];
     
-    NSString *httpUrl = [QIMKit updateLoadFile:thumbData WithMsgId:msgId WithMsgType:QIMMessageType_Image WihtPathExtension:@"jpg"];
+    NSString *httpUrl = [QIMKit updateLoadFile:thumbData WithMsgId:msgId WithMsgType:QIMMessageType_Image WithPathExtension:@"jpg"];
     
     NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
     [dicInfo setQIMSafeObject:httpUrl forKey:@"ThumbUrl"];
@@ -2525,7 +2525,7 @@
     }
     else {
         [msg setTo:self.chatId];
-        [[QIMKit sharedInstance] insertMessageWihtMsgId:msg.messageId WithXmppId:self.chatId WithFrom:msg.from WithTo:msg.to WithContent:msg.message WithExtendInfo:msg.extendInformation WithPlatform:msg.platform WithMsgType:msg.messageType WithMsgState:msg.messageState WithMsgDirection:msg.messageDirection WihtMsgDate:msg.messageDate WithReadedTag:0 WithMsgRaw:msg.msgRaw WithRealJid:msg.realJid WithChatType:msg.chatType];
+        [[QIMKit sharedInstance] insertMessageWithMsgId:msg.messageId WithXmppId:self.chatId WithFrom:msg.from WithTo:msg.to WithContent:msg.message WithExtendInfo:msg.extendInformation WithPlatform:msg.platform WithMsgType:msg.messageType WithMsgState:msg.messageState WithMsgDirection:msg.messageDirection WithMsgDate:msg.messageDate WithReadedTag:0 WithMsgRaw:msg.msgRaw WithRealJid:msg.realJid WithChatType:msg.chatType];
     }
     if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
         [[QIMKit sharedInstance] updateMessageWithExtendInfo:msg.extendInformation ForMsgId:msg.messageId];
@@ -2564,7 +2564,7 @@
         }
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
         else if (self.encryptChatState == QIMEncryptChatStateEncrypting) {
-            msg = [[QIMKit sharedInstance] sendMessage:message WithInfo:info ToUserId:self.chatId WihtMsgType:QIMMessageType_Encrypt];
+            msg = [[QIMKit sharedInstance] sendMessage:message WithInfo:info ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
         }
 #endif
         else {
@@ -2630,7 +2630,7 @@
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
                 else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                     NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:@"此为阅后即焚消息，该终端不支持阅后即焚~~" WithOriginExtendInfo:extendInformation WithUserId:self.chatId];
-                    msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息阅后即焚iOS]" WithInfo:content ToUserId:self.chatId WihtMsgType:QIMMessageType_Encrypt];
+                    msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息阅后即焚iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
                 }
 #endif
                 else {
@@ -2660,7 +2660,7 @@
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
                 else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                     NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_ImageNew WithOriginBody:text WithOriginExtendInfo:normalEmotionExtendInfoStr WithUserId:self.chatId];
-                    msg = [[QIMKit sharedInstance] sendMessage:@"[加密表情消息iOS]" WithInfo:content ToUserId:self.chatId WihtMsgType:QIMMessageType_Encrypt];
+                    msg = [[QIMKit sharedInstance] sendMessage:@"[加密表情消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
                 }
 #endif
                 else {
@@ -2743,7 +2743,7 @@
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
             else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                 NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:@"此为阅后即焚消息，该终端不支持阅后即焚~~" WithOriginExtendInfo:extendInformation WithUserId:self.chatId];
-                msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息阅后即焚iOS]" WithInfo:content ToUserId:self.chatId WihtMsgType:QIMMessageType_Encrypt];
+                msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息阅后即焚iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
             }
 #endif
             else {
@@ -2773,7 +2773,7 @@
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
             else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                 NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:text WithOriginExtendInfo:nil WithUserId:self.chatId];
-                msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息iOS]" WithInfo:content ToUserId:self.chatId WihtMsgType:QIMMessageType_Encrypt];
+                msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
             }
 #endif
             else {
@@ -3249,7 +3249,7 @@ static CGPoint tableOffsetPoint;
             }];
         } else {
 
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count WihtComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
                 if (list.count > 0) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         

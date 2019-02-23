@@ -30,7 +30,7 @@
 
 @implementation QIMLocationShareMsgCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
 {
     return kQIMLocationShareMsgCellHeight + 20 + (chatType == ChatType_GroupChat ? 20 : 0);
 }
@@ -84,7 +84,7 @@
     float backWidth = 215;
     float backHeight = kQIMLocationShareMsgCellHeight;
     
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     switch (self.message.messageDirection) {
         case MessageDirection_Received:

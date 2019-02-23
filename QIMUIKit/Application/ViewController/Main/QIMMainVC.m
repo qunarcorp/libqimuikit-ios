@@ -448,7 +448,7 @@
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_discover"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4be" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4bd" size:28 color:[UIColor qtalkIconSelectColor]]]}];
     
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_myself"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e29b" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e29c" size:28 color:[UIColor qtalkIconSelectColor]]]}];
-    _tabBar = [[QIMCustomTabBar alloc] initWithItemCount:self.totalTabBarArray.count WihtFrame:CGRectMake(0, _rootView.height - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT] - 3.5, _rootView.width, kTabBarHeight)];
+    _tabBar = [[QIMCustomTabBar alloc] initWithItemCount:self.totalTabBarArray.count WithFrame:CGRectMake(0, _rootView.height - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT] - 3.5, _rootView.width, kTabBarHeight)];
     [_tabBar setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
     [_tabBar setDelegate:self];
     [_tabBar setSelectedIndex:0];

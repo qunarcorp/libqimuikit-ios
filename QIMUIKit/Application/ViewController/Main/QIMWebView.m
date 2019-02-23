@@ -885,7 +885,7 @@ static NSString *__default_ua = nil;
             NSString *fileBaseStr = [[[[fileStr componentsSeparatedByString:@";"] lastObject] componentsSeparatedByString:@","] lastObject];
             NSData *decodedImgData = [[NSData alloc] initWithBase64EncodedString:fileBaseStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
             NSLog(@"%@", fileBaseStr);
-            NSString *fileUrl = [QIMHttpApi updateLoadFile:decodedImgData WithMsgId:[QIMUUIDTools UUID] WithMsgType:1 WihtPathExtension:nil];
+            NSString *fileUrl = [QIMHttpApi updateLoadFile:decodedImgData WithMsgId:[QIMUUIDTools UUID] WithMsgType:1 WithPathExtension:nil];
             NSLog(@"fileUrl : %@", fileUrl);
             if (![fileUrl qim_hasPrefixHttpHeader]) {
                 fileUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileUrl];

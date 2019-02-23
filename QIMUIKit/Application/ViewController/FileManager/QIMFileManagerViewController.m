@@ -148,9 +148,9 @@
         }
 #endif
         if (self.messageSaveType == ChatType_GroupChat) {
-         msg = [[QIMKit sharedInstance] sendMessage:[msg message] WithInfo:[msg extendInformation] ToGroupId:self.userId WihtMsgType:[msg messageType]];
+         msg = [[QIMKit sharedInstance] sendMessage:[msg message] WithInfo:[msg extendInformation] ToGroupId:self.userId WithMsgType:[msg messageType]];
         }else{
-         msg = [[QIMKit sharedInstance] sendMessage:[msg message] WithInfo:[msg extendInformation] ToUserId:self.userId WihtMsgType:[msg messageType]];
+         msg = [[QIMKit sharedInstance] sendMessage:[msg message] WithInfo:[msg extendInformation] ToUserId:self.userId WithMsgType:[msg messageType]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.userId userInfo:@{@"message":msg}];
             });

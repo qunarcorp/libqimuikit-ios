@@ -25,7 +25,7 @@
 
 @implementation QIMRedPackCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message  chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message  chatType:(ChatType)chatType{
     return  [QIMRedPackCell redPackCellWidth] * 4 / 9 + ((chatType == ChatType_GroupChat) && (message.messageDirection == MessageDirection_Received) ? 25 : 0) + 10;
 }
 
@@ -97,7 +97,7 @@
         }
     }
     
-    [self setBackViewWithWidth:[QIMRedPackCell redPackCellWidth] WihtHeight:[QIMRedPackCell redPackCellWidth] * 4 / 9 - 10];
+    [self setBackViewWithWidth:[QIMRedPackCell redPackCellWidth] WithHeight:[QIMRedPackCell redPackCellWidth] * 4 / 9 - 10];
     [super refreshUI];
     switch (self.message.messageDirection) {
         case MessageDirection_Received:
