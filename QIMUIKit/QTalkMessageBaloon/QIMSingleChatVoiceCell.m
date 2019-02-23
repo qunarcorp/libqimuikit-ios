@@ -47,7 +47,7 @@ static NSArray *_sentImageArray = nil;
 
 @synthesize delegate = _delegate;
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
     return kBackViewHeight + kCellHeightCap + 20;
 }
 

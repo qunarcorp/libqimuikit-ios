@@ -121,29 +121,6 @@
         [_notReadNumButton setHidden:YES];
         
     }
-    
-    switch ([[QIMKit sharedInstance] getUserPrecenseStatus:_jid]) {
-        case UserPrecenseStatus_Away:
-        {
-            UIImage *image = [UIImage imageNamed:@"Header+Search_Away_Normal"];
-            [_prefrenceImageView setHidden:NO];
-            [_prefrenceImageView setImage:image];
-        }
-            break;
-        case UserPrecenseStatus_Dnd:
-        {
-            UIImage *image = [UIImage imageNamed:@"Header+Search_Busy_Normal"];
-            [_prefrenceImageView setHidden:NO];
-            [_prefrenceImageView setImage:image];
-            
-        }
-            break;
-        default:
-            [_prefrenceImageView setHidden:YES];
-            break;
-    }
-    
-    
     [parentLayer setFrame:CGRectMake(addionWidth+28, 8, 24, 24)];
     parentLayer.contents = (id)[UIImage imageNamed:@"triangleSmall"].CGImage;
     

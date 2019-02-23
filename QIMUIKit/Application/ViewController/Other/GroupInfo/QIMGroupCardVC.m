@@ -148,65 +148,10 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         _oldMembers = [NSMutableArray arrayWithArray:[[QIMKit sharedInstance] getGroupMembersByGroupId:self.groupId]];
-        
-        NSMutableArray *onlineList = [NSMutableArray array];
-        NSMutableArray *offlineList = [NSMutableArray array];
-        NSString *affiliation = @"none";
-        for (NSDictionary *dic in _oldMembers) {
-//            NSString *name = [dic objectForKey:@"name"];
-            NSString *memberJid = [dic objectForKey:@"xmppjid"];
-            NSString *presence = [[QIMKit sharedInstance] userOnlineStatus:memberJid];
-
-            /*
-            NSDictionary *infoDic = [[QIMKit sharedInstance] getUserInfoByName:name];
-            NSString *xmppId = [infoDic objectForKey:@"XmppId"];
-            NSString *presence = [[QIMKit sharedInstance] userOnlineStatus:xmppId]; */
-            if ([presence isEqualToString:@"online"]) {
-                [onlineList addObject:dic];
-            } else if ([presence isEqualToString:@"away"]){
-                [onlineList addObject:dic];
-            } else {
-                [offlineList addObject:dic];
-            }
-            if ([memberJid isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-                affiliation = [dic objectForKey:@"affiliation"];
-            }
-        }
-        
-        if (!_memberList) {
-            _memberList = [NSMutableArray array];
-        }else{
-            [_memberList removeAllObjects];
-        }
-        [_memberList addObjectsFromArray:onlineList];
-        [_memberList addObjectsFromArray:offlineList];
+        _memberList = [NSMutableArray arrayWithCapacity:3];
+        [_memberList addObjectsFromArray:_oldMembers];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (_memberList.count > 0) {
-                int row = ((int)_memberList.count - 1)/4 + 1;
-                CGFloat cap = 30;
-                CGFloat width = (self.view.width - cap * 5) / 4.0;
-                UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, row * (width + cap  + 10) + 40)];
-                [headerView setBackgroundColor:[UIColor whiteColor]];
-                NSInteger onlineMemNum = 0;
-                for (int i = 0; i < _memberList.count; i++) {
-                    //获取用户信息
-                    NSDictionary *memDic = [_memberList objectAtIndex:i];
-                    if ([memDic objectForKey:@"type"] && [[memDic objectForKey:@"type"] isEqualToString:@"add"]) {
-                        
-                    } else {
-                        NSString *memberXmppJid = [memDic objectForKey:@"xmppjid"];
-                        UIImage *headerImage = [[QIMImageManager sharedInstance] getUserHeaderImageByUserId:memberXmppJid];
-                        //判断用户在线状态
-                        BOOL isUserOnline = [[QIMKit sharedInstance] isUserOnline:memberXmppJid];
-                        if (isUserOnline == NO) {
-                            headerImage = [headerImage qim_grayImage];
-                        }else{
-                            onlineMemNum ++;
-                        }
-                    }
-                }
-                [_tableView reloadData];
-            }
+            [_tableView reloadData];
         });
     });
 }
@@ -254,7 +199,6 @@
     [_tableView setShowsVerticalScrollIndicator:NO];
     [self.view addSubview:_tableView];
     
-//    [self initWithHeaderView];
     [self setUpTableViewHeader];
     
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 120)];
@@ -406,13 +350,6 @@
     if ([_groupId isEqualToString:notify.object]) { 
         [[QIMKit sharedInstance] openGroupSessionByGroupId:self.groupId ByName:self.groupName];
         [QIMFastEntrance openGroupChatVCByGroupId:self.groupId];
-        /*
-        QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
-        [chatGroupVC setTitle:self.groupName];
-        [chatGroupVC setChatId:self.groupId];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-        [self.navigationController popToRootVCThenPush:chatGroupVC animated:YES];
-         */
     }
 }
 

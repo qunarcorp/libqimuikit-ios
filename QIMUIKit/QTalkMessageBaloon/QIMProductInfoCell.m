@@ -99,7 +99,7 @@
 - (void)refreshUI{
 
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:QIMProductInfoWidth WihtHeight:QIMProductInfoHeight];
+    [self setBackViewWithWidth:QIMProductInfoWidth WithHeight:QIMProductInfoHeight];
     [_headerImageView qim_setImageWithURL:[NSURL URLWithString:self.headerUrl] placeholderImage:[UIImage imageNamed:@"v_aroundTravel_default"]];
     [_titleLabel setText:self.title];
     [_subTitleLabel setText:self.subTitle];

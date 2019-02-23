@@ -18,7 +18,7 @@
     UILabel         * _descLabel;
 }
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
     NSString * infoStr = message.extendInformation.length <= 0 ? message.message : message.extendInformation;
     NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
     bool showas667 = [[infoDic objectForKey:@"showas667"] boolValue];
@@ -74,10 +74,10 @@
     self.selectedBackgroundView.frame = self.contentView.frame;
     NSString * infoStr = self.message.extendInformation.length <= 0 ? self.message.message : self.message.extendInformation;
     NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
-    CGFloat cellHeight = [QIMCommonTrdInfoCell getCellHeightWihtMessage:self.message chatType:self.chatType];
+    CGFloat cellHeight = [QIMCommonTrdInfoCell getCellHeightWithMessage:self.message chatType:self.chatType];
     CGFloat cellWidth = kCommonTrdInfoCellWidth;
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:cellWidth WihtHeight:cellHeight - 10];
+    [self setBackViewWithWidth:cellWidth WithHeight:cellHeight - 10];
     float imgWidth = 40;
     
     CGFloat titleLeft = (self.message.messageDirection == MessageDirection_Sent) ? 15 : 25;

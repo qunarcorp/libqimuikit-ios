@@ -55,12 +55,7 @@
         [item setIsParentNode:NO];
         [item setName:[NSBundle qim_localizedStringForKey:@"contact_tab_friend"]];
         [item setContentValue:infoDic];
-        if ([[QIMKit sharedInstance] isUserOnline:jid]) {
-            [_friendList insertObject:item atIndex:onlineCount];
-            onlineCount++;
-        }else{
-            [_friendList addObject:item];
-        }
+        [_friendList addObject:item];
     }
     [[_friendList lastObject] setIsLast:YES];
  
@@ -68,7 +63,7 @@
     [friendNode setIsParentNode:YES];
     [friendNode setIsFriend:YES];
     [friendNode setName:[NSBundle qim_localizedStringForKey:@"contact_tab_friend"]];
-    [friendNode setDescInfo:[NSString stringWithFormat:@"%d/%ld",onlineCount,(unsigned long)_friendList.count]];
+    [friendNode setDescInfo:[NSString stringWithFormat:@"%ld",(unsigned long)_friendList.count]];
     [friendNode setContentValue:_friendList];
     [_dataSource addObject:friendNode];
     if (_friendIsExpanded) {

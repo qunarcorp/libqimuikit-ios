@@ -28,7 +28,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _dataSource = [NSMutableArray array];
-    NSArray *msgList = [[QIMKit sharedInstance] getPublicNumberMsgListById:self.userId WihtLimit:50 WithOffset:0];
+    NSArray *msgList = [[QIMKit sharedInstance] getPublicNumberMsgListById:self.userId WithLimit:50 WithOffset:0];
     [_dataSource addObjectsFromArray:msgList]; 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageList:) name:kNotificationMessageUpdate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageState:) name:@"kNotificationUpdateQDMessageState" object:nil];

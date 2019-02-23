@@ -36,7 +36,7 @@
 
 @implementation QIMRobotAnswerCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType {
     
     NSDictionary *exTrdDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
     NSString *content = [exTrdDic objectForKey:@"content"];
@@ -136,11 +136,11 @@
         [self.msgContentLabel setFrameWithOrign:CGPointMake(0, 0) Width:[QIMMessageParser getCellWidth]];
     }
     float cellWidth = [QIMMessageParser getCellWidth];
-    float height = [QIMRobotAnswerCell getCellHeightWihtMessage:self.message chatType:self.message.chatType - 20];
+    float height = [QIMRobotAnswerCell getCellHeightWithMessage:self.message chatType:self.message.chatType - 20];
     
     [self.backView setMessage:self.message];
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
-    [self setBackViewWithWidth:[QIMMessageParser getCellWidth] + 40 WihtHeight:height - 30];
+    [self setBackViewWithWidth:[QIMMessageParser getCellWidth] + 40 WithHeight:height - 30];
     MessageState state = [[QIMKit sharedInstance] getMessageStateWithMsgId:self.message.messageId];
     if (state != MessageState_didControl) {
         self.panelBgView.frame = CGRectMake(10, self.msgContentLabel.bottom, [QIMMessageParser getCellWidth] + 40 - 20, self.backView.bottom - self.msgContentLabel.bottom - 35);

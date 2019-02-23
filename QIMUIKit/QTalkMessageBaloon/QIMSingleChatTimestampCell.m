@@ -29,7 +29,7 @@
     return _timestampButton;
 }
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
     return 25;
 }
 

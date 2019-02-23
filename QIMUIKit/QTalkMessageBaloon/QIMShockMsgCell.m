@@ -20,7 +20,7 @@
 @implementation QIMShockMsgCell
 
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType {
     return kQIMShockMsgCellHeight + 20 + (chatType == ChatType_GroupChat ? 20 : 0);
 }
 
@@ -48,7 +48,7 @@
     float backWidth = 120;
     float backHeight = 40;
     self.backView.message = self.message;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     switch (self.message.messageDirection) {
         case MessageDirection_Received:
         {   

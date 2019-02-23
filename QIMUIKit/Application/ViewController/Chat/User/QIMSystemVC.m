@@ -196,7 +196,7 @@
 //            [weakSelf scrollToBottom_tableView];
         }];
     } else {
-        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WihtLimit:kPageCount WithOffset:0 WihtComplete:^(NSArray *list) {
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
             [self.messageManager.dataSource addObjectsFromArray:list];
             [weakSelf.tableView reloadData];
 //            [weakSelf scrollToBottom_tableView];
@@ -570,7 +570,7 @@ static CGPoint tableOffsetPoint;
                 [_tableView.mj_header endRefreshing];
             }];
         } else {
-            [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WihtLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WihtComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
                     NSRange range = NSMakeRange(0, [list count]);

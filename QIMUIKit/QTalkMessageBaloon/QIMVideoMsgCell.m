@@ -27,7 +27,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     
 }
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType {
     if (message.extendInformation.length > 0) {
         message.message = message.extendInformation;
     }
@@ -174,7 +174,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         size.width = 150;
     }*/
     
-    CGSize size = CGSizeMake(150, [QIMVideoMsgCell getCellHeightWihtMessage:self.message chatType:1] - 40);
+    CGSize size = CGSizeMake(150, [QIMVideoMsgCell getCellHeightWithMessage:self.message chatType:1] - 40);
     
     [_sizeLabel setText:[infoDic objectForKey:@"FileSize"]];
     [_durationLabel setText:[NSString stringWithFormat:@"%@s",[infoDic objectForKey:@"Duration"]]];
@@ -197,7 +197,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     
     float backWidth = size.width + 6 + kBackViewCap + 8;
     float backHeight = size.height + 6 + 5;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     CGPoint center = _imageView.center;
     if (self.message.messageDirection==MessageDirection_Received) {
         center.x -= kBackViewCap+2;

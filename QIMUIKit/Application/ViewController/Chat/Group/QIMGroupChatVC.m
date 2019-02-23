@@ -57,9 +57,6 @@
 #import "QIMPreviewMsgVC.h"
 
 #import "QIMEmotionSpirits.h"
-
-#import "QIMFriendsSpaceViewController.h"
-
 #import "QIMUserListVC.h"
 #import "QIMWebView.h"
 
@@ -178,8 +175,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 @property(nonatomic, strong) QIMNavTitleView *titleView;
 
 @property(nonatomic, strong) UILabel *descLabel;
-
-@property(nonatomic, strong) UIButton *friendsterButton;
 
 @property(nonatomic, strong) UIButton *addGroupMember;
 
@@ -396,19 +391,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         _titleView.backgroundColor = [UIColor clearColor];
     }
     return _titleView;
-}
-
-- (UIButton *)friendsterButton {
-    
-    if (!_friendsterButton) {
-        
-        _friendsterButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 6, 35, 35)];
-        [_friendsterButton setImage:[UIImage imageNamed:@"contacts_add_moment"] forState:UIControlStateNormal];
-        [_friendsterButton addTarget:self
-                              action:@selector(gotoFriendter:)
-                    forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _friendsterButton;
 }
 
 - (UIButton *)addGroupMember {
@@ -775,11 +757,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                  name:kExpandViewItemHandleNotification
                                                object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(popFromFriendsSpaceVC)
-                                                 name:FriendsSpacePopVc
-                                               object:nil];
-    
     //键盘弹出，消息自动滑动最底
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyBoardWillShow:)
@@ -940,12 +917,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     [self scrollToBottom_tableView];
 }
 
-- (void)popFromFriendsSpaceVC {
-    
-    [self initUI];
-    self.textBar.hidden = NO;
-}
-
 - (void)onChatRoomDestroy:(NSNotification *)notify {
     id obj = [notify object];
     if([obj isKindOfClass:[NSString class]]){
@@ -1095,7 +1066,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     __weak id weakSelf = self;
     [[QIMKit sharedInstance] getMsgListByUserId:self.chatId
                                         FromTimeStamp:_readedMsgTimeStamp
-                                         WihtComplete:^(NSArray *list) {
+                                         WithComplete:^(NSArray *list) {
                                              [self updateGroupUsersHeadImgForMsgs:list];
                                              dispatch_async(dispatch_get_main_queue(), ^{
                                                  self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
@@ -1130,7 +1101,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
             if (self.fastMsgTimeStamp > 0) {
-                [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil FromTimeStamp:self.fastMsgTimeStamp WihtComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil FromTimeStamp:self.fastMsgTimeStamp WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
                         //标记已读
@@ -1146,9 +1117,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             } else {
                 [[QIMKit sharedInstance] getMsgListByUserId:self.chatId
                                                 WithRealJid:nil
-                                                  WihtLimit:kPageCount
+                                                  WithLimit:kPageCount
                                                  WithOffset:0
-                                               WihtComplete:^(NSArray *list) {
+                                               WithComplete:^(NSArray *list) {
                                                    //                                                     [self updateGroupUsersHeadImgForMsgs:list];
                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                        self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
@@ -1997,13 +1968,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [[QIMKit sharedInstance] revokeGroupMessageWithMessageId:[(Message *) eventMsg messageId]
                                                                message:msgInfo
                                                                  ToJid:self.chatId];
-    } else if (event == MA_ReplyMsg) {
-        
-        QIMFriendsSpaceViewController *vc = [[QIMFriendsSpaceViewController alloc] init];
-        Message *msg = eventMsg;
-        vc.msgId = msg.replyMsgId ? msg.replyMsgId : msg.messageId;
-        vc.groupId = self.chatId;
-        [self.navigationController pushViewController:vc animated:YES];
     } else if (event == MA_Favorite) {
         
         for (Message *msg in self.messageManager.dataSource) {
@@ -2274,7 +2238,7 @@ static CGPoint tableOffsetPoint;
 - (void)updateHistoryMessageList:(NSNotification *)notify {
     
     if ([self.chatId isEqualToString:notify.object]) {
-        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WihtLimit:kPageCount WithOffset:0 WihtComplete:^(NSArray *list) {
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
             [self updateGroupUsersHeadImgForMsgs:list];
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
@@ -2685,7 +2649,7 @@ static CGPoint tableOffsetPoint;
     NSString *httpUrl = [QIMKit updateLoadFile:thumbData
                                         WithMsgId:msgId
                                       WithMsgType:QIMMessageType_Image
-                                WihtPathExtension:@"jpg"];
+                                WithPathExtension:@"jpg"];
     
     NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
     [dicInfo setQIMSafeObject:httpUrl forKey:@"ThumbUrl"];
@@ -2720,7 +2684,7 @@ static CGPoint tableOffsetPoint;
         msg.messageType = QIMMessageType_BurnAfterRead;
     }
     
-    [[QIMKit sharedInstance] insertMessageWihtMsgId:msg.messageId
+    [[QIMKit sharedInstance] insertMessageWithMsgId:msg.messageId
                                          WithXmppId:self.chatId
                                            WithFrom:msg.from
                                              WithTo:msg.to
@@ -2730,7 +2694,7 @@ static CGPoint tableOffsetPoint;
                                         WithMsgType:msg.messageType
                                        WithMsgState:msg.messageState
                                    WithMsgDirection:msg.messageDirection
-                                        WihtMsgDate:msg.messageDate
+                                        WithMsgDate:msg.messageDate
                                       WithReadedTag:0
                                        WithChatType:msg.chatType];
     if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
@@ -2875,9 +2839,9 @@ static CGPoint tableOffsetPoint;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[QIMKit sharedInstance] getMsgListByUserId:weakSelf.chatId
                                         WithRealJid:nil
-                                          WihtLimit:kPageCount
+                                          WithLimit:kPageCount
                                          WithOffset:(int) weakSelf.messageManager.dataSource.count
-                                       WihtComplete:^(NSArray *list) {
+                                       WithComplete:^(NSArray *list) {
                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                CGFloat offsetY = weakSelf.tableView.contentSize.height - weakSelf.tableView.contentOffset.y;
                                                NSRange range = NSMakeRange(0, [list count]);
@@ -2910,13 +2874,6 @@ static CGPoint tableOffsetPoint;
     self.reloadSearchRemindView = YES;
     [self.searchRemindView removeFromSuperview];
     [[QIMFastEntrance sharedInstance] openLocalSearchWithXmppId:self.chatId withRealJid:nil withChatType:self.chatType];
-}
-
-- (void)gotoFriendter:(id)sender {
-    
-    QIMFriendsSpaceViewController *vc = [[QIMFriendsSpaceViewController alloc] init];
-    vc.groupId = self.chatId;
-    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)addPersonToPgrup:(id)sender {

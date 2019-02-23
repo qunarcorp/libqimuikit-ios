@@ -223,7 +223,7 @@
                 
                 if (chatGroupVC.needShowNewMsgTagCell) {
                     
-                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WithMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
                 }
                 return chatGroupVC;
             }
@@ -246,7 +246,7 @@
                 [chatSingleVC setNotReadCount:notReadCount];
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
                 }
                 
                 return chatSingleVC;

@@ -63,33 +63,6 @@
     _descLabel.text = [userInfo valueForKey:@"DescInfo"];
     
     [_headerView qim_setImageWithJid:_jid];
-    /*
-    UIImage * headImage = [[QIMKit sharedInstance] getUserHeaderImageByUserId:_jid];
-    if (headImage) {
-        [_headerView setImage:headImage];
-    }
-     */
-    switch ([[QIMKit sharedInstance] getUserPrecenseStatus:_jid]) {
-        case UserPrecenseStatus_Away:
-        {
-            UIImage *image = [UIImage imageNamed:@"Header+Search_Away_Normal"];
-            [_prefrenceImageView setHidden:NO];
-            [_prefrenceImageView setImage:image];
-        }
-            break;
-        case UserPrecenseStatus_Dnd:
-        {
-            UIImage *image = [UIImage imageNamed:@"Header+Search_Busy_Normal"];
-            [_prefrenceImageView setHidden:NO];
-            [_prefrenceImageView setImage:image];
-            
-        }
-            break;
-        default:
-            [_prefrenceImageView setHidden:YES];
-            break;
-    }
-    
 }
 
 - (void)didSelectedRadioButton:(QRadioButton *)radio groupId:(NSString *)groupId {

@@ -34,7 +34,7 @@
 }
 
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
     return kCellHeight + 20 + (chatType == ChatType_GroupChat ? 20 : 0);
 }
 
@@ -127,7 +127,7 @@
     float backWidth = kCellWidth + kBackViewCap + 2;
     float backHeight = kCellHeight + 1;
     
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     NSString *fileName = [infoDic objectForKey:@"FileName"];
@@ -163,7 +163,7 @@
         fileName = [NSBundle qim_localizedStringForKey:@"common_old_file"];
         fileSize = @"0.00B";
     }
-    UIImage *icon = [QIMFileIconTools getFileIconWihtExtension:fileName.pathExtension];
+    UIImage *icon = [QIMFileIconTools getFileIconWithExtension:fileName.pathExtension];
     [_iconImageView setImage:icon];
     [_fileNameLabel setText:fileName];
     [_fileSizeLabel setText:fileSize];

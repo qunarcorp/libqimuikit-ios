@@ -104,26 +104,6 @@
     NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:_jid];
     [_nameLabel setText:remarkName?remarkName:self.userName];
     
-    /*
-    UIImage * headImage = [[QIMKit sharedInstance] getUserHeaderImageByUserId:_jid];
-    if (headImage.images.count) {
-        if (headImage.images[0] && ![headImage.images[0] isKindOfClass:[NSNull class]]) {
-            headImage = headImage.images[0];
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////////////
-    
-    NSString *presence   = [[QIMKit sharedInstance] userOnlineStatus:_jid];
-    if ([presence isEqualToString:@"online"]) {
-        
-    } else if ([presence isEqualToString:@"away"]){
-        
-    } else {
-        headImage = [headImage qim_grayImage];
-    }
-       
-    [_headerView setImage:headImage];
-    */
     [_headerView qim_setImageWithJid:_jid];
 
     _notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:_jid];
@@ -162,28 +142,6 @@
         [_notReadNumButton setHidden:YES];
     
     }
-    
-    switch ([[QIMKit sharedInstance] getUserPrecenseStatus:_jid]) {
-        case UserPrecenseStatus_Away:
-        {
-             UIImage *image = [UIImage imageNamed:@"Header+Search_Away_Normal"];
-            [_prefrenceImageView setHidden:NO];
-            [_prefrenceImageView setImage:image];
-        }
-            break;
-        case UserPrecenseStatus_Dnd:
-        {
-            UIImage *image = [UIImage imageNamed:@"Header+Search_Busy_Normal"];
-            [_prefrenceImageView setHidden:NO];
-            [_prefrenceImageView setImage:image];
-
-        }
-            break;
-        default:
-            [_prefrenceImageView setHidden:YES];
-            break;
-    }
-    
 }
 
 - (void)drawRect:(CGRect)rect

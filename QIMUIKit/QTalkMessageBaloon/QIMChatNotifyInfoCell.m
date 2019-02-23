@@ -30,7 +30,7 @@ static double _global_message_cell_width = 0;
 @end
 
 @implementation QIMChatNotifyInfoCell
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType {
     
     UILabel *label = [[UILabel alloc] init];
     label.text = message.message;
@@ -136,7 +136,7 @@ static double _global_message_cell_width = 0;
     QIMAttributedLabel   * _textLabel;
 }
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
      QIMTextContainer *textContaner = [[QIMMessageCellCache sharedInstance] getObjectForKey:message.messageId];
     if (textContaner == nil) {
         NSString *content = message.message;

@@ -64,7 +64,7 @@
 @implementation QIMRobotQuestionCell
 @dynamic delegate;
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)msg chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(Message *)msg chatType:(ChatType)chatType {
     return [self consultRbtCellHeightForMsg:msg];
 }
 
@@ -353,7 +353,7 @@
 //        backHeight = _listBGView.bottom;
     }
     _bgView.frame = CGRectMake(0, 0, screenW, originY + 5);
-//    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+//    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     
     //hints
 //    if (_hintContainer) {

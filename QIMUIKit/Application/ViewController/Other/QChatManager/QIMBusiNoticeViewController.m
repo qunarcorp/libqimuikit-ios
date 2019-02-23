@@ -133,7 +133,7 @@
     [msg setObject:@"ping.xue" forKey:@"from"];
     [msg setObject:message forKey:@"body"];
     message = [[QIMJSONSerializer sharedInstance] serializeObject:msg];
-    [[QIMKit sharedInstance] sendMessage:message ToPublicNumberId:@"rbt_busi_manager" WithMsgId:msgId WihtMsgType:6];
+    [[QIMKit sharedInstance] sendMessage:message ToPublicNumberId:@"rbt_busi_manager" WithMsgId:msgId WithMsgType:6];
     
 }
 #pragma mark  - load contact list data

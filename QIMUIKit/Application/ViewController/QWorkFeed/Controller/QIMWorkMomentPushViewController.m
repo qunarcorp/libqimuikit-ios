@@ -374,7 +374,7 @@
             for (id imageData in self.selectPhotos) {
                 if ([imageData isKindOfClass:[NSData class]]) {
                     dispatch_group_enter(group);
-                    NSString *fileUrl = [QIMKit updateLoadFile:imageData WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_Image WihtPathExtension:@"png"];
+                    NSString *fileUrl = [QIMKit updateLoadFile:imageData WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_Image WithPathExtension:@"png"];
                     if (fileUrl.length > 0) {
                         NSDictionary *imageDic = @{@"addTime":@(0), @"data":fileUrl};
                         [imageList addObject:imageDic];

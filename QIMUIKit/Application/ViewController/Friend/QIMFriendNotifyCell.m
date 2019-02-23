@@ -61,8 +61,8 @@
 }
 
 - (void)onAgreeClick{
-    if ([self.delegate respondsToSelector:@selector(agreeAddFriendWihtUserInfoDic:)]) {
-        [self.delegate agreeAddFriendWihtUserInfoDic:self.userDic];
+    if ([self.delegate respondsToSelector:@selector(agreeAddFriendWithUserInfoDic:)]) {
+        [self.delegate agreeAddFriendWithUserInfoDic:self.userDic];
     }
 }
 

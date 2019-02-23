@@ -33,7 +33,7 @@
 
 @implementation QIMAACollectionCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
     return kAACollectionCellWidthHeight;
 }
 
@@ -116,7 +116,7 @@
     }
     
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:kAACollectionCellWidth WihtHeight:kAACollectionCellWidthHeight - 20];
+    [self setBackViewWithWidth:kAACollectionCellWidth WithHeight:kAACollectionCellWidthHeight - 20];
     CGFloat leftOffset = (self.message.messageDirection == MessageDirection_Sent) ? 15 : 20;
     _titleLabel.frame = CGRectMake(leftOffset, 5, self.backView.width - 25, 25);
     _descInfoView.frame = CGRectMake(_titleLabel.left, _titleLabel.bottom + 5, kAACollectionCellWidth, 60);

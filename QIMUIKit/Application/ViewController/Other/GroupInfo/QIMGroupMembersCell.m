@@ -114,13 +114,6 @@
             }
         }
         */
-        //判断用户在线状态
-        /*
-        BOOL isUserOnline = [[QIMKit sharedInstance] isUserOnline:xmppId];
-        if (!isUserOnline) {
-            headerImage = [headerImage qim_grayImage];
-        }
-         */
         UIImageView *imageView = [[UIImageView alloc] init];
         imageView.frame = CGRectMake(startX, _titleLabel.bottom + 10, kImageWidth, kImageWidth);
         imageView.layer.cornerRadius = kImageWidth / 2.0;

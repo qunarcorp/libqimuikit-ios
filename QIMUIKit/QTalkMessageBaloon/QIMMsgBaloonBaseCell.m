@@ -233,8 +233,8 @@ static UIImage *__rightBallocImage = nil;
     [self.HeadView addGestureRecognizer:longGes];
 }
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message  chatType:(ChatType)chatType{
-    @throw  [NSException exceptionWithName:@"QIMMsgBaloonBaseCell Exception" reason:[NSString stringWithFormat:@"Class %@ \"getCellHeightWihtMessage\" method has not realized ",[self class]] userInfo:nil];
++ (CGFloat)getCellHeightWithMessage:(Message *)message  chatType:(ChatType)chatType{
+    @throw  [NSException exceptionWithName:@"QIMMsgBaloonBaseCell Exception" reason:[NSString stringWithFormat:@"Class %@ \"getCellHeightWithMessage\" method has not realized ",[self class]] userInfo:nil];
 }
 
 - (void)refreshUI {
@@ -434,7 +434,7 @@ static UIImage *__rightBallocImage = nil;
     }
 }
 
-- (void)setBackViewWithWidth:(CGFloat)backWidth WihtHeight:(CGFloat)backHeight{
+- (void)setBackViewWithWidth:(CGFloat)backWidth WithHeight:(CGFloat)backHeight{
     switch (self.message.messageDirection) {
         case MessageDirection_Received: {
             CGRect frame = {{kBackViewCap + AVATAR_WIDTH,kCellHeightCap / 2.0 + _nameLabel.bottom},{backWidth,backHeight}};

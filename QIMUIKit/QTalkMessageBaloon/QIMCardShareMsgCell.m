@@ -30,7 +30,7 @@
 
 @implementation QIMCardShareMsgCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
 {
     return kCardCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == MessageDirection_Received) ? 40 : 20);
 }
@@ -102,7 +102,7 @@
     float backWidth = kCardCellWidth;
     float backHeight = kCardCellHeight;
     
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     switch (self.message.messageDirection) {
         case MessageDirection_Received:
         {

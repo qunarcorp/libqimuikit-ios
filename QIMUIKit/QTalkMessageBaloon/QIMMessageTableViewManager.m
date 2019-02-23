@@ -168,15 +168,15 @@
             case QIMMessageType_CommonTrdInfoPer:
             case QIMMessageType_CommonTrdInfo: {
                 
-                CGFloat height = [QIMCommonTrdInfoCell getCellHeightWihtMessage:message chatType:self.chatType] + 20;
+                CGFloat height = [QIMCommonTrdInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
                 return height;
             }
                 break;
             case QIMMessageType_Forecast: {
-                return [QIMForecastCell getCellHeightWihtMessage:message chatType:self.chatType] + 20;
+                return [QIMForecastCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
             }
             case QIMMessageType_GroupNotify: {
-                return [QIMChatNotifyInfoCell getCellHeightWihtMessage:message chatType:self.chatType] + 20;
+                return [QIMChatNotifyInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
             }
                 break;
             case QIMMessageType_Text:
@@ -206,13 +206,13 @@
                 if (self.chatType == ChatType_Consult) {
                     return 0;
                 } else {
-                    return [TransferInfoCell getCellHeightWihtMessage:message chatType:self.chatType];
+                    return [TransferInfoCell getCellHeightWithMessage:message chatType:self.chatType];
                 }
             }
                 break;
             case QIMMessageType_TransChatToCustomer_Feedback:
             case QIMMessageType_TransChatToCustomerService_Feedback:{
-                return [TransferInfoCell getCellHeightWihtMessage:message chatType:self.chatType];
+                return [TransferInfoCell getCellHeightWithMessage:message chatType:self.chatType];
             }
                 break;
             case PublicNumberMsgType_Notice: {
@@ -234,14 +234,14 @@
             }
                 break;
             case QIMMessageTypeMeetingRemind: {
-                return [QIMMeetingRemindCell getCellHeightWihtMessage:temp chatType:self.chatType] + 35;
+                return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 35;
             }
                 break;
             default: {
                 
                 Class someClass = [[QIMKit sharedInstance] getRegisterMsgCellClassForMessageType:message.messageType];
                 if (someClass) {
-                    CGFloat height = [someClass getCellHeightWihtMessage:temp chatType:self.chatType] + 5;
+                    CGFloat height = [someClass getCellHeightWithMessage:temp chatType:self.chatType] + 5;
                     return height;
                 } else {
                     QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
@@ -461,7 +461,7 @@
             [cell setSelected:NO animated:NO];
         }
     }
-    
+    /*
     if (row < self.dataSource.count) {
         
         Message *message = [self.dataSource objectAtIndex:indexPath.row];
@@ -475,6 +475,7 @@
             }
         }
     }
+    */
 }
 
 #pragma mark - UITableViewDataSource

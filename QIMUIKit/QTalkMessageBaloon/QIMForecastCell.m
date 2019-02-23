@@ -17,7 +17,7 @@
     UILabel         * _descLabel;
 }
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
     NSString * infoStr = message.extendInformation.length <= 0 ? message.message : message.extendInformation;
     NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
     bool showas667 = [[infoDic objectForKey:@"showas667"] boolValue];
@@ -76,12 +76,12 @@
     NSMutableArray * menuList = [NSMutableArray arrayWithArray:@[@(MA_Repeater) /*, @(MA_Favorite)*/, @(MA_ToWithdraw), @(MA_ReplyMsg)]];
     [self.backView setMenuActionTypeList:menuList];
     
-    CGFloat cellHeight = [QIMForecastCell getCellHeightWihtMessage:self.message chatType:self.chatType];
+    CGFloat cellHeight = [QIMForecastCell getCellHeightWithMessage:self.message chatType:self.chatType];
     CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width * 0.65;
 //    if (self.chatType == ChatType_GroupChat && self.message.messageDirection == MessageDirection_Received) {
-//        [self setBackViewWithWidth:cellWidth WihtHeight:cellHeight - 35];
+//        [self setBackViewWithWidth:cellWidth WithHeight:cellHeight - 35];
 //    } else {
-//        [self setBackViewWithWidth:cellWidth WihtHeight:cellHeight - 10];
+//        [self setBackViewWithWidth:cellWidth WithHeight:cellHeight - 10];
 //    }
     float imgWidth = 60;
     if (self.message.messageDirection == MessageDirection_Received) {
@@ -90,7 +90,7 @@
         _imageView.frame = CGRectMake(10, 10, imgWidth, imgWidth);
     }
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:cellWidth WihtHeight:cellHeight];
+    [self setBackViewWithWidth:cellWidth WithHeight:cellHeight];
     switch (self.message.messageDirection) {
         case MessageDirection_Received:
         {

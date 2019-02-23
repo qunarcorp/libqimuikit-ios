@@ -207,7 +207,7 @@
 //    [_voiceCell setMessage:self.message];
 //    _voiceCell.isGroupVoice = NO;
 //    [_voiceCell refreshUI];
-//    _voiceCell.frame = CGRectMake(0, (self.view.height - [QIMSingleChatVoiceCell getCellHeightWihtMessage:self.message chatType:self.message.messageSaveType]) / 2, self.view.width, 100);
+//    _voiceCell.frame = CGRectMake(0, (self.view.height - [QIMSingleChatVoiceCell getCellHeightWithMessage:self.message chatType:self.message.messageSaveType]) / 2, self.view.width, 100);
 //    [self.view addSubview:_voiceCell];
     
     _voiceFireBGView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 120, 120)];

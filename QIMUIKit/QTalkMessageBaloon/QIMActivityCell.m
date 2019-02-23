@@ -32,7 +32,7 @@
 
 @implementation QIMActivityCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
     return  kActiviifyCellHeight;
 }
 
@@ -142,7 +142,7 @@
     }
     
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:kActivityCellWidth WihtHeight:kActiviifyCellHeight - 20];
+    [self setBackViewWithWidth:kActivityCellWidth WithHeight:kActiviifyCellHeight - 20];
     CGFloat leftOffset = (self.message.messageDirection == MessageDirection_Sent) ? 15 : 20;
     _titleLabel.frame = CGRectMake(leftOffset, 5, self.backView.width - 25, 25);
     _descInfoView.frame = CGRectMake(_titleLabel.left, _titleLabel.bottom, kActivityCellWidth, 60);

@@ -499,13 +499,11 @@
 		2C8AFD6420B1D51C00CF98EB /* QIMGroupMemberManagerCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA5F20B1D51A00CF98EB /* QIMGroupMemberManagerCell.h */; };
 		2C8AFD6520B1D51C00CF98EB /* QIMGroupTopicCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA6020B1D51A00CF98EB /* QIMGroupTopicCell.h */; };
 		2C8AFD6620B1D51C00CF98EB /* QIMEmotionSpirits.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA6120B1D51A00CF98EB /* QIMEmotionSpirits.h */; };
-		2C8AFD6720B1D51C00CF98EB /* QIMFriendsSpaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA6220B1D51A00CF98EB /* QIMFriendsSpaceViewController.m */; };
 		2C8AFD6820B1D51C00CF98EB /* QIMGroupChatVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA6320B1D51A00CF98EB /* QIMGroupChatVC.m */; };
 		2C8AFD6920B1D51C00CF98EB /* QIMGroupMemberManagerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA6420B1D51A00CF98EB /* QIMGroupMemberManagerCell.m */; };
 		2C8AFD6A20B1D51C00CF98EB /* QIMGroupMemberManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA6520B1D51A00CF98EB /* QIMGroupMemberManagerController.h */; };
 		2C8AFD6B20B1D51C00CF98EB /* QIMEmotionSpirits.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA6620B1D51A00CF98EB /* QIMEmotionSpirits.m */; };
 		2C8AFD6C20B1D51C00CF98EB /* QIMGroupTopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA6720B1D51A00CF98EB /* QIMGroupTopicCell.m */; };
-		2C8AFD6D20B1D51C00CF98EB /* QIMFriendsSpaceViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA6820B1D51A00CF98EB /* QIMFriendsSpaceViewController.h */; };
 		2C8AFD6E20B1D51C00CF98EB /* QIMMicroTourGuideVC.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA6920B1D51A00CF98EB /* QIMMicroTourGuideVC.h */; };
 		2C8AFD6F20B1D51C00CF98EB /* QIMOpenPlatformCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA6A20B1D51A00CF98EB /* QIMOpenPlatformCell.m */; };
 		2C8AFD7020B1D51C00CF98EB /* QIMMicroTourGuideCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA6B20B1D51A00CF98EB /* QIMMicroTourGuideCell.h */; };
@@ -1485,13 +1483,11 @@
 		2C8AFA5F20B1D51A00CF98EB /* QIMGroupMemberManagerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMGroupMemberManagerCell.h; sourceTree = "<group>"; };
 		2C8AFA6020B1D51A00CF98EB /* QIMGroupTopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMGroupTopicCell.h; sourceTree = "<group>"; };
 		2C8AFA6120B1D51A00CF98EB /* QIMEmotionSpirits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMEmotionSpirits.h; sourceTree = "<group>"; };
-		2C8AFA6220B1D51A00CF98EB /* QIMFriendsSpaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMFriendsSpaceViewController.m; sourceTree = "<group>"; };
 		2C8AFA6320B1D51A00CF98EB /* QIMGroupChatVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMGroupChatVC.m; sourceTree = "<group>"; };
 		2C8AFA6420B1D51A00CF98EB /* QIMGroupMemberManagerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMGroupMemberManagerCell.m; sourceTree = "<group>"; };
 		2C8AFA6520B1D51A00CF98EB /* QIMGroupMemberManagerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMGroupMemberManagerController.h; sourceTree = "<group>"; };
 		2C8AFA6620B1D51A00CF98EB /* QIMEmotionSpirits.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMEmotionSpirits.m; sourceTree = "<group>"; };
 		2C8AFA6720B1D51A00CF98EB /* QIMGroupTopicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMGroupTopicCell.m; sourceTree = "<group>"; };
-		2C8AFA6820B1D51A00CF98EB /* QIMFriendsSpaceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMFriendsSpaceViewController.h; sourceTree = "<group>"; };
 		2C8AFA6920B1D51A00CF98EB /* QIMMicroTourGuideVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMMicroTourGuideVC.h; sourceTree = "<group>"; };
 		2C8AFA6A20B1D51A00CF98EB /* QIMOpenPlatformCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMOpenPlatformCell.m; sourceTree = "<group>"; };
 		2C8AFA6B20B1D51A00CF98EB /* QIMMicroTourGuideCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMMicroTourGuideCell.h; sourceTree = "<group>"; };
@@ -3140,8 +3136,6 @@
 			children = (
 				2C8AFA6120B1D51A00CF98EB /* QIMEmotionSpirits.h */,
 				2C8AFA6620B1D51A00CF98EB /* QIMEmotionSpirits.m */,
-				2C8AFA6820B1D51A00CF98EB /* QIMFriendsSpaceViewController.h */,
-				2C8AFA6220B1D51A00CF98EB /* QIMFriendsSpaceViewController.m */,
 				2C8AFA5D20B1D51A00CF98EB /* QIMGroupChatVC.h */,
 				2C8AFA6320B1D51A00CF98EB /* QIMGroupChatVC.m */,
 				2C8AFA5F20B1D51A00CF98EB /* QIMGroupMemberManagerCell.h */,
@@ -4174,7 +4168,6 @@
 				2CC93B9B21EC33C800EEC47D /* QIMArrowView.h in Headers */,
 				2C8AFDA320B1D51C00CF98EB /* QIMNotifyView.h in Headers */,
 				2C8AFE7620B1D51C00CF98EB /* QIMPublicNumberCardCommonCell.h in Headers */,
-				2C8AFD6D20B1D51C00CF98EB /* QIMFriendsSpaceViewController.h in Headers */,
 				2C8AFC0E20B1D51B00CF98EB /* ShareLocationViewController.h in Headers */,
 				2CC93B6721EC33C800EEC47D /* PasswordHistoryViewController.h in Headers */,
 				2C8AFF4320B1D8AB00CF98EB /* QIMAACollectionDescCell.h in Headers */,
@@ -5010,7 +5003,6 @@
 				2C8AFDEB20B1D51C00CF98EB /* QIMGroupChangeTopicVC.m in Sources */,
 				2C7F92F121C7E45A0087BD04 /* QIMRedMindView.m in Sources */,
 				2C8AFD2920B1D51C00CF98EB /* QIMExportMsgManager.m in Sources */,
-				2C8AFD6720B1D51C00CF98EB /* QIMFriendsSpaceViewController.m in Sources */,
 				2C8AFF4220B1D8AB00CF98EB /* QIMCardShareMsgCell.m in Sources */,
 				2CC93B5A21EC33C800EEC47D /* PwdBoxSecuritySettingVc.m in Sources */,
 				2C8AFF4820B1D8AB00CF98EB /* QIMActivityCell.m in Sources */,

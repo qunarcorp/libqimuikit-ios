@@ -89,7 +89,7 @@
     [_dataSource addObject:item];
     
     [self updateMySetting];
-    [self initWihtNav];
+    [self initWithNav];
     [self initWithTableView];
 }
 
@@ -112,7 +112,7 @@
 }
 
 #pragma mark - init UI
-- (void)initWihtNav{
+- (void)initWithNav{
     [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"privacy_settings"]];
 }
 
