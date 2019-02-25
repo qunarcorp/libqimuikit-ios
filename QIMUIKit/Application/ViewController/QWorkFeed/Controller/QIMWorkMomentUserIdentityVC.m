@@ -10,7 +10,7 @@
 #import "QIMWorkMomentUserIdentityModel.h"
 #import "QIMWorkMomentUserIdentityCell.h"
 
-@interface QIMWorkMomentUserIdentityVC () <UITableViewDelegate, UITableViewDataSource>
+@interface QIMWorkMomentUserIdentityVC () <UITableViewDelegate, UITableViewDataSource, QIMWorkMomentUserIdentityReplaceDelegate>
 
 @property (nonatomic, strong) UITableView *userIdentityListView;
 
@@ -66,23 +66,42 @@
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
     [self.view addSubview:self.userIdentityListView];
     __weak __typeof(self) weakSelf = self;
-    [[QIMKit sharedInstance] getAnonyMouseDicWithMomentId:self.momentId WithCallBack:^(NSDictionary *anonymousDic) {
-        NSLog(@"anonymousDic : %@", anonymousDic);
-        if (anonymousDic.count > 0) {
-            NSString *anonymousName = [anonymousDic objectForKey:@"anonymous"];
-            NSString *anonymousPhoto = [anonymousDic objectForKey:@"anonymousPhoto"];
-            NSInteger anonymousId = [[anonymousDic objectForKey:@"id"] integerValue];
-            QIMWorkMomentUserIdentityModel *model = [[QIMWorkMomentUserIdentityModel alloc] init];
-            model.isAnonymous = YES;
-            model.anonymousId = anonymousId;
-            model.anonymousName = anonymousName;
-            model.anonymousPhoto = anonymousPhoto;
-            [weakSelf.userIdentityList addObject:model];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.userIdentityListView reloadData];
-            });
-        }
-    }];
+    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == YES) {
+        NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
+        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
+        NSInteger anonymousId = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousId];
+        BOOL anonymousReplaceable = [[QIMWorkMomentUserIdentityManager sharedInstance] replaceable];
+        QIMWorkMomentUserIdentityModel *model = [[QIMWorkMomentUserIdentityModel alloc] init];
+        model.isAnonymous = YES;
+        model.anonymousId = anonymousId;
+        model.anonymousName = anonymousName;
+        model.anonymousPhoto = anonymousPhoto;
+        model.replaceable = anonymousReplaceable;
+        [weakSelf.userIdentityList addObject:model];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.userIdentityListView reloadData];
+        });
+    } else {
+        [[QIMKit sharedInstance] getAnonyMouseDicWithMomentId:self.momentId WithCallBack:^(NSDictionary *anonymousDic) {
+            NSLog(@"anonymousDic : %@", anonymousDic);
+            if (anonymousDic.count > 0) {
+                NSString *anonymousName = [anonymousDic objectForKey:@"anonymous"];
+                NSString *anonymousPhoto = [anonymousDic objectForKey:@"anonymousPhoto"];
+                NSInteger anonymousId = [[anonymousDic objectForKey:@"id"] integerValue];
+                BOOL replaceable = [[anonymousDic objectForKey:@"replaceable"] boolValue];
+                QIMWorkMomentUserIdentityModel *model = [[QIMWorkMomentUserIdentityModel alloc] init];
+                model.isAnonymous = YES;
+                model.anonymousId = anonymousId;
+                model.anonymousName = anonymousName;
+                model.anonymousPhoto = anonymousPhoto;
+                model.replaceable = replaceable;
+                [weakSelf.userIdentityList addObject:model];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.userIdentityListView reloadData];
+                });
+            }
+        }];
+    }
 }
 
 - (void)backBtnClick:(id)sender {
@@ -111,6 +130,7 @@
     QIMWorkMomentUserIdentityCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (!cell) {
         cell = [[QIMWorkMomentUserIdentityCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
+        cell.delegate = self;
     }
     QIMWorkMomentUserIdentityModel *userIdentityModel = [self.userIdentityList objectAtIndex:indexPath.row];
     NSLog(@"[[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] : %ld", [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO);
@@ -131,8 +151,8 @@
         } else {
             [cell setUserIdentitySelected:NO];
         }
+        [cell setUserIdentityReplaceable:userIdentityModel.replaceable];
     }
-    
     return cell;
 }
 
@@ -153,16 +173,42 @@
         [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
         [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
         [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:NO];
     } else {
         [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:YES];
         [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
         [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:userIdentityModel.anonymousName];
         [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:userIdentityModel.anonymousPhoto];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:userIdentityModel.replaceable];
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"kReloadUserIdentifier" object:nil];
     });
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)replaceWorkMomentUserIdentity {
+    __weak __typeof(self) weakSelf = self;
+    [[QIMKit sharedInstance] getAnonyMouseDicWithMomentId:self.momentId WithCallBack:^(NSDictionary *anonymousDic) {
+        NSLog(@"anonymousDic : %@", anonymousDic);
+        [weakSelf.userIdentityList removeLastObject];
+        if (anonymousDic.count > 0) {
+            NSString *anonymousName = [anonymousDic objectForKey:@"anonymous"];
+            NSString *anonymousPhoto = [anonymousDic objectForKey:@"anonymousPhoto"];
+            NSInteger anonymousId = [[anonymousDic objectForKey:@"id"] integerValue];
+            BOOL replaceable = [[anonymousDic objectForKey:@"replaceable"] boolValue];
+            QIMWorkMomentUserIdentityModel *model = [[QIMWorkMomentUserIdentityModel alloc] init];
+            model.isAnonymous = YES;
+            model.anonymousId = anonymousId;
+            model.anonymousName = anonymousName;
+            model.anonymousPhoto = anonymousPhoto;
+            model.replaceable = replaceable;
+            [weakSelf.userIdentityList addObject:model];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.userIdentityListView reloadData];
+            });
+        }
+    }];
 }
 
 @end

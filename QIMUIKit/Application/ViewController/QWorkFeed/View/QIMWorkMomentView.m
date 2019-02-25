@@ -10,6 +10,8 @@
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkMomentLabel.h"
 #import "QIMMarginLabel.h"
+#import "QIMWorkMomentParser.h"
+#import "QIMEmotionManager.h"
 
 CGFloat maxFullContentHeight = 0;
 
@@ -150,11 +152,16 @@ CGFloat maxFullContentHeight = 0;
     _organLab.centerY = self.headImageView.centerY;
     _rIdLabe.centerY = self.headImageView.centerY;
     CGFloat bottom = self.headImageView.bottom;
-    _contentLabel.text = self.moment.content.content;
-    [_contentLabel sizeToFit];
-    CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
-    self.contentLabel.height = textH;
+    
+    NSString *texg = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.moment.content.content];
+    Message *msg = [[Message alloc] init];
+    msg.message = texg;
+    msg.messageId = self.moment.momentId;
+    QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
+    CGFloat textH = textContainer.textHeight;
+    self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 20, textContainer.textHeight);
+    _contentLabel.textContainer = textContainer;
+
     bottom = _contentLabel.bottom + 8;
 
     if (self.moment.content.imgList.count > 0) {

@@ -147,6 +147,8 @@
 		2C14835F213D626F009D4AE3 /* UINavigationController+QIMOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C14835D213D626F009D4AE3 /* UINavigationController+QIMOrientation.m */; };
 		2C21D5F320C671F900DEC74C /* QIMMWCodeActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C21D5F120C671F900DEC74C /* QIMMWCodeActivity.m */; };
 		2C21D5F420C671F900DEC74C /* QIMMWCodeActivity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C21D5F220C671F900DEC74C /* QIMMWCodeActivity.h */; };
+		2C22663E22240F9F00EED2B8 /* QIMWorkMomentParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C22663C22240F9F00EED2B8 /* QIMWorkMomentParser.h */; };
+		2C22663F22240F9F00EED2B8 /* QIMWorkMomentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C22663D22240F9F00EED2B8 /* QIMWorkMomentParser.m */; };
 		2C2A797A221275A000AF2153 /* QIMMarginLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C2A7978221275A000AF2153 /* QIMMarginLabel.h */; };
 		2C2A797B221275A000AF2153 /* QIMMarginLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2A7979221275A000AF2153 /* QIMMarginLabel.m */; };
 		2C363B2E215E12C7003BA9FF /* QIMCommonUIFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C363B2D215E12C7003BA9FF /* QIMCommonUIFramework.h */; };
@@ -1129,6 +1131,8 @@
 		2C14835D213D626F009D4AE3 /* UINavigationController+QIMOrientation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+QIMOrientation.m"; sourceTree = "<group>"; };
 		2C21D5F120C671F900DEC74C /* QIMMWCodeActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMMWCodeActivity.m; sourceTree = "<group>"; };
 		2C21D5F220C671F900DEC74C /* QIMMWCodeActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMMWCodeActivity.h; sourceTree = "<group>"; };
+		2C22663C22240F9F00EED2B8 /* QIMWorkMomentParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMWorkMomentParser.h; sourceTree = "<group>"; };
+		2C22663D22240F9F00EED2B8 /* QIMWorkMomentParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMWorkMomentParser.m; sourceTree = "<group>"; };
 		2C2A7978221275A000AF2153 /* QIMMarginLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMMarginLabel.h; sourceTree = "<group>"; };
 		2C2A7979221275A000AF2153 /* QIMMarginLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMMarginLabel.m; sourceTree = "<group>"; };
 		2C363B2D215E12C7003BA9FF /* QIMCommonUIFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMCommonUIFramework.h; sourceTree = "<group>"; };
@@ -2588,6 +2592,8 @@
 				2C8AF8F220B1D51900CF98EB /* QIMMessageCellCache.m */,
 				2C8AF8EE20B1D51900CF98EB /* QIMMessageParser.h */,
 				2C8AF90B20B1D51900CF98EB /* QIMMessageParser.m */,
+				2C22663C22240F9F00EED2B8 /* QIMWorkMomentParser.h */,
+				2C22663D22240F9F00EED2B8 /* QIMWorkMomentParser.m */,
 				2C8AF8F320B1D51900CF98EB /* TYAttributedLabel */,
 			);
 			path = CoretText;
@@ -4246,6 +4252,7 @@
 				2C8AFF8220B1D8AB00CF98EB /* QIMSingleChatVoiceCell.h in Headers */,
 				2C8AFCAE20B1D51B00CF98EB /* UITextView+AttributedTextWithItems.h in Headers */,
 				2C67A8C4218846ED007C6E4C /* QIMFileTransMiddleVC.h in Headers */,
+				2C22663E22240F9F00EED2B8 /* QIMWorkMomentParser.h in Headers */,
 				2C8AFE1920B1D51C00CF98EB /* QIMUserListCategoryView.h in Headers */,
 				2C8AFD1F20B1D51C00CF98EB /* QIMCollectionEmotionEditorViewCell.h in Headers */,
 				2C8AFC1F20B1D51B00CF98EB /* QIMMessageRefreshHeader.h in Headers */,
@@ -4997,6 +5004,7 @@
 				2C8AFDC620B1D51C00CF98EB /* QIMGroupMemManCell.m in Sources */,
 				2C8AFBEB20B1D51B00CF98EB /* QIMFilePreviewVC.m in Sources */,
 				2C8AFBF720B1D51B00CF98EB /* QIMAudioPlayer.m in Sources */,
+				2C22663F22240F9F00EED2B8 /* QIMWorkMomentParser.m in Sources */,
 				2C8AFCFA20B1D51B00CF98EB /* QIMEmotionManager.m in Sources */,
 				2C2A797B221275A000AF2153 /* QIMMarginLabel.m in Sources */,
 				2C8AFF6620B1D8AB00CF98EB /* QIMMessageTableViewManager.m in Sources */,

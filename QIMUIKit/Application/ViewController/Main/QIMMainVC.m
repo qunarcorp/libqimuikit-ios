@@ -237,8 +237,9 @@
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.reloadCountQueue, ^{
         NSUInteger appNotReaderCount = [[QIMKit sharedInstance] getAppNotReaderCount];
-        NSInteger appNotRemindCount = [[QIMKit sharedInstance] getNotRemindNotReaderCount];
-        NSInteger appCount = appNotReaderCount - appNotRemindCount;
+        NSInteger appCount = appNotReaderCount;
+//        NSInteger appNotRemindCount = [[QIMKit sharedInstance] getNotRemindNotReaderCount];
+//        NSInteger appCount = appNotReaderCount - appNotRemindCount;
         dispatch_async(dispatch_get_main_queue(), ^{
             [_tabBar setBadgeNumber:appCount ByItemIndex:0];
             if (appCount <= 0) {
