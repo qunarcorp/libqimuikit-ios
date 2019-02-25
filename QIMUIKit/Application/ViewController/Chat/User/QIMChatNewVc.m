@@ -479,7 +479,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSArray *markReadMsgList = [[QIMKit sharedInstance] getNotReadMsgIdListByUserId:userId WithRealJid:realJid];
         if (markReadMsgList.count > 0) {
-            [[QIMKit sharedInstance] sendReadStateWithMessagesIdArray:markReadMsgList WithXmppId:self.userId];
+            [[QIMKit sharedInstance] sendReadStateWithMessagesIdArray:markReadMsgList WithMessageReadFlag:QIMMessageReadFlagDidRead WithXmppId:self.chatId];
         }
     });
 }

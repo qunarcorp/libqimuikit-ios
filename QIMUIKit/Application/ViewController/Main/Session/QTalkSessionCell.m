@@ -852,6 +852,39 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     }
     CGFloat timeLabelMaxX = CGRectGetMaxX(self.timeLabel.frame);
     CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 25;
+    
+    __block NSString *countStr = nil;
+    NSInteger notReadCount = [[self.infoDic objectForKey:@"UnreadCount"] integerValue];
+    if (notReadCount > 0) {
+        if (notReadCount > 99) {
+            countStr = @"99+";
+        }
+        else {
+            countStr = [NSString stringWithFormat:@"%ld",(long)notReadCount];
+        }
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (countStr.length > 0) {
+            
+            [self.notReadNumButton hiddenBadgeButton:NO];
+            CGFloat width = (countStr.length * 7) + 13;
+            [self setUpNotReadNumButtonWithFrame:CGRectMake(self.timeLabel.right - width, 11, width, 20) withBadgeString:countStr];
+            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
+        } else {
+            
+            [self.notReadNumButton hiddenBadgeButton:YES];
+            [_muteNotReadView setHidden:YES];
+            self.contentLabel.width = contentLabelWidth;
+            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
+        }
+        if (self.isReminded) {
+            [self.muteView setImage:[UIImage imageNamed:@"state-shield"]];
+            self.muteView.hidden = NO;
+        } else {
+            self.muteView.hidden = YES;
+        }
+    });
+    /*
     dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
         __block NSString *countStr = nil;
         NSInteger notReadCount = 0;
@@ -907,6 +940,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         });
         self.needRefreshNotReadCount = NO;
     });
+     */
 }
 
 - (void)refreshName {

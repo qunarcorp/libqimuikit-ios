@@ -80,6 +80,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL alwaysFullText;
 
+@property (nonatomic, assign) BOOL isFullText;
+
 @property (nonatomic, assign) BOOL notShowControl;
 
 @end

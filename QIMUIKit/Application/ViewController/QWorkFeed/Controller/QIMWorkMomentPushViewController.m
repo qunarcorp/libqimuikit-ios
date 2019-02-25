@@ -28,6 +28,7 @@
 #import "YYModel.h"
 #import "MBProgressHUD.h"
 #import "QIMProgressHUD.h"
+#import "QIMEmotionManager.h"
 
 @interface QIMWorkMomentPushUserIdentityCell : UITableViewCell
 
@@ -369,6 +370,7 @@
             
             NSMutableDictionary *momentContentDic = [[NSMutableDictionary alloc] initWithCapacity:3];
             [momentContentDic setQIMSafeObject:self.textView.text forKey:@"content"];
+            [momentContentDic setQIMSafeObject:[[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.textView.text] forKey:@"exContent"];
             NSMutableArray *imageList = [[NSMutableArray alloc] init];
             dispatch_group_t group = dispatch_group_create();
             for (id imageData in self.selectPhotos) {

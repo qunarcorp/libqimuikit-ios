@@ -8,17 +8,18 @@
 
 #import "QIMWorkMomentCell.h"
 #import "QIMWorkMomentLabel.h"
-#import "QIMMessageParser.h"
+#import "QIMWorkMomentParser.h"
 #import "QIMWorkMomentModel.h"
 #import "QIMWorkMomentContentModel.h"
 #import "QIMWorkMomentPicture.h"
 #import "QIMWorkMomentImageListView.h"
 #import <YYModel/YYModel.h>
+#import "QIMEmotionManager.h"
 
 // 最大高度限制
 CGFloat maxLimitHeight = 0;
 
-@interface QIMWorkMomentCell () {
+@interface QIMWorkMomentCell () <QIMAttributedLabelDelegate> {
     CGFloat _rowHeight;
 }
 
@@ -142,6 +143,7 @@ CGFloat maxLimitHeight = 0;
     _contentLabel.characterSpacing = 0.0f;
     _contentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
     _contentLabel.verticalAlignment = QCVerticalAlignmentBottom;
+    _contentLabel.delegate = self;
     [self.contentView addSubview:_contentLabel];
 
     // 查看'全文'按钮
@@ -255,28 +257,52 @@ CGFloat maxLimitHeight = 0;
     _organLab.centerY = self.headImageView.centerY;
     _rIdLabe.centerY = self.headImageView.centerY;
     CGFloat bottom = self.headImageView.bottom;
-    _contentLabel.text = moment.content.content;
-    [_contentLabel sizeToFit];
-    CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
+    
+    QIMWorkMomentContentType contentType = moment.content.type;
+    NSString *content = moment.content.content;
+    switch (contentType) {
+        case QIMWorkMomentContentTypeText: {
+            NSString *exContent = moment.content.exContent;
+            if (exContent.length > 0) {
+                content = exContent;
+            } else {
+                
+            }
+        }
+            break;
+        case QIMWorkMomentContentTypeVideo: {
+            
+        }
+            break;
+        default: {
+            
+        }
+            break;
+    }
+    NSString *texg = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:content];
+    Message *msg = [[Message alloc] init];
+    msg.message = texg;
+    msg.messageId = moment.momentId;
+    
+    QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:6];
+    CGFloat textH = textContainer.textHeight;
     if(self.alwaysFullText) {
         _showAllBtn.hidden = YES;
     } else {
         if (textH > maxLimitHeight) {
-            if (!moment.isFullText) {
-                textH = maxLimitHeight;
-                [self.contentLabel setNumberOfLines:6];
+            if (!self.isFullText) {
                 [self.showAllBtn setTitle:@"全文" forState:UIControlStateNormal];
             } else {
-                [self.contentLabel setNumberOfLines:0];
+                textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
                 [self.showAllBtn setTitle:@"收起" forState:UIControlStateNormal];
             }
             _showAllBtn.hidden = NO;
         } else {
-            [self.contentLabel setNumberOfLines:0];
+            
         }
     }
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
-//    self.contentLabel.height = textH;
+    self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 20, textContainer.textHeight);
+    _contentLabel.textContainer = textContainer;
     _showAllBtn.frame = CGRectMake(self.nameLab.left, _contentLabel.bottom + 5, 60, 20);
     if (_showAllBtn.hidden) {
         bottom = _contentLabel.bottom + 8;
@@ -285,19 +311,8 @@ CGFloat maxLimitHeight = 0;
         bottom = _showAllBtn.bottom + 8;
         _rowHeight = self.showAllBtn.bottom;
     }
-    if (moment.content.imgList.count > 0) {
-        _imageListView.momentContentModel = moment.content;
-        _imageListView.origin = CGPointMake(self.nameLab.left, bottom + 5);
-        [_imageListView setTapSmallImageView:^(QIMWorkMomentContentModel * _Nonnull momentContentModel, NSInteger currentTag) {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(didClickSmallImage:WithCurrentTag:)]) {
-                [self.delegate didClickSmallImage:self.moment WithCurrentTag:currentTag];
-            }
-        }];
-        _rowHeight = _imageListView.bottom;
-    } else {
-        
-    }
     
+    [self refreshContentUIWithType:contentType withBottom:bottom];
     [self updateLikeUI];
     [self updateCommentUI];
     
@@ -306,6 +321,34 @@ CGFloat maxLimitHeight = 0;
     _timeLab.frame = CGRectMake(self.contentLabel.left, _rowHeight + 15, 60, 12);
     _timeLab.centerY = _commentBtn.centerY;
     _moment.rowHeight = self.commentBtn.bottom + 18;
+}
+
+- (void)refreshContentUIWithType:(QIMWorkMomentContentType)type withBottom:(CGFloat)bottom {
+    switch (type) {
+        case QIMWorkMomentContentTypeText: {
+            if (self.moment.content.imgList.count > 0) {
+                _imageListView.momentContentModel = self.moment.content;
+                _imageListView.origin = CGPointMake(self.nameLab.left, bottom + 5);
+                [_imageListView setTapSmallImageView:^(QIMWorkMomentContentModel * _Nonnull momentContentModel, NSInteger currentTag) {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(didClickSmallImage:WithCurrentTag:)]) {
+                        [self.delegate didClickSmallImage:self.moment WithCurrentTag:currentTag];
+                    }
+                }];
+                _rowHeight = _imageListView.bottom;
+            } else {
+                
+            }
+        }
+            break;
+        case QIMWorkMomentContentTypeVideo: {
+            
+        }
+            break;
+        default: {
+            
+        }
+            break;
+    }
 }
 
 - (void)updateLikeUI {
@@ -365,6 +408,7 @@ CGFloat maxLimitHeight = 0;
 //点击全文/收起
 - (void)fullTextClicked:(UIButton *)sender {
     self.moment.isFullText = !self.moment.isFullText;
+    self.isFullText = self.moment.isFullText;
     if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectFullText:withFullText:)]) {
         [self.delegate didSelectFullText:self withFullText:self.moment.isFullText];
     }
@@ -420,6 +464,26 @@ CGFloat maxLimitHeight = 0;
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+// 点击代理
+- (void)attributedLabel:(QIMAttributedLabel *)attributedLabel textStorageClicked:(id<QIMTextStorageProtocol>)textStorage atPoint:(CGPoint)point {
+    if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
+        QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
+        if (![storage.linkData length]) {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView show];
+        } else {
+            [QIMFastEntrance openWebViewForUrl:storage.linkData showNavBar:YES];
+        }
+    } else {
+        
+    }
+}
+
+// 长按代理 有多个状态 begin, changes, end 都会调用,所以需要判断状态
+- (void)attributedLabel:(QIMAttributedLabel *)attributedLabel textStorageLongPressed:(id<QIMTextStorageProtocol>)textStorage onState:(UIGestureRecognizerState)state atPoint:(CGPoint)point {
+    
 }
 
 @end
