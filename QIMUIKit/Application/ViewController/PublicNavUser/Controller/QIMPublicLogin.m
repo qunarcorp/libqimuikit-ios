@@ -249,6 +249,11 @@ static const int companyTag = 10001;
     QIMVerboseLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
     if (oldNavConfigUrlDict.count) {
         self.multipleLogin = YES;
+        QIMPublicCompanyModel *companyModel = [[QIMPublicCompanyModel alloc] init];
+        companyModel.name = [oldNavConfigUrlDict objectForKey:QIMNavNameKey];
+        companyModel.domain = [oldNavConfigUrlDict objectForKey:QIMNavNameKey];
+        companyModel.nav = [oldNavConfigUrlDict objectForKey:QIMNavUrlKey];
+        self.companyModel = companyModel;
     } else {
         self.multipleLogin = NO;
     }
@@ -277,12 +282,16 @@ static const int companyTag = 10001;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    if (self.userNameTextField.text.length > 0 && self.userPwdTextField.text.length > 0) {
+    [self updateLoginUI];
+    return YES;
+}
+
+- (void)updateLoginUI {
+    if (self.userNameTextField.text.length > 0 && self.userPwdTextField.text.length > 0 && self.companyModel.domain.length > 0) {
         [self.loginBtn setEnabled:YES];
     } else {
         [self.loginBtn setEnabled:NO];
     }
-    return YES;
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
@@ -467,11 +476,11 @@ static const int companyTag = 10001;
 #pragma mark - Action
 
 - (void)registerNew:(id)sender {
-    [QIMFastEntrance openWebViewForUrl:@"https://im.qunar.com/#/register" showNavBar:YES];
+    [QIMFastEntrance openWebViewForUrl:@"http://im.qunar.com/new/#/register" showNavBar:YES];
 }
 
 - (void)forgotPWD:(id)sender {
-    [QIMFastEntrance openWebViewForUrl:@"https://im.qunar.com/reterievePassword#/" showNavBar:NO];
+    [QIMFastEntrance openWebViewForUrl:@"http://im.qunar.com/clientweb/reterievePassword#/" showNavBar:NO];
 }
 
 - (void)agreementBtnHandle:(UIButton *)sender {
@@ -571,6 +580,7 @@ static const int companyTag = 10001;
             [self.companyTextField setText:companyDomain];
             [self.companyShowLabel setText:companyDomain];
         }
+        [self updateLoginUI];
     }];
     [self.navigationController pushViewController:companyVC animated:YES];
 }
