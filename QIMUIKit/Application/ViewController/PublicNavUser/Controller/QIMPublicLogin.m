@@ -12,6 +12,8 @@
 #import "QIMNavConfigManagerVC.h"
 #import "YYModel.h"
 #import "QIMUUIDTools.h"
+#import "QIMProgressHUD.h"
+#import "QIMAgreementViewController.h"
 #import "QIMSelectComponyViewController.h"
 
 static const int companyTag = 10001;
@@ -177,9 +179,17 @@ static const int companyTag = 10001;
 - (UILabel *)textLabel {
     if (!_textLabel) {
         _textLabel = [[UILabel alloc] init];
-        _textLabel.text = @"同意《使用条款和隐私政策》";
         _textLabel.textColor = [UIColor qim_colorWithHex:0x999999];
         _textLabel.font = [UIFont systemFontOfSize:14];
+        NSString *commentNumStr = @"《使用条款和隐私政策》";
+        NSString *titleText = [NSString stringWithFormat:@"同意%@", commentNumStr];
+        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
+        [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor spectralColorGrayBlueColor], NSFontAttributeName:[UIFont systemFontOfSize:14]}
+                                range:[titleText rangeOfString:commentNumStr]];
+        [_textLabel setAttributedText:attributedText];
+        _textLabel.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(agreementBtnHandle:)];
+        [_textLabel addGestureRecognizer:tap];
     }
     return _textLabel;
 }
@@ -187,8 +197,10 @@ static const int companyTag = 10001;
 - (UIButton *)checkBtn {
     if (!_checkBtn) {
         _checkBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_checkBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e337" size:17 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateNormal];
+        [_checkBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e337" size:17 color:[UIColor qim_colorWithHex:0xE4E4E4]]] forState:UIControlStateNormal];
         [_checkBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e337" size:17 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateSelected];
+        _checkBtn.selected = YES;
+        [_checkBtn addTarget:self action:@selector(agreeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _checkBtn;
 }
@@ -243,25 +255,16 @@ static const int companyTag = 10001;
     
     [self setupUI];
     NSString *lastUserName = [QIMKit getLastUserName];
-    if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
-        NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
-        [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:lastUserName Check:YES WithForcedUpdate:YES];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
-            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
-        });
+    NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+    if (userToken && lastUserName) {
+        
+        [self autoLogin];
+        
+    } else if (lastUserName && !userToken) {
+        //如果本地还有用户名，自动输入
+        _userNameTextField.text = lastUserName;
     } else {
-        NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-        if (userToken && lastUserName) {
-            
-            [self autoLogin];
-            
-        } else if (lastUserName && !userToken) {
-            //如果本地还有用户名，自动输入
-            _userNameTextField.text = lastUserName;
-        } else {
-            
-        }
+        
     }
 }
 
@@ -471,6 +474,12 @@ static const int companyTag = 10001;
     [QIMFastEntrance openWebViewForUrl:@"https://im.qunar.com/reterievePassword#/" showNavBar:NO];
 }
 
+- (void)agreementBtnHandle:(UIButton *)sender {
+    QIMAgreementViewController * agreementVC = [[QIMAgreementViewController alloc] init];
+    QIMNavController * nav = [[QIMNavController alloc]initWithRootViewController:agreementVC];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
 - (void)autoLogin {
     // 增加 appstore 验证通过能力
     // 修正偶尔无法登录的问题
@@ -503,27 +512,42 @@ static const int companyTag = 10001;
 
 - (void)clickLogin:(id)sender {
     
-    NSString *userName = [[self.userNameTextField text] lowercaseString];
-    userName = [userName stringByReplacingOccurrencesOfString:@" " withString:@""];
-    NSString *validCode = self.userPwdTextField.text;
-#warning 报错即将登陆的用户名 并请求导航
-    [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
-    if ([[userName lowercaseString] isEqualToString:@"appstore"]) {
-        NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
-        [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:userName];
-        });
+    if (self.checkBtn.selected == NO) {
+        __weak __typeof(self) weakSelf = self;
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"请选择同意Startalk服务条款后登录" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alert addAction:action];
+        [self presentViewController:alert animated:YES completion:nil];
     } else {
-        NSDictionary *publicQTalkNav = @{QIMNavNameKey:(self.companyModel.name.length > 0) ? self.companyModel.name : self.companyModel.domain, QIMNavUrlKey:self.companyModel.nav};
-        [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:publicQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
-        __weak id weakSelf = self;
-        NSString *pwd = self.userPwdTextField.text;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
-            [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
-        });
+        NSString *userName = [[self.userNameTextField text] lowercaseString];
+        userName = [userName stringByReplacingOccurrencesOfString:@" " withString:@""];
+        NSString *validCode = self.userPwdTextField.text;
+#warning 报错即将登陆的用户名 并请求导航
+        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"登录中..."];
+        [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
+        if ([[userName lowercaseString] isEqualToString:@"appstore"]) {
+            NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
+            [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:userName];
+            });
+        } else {
+            NSDictionary *publicQTalkNav = @{QIMNavNameKey:(self.companyModel.name.length > 0) ? self.companyModel.name : self.companyModel.domain, QIMNavUrlKey:self.companyModel.nav};
+            [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:publicQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
+            __weak id weakSelf = self;
+            NSString *pwd = self.userPwdTextField.text;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
+            });
+        }
     }
+}
+
+- (void)agreeBtnHandle:(UIButton *)sender {
+    sender.selected = !sender.selected;
 }
 
 - (void)onSettingClick:(UIButton *)sender{
@@ -555,6 +579,7 @@ static const int companyTag = 10001;
 
 - (void)loginNotify:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
+        [[QIMProgressHUD sharedInstance] closeHUD];
         if ([notify.object boolValue]) {
 
             NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
