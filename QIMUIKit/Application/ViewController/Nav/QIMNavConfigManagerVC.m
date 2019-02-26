@@ -415,11 +415,15 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row <= 1) {
-
-        return NO;
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+        return YES;
+    } else {
+        if (indexPath.row <= 1) {
+            
+            return NO;
+        }
+        return YES;
     }
-    return YES;
 }
 
 - (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {

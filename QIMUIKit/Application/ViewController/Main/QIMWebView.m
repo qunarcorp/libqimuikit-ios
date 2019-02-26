@@ -807,9 +807,6 @@ static NSString *__default_ua = nil;
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    if (navigationType==UIWebViewNavigationTypeBackForward) {
-        [self goBack];
-    }
     NSString *urlStr = [[request URL] absoluteString];
     NSArray * components = [urlStr componentsSeparatedByString:@":"];
     if ([urlStr hasPrefix:@"qchatiphone://"] && components.count > 1) {
@@ -857,7 +854,7 @@ static NSString *__default_ua = nil;
         if ([[[components objectAtIndex:1] lowercaseString] hasPrefix:@"//close"]) {
             [self quitItemHandle:nil];
             return NO;
-        } else if ([[[components objectAtIndex:1] lowercaseString] hasPrefix:@"//publicNav/resetpwdSuccessed"]) {
+        } else if ([[components objectAtIndex:1] hasPrefix:@"//publicNav/resetpwdSuccessed"]) {
             [QIMFastEntrance reloginAccount];
             return NO;
         }
