@@ -242,17 +242,26 @@ static const int companyTag = 10001;
     }
     
     [self setupUI];
-    NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
     NSString *lastUserName = [QIMKit getLastUserName];
-    if (userToken && lastUserName) {
-        
-        [self autoLogin];
-        
-    } else if (lastUserName && !userToken) {
-        //如果本地还有用户名，自动输入
-        _userNameTextField.text = lastUserName;
+    if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
+        NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
+        [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:lastUserName Check:YES WithForcedUpdate:YES];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
+        });
     } else {
-
+        NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+        if (userToken && lastUserName) {
+            
+            [self autoLogin];
+            
+        } else if (lastUserName && !userToken) {
+            //如果本地还有用户名，自动输入
+            _userNameTextField.text = lastUserName;
+        } else {
+            
+        }
     }
 }
 
@@ -470,7 +479,10 @@ static const int companyTag = 10001;
     _userPwdTextField.text = @"......";
     
     if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
+        NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
+        [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:lastUserName Check:YES WithForcedUpdate:YES];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
         });
     } else {
@@ -478,6 +490,7 @@ static const int companyTag = 10001;
         if ([lastUserName length] > 0 && [token length] > 0) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
+                [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
                 [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
             });
         } else {
@@ -495,15 +508,22 @@ static const int companyTag = 10001;
     NSString *validCode = self.userPwdTextField.text;
 #warning 报错即将登陆的用户名 并请求导航
     [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
-    
-    NSDictionary *publicQTalkNav = @{QIMNavNameKey:(self.companyModel.name.length > 0) ? self.companyModel.name : self.companyModel.domain, QIMNavUrlKey:self.companyModel.nav};
-    [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:publicQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
-    __weak id weakSelf = self;
-    NSString *pwd = self.userPwdTextField.text;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
-        [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
-    });
+    if ([[userName lowercaseString] isEqualToString:@"appstore"]) {
+        NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
+        [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:userName];
+        });
+    } else {
+        NSDictionary *publicQTalkNav = @{QIMNavNameKey:(self.companyModel.name.length > 0) ? self.companyModel.name : self.companyModel.domain, QIMNavUrlKey:self.companyModel.nav};
+        [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:publicQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
+        __weak id weakSelf = self;
+        NSString *pwd = self.userPwdTextField.text;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
+        });
+    }
 }
 
 - (void)onSettingClick:(UIButton *)sender{
