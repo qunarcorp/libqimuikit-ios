@@ -79,6 +79,7 @@ static const int companyTag = 10001;
         [_registerBtn setTitle:@"创建公司" forState:UIControlStateNormal];
         [_registerBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         [_registerBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
+        [_registerBtn.titleLabel setFont:[UIFont systemFontOfSize:16]];
     }
     return _registerBtn;
 }
@@ -313,7 +314,7 @@ static const int companyTag = 10001;
     [self.registerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_offset(-16);
         make.top.mas_offset(55);
-        make.width.mas_equalTo(40);
+        make.width.mas_equalTo(80);
         make.height.mas_equalTo(18);
     }];
     
