@@ -225,7 +225,9 @@
 - (NSMutableArray *)selectPhotos {
     if (!_selectPhotos) {
         _selectPhotos = [NSMutableArray arrayWithCapacity:1];
-        [_selectPhotos addObject:@"Q_Work_Add"];
+        if (self.shareWorkMoment == NO) {
+            [_selectPhotos addObject:@"Q_Work_Add"];
+        }
     }
     return _selectPhotos;
 }
@@ -267,8 +269,13 @@
 
     self.navigationItem.title = @"发布动态";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
-    UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
-    [[self navigationItem] setLeftBarButtonItem:cancelBtn];
+    if (self.navigationController.topViewController != self) {
+        UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
+        [[self navigationItem] setLeftBarButtonItem:cancelBtn];
+    } else {
+        self.navigationController.navigationBar.translucent = NO;
+        
+    }
     UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.pushBtn];
     [[self navigationItem] setRightBarButtonItem:newMomentBtn];
 }
@@ -336,7 +343,11 @@
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
     [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:NO];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.navigationController.topViewController != self) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        
+    }
 }
 
 - (void)pushNewMoment:(id)sender {
