@@ -33,7 +33,7 @@
 
 - (void)setUpNav
 {
-    self.navigationItem.title = @"QTALK软件使用许可协议";
+    self.navigationItem.title = [NSString stringWithFormat:@"%@软件使用许可协议", [QIMKit getQIMProjectType] == QIMProjectTypeStartalk ? @"Startalk" : @"QTalk"];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"关闭" style:UIBarButtonItemStyleDone target:self action:@selector(closeHandle:)];
     [self.navigationItem setRightBarButtonItem:rightItem];
 }
@@ -43,7 +43,8 @@
     _webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     _webView.scalesPageToFit = YES;
     [self.view addSubview:_webView];
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"eula" ofType:@"html"];
+    NSString *eulaFileName = [NSString stringWithFormat:@"%@", [QIMKit getQIMProjectType] == QIMProjectTypeStartalk ? @"Startalkeula" : @"QTalkeula"];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:eulaFileName ofType:@"html"];
     NSString *htmlString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
     [_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:filePath]];
 }
