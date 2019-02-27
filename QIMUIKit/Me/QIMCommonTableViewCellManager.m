@@ -215,7 +215,6 @@
             break;
         case QIMCommonTableViewCellDataTypeGroupQRcode: {
             [QIMFastEntrance showQRCodeWithQRId:self.groupModel.groupId withType:QRCodeType_GroupQR];
-//            [QIMFastEntrance showQRCodeWithUserId:self.groupModel.groupId withName:self.groupModel.groupName withType:QRCodeType_GroupQR];
         }
             break;
         case QIMCommonTableViewCellDataTypeGroupLeave: {

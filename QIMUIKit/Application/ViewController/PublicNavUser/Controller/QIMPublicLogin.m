@@ -76,7 +76,7 @@ static const int companyTag = 10001;
 - (UIButton *)registerBtn {
     if (!_registerBtn) {
         _registerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_registerBtn setTitle:@"注册" forState:UIControlStateNormal];
+        [_registerBtn setTitle:@"创建公司" forState:UIControlStateNormal];
         [_registerBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         [_registerBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -243,6 +243,7 @@ static const int companyTag = 10001;
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadNavDicts:) name:@"NavConfigSettingChanged" object:nil];
     self.view.backgroundColor = [UIColor whiteColor];
     
     NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
@@ -604,6 +605,18 @@ static const int companyTag = 10001;
             [alert addAction:action];
             [self presentViewController:alert animated:YES completion:nil];
         }
+    });
+}
+
+- (void)reloadNavDicts:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *navDict = notify.object;
+        NSString *navName = [navDict objectForKey:QIMNavNameKey];
+        NSString *navUrl = [navDict objectForKey:QIMNavUrlKey];
+        self.companyModel.name = navName;
+        self.companyModel.nav = navUrl;
+        self.companyShowLabel.text = navName;
+        self.companyTextField.text = navName;
     });
 }
 

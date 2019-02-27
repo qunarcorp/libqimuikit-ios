@@ -267,7 +267,7 @@
                         [[QIMKit sharedInstance] setUserObject:self.navConfigs forKey:@"QC_NavAllDicts"];
                         [[QIMKit sharedInstance] setUserObject:navUrlDict forKey:@"QC_CurrentNavDict"];
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:nil];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:navUrlDict];
                         });
                     } else {
                         [self onCancel];
@@ -380,7 +380,6 @@
     NSString *navUrl = [willEditedNavDict objectForKey:QIMNavUrlKey];
     NSString *navName = [willEditedNavDict objectForKey:QIMNavNameKey];
     NSString *name = [NSString stringWithFormat:@"%@ : %@", navName, navUrl];
-//    [QIMFastEntrance showQRCodeWithUserId:navUrl withName:name withType:QRCodeType_ClientNav];
     [QIMFastEntrance showQRCodeWithQRId:navUrl withType:QRCodeType_ClientNav];
 }
 

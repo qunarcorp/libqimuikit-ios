@@ -1077,7 +1077,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
             break;
         case QRCodeType_ClientNav: {
-            
+            qrName = qrId;
         }
             break;
         default:
@@ -1089,7 +1089,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)showQRCodeWithQRId:(NSString *)qrId withType:(QRCodeType)qrcodeType {
     if (qrId.length <= 0) {
-        NSAssert(qrId, @"UserId is nil, Please Check it");
+        NSAssert(qrId, @"qrId is nil, Please Check it");
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *qrVC = [[QIMFastEntrance sharedInstance] getQRCodeWithQRId:qrId withType:qrcodeType];
