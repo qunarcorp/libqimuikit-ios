@@ -29,6 +29,7 @@
 #import "MBProgressHUD.h"
 #import "QIMProgressHUD.h"
 #import "QIMEmotionManager.h"
+#import "QIMWorkFeedAtNotifyViewController.h"
 
 @interface QIMWorkMomentPushUserIdentityCell : UITableViewCell
 
@@ -126,7 +127,7 @@
         [_textView setFont:[UIFont systemFontOfSize:17]];
         [_textView setTextColor:[UIColor qim_colorWithHex:0x333333]];
         [_textView setTintColor:[UIColor qim_colorWithHex:0x333333]];
-        
+        _textView.delegate = self;
         UILabel *placeHolderLabel = [[UILabel alloc] init];
         placeHolderLabel.text = @"来吧，尽情发挥吧…";
         placeHolderLabel.numberOfLines = 0;
@@ -269,12 +270,11 @@
 
     self.navigationItem.title = @"发布动态";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
-    if (self.navigationController.topViewController != self) {
+    if (self.shareWorkMoment) {
+        self.navigationController.navigationBar.translucent = NO;
+    } else {
         UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
         [[self navigationItem] setLeftBarButtonItem:cancelBtn];
-    } else {
-        self.navigationController.navigationBar.translucent = NO;
-        
     }
     UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.pushBtn];
     [[self navigationItem] setRightBarButtonItem:newMomentBtn];
@@ -343,10 +343,10 @@
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
     [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:NO];
-    if (self.navigationController.topViewController != self) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.shareWorkMoment) {
+        [self.navigationController popViewControllerAnimated:YES];
     } else {
-        
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
@@ -395,12 +395,18 @@
                     }
                 }
             }
+            NSDictionary *atDic = @{@"type":@(10001), @"data":@[@{@"jid": @"lilulucas.li@ejabhost1", @"text":@"lilulucas.li"}, @{@"jid": @"binz.zhang@ejabhost1", @"text":@"张滨"}]};
+            NSArray *atArray = @[atDic];
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                 
                 [momentContentDic setQIMSafeObject:imageList forKey:@"imgList"];
+                [momentContentDic setQIMSafeObject:@(0) forKey:@"type"];
                 NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
                 [momentDic setObject:momentContent forKey:@"content"];
+                [momentDic setObject:atArray forKey:@"atList"];
+                QIMVerboseLog(@"AtArray: %@", atArray);
                 QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
+                QIMVerboseLog(@"momentDic: %@", momentDic);
                 QIMVerboseLog(@"imageList : %@", imageList);
                 [[QIMKit sharedInstance] pushNewMomentWithMomentDic:momentDic];
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -410,6 +416,86 @@
             });
         });
     }
+}
+
+#pragma mark - UITextViewDelegate
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if ([text isEqualToString:@"@"]) {
+        //@ 弹出联系人
+        QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
+        [qNoticeVC onQIMWorkFeedSelectUser:^(NSDictionary * _Nonnull userInfo) {
+            QIMVerboseLog(@"selectUserInfo : %@", userInfo);
+            if (userInfo.count > 0) {
+                NSString *name = [userInfo objectForKey:@"name"];
+                NSString *jid = [userInfo objectForKey:@"jid"];
+                NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+                if ([[QIMKit sharedInstance] getIsIpad]) {
+                    memberName = [NSString stringWithFormat:@"%@ ", name];
+                }
+//                NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] initWithString:memberName];
+//                [textAtt addAttribute:NSStrikethroughStyleAttributeName value:@(NSUnderlinePatternSolid | NSUnderlineStyleSingle) range:NSMakeRange(0, memberName.length)];
+//                [textAtt addAttribute:NSStrikethroughColorAttributeName value:[UIColor qim_colorWithHex:0x336cd5] range:NSMakeRange(0, memberName.length)];
+//
+                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:memberName];
+//                [attributedText addAttributeFont:[UIFont systemFontOfSize:15]];
+                [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x336cd5], NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                        range:NSMakeRange(0, memberName.length)];
+                [self.textView.textStorage insertAttributedString:attributedText atIndex:self.textView.selectedRange.location];
+                self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location + self.textView.selectedRange.length + memberName.length + 1, 0);
+            } else {
+                NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] initWithString:@"@"];
+                [self.textView.textStorage insertAttributedString:textAtt atIndex:self.textView.selectedRange.location];
+                self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location + self.textView.selectedRange.length + 1, 0);
+            }
+        }];
+//        [qNoticeVC selectMember:^(NSDictionary *memeberInfo) {
+//
+//        }];
+//        [qNoticeVC setGroupID:self.chatId];
+        /*
+        __weak __typeof(&*self) weakSelf = self;
+        [qNoticeVC selectMember:^(NSDictionary *memberInfoDic) {
+            if (memberInfoDic.count > 0) {
+                NSString *name = [memberInfoDic objectForKey:@"name"];
+                NSString *jid = [memberInfoDic objectForKey:@"jid"];
+                NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+                if ([[QIMKit sharedInstance] getIsIpad]) {
+                    memberName = [NSString stringWithFormat:@"%@ ", name];
+                }
+                
+                QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
+                atTextAttachment.groupMemberName = name;
+                atTextAttachment.groupMemberJid = jid;
+                
+                NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] init];
+                NSAttributedString *textAtt2 = [NSAttributedString attributedStringWithAttachment:atTextAttachment];
+                [textAtt appendAttributedString:textAtt2];
+                [textAtt appendAttributedString:[[NSAttributedString alloc] initWithString:memberName]];
+                
+                [self.chatToolBar.textView.textStorage insertAttributedString:textAtt atIndex:self.chatToolBar.textView.selectedRange.location];
+                weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(weakSelf.chatToolBar.textView.selectedRange.location + _myTextView.selectedRange.length + memberName.length + 1, 0);
+                [weakSelf resetTextStyle];
+            } else {
+                QIMVerboseLog(@"未选择要艾特的群成员");
+                [self.chatToolBar.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:text] atIndex:self.chatToolBar.textView.selectedRange.location];
+                weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(weakSelf.chatToolBar.textView.selectedRange.location + _myTextView.selectedRange.length + 1, 0);
+                [weakSelf resetTextStyle];
+            }
+        }];
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
+            SEL sel = NSSelectorFromString(@"detaiPushViewController:");
+            if ([RunC respondsToSelector:sel]) {
+                [RunC performSelector:sel withObject:qNoticeVC];
+            }
+        } else {
+            */
+            QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+            [self presentViewController:qtalNav animated:YES completion:nil];
+//        }
+    }
+    return YES;
 }
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDatasource

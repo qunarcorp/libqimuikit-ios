@@ -186,6 +186,8 @@
 		2C7F92F121C7E45A0087BD04 /* QIMRedMindView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F92EF21C7E45A0087BD04 /* QIMRedMindView.m */; };
 		2C7F92F421C8AB8C0087BD04 /* QIMSearchRemindView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C7F92F221C8AB8C0087BD04 /* QIMSearchRemindView.h */; };
 		2C7F92F521C8AB8C0087BD04 /* QIMSearchRemindView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F92F321C8AB8C0087BD04 /* QIMSearchRemindView.m */; };
+		2C8AADCD2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AADCB2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.h */; };
+		2C8AADCE2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AADCC2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.m */; };
 		2C8AC7B220C68EF70091B3C0 /* QIMZBarViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AC7B020C68EF70091B3C0 /* QIMZBarViewController.h */; };
 		2C8AC7B320C68EF70091B3C0 /* QIMZBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AC7B120C68EF70091B3C0 /* QIMZBarViewController.m */; };
 		2C8AF86E20B1D3D400CF98EB /* QIMUIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AF86C20B1D3D400CF98EB /* QIMUIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1170,6 +1172,8 @@
 		2C7F92EF21C7E45A0087BD04 /* QIMRedMindView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMRedMindView.m; sourceTree = "<group>"; };
 		2C7F92F221C8AB8C0087BD04 /* QIMSearchRemindView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMSearchRemindView.h; sourceTree = "<group>"; };
 		2C7F92F321C8AB8C0087BD04 /* QIMSearchRemindView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMSearchRemindView.m; sourceTree = "<group>"; };
+		2C8AADCB2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMWorkFeedAtNotifyViewController.h; sourceTree = "<group>"; };
+		2C8AADCC2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMWorkFeedAtNotifyViewController.m; sourceTree = "<group>"; };
 		2C8AC7B020C68EF70091B3C0 /* QIMZBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMZBarViewController.h; sourceTree = "<group>"; };
 		2C8AC7B120C68EF70091B3C0 /* QIMZBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMZBarViewController.m; sourceTree = "<group>"; };
 		2C8AF86920B1D3D400CF98EB /* QIMUIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QIMUIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2038,6 +2042,8 @@
 			children = (
 				2C06A01722045DE8000CAF37 /* QIMWorkFeedDetailViewController.h */,
 				2C06A01122045DE8000CAF37 /* QIMWorkFeedDetailViewController.m */,
+				2C8AADCB2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.h */,
+				2C8AADCC2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.m */,
 				2C06A01522045DE8000CAF37 /* QIMWorkFeedMessageViewController.h */,
 				2C06A00F22045DE8000CAF37 /* QIMWorkFeedMessageViewController.m */,
 				2C06A00E22045DE8000CAF37 /* QIMWorkFeedViewController.h */,
@@ -4136,6 +4142,7 @@
 				2C8AFBD720B1D51B00CF98EB /* QIMVideoDownloadManager.h in Headers */,
 				2C8AFF6920B1D8AB00CF98EB /* QIMDefalutMessageCell.h in Headers */,
 				2C8AFD4120B1D51C00CF98EB /* QIMHistoryMsgListViewController.h in Headers */,
+				2C8AADCD2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.h in Headers */,
 				2C8AFCD120B1D51B00CF98EB /* QCDepartmentModel.h in Headers */,
 				2C8AFDA620B1D51C00CF98EB /* QIMQRCodeViewDisplayController.h in Headers */,
 				2C363B2E215E12C7003BA9FF /* QIMCommonUIFramework.h in Headers */,
@@ -5155,6 +5162,7 @@
 				2C8AFD7820B1D51C00CF98EB /* QIMChatBubbleFontChangeViewController.m in Sources */,
 				2CC93BBA21EC33C800EEC47D /* KZColorPickerHSWheel.m in Sources */,
 				2C8AFCA120B1D51B00CF98EB /* QIMMessageTextAttachment.m in Sources */,
+				2C8AADCE2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.m in Sources */,
 				2C8AFCF620B1D51B00CF98EB /* QIMEmotion.m in Sources */,
 				2C8AFBDB20B1D51B00CF98EB /* QIMMoviePlayer.m in Sources */,
 				2C8AFCB420B1D51B00CF98EB /* QIMCommonUserProfileCellManager.m in Sources */,

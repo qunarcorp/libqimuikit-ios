@@ -275,13 +275,12 @@ CGFloat maxLimitHeight = 0;
         }
             break;
         default: {
-            
+            content = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:moment.content.content];
         }
             break;
     }
-    NSString *texg = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:content];
     Message *msg = [[Message alloc] init];
-    msg.message = texg;
+    msg.message = content;
     msg.messageId = moment.momentId;
     
     QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:6];
