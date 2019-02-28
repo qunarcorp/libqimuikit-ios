@@ -83,8 +83,8 @@ static UIImage *__rightBallocImage = nil;
     
     //消息发送成功，更新消息状态
     if ([[self.message messageId] isEqualToString:msgID]) {
-        if (self.message.messageState < MessageState_Success) {
-            self.message.messageState = MessageState_Success;
+        if (self.message.messageState < QIMMessageSendState_Success) {
+            self.message.messageState = QIMMessageSendState_Success;
         }
         [self refreshUI];
     }
@@ -96,7 +96,7 @@ static UIImage *__rightBallocImage = nil;
         NSArray *msgIds = [notifyDic objectForKey:@"MsgIds"];
         for (NSDictionary *msgDict in msgIds) {
             NSString *msgId = [msgDict objectForKey:@"id"];
-            MessageState state = (MessageState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
+            QIMMessageSendState state = (QIMMessageSendState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
             if ([msgId isEqualToString:self.message.messageId]) {
                 if (state > self.message.messageState) {
                     self.message.messageState = state;
@@ -114,7 +114,7 @@ static UIImage *__rightBallocImage = nil;
         for (NSDictionary *msgCompensateDic in compensateMsgs) {
 //            QIMVerboseLog(@"补偿消息状态 : %@", msgCompensateDic);
             NSString *MsgId = [msgCompensateDic objectForKey:@"MsgId"];
-            MessageState state = (MessageState)[[msgCompensateDic objectForKey:@"State"] unsignedIntegerValue];
+            QIMMessageSendState state = (QIMMessageSendState)[[msgCompensateDic objectForKey:@"State"] unsignedIntegerValue];
             if ([MsgId isEqualToString:self.message.messageId]) {
                 if (state > self.message.messageState) {
                     self.message.messageState = state;
@@ -240,7 +240,7 @@ static UIImage *__rightBallocImage = nil;
 - (void)refreshUI {
     self.backView.menuActionTypeList = [self showMenuActionTypeList];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             self.HeadView.frame = CGRectMake(AVATAR_SUPER_LEFT, AVATAR_SUPER_TOP, AVATAR_WIDTH, AVATAR_HEIGHT);
             
             self.nameLabel.font = [UIFont systemFontOfSize:13];
@@ -253,7 +253,7 @@ static UIImage *__rightBallocImage = nil;
             }
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             CGFloat selectOffset = self.editing ? (CELL_EDIT_OFFSET + AVATAR_SUPER_LEFT) : AVATAR_SUPER_LEFT;
             CGRect headViewFrame = {{self.frameWidth - AVATAR_WIDTH - selectOffset, AVATAR_SUPER_TOP},{AVATAR_WIDTH,AVATAR_HEIGHT}};
             self.HeadView.frame = headViewFrame;
@@ -266,7 +266,7 @@ static UIImage *__rightBallocImage = nil;
     float moveSpace = 38;
     CGRect rect = self.backView.frame;
     if (self.editing) {
-        if (self.message.messageDirection == MessageDirection_Sent) {
+        if (self.message.messageDirection == QIMMessageDirection_Sent) {
             rect.origin.x = rect.origin.x - moveSpace;
             self.backView.frame = rect;
         }
@@ -285,7 +285,7 @@ static UIImage *__rightBallocImage = nil;
     CGRect headerRect = self.HeadView.frame;
     if (self.editing) {
         self.HeadView.userInteractionEnabled = NO;
-        if (self.message.messageDirection == MessageDirection_Sent) {
+        if (self.message.messageDirection == QIMMessageDirection_Sent) {
             headerRect.origin.x = headerRect.origin.x - moveSpace;
             rect.origin.x = rect.origin.x - moveSpace;
             self.HeadView.frame = headerRect;
@@ -293,7 +293,7 @@ static UIImage *__rightBallocImage = nil;
         }
     } else {
         self.HeadView.userInteractionEnabled = YES;
-        if (self.message.messageDirection == MessageDirection_Sent) {
+        if (self.message.messageDirection == QIMMessageDirection_Sent) {
             headerRect.origin.x = headerRect.origin.x + moveSpace;
             rect.origin.x = rect.origin.x + moveSpace;
             self.HeadView.frame = headerRect;
@@ -304,7 +304,7 @@ static UIImage *__rightBallocImage = nil;
 
 - (void)updateNameLabel {
 
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         __block NSString *nickName = self.message.nickName;
         if (self.chatType != ChatType_CollectionChat) {
             //备注
@@ -337,7 +337,7 @@ static UIImage *__rightBallocImage = nil;
     if (self.chatType == ChatType_PublicNumber) {
         return;
     }
-    if (self.message.messageDirection == MessageDirection_Sent) {
+    if (self.message.messageDirection == QIMMessageDirection_Sent) {
         //这里只有单聊，Consult（单人会话）显示消息状态
         if ((self.chatType == ChatType_SingleChat || self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) && ![[QIMKit sharedInstance] isMiddleVirtualAccountWithJid:self.message.to]) {
             if ([[QIMKit sharedInstance] qimNav_Showmsgstat]) {
@@ -350,14 +350,14 @@ static UIImage *__rightBallocImage = nil;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             switch (self.message.messageState) {
-                case MessageState_Waiting: {
+                case QIMMessageSendState_Waiting: {
                     self.indicatorView.center = CGPointMake(self.backView.left - 24, self.backView.centerY);
                     [self.contentView addSubview:self.indicatorView];
                     [self.indicatorView startAnimating];
                     self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"发送中 %@", self.message.messageId];
                 }
                     break;
-                case MessageState_Faild: {
+                case QIMMessageSendState_Faild: {
 //                    QIMVerboseLog(@"消息发送失败 : %@", self.message);
                     self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"消息发送失败 %@", self.message.messageId];
                     [self.indicatorView stopAnimating];
@@ -367,6 +367,7 @@ static UIImage *__rightBallocImage = nil;
                     [self.contentView addSubview:self.statusButton];
                 }
                     break;
+                    /* Mark By DB
                 case MessageState_NotRead: {
 //                    QIMVerboseLog(@"已发送至对方用户，但未读 : 【%@】", self.message.messageId);
                     self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"%@-%@", @"已发送至对方用户，但未读", self.message.messageId];
@@ -402,7 +403,8 @@ static UIImage *__rightBallocImage = nil;
                     self.messgaeStateLabel.textColor = [UIColor qim_colorWithHex:0x15b0f9 alpha:1.0];
                 }
                     break;
-                case MessageState_Success: {
+                    */
+                case QIMMessageSendState_Success: {
 //                    QIMVerboseLog(@"已送达至服务器，对方用户还没接收 : 【%@】", self.message.messageId);
                     self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"%@-%@", @"已送达至服务器，对方用户还没接收", self.message.messageId];
                     
@@ -423,6 +425,7 @@ static UIImage *__rightBallocImage = nil;
             }
         });
     } else {
+        /* Mark by DB
         switch (self.message.messageState) {
             case MessageState_didRead: {
 //                QIMVerboseLog(@"接收到的消息【%@】已读", self.message.messageId);
@@ -431,12 +434,13 @@ static UIImage *__rightBallocImage = nil;
             default:
                 break;
         }
+        */
     }
 }
 
 - (void)setBackViewWithWidth:(CGFloat)backWidth WithHeight:(CGFloat)backHeight{
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             CGRect frame = {{kBackViewCap + AVATAR_WIDTH,kCellHeightCap / 2.0 + _nameLabel.bottom},{backWidth,backHeight}};
             if (self.chatType != ChatType_PublicNumber && self.chatType != ChatType_System) {
                 frame = CGRectMake(kBackViewCap + AVATAR_WIDTH, kCellHeightCap / 2.0 + _nameLabel.bottom, backWidth, backHeight);
@@ -447,7 +451,7 @@ static UIImage *__rightBallocImage = nil;
             [self.backView setImage:[QIMMsgBaloonBaseCell leftBallocImage]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             CGRect frame = {{self.frameWidth - kBackViewCap - backWidth - AVATAR_WIDTH, kCellHeightCap / 2.0 + kBackViewCap},{backWidth,backHeight}};
             [self.backView setFrame:frame];
             [self.backView setImage:[QIMMsgBaloonBaseCell rightBallcoImage]];
@@ -477,7 +481,7 @@ static UIImage *__rightBallocImage = nil;
 }
 
 - (void)resendMessage:(id)sender {
-    if (self.message.messageState == MessageState_Faild) {
+    if (self.message.messageState == QIMMessageSendState_Faild) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kXmppStreamReSendMessage object:self.message];
     }
 }
@@ -532,11 +536,11 @@ static UIImage *__rightBallocImage = nil;
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Refer),@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
                 [menuList addObjectsFromArray:@[@(MA_Refer), @(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
             }
             break;
@@ -571,11 +575,11 @@ static UIImage *__rightBallocImage = nil;
     }
     if (self.chatType != ChatType_GroupChat) {
         switch (self.message.messageDirection) {
-            case MessageDirection_Sent: {
+            case QIMMessageDirection_Sent: {
                 self.message.nickName = [[QIMKit sharedInstance] getLastJid];
             }
                 break;
-            case MessageDirection_Received: {
+            case QIMMessageDirection_Received: {
                 self.message.nickName = self.message.from;
             }
             default:
@@ -589,7 +593,7 @@ static UIImage *__rightBallocImage = nil;
         }
         [self.HeadView qim_setImageWithURL:collectionUserUrl placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
     } else {
-        if (self.message.messageDirection == MessageDirection_Sent) {
+        if (self.message.messageDirection == QIMMessageDirection_Sent) {
             [self.HeadView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid] WithChatType:ChatType_SingleChat];
         } else {
             [self.HeadView qim_setImageWithJid:self.message.nickName];

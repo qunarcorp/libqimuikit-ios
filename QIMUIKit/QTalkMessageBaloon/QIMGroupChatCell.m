@@ -130,7 +130,7 @@
             [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
         }else{
             if ([status isEqualToString:@"failed"]) {
-                self.message.messageState = MessageState_Faild;
+                self.message.messageState = QIMMessageSendState_Faild;
                 
                 _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height);
                 _propressView.hidden = YES;
@@ -273,13 +273,13 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    [_textLabel setFrameWithOrign:CGPointMake(kTextLableLeft + (self.message.messageDirection == MessageDirection_Sent ? 0 : 10),10) Width:_textContainer.textWidth];
+    [_textLabel setFrameWithOrign:CGPointMake(kTextLableLeft + (self.message.messageDirection == QIMMessageDirection_Sent ? 0 : 10),10) Width:_textContainer.textWidth];
 }
 
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             if (self.textContainer.textStorages.count > 0 && [self hasTextWithArray:self.textContainer.textStorages]) {
                 
                 [menuList addObject:@(MA_Copy)];
@@ -291,7 +291,7 @@
             [menuList addObjectsFromArray:@[@(MA_Refer),@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             if (self.textContainer.textStorages.count > 0 && [self hasTextWithArray:self.textContainer.textStorages]) {
                 
                 [menuList addObject:@(MA_Copy)];

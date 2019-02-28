@@ -80,7 +80,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
             textContainer.textColor = [UIColor whiteColor];
             textContainer.font = [UIFont fontWithName:kNomalFontName size:12];
         }else{
-            UIColor * textColor = message.messageDirection == MessageDirection_Sent ? [UIColor qim_rightBallocFontColor] : [UIColor qim_leftBallocFontColor];
+            UIColor * textColor = message.messageDirection == QIMMessageDirection_Sent ? [UIColor qim_rightBallocFontColor] : [UIColor qim_leftBallocFontColor];
             textContainer.textColor = textColor;
             textContainer.font = [UIFont fontWithName:kNomalFontName size:kMessageTextFontSize];
         }
@@ -97,7 +97,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
 }
 
 
-+ (QIMTextContainer *)textContainerForMessageCtnt:(NSString *)ctnt withId:(NSString *)signId direction:(MessageDirection)direction {
++ (QIMTextContainer *)textContainerForMessageCtnt:(NSString *)ctnt withId:(NSString *)signId direction:(QIMMessageDirection)direction {
     if (signId == nil || ctnt.length == 0) {
         return nil;
     }
@@ -106,7 +106,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
         NSArray * storages = [self storagesWithContent:ctnt WithMsgId:signId WithDirection:direction];
         // 属性文本生成器
         textContainer = [[QIMTextContainer alloc]init];
-        UIColor * textColor = direction == MessageDirection_Sent ? [UIColor qim_rightBallocFontColor] : [UIColor qim_leftBallocFontColor];
+        UIColor * textColor = direction == QIMMessageDirection_Sent ? [UIColor qim_rightBallocFontColor] : [UIColor qim_leftBallocFontColor];
         textContainer.textColor = textColor;
         textContainer.font = [UIFont systemFontOfSize:kMessageTextFontSize];
         textContainer.text = ctnt;
@@ -119,7 +119,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
     return textContainer;
 }
 
-+ (NSArray *)storagesWithContent:(NSString *)content WithMsgId:(NSString *)msgId WithDirection:(MessageDirection)direction {
++ (NSArray *)storagesWithContent:(NSString *)content WithMsgId:(NSString *)msgId WithDirection:(QIMMessageDirection)direction {
     NSString *msg = content;
     //正则 分析内容，匹配消息
     NSString *regulaStr = @"\\[obj type=\"(.*?)\" value=\"(.*?)\"(.*?)\\]";
@@ -196,7 +196,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
         else if ([type hasPrefix:@"url"]) {
             NSString * url  = value;
             if (url.length) {
-                UIColor * textColor = direction == MessageDirection_Sent ? [UIColor qim_colorWithHex:0x00fffd alpha:1.0] : [UIColor qim_colorWithHex:0x009ad6 alpha:1.0];
+                UIColor * textColor = direction == QIMMessageDirection_Sent ? [UIColor qim_colorWithHex:0x00fffd alpha:1.0] : [UIColor qim_colorWithHex:0x009ad6 alpha:1.0];
                 [storages addObject:[self parseLinkRunFromDictinary:@{@"content":url?url:@"",@"fontSize":@(kMessageTextFontSize),@"color":textColor,@"linkUrl":url?url:@"",@"range":NSStringFromRange(match.range)}]];
             }
         }
@@ -279,9 +279,9 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
     return [self storagesWithContent:message.message WithMsgId:message.messageId WithDirection:message.messageDirection];
 }
 
-+ (NSArray *)getStoragesForTextString:(NSString *)tStr msgDirection:(MessageDirection) direction {
++ (NSArray *)getStoragesForTextString:(NSString *)tStr msgDirection:(QIMMessageDirection) direction {
     
-    UIColor * textColor = direction == MessageDirection_Sent ? [UIColor qim_rightBallocFontColor] : [UIColor qim_leftBallocFontColor];
+    UIColor * textColor = direction == QIMMessageDirection_Sent ? [UIColor qim_rightBallocFontColor] : [UIColor qim_leftBallocFontColor];
     NSString *content = [NSString stringWithFormat:@"@%@",[[QIMKit sharedInstance] getMyNickName]];
     NSInteger startLoc = 0;
     NSArray * subStrs = [tStr componentsSeparatedByString:content];
@@ -312,7 +312,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
                 NSString *url = [[match URL] absoluteString];
                 NSRange urlRange = [match range];
                 if (urlRange.location + urlRange.length <= tStr.length && urlRange.length + urlRange.location > 0) {
-                    UIColor *linkTextColor = direction == MessageDirection_Sent ? [UIColor qim_colorWithHex:0x00fffd alpha:1.0] : [UIColor qim_colorWithHex:0x009ad6 alpha:1.0];
+                    UIColor *linkTextColor = direction == QIMMessageDirection_Sent ? [UIColor qim_colorWithHex:0x00fffd alpha:1.0] : [UIColor qim_colorWithHex:0x009ad6 alpha:1.0];
                     [storages addObject:[self parseLinkRunFromDictinary:@{@"content":url?url:@"",@"fontSize":@(kMessageTextFontSize),@"color":linkTextColor,@"linkUrl":url,@"range":NSStringFromRange(match.range)}]];
                     startLoc = match.range.location + match.range.length;
                 }
@@ -320,7 +320,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
                 NSString *phoneNumber = [match phoneNumber];
                 NSRange phoneNumberRange = [match range];
                 if (phoneNumberRange.location + phoneNumberRange.length <= tStr.length && phoneNumberRange.length + phoneNumberRange.location > 0) {
-                    UIColor * phoneNumColor = direction == MessageDirection_Sent ? [UIColor qim_colorWithHex:0x00fffd alpha:1.0] : [UIColor qim_colorWithHex:0x009ad6 alpha:1.0];
+                    UIColor * phoneNumColor = direction == QIMMessageDirection_Sent ? [UIColor qim_colorWithHex:0x00fffd alpha:1.0] : [UIColor qim_colorWithHex:0x009ad6 alpha:1.0];
                     [storages addObject:[self parsePhoneNumberRunFromDictionary:@{@"content":phoneNumber?phoneNumber:@"", @"fontSize":@(kMessageTextFontSize), @"phoneNumColor":phoneNumColor}]];
                     startLoc = match.range.location + match.range.length;
                 }

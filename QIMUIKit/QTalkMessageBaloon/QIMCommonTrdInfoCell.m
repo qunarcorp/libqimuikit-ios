@@ -80,7 +80,7 @@
     [self setBackViewWithWidth:cellWidth WithHeight:cellHeight - 10];
     float imgWidth = 40;
     
-    CGFloat titleLeft = (self.message.messageDirection == MessageDirection_Sent) ? 15 : 25;
+    CGFloat titleLeft = (self.message.messageDirection == QIMMessageDirection_Sent) ? 15 : 25;
     NSString *title = [infoDic objectForKey:@"title"];
     NSString *desc = [infoDic objectForKey:@"desc"];
     NSString *linkUrl = [infoDic objectForKey:@"linkurl"];
@@ -110,11 +110,11 @@
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;

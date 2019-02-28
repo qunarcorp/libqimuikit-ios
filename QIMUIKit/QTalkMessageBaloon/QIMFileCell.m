@@ -150,7 +150,7 @@
     NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileMd5?fileMd5:@""]];
 
     NSString *fileState = [NSBundle qim_localizedStringForKey:@"common_sent"];
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:nil]) {
             fileState = [NSBundle qim_localizedStringForKey:@"common_not_download"];
         } else {
@@ -169,7 +169,7 @@
     [_fileSizeLabel setText:fileSize];
     [_fileStateLabel setText:fileState];
     [_fileNameLabel alignTop];
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         [_bgView setLeft:kBackViewCap+2];
         [_fileNameLabel setTextColor:[UIColor qim_colorWithHex:0x212121]];
         [_fileSizeLabel setTextColor:[UIColor qim_colorWithHex:0x9E9E9E]];
@@ -187,11 +187,11 @@
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;

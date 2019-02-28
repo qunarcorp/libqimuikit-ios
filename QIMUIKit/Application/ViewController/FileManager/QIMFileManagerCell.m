@@ -93,7 +93,7 @@
     
     NSString *fileState = [NSBundle qim_localizedStringForKey:@"common_sent"];
     NSString * peopleStr =nil;
-    if (message.messageDirection == MessageDirection_Received) {
+    if (message.messageDirection == QIMMessageDirection_Received) {
         peopleStr = [NSString stringWithFormat:@"%@%@", [NSBundle qim_localizedStringForKey:@"common_from"],message.from];
         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:nil]) {
             fileState = [NSBundle qim_localizedStringForKey:@"common_not_download"];

@@ -40,7 +40,7 @@ static NSMutableArray *_myFavoritesArray = nil;
 
 - (void)setMyFavoritesArrayWithMsg:(Message *)message {
     
-    message.messageDirection = MessageDirection_Received;
+    message.messageDirection = QIMMessageDirection_Received;
     
     NSData *messageData = [NSKeyedArchiver archivedDataWithRootObject:message];
     BOOL isContain = [self isContainWithMsg:messageData];

@@ -67,7 +67,7 @@
     float backHeight = kQIMShareLocationChatCellHeight;
     
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             _titleLabel.textColor = [UIColor blackColor];
             CGRect frame = {{kBackViewCap + self.HeadView.width,kCellHeightCap / 2.0 + self.nameLabel.bottom},{backWidth,backHeight}};
@@ -79,7 +79,7 @@
             _titleLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             _titleLabel.textColor = [UIColor whiteColor];
             CGRect frame = {{self.frameWidth - kBackViewCap - backWidth,kBackViewCap},{backWidth,backHeight}};

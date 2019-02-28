@@ -53,7 +53,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self.view setBackgroundColor:self.message.messageDirection == MessageDirection_Sent ? [UIColor qim_rightBallocColor] : [UIColor qim_leftBallocColor]];
+    [self.view setBackgroundColor:self.message.messageDirection == QIMMessageDirection_Sent ? [UIColor qim_rightBallocColor] : [UIColor qim_leftBallocColor]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageDidLoaded:) name:@"refreshTableView" object:nil];
     

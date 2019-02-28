@@ -188,7 +188,7 @@ typedef enum {
     msg.messageId = [QIMUUIDTools UUID];
     msg.messageType = QIMMessageType_Text;
     msg.message = [NSBundle qim_localizedStringForKey:@"custom_bubble_preview"];
-    msg.messageDirection = MessageDirection_Sent;
+    msg.messageDirection = QIMMessageDirection_Sent;
     msg.nickName = [QIMKit getLastUserName];
     [_placeholderMsgs addObject:msg];
     
@@ -196,7 +196,7 @@ typedef enum {
     msg1.messageId = [QIMUUIDTools UUID];
     msg1.messageType = QIMMessageType_Text;
     msg1.message = [NSBundle qim_localizedStringForKey:@"Custom_Color_Choose_Btn"];
-    msg1.messageDirection = MessageDirection_Received;
+    msg1.messageDirection = QIMMessageDirection_Received;
     msg1.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
     [_placeholderMsgs addObject:msg1];
     
@@ -204,7 +204,7 @@ typedef enum {
     msg2.messageId = [QIMUUIDTools UUID];
     msg2.messageType = QIMMessageType_Text;
     msg2.message = [NSBundle qim_localizedStringForKey:@"Custom_Color_FeedBack"];
-    msg2.messageDirection = MessageDirection_Received;
+    msg2.messageDirection = QIMMessageDirection_Received;
     msg2.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
     [_placeholderMsgs addObject:msg2];
     
@@ -212,7 +212,7 @@ typedef enum {
     msg3.messageId = [QIMUUIDTools UUID];
     msg3.messageType = QIMMessageType_Text;
     msg3.message = [NSBundle qim_localizedStringForKey:@"thanks"];
-    msg3.messageDirection = MessageDirection_Sent;
+    msg3.messageDirection = QIMMessageDirection_Sent;
     msg3.nickName = [QIMKit getLastUserName];
     [_placeholderMsgs addObject:msg3];
 }
@@ -389,7 +389,7 @@ typedef enum {
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     Message * message = [_placeholderMsgs objectAtIndex:indexPath.row];
     QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + (message.messageDirection == MessageDirection_Sent?30:60);
+    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + (message.messageDirection == QIMMessageDirection_Sent ? 30 : 60);
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

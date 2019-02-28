@@ -59,7 +59,7 @@
     return textContainer;
 }
 
-+ (NSArray *)storagesWithContent:(NSString *)content WithMsgId:(NSString *)msgId WithDirection:(MessageDirection)direction {
++ (NSArray *)storagesWithContent:(NSString *)content WithMsgId:(NSString *)msgId WithDirection:(QIMMessageDirection)direction {
     NSString *msg = content;
     //正则 分析内容，匹配消息
     NSString *regulaStr = @"\\[obj type=\"(.*?)\" value=\"(.*?)\"(.*?)\\]";
@@ -218,7 +218,7 @@
     return [self storagesWithContent:message.message WithMsgId:message.messageId WithDirection:message.messageDirection];
 }
 
-+ (NSArray *)getStoragesForTextString:(NSString *)tStr msgDirection:(MessageDirection) direction {
++ (NSArray *)getStoragesForTextString:(NSString *)tStr msgDirection:(QIMMessageDirection) direction {
     
     UIColor * textColor = [UIColor qim_colorWithHex:0x333333];
     NSString *content = [NSString stringWithFormat:@"@%@",[[QIMKit sharedInstance] getMyNickName]];

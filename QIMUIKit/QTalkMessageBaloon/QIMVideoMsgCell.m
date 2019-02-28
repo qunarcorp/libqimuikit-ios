@@ -110,7 +110,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
             [_progressView setProgress:progress];
         }
         if ([status isEqualToString:@"failed"]) {
-            self.message.messageState = MessageState_Faild;
+            self.message.messageState = QIMMessageSendState_Faild;
             [self refreshUI];
         }
     }
@@ -178,7 +178,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     
     [_sizeLabel setText:[infoDic objectForKey:@"FileSize"]];
     [_durationLabel setText:[NSString stringWithFormat:@"%@s",[infoDic objectForKey:@"Duration"]]];
-    [_imageView setFrame:CGRectMake((self.message.messageDirection==MessageDirection_Received?kBackViewCap+10:5) - 1, 5, size.width, size.height)];
+    [_imageView setFrame:CGRectMake((self.message.messageDirection==QIMMessageDirection_Received?kBackViewCap+10:5) - 1, 5, size.width, size.height)];
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *thubmName = [infoDic objectForKey:@"ThumbName"] ? [infoDic objectForKey:@"ThumbName"] : [NSString stringWithFormat:@"%@_thumb.jpg", [[fileName componentsSeparatedByString:@"."] firstObject]];
     NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:thubmName];
@@ -199,7 +199,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     float backHeight = size.height + 6 + 5;
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     CGPoint center = _imageView.center;
-    if (self.message.messageDirection==MessageDirection_Received) {
+    if (self.message.messageDirection==QIMMessageDirection_Received) {
         center.x -= kBackViewCap+2;
     }
     [_playIconView setCenter:center];
@@ -209,11 +209,11 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;

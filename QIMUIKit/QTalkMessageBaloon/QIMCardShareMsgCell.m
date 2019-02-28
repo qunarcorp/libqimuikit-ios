@@ -32,7 +32,7 @@
 
 + (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
 {
-    return kCardCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == MessageDirection_Received) ? 40 : 20);
+    return kCardCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == QIMMessageDirection_Received) ? 40 : 20);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -70,7 +70,7 @@
 }
 
 - (void)tapGesHandle:(UITapGestureRecognizer *)tap{
-    if (self.message.messageState == MessageState_Faild) {
+    if (self.message.messageState == QIMMessageSendState_Faild) {
         if (self.message.extendInformation) {
             self.message.message = self.message.extendInformation;
         }
@@ -104,7 +104,7 @@
     
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             
             _titleLabel.textColor = [UIColor qtalkTextLightColor];
@@ -123,7 +123,7 @@
             _userDescLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             _titleLabel.textColor = [UIColor whiteColor];
             _sepLine.backgroundColor = [UIColor whiteColor];
@@ -150,11 +150,11 @@
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete)]];
         }
             break;

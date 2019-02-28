@@ -136,7 +136,7 @@
         msg.messageId = [QIMUUIDTools UUID];
         msg.messageType = QIMMessageType_Text;
         msg.message = [NSBundle qim_localizedStringForKey:@"Preview_text_size"];
-        msg.messageDirection = MessageDirection_Sent;
+        msg.messageDirection = QIMMessageDirection_Sent;
         msg.nickName = [QIMKit getLastUserName];
         [_chatDatasource addObject:msg];
         
@@ -145,7 +145,7 @@
         msg1.messageType = QIMMessageType_Text;
         msg1.message = [NSBundle qim_localizedStringForKey:@""];
         msg1.message = [NSBundle qim_localizedStringForKey:@"Drag_Change_Text_Size"];
-        msg1.messageDirection = MessageDirection_Received;
+        msg1.messageDirection = QIMMessageDirection_Received;
         msg1.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
         [_chatDatasource addObject:msg1];
         
@@ -153,7 +153,7 @@
         msg2.messageId = [QIMUUIDTools UUID];
         msg2.messageType = QIMMessageType_Text;
         msg2.message = [NSBundle qim_localizedStringForKey:@"Text_Size_FeedBack"];
-        msg2.messageDirection = MessageDirection_Received;
+        msg2.messageDirection = QIMMessageDirection_Received;
         msg2.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
         [_chatDatasource addObject:msg2];
         
@@ -161,7 +161,7 @@
         msg3.messageId = [QIMUUIDTools UUID];
         msg3.messageType = QIMMessageType_Text;
         msg3.message = [NSBundle qim_localizedStringForKey:@"thanks"];
-        msg3.messageDirection = MessageDirection_Sent;
+        msg3.messageDirection = QIMMessageDirection_Sent;
         msg3.nickName = [QIMKit getLastUserName];
         [_chatDatasource addObject:msg3];
     }
@@ -331,7 +331,7 @@
     if (tableView == _chatTableView) {
         Message * message = [_chatDatasource objectAtIndex:indexPath.row];
         QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-        return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + (message.messageDirection == MessageDirection_Sent?30:60);
+        return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + (message.messageDirection == QIMMessageDirection_Sent ? 30 : 60);
     }else if (tableView == _sessionTableView){
         return [QTalkSessionCell getCellHeight];
     }

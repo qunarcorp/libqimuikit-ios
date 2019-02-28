@@ -176,7 +176,7 @@ static NSArray *_sentImageArray = nil;
         [[QIMPlayVoiceManager defaultPlayVoiceManager] playVoiceWithMsgId:self.message.messageId];
         [_timeLabel setText:@"00''"];
         [_voiceImageView startAnimating];
-        if (self.message.messageDirection == MessageDirection_Received) {
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
             //如果语音未读，mssageID落地
             [[QIMVoiceNoReadStateManager sharedVoiceNoReadStateManager] setVoiceNoReadStateWithMsgId:self.message.messageId ChatId:self.chatId withState:YES];
             self.message.readTag = 1;
@@ -223,7 +223,7 @@ static NSArray *_sentImageArray = nil;
             frameWeight = kBackViewWidth;
         }
         
-        if (self.message.messageDirection == MessageDirection_Received) {
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
             
             CGRect frame = {{kBackViewCap+45,kCellHeightCap / 2.0},{frameWeight,kBackViewHeight}};
             [self.backView setFrame:frame];
@@ -264,8 +264,8 @@ static NSArray *_sentImageArray = nil;
             
             CGRect timeFrame = CGRectMake(self.backView.frame.origin.x-4-KTimeLabelWeight, kBackViewCap, KTimeLabelWeight, kBackViewHeight);
             [_timeLabel setFrame:timeFrame];
-            [_errorButton setHidden:self.message.messageState != MessageState_Faild];
-            [_errorButton setHidden:self.message.messageState != MessageState_Faild];
+            [_errorButton setHidden:self.message.messageState != QIMMessageSendState_Faild];
+            [_errorButton setHidden:self.message.messageState != QIMMessageSendState_Faild];
             CGRect errorFrame = _errorButton.frame;
             errorFrame.origin.x = _timeLabel.frame.origin.x - kBackViewCap - errorFrame.size.width;
             errorFrame.origin.y = _timeLabel.frame.origin.y;
@@ -316,7 +316,7 @@ static NSArray *_sentImageArray = nil;
         else {
             frameWeight = kBackViewWidth;
         }
-        if (self.message.messageDirection == MessageDirection_Received) {
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
             
             [_dateLabel setText:self.messageDate];
             [_dateLabel setTextColor:[UIColor darkGrayColor]];
@@ -362,8 +362,8 @@ static NSArray *_sentImageArray = nil;
             [_timeLabel setFrame:timeFrame];
             [_timeLabel setTextColor:[UIColor qtalkTextBlackColor]];
             
-            [_errorButton setHidden:self.message.messageState != MessageState_Faild];
-            [_errorButton setHidden:self.message.messageState != MessageState_Faild];
+            [_errorButton setHidden:self.message.messageState != QIMMessageSendState_Faild];
+            [_errorButton setHidden:self.message.messageState != QIMMessageSendState_Faild];
             CGRect errorFrame = _errorButton.frame;
             errorFrame.origin.x = self.backView.frame.origin.x - kBackViewCap - errorFrame.size.width;
             errorFrame.origin.y = self.backView.frame.origin.y;
@@ -392,11 +392,11 @@ static NSArray *_sentImageArray = nil;
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;

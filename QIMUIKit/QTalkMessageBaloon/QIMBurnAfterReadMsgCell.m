@@ -49,6 +49,7 @@
     [self.backView setMenuActionTypeList:@[@(MA_Delete)]];
     
     self.backView.message = self.message;
+    /* Mark by DB
     if (self.message.messageState != MessageState_didDestroyed) {
         _titleLabel.text = @"此消息为阅后即焚消息";
         _flagView.image = [UIImage imageNamed:@"fire_icon_receive"];
@@ -56,13 +57,14 @@
         _titleLabel.text = @"此消息为阅后即焚消息,已销毁~";
         _flagView.image = [UIImage imageNamed:@"fire_icon_fired"];
     }
+    */
     
     float backWidth = 200;
     float backHeight = 50;
     
     
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             _titleLabel.textColor = [UIColor qim_leftBallocFontColor];
             CGRect frame = {{kBackViewCap + self.HeadView.width + 10,kCellHeightCap / 2.0 + self.nameLabel.bottom},{backWidth,backHeight}};
@@ -74,7 +76,7 @@
             _titleLabel.frame = CGRectMake(_flagView.right + 5, self.backView.top + (self.backView.height - 40) / 2, self.backView.width - _flagView.width - 20, 40);
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             _titleLabel.textColor = [UIColor qim_rightBallocFontColor];
             
@@ -97,6 +99,7 @@
 
 - (void)tapHandle:(UITapGestureRecognizer *)tap
 {
+    /* Mark by DB
     if (self.message.messageState == MessageState_didDestroyed) {
         return;
     }
@@ -106,6 +109,7 @@
         }
         [self.delegate browserMessage:self.message];
     }
+    */
 }
 
 @end

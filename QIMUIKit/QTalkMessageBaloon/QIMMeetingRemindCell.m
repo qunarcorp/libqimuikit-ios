@@ -141,7 +141,7 @@
     [self.backView setMessage:self.message];
     [self setBackViewWithWidth:cellWidth WithHeight:cellHeight];
     
-    CGFloat titleLeft = (self.message.messageDirection == MessageDirection_Sent) ? 15 : 25;
+    CGFloat titleLeft = (self.message.messageDirection == QIMMessageDirection_Sent) ? 15 : 25;
     NSString *content = [self getMeetingRemindContent];
     [_titleLabel setText:content.length > 0 ? content : @""];
     

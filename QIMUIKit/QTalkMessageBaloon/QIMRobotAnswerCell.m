@@ -50,7 +50,8 @@
         textContainer.font = [UIFont systemFontOfSize:kHintTextFontSize];
         cellHeight += [textContainer getHeightWithFramesetter:nil width:textContainer.textWidth];
     }
-    MessageState state = [[QIMKit sharedInstance] getMessageStateWithMsgId:message.messageId];
+    /* Mark by DB
+    QIMMessageState state = [[QIMKit sharedInstance] getMessageStateWithMsgId:message.messageId];
     if (state == MessageState_didControl) {
         return cellHeight + 50;
     } else {
@@ -66,6 +67,7 @@
         }
         return cellHeight + 100;
     }
+    */
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -102,7 +104,7 @@
         NSArray *msgIds = [notifyDic objectForKey:@"MsgIds"];
         for (NSDictionary *msgDict in msgIds) {
             NSString *msgId = [msgDict objectForKey:@"id"];
-            MessageState state = (MessageState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
+            QIMMessageSendState state = (QIMMessageSendState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
             if ([msgId isEqualToString:self.message.messageId]) {
                 if (state > self.message.messageState) {
                     self.message.messageState = state;
@@ -131,7 +133,7 @@
     self.msgContentLabel.delegate = self.delegate;
     self.msgContentLabel.textContainer = _msgContentContainer;
     if (_msgContentContainer) {
-        [self.msgContentLabel setFrameWithOrign:CGPointMake((MessageDirection_Received == self.message.messageDirection) ? 25 :10, 16) Width:[QIMMessageParser getCellWidth]];
+        [self.msgContentLabel setFrameWithOrign:CGPointMake((QIMMessageDirection_Received == self.message.messageDirection) ? 25 :10, 16) Width:[QIMMessageParser getCellWidth]];
     }else {
         [self.msgContentLabel setFrameWithOrign:CGPointMake(0, 0) Width:[QIMMessageParser getCellWidth]];
     }
@@ -141,6 +143,7 @@
     [self.backView setMessage:self.message];
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
     [self setBackViewWithWidth:[QIMMessageParser getCellWidth] + 40 WithHeight:height - 30];
+    /* Mark by DB
     MessageState state = [[QIMKit sharedInstance] getMessageStateWithMsgId:self.message.messageId];
     if (state != MessageState_didControl) {
         self.panelBgView.frame = CGRectMake(10, self.msgContentLabel.bottom, [QIMMessageParser getCellWidth] + 40 - 20, self.backView.bottom - self.msgContentLabel.bottom - 35);
@@ -158,7 +161,7 @@
         self.middleContentLabel.delegate = self.delegate;
         self.middleContentLabel.textContainer = _middleContentContainer;
         if (_middleContentContainer) {
-            [self.middleContentLabel setFrameWithOrign:CGPointMake((MessageDirection_Received == self.message.messageDirection) ? 20 :5, 16) Width:[QIMMessageParser getCellWidth]];
+            [self.middleContentLabel setFrameWithOrign:CGPointMake((QIMMessageDirection_Received == self.message.messageDirection) ? 20 :5, 16) Width:[QIMMessageParser getCellWidth]];
         } else {
             [self.middleContentLabel setFrameWithOrign:CGPointMake(0,0) Width:[QIMMessageParser getCellWidth]];
         }
@@ -172,6 +175,7 @@
         [self.panelBgView removeAllSubviews];
         [self.panelBgView removeFromSuperview];
     }
+    */
     [super refreshUI];
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
 }

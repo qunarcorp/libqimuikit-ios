@@ -26,7 +26,7 @@
 @implementation QIMRedPackCell
 
 + (CGFloat)getCellHeightWithMessage:(Message *)message  chatType:(ChatType)chatType{
-    return  [QIMRedPackCell redPackCellWidth] * 4 / 9 + ((chatType == ChatType_GroupChat) && (message.messageDirection == MessageDirection_Received) ? 25 : 0) + 10;
+    return  [QIMRedPackCell redPackCellWidth] * 4 / 9 + ((chatType == ChatType_GroupChat) && (message.messageDirection == QIMMessageDirection_Received) ? 25 : 0) + 10;
 }
 
 + (CGFloat)redPackCellWidth{
@@ -100,7 +100,7 @@
     [self setBackViewWithWidth:[QIMRedPackCell redPackCellWidth] WithHeight:[QIMRedPackCell redPackCellWidth] * 4 / 9 - 10];
     [super refreshUI];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             UIImage *image = [UIImage imageNamed:@"redPackLeftBalloon"];
             CGFloat width = image.size.width / 2.0;
@@ -109,7 +109,7 @@
             
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             UIImage *image = [UIImage imageNamed:@"redPackRightBalloon"];
             CGFloat width = image.size.width / 2.0;
@@ -121,7 +121,7 @@
             break;
     }
     
-    _logoImageView.frame = CGRectMake(self.backView.left + (15 + (self.message.messageDirection == MessageDirection_Received ? 5 : 0)) *  [QIMRedPackCell scale], self.backView.top + 13 *  [QIMRedPackCell scale], 40 *  [QIMRedPackCell scale], 45 *  [QIMRedPackCell scale]);
+    _logoImageView.frame = CGRectMake(self.backView.left + (15 + (self.message.messageDirection == QIMMessageDirection_Received ? 5 : 0)) *  [QIMRedPackCell scale], self.backView.top + 13 *  [QIMRedPackCell scale], 40 *  [QIMRedPackCell scale], 45 *  [QIMRedPackCell scale]);
     _titleLabel.frame = CGRectMake(_logoImageView.right + 5 *  [QIMRedPackCell scale], _logoImageView.top - 2 * [QIMRedPackCell scale] , [QIMRedPackCell redPackCellWidth] - 70 - 20, 25 *  [QIMRedPackCell scale]);
     _tipLabel.frame = CGRectMake(_logoImageView.right + 5 *  [QIMRedPackCell scale], _titleLabel.bottom + 5 * [QIMRedPackCell scale], [QIMRedPackCell redPackCellWidth] - 70 - 20, 15);
     
