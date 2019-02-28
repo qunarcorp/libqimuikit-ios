@@ -52,7 +52,13 @@
 - (QIMWorkMomentModel *)momentModel {
     if (!_momentModel) {
         NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWithMomentId:self.momentId];
-        
+        if (momentDic == nil) {
+            [[QIMKit sharedInstance] getRemoteMomentDetailWithMomentUUId:self.momentId withCallback:^(NSDictionary *momentDic) {
+                _momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
+            }];
+        } else {
+            
+        }
         _momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
         NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
         QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];

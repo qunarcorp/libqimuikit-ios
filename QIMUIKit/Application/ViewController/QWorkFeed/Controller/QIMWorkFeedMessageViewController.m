@@ -133,6 +133,7 @@
     
     QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
     detailVc.momentId = model.postUUID;
+    QIMVerboseLog(@"model.PostUUID : %@", model);
     [self.navigationController pushViewController:detailVc animated:YES];
 }
 
