@@ -125,7 +125,7 @@
                 NSDictionary *infoDic = [productDic objectForKey:@"data"];
                 NSString *url = [productDic objectForKey:@"url"];
                 if (infoDic.count > 0) {
-                    if (MessageDirection_Received == message.messageType || QIMMessageType_CNote == message.messageType) {
+                    if (QIMMessageDirection_Received == message.messageType || QIMMessageType_CNote == message.messageType) {
                         return [QIMProductInfoCell getCellHeight];
                     } else {
                         message.message = [NSString stringWithFormat:@"[obj type=\"url\" value=\"%@\"]", url];
@@ -184,12 +184,12 @@
             case QIMMessageType_ImageNew:{
                 
                 QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == MessageDirection_Received ? 36 : 25) + 10;
+                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == QIMMessageDirection_Received ? 36 : 25) + 10;
             }
                 break;
             case QIMMessageType_NewAt: {
                 QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == MessageDirection_Received ? 36 : 25) + 10;
+                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == QIMMessageDirection_Received ? 36 : 25) + 10;
             }
                 break;
             case QIMMessageType_NewMsgTag: {
@@ -747,7 +747,7 @@
                 [cell setDelegate:self.ownerVc];
                 [cell setMessage:message];
                 BOOL isRead = [[QIMVoiceNoReadStateManager sharedVoiceNoReadStateManager] isReadWithMsgId:message.messageId ChatId:self.chatId];
-                if (message.messageDirection == MessageDirection_Received) {
+                if (message.messageDirection == QIMMessageDirection_Received) {
                     [[QIMVoiceNoReadStateManager sharedVoiceNoReadStateManager] setVoiceNoReadStateWithMsgId:message.messageId ChatId:self.chatId withState:isRead];
                 }
                 cell.isGroupVoice = YES;

@@ -279,7 +279,7 @@
 
 - (void)refreshUI
 {
-    self.message.messageDirection = MessageDirection_Received;
+    self.message.messageDirection = QIMMessageDirection_Received;
     
     [_originalMsgCell removeFromSuperview];
     [self setUpOriginalMsgCell];
@@ -298,7 +298,7 @@
     float heightSum = 0;
     for (Message * replyMsg in self.replyMsgList) {
         
-        replyMsg.messageDirection = MessageDirection_Sent;
+        replyMsg.messageDirection = QIMMessageDirection_Sent;
         ReplyMsgView * replyMsgView = [[ReplyMsgView alloc] initWithFrame:CGRectMake(_nickNameLabel.left + 3, _timeLabel.bottom + 10 + heightSum, _mainMsgLabel.width - 6, 0)];
         replyMsgView.delegate = self;
         replyMsgView.message = replyMsg;

@@ -27,7 +27,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         [self.view setBackgroundColor:[UIColor qim_leftBallocColor]];
     }else{
         [self.view setBackgroundColor:[UIColor qim_rightBallocColor]];

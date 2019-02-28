@@ -211,7 +211,7 @@ static NSDateFormatter  *__global_dateformatter;
         switch ([[_infoDic objectForKey:@"MsgType"] intValue]) {
             case QIMMessageType_File:
             {
-                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == MessageDirection_Received) {
+                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == QIMMessageDirection_Received) {
                     content = [NSString stringWithFormat:@"%@:[文件]", nickName];
                 } else {
                     content = @"[文件]";
@@ -220,7 +220,7 @@ static NSDateFormatter  *__global_dateformatter;
                 break;
             case QIMMessageType_Image:
             {
-                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == MessageDirection_Received) {
+                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == QIMMessageDirection_Received) {
                     content = [NSString stringWithFormat:@"%@:[图片]", nickName];
                 } else {
                     content = @"[图片]";
@@ -231,7 +231,7 @@ static NSDateFormatter  *__global_dateformatter;
             case QIMMessageType_Shock:
             {
                 
-                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == MessageDirection_Received) {
+                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == QIMMessageDirection_Received) {
                     content = [NSString stringWithFormat:@"%@:%@", nickName, message];
                 } else {
                     content = message;

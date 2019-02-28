@@ -34,7 +34,7 @@
 
 + (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
 {
-    return kEncryptChatCellHeight + ((message.messageDirection == MessageDirection_Received) ? 40 : 20);
+    return kEncryptChatCellHeight + ((message.messageDirection == QIMMessageDirection_Received) ? 40 : 20);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -65,7 +65,7 @@
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             _titleLabel.textColor = [UIColor blackColor];
             _imageView.frame = CGRectMake(self.backView.left + 16, self.backView.top + 5, 24, 24);
@@ -73,7 +73,7 @@
             _titleLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             _titleLabel.textColor = [UIColor whiteColor];
             _imageView.frame = CGRectMake(self.backView.left + 10, self.backView.top + 5, 24, 24);

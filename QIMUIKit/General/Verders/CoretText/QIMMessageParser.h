@@ -17,7 +17,7 @@
 + (QIMAttributedLabel *)attributedLabelForMessage:(Message *)message;
 + (QIMTextContainer *)textContainerForMessage:(Message *)message;
 + (QIMTextContainer *)textContainerForMessage:(Message *)message fromCache:(BOOL)fromCache;
-+ (QIMTextContainer *)textContainerForMessageCtnt:(NSString *)ctnt withId:(NSString *)signId direction:(MessageDirection)direction;
++ (QIMTextContainer *)textContainerForMessageCtnt:(NSString *)ctnt withId:(NSString *)signId direction:(QIMMessageDirection)direction;
 
 + (NSArray *)storagesFromMessage:(Message *)message;
 

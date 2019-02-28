@@ -87,7 +87,7 @@
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
 //            [self.backView setMenuActionTypeList:@[@(MA_Repeater), @(MA_Delete) /*@(MA_ReplyMsg) , @(MA_Favorite)*/]];
 //            CGRect frame = {{kBackViewCap + (self.chatType == ChatType_GroupChat ? self.HeadView.width + 10: 0),kCellHeightCap / 2.0 + self.nameLabel.bottom},{backWidth,backHeight}};
@@ -100,7 +100,7 @@
             [_imageView setup];
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
 //            NSMutableArray * menuList = [NSMutableArray arrayWithArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete)/*, @(MA_Favorite)*/]];
 //            [self.backView setMenuActionTypeList:menuList];
@@ -142,11 +142,11 @@
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;

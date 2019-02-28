@@ -1941,8 +1941,8 @@
     for (Message *msg in self.messageManager.dataSource) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
-            if (msg.messageState < MessageState_Success) {
-                msg.messageState = MessageState_Success;
+            if (msg.messageState < QIMMessageSendState_Success) {
+                msg.messageState = QIMMessageSendState_Success;
             }
             break;
         }
@@ -1956,8 +1956,8 @@
     for (Message *msg in self.messageManager.dataSource) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
-            if (msg.messageState < MessageState_Faild) {
-                msg.messageState = MessageState_Faild;
+            if (msg.messageState < QIMMessageSendState_Faild) {
+                msg.messageState = QIMMessageSendState_Faild;
             }
             break;
         }
@@ -2058,6 +2058,7 @@
 
 
 - (void)BurnAfterReadMsgDestructionNotificationHandle:(NSNotification *)notify {
+    /*
     Message *message = notify.object;
     message.messageState = MessageState_didDestroyed;
     message.messageType = QIMMessageType_BurnAfterRead;
@@ -2074,6 +2075,7 @@
             break;
         }
     }
+    */
 }
 
 - (void)revokeMsgNotificationHandle:(NSNotification *)notify {
@@ -2298,8 +2300,8 @@
 - (void)scrollToBottomWithCheck:(BOOL)flag {
     
     Message *message = self.messageManager.dataSource.lastObject;
-    MessageDirection messageDirection = message.messageDirection;
-    if (messageDirection == MessageDirection_Sent) {
+    QIMMessageDirection messageDirection = message.messageDirection;
+    if (messageDirection == QIMMessageDirection_Sent) {
         [self scrollToBottom:flag];
         [self hidePopView];
     } else {
@@ -2501,7 +2503,7 @@
     
     Message *msg = [Message new];
     [msg setMessageId:msgId];
-    [msg setMessageDirection:MessageDirection_Sent];
+    [msg setMessageDirection:QIMMessageDirection_Sent];
     [msg setChatType:self.chatType];
     [msg setMessageType:QIMMessageType_SmallVideo];
     [msg setMessageDate:([[NSDate date] timeIntervalSince1970] - [[QIMKit sharedInstance] getServerTimeDiff]) * 1000];

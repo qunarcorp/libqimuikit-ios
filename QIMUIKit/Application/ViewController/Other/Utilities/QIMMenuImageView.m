@@ -278,7 +278,7 @@
                 case MA_ToWithdraw:
                 {
                     BOOL flag = YES;
-                    if ([[self message] messageDirection] != MessageDirection_Sent) {
+                    if ([[self message] messageDirection] != QIMMessageDirection_Sent) {
                         flag = NO;
                     }
                     long long date = self.message.messageDate;

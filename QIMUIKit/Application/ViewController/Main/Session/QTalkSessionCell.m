@@ -59,9 +59,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 @property (nonatomic, assign) QIMMessageType msgType;
 
-@property (nonatomic, assign) MessageState msgState;
+@property (nonatomic, assign) QIMMessageSendState msgState;
 
-@property (nonatomic, assign) MessageDirection msgDirection;
+@property (nonatomic, assign) QIMMessageDirection msgDirection;
 
 @property (nonatomic, assign) long long msgDateTime;
 
@@ -728,7 +728,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             case QIMMessageType_Text:
             case QIMMessageType_NewAt:
             case QIMMessageType_Shock: {
-                if (self.msgDirection == MessageDirection_Received && self.chatType != ChatType_SingleChat && self.chatType != ChatType_System && self.chatType != ChatType_ConsultServer && self.chatType != ChatType_Consult && self.nickName.length > 0) {
+                if (self.msgDirection == QIMMessageDirection_Received && self.chatType != ChatType_SingleChat && self.chatType != ChatType_System && self.chatType != ChatType_ConsultServer && self.chatType != ChatType_Consult && self.nickName.length > 0) {
                     content = [NSString stringWithFormat:@"%@:%@", self.nickName, message];
                 } else {
                     content = message;
@@ -737,7 +737,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             break;
             case QIMMessageType_Revoke: {
                 content = [[QIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
-                if (self.msgDirection == MessageDirection_Received && self.nickName.length > 0) {
+                if (self.msgDirection == QIMMessageDirection_Received && self.nickName.length > 0) {
                     content = [NSString stringWithFormat:@"\"%@\"%@", self.nickName, content];
                 } else {
                     content = [NSString stringWithFormat:@"你%@", content];
@@ -773,7 +773,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                         
                         content = @"发送了一条消息。";
                     }
-                    if (self.msgDirection == MessageDirection_Received) {
+                    if (self.msgDirection == QIMMessageDirection_Received) {
                         content = @"接收到一条消息。";
                     } else {
                         content = @"发送了一条消息。";
@@ -789,7 +789,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                     
                     content = @"发送了一条消息。";
                 }
-                if (self.msgDirection == MessageDirection_Received && (self.chatType == ChatType_GroupChat || self.chatType == ChatType_CollectionChat) && self.nickName.length > 0) {
+                if (self.msgDirection == QIMMessageDirection_Received && (self.chatType == ChatType_GroupChat || self.chatType == ChatType_CollectionChat) && self.nickName.length > 0) {
                     content = [NSString stringWithFormat:@"%@:%@", self.nickName, content];
                 } else {
                     
@@ -798,10 +798,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         }
             break;
     }
-    if (self.msgDirection == MessageDirection_Sent) {
-        if (self.msgState == MessageState_Faild) {
+    if (self.msgDirection == QIMMessageDirection_Sent) {
+        if (self.msgState == QIMMessageSendState_Faild) {
             content = [NSString stringWithFormat:@"[obj type=\"faild\" value=\"\"]%@", content];
-        } else if (self.msgState == MessageState_Waiting) {
+        } else if (self.msgState == QIMMessageSendState_Waiting) {
             content = [NSString stringWithFormat:@"[obj type=\"waiting\" value=\"\"]%@", content];
         }
     }

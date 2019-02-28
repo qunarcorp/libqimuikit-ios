@@ -24,9 +24,9 @@
     if (message.messageType == QIMMessageType_Forecast || showas667) {
         NSString *desc = [infoDic objectForKey:@"desc"];
         CGSize descSize = [desc qim_sizeWithFontCompatible:[UIFont systemFontOfSize:12] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width * 0.65 - 20, MAXFLOAT)];
-        return (chatType == ChatType_GroupChat && message.messageDirection == MessageDirection_Received ? 115 : 90)  + MAX(descSize.height, 20) ;
+        return (chatType == ChatType_GroupChat && message.messageDirection == QIMMessageDirection_Received ? 115 : 90)  + MAX(descSize.height, 20) ;
     }else{
-        return chatType == ChatType_GroupChat && message.messageDirection == MessageDirection_Received ? 115 : 90 ;
+        return chatType == ChatType_GroupChat && message.messageDirection == QIMMessageDirection_Received ? 115 : 90 ;
     }
 }
 
@@ -78,13 +78,13 @@
     
     CGFloat cellHeight = [QIMForecastCell getCellHeightWithMessage:self.message chatType:self.chatType];
     CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width * 0.65;
-//    if (self.chatType == ChatType_GroupChat && self.message.messageDirection == MessageDirection_Received) {
+//    if (self.chatType == ChatType_GroupChat && self.message.messageDirection == QIMMessageDirection_Received) {
 //        [self setBackViewWithWidth:cellWidth WithHeight:cellHeight - 35];
 //    } else {
 //        [self setBackViewWithWidth:cellWidth WithHeight:cellHeight - 10];
 //    }
     float imgWidth = 60;
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         _imageView.frame = CGRectMake(25, 10, imgWidth, imgWidth);
     } else {
         _imageView.frame = CGRectMake(10, 10, imgWidth, imgWidth);
@@ -92,13 +92,13 @@
     [self.backView setMessage:self.message];
     [self setBackViewWithWidth:cellWidth WithHeight:cellHeight];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             [self.backView setImage:nil];
             _titleLabel.frame = CGRectMake(self.backView.left + 15, self.backView.top + 10, self.backView.width - 25, 25);
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             [self.backView setImage:nil];
             _titleLabel.frame = CGRectMake(self.backView.left + 5, self.backView.top + 10, self.backView.width - 25, 25);

@@ -261,10 +261,10 @@
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatSingleVC setReadedMsgTimeStamp:-1];
                 [chatSingleVC setNotReadCount:notReadCount];
-                /*/* Mark DB
+                /*/* Mark by DB
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithMsgDirection:QIMMessageDirection_Received WithReadedState:MessageState_didRead];
                 }
                 */
                 return chatSingleVC;
@@ -283,7 +283,7 @@
                 /*/* Mark DB
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithMsgDirection:QIMMessageDirection_Received WithReadedState:MessageState_didRead];
                 }
                 */
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -307,10 +307,10 @@
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatSingleVC setReadedMsgTimeStamp:-1];
                 [chatSingleVC setNotReadCount:notReadCount];
-                /*/* Mark DB
+                /*/* Mark by DB
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithMsgDirection:QIMMessageDirection_Received WithReadedState:MessageState_didRead];
                 }
                 */
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{

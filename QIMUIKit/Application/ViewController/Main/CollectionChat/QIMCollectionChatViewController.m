@@ -220,11 +220,12 @@
                 [chatGroupVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatGroupVC setNotReadCount:notReadCount];
                 [chatGroupVC setReadedMsgTimeStamp:-1];
-                
+                /*Mark by DB
                 if (chatGroupVC.needShowNewMsgTagCell) {
                     
-                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WithMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WithMsgDirection:QIMMessageDirection_Received WithReadedState:MessageState_didRead];
                 }
+                */
                 return chatGroupVC;
             }
                 break;
@@ -244,11 +245,12 @@
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatSingleVC setReadedMsgTimeStamp:-1];
                 [chatSingleVC setNotReadCount:notReadCount];
+                /*
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithMsgDirection:QIMMessageDirection_Received WithReadedState:MessageState_didRead];
                 }
-                
+                */
                 return chatSingleVC;
             }
                 break;

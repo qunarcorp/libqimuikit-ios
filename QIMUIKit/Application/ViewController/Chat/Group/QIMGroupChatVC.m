@@ -1446,9 +1446,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         
         if ([[msg messageId] isEqualToString:msgID]) {
             
-            if (msg.messageState < MessageState_Success) {
+            if (msg.messageState < QIMMessageSendState_Success) {
                 
-                msg.messageState = MessageState_Success;
+                msg.messageState = QIMMessageSendState_Success;
                 
             }
             break;
@@ -1465,9 +1465,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         //找到对应的msg
         if ([[msg messageId] isEqualToString:msgID]) {
             
-            if (msg.messageState < MessageState_Faild) {
+            if (msg.messageState < QIMMessageSendState_Faild) {
                 
-                msg.messageState = MessageState_Faild;
+                msg.messageState = QIMMessageSendState_Faild;
             }
             break;
         }
@@ -1558,7 +1558,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)BurnAfterReadMsgDestructionNotificationHandle:(NSNotification *)notify {
-    
+    /*Mark by DB
     Message *message = notify.object;
     message.messageState = MessageState_didDestroyed;
     message.messageType = QIMMessageType_BurnAfterRead;
@@ -1578,6 +1578,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             break;
         }
     }
+    */
 }
 
 - (void)revokeMsgNotificationHandle:(NSNotification *)notify {
@@ -2273,7 +2274,7 @@ static CGPoint tableOffsetPoint;
             }
             [self addImageToImageList];
             [self scrollToBottomWithCheck:NO];
-            if ([msg isKindOfClass:[Message class]] && msg.messageDirection == MessageDirection_Received) {
+            if ([msg isKindOfClass:[Message class]] && msg.messageDirection == QIMMessageDirection_Received) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [[QIMKit sharedInstance] sendReadstateWithGroupLastMessageTime:msg.messageDate
                                                                              withGroupId:self.chatId];
@@ -2310,7 +2311,7 @@ static CGPoint tableOffsetPoint;
             }
             [self addImageToImageList];
             [self scrollToBottomWithCheck:NO];
-            if ([msg isKindOfClass:[Message class]] && msg.messageDirection == MessageDirection_Received) {
+            if ([msg isKindOfClass:[Message class]] && msg.messageDirection == QIMMessageDirection_Received) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [[QIMKit sharedInstance] sendReadstateWithGroupLastMessageTime:msg.messageDate
                                                                        withGroupId:self.chatId];
@@ -2368,8 +2369,8 @@ static CGPoint tableOffsetPoint;
 - (void)scrollToBottomWithCheck:(BOOL)flag {
     
     Message *message = self.messageManager.dataSource.lastObject;
-    MessageDirection messageDirection = message.messageDirection;
-    if (messageDirection == MessageDirection_Sent) {
+    QIMMessageDirection messageDirection = message.messageDirection;
+    if (messageDirection == QIMMessageDirection_Sent) {
         [self scrollToBottom:flag];
         [self hidePopView];
     } else {
@@ -2663,7 +2664,7 @@ static CGPoint tableOffsetPoint;
     
     Message *msg = [Message new];
     [msg setMessageId:msgId];
-    [msg setMessageDirection:MessageDirection_Sent];
+    [msg setMessageDirection:QIMMessageDirection_Sent];
     [msg setChatType:ChatType_GroupChat];
     [msg setMessageType:QIMMessageType_SmallVideo];
     [msg setMessageDate:([[NSDate date] timeIntervalSince1970] - [[QIMKit sharedInstance] getServerTimeDiff]) * 1000];

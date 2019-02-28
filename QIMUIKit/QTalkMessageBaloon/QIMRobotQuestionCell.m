@@ -223,7 +223,7 @@
     _textLabel.delegate = self.delegate;
     _textLabel.textContainer = _textContainer;
     if (_textContainer) {
-        [_textLabel setFrameWithOrign:CGPointMake((MessageDirection_Received == self.message.messageDirection) ? kQCIMMsgCellCtntMargin :kQCIMMsgCellCtntMargin - 3,kQCIMMsgCellCtntMargin) Width:[QIMMessageParser getCellWidth]];
+        [_textLabel setFrameWithOrign:CGPointMake((QIMMessageDirection_Received == self.message.messageDirection) ? kQCIMMsgCellCtntMargin :kQCIMMsgCellCtntMargin - 3,kQCIMMsgCellCtntMargin) Width:[QIMMessageParser getCellWidth]];
     } else {
         [_textLabel setFrameWithOrign:CGPointMake(0,0) Width:[QIMMessageParser getCellWidth]];
     }
