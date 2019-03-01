@@ -119,12 +119,12 @@ static double _global_message_cell_width = 0;
     float propress = [[infoDic objectForKey:@"propress"] floatValue];
     NSString * status = [infoDic objectForKey:@"status"];
     if ([message.messageId isEqualToString:self.message.messageId]) {
-        message.propress = (int)MAX((1-propress) * 100, 0);
+//        message.propress = (int)MAX((1-propress) * 100, 0);
         if (propress <= 1) {
             //update进度条
             _propressView.hidden = NO;
             _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (1 - propress));
-            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
+//            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
         }else{
             if ([status isEqualToString:@"failed"]) {
                 //                UILabel * failedLabel = [[UILabel alloc] initWithFrame:_propressView.frame];
@@ -394,7 +394,7 @@ static double _global_message_cell_width = 0;
         default:
             break;
     }
-    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (self.message.propress / 100.0f));
+//    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (self.message.propress / 100.0f));
     float moveSpace = 38;
     CGRect rect = _backView.frame;
     if (self.editing) {

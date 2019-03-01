@@ -122,12 +122,12 @@
     float propress = [[infoDic objectForKey:@"propress"] floatValue];
     NSString * status = [infoDic objectForKey:@"status"];
     if ([message.messageId isEqualToString:self.message.messageId] || [message.messageId isEqualToString:_imageMd5]) {
-        message.propress = (int)MAX((1-propress) * 100, 0);
+//        message.propress = (int)MAX((1-propress) * 100, 0);
         if (propress <= 1) {
             //update进度条
             _propressView.hidden = NO;
             _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (1 - propress));
-            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
+//            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
         }else{
             if ([status isEqualToString:@"failed"]) {
                 self.message.messageState = QIMMessageSendState_Faild;
@@ -204,7 +204,7 @@
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
 
-    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (self.message.propress / 100.0f));
+//    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (self.message.propress / 100.0f));
 }
 
 //判断是否有文字
