@@ -1239,6 +1239,7 @@
             realJid = self.chatId;
         } else {
             userId = self.chatId;
+            realJid = self.chatId;
         }
         if (self.fastMsgTimeStamp > 0) {
             [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid FromTimeStamp:self.fastMsgTimeStamp WithComplete:^(NSArray *list) {
@@ -2148,6 +2149,7 @@
             realJid = self.chatId;
         } else {
             userId = self.chatId;
+            realJid = self.chatId;
         }
         __weak typeof(self) weakSelf = self;
         if (self.chatType == ChatType_ConsultServer) {
@@ -3226,6 +3228,7 @@ static CGPoint tableOffsetPoint;
             realJid = self.chatId;
         } else {
             userId = self.chatId;
+            realJid = self.chatId;
         }
         if (self.chatType == ChatType_ConsultServer) {
             [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {

@@ -196,7 +196,7 @@
 //            [weakSelf scrollToBottom_tableView];
         }];
     } else {
-        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
             [self.messageManager.dataSource addObjectsFromArray:list];
             [weakSelf.tableView reloadData];
 //            [weakSelf scrollToBottom_tableView];
