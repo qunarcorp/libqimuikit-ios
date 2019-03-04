@@ -1207,7 +1207,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     }];
 }
 
-- (UIViewController *)getContactSelectionVC:(Message *)msg withExternalForward:(BOOL)externalForward {
+- (UIViewController *)getContactSelectionVC:(QIMMessageModel *)msg withExternalForward:(BOOL)externalForward {
     QIMContactSelectionViewController *controllerVc = [[QIMContactSelectionViewController alloc] init];
     controllerVc.ExternalForward = YES;
     [controllerVc setMessage:msg];
@@ -1290,7 +1290,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     if (fileUrl.length <= 0 || fileName.length <= 0 || fileSize.length <= 0) {
         return;
     }
-    Message *fileMsg = [[Message alloc] init];
+   QIMMessageModel *fileMsg = [[QIMMessageModel alloc] init];
     fileMsg.messageId = [QIMUUIDTools UUID];
     NSMutableDictionary *fileInfoDic = [[NSMutableDictionary alloc] init];
     [fileInfoDic setQIMSafeObject:fileUrl forKey:@"HttpUrl"];

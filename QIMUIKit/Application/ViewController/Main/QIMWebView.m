@@ -169,7 +169,7 @@ static NSString *__default_ua = nil;
     NSURL *url = _webView.request.URL;
     QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
     QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
-    Message *message = [Message new];
+   QIMMessageModel *message = [QIMMessageModel new];
     [message setMessageType:QIMMessageType_Text];
     [message setMessage:[NSString stringWithFormat:@"[obj type=\"url\" value=\"%@\"]", [url absoluteString]]];
     [controller setMessage:message];

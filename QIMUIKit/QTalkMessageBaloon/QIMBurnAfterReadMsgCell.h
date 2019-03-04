@@ -6,7 +6,7 @@
 
 @protocol QIMBurnAfterReadMsgCellDelegate <NSObject>
 
-- (void)browserMessage:(Message *)message;
+- (void)browserMessage:(QIMMessageModel *)message;
 
 @end
 
@@ -14,7 +14,7 @@
 
 @property (nonatomic, assign) id<QIMBurnAfterReadMsgCellDelegate,QIMMsgBaloonBaseCellDelegate> delegate;
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType;
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType;
 
 - (void)refreshUI;
 

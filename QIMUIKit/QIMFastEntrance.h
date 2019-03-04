@@ -119,7 +119,7 @@
 
 + (void)showQRCodeWithQRId:(NSString *)qrId withType:(NSInteger)qrcodeType;
 
-- (UIViewController *)getContactSelectionVC:(Message *)msg withExternalForward:(BOOL)externalForward;
+- (UIViewController *)getContactSelectionVC:(QIMMessageModel *)msg withExternalForward:(BOOL)externalForward;
 
 + (void)signOutWithNoPush;
 

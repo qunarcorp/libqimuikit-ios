@@ -24,7 +24,7 @@
 
 @implementation QIMMeetingRemindCell
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     
     NSString *infoStr = message.extendInformation.length <= 0 ? message.message : message.extendInformation;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];

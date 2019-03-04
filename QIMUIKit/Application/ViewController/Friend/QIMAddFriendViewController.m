@@ -297,7 +297,7 @@
         [self openChatSession];
         NSString *xmppid = [self.userInfoDic objectForKey:@"XmppId"];
 //        NSString *name = [self.userInfoDic objectForKey:@"Name"];
-//        Message *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"我通过了你的朋友验证请求，现在我们可以开始聊天了" extenddInfo:nil userId:xmppid userType:ChatType_SingleChat msgType:QIMMessageType_Text];
+//       QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"我通过了你的朋友验证请求，现在我们可以开始聊天了" extenddInfo:nil userId:xmppid userType:ChatType_SingleChat msgType:QIMMessageType_Text];
         [[QIMKit sharedInstance] sendMessage:@"我通过了你的朋友验证请求，现在我们可以开始聊天了" WithInfo:nil ToUserId:xmppid WithMsgType:QIMMessageType_Text];
     }
 }

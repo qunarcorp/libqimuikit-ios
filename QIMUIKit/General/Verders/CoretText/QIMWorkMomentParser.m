@@ -35,7 +35,7 @@
     return parser;
 }
 
-+ (QIMTextContainer *)textContainerForMessage:(Message *)message fromCache:(BOOL)fromCache withCellWidth:(CGFloat)cellWidth withFontSize:(CGFloat)fontSize withFontColor:(UIColor *)textColor withNumberOfLines:(NSInteger)numberOfLines {
++ (QIMTextContainer *)textContainerForMessage:(QIMMessageModel *)message fromCache:(BOOL)fromCache withCellWidth:(CGFloat)cellWidth withFontSize:(CGFloat)fontSize withFontColor:(UIColor *)textColor withNumberOfLines:(NSInteger)numberOfLines {
     if (message == nil) {
         return nil;
     }
@@ -214,7 +214,7 @@
     return storages;
 }
 
-+ (NSArray *)storagesFromMessage:(Message *)message {
++ (NSArray *)storagesFromMessage:(QIMMessageModel *)message {
     return [self storagesWithContent:message.message WithMsgId:message.messageId WithDirection:message.messageDirection];
 }
 
@@ -363,8 +363,8 @@
     }
 }
 
-+ (Message *)reductionMessageForMessage:(Message *)message {
-    Message * newMsg = message;
++ (QIMMessageModel *)reductionMessageForMessage:(QIMMessageModel *)message {
+   QIMMessageModel * newMsg = message;
     NSString * parseStr = message.extendInformation.length ? message.extendInformation : message.message;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:parseStr error:nil];
     switch (message.messageType) {

@@ -11,5 +11,5 @@
 #define kNotifyDownloadFileComplete @"kNotifyDownloadFileComplete"
 
 @interface QIMFilePreviewVC : QTalkViewController
-@property (nonatomic, strong) Message *message;
+@property (nonatomic, strong)QIMMessageModel *message;
 @end

@@ -22,7 +22,7 @@
 
 @implementation QIMAACollectionDescCell
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message  chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message  chatType:(ChatType)chatType{
     return  30;
 }
 

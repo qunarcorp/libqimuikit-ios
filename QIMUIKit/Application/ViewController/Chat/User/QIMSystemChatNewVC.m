@@ -112,7 +112,7 @@
 - (void)updateMessageList:(NSNotification *)notify{
     
     if ([self.chatId isEqualToString:notify.object]) {
-        Message *msg = [notify.userInfo objectForKey:@"message"];
+       QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         
         if (msg) {
             [self.messageManager.dataSource addObject:msg];

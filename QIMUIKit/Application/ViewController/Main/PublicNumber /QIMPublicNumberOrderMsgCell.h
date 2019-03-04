@@ -15,7 +15,7 @@
 
 @interface QIMPublicNumberOrderMsgCell : UITableViewCell
 
-@property (nonatomic, weak) Message *message;
+@property (nonatomic, weak)QIMMessageModel *message;
 
 @property (nonatomic, weak) id<PNOrderMsgCellDelegate> delegate;
 

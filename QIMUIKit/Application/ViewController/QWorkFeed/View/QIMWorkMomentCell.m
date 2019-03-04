@@ -279,7 +279,7 @@ CGFloat maxLimitHeight = 0;
         }
             break;
     }
-    Message *msg = [[Message alloc] init];
+   QIMMessageModel *msg = [[QIMMessageModel alloc] init];
     msg.message = content;
     msg.messageId = moment.momentId;
     

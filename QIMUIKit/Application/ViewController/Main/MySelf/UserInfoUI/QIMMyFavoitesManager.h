@@ -12,7 +12,7 @@
 
 + (instancetype) sharedMyFavoritesManager;
 
-- (void)setMyFavoritesArrayWithMsg:(Message *)message;
+- (void)setMyFavoritesArrayWithMsg:(QIMMessageModel *)message;
 
 - (NSMutableArray *)myFavoritesArray;
 

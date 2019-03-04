@@ -416,7 +416,7 @@
 - (void)updateMessageList:(NSNotification *)notify{
     
     if ([self.chatId isEqualToString:notify.object]) {
-        Message *msg = [notify.userInfo objectForKey:@"message"];
+       QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         
         if (msg) {
             [self.messageManager.dataSource addObject:msg];
@@ -488,8 +488,8 @@ static CGPoint tableOffsetPoint;
             
         }];
     }else if (event == MA_Delete){
-        for (Message * msg in self.messageManager.dataSource) {
-            if ([msg.messageId isEqualToString:[(Message *)message messageId]]) {
+        for (QIMMessageModel * msg in self.messageManager.dataSource) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *)message messageId]]) {
                 NSInteger index = [self.messageManager.dataSource indexOfObject:msg];
                 [self.messageManager.dataSource removeObject:msg];
                 [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -500,9 +500,9 @@ static CGPoint tableOffsetPoint;
         
     } else if (event == MA_Favorite) {
         
-        for (Message *msg in self.messageManager.dataSource) {
+        for (QIMMessageModel *msg in self.messageManager.dataSource) {
             
-            if ([msg.messageId isEqualToString:[(Message *)message messageId]]) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *)message messageId]]) {
                 
                 
                 [[QIMMyFavoitesManager sharedMyFavoritesManager] setMyFavoritesArrayWithMsg:message];
@@ -626,7 +626,7 @@ static CGPoint tableOffsetPoint;
     NSInteger imageIndex = 0;
     NSInteger cellIndex  = 0;
     NSArray *tempDataSource = [NSArray arrayWithArray:self.messageManager.dataSource];
-    for (Message *msg in tempDataSource) {
+    for (QIMMessageModel *msg in tempDataSource) {
         if (![msg isKindOfClass:[NSString class]]) {
             TextCellCache *cache = [_cellSizeDic objectForKey:msg.messageId];
             if (cache) {

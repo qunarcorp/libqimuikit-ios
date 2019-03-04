@@ -150,7 +150,7 @@
     
     
     
-    Message *_resendMsg;
+   QIMMessageModel *_resendMsg;
     NSData *_willSendImageData;
     
     NSString *_transferReason;
@@ -515,11 +515,11 @@
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *quickForwardAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"One-by-One Forward"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
             NSArray *forwardIndexpaths = [self.messageManager.forwardSelectedMsgs.allObjects sortedArrayUsingComparator:^NSComparisonResult(id _Nonnull obj1, id _Nonnull obj2) {
-                return [(Message *)obj1 messageDate] > [(Message *)obj2 messageDate];
+                return [(QIMMessageModel *)obj1 messageDate] > [(QIMMessageModel *)obj2 messageDate];
             }];
             
             NSMutableArray *msgList = [NSMutableArray arrayWithCapacity:1];
-            for (Message *message in forwardIndexpaths) {
+            for (QIMMessageModel *message in forwardIndexpaths) {
                 [msgList addObject:[QIMMessageParser reductionMessageForMessage:message]];
             }
             QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
@@ -838,7 +838,7 @@
     }
     
     for (int i = 0; i < (int) self.messageManager.dataSource.count - kPageCount * 2; i++) {
-        [[QIMMessageCellCache sharedInstance] removeObjectForKey:[(Message *) self.messageManager.dataSource[i] messageId]];
+        [[QIMMessageCellCache sharedInstance] removeObjectForKey:[(QIMMessageModel *) self.messageManager.dataSource[i] messageId]];
     }
 }
 
@@ -969,7 +969,7 @@
 
 - (void)forceReloadSingleMessages:(NSNotification *)notify {
     long long currentMaxSingleMsgTime = [[QIMKit sharedInstance] getMaxMsgTimeStampByXmppId:self.chatId];
-    Message *msg = [self.messageManager.dataSource lastObject];
+   QIMMessageModel *msg = [self.messageManager.dataSource lastObject];
     long long currentSingleTime = msg.messageDate;
     if (currentSingleTime < currentMaxSingleMsgTime) {
         QIMVerboseLog(@"重新Reload 单人聊天会话框");
@@ -1111,7 +1111,7 @@
         //        _transToUserInfo = transInfo;
         NSString *transToJid = [transInfo objectForKey:@"TransJid"];
         NSString *transToName = [transInfo objectForKey:@"TransName"];
-        Message *msg = [Message new];
+       QIMMessageModel *msg = [QIMMessageModel new];
         [msg setMessageType:QIMMessageType_TransToUser];
         [msg setMessage:(id) transInfo];
         [self.messageManager.dataSource addObject:msg];
@@ -1150,13 +1150,13 @@
 }
 
 - (void)checkAddNewMsgTag {
-    Message *firstMsg = [self.messageManager.dataSource firstObject];
+   QIMMessageModel *firstMsg = [self.messageManager.dataSource firstObject];
     if (firstMsg.messageDate > _readedMsgTimeStamp) {
         return;
     }
     int index = 0;
     BOOL needAdd = NO;
-    for (Message *msg in self.messageManager.dataSource) {
+    for (QIMMessageModel *msg in self.messageManager.dataSource) {
         if (msg.messageDate >= _readedMsgTimeStamp) {
             needAdd = YES;
             break;
@@ -1164,7 +1164,7 @@
         index++;
     }
     if (needAdd) {
-        Message *msg = [Message new];
+       QIMMessageModel *msg = [QIMMessageModel new];
         [msg setMessageType:QIMMessageType_NewMsgTag];
         [self.messageManager.dataSource insertObject:msg atIndex:index + 1];
         
@@ -1614,7 +1614,7 @@
 }
 
 - (void)emotionImageDidLoad:(NSNotification *)notify {
-    for (Message *msg in self.messageManager.dataSource) {
+    for (QIMMessageModel *msg in self.messageManager.dataSource) {
         if ([msg.messageId isEqualToString:notify.object]) {
             QIMTextContainer *container = [QIMMessageParser textContainerForMessage:msg fromCache:NO];
             if (container) {
@@ -1738,7 +1738,7 @@
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:emotionEditor];
         [self presentViewController:nav animated:YES completion:nil];
     } else {
-        __block Message *msg = nil;
+        __block QIMMessageModel *msg = nil;
         if (httpUrl.length) {
             
             BOOL isFileExist = [[QIMKit sharedInstance] isFileExistForUrl:httpUrl width:0 height:0 forCacheType:QIMFileCacheTypeColoction];
@@ -1840,7 +1840,7 @@
         //两次有效窗口抖动的时间间隔为10s，第一次timeInterval为nan，用isnan(timeInterval)判断
         if (timeInterval > 10 || isnanTimeInterval) {
             
-            Message *msg = [[QIMKit sharedInstance] sendShockToUserId:self.chatId];
+           QIMMessageModel *msg = [[QIMKit sharedInstance] sendShockToUserId:self.chatId];
             
             [self.messageManager.dataSource addObject:msg];
             [_tableView beginUpdates];
@@ -1940,7 +1940,7 @@
     NSString *msgID = [notify.object objectForKey:@"messageId"];
     
     //消息发送成功，更新消息状态，刷新tableView
-    for (Message *msg in self.messageManager.dataSource) {
+    for (QIMMessageModel *msg in self.messageManager.dataSource) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
             if (msg.messageSendState < QIMMessageSendState_Success) {
@@ -1955,7 +1955,7 @@
     NSString *msgID = [notify.object objectForKey:@"messageId"];
     
     //消息发送失败，更新消息状态，刷新tableView
-    for (Message *msg in self.messageManager.dataSource) {
+    for (QIMMessageModel *msg in self.messageManager.dataSource) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
             if (msg.messageSendState < QIMMessageSendState_Faild) {
@@ -1967,8 +1967,8 @@
 }
 
 - (void)removeFailedMsg {
-    Message *message = _resendMsg;
-    for (Message *msg in self.messageManager.dataSource) {
+   QIMMessageModel *message = _resendMsg;
+    for (QIMMessageModel *msg in self.messageManager.dataSource) {
         if ([msg isEqual:message]) {
             NSInteger index = [self.messageManager.dataSource indexOfObject:msg];
             
@@ -1982,7 +1982,7 @@
 }
 
 - (void)reSendMsg {
-    Message *message = _resendMsg;
+   QIMMessageModel *message = _resendMsg;
     [self removeFailedMsg];
     if (message.messageType == QIMMessageType_LocalShare) {
         if (self.chatType == ChatType_ConsultServer || self.chatType == ChatType_Consult) {
@@ -2061,12 +2061,12 @@
 
 - (void)BurnAfterReadMsgDestructionNotificationHandle:(NSNotification *)notify {
     /*
-    Message *message = notify.object;
+   QIMMessageModel *message = notify.object;
     message.messageSendState = MessageState_didDestroyed;
     message.messageType = QIMMessageType_BurnAfterRead;
     [[QIMKit sharedInstance] updateMsg:message ByJid:self.chatId];
     
-    for (Message *msg  in self.messageManager.dataSource) {
+    for (QIMMessageModel *msg  in self.messageManager.dataSource) {
         if ([msg.messageId isEqualToString:message.messageId]) {
             [self.messageManager.dataSource replaceObjectAtIndex:[self.messageManager.dataSource indexOfObject:msg] withObject:message];
             NSIndexPath *thisIndexPath = [NSIndexPath indexPathForRow:[self.messageManager.dataSource indexOfObject:msg] inSection:0];
@@ -2084,10 +2084,10 @@
     //    NSString * jid = notify.object;
     NSString *msgID = [notify.userInfo objectForKey:@"MsgId"];
     //    NSString * content = [notify.userInfo objectForKey:@"Content"];
-    for (Message *msg in self.messageManager.dataSource) {
+    for (QIMMessageModel *msg in self.messageManager.dataSource) {
         if ([msg.messageId isEqualToString:msgID]) {
             NSInteger index = [self.messageManager.dataSource indexOfObject:msg];
-            [(Message *) msg setMessageType:QIMMessageType_Revoke];
+            [(QIMMessageModel *) msg setMessageType:QIMMessageType_Revoke];
             [self.messageManager.dataSource replaceObjectAtIndex:index withObject:msg];
             [[QIMKit sharedInstance] updateMsg:msg ByJid:self.chatId];
             NSIndexPath *thisIndexPath = [NSIndexPath indexPathForRow:[self.messageManager.dataSource indexOfObject:msg] inSection:0];
@@ -2103,7 +2103,7 @@
 
 - (void)WillSendRedPackNotificationHandle:(NSNotification *)noti {
     NSString *infoStr = [NSString qim_stringWithBase64EncodedString:noti.object];
-    Message *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"【红包】请升级最新版本客户端查看红包~" extenddInfo:infoStr userId:self.chatId userType:self.chatType msgType:QIMMessageType_RedPack];
+   QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"【红包】请升级最新版本客户端查看红包~" extenddInfo:infoStr userId:self.chatId userType:self.chatType msgType:QIMMessageType_RedPack];
     
     [self.messageManager.dataSource addObject:msg];
     [_tableView beginUpdates];
@@ -2185,7 +2185,7 @@
     NSString *originTo = [msgDic objectForKey:@"Originto"];
     if ([originFrom isEqualToString:self.chatId] && [originTo isEqualToString:self.bindId]) {
         NSString *msgId = [msgDic objectForKey:@"MsgId"];
-        Message *msg = [[QIMKit sharedInstance] getCollectionMsgListForMsgId:msgId];
+       QIMMessageModel *msg = [[QIMKit sharedInstance] getCollectionMsgListForMsgId:msgId];
         if (msg) {
             if (!self.messageManager.dataSource) {
                 self.messageManager.dataSource = [[NSMutableArray alloc] initWithCapacity:20];
@@ -2224,7 +2224,7 @@
         userId = self.chatId;
     }
     if ([userId isEqualToString:notify.object]) {
-        Message *msg = [notify.userInfo objectForKey:@"message"];
+       QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         if (self.chatType == ChatType_ConsultServer) {
             if (msg.messageType == QIMMessageType_TransChatToCustomerService_Feedback) {
                 _hasServerTransferFeedback = YES;
@@ -2302,7 +2302,7 @@
 
 - (void)scrollToBottomWithCheck:(BOOL)flag {
     
-    Message *message = self.messageManager.dataSource.lastObject;
+   QIMMessageModel *message = self.messageManager.dataSource.lastObject;
     QIMMessageDirection messageDirection = message.messageDirection;
     if (messageDirection == QIMMessageDirection_Sent) {
         [self scrollToBottom:flag];
@@ -2345,7 +2345,7 @@
     NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:[[QIMKit sharedInstance] getLastJid]];
     NSString *userName = [userInfoDic objectForKey:@"Name"];
     
-    Message *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"您收到了一个消息记录文件文件，请升级客户端查看。" extenddInfo:nil userId:[contactVC getSelectInfoDic][@"userId"] userType:[[contactVC getSelectInfoDic][@"isGroup"] boolValue] ? ChatType_GroupChat : ChatType_SingleChat msgType:QIMMessageType_CommonTrdInfo];
+   QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"您收到了一个消息记录文件文件，请升级客户端查看。" extenddInfo:nil userId:[contactVC getSelectInfoDic][@"userId"] userType:[[contactVC getSelectInfoDic][@"isGroup"] boolValue] ? ChatType_GroupChat : ChatType_SingleChat msgType:QIMMessageType_CommonTrdInfo];
     
     NSMutableDictionary *infoDic = [NSMutableDictionary dictionaryWithCapacity:1];
     [infoDic setQIMSafeObject:[NSString stringWithFormat:@"%@和%@的聊天记录", userName ? userName : [QIMKit getLastUserName], self.title] forKey:@"title"];
@@ -2362,7 +2362,7 @@
     NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:[[QIMKit sharedInstance] getLastJid]];
     NSString *userName = [userInfoDic objectForKey:@"Name"];
     
-    Message *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"您收到了一个消息记录文件文件，请升级客户端查看。" extenddInfo:nil userId:[contactVC getSelectInfoDic][@"userId"] userType:[[contactVC getSelectInfoDic][@"isGroup"] boolValue] ? ChatType_GroupChat : ChatType_SingleChat msgType:QIMMessageType_CommonTrdInfo];
+   QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"您收到了一个消息记录文件文件，请升级客户端查看。" extenddInfo:nil userId:[contactVC getSelectInfoDic][@"userId"] userType:[[contactVC getSelectInfoDic][@"isGroup"] boolValue] ? ChatType_GroupChat : ChatType_SingleChat msgType:QIMMessageType_CommonTrdInfo];
     
     NSMutableDictionary *infoDic = [NSMutableDictionary dictionaryWithCapacity:1];
     [infoDic setQIMSafeObject:[NSString stringWithFormat:@"%@和%@的聊天记录", userName ? userName : [QIMKit getLastUserName], self.title] forKey:@"title"];
@@ -2449,7 +2449,7 @@
     [dicInfo setQIMSafeObject:@(duration) forKey:@"Duration"];
     NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
     
-    Message *msg = [Message new];
+   QIMMessageModel *msg = [QIMMessageModel new];
     [msg setMessageId:msgId];
     [msg setMessageDirection:QIMMessageDirection_Sent];
     [msg setChatType:self.chatType];
@@ -2491,7 +2491,7 @@
 - (void)sendMessage:(NSString *)message WithInfo:(NSString *)info ForMsgType:(int)msgType {
     if (msgType == QIMMessageType_LocalShare) {
         NSData *imageData = [[QIMKit sharedInstance] userObjectForKey:@"userLocationScreenshotImage"];
-        Message *msg = nil;
+       QIMMessageModel *msg = nil;
         if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
             msg = [[QIMKit sharedInstance] createMessageWithMsg:message extenddInfo:info userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:QIMMessageType_LocalShare forMsgId:[QIMUUIDTools UUID] willSave:YES];
         } else {
@@ -2508,7 +2508,7 @@
         [self addImageToImageList];
         [[QIMKit sharedInstance] uploadFileForData:imageData forMessage:msg withJid:self.chatId isFile:NO];
     } else {
-        Message *msg = nil;
+       QIMMessageModel *msg = nil;
         if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
             msg = [[QIMKit sharedInstance] createMessageWithMsg:message extenddInfo:info userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:msgType forMsgId:_resendMsg.messageId willSave:YES];
         }
@@ -2552,7 +2552,7 @@
         NSDictionary *normalEmotionExtendInfoDic = @{@"height": @(0), @"pkgid":packageId, @"shortcut":faceStr, @"url":@"", @"width": @(0)};
         NSString *normalEmotionExtendInfoStr = [[QIMJSONSerializer sharedInstance] serializeObject:normalEmotionExtendInfoDic];
         if ([text length] > 0) {
-            Message *msg = nil;
+           QIMMessageModel *msg = nil;
             if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
                 NSDictionary *dict = [[QIMKit sharedInstance] conversationParamWithJid:self.chatId];
                 NSString *param = [dict objectForKey:@"urlappend"];
@@ -2665,7 +2665,7 @@
     }
     
     if ([text length] > 0) {
-        Message *msg = nil;
+       QIMMessageModel *msg = nil;
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
             NSDictionary *dict = [[QIMKit sharedInstance] conversationParamWithJid:self.chatId];
             NSString *param = [dict objectForKey:@"urlappend"];
@@ -2772,7 +2772,7 @@
 }
 
 - (void)sendFileData:(NSData *)fileData fileName:(NSString *)fileName {
-    Message *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"您收到了一个消息记录文件文件，请升级客户端查看。" extenddInfo:nil userId:self.chatId userType:ChatType_SingleChat msgType:QIMMessageType_CommonTrdInfo];
+   QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"您收到了一个消息记录文件文件，请升级客户端查看。" extenddInfo:nil userId:self.chatId userType:ChatType_SingleChat msgType:QIMMessageType_CommonTrdInfo];
     
     NSMutableDictionary *infoDic = [NSMutableDictionary dictionaryWithCapacity:1];
     [infoDic setQIMSafeObject:fileName forKey:@"title"];
@@ -2800,7 +2800,7 @@
 - (void)sendimageText:(NSString *)text {
     
     if ([text length] > 0) {
-        Message *msg = nil;
+       QIMMessageModel *msg = nil;
         if ([self.stype isEqualToString:kSessionType_Group]) {
             msg = [[QIMKit sharedInstance] sendMessage:text ToGroupId:self.chatId];
             [self addImageToImageList];
@@ -2869,8 +2869,8 @@
     }
 }
 
-- (void)refreshCellForMsg:(Message *)msg {
-    for (Message *message in self.messageManager.dataSource) {
+- (void)refreshCellForMsg:(QIMMessageModel *)msg {
+    for (QIMMessageModel *message in self.messageManager.dataSource) {
         if ([msg.messageId isEqualToString:[message messageId]]) {
             NSInteger index = [self.messageManager.dataSource indexOfObject:msg];
             [self.messageManager.dataSource replaceObjectAtIndex:index withObject:msg];
@@ -2886,7 +2886,7 @@
 }
 
 - (void)processEvent:(int)event withMessage:(id)message {
-    Message *eventMsg = (Message *)message;
+   QIMMessageModel *eventMsg = (QIMMessageModel *)message;
     eventMsg.chatType = self.chatType;
     if (_tableView.editing) {
         [self cancelForwardHandle:nil];
@@ -2900,18 +2900,18 @@
             
         }];
     } else if (event == MA_Delete) {
-        for (Message *msg in self.messageManager.dataSource) {
-            if ([msg.messageId isEqualToString:[(Message *) eventMsg messageId]]) {
+        for (QIMMessageModel *msg in self.messageManager.dataSource) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *) eventMsg messageId]]) {
                 NSMutableArray *deleteIndexs = [NSMutableArray array];
                 NSInteger index = [self.messageManager.dataSource indexOfObject:msg];
                 [deleteIndexs addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                Message *timeMsg = nil;
+               QIMMessageModel *timeMsg = nil;
                 if (index > 0) {
-                    Message *tempMsg = [self.messageManager.dataSource objectAtIndex:index - 1];
+                   QIMMessageModel *tempMsg = [self.messageManager.dataSource objectAtIndex:index - 1];
                     if (tempMsg.messageType == QIMMessageType_Time) {
                         timeMsg = tempMsg;
                         if (index + 1 < self.messageManager.dataSource.count) {
-                            Message *nMsg = [self.messageManager.dataSource objectAtIndex:index + 1];
+                           QIMMessageModel *nMsg = [self.messageManager.dataSource objectAtIndex:index + 1];
                             if (nMsg.messageType != QIMMessageType_Time) {
                                 timeMsg = nil;
                             }
@@ -2933,10 +2933,10 @@
         }
         
     } else if (event == MA_ToWithdraw) {
-        for (Message *msg in self.messageManager.dataSource) {
-            if ([msg.messageId isEqualToString:[(Message *) eventMsg messageId]]) {
+        for (QIMMessageModel *msg in self.messageManager.dataSource) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *) eventMsg messageId]]) {
                 NSInteger index = [self.messageManager.dataSource indexOfObject:msg];
-                [(Message *) eventMsg setMessageType:QIMMessageType_Revoke];
+                [(QIMMessageModel *) eventMsg setMessageType:QIMMessageType_Revoke];
                 [self.messageManager.dataSource replaceObjectAtIndex:index withObject:eventMsg];
                 [[QIMKit sharedInstance] updateMsg:eventMsg ByJid:self.chatId];
                 NSIndexPath *thisIndexPath = [NSIndexPath indexPathForRow:[self.messageManager.dataSource indexOfObject:msg] inSection:0];
@@ -2946,19 +2946,19 @@
                 }
                 NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
                 [dicInfo setObject:[[QIMKit sharedInstance] getLastJid] forKey:@"fromId"];
-                [dicInfo setObject:[(Message *) eventMsg messageId] forKey:@"messageId"];
-                [dicInfo setObject:[(Message *) eventMsg message] forKey:@"message"];
+                [dicInfo setObject:[(QIMMessageModel *) eventMsg messageId] forKey:@"messageId"];
+                [dicInfo setObject:[(QIMMessageModel *) eventMsg message] forKey:@"message"];
                 NSString *msgInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
                 
-                [[QIMKit sharedInstance] revokeMessageWithMessageId:[(Message *) eventMsg messageId] message:msgInfo ToJid:self.chatId];
+                [[QIMKit sharedInstance] revokeMessageWithMessageId:[(QIMMessageModel *) eventMsg messageId] message:msgInfo ToJid:self.chatId];
                 break;
             }
         }
     } else if (event == MA_Favorite) {
         
-        for (Message *msg in self.messageManager.dataSource) {
+        for (QIMMessageModel *msg in self.messageManager.dataSource) {
             
-            if ([msg.messageId isEqualToString:[(Message *) eventMsg messageId]]) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *) eventMsg messageId]]) {
                 
                 
                 [[QIMMyFavoitesManager sharedMyFavoritesManager] setMyFavoritesArrayWithMsg:eventMsg];
@@ -2976,8 +2976,8 @@
         self.textBar.isRefer = YES;
         self.textBar.referMsg = eventMsg;
     } else if (event == MA_CopyOriginMsg) {
-        for (Message *msg in self.messageManager.dataSource) {
-            if ([msg.messageId isEqualToString:[(Message *) eventMsg messageId]]) {
+        for (QIMMessageModel *msg in self.messageManager.dataSource) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *) eventMsg messageId]]) {
                 QIMVerboseLog(@"原始消息为 : %@", msg);
                 NSString *originMsg = [[QIMOriginMessageParser shareParserOriginMessage] getOriginPBMessageWithMsgId:msg.messageId];
                 if (originMsg.length > 0) {
@@ -3296,7 +3296,7 @@ static CGPoint tableOffsetPoint;
     UIImage *image = [YLGIFImage imageWithData:imageData];
     CGFloat width = CGImageGetWidth(image.CGImage);
     CGFloat height = CGImageGetHeight(image.CGImage);
-    __block Message *msg = nil;
+    __block QIMMessageModel *msg = nil;
     NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
     if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
         msg = [[QIMKit sharedInstance] createMessageWithMsg:@"此为阅后即焚消息，该终端不支持阅后即焚~~" extenddInfo:nil userId:self.chatId userType:ChatType_SingleChat msgType:QIMMessageType_BurnAfterRead forMsgId:_resendMsg.messageId];
@@ -3393,7 +3393,7 @@ static CGPoint tableOffsetPoint;
         [_imagesArr removeAllObjects];
     }
     NSArray *tempDataSource = [NSArray arrayWithArray:self.messageManager.dataSource];
-    for (Message *msg in tempDataSource) {
+    for (QIMMessageModel *msg in tempDataSource) {
         if (msg.messageType == QIMMessageType_Image || msg.messageType == QIMMessageType_Text || msg.messageType == QIMMessageType_NewAt) {
             QIMTextContainer *textContainer = [QIMMessageParser textContainerForMessage:msg];
             for (id storage in textContainer.textStorages) {
@@ -3440,7 +3440,7 @@ static CGPoint tableOffsetPoint;
 - (void)sendVoiceUrl:(NSString *)voiceUrl WithDuration:(int)duration WithSmallData:(NSData *)amrData WithFileName:(NSString *)filename AndFilePath:(NSString *)filepath {
     //    if ([voiceUrl length] > 0) {
     voiceUrl = voiceUrl ? voiceUrl : @"";
-    Message *msg = nil;
+   QIMMessageModel *msg = nil;
     NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
     if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
         NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
@@ -3498,7 +3498,7 @@ static CGPoint tableOffsetPoint;
                 self.messageManager.forwardSelectedMsgs = [[NSMutableSet alloc] initWithCapacity:5];
             }
             NSArray *msgList = [self.messageManager.forwardSelectedMsgs.allObjects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-                return [(Message *)obj1 messageDate] > [(Message *)obj2 messageDate];
+                return [(QIMMessageModel *)obj1 messageDate] > [(QIMMessageModel *)obj2 messageDate];
             }];
             NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:[[QIMKit sharedInstance] getLastJid]];
             NSString *userName = [userInfoDic objectForKey:@"Name"];
@@ -3597,7 +3597,7 @@ static CGPoint tableOffsetPoint;
     _referMsgwindow = nil;
 }
 
-- (void)browserMessage:(Message *)message {
+- (void)browserMessage:(QIMMessageModel *)message {
     
     UIViewController *vc = nil;
     if (message.messageType == QIMMessageType_BurnAfterRead) {

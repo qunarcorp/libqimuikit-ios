@@ -399,7 +399,7 @@
 }
 
 //解析原始消息
-- (NSDictionary *)getOriginMessageWithMsg:(Message *)msg {
+- (NSDictionary *)getOriginMessageWithMsg:(QIMMessageModel *)msg {
     if (msg.messageId.length <= 0) {
         return nil;
     }
@@ -441,14 +441,14 @@
     */
     _selectInfoDic = @{@"userId":jid,@"isGroup":@(NO)};
     if (self.ExternalForward) {
-        Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
+       QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
         [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
     } else {
         if (self.message) {
             NSString *msgContent = self.message.message;
             NSString *msgExtendInfo = self.message.extendInformation;
             if (msgContent.length > 0 && msgExtendInfo.length > 0) {
-                Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:self.message.backupInfo];
+               QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:self.message.backupInfo];
                 [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
             } else {
                 NSDictionary *originMsg = [self getOriginMessageWithMsg:self.message];
@@ -459,12 +459,12 @@
                 if (msgType == QIMMessageType_None && !self.ExternalForward) {
                     [[QIMKit sharedInstance] sendMessage:self.message.message WithInfo:self.message.extendInformation ToUserId:jid WithMsgType:self.message.messageType];
                 } else {
-                    Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:msgType backinfo:backUpInfo];
+                   QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:msgType backinfo:backUpInfo];
                     [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
                 }
             }
         } else if (self.messageList.count){
-            for (Message * msg in self.messageList) {
+            for (QIMMessageModel * msg in self.messageList) {
                 NSDictionary *originMsg = [self getOriginMessageWithMsg:msg];
                 NSString *msgContent = [originMsg objectForKey:@"Content"];
                 NSString *msgExtendInfo = [originMsg objectForKey:@"ExtendInfo"];
@@ -473,7 +473,7 @@
                 if (msgType == QIMMessageType_None && !self.ExternalForward) {
                     [[QIMKit sharedInstance] sendMessage:msg.message WithInfo:msg.extendInformation ToUserId:jid WithMsgType:msg.messageType];
                 } else {
-                    Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:msgType backinfo:backUpInfo];
+                   QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:msgType backinfo:backUpInfo];
                     [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
                 }
             }
@@ -506,15 +506,15 @@
      */
     _selectInfoDic = @{@"userId":jid,@"isGroup":@(YES)};
     if (self.ExternalForward) {
-        Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
-        Message *tempMsg = [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
+       QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
+       QIMMessageModel *tempMsg = [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:jid userInfo:@{@"message":tempMsg}];
     } else {
         if (self.message) {
             NSString *msgContent = self.message.message;
             NSString *msgExtendInfo = self.message.extendInformation;
             if (msgContent.length > 0 && msgExtendInfo.length > 0) {
-                Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:self.message.backupInfo];
+               QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:self.message.backupInfo];
                 [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
             } else {
                 NSDictionary *originMsg = [self getOriginMessageWithMsg:self.message];
@@ -525,12 +525,12 @@
                 if (msgType == QIMMessageType_None && !self.ExternalForward) {
                     [[QIMKit sharedInstance] sendMessage:self.message.message WithInfo:self.message.extendInformation ToGroupId:jid WithMsgType:self.message.messageType];
                 } else {
-                    Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:msgType backinfo:backUpInfo];
+                   QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:msgType backinfo:backUpInfo];
                     [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
                 }
             }
         } else if (self.messageList.count){
-            for (Message * msg in self.messageList) {
+            for (QIMMessageModel * msg in self.messageList) {
                 NSDictionary *originMsg = [self getOriginMessageWithMsg:msg];
                 NSString *msgContent = [originMsg objectForKey:@"Content"];
                 NSString *msgExtendInfo = [originMsg objectForKey:@"ExtendInfo"];
@@ -539,7 +539,7 @@
                 if (msgType == QIMMessageType_None && self.ExternalForward) {
                     [[QIMKit sharedInstance] sendMessage:self.message.message WithInfo:self.message.extendInformation ToGroupId:jid WithMsgType:self.message.messageType];
                 } else {
-                    Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:msgType backinfo:backUpInfo];
+                   QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:msgType backinfo:backUpInfo];
                     [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
                 }
             }

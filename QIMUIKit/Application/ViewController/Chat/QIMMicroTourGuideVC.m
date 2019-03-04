@@ -53,7 +53,7 @@
 - (void)updateMessageList:(NSNotification *)notify{
     NSString *userId = notify.object;
     if ([self.userId isEqualToString:userId]) {
-        Message *msg = [notify.userInfo objectForKey:@"message"];
+       QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         [_dataSource addObject:msg];
         if (_ready) {
             [self initMessage:msg];
@@ -62,7 +62,7 @@
     }
 }
 
-- (void)initMessage:(Message *)msg{
+- (void)initMessage:(QIMMessageModel *)msg{
     switch (msg.messageType) {
         case QIMMessageType_Time:
         {
@@ -172,7 +172,7 @@
 }
 
 - (void)initDataSource{
-    for (Message *msg in _dataSource) {
+    for (QIMMessageModel *msg in _dataSource) {
         [self initMessage:msg];
     }
     [self scrollToBottom];

@@ -19,7 +19,7 @@
     return size.height + 30;
 }
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     CGSize size = [message.message sizeWithFont:[UIFont systemFontOfSize:12] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width - 100, INT32_MAX) lineBreakMode:NSLineBreakByCharWrapping];
     return size.height + 30;
 }

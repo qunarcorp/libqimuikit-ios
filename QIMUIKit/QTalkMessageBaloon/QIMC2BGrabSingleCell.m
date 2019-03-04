@@ -31,7 +31,7 @@
     UIButton *_grabSingleButtton;    //抢单按钮
     UILabel *_priceStrLabel;
     UILabel *_typeLabel;
-    Message *_c2BMessage;
+   QIMMessageModel *_c2BMessage;
 }
 
 + (CGFloat)getCellHeight {
@@ -42,7 +42,7 @@
     NSString *msgId = notify.object;
     if ([msgId isEqualToString:_c2BMessage.messageId] && [notify.userInfo objectForKey:@"message"]) {
         
-        Message *msg = [notify.userInfo objectForKey:@"message"];
+       QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         NSString *c2BExtendInfo = msg.extendInformation;
         NSDictionary *c2BMsgDict = [[QIMJSONSerializer sharedInstance] deserializeObject:c2BExtendInfo error:nil];
         NSString *c2BMsgId = nil;
@@ -66,7 +66,7 @@
     }
 }
 
-- (void)setMessage:(Message *)message {
+- (void)setMessage:(QIMMessageModel *)message {
     
     _c2BMessage = message;
     NSDictionary *grabSingleDic = nil;

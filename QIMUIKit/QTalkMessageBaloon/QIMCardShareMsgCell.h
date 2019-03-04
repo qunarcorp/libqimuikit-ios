@@ -12,7 +12,7 @@
 
 @interface QIMCardShareMsgCell : QIMMsgBaloonBaseCell
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType;
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType;
 
 - (void)refreshUI;
 

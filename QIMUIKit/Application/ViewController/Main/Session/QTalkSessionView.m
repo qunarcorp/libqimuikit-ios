@@ -409,11 +409,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *notifyStr = notify.object;
         QIMVerboseLog(@"收到刷新列表页的通知 : %@", notify);
-//        if ([notifyStr isEqualToString:@"ForceRefresh"]) {
-//            [self.tableView reloadData];
-//        } else {
-//            [self refreshTableView];
-//        }
         [self refreshTableView];
     });
 }
@@ -428,7 +423,6 @@
 #pragma mark - notify
 
 - (void)onChatRoomDestroy:(NSNotification *)notify {
-//    QIMVerboseLog(@"收到通知中心onChatRoomDestroy通知 : %@", notify);
     NSString *groupId = nil;
     id obj = notify.object;
     if ([obj isKindOfClass:[NSString class]]) {

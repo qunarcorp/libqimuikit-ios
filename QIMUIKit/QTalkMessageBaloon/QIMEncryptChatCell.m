@@ -32,7 +32,7 @@
 @implementation QIMEncryptChatCell
 
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
     return kEncryptChatCellHeight + ((message.messageDirection == QIMMessageDirection_Received) ? 40 : 20);
 }

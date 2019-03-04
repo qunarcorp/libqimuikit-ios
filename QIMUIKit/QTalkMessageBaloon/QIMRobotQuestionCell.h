@@ -23,7 +23,7 @@
 
 @property (nonatomic, weak) id<QIMRobotQuestionCellDelegate,QIMMsgBaloonBaseCellDelegate> delegate;
 
-+ (float)cellHeightForMessage:(Message *)msg chatType:(ChatType)chatType;
++ (float)cellHeightForMessage:(QIMMessageModel *)msg chatType:(ChatType)chatType;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier WithChatType:(ChatType)chatType;
 
