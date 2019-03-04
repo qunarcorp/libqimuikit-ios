@@ -50,7 +50,7 @@
     
     self.backView.message = self.message;
     /* Mark by DB
-    if (self.message.messageState != MessageState_didDestroyed) {
+    if (self.message.messageSendState != MessageState_didDestroyed) {
         _titleLabel.text = @"此消息为阅后即焚消息";
         _flagView.image = [UIImage imageNamed:@"fire_icon_receive"];
     }else{
@@ -100,7 +100,7 @@
 - (void)tapHandle:(UITapGestureRecognizer *)tap
 {
     /* Mark by DB
-    if (self.message.messageState == MessageState_didDestroyed) {
+    if (self.message.messageSendState == MessageState_didDestroyed) {
         return;
     }
     if ([self.delegate respondsToSelector:@selector(browserMessage:)]) {

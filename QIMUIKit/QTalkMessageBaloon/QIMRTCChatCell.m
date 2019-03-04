@@ -55,7 +55,7 @@
 }
 
 - (void)tapGesHandle:(UITapGestureRecognizer *)tap{
-    if (self.message.messageState == QIMMessageSendState_Faild) {
+    if (self.message.messageSendState == QIMMessageSendState_Faild) {
         if (self.message.extendInformation) {
             self.message.message = self.message.extendInformation;
         }

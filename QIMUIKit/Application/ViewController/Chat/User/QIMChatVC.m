@@ -1311,12 +1311,13 @@
         realJid = self.chatId;
     } else {
         userId = self.chatId;
+        realJid = self.chatId;
     }
     //取出数据库所有消息，置已读
     count ++;
-    QIMVerboseLog(@"markReadFlag : %d", count);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSArray *markReadMsgList = [[QIMKit sharedInstance] getNotReadMsgIdListByUserId:userId WithRealJid:realJid];
+        QIMVerboseLog(@"markReadMsgList : %d", markReadMsgList);
         if (markReadMsgList.count > 0) {
             [[QIMKit sharedInstance] sendReadStateWithMessagesIdArray:markReadMsgList WithMessageReadFlag:QIMMessageReadFlagDidRead WithXmppId:self.chatId];
         }
@@ -1942,8 +1943,8 @@
     for (Message *msg in self.messageManager.dataSource) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
-            if (msg.messageState < QIMMessageSendState_Success) {
-                msg.messageState = QIMMessageSendState_Success;
+            if (msg.messageSendState < QIMMessageSendState_Success) {
+                msg.messageSendState = QIMMessageSendState_Success;
             }
             break;
         }
@@ -1957,8 +1958,8 @@
     for (Message *msg in self.messageManager.dataSource) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
-            if (msg.messageState < QIMMessageSendState_Faild) {
-                msg.messageState = QIMMessageSendState_Faild;
+            if (msg.messageSendState < QIMMessageSendState_Faild) {
+                msg.messageSendState = QIMMessageSendState_Faild;
             }
             break;
         }
@@ -2061,7 +2062,7 @@
 - (void)BurnAfterReadMsgDestructionNotificationHandle:(NSNotification *)notify {
     /*
     Message *message = notify.object;
-    message.messageState = MessageState_didDestroyed;
+    message.messageSendState = MessageState_didDestroyed;
     message.messageType = QIMMessageType_BurnAfterRead;
     [[QIMKit sharedInstance] updateMsg:message ByJid:self.chatId];
     
@@ -2529,7 +2530,7 @@
     }
     else {
         [msg setTo:self.chatId];
-        [[QIMKit sharedInstance] insertMessageWithMsgId:msg.messageId WithXmppId:self.chatId WithFrom:msg.from WithTo:msg.to WithContent:msg.message WithExtendInfo:msg.extendInformation WithPlatform:msg.platform WithMsgType:msg.messageType WithMsgState:msg.messageState WithMsgDirection:msg.messageDirection WithMsgDate:msg.messageDate WithReadedTag:0 WithMsgRaw:msg.msgRaw WithRealJid:msg.realJid WithChatType:msg.chatType];
+        [[QIMKit sharedInstance] insertMessageWithMsgId:msg.messageId WithXmppId:self.chatId WithFrom:msg.from WithTo:msg.to WithContent:msg.message WithExtendInfo:msg.extendInformation WithPlatform:msg.platform WithMsgType:msg.messageType WithMsgState:msg.messageSendState WithMsgDirection:msg.messageDirection WithMsgDate:msg.messageDate WithReadedTag:0 WithMsgRaw:msg.msgRaw WithRealJid:msg.realJid WithChatType:msg.chatType];
     }
     if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
         [[QIMKit sharedInstance] updateMessageWithExtendInfo:msg.extendInformation ForMsgId:msg.messageId];

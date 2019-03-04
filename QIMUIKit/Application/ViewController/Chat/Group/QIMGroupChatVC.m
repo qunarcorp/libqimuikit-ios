@@ -1116,7 +1116,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                 }];
             } else {
                 [[QIMKit sharedInstance] getMsgListByUserId:self.chatId
-                                                WithRealJid:nil
+                                                WithRealJid:self.chatId
                                                   WithLimit:kPageCount
                                                  WithOffset:0
                                                WithComplete:^(NSArray *list) {
@@ -1446,9 +1446,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         
         if ([[msg messageId] isEqualToString:msgID]) {
             
-            if (msg.messageState < QIMMessageSendState_Success) {
+            if (msg.messageSendState < QIMMessageSendState_Success) {
                 
-                msg.messageState = QIMMessageSendState_Success;
+                msg.messageSendState = QIMMessageSendState_Success;
                 
             }
             break;
@@ -1465,9 +1465,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         //找到对应的msg
         if ([[msg messageId] isEqualToString:msgID]) {
             
-            if (msg.messageState < QIMMessageSendState_Faild) {
+            if (msg.messageSendState < QIMMessageSendState_Faild) {
                 
-                msg.messageState = QIMMessageSendState_Faild;
+                msg.messageSendState = QIMMessageSendState_Faild;
             }
             break;
         }
@@ -1560,7 +1560,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 - (void)BurnAfterReadMsgDestructionNotificationHandle:(NSNotification *)notify {
     /*Mark by DB
     Message *message = notify.object;
-    message.messageState = MessageState_didDestroyed;
+    message.messageSendState = MessageState_didDestroyed;
     message.messageType = QIMMessageType_BurnAfterRead;
     [[QIMKit sharedInstance] updateMsg:message ByJid:self.chatId];
     
@@ -2507,14 +2507,6 @@ static CGPoint tableOffsetPoint;
                 [self scrollToBottomWithCheck:YES];
                 [self addImageToImageList];
                 msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
-            } else if (_replyMsgId) {
-                
-                [[QIMKit sharedInstance] sendReplyMessageId:_replyMsgId
-                                                    WithReplyUser:_replyUser
-                                              WithMessageId:[QIMUUIDTools UUID]
-                                                      WithMessage:text
-                                                        ToGroupId:self.chatId];
-                _replyMsgId = nil;
             } else {
                 
                 msg = [[QIMKit sharedInstance] createMessageWithMsg:text
@@ -2589,14 +2581,6 @@ static CGPoint tableOffsetPoint;
             [self scrollToBottomWithCheck:YES];
             [self addImageToImageList];
             msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
-        } else if (_replyMsgId) {
-            
-            [[QIMKit sharedInstance] sendReplyMessageId:_replyMsgId
-                                                WithReplyUser:_replyUser
-                                          WithMessageId:[QIMUUIDTools UUID]
-                                                  WithMessage:text
-                                                    ToGroupId:self.chatId];
-            _replyMsgId = nil;
         } else {
             
             msg = [[QIMKit sharedInstance] createMessageWithMsg:text
@@ -2693,7 +2677,7 @@ static CGPoint tableOffsetPoint;
                                      WithExtendInfo:msg.extendInformation
                                        WithPlatform:msg.platform
                                         WithMsgType:msg.messageType
-                                       WithMsgState:msg.messageState
+                                       WithMsgState:msg.messageSendState
                                    WithMsgDirection:msg.messageDirection
                                         WithMsgDate:msg.messageDate
                                       WithReadedTag:0
@@ -2839,7 +2823,7 @@ static CGPoint tableOffsetPoint;
     self.loadCount += 1;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[QIMKit sharedInstance] getMsgListByUserId:weakSelf.chatId
-                                        WithRealJid:nil
+                                        WithRealJid:weakSelf.chatId
                                           WithLimit:kPageCount
                                          WithOffset:(int) weakSelf.messageManager.dataSource.count
                                        WithComplete:^(NSArray *list) {

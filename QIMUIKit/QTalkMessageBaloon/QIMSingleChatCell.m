@@ -156,7 +156,7 @@ static double _global_message_cell_width = 0;
 }
 
 - (void)tapHandle:(UITapGestureRecognizer *)tap{
-    if (self.message.messageState == QIMMessageSendState_Faild) {
+    if (self.message.messageSendState == QIMMessageSendState_Faild) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kXmppStreamReSendMessage object:self.message];
         //        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"重发",@"删除", nil];
         //        [actionSheet showInView:[(UIViewController *)self.delegate view]];
@@ -242,8 +242,8 @@ static double _global_message_cell_width = 0;
     NSString * msgID = [notify.object objectForKey:@"messageId"];
     //消息发送成功，更新消息状态
     if ([[self.message messageId] isEqualToString:msgID]) {
-        if (self.message.messageState < QIMMessageSendState_Success) {
-            self.message.messageState = QIMMessageSendState_Success;
+        if (self.message.messageSendState < QIMMessageSendState_Success) {
+            self.message.messageSendState = QIMMessageSendState_Success;
         }
         [self refreshUI];
     }
@@ -360,9 +360,9 @@ static double _global_message_cell_width = 0;
             CGRect frame = {{self.frameWidth - kBackViewCap - backWidth,kBackViewCap},{backWidth,backHeight}};
             [_backView setFrame:frame];
             NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
-//            if (self.message.messageState == QIMMessageSendState_Success || self.message.messageState == MessageState_didRead || self.message.messageState == MessageState_none) {
+//            if (self.message.messageSendState == QIMMessageSendState_Success || self.message.messageSendState == MessageState_didRead || self.message.messageSendState == MessageState_none) {
             //Mark by DB
-            if (self.message.messageState == QIMMessageSendState_Success) {
+            if (self.message.messageSendState == QIMMessageSendState_Success) {
 
                 if (self.textContainer.textStorages.count > 0 && [self hasTextWithArray:self.textContainer.textStorages]) {
                     
@@ -379,10 +379,10 @@ static double _global_message_cell_width = 0;
 //            [_textLabel setTextColor:[UIColor qim_rightBallocFontColor]];
             [_backView setImage:[QIMMsgBaloonBaseCell rightBallcoImage]];
             //            dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.message.messageState == QIMMessageSendState_Waiting) {
+            if (self.message.messageSendState == QIMMessageSendState_Waiting) {
                 _actIndView.frame = CGRectMake(_backView.left - 30, _backView.bottom - 35, 30, 30);
                 [_actIndView startAnimating];
-            }else if(self.message.messageState == QIMMessageSendState_Faild){
+            }else if(self.message.messageSendState == QIMMessageSendState_Faild){
                 _msgSendFailedImageView.frame = CGRectMake(_backView.left - 30, _backView.bottom - 35, 30, 30);
                 _msgSendFailedImageView.hidden = NO;
             }else{

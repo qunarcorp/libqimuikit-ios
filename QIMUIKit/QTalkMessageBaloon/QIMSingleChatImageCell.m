@@ -150,7 +150,7 @@
         
         CGFloat backWidth = width + kMsgImageViewLeft * 2 + 5, backHeight = height + kMsgImageViewTop * 2;
         
-        switch (self.message.messageState) {
+        switch (self.message.messageSendState) {
             case QIMMessageSendState_Waiting:
             {
                 [_errorButton setHidden:YES];
@@ -195,7 +195,7 @@
             [_backView setFrame:frame];
             [_backView setImage:[[QIMSingleChatImageTools sharedInstance] getSentBg]];
             
-            [_errorButton setHidden:self.message.messageState != QIMMessageSendState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
             CGRect errorFrame = _errorButton.frame;
             errorFrame.origin.x = _backView.frame.origin.x - kBackViewCap - errorFrame.size.width;
             errorFrame.origin.y = _backView.frame.origin.y;
