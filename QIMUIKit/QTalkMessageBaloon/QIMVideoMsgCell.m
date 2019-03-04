@@ -27,7 +27,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     
 }
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType {
     if (message.extendInformation.length > 0) {
         message.message = message.extendInformation;
     }
@@ -91,7 +91,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
 
 - (void)updateProgress:(NSNotification *)notify{
     NSDictionary *infoDic = [notify object];
-    Message *message = [infoDic objectForKey:@"message"];
+   QIMMessageModel *message = [infoDic objectForKey:@"message"];
     float progress = [[infoDic objectForKey:@"propress"] floatValue];
     NSString * status = [infoDic objectForKey:@"status"];
     if (__uploading_progress_dic == nil) {

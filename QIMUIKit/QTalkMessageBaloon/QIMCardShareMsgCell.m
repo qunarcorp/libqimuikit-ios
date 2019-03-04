@@ -30,7 +30,7 @@
 
 @implementation QIMCardShareMsgCell
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
     return kCardCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == QIMMessageDirection_Received) ? 40 : 20);
 }

@@ -154,7 +154,7 @@ CGFloat maxFullContentHeight = 0;
     CGFloat bottom = self.headImageView.bottom;
     
     NSString *texg = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.moment.content.content];
-    Message *msg = [[Message alloc] init];
+   QIMMessageModel *msg = [[QIMMessageModel alloc] init];
     msg.message = texg;
     msg.messageId = self.moment.momentId;
     QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];

@@ -194,7 +194,6 @@ const float colormatrix_yese[] = {
     
     UIButton * cancelBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     cancelBtn.frame = CGRectMake(0, 12, 50, 20);
-//    [NSBundle qim_localizedStringForKey:@"common_cancel"];
     [cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"common_cancel"] forState:UIControlStateNormal];
     [cancelBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [cancelBtn addTarget:self action:@selector(cancelBtnHandle:) forControlEvents:UIControlEventTouchUpInside];

@@ -50,8 +50,8 @@ static UIImage *__rightBallocImage = nil;
 
 #pragma mark - setter and getter
 
-- (void)setMessage:(Message *)message {
-    Message *tempMsg = _message;
+- (void)setMessage:(QIMMessageModel *)message {
+   QIMMessageModel *tempMsg = _message;
     _message = message;
     [self updateNameLabel];
     [self refreshHeaderView];
@@ -223,7 +223,7 @@ static UIImage *__rightBallocImage = nil;
     [self.HeadView addGestureRecognizer:longGes];
 }
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message  chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message  chatType:(ChatType)chatType{
     @throw  [NSException exceptionWithName:@"QIMMsgBaloonBaseCell Exception" reason:[NSString stringWithFormat:@"Class %@ \"getCellHeightWithMessage\" method has not realized ",[self class]] userInfo:nil];
 }
 

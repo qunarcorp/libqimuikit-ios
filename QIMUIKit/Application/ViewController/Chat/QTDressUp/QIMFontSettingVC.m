@@ -132,7 +132,7 @@
 - (void)initPlaceholder{
     if (_chatDatasource == nil) {
         _chatDatasource = [NSMutableArray arrayWithCapacity:1];
-        Message * msg = [Message new];
+       QIMMessageModel * msg = [QIMMessageModel new];
         msg.messageId = [QIMUUIDTools UUID];
         msg.messageType = QIMMessageType_Text;
         msg.message = [NSBundle qim_localizedStringForKey:@"Preview_text_size"];
@@ -140,7 +140,7 @@
         msg.nickName = [QIMKit getLastUserName];
         [_chatDatasource addObject:msg];
         
-        Message * msg1 = [Message new];
+       QIMMessageModel * msg1 = [QIMMessageModel new];
         msg1.messageId = [QIMUUIDTools UUID];
         msg1.messageType = QIMMessageType_Text;
         msg1.message = [NSBundle qim_localizedStringForKey:@""];
@@ -149,7 +149,7 @@
         msg1.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
         [_chatDatasource addObject:msg1];
         
-        Message * msg2 = [Message new];
+       QIMMessageModel * msg2 = [QIMMessageModel new];
         msg2.messageId = [QIMUUIDTools UUID];
         msg2.messageType = QIMMessageType_Text;
         msg2.message = [NSBundle qim_localizedStringForKey:@"Text_Size_FeedBack"];
@@ -157,7 +157,7 @@
         msg2.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
         [_chatDatasource addObject:msg2];
         
-        Message * msg3 = [Message new];
+       QIMMessageModel * msg3 = [QIMMessageModel new];
         msg3.messageId = [QIMUUIDTools UUID];
         msg3.messageType = QIMMessageType_Text;
         msg3.message = [NSBundle qim_localizedStringForKey:@"thanks"];
@@ -329,7 +329,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (tableView == _chatTableView) {
-        Message * message = [_chatDatasource objectAtIndex:indexPath.row];
+       QIMMessageModel * message = [_chatDatasource objectAtIndex:indexPath.row];
         QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
         return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + (message.messageDirection == QIMMessageDirection_Sent ? 30 : 60);
     }else if (tableView == _sessionTableView){
@@ -340,7 +340,7 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (tableView == _chatTableView) {
-        Message * message = [_chatDatasource objectAtIndex:indexPath.row];
+       QIMMessageModel * message = [_chatDatasource objectAtIndex:indexPath.row];
         NSString *cellIdentifier = [NSString stringWithFormat:@"Cell text %@",@(message.messageDirection)];
         QIMGroupChatCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         if (cell == nil) {
@@ -373,7 +373,7 @@
 
 #pragma mark - QIMSliderViewDelegate
 -(void)sliderView:(QIMSliderView *)slider didChangeSelectedValue:(NSInteger)index{
-    for (Message * msg in _chatDatasource) {
+    for (QIMMessageModel * msg in _chatDatasource) {
         [[QIMMessageCellCache sharedInstance] removeObjectForKey:msg.messageId];
     }
     [_chatTableView reloadData];

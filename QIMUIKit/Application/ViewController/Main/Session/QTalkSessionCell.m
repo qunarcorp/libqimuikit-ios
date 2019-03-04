@@ -77,7 +77,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 @property (nonatomic, copy) NSString *markUpName;
 
-@property (nonatomic, strong) Message *currentMsg;          //当前消息
+@property (nonatomic, strong)QIMMessageModel *currentMsg;          //当前消息
 
 @property (nonatomic, strong) dispatch_queue_t reloadNotReadCountQueue;
 
@@ -693,7 +693,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if ([userId isEqualToString:self.jid]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.firstRefresh = NO;
-            Message *msg = (Message *)[notify.userInfo objectForKey:@"message"];
+           QIMMessageModel *msg = (QIMMessageModel *)[notify.userInfo objectForKey:@"message"];
             [self refreshContentWithMessage:msg.message];
             [self refreshTimeLabelWithTime:msg.messageDate];
         });

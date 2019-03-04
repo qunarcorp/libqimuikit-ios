@@ -8,22 +8,22 @@
 
 #import "QIMCommonUIFramework.h"
 
-@class Message;
+@class QIMMessageModel;
 @class QIMAttributedLabel;
 @class QIMTextContainer;
 @interface QIMMessageParser : NSObject
 
 + (instancetype) sharedInstance;
-+ (QIMAttributedLabel *)attributedLabelForMessage:(Message *)message;
-+ (QIMTextContainer *)textContainerForMessage:(Message *)message;
-+ (QIMTextContainer *)textContainerForMessage:(Message *)message fromCache:(BOOL)fromCache;
++ (QIMAttributedLabel *)attributedLabelForMessage:(QIMMessageModel *)message;
++ (QIMTextContainer *)textContainerForMessage:(QIMMessageModel *)message;
++ (QIMTextContainer *)textContainerForMessage:(QIMMessageModel *)message fromCache:(BOOL)fromCache;
 + (QIMTextContainer *)textContainerForMessageCtnt:(NSString *)ctnt withId:(NSString *)signId direction:(QIMMessageDirection)direction;
 
-+ (NSArray *)storagesFromMessage:(Message *)message;
++ (NSArray *)storagesFromMessage:(QIMMessageModel *)message;
 
 + (float)getCellWidth;
 
-+ (Message *)reductionMessageForMessage:(Message *)message;
++ (QIMMessageModel *)reductionMessageForMessage:(QIMMessageModel *)message;
              
 - (void)parseForXMLString:(NSString *)xmlStr complete:(void (^)(NSDictionary * info))complete;
 

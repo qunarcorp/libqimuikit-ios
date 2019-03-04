@@ -43,7 +43,7 @@
 @implementation QIMGroupChatCell
 @dynamic delegate;
 
-- (void)setMessage:(Message *)aMessage {
+- (void)setMessage:(QIMMessageModel *)aMessage {
     [super setMessage:aMessage];
     _textContainer = nil;
     if (aMessage) {
@@ -118,7 +118,7 @@
 
 - (void)applicationFileManagerUpdate:(NSNotification *)notify {
     NSDictionary * infoDic = notify.object;
-    Message * message = [infoDic objectForKey:@"message"];
+   QIMMessageModel * message = [infoDic objectForKey:@"message"];
     float propress = [[infoDic objectForKey:@"propress"] floatValue];
     NSString * status = [infoDic objectForKey:@"status"];
     if ([message.messageId isEqualToString:self.message.messageId] || [message.messageId isEqualToString:_imageMd5]) {

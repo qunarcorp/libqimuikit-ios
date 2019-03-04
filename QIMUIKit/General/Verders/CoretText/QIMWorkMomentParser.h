@@ -10,17 +10,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class Message;
+@class QIMMessageModel;
 @class QIMAttributedLabel;
 @class QIMTextContainer;
 @interface QIMWorkMomentParser : NSObject
 
 + (instancetype) sharedInstance;
-+ (QIMTextContainer *)textContainerForMessage:(Message *)message fromCache:(BOOL)fromCache withCellWidth:(CGFloat)cellWidth withFontSize:(CGFloat)fontSize withFontColor:(UIColor *)textColor withNumberOfLines:(NSInteger)numberOfLines;
++ (QIMTextContainer *)textContainerForMessage:(QIMMessageModel *)message fromCache:(BOOL)fromCache withCellWidth:(CGFloat)cellWidth withFontSize:(CGFloat)fontSize withFontColor:(UIColor *)textColor withNumberOfLines:(NSInteger)numberOfLines;
 
-+ (NSArray *)storagesFromMessage:(Message *)message;
++ (NSArray *)storagesFromMessage:(QIMMessageModel *)message;
 
-+ (Message *)reductionMessageForMessage:(Message *)message;
++ (QIMMessageModel *)reductionMessageForMessage:(QIMMessageModel *)message;
             
 - (void)parseForXMLString:(NSString *)xmlStr complete:(void (^)(NSDictionary * info))complete;
 

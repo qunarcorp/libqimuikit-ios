@@ -38,7 +38,7 @@ static NSMutableArray *_myFavoritesArray = nil;
     return _myFavoritesArray;
 }
 
-- (void)setMyFavoritesArrayWithMsg:(Message *)message {
+- (void)setMyFavoritesArrayWithMsg:(QIMMessageModel *)message {
     
     message.messageDirection = QIMMessageDirection_Received;
     

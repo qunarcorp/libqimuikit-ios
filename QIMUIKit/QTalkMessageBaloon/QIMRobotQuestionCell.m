@@ -64,11 +64,11 @@
 @implementation QIMRobotQuestionCell
 @dynamic delegate;
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)msg chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)msg chatType:(ChatType)chatType {
     return [self consultRbtCellHeightForMsg:msg];
 }
 
-+ (CGFloat)consultRbtCellHeightForMsg:(Message *)msg {
++ (CGFloat)consultRbtCellHeightForMsg:(QIMMessageModel *)msg {
     CGFloat screenW = [UIScreen mainScreen].bounds.size.width;
     CGFloat maxWidth = screenW - 2*kIMChatMargin;
     float cellHeight = 0;
@@ -202,7 +202,7 @@
     return self;
 }
 
-- (void)setMessage:(Message *)message {
+- (void)setMessage:(QIMMessageModel *)message {
     [super setMessage:message];
     _hintContainer = [[QIMMessageCellCache sharedInstance] getObjectForKey:[message.messageId stringByAppendingString:@"_hints"]];
     NSString * jsonStr = self.message.extendInformation ? self.message.extendInformation : self.message.message;

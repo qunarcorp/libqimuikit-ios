@@ -36,13 +36,13 @@
 
 @implementation QIMRobotAnswerCell
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType {
     
     NSDictionary *exTrdDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
     NSString *content = [exTrdDic objectForKey:@"content"];
     CGFloat cellHeight = 0.0f;
     if (content.length) {
-        Message *contentMsg = [[Message alloc] init];
+       QIMMessageModel *contentMsg = [[QIMMessageModel alloc] init];
         contentMsg.message = content;
         contentMsg.messageId = [NSString stringWithFormat:@"%@_content", message.messageId];
         contentMsg.messageDirection = message.messageDirection;
@@ -57,7 +57,7 @@
     } else {
         NSString *middleContent = [exTrdDic objectForKey:@"middleContent"];
         if (middleContent.length) {
-            Message *middleContentMsg = [[Message alloc] init];
+           QIMMessageModel *middleContentMsg = [[QIMMessageModel alloc] init];
             middleContentMsg.message = middleContent;
             middleContentMsg.messageId = [NSString stringWithFormat:@"%@_middleContent", message.messageId];
             middleContentMsg.messageDirection = message.messageDirection;
@@ -124,7 +124,7 @@
     
     NSDictionary *exTrdDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.extendInformation error:nil];
     NSString *msgContent = [exTrdDic objectForKey:@"content"];
-    Message *contentMsg = [[Message alloc] init];
+   QIMMessageModel *contentMsg = [[QIMMessageModel alloc] init];
     contentMsg.message = msgContent;
     contentMsg.messageId = [NSString stringWithFormat:@"%@_content", self.message.messageId];
     contentMsg.messageDirection = self.message.messageDirection;
@@ -152,7 +152,7 @@
         [self.panelBgView addSubview:self.lineView];
         
         NSString *middleContent = [exTrdDic objectForKey:@"middleContent"];
-        Message *middleContentMsg = [[Message alloc] init];
+       QIMMessageModel *middleContentMsg = [[QIMMessageModel alloc] init];
         middleContentMsg.message = middleContent;
         middleContentMsg.messageId = [NSString stringWithFormat:@"%@_middleContent", self.message.messageId];
         middleContentMsg.messageDirection = self.message.messageDirection;

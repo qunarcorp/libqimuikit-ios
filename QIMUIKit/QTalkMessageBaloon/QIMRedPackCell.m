@@ -25,7 +25,7 @@
 
 @implementation QIMRedPackCell
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message  chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message  chatType:(ChatType)chatType{
     return  [QIMRedPackCell redPackCellWidth] * 4 / 9 + ((chatType == ChatType_GroupChat) && (message.messageDirection == QIMMessageDirection_Received) ? 25 : 0) + 10;
 }
 

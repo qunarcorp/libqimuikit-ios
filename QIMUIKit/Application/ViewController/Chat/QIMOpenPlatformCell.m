@@ -24,7 +24,7 @@
     UIView *_lineView;
 }
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message{
     NSDictionary *msgDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
     NSString *content = [msgDic objectForKey:@"detail"];
     CGSize contentSize = [content sizeWithFont:[UIFont systemFontOfSize:16] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width - 40, INT32_MAX) lineBreakMode:NSLineBreakByCharWrapping];

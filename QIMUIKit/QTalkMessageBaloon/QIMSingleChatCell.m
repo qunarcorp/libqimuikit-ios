@@ -45,7 +45,7 @@ static double _global_message_cell_width = 0;
 
 #pragma mark - setter and getter
 
-- (void)setMessage:(Message *)message {
+- (void)setMessage:(QIMMessageModel *)message {
     _message = message;
     _textContainer = [QIMMessageParser textContainerForMessage:message];
 }
@@ -115,7 +115,7 @@ static double _global_message_cell_width = 0;
 - (void)applicationFileManagerUpdate : (NSNotification *)notify
 {
     NSDictionary * infoDic = notify.object;
-    Message * message = [infoDic objectForKey:@"message"];
+   QIMMessageModel * message = [infoDic objectForKey:@"message"];
     float propress = [[infoDic objectForKey:@"propress"] floatValue];
     NSString * status = [infoDic objectForKey:@"status"];
     if ([message.messageId isEqualToString:self.message.messageId]) {

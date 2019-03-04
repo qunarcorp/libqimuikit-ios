@@ -29,7 +29,7 @@
 
 @implementation QIMRTCChatCell
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
     return kRTCCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == QIMMessageDirection_Received) ? 40 : 20);
 }

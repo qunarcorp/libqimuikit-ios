@@ -112,10 +112,10 @@
     id temp = [self.dataSource objectAtIndex:indexPath.row];
     if ([temp isKindOfClass:[NSString class]]) {
         
-    } else if (![temp isKindOfClass:[Message class]]) {
+    } else if (![temp isKindOfClass:[QIMMessageModel class]]) {
         
     } else {
-        Message *message = temp;
+       QIMMessageModel *message = temp;
         NSString *msgContent = message.message;
         NSString *extendInfo = message.extendInformation;
         switch (message.messageType) {
@@ -259,14 +259,14 @@
         if (!self.forwardSelectedMsgs) {
             self.forwardSelectedMsgs = [[NSMutableSet alloc] initWithCapacity:5];
         }
-        Message *msg = [self.dataSource objectAtIndex:indexPath.row];
+       QIMMessageModel *msg = [self.dataSource objectAtIndex:indexPath.row];
         if ([self.canForwardMsgTypeArray containsObject:@(msg.messageType)]) {
             [self.forwardSelectedMsgs addObject:msg];
         }
         [self updateForwardBtnState];
         return;
     }
-    Message *msg = [self.dataSource objectAtIndex:indexPath.row];
+   QIMMessageModel *msg = [self.dataSource objectAtIndex:indexPath.row];
     
     switch (msg.messageType) {
         case QIMMessageType_RedPack:
@@ -433,7 +433,7 @@
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView.editing) {
-        Message *msg = [self.dataSource objectAtIndex:indexPath.row];
+       QIMMessageModel *msg = [self.dataSource objectAtIndex:indexPath.row];
         if (!self.forwardSelectedMsgs) {
             self.forwardSelectedMsgs = [[NSMutableSet alloc] initWithCapacity:5];
         }
@@ -450,7 +450,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger row = [indexPath row];
-    Message *msg = [self.dataSource objectAtIndex:indexPath.row];
+   QIMMessageModel *msg = [self.dataSource objectAtIndex:indexPath.row];
     if (tableView.editing) {
         if (!self.forwardSelectedMsgs) {
             self.forwardSelectedMsgs = [[NSMutableSet alloc] initWithCapacity:5];
@@ -464,7 +464,7 @@
     /*
     if (row < self.dataSource.count) {
         
-        Message *message = [self.dataSource objectAtIndex:indexPath.row];
+       QIMMessageModel *message = [self.dataSource objectAtIndex:indexPath.row];
         if (message.messageType == QIMMessageType_Text) {
             if (message.readTag != 1) {
                 [[QIMEmotionSpirits sharedInstance] playQIMEmotionSpiritsWithMessage:message.message];
@@ -487,7 +487,7 @@
     }
     BOOL isvisable = [[tableView indexPathsForVisibleRows] containsObject:indexPath];
     id temp = [self.dataSource objectAtIndex:row];
-    Message *message = temp;
+   QIMMessageModel *message = temp;
 //    QIMVerboseLog(@"解密会话状态 : %lu,   %d", (unsigned long)[[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId], message.messageType);
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
     if (([[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId] > QIMEncryptChatStateNone) && message.messageType == QIMMessageType_Encrypt) {
@@ -1006,7 +1006,7 @@
     }
     if (tableView.editing) {
         id temp = [self.dataSource objectAtIndex:indexPath.row];
-        Message *message = temp;
+       QIMMessageModel *message = temp;
         if ([self.canForwardMsgTypeArray containsObject:@(message.messageType)]) {
             return YES;
         }
@@ -1016,7 +1016,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     id temp = [self.dataSource objectAtIndex:indexPath.row];
-    Message *message = temp;
+   QIMMessageModel *message = temp;
     QIMVerboseLog(@"commit msg : %@", message);
 }
 

@@ -53,7 +53,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
     return kCellWidth;
 }
 
-+ (QIMAttributedLabel *)attributedLabelForMessage:(Message *)message {
++ (QIMAttributedLabel *)attributedLabelForMessage:(QIMMessageModel *)message {
     NSArray * storages = [self storagesFromMessage:message];
     QIMAttributedLabel *label = [[QIMMessageCellCache sharedInstance] getObjectForKey:message.messageId];
     [label appendTextStorageArray:storages];
@@ -63,11 +63,11 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
     return label;
 }
 
-+ (QIMTextContainer *)textContainerForMessage:(Message *)message {
++ (QIMTextContainer *)textContainerForMessage:(QIMMessageModel *)message {
     return [self textContainerForMessage:message fromCache:YES];
 }
 
-+ (QIMTextContainer *)textContainerForMessage:(Message *)message fromCache:(BOOL)fromCache{
++ (QIMTextContainer *)textContainerForMessage:(QIMMessageModel *)message fromCache:(BOOL)fromCache{
     if (message == nil) {
         return nil;
     }
@@ -275,7 +275,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
     return storages;
 }
 
-+ (NSArray *)storagesFromMessage:(Message *)message {
++ (NSArray *)storagesFromMessage:(QIMMessageModel *)message {
     return [self storagesWithContent:message.message WithMsgId:message.messageId WithDirection:message.messageDirection];
 }
 
@@ -428,8 +428,8 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
     }
 }
 
-+ (Message *)reductionMessageForMessage:(Message *)message {
-    Message * newMsg = message;
++ (QIMMessageModel *)reductionMessageForMessage:(QIMMessageModel *)message {
+   QIMMessageModel * newMsg = message;
     NSString * parseStr = message.extendInformation.length ? message.extendInformation : message.message;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:parseStr error:nil];
     switch (message.messageType) {

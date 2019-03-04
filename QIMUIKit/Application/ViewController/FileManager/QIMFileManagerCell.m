@@ -19,7 +19,7 @@
     UILabel                 * _descLabel;//显示时间 联系人
     UILabel                 * _statusLabel;
     
-    Message                 * _message;
+    QIMMessageModel                 * _message;
     BOOL                    _selected;
     UIImageView             * _selectBtn;
 }
@@ -75,7 +75,7 @@
     return self;
 }
 
-- (void)setCellMessage:(Message *)message
+- (void)setCellMessage:(QIMMessageModel *)message
 {
     _message = message;
     

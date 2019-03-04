@@ -30,7 +30,7 @@
 
 @implementation QIMLocationShareMsgCell
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
     return kQIMLocationShareMsgCellHeight + 20 + (chatType == ChatType_GroupChat ? 20 : 0);
 }

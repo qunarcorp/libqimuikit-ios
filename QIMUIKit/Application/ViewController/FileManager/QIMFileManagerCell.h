@@ -10,7 +10,7 @@
 
 @interface QIMFileManagerCell : UITableViewCell
 
-- (void)setCellMessage:(Message *)message;
+- (void)setCellMessage:(QIMMessageModel *)message;
 
 @property (nonatomic,assign) BOOL isSelect;//是否是可选的
 

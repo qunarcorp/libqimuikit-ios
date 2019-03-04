@@ -23,7 +23,7 @@
 
 + (CGFloat)getCellHeight;
 
-- (void)setMessage:(Message *)message;
+- (void)setMessage:(QIMMessageModel *)message;
 
 - (void)refreshUI;
 
