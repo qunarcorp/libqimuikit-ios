@@ -1212,8 +1212,6 @@
 
 - (void)selectIndexPathRow:(NSInteger )index {
     QIMVerboseLog(@"右上角快捷入口%s , %ld", __func__, index);
-    [[QIMKit sharedInstance] updateSessionListCount];
-    /*
     NSString *moreActionId = [self.moreActionArray objectAtIndex:index];
     if ([moreActionId isEqualToString:@"扫一扫"]) {
         [QIMFastEntrance openQRCodeVC];
@@ -1230,7 +1228,6 @@
     } else {
         
     }
-     */
 }
 
 #if defined (QIMNotifyEnable) && QIMNotifyEnable == 1

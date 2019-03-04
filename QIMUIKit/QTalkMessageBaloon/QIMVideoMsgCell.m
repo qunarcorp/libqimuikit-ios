@@ -110,7 +110,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
             [_progressView setProgress:progress];
         }
         if ([status isEqualToString:@"failed"]) {
-            self.message.messageState = QIMMessageSendState_Faild;
+            self.message.messageSendState = QIMMessageSendState_Faild;
             [self refreshUI];
         }
     }

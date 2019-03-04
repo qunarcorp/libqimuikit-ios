@@ -69,22 +69,33 @@ static UIImage *__rightBallocImage = nil;
         [self initBackViewAndHeaderName];
         [self setupGestureRecognizer];
         //消息发送成功
-        
+        /*
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msgDidSendNotificationHandle:) name:kXmppStreamDidSendMessage object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshHeaderView) name:kUserHeaderImgUpdate object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStateByNotification:) name:kNotificationMessageStateUpdate object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshUserCard:) name:kUserVCardUpdate object:nil];
+        */
+        
+        //刷新用户头像
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshHeaderView) name:kUserHeaderImgUpdate object:nil];
+        //消息发送状态变更
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageSendStateByNotification:) name:kNotificationMessageSendStateUpdate object:nil];
+        //消息阅读状态变更
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageReadStateByNotification:) name:kNotificationMessageReadStateUpdate object:nil];
+        //用户名片更新
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshUserCard:) name:kUserVCardUpdate object:nil];
     }
     return self;
 }
 
+/* Mark by DB
 - (void)msgDidSendNotificationHandle:(NSNotification *)notify {
     NSString * msgID = [notify.object objectForKey:@"messageId"];
     
     //消息发送成功，更新消息状态
     if ([[self.message messageId] isEqualToString:msgID]) {
-        if (self.message.messageState < QIMMessageSendState_Success) {
-            self.message.messageState = QIMMessageSendState_Success;
+        if (self.message.messageSendState < QIMMessageSendState_Success) {
+            self.message.messageSendState = QIMMessageSendState_Success;
         }
         [self refreshUI];
     }
@@ -98,8 +109,8 @@ static UIImage *__rightBallocImage = nil;
             NSString *msgId = [msgDict objectForKey:@"id"];
             QIMMessageSendState state = (QIMMessageSendState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
             if ([msgId isEqualToString:self.message.messageId]) {
-                if (state > self.message.messageState) {
-                    self.message.messageState = state;
+                if (state > self.message.messageSendState) {
+                    self.message.messageSendState = state;
                 }
                 [self updateMessageState];
                 [[QIMKit sharedInstance] updateMsgReadCompensateSetWithMsgId:msgId WithAddFlag:NO WithState:state];
@@ -116,13 +127,42 @@ static UIImage *__rightBallocImage = nil;
             NSString *MsgId = [msgCompensateDic objectForKey:@"MsgId"];
             QIMMessageSendState state = (QIMMessageSendState)[[msgCompensateDic objectForKey:@"State"] unsignedIntegerValue];
             if ([MsgId isEqualToString:self.message.messageId]) {
-                if (state > self.message.messageState) {
-                    self.message.messageState = state;
+                if (state > self.message.messageSendState) {
+                    self.message.messageSendState = state;
                 }
                 [self updateMessageState];
                 [[QIMKit sharedInstance] updateMsgReadCompensateSetWithMsgId:MsgId WithAddFlag:NO WithState:state];
                 break;
             }
+        }
+    });
+}
+*/
+- (void)updateMessageReadStateByNotification:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *notifyDic = notify.object;
+        NSArray *msgIds = [notifyDic objectForKey:@"MsgIds"];
+        for (NSDictionary *msgDict in msgIds) {
+            NSString *msgId = [msgDict objectForKey:@"id"];
+            QIMMessageRemoteReadState state = (QIMMessageRemoteReadState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
+            if ([msgId isEqualToString:self.message.messageId]) {
+                self.message.messageReadState = state;
+                [self updateMessageReadState];
+            }
+        }
+    });
+}
+
+- (void)updateMessageSendStateByNotification:(NSNotification *)notify {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *notifyDic = notify.object;
+        QIMMessageSendState sendState = [[notifyDic objectForKey:@"MsgSendState"] unsignedIntegerValue];
+        NSString *msgId = [notifyDic objectForKey:@"messageId"];
+        if ([msgId isEqualToString:self.message.messageId]) {
+            self.message.messageSendState = sendState;
+            [self updateMessageSendState];
+            [self updateMessageReadState];
         }
     });
 }
@@ -262,7 +302,8 @@ static UIImage *__rightBallocImage = nil;
         default:
             break;
     }
-    [self updateMessageState];
+    [self updateMessageSendState];
+    [self updateMessageReadState];
     float moveSpace = 38;
     CGRect rect = self.backView.frame;
     if (self.editing) {
@@ -333,7 +374,46 @@ static UIImage *__rightBallocImage = nil;
     }
 }
 
-- (void)updateMessageState {
+//更新消息阅读状态
+- (void)updateMessageReadState {
+    if (self.message.messageDirection == QIMMessageDirection_Sent && self.message.messageSendState == QIMMessageSendState_Success) {
+        if ([[[QIMKit sharedInstance] qimNav_getDebugers] containsObject:[QIMKit getLastUserName]]) {
+            self.messgaeRealStateLabel.frame = CGRectMake(self.backView.left - 80, self.backView.top, 70, 24);
+            [self.contentView addSubview:self.messgaeRealStateLabel];
+        }
+        BOOL readFlag = (self.message.messageReadState & QIMMessageRemoteReadStateDidReaded) == QIMMessageRemoteReadStateDidReaded;
+//        QIMVerboseLog(@"ReadFlag : %ld", readFlag);
+        if (readFlag) {
+            [self.indicatorView stopAnimating];
+            self.indicatorView.hidden = YES;
+            self.messgaeStateLabel.hidden = NO;
+            self.messgaeStateLabel.text = @"已读";
+            self.messgaeStateLabel.textColor = [UIColor lightGrayColor];
+            self.statusButton.hidden = YES;
+        } else {
+            
+            BOOL sentFlag = (self.message.messageReadState & QIMMessageRemoteReadStateDidSent) == QIMMessageRemoteReadStateDidSent;
+            if (sentFlag) {
+                [self.indicatorView stopAnimating];
+                self.indicatorView.hidden = YES;
+                self.messgaeStateLabel.hidden = NO;
+                self.statusButton.hidden = YES;
+                self.messgaeStateLabel.text = @"未读";
+                self.messgaeStateLabel.textColor = [UIColor qim_colorWithHex:0x15b0f9 alpha:1.0];
+            } else {
+                [self.indicatorView stopAnimating];
+                self.indicatorView.hidden = YES;
+                self.messgaeStateLabel.hidden = NO;
+                self.statusButton.hidden = YES;
+                self.messgaeStateLabel.text = @"已送达";
+                self.messgaeStateLabel.textColor = [UIColor qim_colorWithHex:0x15b0f9 alpha:1.0];
+            }
+        }
+    }
+}
+
+//更新消息发送状态
+- (void)updateMessageSendState {
     if (self.chatType == ChatType_PublicNumber) {
         return;
     }
@@ -343,13 +423,9 @@ static UIImage *__rightBallocImage = nil;
             if ([[QIMKit sharedInstance] qimNav_Showmsgstat]) {
                 [self.contentView addSubview:self.messgaeStateLabel];
             }
-            if ([[[QIMKit sharedInstance] qimNav_getDebugers] containsObject:[QIMKit getLastUserName]]) {
-                self.messgaeRealStateLabel.frame = CGRectMake(self.backView.left - 80, self.backView.top, 70, 24);
-                [self.contentView addSubview:self.messgaeRealStateLabel];
-            }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            switch (self.message.messageState) {
+            switch (self.message.messageSendState) {
                 case QIMMessageSendState_Waiting: {
                     self.indicatorView.center = CGPointMake(self.backView.left - 24, self.backView.centerY);
                     [self.contentView addSubview:self.indicatorView];
@@ -358,7 +434,6 @@ static UIImage *__rightBallocImage = nil;
                 }
                     break;
                 case QIMMessageSendState_Faild: {
-//                    QIMVerboseLog(@"消息发送失败 : %@", self.message);
                     self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"消息发送失败 %@", self.message.messageId];
                     [self.indicatorView stopAnimating];
                     self.indicatorView.hidden = YES;
@@ -367,53 +442,11 @@ static UIImage *__rightBallocImage = nil;
                     [self.contentView addSubview:self.statusButton];
                 }
                     break;
-                    /* Mark By DB
-                case MessageState_NotRead: {
-//                    QIMVerboseLog(@"已发送至对方用户，但未读 : 【%@】", self.message.messageId);
-                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"%@-%@", @"已发送至对方用户，但未读", self.message.messageId];
-                    
-                    [self.indicatorView stopAnimating];
-                    self.indicatorView.hidden = YES;
-                    self.messgaeStateLabel.hidden = NO;
-                    self.statusButton.hidden = YES;
-                    self.messgaeStateLabel.text = @"未读";
-                    self.messgaeStateLabel.textColor = [UIColor qim_colorWithHex:0x15b0f9 alpha:1.0];
-                }
-                    break;
-                case MessageState_didRead: {
-//                    QIMVerboseLog(@"对方已读 : 【%@】", self.message.messageId);
-                    self.messgaeRealStateLabel.text = @"对方已读";
-                    
-                    [self.indicatorView stopAnimating];
-                    self.indicatorView.hidden = YES;
-                    self.messgaeStateLabel.hidden = NO;
-                    self.messgaeStateLabel.text = @"已读";
-                    self.messgaeStateLabel.textColor = [UIColor lightGrayColor];
-                    self.statusButton.hidden = YES;
-                }
-                    break;
-                case MessageState_none: {
-                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"未读None_%@", self.message.messageId];
-                    
-                    [self.indicatorView stopAnimating];
-                    self.indicatorView.hidden = YES;
-                    self.statusButton.hidden = YES;
-                    self.messgaeStateLabel.hidden = NO;
-                    self.messgaeStateLabel.text = @"未读";
-                    self.messgaeStateLabel.textColor = [UIColor qim_colorWithHex:0x15b0f9 alpha:1.0];
-                }
-                    break;
-                    */
                 case QIMMessageSendState_Success: {
-//                    QIMVerboseLog(@"已送达至服务器，对方用户还没接收 : 【%@】", self.message.messageId);
-                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"%@-%@", @"已送达至服务器，对方用户还没接收", self.message.messageId];
-                    
+                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"%@-%@", @"发送成功", self.message.messageId];
                     self.statusButton.hidden = YES;
                     [self.indicatorView stopAnimating];
                     self.indicatorView.hidden = YES;
-                    self.messgaeStateLabel.hidden = NO;
-                    self.messgaeStateLabel.text = @"未读";
-                    self.messgaeStateLabel.textColor = [UIColor qim_colorWithHex:0x15b0f9 alpha:1.0];
                 }
                     break;
                 default: {
@@ -425,10 +458,10 @@ static UIImage *__rightBallocImage = nil;
             }
         });
     } else {
-        /* Mark by DB
-        switch (self.message.messageState) {
-            case MessageState_didRead: {
-//                QIMVerboseLog(@"接收到的消息【%@】已读", self.message.messageId);
+        /*
+        switch (self.message.messageSendState) {
+            case QIMMessageSendState_didRead: {
+                //                QIMVerboseLog(@"接收到的消息【%@】已读", self.message.messageId);
             }
                 break;
             default:
@@ -481,7 +514,7 @@ static UIImage *__rightBallocImage = nil;
 }
 
 - (void)resendMessage:(id)sender {
-    if (self.message.messageState == QIMMessageSendState_Faild) {
+    if (self.message.messageSendState == QIMMessageSendState_Faild) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kXmppStreamReSendMessage object:self.message];
     }
 }

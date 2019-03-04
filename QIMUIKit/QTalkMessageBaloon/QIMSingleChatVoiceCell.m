@@ -264,8 +264,8 @@ static NSArray *_sentImageArray = nil;
             
             CGRect timeFrame = CGRectMake(self.backView.frame.origin.x-4-KTimeLabelWeight, kBackViewCap, KTimeLabelWeight, kBackViewHeight);
             [_timeLabel setFrame:timeFrame];
-            [_errorButton setHidden:self.message.messageState != QIMMessageSendState_Faild];
-            [_errorButton setHidden:self.message.messageState != QIMMessageSendState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
             CGRect errorFrame = _errorButton.frame;
             errorFrame.origin.x = _timeLabel.frame.origin.x - kBackViewCap - errorFrame.size.width;
             errorFrame.origin.y = _timeLabel.frame.origin.y;
@@ -362,8 +362,8 @@ static NSArray *_sentImageArray = nil;
             [_timeLabel setFrame:timeFrame];
             [_timeLabel setTextColor:[UIColor qtalkTextBlackColor]];
             
-            [_errorButton setHidden:self.message.messageState != QIMMessageSendState_Faild];
-            [_errorButton setHidden:self.message.messageState != QIMMessageSendState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
             CGRect errorFrame = _errorButton.frame;
             errorFrame.origin.x = self.backView.frame.origin.x - kBackViewCap - errorFrame.size.width;
             errorFrame.origin.y = self.backView.frame.origin.y;

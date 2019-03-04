@@ -130,7 +130,7 @@
 //            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
         }else{
             if ([status isEqualToString:@"failed"]) {
-                self.message.messageState = QIMMessageSendState_Faild;
+                self.message.messageSendState = QIMMessageSendState_Faild;
                 
                 _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height);
                 _propressView.hidden = YES;

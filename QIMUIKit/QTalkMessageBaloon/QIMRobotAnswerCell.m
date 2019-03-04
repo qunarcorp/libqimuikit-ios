@@ -106,8 +106,8 @@
             NSString *msgId = [msgDict objectForKey:@"id"];
             QIMMessageSendState state = (QIMMessageSendState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
             if ([msgId isEqualToString:self.message.messageId]) {
-                if (state > self.message.messageState) {
-                    self.message.messageState = state;
+                if (state > self.message.messageSendState) {
+                    self.message.messageSendState = state;
                 }
                 if (self.delegate && [self.delegate respondsToSelector:@selector(refreshRobotAnswerMessageCell:)]) {
                     [self.delegate refreshRobotAnswerMessageCell:self];

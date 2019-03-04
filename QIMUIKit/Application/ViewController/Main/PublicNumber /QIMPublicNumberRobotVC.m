@@ -822,8 +822,8 @@
     for (Message * msg in _dataSounce) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
-            if (msg.messageState < QIMMessageSendState_Success) {
-                msg.messageState = QIMMessageSendState_Success;
+            if (msg.messageSendState < QIMMessageSendState_Success) {
+                msg.messageSendState = QIMMessageSendState_Success;
             }
             break;
         }
@@ -837,8 +837,8 @@
     for (Message * msg in _dataSounce) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
-            if (msg.messageState < QIMMessageSendState_Faild) {
-                msg.messageState = QIMMessageSendState_Faild;
+            if (msg.messageSendState < QIMMessageSendState_Faild) {
+                msg.messageSendState = QIMMessageSendState_Faild;
             }
             break;
         }
@@ -1305,7 +1305,7 @@
         Message  * message = [_dataSounce objectAtIndex:indexPath.row];
         if (message.messageType == QIMMessageType_Text) {
             /* Mark by DB
-            if (message.messageState != MessageState_didRead) {
+            if (message.messageSendState != MessageState_didRead) {
                 [[QIMEmotionSpirits sharedInstance] playQIMEmotionSpiritsWithMessage:message.message];
                 [message setMessageState:MessageState_didRead];
             }
