@@ -88,56 +88,6 @@ static UIImage *__rightBallocImage = nil;
     return self;
 }
 
-/* Mark by DB
-- (void)msgDidSendNotificationHandle:(NSNotification *)notify {
-    NSString * msgID = [notify.object objectForKey:@"messageId"];
-    
-    //消息发送成功，更新消息状态
-    if ([[self.message messageId] isEqualToString:msgID]) {
-        if (self.message.messageSendState < QIMMessageSendState_Success) {
-            self.message.messageSendState = QIMMessageSendState_Success;
-        }
-        [self refreshUI];
-    }
-}
-
-- (void)updateMessageStateByNotification:(NSNotification *)notify {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary *notifyDic = notify.object;
-        NSArray *msgIds = [notifyDic objectForKey:@"MsgIds"];
-        for (NSDictionary *msgDict in msgIds) {
-            NSString *msgId = [msgDict objectForKey:@"id"];
-            QIMMessageSendState state = (QIMMessageSendState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
-            if ([msgId isEqualToString:self.message.messageId]) {
-                if (state > self.message.messageSendState) {
-                    self.message.messageSendState = state;
-                }
-                [self updateMessageState];
-                [[QIMKit sharedInstance] updateMsgReadCompensateSetWithMsgId:msgId WithAddFlag:NO WithState:state];
-                break;
-            } else {
-                [[QIMKit sharedInstance] updateMsgReadCompensateSetWithMsgId:msgId WithAddFlag:YES WithState:state];
-            }
-        }
-        
-        NSMutableSet *compensateMsgs = [[QIMKit sharedInstance] getLastMsgCompensateReadSet];
-//        QIMVerboseLog(@"现有的补偿消息状态set : %@", compensateMsgs);
-        for (NSDictionary *msgCompensateDic in compensateMsgs) {
-//            QIMVerboseLog(@"补偿消息状态 : %@", msgCompensateDic);
-            NSString *MsgId = [msgCompensateDic objectForKey:@"MsgId"];
-            QIMMessageSendState state = (QIMMessageSendState)[[msgCompensateDic objectForKey:@"State"] unsignedIntegerValue];
-            if ([MsgId isEqualToString:self.message.messageId]) {
-                if (state > self.message.messageSendState) {
-                    self.message.messageSendState = state;
-                }
-                [self updateMessageState];
-                [[QIMKit sharedInstance] updateMsgReadCompensateSetWithMsgId:MsgId WithAddFlag:NO WithState:state];
-                break;
-            }
-        }
-    });
-}
-*/
 - (void)updateMessageReadStateByNotification:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSDictionary *notifyDic = notify.object;

@@ -132,6 +132,7 @@
     
     [self.view addSubview:self.mainTableView];
     self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    self.notReadNoticeMsgCount = 3;
     if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
         [self.mainTableView reloadData];
     } else {

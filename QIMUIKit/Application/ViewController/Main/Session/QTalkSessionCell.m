@@ -404,7 +404,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         self.bindId = nil;
         self.needRefreshName = YES;
         self.needRefreshHeader = YES;
-        self.needRefreshNotReadCount = YES;
     }
     return self;
 }
@@ -469,44 +468,26 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 #pragma mark - kMsgNotReadCountChange 更新Cell未读数
 - (void)updateCellNotReadCount:(NSNotification *)notify {
 
-    NSString *jid = [notify object];
-    if ([jid isEqualToString:@"ForceRefresh"]) {
-        self.needRefreshNotReadCount = YES;
+    NSDictionary *notifyDic = notify.object;
+    BOOL ForceRefresh = [notifyDic objectForKey:@"ForceRefresh"];
+    if (ForceRefresh == YES) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self refreshNotReadCount];
         });
         return;
     }
     if (!self.bindId) {
-        if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
-            NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
-            NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
-            if ([jid isEqualToString:[NSString stringWithFormat:@"%@-%@",xmppId,realJid]]) {
-//                QIMVerboseLog(@"收到通知中心updateCellNotReadCount通知 : %@", notify);
-                self.isReminded = [[QIMKit sharedInstance] groupPushState:[NSString stringWithFormat:@"%@-%@", xmppId, realJid]];
-                self.needRefreshNotReadCount = YES;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self refreshNotReadCount];
-                });
-            }
-        } else {
-            if ([jid isEqualToString:self.jid]) {
-//                QIMVerboseLog(@"收到通知中心updateCellNotReadCount通知 : %@", notify);
-                self.needRefreshNotReadCount = YES;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self refreshNotReadCount];
-                });
-            } else if ([jid isEqualToString:@"ForceRefresh"]) {
-                self.needRefreshNotReadCount = YES;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self refreshNotReadCount];
-                });
-            } else {
-                
-            }
+        NSString *notifyJid = [notifyDic objectForKey:@"XmppId"];
+        NSString *notifyRealJid = [notifyDic objectForKey:@"RealJid"];
+        NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
+        NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
+        if ([notifyJid isEqualToString:xmppId] && [notifyRealJid isEqualToString:realJid]) {
+            self.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:self.chatType];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self refreshNotReadCount];
+            });
         }
     } else {
-        self.needRefreshNotReadCount = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self refreshNotReadCount];
         });
@@ -518,6 +499,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if ([jid isEqualToString:@"ForceRefresh"]) {
         self.needRefreshNotReadCount = YES;
         self.isReminded = ![[QIMKit sharedInstance] groupPushState:self.jid];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             [self refreshNotReadCount];
         });
@@ -846,21 +828,20 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 //刷新消息未读数
 - (void)refreshNotReadCount {
-    
-    if (self.needRefreshNotReadCount == NO) {
-        return;
-    }
+//
+//    if (self.needRefreshNotReadCount == NO) {
+//        return;
+//    }
     CGFloat timeLabelMaxX = CGRectGetMaxX(self.timeLabel.frame);
     CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 25;
     
     __block NSString *countStr = nil;
-    NSInteger notReadCount = [[self.infoDic objectForKey:@"UnreadCount"] integerValue];
-    if (notReadCount > 0) {
-        if (notReadCount > 99) {
+    if (self.notReadCount > 0) {
+        if (self.notReadCount > 99) {
             countStr = @"99+";
         }
         else {
-            countStr = [NSString stringWithFormat:@"%ld",(long)notReadCount];
+            countStr = [NSString stringWithFormat:@"%ld", self.notReadCount];
         }
     }
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1171,17 +1152,21 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     }
 
     __block NSString *content = @"";
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        content = [self refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (content.length > 0) {
-                
-                [str appendAttributedString:[self decodeMsg:content]];
-            }
-            [self.contentLabel setAttributedText:str];
+    if (message.length > 0) {
+        QIMVerboseLog(@"message : %@", message);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            content = [self refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (content.length > 0) {
+                    
+                    [str appendAttributedString:[self decodeMsg:content]];
+                }
+                QIMVerboseLog(@"content : %@", str);
+                [self.contentLabel setAttributedText:str];
+            });
         });
-    });
-
+    }
+    self.notReadCount = [[self.infoDic objectForKey:@"UnreadCount"] integerValue];
     [self refreshNotReadCount];
     self.needRefreshNotReadCount = NO;
     if (self.isStick) {
