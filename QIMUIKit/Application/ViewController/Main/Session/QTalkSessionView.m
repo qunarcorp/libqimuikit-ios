@@ -451,7 +451,6 @@
             message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupId];
         }
     }
-    message = [message stringByAppendingFormat:@"原因:%@", reason];
     [self refreshTableView];
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
     [alertView show];
@@ -879,37 +878,7 @@
             case ChatType_Consult:
             {
                 NSString *xmppId = [infoDic objectForKey:@"XmppId"];
-                /*
-                NSString *uId = [xmppId componentsSeparatedByString:@"@"].firstObject;
-                NSString *realJid = [infoDic objectForKey:@"RealJid"];
-                if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-                    NSString *getRealJid = [[QIMKit sharedInstance] getRealJidForVirtual:xmppId];
-                    if (getRealJid.length) {
-                        realJid = getRealJid;
-                    }
-                } else {
-                    if ([[[QIMKit sharedInstance] getVirtualList] containsObject:uId]) {
-                        realJid = [[QIMKit sharedInstance] getRealJidForVirtual:uId];
-                        realJid = [NSString stringWithFormat:@"%@@%@",realJid,[[QIMKit sharedInstance] getDomain]];
-                    }
-                    if (realJid == nil) {
-                        realJid = [infoDic objectForKey:@"RealJid"];
-                    }
-                    if (realJid == nil) {
-                        realJid = xmppId;
-                    }
-                }
-                */
                 QIMChatVC *chatSingleVC = (QIMChatVC *)[[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
-                /*
-                QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
-                [chatSingleVC setStype:kSessionType_Chat];
-                [chatSingleVC setChatId:xmppId];
-                [chatSingleVC setVirtualJid:xmppId];
-                [chatSingleVC setName:name];
-                [chatSingleVC setChatInfoDict:infoDic];
-                [chatSingleVC setChatType:chatType];
-                */
                 //备注
                 NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
                 [chatSingleVC setTitle:remarkName ? remarkName : name];

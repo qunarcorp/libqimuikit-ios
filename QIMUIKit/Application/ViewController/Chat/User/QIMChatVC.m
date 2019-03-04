@@ -909,7 +909,7 @@
     //重发消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msgReSendNotificationHandle:) name:kXmppStreamReSendMessage object:nil];
     //阅后即焚消息销毁
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(BurnAfterReadMsgDestructionNotificationHandle:) name:kBurnAfterReadMsgDestruction object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(BurnAfterReadMsgDestructionNotificationHandle:) name:kBurnAfterReadMsgDestruction object:nil];
     //消息被撤回
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(revokeMsgNotificationHandle:) name:kRevokeMsg object:nil];
     //键盘弹出，消息自动滑动最底
@@ -1319,7 +1319,7 @@
         NSArray *markReadMsgList = [[QIMKit sharedInstance] getNotReadMsgIdListByUserId:userId WithRealJid:realJid];
         QIMVerboseLog(@"markReadMsgList : %d", markReadMsgList);
         if (markReadMsgList.count > 0) {
-            [[QIMKit sharedInstance] sendReadStateWithMessagesIdArray:markReadMsgList WithMessageReadFlag:QIMMessageReadFlagDidRead WithXmppId:self.chatId];
+            [[QIMKit sharedInstance] sendReadStateWithMessagesIdArray:markReadMsgList WithMessageReadFlag:QIMMessageReadFlagDidRead WithXmppId:self.chatId WithRealJid:realJid];
         }
     });
 }
@@ -2386,62 +2386,7 @@
 }
 
 - (void)selectContactWithJid:(NSString *)jid {
-    if (_expandViewItemType == QIMTextBarExpandViewItemType_ChatTransfer) {
-        [[QIMProgressHUD sharedInstance] closeHUD];
-        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"正在转接会话"];
-        _hasUserTransferFeedback = NO;
-        _hasServerTransferFeedback = NO;
-        [self performSelector:@selector(endTransferChatSession) withObject:nil afterDelay:3];
-        if (self.chatType == ChatType_ConsultServer) {
-            { //QIMMessageType_TransChatToCustomerService
-                //                {
-                //                    "d": "ejabhost2",
-                //                    "f": "gunjern9357",
-                //                    "r": "test转移",
-                //                    "u": "uurpoby2438@ejabhost2"
-                //                }
-                NSMutableDictionary *infoDic = [NSMutableDictionary dictionary];
-                [infoDic setObject:_transferReason forKey:@"r"];
-                [infoDic setObject:[QIMKit getLastUserName] forKey:@"f"];
-                [infoDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"d"];
-                [infoDic setObject:self.chatId forKey:@"u"];
-                NSString *msgId = [QIMUUIDTools UUID];
-                [infoDic setObject:msgId forKey:@"retId"];
-                [infoDic setObject:[jid componentsSeparatedByString:@"@"].firstObject forKey:@"rt"];
-                [infoDic setObject:self.virtualJid forKey:@"toId"];
-                NSString *content = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
-                [[QIMKit sharedInstance] sendConsultMessageId:msgId WithMessage:content WithInfo:content toJid:self.virtualJid realToJid:jid WithChatType:self.chatType WithMsgType:QIMMessageType_TransChatToCustomerService];
-            }
-            { //QIMMessageType_TransChatToCustomer
-                NSMutableDictionary *infoDic = [NSMutableDictionary dictionary];
-                [infoDic setObject:_transferReason forKey:@"TransReson"];
-                [infoDic setObject:[[QIMKit sharedInstance] getMyNickName] forKey:@"realfromIdNickName"];
-                [infoDic setObject:[jid componentsSeparatedByString:@"@"].firstObject forKey:@"realtoId"];
-                [infoDic setObject:[jid componentsSeparatedByString:@"@"].lastObject forKey:@"realtoDomain"];
-                [infoDic setObject:self.virtualJid forKey:@"toId"];
-//                [infoDic setObject:[self.virtualJid componentsSeparatedByString:@"@"].firstObject forKey:@"toId"];
-                NSString *content = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
-                Message *msg = [[QIMKit sharedInstance] createMessageWithMsg:content extenddInfo:nil userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:QIMMessageType_TransChatToCustomer forMsgId:[QIMUUIDTools UUID] willSave:YES];
-                [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
-                [self.messageManager.dataSource addObject:msg];
-                [_tableView beginUpdates];
-                [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-                [_tableView endUpdates];
-                [self scrollToBottomWithCheck:YES];
-            }
-        } else if (self.chatType == ChatType_SingleChat) {
-            [[QIMKit sharedInstance] chatTransferFrom:[[QIMKit sharedInstance] getLastJid] To:jid User:self.chatId Reson:_transferReason chatId:@"0" WithMsgId:[QIMUUIDTools UUID]];
-        }
-        //        NSDictionary *infoDic = [[QIMKit sharedInstance] getUserInfoByUserId:[[QIMKit sharedInstance] getLastJid]];
-        //        NSString *name = [infoDic objectForKey:@"Name"];
-        //        NSString * infoStr = [[CJSONSerializer serializer] serializeDictionary:@{@"TransId":[jid componentsSeparatedByString:@"@"].firstObject,@"TransReson":[NSString stringWithFormat:@"转移From：%@ \n 转移原因：%@",name,_transferReason]}];
-        //        [[QIMKit sharedInstance] chatTransferTo:self.chatId message:infoStr chatId:self.chatId];
-        //        [[QIMKit sharedInstance] chatTransferFrom:[[QIMKit sharedInstance] getLastJid] To:jid User:self.chatId Reson:_transferReason chatId:@"0" WithMsgId:[UUIDTools UUID]];
-        //    if (!self.isTransfer) {
-        //        QIMNavController *nav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        //        [nav popToRootVCThenPush:chatVC animated:YES];
-        //    }
-    } else if (_expandViewItemType == QIMTextBarExpandViewItemType_ShareCard) {
+    if (_expandViewItemType == QIMTextBarExpandViewItemType_ShareCard) {
         //分享名片 选择的user
         NSDictionary *infoDic = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
         if (self.chatType == ChatType_ConsultServer || self.chatType == ChatType_Consult) {

@@ -1300,18 +1300,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSUInteger row = [indexPath row];
-    if (row < _dataSounce.count) {
-        Message  * message = [_dataSounce objectAtIndex:indexPath.row];
-        if (message.messageType == QIMMessageType_Text) {
-            /* Mark by DB
-            if (message.messageSendState != MessageState_didRead) {
-                [[QIMEmotionSpirits sharedInstance] playQIMEmotionSpiritsWithMessage:message.message];
-                [message setMessageState:MessageState_didRead];
-            }
-            */
-        }
-    }
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

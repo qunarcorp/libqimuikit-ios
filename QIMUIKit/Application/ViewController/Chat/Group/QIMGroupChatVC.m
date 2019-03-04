@@ -1065,6 +1065,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     __weak id weakSelf = self;
     [[QIMKit sharedInstance] getMsgListByUserId:self.chatId
+                                    WithRealJid:self.chatId
                                         FromTimeStamp:_readedMsgTimeStamp
                                          WithComplete:^(NSArray *list) {
                                              [self updateGroupUsersHeadImgForMsgs:list];
@@ -2699,13 +2700,6 @@ static CGPoint tableOffsetPoint;
 
 - (void)sendVoiceData:(NSData *)voiceData WithDuration:(int)duration {
     
-    //      [[IMXmppManager sharedInstance] sendVoiceData:voiceData
-    //      WithDuration:duration ToUserId:self.chatSession.userId];
-    //    [[QIMKit sharedInstance] sendGroupVoiceUrl: withVoiceName:
-    //    withSeconds: ToGroupId:]
-    //
-    //    [[QIMKit sharedInstance] sendVoiceUrl: withVoiceName: withSeconds:
-    //    ToUserId:]
 }
 
 - (void)setKeyBoardHeight:(CGFloat)height WithScrollToBottom:(BOOL)flag {

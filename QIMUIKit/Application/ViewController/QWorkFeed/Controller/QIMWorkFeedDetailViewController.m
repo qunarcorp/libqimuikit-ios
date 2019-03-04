@@ -52,7 +52,7 @@
 - (QIMWorkMomentModel *)momentModel {
     if (!_momentModel) {
         NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWithMomentId:self.momentId];
-        if (momentDic == nil) {
+        if (!momentDic.count) {
             [[QIMKit sharedInstance] getRemoteMomentDetailWithMomentUUId:self.momentId withCallback:^(NSDictionary *momentDic) {
                 _momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
             }];
