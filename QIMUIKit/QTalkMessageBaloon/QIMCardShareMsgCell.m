@@ -75,7 +75,7 @@
             self.message.message = self.message.extendInformation;
         }
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
-        NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.message.nickName];
+        NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.message.from];
         self.message.extendInformation = self.message.message;
         self.message.message = [NSString stringWithFormat:@"分享名片：\n昵称：%@\n部门：%@",[userInfoDic objectForKey:@"Name"],[userInfoDic objectForKey:@"DescInfo"]];
         

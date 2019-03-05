@@ -60,7 +60,7 @@
             body = msg.extendInformation.length > 0 ? msg.extendInformation : msg.message;
         }
         NSDictionary * userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:msg.from];
-        NSString * nickName = userInfo[@"Name"]?userInfo[@"Name"]:msg.nickName;
+        NSString * nickName = userInfo[@"Name"]?userInfo[@"Name"]:msg.from;
         NSNumber * direction = @(msg.messageDirection + 1);
         NSNumber * stamp = @(msg.messageDate);
         if (!body) {
@@ -126,7 +126,7 @@
     NSDictionary * userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:msg.from];
     NSString *headerUrl = [[QIMKit sharedInstance] getUserHeaderSrcByUserId:userInfo[@"XmppId"]];
     msgBodyHtmlStr = [msgBodyHtmlStr stringByReplacingOccurrencesOfString:@"[MSGFROMIMG]" withString:headerUrl?headerUrl:@""];
-    msgBodyHtmlStr = [msgBodyHtmlStr stringByReplacingOccurrencesOfString:@"[MSGFROMNAME]" withString:userInfo[@"Name"]?userInfo[@"Name"]:msg.nickName];
+    msgBodyHtmlStr = [msgBodyHtmlStr stringByReplacingOccurrencesOfString:@"[MSGFROMNAME]" withString:userInfo[@"Name"]?userInfo[@"Name"]:msg.from];
     
     NSString * msgTime = [[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:msg.messageDate] qim_formattedDateDescription];
     

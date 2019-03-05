@@ -150,7 +150,8 @@ static NSArray *_sentImageArray = nil;
     
     NSString *msgId = notifi.object;
     if ([msgId isEqual:self.message.messageId]) {
-        self.message.readTag = 1;
+        //Mark By DB
+//        self.message.readTag = 1;
         [self refreshUI];
     }
 }
@@ -159,7 +160,8 @@ static NSArray *_sentImageArray = nil;
     
     NSString *msgId = notification.object;
     if ([msgId isEqual:self.message.messageId]) {
-        self.message.readTag = 1;
+        //Mark By DB
+//        self.message.readTag = 1;
         [self refreshUI];
         [_voiceImageView stopAnimating];
     }
@@ -179,7 +181,8 @@ static NSArray *_sentImageArray = nil;
         if (self.message.messageDirection == QIMMessageDirection_Received) {
             //如果语音未读，mssageID落地
             [[QIMVoiceNoReadStateManager sharedVoiceNoReadStateManager] setVoiceNoReadStateWithMsgId:self.message.messageId ChatId:self.chatId withState:YES];
-            self.message.readTag = 1;
+            //Mark By DB
+//            self.message.readTag = 1;
             [self refreshUI];
         }
     }

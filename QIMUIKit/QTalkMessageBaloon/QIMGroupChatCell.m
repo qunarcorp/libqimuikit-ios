@@ -99,7 +99,7 @@
 
 - (void)markNameUpdate:(NSNotification *)noti {
     NSDictionary * info = noti.object;
-    if ([info[@"nickName"] isEqualToString:self.message.nickName]) {
+    if ([info[@"nickName"] isEqualToString:self.message.from]) {
         [self refreshUI];
     }
 }
@@ -111,8 +111,8 @@
 }
 
 - (void)userHeaderImgUpdate:(NSNotification *)notify {
-    if ([notify.object isEqualToString:self.message.nickName]) {
-        [self.HeadView qim_setImageWithJid:self.message.nickName];
+    if ([notify.object isEqualToString:self.message.from]) {
+        [self.HeadView qim_setImageWithJid:self.message.from];
     }
 }
 

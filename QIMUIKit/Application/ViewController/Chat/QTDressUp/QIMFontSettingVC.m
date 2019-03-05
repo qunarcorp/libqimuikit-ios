@@ -132,37 +132,41 @@
 - (void)initPlaceholder{
     if (_chatDatasource == nil) {
         _chatDatasource = [NSMutableArray arrayWithCapacity:1];
-       QIMMessageModel * msg = [QIMMessageModel new];
+        QIMMessageModel * msg = [QIMMessageModel new];
         msg.messageId = [QIMUUIDTools UUID];
         msg.messageType = QIMMessageType_Text;
         msg.message = [NSBundle qim_localizedStringForKey:@"Preview_text_size"];
         msg.messageDirection = QIMMessageDirection_Sent;
-        msg.nickName = [QIMKit getLastUserName];
+        msg.messageSendState = QIMMessageSendState_Success;
+//        msg.nickName = [QIMKit getLastUserName];
         [_chatDatasource addObject:msg];
         
-       QIMMessageModel * msg1 = [QIMMessageModel new];
+        QIMMessageModel * msg1 = [QIMMessageModel new];
         msg1.messageId = [QIMUUIDTools UUID];
         msg1.messageType = QIMMessageType_Text;
         msg1.message = [NSBundle qim_localizedStringForKey:@""];
         msg1.message = [NSBundle qim_localizedStringForKey:@"Drag_Change_Text_Size"];
         msg1.messageDirection = QIMMessageDirection_Received;
-        msg1.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
+        msg1.messageSendState = QIMMessageSendState_Success;
+//        msg1.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
         [_chatDatasource addObject:msg1];
         
-       QIMMessageModel * msg2 = [QIMMessageModel new];
+        QIMMessageModel * msg2 = [QIMMessageModel new];
         msg2.messageId = [QIMUUIDTools UUID];
         msg2.messageType = QIMMessageType_Text;
         msg2.message = [NSBundle qim_localizedStringForKey:@"Text_Size_FeedBack"];
         msg2.messageDirection = QIMMessageDirection_Received;
-        msg2.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
+        msg2.messageSendState = QIMMessageSendState_Success;
+//        msg2.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
         [_chatDatasource addObject:msg2];
         
-       QIMMessageModel * msg3 = [QIMMessageModel new];
+        QIMMessageModel * msg3 = [QIMMessageModel new];
         msg3.messageId = [QIMUUIDTools UUID];
         msg3.messageType = QIMMessageType_Text;
         msg3.message = [NSBundle qim_localizedStringForKey:@"thanks"];
         msg3.messageDirection = QIMMessageDirection_Sent;
-        msg3.nickName = [QIMKit getLastUserName];
+        msg3.messageSendState = QIMMessageSendState_Success;
+//        msg3.nickName = [QIMKit getLastUserName];
         [_chatDatasource addObject:msg3];
     }
     
