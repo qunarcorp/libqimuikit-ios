@@ -719,36 +719,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)updateGroupUsersHeadImgForMsgs:(NSArray *)msgs {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        if (_hasGetHeadImgUsers == nil) {
-            _hasGetHeadImgUsers = [NSMutableArray arrayWithCapacity:1];
-        }
-        for (QIMMessageModel *msg in msgs) {
-            if (msg.nickName == nil || [_hasGetHeadImgUsers containsObject:msg.nickName] || msg.messageType == QIMMessageType_Time || msg.messageType == QIMMessageType_GroupNotify || msg.messageType == QIMMessageType_Revoke || msg.messageType == QIMMessageType_AAInfo || msg.messageType == QIMMessageType_RedPackInfo) {
-                continue;
-            } else {
-                [_hasGetHeadImgUsers addObject:msg.nickName];
-                /*
-                if (![[QIMKit sharedInstance] isExistUserHeaderImageByUserId:msg.nickName WithImageSize:CGSizeMake(90, 90)]) {
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                        [[QIMKit sharedInstance] updateUserHeaderImageWithXmppId:msg.nickName];
-                    });
-                }
-                 */
-                /*
-                NSDictionary *infoDic = [[QIMKit sharedInstance] getUserInfoByName:msg.nickName];
-                if (infoDic.count > 0) {
-                    NSString *xmppId = [infoDic objectForKey:@"XmppId"];
-                    if (![[QIMKit sharedInstance] isExistUserHeaderImageByUserId:xmppId WithImageSize:CGSizeMake(90, 90)]) {
-                        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                            [[QIMKit sharedInstance] updateUserHeaderImageWithXmppId:xmppId];
-                        });
-                    }
-                } */
-            }
-        }
-    });
-    
+    return;
 }
 
 - (void)initNotifications {
@@ -2480,9 +2451,9 @@ static CGPoint tableOffsetPoint;
            QIMMessageModel *msg = nil;
             text = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:text];
             if (self.textBar.isRefer) {
-                NSDictionary *referMsgUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.textBar.referMsg.nickName];
+                NSDictionary *referMsgUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.textBar.referMsg.from];
                 NSString *referMsgNickName = [referMsgUserInfo objectForKey:@"Name"];
-                text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n", (referMsgNickName.length > 0) ? referMsgNickName : self.textBar.referMsg.nickName,self.textBar.referMsg.message] stringByAppendingString:text];
+                text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n", (referMsgNickName.length > 0) ? referMsgNickName : self.textBar.referMsg.from,self.textBar.referMsg.message] stringByAppendingString:text];
                 self.textBar.isRefer = NO;
                 self.textBar.referMsg = nil;
             }
@@ -2549,9 +2520,9 @@ static CGPoint tableOffsetPoint;
        QIMMessageModel *msg = nil;
         text = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:text];
         if (self.textBar.isRefer) {
-            NSDictionary *referMsgUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.textBar.referMsg.nickName];
+            NSDictionary *referMsgUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.textBar.referMsg.from];
             NSString *referMsgNickName = [referMsgUserInfo objectForKey:@"Name"];
-            text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n",(referMsgNickName.length > 0) ? referMsgNickName : self.textBar.referMsg.nickName,self.textBar.referMsg.message] stringByAppendingString:text];
+            text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n",(referMsgNickName.length > 0) ? referMsgNickName : self.textBar.referMsg.from,self.textBar.referMsg.message] stringByAppendingString:text];
             self.textBar.isRefer = NO;
             self.textBar.referMsg = nil;
         }
@@ -2647,7 +2618,7 @@ static CGPoint tableOffsetPoint;
     [dicInfo setQIMSafeObject:@(duration) forKey:@"Duration"];
     NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
     
-   QIMMessageModel *msg = [QIMMessageModel new];
+    QIMMessageModel *msg = [QIMMessageModel new];
     [msg setMessageId:msgId];
     [msg setMessageDirection:QIMMessageDirection_Sent];
     [msg setChatType:ChatType_GroupChat];
@@ -2669,7 +2640,7 @@ static CGPoint tableOffsetPoint;
         msg.message = @"此为阅后即焚消息，该终端不支持阅后即焚~"@"~";
         msg.messageType = QIMMessageType_BurnAfterRead;
     }
-    
+    /* Mark By DB
     [[QIMKit sharedInstance] insertMessageWithMsgId:msg.messageId
                                          WithXmppId:self.chatId
                                            WithFrom:msg.from
@@ -2683,6 +2654,7 @@ static CGPoint tableOffsetPoint;
                                         WithMsgDate:msg.messageDate
                                       WithReadedTag:0
                                        WithChatType:msg.chatType];
+    */
     if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
         
         [[QIMKit sharedInstance] updateMessageWithExtendInfo:msg.extendInformation ForMsgId:msg.messageId];

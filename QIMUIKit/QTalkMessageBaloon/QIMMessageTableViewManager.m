@@ -461,21 +461,6 @@
             [cell setSelected:NO animated:NO];
         }
     }
-    /*
-    if (row < self.dataSource.count) {
-        
-       QIMMessageModel *message = [self.dataSource objectAtIndex:indexPath.row];
-        if (message.messageType == QIMMessageType_Text) {
-            if (message.readTag != 1) {
-                [[QIMEmotionSpirits sharedInstance] playQIMEmotionSpiritsWithMessage:message.message];
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                   [[QIMKit sharedInstance] updateMessageReadStateWithMsgId:message.messageId];
-                });
-                [message setReadTag:1];
-            }
-        }
-    }
-    */
 }
 
 #pragma mark - UITableViewDataSource

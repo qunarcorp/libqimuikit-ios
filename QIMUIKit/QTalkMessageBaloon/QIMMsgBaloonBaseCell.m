@@ -120,7 +120,7 @@ static UIImage *__rightBallocImage = nil;
 - (void)refreshUserCard:(NSNotification *)notify {
     
     NSArray *updateUserIds = notify.object;
-    if ([updateUserIds containsObject:self.message.nickName]) {
+    if ([updateUserIds containsObject:self.message.from]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self updateNameLabel];
             [self refreshHeaderView];
@@ -296,10 +296,10 @@ static UIImage *__rightBallocImage = nil;
 - (void)updateNameLabel {
 
     if (self.message.messageDirection == QIMMessageDirection_Received) {
-        __block NSString *nickName = self.message.nickName;
+        __block NSString *nickName = self.message.from;
         if (self.chatType != ChatType_CollectionChat) {
             //备注
-            NSString * remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.message.nickName];
+            NSString * remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.message.from];
             if (remarkName.length > 0) {
                 nickName = remarkName;
             }
@@ -456,9 +456,9 @@ static UIImage *__rightBallocImage = nil;
 #pragma mark - action
 
 - (void)onHeaderViewClick:(UITapGestureRecognizer *)tapGesture {
-    if (self.message.nickName.length > 0 && self.chatType != ChatType_CollectionChat) {
+    if (self.message.from.length > 0 && self.chatType != ChatType_CollectionChat) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [QIMFastEntrance openUserCardVCByUserId:self.message.nickName];
+            [QIMFastEntrance openUserCardVCByUserId:self.message.from];
         });
     }
 }
@@ -471,7 +471,7 @@ static UIImage *__rightBallocImage = nil;
 
 - (void)atSomeOne:(UILongPressGestureRecognizer *)logGes {
     if (logGes.state == UIGestureRecognizerStateBegan && self.chatType == ChatType_GroupChat) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:ATSomeOneNotifacation object:self.message.nickName];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ATSomeOneNotifacation object:self.message.from];
     }
 }
 
@@ -559,11 +559,11 @@ static UIImage *__rightBallocImage = nil;
     if (self.chatType != ChatType_GroupChat) {
         switch (self.message.messageDirection) {
             case QIMMessageDirection_Sent: {
-                self.message.nickName = [[QIMKit sharedInstance] getLastJid];
+                self.message.from = [[QIMKit sharedInstance] getLastJid];
             }
                 break;
             case QIMMessageDirection_Received: {
-                self.message.nickName = self.message.from;
+                self.message.from = self.message.from;
             }
             default:
                 break;
@@ -579,7 +579,7 @@ static UIImage *__rightBallocImage = nil;
         if (self.message.messageDirection == QIMMessageDirection_Sent) {
             [self.HeadView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid] WithChatType:ChatType_SingleChat];
         } else {
-            [self.HeadView qim_setImageWithJid:self.message.nickName];
+            [self.HeadView qim_setImageWithJid:self.message.from];
         }
     }
 }

@@ -203,23 +203,28 @@ static double _screen_width = 0;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[QIMKit sharedInstance] updateMessageReadStateWithMsgId:self.message.messageId];
         });
-        [self.message setReadTag:1];
+        //Mark by DB
+//        [self.message setReadTag:1];
+        /*//Mark By DB
         if (self.message.readTag == 0) {
             [_operationLabel setText:@"现在去处理"];
         } else {
             [_operationLabel setText:@"已处理"];
         }
+        */
     }
 }
 
 - (void)refreshUI{
     
     NSDictionary *dic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+    /*//Mark By DB
     if (self.message.readTag == 0) {
         [_operationLabel setText:@"现在去处理"];
     } else {
         [_operationLabel setText:@"已处理"];
     }
+    */
     NSString *title = [dic objectForKey:@"title"];
     NSArray *contentList = [dic objectForKey:@"content"];
     NSString *linkUrl = [dic objectForKey:@"operation_url"];

@@ -2475,7 +2475,8 @@
     }
     else {
         [msg setTo:self.chatId];
-        [[QIMKit sharedInstance] insertMessageWithMsgId:msg.messageId WithXmppId:self.chatId WithFrom:msg.from WithTo:msg.to WithContent:msg.message WithExtendInfo:msg.extendInformation WithPlatform:msg.platform WithMsgType:msg.messageType WithMsgState:msg.messageSendState WithMsgDirection:msg.messageDirection WithMsgDate:msg.messageDate WithReadedTag:0 WithMsgRaw:msg.msgRaw WithRealJid:msg.realJid WithChatType:msg.chatType];
+        /* Mark By DB */
+//        [[QIMKit sharedInstance] insertMessageWithMsgId:msg.messageId WithXmppId:self.chatId WithFrom:msg.from WithTo:msg.to WithContent:msg.message WithExtendInfo:msg.extendInformation WithPlatform:msg.platform WithMsgType:msg.messageType WithMsgState:msg.messageSendState WithMsgDirection:msg.messageDirection WithMsgDate:msg.messageDate WithReadedTag:0 WithMsgRaw:msg.msgRaw WithRealJid:msg.realJid WithChatType:msg.chatType];
     }
     if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
         [[QIMKit sharedInstance] updateMessageWithExtendInfo:msg.extendInformation ForMsgId:msg.messageId];
