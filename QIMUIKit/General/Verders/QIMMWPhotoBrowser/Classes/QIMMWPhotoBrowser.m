@@ -1711,7 +1711,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
         case 1: {
             NSString *photoUrl = [photo.photoURL absoluteString];
             if (photoUrl.length > 0) {
-               QIMMessageModel *msg = [QIMMessageModel new];
+                QIMMessageModel *msg = [QIMMessageModel new];
                 [msg setMessageType:QIMMessageType_Text];
                 NSString *msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\"]", photoUrl];
                 [msg setMessage:msgText];
@@ -1742,7 +1742,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 } else {
                     msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"FileName=%@\" width=%f height=%f]", fileName, width, height];
                 }
-               QIMMessageModel *msg = [QIMMessageModel new];
+                QIMMessageModel *msg = [QIMMessageModel new];
                 [msg setMessageType:QIMMessageType_Text];
                 [msg setMessage:msgText];
                 QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];

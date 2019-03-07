@@ -1010,7 +1010,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     }
     if (needAdd) {
         
-       QIMMessageModel *msg = [QIMMessageModel new];
+        QIMMessageModel *msg = [QIMMessageModel new];
         [msg setMessageType:QIMMessageType_NewMsgTag];
         [self.messageManager.dataSource insertObject:msg atIndex:index + 1];
         [self updateGroupUsersHeadImgForMsgs:@[msg]];
@@ -2812,7 +2812,7 @@ static CGPoint tableOffsetPoint;
                                        }];
     });
 #if defined (QIMRNEnable) && QIMRNEnable == 1
-    if (self.loadCount >= 3 && !self.reloadSearchRemindView) {
+    if (self.loadCount >= 3 && !self.reloadSearchRemindView && !self.bindId) {
         self.searchRemindView = [[QIMSearchRemindView alloc] initWithChatId:self.chatId withRealJid:nil withChatType:self.chatType];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToConverstaionSearch)];
         [self.searchRemindView addGestureRecognizer:tap];

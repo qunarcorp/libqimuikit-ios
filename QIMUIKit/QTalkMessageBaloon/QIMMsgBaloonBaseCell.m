@@ -332,7 +332,7 @@ static UIImage *__rightBallocImage = nil;
             [self.contentView addSubview:self.messgaeRealStateLabel];
         }
         BOOL readFlag = (self.message.messageReadState & QIMMessageRemoteReadStateDidReaded) == QIMMessageRemoteReadStateDidReaded;
-//        QIMVerboseLog(@"ReadFlag : %ld", readFlag);
+        QIMVerboseLog(@"ReadFlag : %ld, self.message.messageReadState : %d", readFlag, self.message.messageReadState);
         if (readFlag) {
             [self.indicatorView stopAnimating];
             self.indicatorView.hidden = YES;
