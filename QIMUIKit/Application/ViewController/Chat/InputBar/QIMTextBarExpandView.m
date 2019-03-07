@@ -43,7 +43,7 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
     if ([[QIMKit sharedInstance] getMsgTextBarButtonInfoList].count) {
         [[QIMKit sharedInstance] removeAllExpandItems];
     }
-    if ([[QIMKit getLastUserName].lowercaseString isEqualToString:@"appstore"] == NO) {
+//    if ([[QIMKit getLastUserName].lowercaseString isEqualToString:@"appstore"] == NO) {
         if (__trdExtendInfoDic == nil) {
             __trdExtendInfoDic = [[NSMutableDictionary alloc] init];
         }
@@ -99,7 +99,7 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
                 }
             }
         }
-    }
+//    }
     if ([[QIMKit sharedInstance] trdExtendInfo].count <= 0) {
         [self defaultItems];
     }
