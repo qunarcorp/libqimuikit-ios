@@ -340,7 +340,6 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
 {
     QIMTextStorage *textStorage = [[QIMTextStorage alloc]init];
     textStorage.text = dic[@"content"];
-//    textStorage.range = NSRangeFromString(dic[@"range"]);
     float fontSize = [dic[@"fontSize"] floatValue];
     if (fontSize > 0) {
         textStorage.font = [UIFont fontWithName:kNomalFontName size:fontSize];
@@ -353,7 +352,6 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
 + (id<QIMDrawStorageProtocol>)parseImageRunFromDictinary:(NSDictionary *)dic
 {
     QIMImageStorage *imageStorage = [[QIMImageStorage alloc]init];
-//    imageStorage.range = NSRangeFromString(dic[@"range"]);
     imageStorage.imageURL = [NSURL URLWithString:dic[@"httpUrl"]];
     imageStorage.size = CGSizeMake([dic[@"width"] floatValue], [dic[@"height"] floatValue]);
     imageStorage.storageType = QIMImageStorageTypeImage;
@@ -363,7 +361,6 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
 + (id<QIMDrawStorageProtocol>)parseEmotionFromDictinary:(NSDictionary *)dic
 {
     QIMImageStorage *imageStorage = [[QIMImageStorage alloc]init];
-//    imageStorage.range = NSRangeFromString(dic[@"range"]);
     imageStorage.image = dic[@"image"];
     imageStorage.imageAlignment = QCImageAlignmentRight;
     imageStorage.size = CGSizeMake([dic[@"width"] floatValue], [dic[@"height"] floatValue]);
@@ -375,7 +372,6 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
 + (id<QCAppendTextStorageProtocol>)parseLinkRunFromDictinary:(NSDictionary *)dic
 {
     QIMLinkTextStorage *linkStorage = [[QIMLinkTextStorage alloc]init];
-//    linkStorage.range = NSRangeFromString(dic[@"range"]);
     linkStorage.text = dic[@"content"];
     float fontSize = [dic[@"fontSize"] floatValue];
     if (fontSize > 0) {
@@ -487,61 +483,6 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
             break;
     }
     return newMsg;
-}
-
-- (void)parseForXMLString:(NSString *)xmlStr complete:(void (^)(NSDictionary * info))complete {
-    if (xmlStr.length) {
-        _parseCompleteBlock = complete;
-        NSData * data = [xmlStr dataUsingEncoding:NSUTF8StringEncoding];
-        NSXMLParser * parser = [[NSXMLParser alloc] initWithData:data];
-        parser.delegate = self;
-        [parser parse];
-    }
-}
-
-#pragma mark - NSXMLParserDelegate
-
-#pragma mark-NSXMLParserDelegate
-/**
- *开始解析时调用
- */
--(void)parserDidStartDocument:(NSXMLParser *)parser
-{
-    if (_msgInfoDic) {
-        [_msgInfoDic removeAllObjects];
-    }else{
-        _msgInfoDic = [NSMutableDictionary dictionaryWithCapacity:1];
-    }
-}
-/**
- *结束解析时调用（解析完毕）
- */
--(void)parserDidEndDocument:(NSXMLParser *)parser
-{
-    _parseCompleteBlock(_msgInfoDic);
-}
-/**
-*解析到一个元素的开头时调用
-*/
--(void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict
-{
-    if (elementName && attributeDict.allKeys.count) {
-        [_msgInfoDic setObject:attributeDict forKey:elementName];
-    }
-}
-/**
-  *解析到一个元素的结尾时调用
-  */
--(void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName
-{
-    
-}
-
-//获取cdata块数据
-//节点有值则调用此方法
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
-{
-    [_msgInfoDic setQIMSafeObject:string forKey:@"message"];
 }
 
 @end

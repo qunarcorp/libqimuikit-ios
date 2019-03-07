@@ -184,7 +184,7 @@ static double _global_message_cell_width = 0;
             default:
                 break;
         }
-       QIMMessageModel *msg = [QIMMessageModel new];
+        QIMMessageModel *msg = [QIMMessageModel new];
         [msg setMessage:content];
         [msg setMessageId:message.messageId];
         [msg setMessageType:message.messageType];

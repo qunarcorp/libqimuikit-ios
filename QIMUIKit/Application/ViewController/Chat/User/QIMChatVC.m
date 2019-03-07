@@ -1111,7 +1111,7 @@
         //        _transToUserInfo = transInfo;
         NSString *transToJid = [transInfo objectForKey:@"TransJid"];
         NSString *transToName = [transInfo objectForKey:@"TransName"];
-       QIMMessageModel *msg = [QIMMessageModel new];
+        QIMMessageModel *msg = [QIMMessageModel new];
         [msg setMessageType:QIMMessageType_TransToUser];
         [msg setMessage:(id) transInfo];
         [self.messageManager.dataSource addObject:msg];
@@ -1164,7 +1164,7 @@
         index++;
     }
     if (needAdd) {
-       QIMMessageModel *msg = [QIMMessageModel new];
+        QIMMessageModel *msg = [QIMMessageModel new];
         [msg setMessageType:QIMMessageType_NewMsgTag];
         [self.messageManager.dataSource insertObject:msg atIndex:index + 1];
         
@@ -2449,7 +2449,7 @@
     [dicInfo setQIMSafeObject:@(duration) forKey:@"Duration"];
     NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
     
-   QIMMessageModel *msg = [QIMMessageModel new];
+    QIMMessageModel *msg = [QIMMessageModel new];
     [msg setMessageId:msgId];
     [msg setMessageDirection:QIMMessageDirection_Sent];
     [msg setChatType:self.chatType];
@@ -3225,7 +3225,7 @@ static CGPoint tableOffsetPoint;
         }
     });
 #if defined (QIMRNEnable) && QIMRNEnable == 1
-    if (self.loadCount >= 3 && !self.reloadSearchRemindView) {
+    if (self.loadCount >= 3 && !self.reloadSearchRemindView && !self.bindId) {
         NSString *userId = nil;
         NSString *realJid = nil;
         if (self.chatType == ChatType_Consult) {

@@ -1153,7 +1153,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
     __block NSString *content = @"";
     if (message.length > 0) {
-        QIMVerboseLog(@"message : %@", message);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             content = [self refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1161,7 +1160,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                     
                     [str appendAttributedString:[self decodeMsg:content]];
                 }
-                QIMVerboseLog(@"content : %@", str);
                 [self.contentLabel setAttributedText:str];
             });
         });
