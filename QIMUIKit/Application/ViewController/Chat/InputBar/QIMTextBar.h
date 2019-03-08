@@ -75,6 +75,8 @@ typedef enum {
 @class QIMRemoteAudioPlayer;
 @interface QIMTextBar : UIView
 
++ (void)clearALLTextBar;
+
 @property (nonatomic, weak) id <QIMTextBarDelegate> delegate;
 
 /**
