@@ -95,11 +95,13 @@ static QIMFastEntrance *_sharedInstance = nil;
     QIMVerboseLog(@"getQIMFastEntranceRootNav: %@", _sharedInstance.rootNav);
     if (!self.rootNav) {
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-//            self.rootNav = [[IPAD_NAVViewController alloc] init];
             self.rootNav = [[QIMIPadWindowManager sharedInstance] getDetailNav];
         } else {
             self.rootNav = [[self getQIMFastEntranceRootVc] navigationController];
         }
+    }
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        self.rootNav = [[QIMIPadWindowManager sharedInstance] getDetailNav];
     }
     return self.rootNav;
 }
@@ -307,13 +309,13 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         //打开用户名片页
         //导航返回的RNUserCardView 为YES时，默认打开RN 名片页
-        if ([[QIMKit sharedInstance] getIsIpad]) {
-            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
-            SEL sel = NSSelectorFromString(@"openSingleChatByJid:");
-            if ([RunC respondsToSelector:sel]) {
-                [RunC performSelector:sel withObject:userId];
-            }
-        } else {
+//        if ([[QIMKit sharedInstance] getIsIpad]) {
+//            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
+//            SEL sel = NSSelectorFromString(@"openSingleChatByJid:");
+//            if ([RunC respondsToSelector:sel]) {
+//                [RunC performSelector:sel withObject:userId];
+//            }
+//        } else {
 #if defined (QIMRNEnable) && QIMRNEnable == 1
             
             if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
@@ -331,7 +333,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 #if defined (QIMRNEnable) && QIMRNEnable == 1
             }
 #endif
-        }
+//        }
     });
 }
 
