@@ -1371,7 +1371,11 @@
 
 //左上角返回按钮
 - (void)leftBarBtnClicked:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+    }
 }
 
 //SwipeBack
