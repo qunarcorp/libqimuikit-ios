@@ -43,6 +43,7 @@
 #import "QIMNavBackBtn.h"
 #import "QIMMessageTableViewManager.h"
 #import "QIMMWPhotoBrowser.h"
+#import "QIMIPadWindowManager.h"
 
  @interface QIMSystemVC()<QTalkMessageTableScrollViewDelegate, UIGestureRecognizerDelegate,QIMSingleChatCellDelegate,QIMSingleChatVoiceCellDelegate,NSXMLParserDelegate,QIMMWPhotoBrowserDelegate,QIMMsgBaloonBaseCellDelegate,PNNoticeCellDelegate,PNOrderMsgCellDelegate>
 {
@@ -222,7 +223,11 @@
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+    }
 }
 
 
