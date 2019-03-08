@@ -894,7 +894,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarOrientationChange:)name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 }
 
-
 #pragma mark - 重新修改frame
 - (void)reloadFrame {
     
@@ -902,9 +901,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     QIMVerboseLog(@"%@",NSStringFromCGRect(_tableView.frame));
     _tableViewFrame = _tableView.frame;
     _rootViewFrame = self.view.frame;
+    [[QIMMessageCellCache sharedInstance] clearUp];
     [_tableView setValue:nil forKey:@"reusableTableCells"];
+    [self.textBar removeAllSubviews];
     [self.textBar removeFromSuperview];
     self.textBar = nil;
+    [QIMTextBar clearALLTextBar];
     [self.view addSubview:self.textBar];
     [self refreshTableView];
 }
@@ -913,12 +915,13 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)statusBarOrientationChange:(NSNotification *)notification {
     QIMVerboseLog(@"屏幕发送旋转 : %@", notification);
-    [self reloadFrame];
+    [self reloadIPadViewFrame:notification];
 }
 
 - (void)reloadIPadViewFrame:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.preferredContentSize = CGSizeMake([[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]);
+        [self reloadFrame];
     });
 }
 

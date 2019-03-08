@@ -536,20 +536,20 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)openGroupChatVCByGroupId:(NSString *)groupId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([[QIMKit sharedInstance] getIsIpad]) {
-            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
-            SEL sel = NSSelectorFromString(@"openGrouChatByGroupId:");
-            if ([RunC respondsToSelector:sel]) {
-                [RunC performSelector:sel withObject:groupId];
-            }
-        } else {
+//        if ([[QIMKit sharedInstance] getIsIpad]) {
+//            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
+//            SEL sel = NSSelectorFromString(@"openGrouChatByGroupId:");
+//            if ([RunC respondsToSelector:sel]) {
+//                [RunC performSelector:sel withObject:groupId];
+//            }
+//        } else {
             UIViewController *chatGroupVC = [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:groupId];
             UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
             if (!navVC) {
                 navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
             }
             [navVC pushViewController:chatGroupVC animated:YES];
-        }
+//        }
     });
 }
 
