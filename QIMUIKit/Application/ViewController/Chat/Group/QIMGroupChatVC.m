@@ -96,6 +96,8 @@
 #endif
 #import "QIMAuthorizationManager.h"
 #import "QIMSearchRemindView.h"
+#import "QIMIPadWindowManager.h"
+
 #define kPageCount 20
 
 #define kReSendMsgAlertViewTag 10000
@@ -1398,8 +1400,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         fileManagerVC.messageSaveType = ChatType_GroupChat;
         
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
-        
-        [self presentViewController:nav animated:YES completion:nil];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
+        } else {
+            [self presentViewController:nav animated:YES completion:nil];
+        }
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
         
         //分享名片
@@ -1453,7 +1459,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
             UserLocationViewController *userLct = [[UserLocationViewController alloc] init];
             userLct.delegate = self;
-            [self.navigationController presentViewController:userLct animated:YES completion:nil];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+            } else {
+                [self.navigationController presentViewController:userLct animated:YES completion:nil];
+            }
         };
         [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_TouPiao]) {

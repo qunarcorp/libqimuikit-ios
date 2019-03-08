@@ -1846,9 +1846,10 @@
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
+        } else {
+            [self presentViewController:nav animated:YES completion:nil];
         }
-        [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
-//        [self presentViewController:nav animated:YES completion:nil];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ChatTransfer]) {
         [QIMFastEntrance openTransferConversation:self.virtualJid withVistorId:self.chatId];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
@@ -1883,7 +1884,12 @@
         [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
             UserLocationViewController *userLct = [[UserLocationViewController alloc] init];
             userLct.delegate = self;
-            [self.navigationController presentViewController:userLct animated:YES completion:nil];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+            } else {
+                [self.navigationController presentViewController:userLct animated:YES completion:nil];
+            }
         };
         [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_VideoCall]) {
