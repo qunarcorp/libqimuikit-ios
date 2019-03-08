@@ -50,7 +50,7 @@
 
 + (NSDictionary *)qimrn_getUserLeaderInfoByUserId:(NSString *)userId {
     NSDictionary *userWorkInfo = nil;
-    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat && [[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"]) {
         userWorkInfo = [[QIMKit sharedInstance] getUserWorkInfoByUserId:userId];
     } else {
         userWorkInfo = nil;
