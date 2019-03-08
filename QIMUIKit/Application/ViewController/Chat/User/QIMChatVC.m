@@ -35,6 +35,7 @@
 #import "SDImageCache.h"
 #import "QIMMWPhotoBrowser.h"
 #import "QIMRedPackageView.h"
+#import "QIMIPadWindowManager.h"
 
 #define kPageCount 20
 #define kReSendMsgAlertViewTag 10000
@@ -644,7 +645,9 @@
 }
 
 - (void)initUI {
-    
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     self.view.backgroundColor = [UIColor qtalkChatBgColor];
  
     [[QIMEmotionSpirits sharedInstance] setTableView:_tableView];
@@ -802,20 +805,6 @@
     if (self.chatType != ChatType_CollectionChat) {
         [self.view addSubview:self.textBar];
     }
-//    [self initUI];
-    /*
-    if (self.chatType != ChatType_CollectionChat) {
-        BOOL containTextBar = NO;
-        for (UIView *view in self.view.subviews) {
-            if ([view isKindOfClass:[QIMTextBar class]]) {
-                containTextBar = YES;
-            }
-        }
-        if (containTextBar == NO) {
-            [self.view addSubview:self.textBar];
-        }
-    }
-    */
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -1855,8 +1844,11 @@
         fileManagerVC.messageSaveType = ChatType_SingleChat;
         
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
-        
-        [self presentViewController:nav animated:YES completion:nil];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+        }
+        [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
+//        [self presentViewController:nav animated:YES completion:nil];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ChatTransfer]) {
         [QIMFastEntrance openTransferConversation:self.virtualJid withVistorId:self.chatId];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {

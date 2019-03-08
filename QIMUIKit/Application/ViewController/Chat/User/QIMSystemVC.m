@@ -112,6 +112,9 @@
 }
 
 - (void)setUI {
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     [self.view setBackgroundColor:[UIColor qtalkChatBgColor]];
     [self setupNav];
     [self.view addSubview:self.tableView];

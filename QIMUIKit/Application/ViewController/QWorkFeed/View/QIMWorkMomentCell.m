@@ -122,7 +122,11 @@ CGFloat maxLimitHeight = 0;
     _rIdLabe.hidden = YES;
     
     _controlBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    _controlBtn.frame = CGRectMake(SCREEN_WIDTH - 15 - 19, _nameLab.top, 19, 19);
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        _controlBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 15 - 19, _nameLab.top, 19, 19);
+    } else {
+        _controlBtn.frame = CGRectMake(SCREEN_WIDTH - 15 - 19, _nameLab.top, 19, 19);
+    }
     [_controlBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1cd" size:28 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
     _controlBtn.centerY = _nameLab.centerY;
     [_controlBtn addTarget:self action:@selector(controlPanelClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -257,6 +261,9 @@ CGFloat maxLimitHeight = 0;
     _contentLabel.text = moment.content.content;
     [_contentLabel sizeToFit];
     CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        textH = [_contentLabel getHeightWithWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20];
+    }
     if(self.alwaysFullText) {
         _showAllBtn.hidden = YES;
     } else {
@@ -271,6 +278,9 @@ CGFloat maxLimitHeight = 0;
         }
     }
     [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:([[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20)];
+    }
     self.contentLabel.height = textH;
     _showAllBtn.frame = CGRectMake(self.nameLab.left, _contentLabel.bottom + 5, 60, 20);
     if (_showAllBtn.hidden) {
@@ -304,7 +314,11 @@ CGFloat maxLimitHeight = 0;
 }
 
 - (void)updateLikeUI {
-    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 15 - 70, _rowHeight + 15, 70, 27);
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        _likeBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 15 - 70, _rowHeight + 15, 70, 27);
+    } else {
+        _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 15 - 70, _rowHeight + 15, 70, 27);
+    }
     NSInteger likeNum = self.moment.likeNum;
     if (self.moment.isLike) {
         _likeBtn.selected = YES;

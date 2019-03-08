@@ -202,7 +202,11 @@
         [menuList addObject:@(MA_CopyOriginMsg)];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeAllObjects];
+        [menuList removeObject:@(MA_Refer)];
+        [menuList removeObject:@(MA_Repeater)];
+        [menuList removeObject:@(MA_Delete)];
+        [menuList removeObject:@(MA_Forward)];
+        [menuList removeObject:@(MA_Repeater)];
     }
     return menuList;
 }

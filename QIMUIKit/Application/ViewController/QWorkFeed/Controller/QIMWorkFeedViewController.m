@@ -83,7 +83,7 @@
 
 - (UIView *)loadFaildView {
     if (!_loadFaildView) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 54)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 54)];
         view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F9];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 90, 21)];
@@ -297,9 +297,16 @@
 - (void)jumpToAddNewMomentVc {
     
     QIMWorkMomentPushViewController *newMomentVc = [[QIMWorkMomentPushViewController alloc] init];
-    QIMNavController *newMomentNav = [[QIMNavController alloc] initWithRootViewController:newMomentVc];
-    self.notNeedReloadMomentView = YES;
-    [self presentViewController:newMomentNav animated:YES completion:nil];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        QIMNavController *newMomentNav = [[QIMNavController alloc] initWithRootViewController:newMomentVc];
+        newMomentNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+        self.notNeedReloadMomentView = YES;
+        [self presentViewController:newMomentNav animated:YES completion:nil];
+    } else {
+        QIMNavController *newMomentNav = [[QIMNavController alloc] initWithRootViewController:newMomentVc];
+        self.notNeedReloadMomentView = YES;
+        [self presentViewController:newMomentNav animated:YES completion:nil];
+    }
 }
 
 #pragma mark - UITableViewDataSource

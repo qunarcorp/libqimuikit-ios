@@ -152,9 +152,16 @@ CGFloat maxFullContentHeight = 0;
     CGFloat bottom = self.headImageView.bottom;
     _contentLabel.text = self.moment.content.content;
     [_contentLabel sizeToFit];
-    CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
-    self.contentLabel.height = textH;
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        CGFloat textH = [_contentLabel getHeightWithWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20];
+        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:([[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20)];
+        self.contentLabel.height = textH;
+    } else {
+        CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
+        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
+        self.contentLabel.height = textH;
+    }
+
     bottom = _contentLabel.bottom + 8;
 
     if (self.moment.content.imgList.count > 0) {

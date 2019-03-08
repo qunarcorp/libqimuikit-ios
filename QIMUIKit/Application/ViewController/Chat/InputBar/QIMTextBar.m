@@ -68,6 +68,7 @@
 #import "QIMEmotionManagerView.h"
 #endif
 
+#import "QIMIPadWindowManager.h"
 #import "QIMAuthorizationManager.h"
 
 @interface NSAttributedString (EmojiExtension)
@@ -1752,8 +1753,15 @@ static QIMTextBar *__publicNumberTextBar = nil;
         picker.colsInPortrait = 4;
         picker.colsInLandscape = 5;
         picker.minimumInteritemSpacing = 2.0;
-        [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
-//        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:picker animated:YES completion:nil];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
+//            UIViewController *vc = (UIViewController *)self.delegate;
+//            [vc presentViewController:picker animated:YES completion:nil];
+//            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+        } else {
+            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+        }
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }
