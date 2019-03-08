@@ -44,6 +44,8 @@
 #import "QIMFileTransMiddleVC.h"
 #if defined (QIMIPadEnable) && QIMIPadEnable == 1
     #import "IPAD_RemoteLoginVC.h"
+    #import "IPAD_NAVViewController.h"
+    #import "QIMIPadWindowManager.h"
 #endif
 #import "QIMWatchDog.h"
 #import "QIMUUIDTools.h"
@@ -92,7 +94,12 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (UINavigationController *)getQIMFastEntranceRootNav {
     QIMVerboseLog(@"getQIMFastEntranceRootNav: %@", _sharedInstance.rootNav);
     if (!self.rootNav) {
-        self.rootNav = [[self getQIMFastEntranceRootVc] navigationController];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+//            self.rootNav = [[IPAD_NAVViewController alloc] init];
+            self.rootNav = [[QIMIPadWindowManager sharedInstance] getDetailNav];
+        } else {
+            self.rootNav = [[self getQIMFastEntranceRootVc] navigationController];
+        }
     }
     return self.rootNav;
 }
@@ -234,9 +241,9 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         //打开用户名片页
         //导航返回的RNUserCardView 为YES时，默认打开RN 名片页
-        if ([[QIMKit sharedInstance] getIsIpad]) {
-            
-        } else {
+//        if ([[QIMKit sharedInstance] getIsIpad]) {
+//            
+//        } else {
 #if defined (QIMRNEnable) && QIMRNEnable == 1
             
             if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
@@ -254,7 +261,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 #if defined (QIMRNEnable) && QIMRNEnable == 1
             }
 #endif
-        }
+//        }
     });
 }
 

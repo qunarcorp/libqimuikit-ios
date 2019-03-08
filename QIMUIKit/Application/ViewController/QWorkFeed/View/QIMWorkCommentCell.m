@@ -161,9 +161,9 @@
                             range:[likeString rangeOfString:replayNameStr]];
     
     _contentLabel.attributedText = attributedText;
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 16) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
+    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 16) Width:(self.width - self.nameLab.left - 20)];
     rowHeight = self.contentLabel.bottom;
-    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70, 5, 60, 27);
+    _likeBtn.frame = CGRectMake(self.width - 70, 5, 60, 27);
     NSInteger likeNum = commentModel.likeNum;
     BOOL isLike = commentModel.isLike;
     if (isLike) {

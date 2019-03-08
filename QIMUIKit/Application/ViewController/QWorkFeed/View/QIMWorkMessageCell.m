@@ -194,7 +194,11 @@
             self.contentLabel.text = noticeMsgModel.content;
         }
     }
-    self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, SCREEN_WIDTH - 56 - 6 - self.headerImageView.right - 6, 30);
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, [[UIScreen mainScreen] qim_rightWidth] - 56 - 6 - self.headerImageView.right - 6, 30);
+    } else {
+        self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, SCREEN_WIDTH - 56 - 6 - self.headerImageView.right - 6, 30);
+    }
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:(noticeMsgModel.createTime/1000)];
     self.timeLabel.text = [timeDate qim_timeIntervalDescription];
     self.timeLabel.frame = CGRectMake(self.headerImageView.right + 6, self.contentLabel.bottom + 6, 100, 20);

@@ -28,6 +28,7 @@
 #import "YYModel.h"
 #import "MBProgressHUD.h"
 #import "QIMProgressHUD.h"
+#import "QIMIPadWindowManager.h"
 
 @interface QIMWorkMomentPushUserIdentityCell : UITableViewCell
 
@@ -120,7 +121,11 @@
 
 - (UITextView *)textView {
     if (!_textView) {
-        _textView = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, SCREEN_WIDTH - 30, 150)];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            _textView = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, [[UIScreen mainScreen] qim_rightWidth] - 30, 150)];
+        } else {
+            _textView = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, SCREEN_WIDTH - 30, 150)];
+        }
         _textView.backgroundColor = [UIColor whiteColor];
         [_textView setFont:[UIFont systemFontOfSize:17]];
         [_textView setTextColor:[UIColor qim_colorWithHex:0x333333]];
@@ -145,7 +150,10 @@
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         CGFloat cellHeight = (SCREEN_WIDTH - 75) / 3;
         CGFloat cellWidth = (SCREEN_WIDTH - 75) / 3;
-        
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            cellHeight = ([[UIScreen mainScreen] qim_rightWidth] - 75) / 3;
+            cellWidth = ([[UIScreen mainScreen] qim_rightWidth] - 75) / 3;
+        }
         layout.itemSize = CGSizeMake(cellWidth, cellHeight);
         layout.sectionInset = UIEdgeInsetsMake(15, 15, 15, 25);
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -181,7 +189,11 @@
 
 - (UITableView *)panelListView {
     if (!_panelListView) {
-        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 500) style:UITableViewStylePlain];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 500) style:UITableViewStylePlain];
+        } else {
+            _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 500) style:UITableViewStylePlain];
+        }
         _panelListView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _panelListView.delegate = self;
         _panelListView.dataSource = self;
@@ -325,7 +337,12 @@
         picker.colsInPortrait = 4;
         picker.colsInLandscape = 5;
         picker.minimumInteritemSpacing = 2.0;
-        [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+            [self presentViewController:picker animated:YES completion:nil];
+        } else {
+            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+        }
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }

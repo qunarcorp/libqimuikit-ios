@@ -55,6 +55,9 @@
     self = [super init];
     if (self) {
         [self registeNotifications];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+        }
     }
     return self;
 }
