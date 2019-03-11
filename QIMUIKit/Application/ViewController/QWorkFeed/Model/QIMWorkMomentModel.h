@@ -9,6 +9,7 @@
 #import "QIMCommonUIFramework.h"
 
 @class QIMWorkMomentContentModel;
+@class QIMWorkCommentModel;
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkMomentModel : NSObject
@@ -32,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSNumber *updateTime;     //更新时间
 
 @property (nonatomic, strong) QIMWorkMomentContentModel *content;  //Moment内容
+
+@property (nonatomic, strong) NSArray <QIMWorkCommentModel *> *attachCommentList;   //附带的评论List
 
 @property (nonatomic, strong) NSString *atList;         //艾特列表
 

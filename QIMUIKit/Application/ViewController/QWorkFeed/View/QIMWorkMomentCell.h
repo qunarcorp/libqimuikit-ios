@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class QIMWorkMomentModel;
 @class QIMWorkMomentLabel;
 @class QIMWorkMomentImageListView;
+@class QIMWorkAttachCommentListView;
 
 @protocol MomentCellDelegate <NSObject>
 
@@ -58,6 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 图片
 @property (nonatomic, strong) QIMWorkMomentImageListView *imageListView;
+
+@property (nonatomic, strong) QIMWorkAttachCommentListView *attachCommentListView;
 
 //点赞按钮
 @property (nonatomic, strong) UIButton *likeBtn;

@@ -10,7 +10,7 @@
 #import "QIMWorkMomentPicture.h"
 
 typedef enum : NSUInteger {
-    QIMWorkMomentContentTypeText,   //文本
+    QIMWorkMomentContentTypeText = 1,   //文本
     QIMWorkMomentContentTypeVideo,  //视频
     QIMWorkMomentContentTypeCommonTrdInfo, //666
 } QIMWorkMomentContentType;
