@@ -137,7 +137,7 @@
     } else {
         
     }
-    [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
+//    [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
 }
 
 - (void)backBtnClick:(id)sender {

@@ -13,6 +13,7 @@
 #import "QIMWorkMomentContentModel.h"
 #import "QIMWorkMomentPicture.h"
 #import "QIMWorkMomentImageListView.h"
+#import "QIMWorkAttachCommentListView.h"
 #import <YYModel/YYModel.h>
 #import "QIMEmotionManager.h"
 
@@ -160,6 +161,9 @@ CGFloat maxLimitHeight = 0;
     _imageListView = [[QIMWorkMomentImageListView alloc] initWithFrame:CGRectZero];
     [self.contentView addSubview:_imageListView];
 
+    _attachCommentListView = [[QIMWorkAttachCommentListView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    [self.contentView addSubview:_attachCommentListView];
+    
     // 时间视图
     _timeLab = [[UILabel alloc] init];
     _timeLab.textColor = [UIColor qim_colorWithHex:0xADADAD];
@@ -279,7 +283,7 @@ CGFloat maxLimitHeight = 0;
         }
             break;
     }
-   QIMMessageModel *msg = [[QIMMessageModel alloc] init];
+    QIMMessageModel *msg = [[QIMMessageModel alloc] init];
     msg.message = content;
     msg.messageId = moment.momentId;
     
@@ -319,7 +323,8 @@ CGFloat maxLimitHeight = 0;
     _timeLab.text = [timeDate qim_timeIntervalDescription];
     _timeLab.frame = CGRectMake(self.contentLabel.left, _rowHeight + 15, 60, 12);
     _timeLab.centerY = _commentBtn.centerY;
-    _moment.rowHeight = self.commentBtn.bottom + 18;
+    _rowHeight = self.commentBtn.bottom + 24;
+    [self updateAttachCommentList];
 }
 
 - (void)refreshContentUIWithType:(QIMWorkMomentContentType)type withBottom:(CGFloat)bottom {
@@ -344,10 +349,29 @@ CGFloat maxLimitHeight = 0;
         }
             break;
         default: {
-            
+            if (self.moment.content.imgList.count > 0) {
+                _imageListView.momentContentModel = self.moment.content;
+                _imageListView.origin = CGPointMake(self.nameLab.left, bottom + 5);
+                [_imageListView setTapSmallImageView:^(QIMWorkMomentContentModel * _Nonnull momentContentModel, NSInteger currentTag) {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(didClickSmallImage:WithCurrentTag:)]) {
+                        [self.delegate didClickSmallImage:self.moment WithCurrentTag:currentTag];
+                    }
+                }];
+                _rowHeight = _imageListView.bottom;
+            } else {
+                
+            }
         }
             break;
     }
+}
+
+- (void)updateAttachCommentList {
+    _attachCommentListView.attachCommentList = self.moment.attachCommentList;
+    _attachCommentListView.origin = CGPointMake(self.nameLab.left, _rowHeight + 5);
+    _attachCommentListView.width = 300;
+    _attachCommentListView.height = 300;
+    _moment.rowHeight = _attachCommentListView.bottom + 18;
 }
 
 - (void)updateLikeUI {
