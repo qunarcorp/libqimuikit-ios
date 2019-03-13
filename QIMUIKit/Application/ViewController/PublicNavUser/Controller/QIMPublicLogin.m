@@ -283,9 +283,34 @@ static const int companyTag = 10001;
     [self.view endEditing:YES];
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    [self updateLoginUI];
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if (textField == self.userPwdTextField) {
+        if (textField.text.length - range.length + string.length >= 1 && self.userNameTextField.text.length > 0 && self.companyModel.domain.length > 0) {
+            [self updateLoginEnable:YES];
+        } else {
+            [self updateLoginEnable:NO];
+        }
+    } else if (textField == self.userNameTextField) {
+        if (textField.text.length - range.length + string.length >= 1 && self.userPwdTextField.text.length > 0 && self.companyModel.domain.length > 0) {
+            [self updateLoginEnable:YES];
+        } else {
+            [self updateLoginEnable:NO];
+        }
+    }
     return YES;
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    if (textField == self.userPwdTextField) {
+        [self updateLoginEnable:NO];
+    } else if (textField == self.userNameTextField) {
+        [self updateLoginEnable:NO];
+    }
+    return YES;
+}
+
+- (void)updateLoginEnable:(BOOL)flag {
+    [self.loginBtn setEnabled:flag];
 }
 
 - (void)updateLoginUI {
@@ -294,11 +319,6 @@ static const int companyTag = 10001;
     } else {
         [self.loginBtn setEnabled:NO];
     }
-}
-
-- (BOOL)textFieldShouldClear:(UITextField *)textField {
-    self.loginBtn.enabled = NO;
-    return YES;
 }
 
 - (void)setupUI {
