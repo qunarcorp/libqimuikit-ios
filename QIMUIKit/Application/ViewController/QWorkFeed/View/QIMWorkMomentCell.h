@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class QIMWorkMomentLabel;
 @class QIMWorkMomentImageListView;
 @class QIMWorkAttachCommentListView;
+@class QIMWorkMomentTagCollectionView;
 
 @protocol MomentCellDelegate <NSObject>
 
@@ -60,6 +61,10 @@ NS_ASSUME_NONNULL_BEGIN
 // 图片
 @property (nonatomic, strong) QIMWorkMomentImageListView *imageListView;
 
+//标签collectionView
+@property (nonatomic, strong) QIMWorkMomentTagCollectionView *tagCollectionView;
+
+//附带评论listView
 @property (nonatomic, strong) QIMWorkAttachCommentListView *attachCommentListView;
 
 //点赞按钮

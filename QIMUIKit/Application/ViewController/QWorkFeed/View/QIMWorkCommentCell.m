@@ -11,6 +11,7 @@
 #import "QIMMessageParser.h"
 #import "QIMMarginLabel.h"
 #import "QIMWorkCommentModel.h"
+#import "QIMWorkChildCommentListView.h"
 
 @implementation QIMWorkCommentCell
 
@@ -28,7 +29,11 @@
 
 - (void)setupUI {
     // 头像视图
-    _headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 43, 43)];
+    if (self.isChildComment == YES) {
+        _headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.leftMagin, 10, 23, 23)];
+    } else {
+        _headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 36, 36)];
+    }
     _headImageView.contentMode = UIViewContentModeScaleAspectFill;
     _headImageView.userInteractionEnabled = YES;
     _headImageView.layer.masksToBounds = YES;
@@ -42,7 +47,11 @@
     
     // 名字视图
     _nameLab = [[UILabel alloc] initWithFrame:CGRectMake(_headImageView.right+10, _headImageView.top, 50, 20)];
-    _nameLab.font = [UIFont boldSystemFontOfSize:15.0];
+    if (self.isChildComment == YES) {
+        _nameLab.font = [UIFont boldSystemFontOfSize:14.0];
+    } else {
+        _nameLab.font = [UIFont boldSystemFontOfSize:15.0];
+    }
     _nameLab.textColor = [UIColor qim_colorWithHex:0x00CABE];
     _nameLab.backgroundColor = [UIColor clearColor];
     _nameLab.userInteractionEnabled = YES;
@@ -59,7 +68,7 @@
     _organLab.layer.cornerRadius = 2.0f;
     _organLab.layer.masksToBounds = YES;
     _organLab.textAlignment = NSTextAlignmentCenter;
-    [self.contentView addSubview:_organLab];
+//    [self.contentView addSubview:_organLab];
     
     //点赞按钮
     _likeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -74,19 +83,22 @@
     [_likeBtn setImageEdgeInsets:UIEdgeInsetsMake(0.0, -10, 0.0, 0.0)];
     [_likeBtn addTarget:self action:@selector(didLikeComment:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_likeBtn];
-
-    //回复名称
-    _replyNameLabel = [[UILabel alloc] init];
-    [_replyNameLabel setTextColor:[UIColor qim_colorWithHex:0x999999]];
-    [_replyNameLabel setFont:[UIFont systemFontOfSize:15]];
-    [self.contentView addSubview:_replyNameLabel];
     
     // 正文视图
     _contentLabel = [[QIMWorkMomentLabel alloc] init];
-    _contentLabel.font = [UIFont systemFontOfSize:15];
+    if (self.isChildComment == YES) {
+        _contentLabel.font = [UIFont systemFontOfSize:14];
+    } else {
+        _contentLabel.font = [UIFont systemFontOfSize:15];
+    }
     _contentLabel.linesSpacing = 1.0f;
     _contentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
+    _contentLabel.lineBreakMode = UILineBreakModeCharacterWrap;
     [self.contentView addSubview:_contentLabel];
+    
+    _childCommentListView = [[QIMWorkChildCommentListView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    _childCommentListView.backgroundColor = [UIColor yellowColor];
+    [self.contentView addSubview:_childCommentListView];
 }
 
 - (void)setCommentModel:(QIMWorkCommentModel *)commentModel {
@@ -132,6 +144,22 @@
 
     _nameLab.centerY = self.headImageView.centerY;
     _organLab.centerY = self.headImageView.centerY;
+    
+    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70 - self.leftMagin, 5, 60, 27);
+    NSInteger likeNum = commentModel.likeNum;
+    BOOL isLike = commentModel.isLike;
+    if (isLike) {
+        _likeBtn.selected = YES;
+        [_likeBtn setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateSelected];
+    } else {
+        _likeBtn.selected = NO;
+        if (likeNum > 0) {
+            [_likeBtn setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
+        } else {
+            [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
+        }
+    }
+    _likeBtn.centerY = self.headImageView.centerY;
 
     BOOL isChildComment = (commentModel.parentCommentUUID.length > 0) ? YES : NO;
     BOOL toisAnonymous = commentModel.toisAnonymous;
@@ -156,30 +184,28 @@
 
     NSString *likeString  = [NSString stringWithFormat:@"%@%@", replayNameStr, commentModel.content];
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:likeString];
-    [attributedText addAttributeFont:[UIFont systemFontOfSize:15]];
+    if (self.isChildComment == YES) {
+        [attributedText addAttributeFont:[UIFont systemFontOfSize:14]];
+    } else {
+        [attributedText addAttributeFont:[UIFont systemFontOfSize:15]];
+    }
     [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:15]}
                             range:[likeString rangeOfString:replayNameStr]];
     
     _contentLabel.attributedText = attributedText;
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 16) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
+    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 16) Width:(self.likeBtn.left - self.nameLab.left)];
     rowHeight = self.contentLabel.bottom;
-    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70, 5, 60, 27);
-    NSInteger likeNum = commentModel.likeNum;
-    BOOL isLike = commentModel.isLike;
-    if (isLike) {
-        _likeBtn.selected = YES;
-        [_likeBtn setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateSelected];
-    } else {
-        _likeBtn.selected = NO;
-        if (likeNum > 0) {
-            [_likeBtn setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
-        } else {
-            [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
-        }
-    }
-    _likeBtn.centerY = self.headImageView.centerY;
     
-    _commentModel.rowHeight = _contentLabel.bottom + 20;
+    if (self.commentModel.childComments.count > 0) {
+        _childCommentListView.childCommentList = self.commentModel.childComments;
+        _childCommentListView.origin = CGPointMake(0, rowHeight + 5);
+        _childCommentListView.width = SCREEN_WIDTH - self.nameLab.left;
+        _childCommentListView.height = 500;
+        _childCommentListView.height = [_childCommentListView getWorkChildCommentListViewHeight];
+        _commentModel.rowHeight = _childCommentListView.bottom;
+    } else {
+        _commentModel.rowHeight = _contentLabel.bottom + 20;
+    }
 }
 
 - (void)didLikeComment:(UIButton *)sender {

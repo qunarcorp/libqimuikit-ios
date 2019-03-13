@@ -34,12 +34,12 @@ static NSString *cellID = @"QIMMyEmotionsManagerCell";
 /**
 {
     desc = "\U6269\U5c55\U8868\U60c5";
-    file = "https://qt.qunar.com/file/v1/emo/d/z/qq";
+    file = "https://qim.qunar.com/file/v1/emo/d/z/qq";
     "file_size" = 1983898;
     md5 = C044285E87955383B46A4F4B8430851C;
     name = "qq\U8868\U60c5";
     pkgid = qq;
-    thumb = "https://qt.qunar.com/file/v1/emo/d/e/qq/tpx/fixed";
+    thumb = "https://qim.qunar.com/file/v1/emo/d/e/qq/tpx/fixed";
 }
 */
 - (NSMutableArray *)dataList {

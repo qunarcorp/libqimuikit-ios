@@ -182,7 +182,7 @@
     NSString *httpUrl = [QIMKit updateLoadFile:[NSData dataWithContentsOfFile:zipFilePath] WithMsgId:nil WithMsgType:QIMMessageType_File WithPathExtension:zipFilePath.pathExtension];
     if (httpUrl.length) {
         if (![httpUrl qim_hasPrefixHttpHeader]) {
-            httpUrl = [NSString stringWithFormat:@"%@/%@", @"https://qt.qunar.com", httpUrl];
+            httpUrl = [NSString stringWithFormat:@"%@/%@", @"https://qim.qunar.com", httpUrl];
         }
         [self submitLogWithFileUrl:httpUrl];
     }
@@ -217,7 +217,7 @@
     [requestDic setObject:@"日志反馈" forKey:@"alt_body"];
     [requestDic setObject:@(YES) forKey:@"is_html"];
     NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:requestDic error:nil];
-    NSURL *requestUrl = [NSURL URLWithString:@"http://qt.qunar.com/test_public/public/mainSite/sendMail.php"];
+    NSURL *requestUrl = [NSURL URLWithString:@"http://qim.qunar.com/test_public/public/mainSite/sendMail.php"];
     QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:requestUrl];
     [request setHTTPMethod:QIMHTTPMethodPOST];
     [request setHTTPBody:requestData];

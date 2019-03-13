@@ -14,6 +14,7 @@
 #import "QIMWorkMomentPicture.h"
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkAttachCommentListView.h"
+#import "QIMWorkMomentTagCollectionView.h"
 #import <YYModel/YYModel.h>
 #import "QIMEmotionManager.h"
 
@@ -22,6 +23,7 @@ CGFloat maxLimitHeight = 0;
 
 @interface QIMWorkMomentCell () <QIMAttributedLabelDelegate> {
     CGFloat _rowHeight;
+    UILabel *_showMoreLabel;
 }
 
 @end
@@ -123,6 +125,14 @@ CGFloat maxLimitHeight = 0;
     [self.contentView addSubview:_rIdLabe];
     _rIdLabe.hidden = YES;
     
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    layout.itemSize = CGSizeMake(34, 17);
+    layout.minimumLineSpacing = 10;
+    layout.minimumInteritemSpacing = 10;
+    _tagCollectionView = [[QIMWorkMomentTagCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+    [self.contentView addSubview:_tagCollectionView];
+    
     _controlBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _controlBtn.frame = CGRectMake(SCREEN_WIDTH - 15 - 19, _nameLab.top, 19, 19);
     [_controlBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1cd" size:28 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
@@ -163,7 +173,7 @@ CGFloat maxLimitHeight = 0;
 
     _attachCommentListView = [[QIMWorkAttachCommentListView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     [self.contentView addSubview:_attachCommentListView];
-    
+
     // 时间视图
     _timeLab = [[UILabel alloc] init];
     _timeLab.textColor = [UIColor qim_colorWithHex:0xADADAD];
@@ -202,6 +212,10 @@ CGFloat maxLimitHeight = 0;
     [_commentBtn setImageEdgeInsets:UIEdgeInsetsMake(0.0, -10, 0.0, 0.0)];
     [_commentBtn addTarget:self action:@selector(didAddComment:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_commentBtn];
+    
+    _showMoreLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _showMoreLabel.textColor = [UIColor qim_colorWithHex:0xBFBFBF];
+    _showMoreLabel.font = [UIFont systemFontOfSize:14];
     
     // 最大高度限制
     maxLimitHeight = (_contentLabel.font.lineHeight) * 6 - 1.0;
@@ -260,8 +274,13 @@ CGFloat maxLimitHeight = 0;
     _nameLab.centerY = self.headImageView.centerY;
     _organLab.centerY = self.headImageView.centerY;
     _rIdLabe.centerY = self.headImageView.centerY;
-    CGFloat bottom = self.headImageView.bottom;
     
+    CGFloat bottom = self.headImageView.bottom;
+    _tagCollectionView.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 80, 24);
+    _tagCollectionView.momentTag = self.moment.postType.integerValue;
+    _tagCollectionView.height = [_tagCollectionView getWorkMomentTagCollectionViewHeight];
+    bottom = _tagCollectionView.bottom;
+
     QIMWorkMomentContentType contentType = moment.content.type;
     NSString *content = moment.content.content;
     switch (contentType) {
@@ -323,7 +342,7 @@ CGFloat maxLimitHeight = 0;
     _timeLab.text = [timeDate qim_timeIntervalDescription];
     _timeLab.frame = CGRectMake(self.contentLabel.left, _rowHeight + 15, 60, 12);
     _timeLab.centerY = _commentBtn.centerY;
-    _rowHeight = self.commentBtn.bottom + 24;
+//    _rowHeight = self.commentBtn.bottom + 24;
     [self updateAttachCommentList];
 }
 
@@ -367,11 +386,21 @@ CGFloat maxLimitHeight = 0;
 }
 
 - (void)updateAttachCommentList {
-    _attachCommentListView.attachCommentList = self.moment.attachCommentList;
-    _attachCommentListView.origin = CGPointMake(self.nameLab.left, _rowHeight + 5);
-    _attachCommentListView.width = 300;
-    _attachCommentListView.height = 300;
-    _moment.rowHeight = _attachCommentListView.bottom + 18;
+    if (self.moment.attachCommentList.count > 0) {
+
+        _attachCommentListView.momentId = self.moment.momentId;
+        _attachCommentListView.attachCommentList = self.moment.attachCommentList;
+        _attachCommentListView.origin = CGPointMake(self.nameLab.left, self.commentBtn.bottom + 24 + 5);
+        _attachCommentListView.width = SCREEN_WIDTH - self.nameLab.left;
+        _attachCommentListView.height = 300;
+        _attachCommentListView.height = [_attachCommentListView getWorkAttachCommentListViewHeight];
+        _showMoreLabel.frame = CGRectMake(_attachCommentListView.left, _attachCommentListView.bottom + 5, _attachCommentListView.width, 15);
+        [self.contentView addSubview:_showMoreLabel];
+        [_showMoreLabel setText:[NSString stringWithFormat:@"查看全部%ld条评论", self.moment.commentsNum]];
+        _moment.rowHeight = _showMoreLabel.bottom + 18;
+    } else {
+        _moment.rowHeight = _commentBtn.bottom + 18;
+    }
 }
 
 - (void)updateLikeUI {

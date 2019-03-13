@@ -1,19 +1,19 @@
 //
-//  QIMWorkAttachCommentListView.m
+//  QIMWorkChildCommentListView.m
 //  QIMUIKit
 //
-//  Created by lilu on 2019/3/11.
+//  Created by lilu on 2019/3/12.
 //
 
-#import "QIMWorkAttachCommentListView.h"
-#import "QIMWorkAttachCommentCell.h"
+#import "QIMWorkChildCommentListView.h"
+#import "QIMWorkCommentCell.h"
 #import "QIMWorkCommentModel.h"
 
-@interface QIMWorkAttachCommentListView () <UITableViewDelegate, UITableViewDataSource>
+@interface QIMWorkChildCommentListView () <UITableViewDelegate, UITableViewDataSource>
 
 @end
 
-@implementation QIMWorkAttachCommentListView
+@implementation QIMWorkChildCommentListView
 
 - (instancetype)initWithFrame:(CGRect)frame style:(UITableViewStyle)style {
     self = [super initWithFrame:frame style:style];
@@ -21,7 +21,6 @@
         self.delegate = self;
         self.dataSource = self;
         self.scrollEnabled = NO;
-        self.userInteractionEnabled = NO;
         CGRect tableHeaderViewFrame = CGRectMake(0, 0, 0, 0.0001f);
         self.tableHeaderView = [[UIView alloc] initWithFrame:tableHeaderViewFrame];
         self.tableFooterView = [UIView new];
@@ -30,11 +29,7 @@
     return self;
 }
 
-- (void)setAttachCommentList:(NSArray *)attachCommentList {
-    _attachCommentList = attachCommentList;
-}
-
-- (CGFloat)getWorkAttachCommentListViewHeight {
+- (CGFloat)getWorkChildCommentListViewHeight {
     [self layoutIfNeeded];
     return self.contentSize.height;
 }
@@ -44,23 +39,24 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.attachCommentList.count;
+    return self.childCommentList.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMWorkCommentModel *commentModel = [self.attachCommentList objectAtIndex:indexPath.row];
-    QIMWorkAttachCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellId"];
+    QIMWorkCommentModel *commentModel = [self.childCommentList objectAtIndex:indexPath.row];
+    QIMWorkCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellId"];
     if (!cell) {
-        cell = [[QIMWorkAttachCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cellId"];
+        cell = [[QIMWorkCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cellId"];
         cell.userInteractionEnabled = NO;
+        cell.isChildComment = YES;
     }
-    [cell setLeftMargin:self.left];
+    [cell setLeftMagin:self.left];
     [cell setCommentModel:commentModel];
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMWorkCommentModel *commentModel = [self.attachCommentList objectAtIndex:indexPath.row];
+    QIMWorkCommentModel *commentModel = [self.childCommentList objectAtIndex:indexPath.row];
     return commentModel.rowHeight;
 }
 

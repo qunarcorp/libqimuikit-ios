@@ -5,7 +5,7 @@
 //  Created by lilu on 2019/3/11.
 //
 
-#import <UIKit/UIKit.h>
+#import "QIMCommonUIFramework.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSArray *attachCommentList;
 
 @property (nonatomic, assign) CGFloat leftMargin;
+
+@property (nonatomic, copy) NSString *momentId;
+
+- (CGFloat)getWorkAttachCommentListViewHeight;
 
 @end
 

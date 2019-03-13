@@ -112,7 +112,7 @@
     [_busiTypeButton setSelected:NO];
     [_supTypeButton setSelected:NO];
     [_userTypeButton setSelected:YES];
-//    curl -i -H 'content-type: application/json' -X POST -d '{"type":2,"business":1,"send_type":1,"to_data":"xxx,xxx","data":{"title":"标题,例:[退款消息]","content":"内容,例:[产品名称:XXXXXXX]12324213123","link_url":"公告touch页地址"}}' http://qt.qunar.com/robot/robot.php
+//    curl -i -H 'content-type: application/json' -X POST -d '{"type":2,"business":1,"send_type":1,"to_data":"xxx,xxx","data":{"title":"标题,例:[退款消息]","content":"内容,例:[产品名称:XXXXXXX]12324213123","link_url":"公告touch页地址"}}' http://qim.qunar.com/robot/robot.php
     NSString *msgId = [QIMUUIDTools UUID];
     NSMutableDictionary *msgDic = [NSMutableDictionary dictionary];
     [msgDic setObject:@(1) forKey:@"opt_type"];
