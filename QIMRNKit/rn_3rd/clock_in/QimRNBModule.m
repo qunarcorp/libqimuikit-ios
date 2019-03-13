@@ -124,7 +124,7 @@ RCT_EXPORT_METHOD(getTOTP:(RCTResponseSenderBlock)success) {
 
 RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
 
-    QIMProjectType projectType = [QIMKit getQIMProjectType];
+    QIMProjectType projectType = ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) ? QIMProjectTypeQTalk : QIMProjectTypeQChat; 
     NSString *ckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
     NSString *ip = [[QIMKit sharedInstance] getClientIp];
     NSString *userId = [QIMKit getLastUserName];

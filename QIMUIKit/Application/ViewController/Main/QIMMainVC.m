@@ -856,9 +856,10 @@
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_contact"]]) {
         
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_contact"]];
-        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.addFriendBtn];
-        [self.navigationItem setRightBarButtonItem:rightBarItem];
-        
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
+            UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.addFriendBtn];
+            [self.navigationItem setRightBarButtonItem:rightBarItem];
+        }
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]]) {
         
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]];
