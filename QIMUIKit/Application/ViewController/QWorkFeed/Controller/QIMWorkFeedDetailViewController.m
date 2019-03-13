@@ -153,6 +153,11 @@
     [self loadComments];
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
 - (void)backBtnClick:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -396,7 +401,7 @@
         [commentDic setQIMSafeObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
         [commentDic setQIMSafeObject:self.momentId forKey:@"postUUID"];
         [commentDic setQIMSafeObject:self.staticCommentModel.commentUUID forKey:@"parentCommentUUID"];
-        [commentDic setQIMSafeObject:self.staticCommentModel.superParentUUID forKey:@"superParentUUID"];
+        [commentDic setQIMSafeObject:(self.staticCommentModel.superParentUUID.length > 0) ? self.staticCommentModel.superParentUUID : self.staticCommentModel.commentUUID forKey:@"superParentUUID"];
         [commentDic setQIMSafeObject:str forKey:@"content"];
         [commentDic setQIMSafeObject:[QIMKit getLastUserName] forKey:@"fromUser"];
         [commentDic setQIMSafeObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
