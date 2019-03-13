@@ -45,6 +45,11 @@ Pod::Spec.new do |s|
     me.source_files = "QIMUIKit/Me/**/*.{h,m,c,mm}"
     me.dependency 'QIMUIKit/PublicUIHeader'
   end
+
+  s.subspec 'QIMUISDK' do |uisdk|
+    uisdk.public_header_files = "QIMSDK/QIMSDK/**/*.{h}"
+    uisdk.source_files = "QIMSDK/QIMSDK/*.{h,m}"
+  end
     
   s.subspec 'QIMCells' do |cells|
       cells.public_header_files = "QIMUIKit/QTalkMessageBaloon/**/*.{h}"
@@ -103,6 +108,7 @@ Pod::Spec.new do |s|
     puts '.......引用QIMUIKit-NORN源码........'
     norn.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMUIKit.xcassets", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle"
     norn.dependency 'QIMUIKit/PublicUIHeader'
+    norn.dependency 'QIMUIKit/QIMUISDK'
     norn.dependency 'QIMUIKit/QIMAppUI'
     norn.dependency 'QIMUIKit/QIMGeneralUI'
     norn.dependency 'QIMUIKit/QIMMeUI'
@@ -117,6 +123,7 @@ Pod::Spec.new do |s|
     puts '.......引用QIMUIKit-FULL源码........'
     full.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMUIKit.xcassets", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle", "QIMRNKit/QIMRNKit.bundle"
     full.dependency 'QIMUIKit/PublicUIHeader'
+    full.dependency 'QIMUIKit/QIMUISDK'
     full.dependency 'QIMUIKit/QIMAppUI'
     full.dependency 'QIMUIKit/QIMGeneralUI'
     full.dependency 'QIMUIKit/QIMMeUI'
