@@ -112,7 +112,7 @@
 
 - (void)didLikeComment:(UIButton *)sender {
     BOOL likeFlag = !sender.selected;
-    [[QIMKit sharedInstance] likeRemoteCommentWithCommentId:self.commentModel.commentUUID withMomentId:self.commentModel.postUUID withLikeFlag:likeFlag withCallBack:^(NSDictionary *responseDic) {
+    [[QIMKit sharedInstance] likeRemoteCommentWithCommentId:self.commentModel.commentUUID withSuperParentUUID:self.commentModel.superParentUUID withMomentId:self.commentModel.postUUID withLikeFlag:likeFlag withCallBack:^(NSDictionary *responseDic) {
         if (responseDic.count > 0) {
             NSLog(@"点赞成功");
             BOOL islike = [[responseDic objectForKey:@"isLike"] boolValue];

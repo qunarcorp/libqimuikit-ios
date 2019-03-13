@@ -13,6 +13,10 @@
 #import "QIMWorkCommentModel.h"
 #import "QIMWorkChildCommentListView.h"
 
+@interface QIMWorkCommentCell () <UIGestureRecognizerDelegate>
+
+@end
+
 @implementation QIMWorkCommentCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -29,11 +33,7 @@
 
 - (void)setupUI {
     // 头像视图
-    if (self.isChildComment == YES) {
-        _headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.leftMagin, 10, 23, 23)];
-    } else {
-        _headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 36, 36)];
-    }
+    _headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 36, 36)];
     _headImageView.contentMode = UIViewContentModeScaleAspectFill;
     _headImageView.userInteractionEnabled = YES;
     _headImageView.layer.masksToBounds = YES;
@@ -43,15 +43,12 @@
     _headImageView.layer.borderWidth = 0.5f;
     [self.contentView addSubview:_headImageView];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickHead:)];
+    tapGesture.delegate = self;
     [_headImageView addGestureRecognizer:tapGesture];
     
     // 名字视图
     _nameLab = [[UILabel alloc] initWithFrame:CGRectMake(_headImageView.right+10, _headImageView.top, 50, 20)];
-    if (self.isChildComment == YES) {
-        _nameLab.font = [UIFont boldSystemFontOfSize:14.0];
-    } else {
-        _nameLab.font = [UIFont boldSystemFontOfSize:15.0];
-    }
+    _nameLab.font = [UIFont boldSystemFontOfSize:15.0];
     _nameLab.textColor = [UIColor qim_colorWithHex:0x00CABE];
     _nameLab.backgroundColor = [UIColor clearColor];
     _nameLab.userInteractionEnabled = YES;
@@ -101,11 +98,31 @@
     [self.contentView addSubview:_childCommentListView];
 }
 
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+//{
+//    return YES;
+//}
+
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+//    NSLog(@"jjj - %@", NSStringFromClass([touch.view class]));
+//    // 点击了tableViewCell，view的类名为UITableViewCellContentView，则不接收Touch点击事件
+//    if ([NSStringFromClass([touch.view class]) isEqualToString:@"UITableViewCellContentView"]) {
+//        return NO;
+//    }
+//    return  YES;
+//}
+
 - (void)setCommentModel:(QIMWorkCommentModel *)commentModel {
     if (commentModel.commentUUID.length <= 0) {
         return;
     }
-    _commentModel = commentModel;;
+    _commentModel = commentModel;
+    // 头像视图
+    if (self.isChildComment == YES) {
+        _headImageView.frame = CGRectMake(self.nameLab.left, 10, 23, 23);
+        _nameLab.frame = CGRectMake(_headImageView.right+10, _headImageView.top, 50, 20);
+        _nameLab.font = [UIFont boldSystemFontOfSize:14.0];
+    }
     BOOL isAnonymousComment = commentModel.isAnonymous;
     if (isAnonymousComment == NO) {
         
@@ -145,7 +162,7 @@
     _nameLab.centerY = self.headImageView.centerY;
     _organLab.centerY = self.headImageView.centerY;
     
-    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70 - self.leftMagin, 5, 60, 27);
+    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70, 5, 60, 27);
     NSInteger likeNum = commentModel.likeNum;
     BOOL isLike = commentModel.isLike;
     if (isLike) {
@@ -198,8 +215,9 @@
     
     if (self.commentModel.childComments.count > 0) {
         _childCommentListView.childCommentList = self.commentModel.childComments;
+        _childCommentListView.leftMargin = self.nameLab.left;
         _childCommentListView.origin = CGPointMake(0, rowHeight + 5);
-        _childCommentListView.width = SCREEN_WIDTH - self.nameLab.left;
+        _childCommentListView.width = SCREEN_WIDTH;
         _childCommentListView.height = 500;
         _childCommentListView.height = [_childCommentListView getWorkChildCommentListViewHeight];
         _commentModel.rowHeight = _childCommentListView.bottom;
@@ -210,7 +228,7 @@
 
 - (void)didLikeComment:(UIButton *)sender {
     BOOL likeFlag = !sender.selected;
-    [[QIMKit sharedInstance] likeRemoteCommentWithCommentId:self.commentModel.commentUUID withMomentId:self.commentModel.postUUID withLikeFlag:likeFlag withCallBack:^(NSDictionary *responseDic) {
+    [[QIMKit sharedInstance] likeRemoteCommentWithCommentId:self.commentModel.commentUUID withSuperParentUUID:self.commentModel.superParentUUID withMomentId:self.commentModel.postUUID withLikeFlag:likeFlag withCallBack:^(NSDictionary *responseDic) {
         if (responseDic.count > 0) {
             NSLog(@"点赞成功");
             BOOL islike = [[responseDic objectForKey:@"isLike"] boolValue];
