@@ -941,8 +941,9 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
         NSString *groupId = [param objectForKey:@"groupId"];
         [[QIMKit sharedInstance] joinGroupWithBuddies:groupId groupName:@"" WithInviteMember:memberIds withCallback:^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                QIMNavController *navVC = (QIMNavController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-                [navVC popViewControllerAnimated:YES];
+                UINavigationController *nav = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+//                QIMNavController *navVC = (QIMNavController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
+                [nav popViewControllerAnimated:YES];
             });
         }];
     } else {
