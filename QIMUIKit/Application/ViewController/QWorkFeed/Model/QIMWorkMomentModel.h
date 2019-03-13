@@ -50,6 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL isFullText;          //是否展开全文
 
+@property (nonatomic, strong) NSNumber *postType;       //帖子状态，1：正常，2：置顶，4：置热
+
+@property (nonatomic, strong) NSNumber *reviewStatus;   //审核状态
+
 @end
 
 NS_ASSUME_NONNULL_END

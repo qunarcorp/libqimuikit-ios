@@ -287,7 +287,7 @@
                                                                    NSLog(@"buttonIndex : %d", buttonIndex);
                                                                    if (buttonIndex == 1) {
                                                                        //删评论
-                                                                       [[QIMKit sharedInstance] deleteRemoteCommentWithComment:commentModel.commentUUID withPostUUId:commentModel.postUUID withCallback:^(BOOL success) {
+                                                                       [[QIMKit sharedInstance] deleteRemoteCommentWithComment:commentModel.commentUUID withPostUUId:commentModel.postUUID withSuperParentUUId:commentModel.superParentUUID withCallback:^(BOOL success) {
                                                                            if (success) {
                                                                                [strongSelf.commentListView removeCommentWithIndexPath:indexPath];
                                                                            } else {
@@ -393,22 +393,23 @@
         NSString *toAnonymousPhoto = self.staticCommentModel.anonymousPhoto;
         
         NSMutableDictionary *commentDic = [[NSMutableDictionary alloc] init];
-        [commentDic setObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
-        [commentDic setObject:self.momentId forKey:@"postUUID"];
-        [commentDic setObject:self.staticCommentModel.commentUUID forKey:@"parentCommentUUID"];
-        [commentDic setObject:str forKey:@"content"];
-        [commentDic setObject:[QIMKit getLastUserName] forKey:@"fromUser"];
-        [commentDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
-        [commentDic setObject:self.staticCommentModel.fromUser forKey:@"toUser"];
-        [commentDic setObject:self.staticCommentModel.fromHost forKey:@"toHost"];
-        [commentDic setObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
-        [commentDic setObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
-        [commentDic setObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
-        [commentDic setObject:(isToAnonymous == YES) ? @(1) : @(0) forKey:@"toisAnonymous"];
-        [commentDic setObject:(toAnonymousName.length > 0) ? toAnonymousName : toAnonymousName forKey:@"toAnonymousName"];
-        [commentDic setObject:(toAnonymousPhoto.length > 0) ? toAnonymousPhoto : toAnonymousPhoto forKey:@"toAnonymousPhoto"];
-        [commentDic setObject:self.momentModel.ownerId forKey:@"postOwner"];
-        [commentDic setObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
+        [commentDic setQIMSafeObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
+        [commentDic setQIMSafeObject:self.momentId forKey:@"postUUID"];
+        [commentDic setQIMSafeObject:self.staticCommentModel.commentUUID forKey:@"parentCommentUUID"];
+        [commentDic setQIMSafeObject:self.staticCommentModel.superParentUUID forKey:@"superParentUUID"];
+        [commentDic setQIMSafeObject:str forKey:@"content"];
+        [commentDic setQIMSafeObject:[QIMKit getLastUserName] forKey:@"fromUser"];
+        [commentDic setQIMSafeObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
+        [commentDic setQIMSafeObject:self.staticCommentModel.fromUser forKey:@"toUser"];
+        [commentDic setQIMSafeObject:self.staticCommentModel.fromHost forKey:@"toHost"];
+        [commentDic setQIMSafeObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
+        [commentDic setQIMSafeObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
+        [commentDic setQIMSafeObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
+        [commentDic setQIMSafeObject:(isToAnonymous == YES) ? @(1) : @(0) forKey:@"toisAnonymous"];
+        [commentDic setQIMSafeObject:(toAnonymousName.length > 0) ? toAnonymousName : toAnonymousName forKey:@"toAnonymousName"];
+        [commentDic setQIMSafeObject:(toAnonymousPhoto.length > 0) ? toAnonymousPhoto : toAnonymousPhoto forKey:@"toAnonymousPhoto"];
+        [commentDic setQIMSafeObject:self.momentModel.ownerId forKey:@"postOwner"];
+        [commentDic setQIMSafeObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
         [[QIMKit sharedInstance] uploadCommentWithCommentDic:commentDic];
     } else {
         //评论帖子
@@ -417,22 +418,21 @@
         BOOL isAnonymous = [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
         
         NSMutableDictionary *commentDic = [[NSMutableDictionary alloc] init];
-        [commentDic setObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
-        [commentDic setObject:self.momentId forKey:@"postUUID"];
-        [commentDic setObject:@"" forKey:@"parentCommentUUID"];
-        [commentDic setObject:str forKey:@"content"];
-        [commentDic setObject:[QIMKit getLastUserName] forKey:@"fromUser"];
-        [commentDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
-        [commentDic setObject:@"" forKey:@"toUser"];
-        [commentDic setObject:@"" forKey:@"toHost"];
-        [commentDic setObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
-        [commentDic setObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
-        [commentDic setObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
-        [commentDic setObject:@(0) forKey:@"toisAnonymous"];
-        [commentDic setObject:@"" forKey:@"toAnonymousName"];
-        [commentDic setObject:@"" forKey:@"toAnonymousPhoto"];
-        [commentDic setObject:self.momentModel.ownerId forKey:@"postOwner"];
-        [commentDic setObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
+        [commentDic setQIMSafeObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
+        [commentDic setQIMSafeObject:self.momentId forKey:@"postUUID"];
+        [commentDic setQIMSafeObject:str forKey:@"content"];
+        [commentDic setQIMSafeObject:[QIMKit getLastUserName] forKey:@"fromUser"];
+        [commentDic setQIMSafeObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
+        [commentDic setQIMSafeObject:@"" forKey:@"toUser"];
+        [commentDic setQIMSafeObject:@"" forKey:@"toHost"];
+        [commentDic setQIMSafeObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
+        [commentDic setQIMSafeObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
+        [commentDic setQIMSafeObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
+        [commentDic setQIMSafeObject:@(0) forKey:@"toisAnonymous"];
+        [commentDic setQIMSafeObject:@"" forKey:@"toAnonymousName"];
+        [commentDic setQIMSafeObject:@"" forKey:@"toAnonymousPhoto"];
+        [commentDic setQIMSafeObject:self.momentModel.ownerId forKey:@"postOwner"];
+        [commentDic setQIMSafeObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
         [[QIMKit sharedInstance] uploadCommentWithCommentDic:commentDic];
     }
     //回复完之后清空staticCommentModel

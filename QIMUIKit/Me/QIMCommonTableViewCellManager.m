@@ -183,7 +183,7 @@
         case QIMCommonTableViewCellDataTypeSearchHistory: {
             QIMWebView *webView = [[QIMWebView alloc] init];
             [webView setUrl:[NSString stringWithFormat:@"%@/lookback/main_controller.php", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost]]];
-            //@"https://qt.qunar.com/lookback/main_controller.php"];
+            //@"https://qim.qunar.com/lookback/main_controller.php"];
             [self.rootVC.navigationController pushViewController:webView animated:YES];
         }
             break;

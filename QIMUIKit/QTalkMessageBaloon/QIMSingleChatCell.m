@@ -211,8 +211,8 @@ static double _global_message_cell_width = 0;
             
             //
             // 因为咱们有两种格式，所以需要根据情况来判定url
-            // 1. http://qt.qunar.com/cgi_bin/get_file.pl?name=md5.jpg
-            // 2. http://qt.qunar.com/file/v2/download/temp/md5.jpg
+            // 1. http://qim.qunar.com/cgi_bin/get_file.pl?name=md5.jpg
+            // 2. http://qim.qunar.com/file/v2/download/temp/md5.jpg
             // 楼下的做法只能处理第二种
             
             for (QIMImageStorage * imageStorage in self.textContainer.textStorages) {

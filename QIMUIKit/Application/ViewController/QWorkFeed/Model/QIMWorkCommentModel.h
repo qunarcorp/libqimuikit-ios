@@ -36,7 +36,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) NSInteger likeNum;        //点赞数
 
+@property (nonatomic, strong) NSArray <QIMWorkCommentModel *> *childComments;   //子评论List
+
 @property (nonatomic, copy) NSString *parentCommentUUID;    //父级评论UUID
+
+@property (nonatomic, copy) NSString *superParentUUID;      //根父评论UUID
 
 @property (nonatomic, copy) NSString *postUUID;          //原贴UUID
 

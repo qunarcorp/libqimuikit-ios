@@ -17,12 +17,12 @@ typedef enum {
 @interface QIMEmotion : NSObject
 /*
      desc = "扩展表情";
-     file = "https://qt.qunar.com/resources/SmallCamel.emt";
+     file = "https://qim.qunar.com/resources/SmallCamel.emt";
      "file_size" = 109759;
      md5 = 4F0E096B614BB4B6AD65394A26B06687;
      name = "小驼表情";
      pkgid = SmallCamel;
-     thumb = "https://qt.qunar.com/file/v1/emo/d/e/SmallCamel/scqq/org";
+     thumb = "https://qim.qunar.com/file/v1/emo/d/e/SmallCamel/scqq/org";
  */
 
 

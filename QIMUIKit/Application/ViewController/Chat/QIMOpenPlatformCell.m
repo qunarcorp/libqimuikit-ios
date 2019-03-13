@@ -146,7 +146,7 @@
 - (void)refreshUI{
     
 //    "source": "东京问题",
-//    "headurl": "http://qt.qunar.com/file/v2...",
+//    "headurl": "http://qim.qunar.com/file/v2...",
 //    "detail": "马桶盖子多少钱",
 //    "dealid": "deal_xxx_yyy",
 //    "dealurl": "http://qchat.qunar.com/deal.php?dealid=deal_xxx_yyy",
@@ -168,7 +168,6 @@
     
     [_backView setFrame:CGRectMake(_backView.left, _backView.top, _backView.width, _bottomButton.bottom)];
     [_lineView setFrame:CGRectMake(0, _bottomButton.top, _backView.width, 0.5)];
-    
 }
 
 @end
