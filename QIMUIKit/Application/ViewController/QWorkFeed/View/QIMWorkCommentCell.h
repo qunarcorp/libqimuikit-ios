@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkCommentCell : UITableViewCell
 
+@property (nonatomic, strong) NSIndexPath *commentIndexPath;
+
 @property (nonatomic, strong) UIImageView *headImageView;
 
 @property (nonatomic, strong) UILabel *nameLab;

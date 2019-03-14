@@ -110,6 +110,50 @@ static CGPoint tableOffsetPoint;
     _commentNum = commentNum;
 }
 
+- (void)reloadUploadCommentWithModel:(QIMWorkCommentModel *)commentModel {
+    if (!commentModel) {
+        return;
+    }
+    NSIndexPath *indexPath = nil;
+    BOOL isHotCommentModel = NO;
+    BOOL isNormalCommentModel = NO;
+    for (NSInteger i = 0; i < self.hotCommentModels.count; i++) {
+        QIMWorkCommentModel *hotCommentModel = [self.hotCommentModels objectAtIndex:i];
+        if ([hotCommentModel.commentUUID isEqualToString:commentModel.commentUUID]/* || [hotCommentModel.commentUUID isEqualToString:commentModel.parentCommentUUID] || [hotCommentModel.commentUUID isEqualToString:commentModel.superParentUUID]*/) {
+            indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+            isHotCommentModel = YES;
+        }
+    }
+    for (NSInteger i = 0; i < self.commentModels.count; i++) {
+        QIMWorkCommentModel *normalCommentModel = [self.commentModels objectAtIndex:i];
+        if ([normalCommentModel.commentUUID isEqualToString:commentModel.commentUUID]/* || [hotCommentModel.commentUUID isEqualToString:commentModel.parentCommentUUID] || [hotCommentModel.commentUUID isEqualToString:commentModel.superParentUUID]*/) {
+            if (self.hotCommentModels.count > 0) {
+                indexPath = [NSIndexPath indexPathForRow:i inSection:1];
+            } else {
+                indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+            }
+            isNormalCommentModel = YES;
+        }
+    }
+    if (isHotCommentModel == NO) {
+        //评论的不是热门评论
+        if (isNormalCommentModel == YES) {
+            //评论的是普通评论
+            [self.commentModels replaceObjectAtIndex:indexPath.row withObject:commentModel];
+            [self reloadCommentWithIndexPath:indexPath withIsHotComment:NO];
+        } else {
+            //新评论，加的普通评论第一条
+            [self.commentModels insertObject:commentModel atIndex:0];
+            [self reloadCommentsData];
+            [self scrollCommentModelToTopIndex];
+        }
+    } else {
+        //评论的是热门评论，重新reload
+        [self.hotCommentModels replaceObjectAtIndex:indexPath.row withObject:commentModel];
+        [self reloadCommentWithIndexPath:indexPath withIsHotComment:YES];
+    }
+}
+
 - (void)reloadCommentsData {
     [self.commentTableView reloadData];
 }
@@ -136,12 +180,23 @@ static CGPoint tableOffsetPoint;
     [self.commentTableView scrollToRowAtIndexPath:indexpath atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
 
-- (void)removeCommentWithIndexPath:(NSIndexPath *)indexPath {
-    
-    [self.commentModels removeObjectAtIndex:indexPath.row];
-    [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    _commentHeaderView.hidden = NO;
-    [self.commentTableView setTableHeaderView:_commentHeaderView];
+- (void)reloadCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment {
+    [self.commentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationMiddle];
+}
+
+- (void)removeCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment {
+
+    if (isHotComment) {
+        [self.hotCommentModels removeObjectAtIndex:indexPath.row];
+        [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        _commentHeaderView.hidden = NO;
+        [self.commentTableView setTableHeaderView:_commentHeaderView];
+    } else {
+        [self.commentModels removeObjectAtIndex:indexPath.row];
+        [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        _commentHeaderView.hidden = NO;
+        [self.commentTableView setTableHeaderView:_commentHeaderView];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -181,23 +236,29 @@ static CGPoint tableOffsetPoint;
         cell = [[QIMWorkCommentCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellId];
     }
     cell.commentModel = commentModel;
+    cell.commentIndexPath = indexPath;
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedIndexPath = indexPath;
+    QIMVerboseLog(@"self.selectedIndexPath : %d", self.selectedIndexPath);
     QIMWorkCommentModel *commentModel = nil;
+    BOOL isHotComment = NO;
     if (self.hotCommentModels.count > 0) {
         if (indexPath.section == 0) {
             commentModel = [self.hotCommentModels objectAtIndex:indexPath.row];
+            isHotComment = YES;
         } else {
             commentModel = [self.commentModels objectAtIndex:indexPath.row];
+            isHotComment = NO;
         }
     } else {
         commentModel = [self.commentModels objectAtIndex:indexPath.row];
+        isHotComment = NO;
     }
-    if (self.commentDelegate && [self.commentDelegate respondsToSelector:@selector(beginControlCommentWithComment:withIndexPath:)]) {
-        [self.commentDelegate beginControlCommentWithComment:commentModel withIndexPath:indexPath];
+    if (self.commentDelegate && [self.commentDelegate respondsToSelector:@selector(beginControlCommentWithComment:withIsHotComment:withIndexPath:)]) {
+        [self.commentDelegate beginControlCommentWithComment:commentModel withIsHotComment:isHotComment withIndexPath:indexPath];
     }
 }
 
@@ -217,9 +278,6 @@ static CGPoint tableOffsetPoint;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (self.commentModels.count <= 0) {
-        return nil;
-    }
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
     view.backgroundColor = [UIColor whiteColor];
     
@@ -235,7 +293,7 @@ static CGPoint tableOffsetPoint;
         if (section == 0) {
             [titleLabel setText:@"热门评论"];
         } else {
-            if (self.commentNum > 0) {
+            if (self.commentNum > 0 && self.commentModels.count) {
                 NSString *commentNumStr = [NSString stringWithFormat:@"（%ld）", self.commentNum];
                 NSString *titleText = [NSString stringWithFormat:@"全部评论%@", commentNumStr];
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
@@ -243,11 +301,11 @@ static CGPoint tableOffsetPoint;
                                         range:[titleText rangeOfString:commentNumStr]];
                 [titleLabel setAttributedText:attributedText];
             } else {
-                [titleLabel setText:@"全部评论"];
+//                [titleLabel setText:@"全部评论"];
             }
         }
     } else {
-        if (self.commentNum > 0) {
+        if (self.commentNum > 0 && self.commentModels.count) {
             NSString *commentNumStr = [NSString stringWithFormat:@"（%ld）", self.commentNum];
             NSString *titleText = [NSString stringWithFormat:@"全部评论%@", commentNumStr];
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
@@ -255,7 +313,7 @@ static CGPoint tableOffsetPoint;
                                     range:[titleText rangeOfString:commentNumStr]];
             [titleLabel setAttributedText:attributedText];
         } else {
-            [titleLabel setText:@"全部评论"];
+//            [titleLabel setText:@"全部评论"];
         }
     }
 
@@ -264,10 +322,23 @@ static CGPoint tableOffsetPoint;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (self.commentModels.count <= 0) {
-        return 0.00001f;
+    QIMWorkCommentModel *commentModel = nil;
+    if (self.hotCommentModels.count > 0) {
+        if (section == 0) {
+            return 60;
+        } else {
+            if (self.commentModels.count <= 0) {
+                return 0.00001f;
+            }
+            return 60;
+        }
+        return commentModel.rowHeight;
+    } else {
+        if (self.commentModels.count <= 0) {
+            return 0.00001f;
+        }
+        return 60;
     }
-    return 60;
 }
 
 @end

@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkChildCommentListView : UITableView
 
+@property (nonatomic, strong) NSIndexPath *parentCommentIndexPath;
+
 @property (nonatomic, strong) NSArray *childCommentList;
 
 @property (nonatomic, assign) CGFloat leftMargin;

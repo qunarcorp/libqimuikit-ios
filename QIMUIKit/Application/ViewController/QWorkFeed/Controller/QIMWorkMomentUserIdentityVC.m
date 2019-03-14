@@ -42,7 +42,13 @@
         _userIdentityList = [NSMutableArray arrayWithCapacity:2];
         QIMWorkMomentUserIdentityModel *model = [[QIMWorkMomentUserIdentityModel alloc] init];
         model.isAnonymous = NO;
+        
+        QIMWorkMomentUserIdentityModel *model1 = [[QIMWorkMomentUserIdentityModel alloc] init];
+        model1.isAnonymous = YES;
+        model1.mockAnonymous = YES;
+        
         [_userIdentityList addObject:model];
+        [_userIdentityList addObject:model1];
     }
     return _userIdentityList;
 }
@@ -77,13 +83,13 @@
         model.anonymousName = anonymousName;
         model.anonymousPhoto = anonymousPhoto;
         model.replaceable = anonymousReplaceable;
-        [weakSelf.userIdentityList addObject:model];
+        [weakSelf.userIdentityList replaceObjectAtIndex:1 withObject:model];
+
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.userIdentityListView reloadData];
         });
     } else {
         [[QIMKit sharedInstance] getAnonyMouseDicWithMomentId:self.momentId WithCallBack:^(NSDictionary *anonymousDic) {
-            NSLog(@"anonymousDic : %@", anonymousDic);
             if (anonymousDic.count > 0) {
                 NSString *anonymousName = [anonymousDic objectForKey:@"anonymous"];
                 NSString *anonymousPhoto = [anonymousDic objectForKey:@"anonymousPhoto"];
@@ -95,7 +101,7 @@
                 model.anonymousName = anonymousName;
                 model.anonymousPhoto = anonymousPhoto;
                 model.replaceable = replaceable;
-                [weakSelf.userIdentityList addObject:model];
+                [weakSelf.userIdentityList replaceObjectAtIndex:1 withObject:model];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.userIdentityListView reloadData];
                 });
@@ -142,16 +148,24 @@
             [cell setUserIdentitySelected:YES];
         }
     } else {
-        cell.textLabel.text = @"匿名发布";
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"花名：%@", userIdentityModel.anonymousName];
-        cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
-        cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
-        if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) {
-            [cell setUserIdentitySelected:YES];
-        } else {
+        if (userIdentityModel.mockAnonymous == YES) {
+            cell.textLabel.text = @"匿名发布";
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"花名获取中..."];
+            cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
             [cell setUserIdentitySelected:NO];
+        } else {
+            cell.textLabel.text = @"匿名发布";
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"花名：%@", userIdentityModel.anonymousName];
+            cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
+            if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) {
+                [cell setUserIdentitySelected:YES];
+            } else {
+                [cell setUserIdentitySelected:NO];
+            }
+            [cell setUserIdentityReplaceable:userIdentityModel.replaceable];
         }
-        [cell setUserIdentityReplaceable:userIdentityModel.replaceable];
     }
     return cell;
 }
@@ -168,23 +182,32 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     QIMWorkMomentUserIdentityModel *userIdentityModel = [self.userIdentityList objectAtIndex:indexPath.row];
-    if (userIdentityModel.isAnonymous == NO) {
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:NO];
+    if (userIdentityModel.mockAnonymous == YES) {
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"花名正在路上，再等等。" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alertVc addAction:okAction];
+        [self presentViewController:alertVc animated:YES completion:nil];
     } else {
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:YES];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:userIdentityModel.anonymousName];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:userIdentityModel.anonymousPhoto];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:userIdentityModel.replaceable];
+        if (userIdentityModel.isAnonymous == NO) {
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:NO];
+        } else {
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:YES];
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:userIdentityModel.anonymousName];
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:userIdentityModel.anonymousPhoto];
+            [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:userIdentityModel.replaceable];
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"kReloadUserIdentifier" object:nil];
+        });
+        [self.navigationController popViewControllerAnimated:YES];
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"kReloadUserIdentifier" object:nil];
-    });
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)replaceWorkMomentUserIdentity {
