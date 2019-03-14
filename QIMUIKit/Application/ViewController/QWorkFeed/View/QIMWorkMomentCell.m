@@ -363,10 +363,6 @@ CGFloat maxLimitHeight = 0;
             }
         }
             break;
-        case QIMWorkMomentContentTypeVideo: {
-            
-        }
-            break;
         default: {
             if (self.moment.content.imgList.count > 0) {
                 _imageListView.momentContentModel = self.moment.content;
@@ -389,6 +385,7 @@ CGFloat maxLimitHeight = 0;
     if (self.moment.attachCommentList.count > 0) {
 
         _attachCommentListView.momentId = self.moment.momentId;
+        _attachCommentListView.hidden = NO;
         _attachCommentListView.attachCommentList = self.moment.attachCommentList;
         _attachCommentListView.origin = CGPointMake(self.nameLab.left, self.commentBtn.bottom + 24 + 5);
         _attachCommentListView.width = SCREEN_WIDTH - self.nameLab.left;
@@ -396,9 +393,13 @@ CGFloat maxLimitHeight = 0;
         _attachCommentListView.height = [_attachCommentListView getWorkAttachCommentListViewHeight];
         _showMoreLabel.frame = CGRectMake(_attachCommentListView.left, _attachCommentListView.bottom + 5, _attachCommentListView.width, 15);
         [self.contentView addSubview:_showMoreLabel];
+        _showMoreLabel.hidden = NO;
         [_showMoreLabel setText:[NSString stringWithFormat:@"查看全部%ld条评论", self.moment.commentsNum]];
         _moment.rowHeight = _showMoreLabel.bottom + 18;
     } else {
+        _attachCommentListView.height = 0;
+        _attachCommentListView.hidden = YES;
+        _showMoreLabel.hidden = YES;
         _moment.rowHeight = _commentBtn.bottom + 18;
     }
 }

@@ -54,11 +54,13 @@
     if (replaceable == YES) {
         self.replaceBtn.frame = CGRectMake(SCREEN_WIDTH - 100, 30, 80, 30);
         [self.contentView addSubview:self.replaceBtn];
+        self.replaceBtn.enabled = YES;
+        /*
         if (self.userIdentitySelected) {
             self.replaceBtn.enabled = YES;
         } else {
             self.replaceBtn.enabled = NO;
-        }
+        }*/
     } else {
         
     }

@@ -32,6 +32,7 @@
 
 - (void)setAttachCommentList:(NSArray *)attachCommentList {
     _attachCommentList = attachCommentList;
+    [self reloadData];
 }
 
 - (CGFloat)getWorkAttachCommentListViewHeight {
@@ -49,9 +50,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     QIMWorkCommentModel *commentModel = [self.attachCommentList objectAtIndex:indexPath.row];
-    QIMWorkAttachCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellId"];
+    QIMWorkAttachCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"attachCommentListCellId"];
     if (!cell) {
-        cell = [[QIMWorkAttachCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cellId"];
+        cell = [[QIMWorkAttachCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"attachCommentListCellId"];
         cell.userInteractionEnabled = NO;
     }
     [cell setLeftMargin:self.left];

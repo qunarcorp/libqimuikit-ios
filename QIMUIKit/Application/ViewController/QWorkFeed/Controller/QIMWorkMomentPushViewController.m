@@ -395,16 +395,16 @@
                     }
                 }
             }
-            NSDictionary *atDic = @{@"type":@(10001), @"data":@[@{@"jid": @"lilulucas.li@ejabhost1", @"text":@"lilulucas.li"}, @{@"jid": @"binz.zhang@ejabhost1", @"text":@"张滨"}]};
-            NSArray *atArray = @[atDic];
+//            NSDictionary *atDic = @{@"type":@(10001), @"data":@[@{@"jid": @"lilulucas.li@ejabhost1", @"text":@"lilulucas.li"}, @{@"jid": @"binz.zhang@ejabhost1", @"text":@"张滨"}]};
+//            NSArray *atArray = @[atDic];
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                 
                 [momentContentDic setQIMSafeObject:imageList forKey:@"imgList"];
                 [momentContentDic setQIMSafeObject:@(0) forKey:@"type"];
                 NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
                 [momentDic setObject:momentContent forKey:@"content"];
-                [momentDic setObject:atArray forKey:@"atList"];
-                QIMVerboseLog(@"AtArray: %@", atArray);
+//                [momentDic setObject:atArray forKey:@"atList"];
+//                QIMVerboseLog(@"AtArray: %@", atArray);
                 QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
                 QIMVerboseLog(@"momentDic: %@", momentDic);
                 QIMVerboseLog(@"imageList : %@", imageList);

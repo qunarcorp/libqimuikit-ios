@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *anonymousPhoto;   //匿名头像
 
+@property (nonatomic, assign) BOOL mockAnonymous;       //Mock匿名
+
 @property (nonatomic, assign) BOOL replaceable;         //匿名头像换一换
 
 @end

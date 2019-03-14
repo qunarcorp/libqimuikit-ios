@@ -11,6 +11,7 @@
 #import "QIMMessageParser.h"
 #import "QIMMarginLabel.h"
 #import "QIMWorkCommentModel.h"
+#import "YYModel.h"
 #import "QIMWorkChildCommentListView.h"
 
 @interface QIMWorkCommentCell () <UIGestureRecognizerDelegate>
@@ -27,8 +28,34 @@
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.selectedBackgroundView = nil;
         [self setupUI];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteChildComment:) name:@"deleteChildCommentModel" object:nil];
     }
     return self;
+}
+
+- (void)deleteChildComment:(NSNotification *)notify {
+    QIMWorkCommentModel *childComment = (QIMWorkCommentModel *)notify.object;
+    if ([childComment.parentCommentUUID isEqualToString:self.commentModel.commentUUID] || [childComment.superParentUUID isEqualToString:self.commentModel.commentUUID]) {
+        NSArray *childComments = [self getChildComments];
+        self.commentModel.childComments = childComments;
+        [self.childCommentListView setChildCommentList:childComments];
+    }
+}
+
+- (NSArray *)getChildComments {
+    NSMutableArray *childCommentArray = [[NSMutableArray alloc] init];
+    NSArray *childComments = [[QIMKit sharedInstance] getWorkChildCommentsWithParentCommentUUID:self.commentModel.commentUUID];
+    for (NSDictionary *commentDic in childComments) {
+        QIMWorkCommentModel *commentModel = [self getCommentModelWithDic:commentDic];
+        [childCommentArray addObject:commentModel];
+    }
+    return childCommentArray;
+}
+
+- (QIMWorkCommentModel *)getCommentModelWithDic:(NSDictionary *)commentDic {
+    
+    QIMWorkCommentModel *model = [QIMWorkCommentModel yy_modelWithDictionary:commentDic];
+    return model;
 }
 
 - (void)setupUI {
@@ -94,23 +121,9 @@
     [self.contentView addSubview:_contentLabel];
     
     _childCommentListView = [[QIMWorkChildCommentListView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    _childCommentListView.backgroundColor = [UIColor yellowColor];
+//    _childCommentListView.backgroundColor = [UIColor yellowColor];
     [self.contentView addSubview:_childCommentListView];
 }
-
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-//{
-//    return YES;
-//}
-
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-//    NSLog(@"jjj - %@", NSStringFromClass([touch.view class]));
-//    // 点击了tableViewCell，view的类名为UITableViewCellContentView，则不接收Touch点击事件
-//    if ([NSStringFromClass([touch.view class]) isEqualToString:@"UITableViewCellContentView"]) {
-//        return NO;
-//    }
-//    return  YES;
-//}
 
 - (void)setCommentModel:(QIMWorkCommentModel *)commentModel {
     if (commentModel.commentUUID.length <= 0) {
@@ -119,7 +132,7 @@
     _commentModel = commentModel;
     // 头像视图
     if (self.isChildComment == YES) {
-        _headImageView.frame = CGRectMake(self.nameLab.left, 10, 23, 23);
+        _headImageView.frame = CGRectMake(self.leftMagin, 10, 23, 23);
         _nameLab.frame = CGRectMake(_headImageView.right+10, _headImageView.top, 50, 20);
         _nameLab.font = [UIFont boldSystemFontOfSize:14.0];
     }
@@ -200,20 +213,36 @@
     }
 
     NSString *likeString  = [NSString stringWithFormat:@"%@%@", replayNameStr, commentModel.content];
-    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:likeString];
-    if (self.isChildComment == YES) {
-        [attributedText addAttributeFont:[UIFont systemFontOfSize:14]];
+    if (commentModel.isDelete == YES) {
+        likeString = @"该评论已被删除";
+        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:likeString];
+        if (self.isChildComment == YES) {
+            [attributedText addAttributeFont:[UIFont systemFontOfSize:14]];
+        } else {
+            [attributedText addAttributeFont:[UIFont systemFontOfSize:15]];
+        }
+        [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor redColor], NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                range:[likeString rangeOfString:likeString]];
+        _contentLabel.textColor = [UIColor redColor];
+        _contentLabel.attributedText = attributedText;
     } else {
-        [attributedText addAttributeFont:[UIFont systemFontOfSize:15]];
+        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:likeString];
+        if (self.isChildComment == YES) {
+            [attributedText addAttributeFont:[UIFont systemFontOfSize:14]];
+        } else {
+            [attributedText addAttributeFont:[UIFont systemFontOfSize:15]];
+        }
+        [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                range:[likeString rangeOfString:replayNameStr]];
+        
+        _contentLabel.attributedText = attributedText;
     }
-    [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:15]}
-                            range:[likeString rangeOfString:replayNameStr]];
-    
-    _contentLabel.attributedText = attributedText;
     [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 16) Width:(self.likeBtn.left - self.nameLab.left)];
     rowHeight = self.contentLabel.bottom;
     
     if (self.commentModel.childComments.count > 0) {
+        _childCommentListView.hidden = NO;
+        _childCommentListView.parentCommentIndexPath = self.commentIndexPath;
         _childCommentListView.childCommentList = self.commentModel.childComments;
         _childCommentListView.leftMargin = self.nameLab.left;
         _childCommentListView.origin = CGPointMake(0, rowHeight + 5);
@@ -222,6 +251,9 @@
         _childCommentListView.height = [_childCommentListView getWorkChildCommentListViewHeight];
         _commentModel.rowHeight = _childCommentListView.bottom;
     } else {
+        _childCommentListView.height = 0;
+        _childCommentListView.parentCommentIndexPath = self.commentIndexPath;
+        _childCommentListView.hidden = YES;
         _commentModel.rowHeight = _contentLabel.bottom + 20;
     }
 }
