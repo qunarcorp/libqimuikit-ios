@@ -48,7 +48,7 @@
         [_switchBtn setOn:!swicthOn];
         [_switchBtn addTarget:self action:@selector(onSwitchClicked:)
             forControlEvents:UIControlEventValueChanged];
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             [self setAccessoryView:_switchBtn];
         }
         

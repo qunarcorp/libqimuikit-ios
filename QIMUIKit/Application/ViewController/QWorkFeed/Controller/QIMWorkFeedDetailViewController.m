@@ -86,7 +86,7 @@
 
 - (QIMWorkMomentView *)momentView {
     if (!_momentView) {
-        _momentView = [[QIMWorkMomentView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 20) withMomentModel:self.momentModel];
+        _momentView = [[QIMWorkMomentView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 20) withMomentModel:self.momentModel];
         _momentView.delegate = self;
     }
     return _momentView;
@@ -96,7 +96,7 @@
     if (!_commentListView) {
         _commentListView = [[QIMWorkCommentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 55 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
         _commentListView.backgroundColor = [UIColor whiteColor];
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 300)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 300)];
         view.backgroundColor = [UIColor whiteColor];
         _commentListView.commentHeaderView = self.momentView;
         _commentListView.commentDelegate = self;
@@ -141,6 +141,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"动态详情";
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     [[YYKeyboardManager defaultManager] addObserver:self];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadLocalComments) name:kNotifyReloadWorkComment object:nil];
@@ -262,7 +265,7 @@
             self.commentInputBar.frame = CGRectMake(0, kbFrameOriginY - 55, CGRectGetWidth(self.view.frame), 55 + [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]);
             [self.commentInputBar resignFirstInputBar:YES];
             self.maskView.hidden = NO;
-            self.maskView.frame = CGRectMake(0, 0, SCREEN_WIDTH, CGRectGetMinY(self.commentInputBar.frame));
+            self.maskView.frame = CGRectMake(0, 0, self.view.width, CGRectGetMinY(self.commentInputBar.frame));
             [self.view addSubview:self.maskView];
             [self.view bringSubviewToFront:self.maskView];
         }];

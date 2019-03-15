@@ -39,8 +39,10 @@
             if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
                 [_navConfigUrls addObject:qtalkNav];
                 [_navConfigUrls addObject:publicQTalkNav];
-            } else {
+            } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
                 [_navConfigUrls addObject:qchatNav];
+            } else {
+
             }
         }  
     }
@@ -159,9 +161,7 @@
 
 - (void)onSave{
     NSString *navHttpName = _navNickNameTextField.text;
-    if (!self.navUrl) {
-        self.navUrl = _navAddressTextField.text;
-    }
+    self.navUrl = _navAddressTextField.text;
     if (self.navUrl.length > 0) {
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         __block NSDictionary *userWillsaveNavDict = @{QIMNavNameKey:navHttpName?navHttpName:[[self.navUrl.lastPathComponent componentsSeparatedByString:@"="] lastObject], QIMNavUrlKey:self.navUrl};
@@ -186,7 +186,7 @@
                         [[QIMKit sharedInstance] setUserObject:self.navConfigUrls forKey:@"QC_NavAllDicts"];
                         [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_CurrentNavDict"];
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:nil];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:userWillsaveNavDict];
                         });
                         [self onCancel];
                     } else {
@@ -208,6 +208,13 @@
                 }
             });
         });
+    } else {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                            message:@"请输入可用的导航地址"
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"确定"
+                                                  otherButtonTitles:nil];
+        [alertView show];
     }
 }
 

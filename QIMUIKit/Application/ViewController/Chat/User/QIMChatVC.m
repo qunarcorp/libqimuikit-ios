@@ -35,6 +35,7 @@
 #import "SDImageCache.h"
 #import "QIMMWPhotoBrowser.h"
 #import "QIMRedPackageView.h"
+#import "QIMIPadWindowManager.h"
 
 #define kPageCount 20
 #define kReSendMsgAlertViewTag 10000
@@ -603,7 +604,7 @@
         [rightItemView addSubview:redMindView];
     }
     
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         UIButton *encryptBtn = nil;
         NSString *qCloudHost = [[QIMKit sharedInstance] qimNav_QCloudHost];
@@ -644,7 +645,9 @@
 }
 
 - (void)initUI {
-    
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     self.view.backgroundColor = [UIColor qtalkChatBgColor];
  
     [[QIMEmotionSpirits sharedInstance] setTableView:_tableView];
@@ -802,20 +805,6 @@
     if (self.chatType != ChatType_CollectionChat) {
         [self.view addSubview:self.textBar];
     }
-//    [self initUI];
-    /*
-    if (self.chatType != ChatType_CollectionChat) {
-        BOOL containTextBar = NO;
-        for (UIView *view in self.view.subviews) {
-            if ([view isKindOfClass:[QIMTextBar class]]) {
-                containTextBar = YES;
-            }
-        }
-        if (containTextBar == NO) {
-            [self.view addSubview:self.textBar];
-        }
-    }
-    */
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -946,6 +935,42 @@
     
     //点击机器人问题列表
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendRobotQuestionText:) name:kNotificationSendRobotQuestion object:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadIPadViewFrame:) name:@"reloadIPadViewFrame" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarOrientationChange:)name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+}
+
+#pragma mark - 重新修改frame
+- (void)reloadFrame {
+    
+    _tableView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.frame), self.view.height - 59);
+    QIMVerboseLog(@"%@",NSStringFromCGRect(_tableView.frame));
+    _tableViewFrame = _tableView.frame;
+    _rootViewFrame = self.view.frame;
+    [[QIMMessageCellCache sharedInstance] clearUp];
+    [_tableView setValue:nil forKey:@"reusableTableCells"];
+    [self.textBar removeAllSubviews];
+    [self.textBar removeFromSuperview];
+    self.textBar = nil;
+    [QIMTextBar clearALLTextBar];
+    [self.view addSubview:self.textBar];
+    [self refreshTableView];
+}
+
+#pragma mark - 监听屏幕旋转
+
+- (void)statusBarOrientationChange:(NSNotification *)notification {
+    QIMVerboseLog(@"屏幕发送旋转 : %@", notification);
+    [self reloadIPadViewFrame:notification];
+}
+
+- (void)reloadIPadViewFrame:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.preferredContentSize = CGSizeMake([[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]);
+        [self reloadFrame];
+    });
 }
 
 - (void)synchronizeDujiaWarning {
@@ -1384,7 +1409,11 @@
 
 //左上角返回按钮
 - (void)leftBarBtnClicked:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+    }
 }
 
 //SwipeBack
@@ -1857,8 +1886,12 @@
         fileManagerVC.messageSaveType = ChatType_SingleChat;
         
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
-        
-        [self presentViewController:nav animated:YES completion:nil];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
+        } else {
+            [self presentViewController:nav animated:YES completion:nil];
+        }
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ChatTransfer]) {
         [QIMFastEntrance openTransferConversation:self.virtualJid withVistorId:self.chatId];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
@@ -1893,7 +1926,12 @@
         [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
             UserLocationViewController *userLct = [[UserLocationViewController alloc] init];
             userLct.delegate = self;
-            [self.navigationController presentViewController:userLct animated:YES completion:nil];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+            } else {
+                [self.navigationController presentViewController:userLct animated:YES completion:nil];
+            }
         };
         [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_VideoCall]) {

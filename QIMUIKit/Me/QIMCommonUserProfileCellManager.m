@@ -158,7 +158,6 @@
             break;
         case QCUserProfileMyQrcode: {
             [QIMFastEntrance showQRCodeWithQRId:self.userId withType:QRCodeType_UserQR];
-//            [QIMFastEntrance showQRCodeWithUserId:self.userId withName:self.model.name withType:QRCodeType_UserQR];
         }
             break;
         case QCUserProfileRemark: {

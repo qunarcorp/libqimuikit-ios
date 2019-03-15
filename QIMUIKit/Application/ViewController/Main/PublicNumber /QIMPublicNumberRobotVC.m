@@ -61,7 +61,7 @@
 #import "QIMMessageParser.h"
 #import "QIMTextContainer.h"
 #import "QIMNavBackBtn.h"
-
+#import "QIMIPadWindowManager.h"
 #define kPageCount 20
 #define kReSendMsgAlertViewTag 10000
 
@@ -450,7 +450,11 @@
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated{

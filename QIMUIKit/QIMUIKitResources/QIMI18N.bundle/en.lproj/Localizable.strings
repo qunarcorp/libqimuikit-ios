@@ -179,6 +179,10 @@
 "user_send_msg" = "Send Message";
 "user_add_friend" = "Add Friend";
 "user_delete_friend" = "Delete Friend";
+"remove_to_blacklist" = "Remove Blacklist";
+"add_to_blacklist" = "Add Blacklist";
+"send_message" = "Send Message";
+"Complaint" = "Complaint";
 "user_camera" = "Camera";
 "user_from_album" = "From Album Select";
 "user_selected" = "Select";

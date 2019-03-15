@@ -29,6 +29,7 @@
 #import "QIMCustomPopViewController.h"
 #import "QIMCustomPresentationController.h"
 #import "QIMCustomPopManager.h"
+#import "QIMIPadWindowManager.h"
 
 #if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
 
@@ -44,7 +45,7 @@
 @end
 #endif
 
-@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate> {
+@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate, UISearchBarDelegate> {
     MBProgressHUD *_tipHUD;
     BOOL _canWrite;
     CABasicAnimation *_writingAnimation;
@@ -99,6 +100,8 @@
 @property (nonatomic, strong) UIViewController *tempRootVc;
 
 @property (nonatomic, strong) NSArray *moreActionArray;
+
+@property (nonatomic, strong) UISearchBar *searchBar;
 
 @end
 
@@ -167,11 +170,16 @@
     }
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, ([self.rootViewController isKindOfClass:[QIMMainVC class]] ? self.rootViewController.searchBar.height : 0) + appendHeight)];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        headerView.frame = CGRectMake(0, 0, self.tableView.width, self.searchBar.height + appendHeight);
+    }
     UIView *logoView = [[UIView alloc] initWithFrame:CGRectMake(0, - self.tableView.height, self.tableView.width, self.tableView.height)];
     [logoView setBackgroundColor:[UIColor qim_colorWithHex:0x787878 alpha:1]];
     [headerView addSubview:logoView];
-    if ([self.rootViewController isKindOfClass:[QIMMainVC class]]) {
+    if ([self.rootViewController isKindOfClass:[QIMMainVC class]] && [[QIMKit sharedInstance] getIsIpad] == NO) {
         [headerView addSubview:self.rootViewController.searchBar];
+    } else {
+        [headerView addSubview:self.searchBar];
     }
     for (UIView *appendView in self.appendHeaderViews) {
         UIView *lastView = headerView.subviews.lastObject;
@@ -230,7 +238,7 @@
     NSString *wikiHost = [[QIMKit sharedInstance] qimNav_WikiUrl];
     self.moreActionArray = [[NSMutableArray alloc] initWithCapacity:3];
     NSArray *moreActionImages = nil;
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         if (qCloudHost.length > 0 && wikiHost.length > 0) {
             self.moreActionArray = @[@"扫一扫", @"发起聊天", @"一键已读", @"随记", @"Wiki"];
             moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e23f" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1b7" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e455" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
@@ -269,6 +277,43 @@
         _moreBtn = moreActionBtn;
     }
     return _moreBtn;
+}
+
+- (UISearchBar *)searchBar {
+    if (!_searchBar) {
+        _searchBar = [[UISearchBar alloc] init];
+        _searchBar.delegate = self;
+        [_searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+        [_searchBar sizeToFit];
+        _searchBar.placeholder = [NSBundle qim_localizedStringForKey:@"search_bar_placeholder"];
+        [_searchBar setTintColor:[UIColor spectralColorBlueColor]];
+        if ([_searchBar respondsToSelector:@selector(setBarTintColor:)]) {
+            [_searchBar setBarTintColor:[UIColor qim_colorWithHex:0xEEEEEE alpha:1.0]];
+        }
+        [_searchBar setBackgroundColor:[UIColor qim_colorWithHex:0xEEEEEE]];
+    }
+    return _searchBar;
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    
+#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CATransition *animation = [CATransition animation];
+        animation.duration = 0.4f;   //时间间隔
+        animation.fillMode = kCAFillModeForwards;
+        animation.type = @"rippleEffect";
+        //动画效果
+        animation.subtype = kCATransitionFromTop;   //动画方向
+        UINavigationController *rootNav = [[QIMIPadWindowManager sharedInstance] getLeftMainVcNav];
+        [rootNav.view.layer addAnimation:animation forKey:@"animation"];
+        UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
+        [rootNav.view.layer addAnimation:animation forKey:nil];
+        [rootNav pushViewController:reactVC animated:YES];
+    });
+    return NO;
+#endif
+    return YES;
 }
 
 - (void)doMoreAction:(id)sender {
@@ -315,6 +360,10 @@
 
 - (void)showFileTrans {
     [[QIMFastEntrance sharedInstance] openFileTransMiddleVC];
+}
+
+- (void)setSessionViewHeader:(UIView *)headerView {
+    [self.tableView setTableHeaderView:headerView];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -665,8 +714,12 @@
             }
             NSLog(@"跳转的RootVc3 ：%@ ", rootNav);
             NSLog(@"跳转的PushVc : %@", pushVc);
-            pushVc.hidesBottomBarWhenPushed = YES;
-            [rootNav pushViewController:pushVc animated:YES];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                [[QIMIPadWindowManager sharedInstance] showDetailViewController:pushVc];
+            } else {
+                pushVc.hidesBottomBarWhenPushed = YES;
+                [rootNav pushViewController:pushVc animated:YES];
+            }
         }
         _willRefreshTableView = YES;
     }

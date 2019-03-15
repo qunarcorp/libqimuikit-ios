@@ -142,7 +142,7 @@ static UIViewController *__redPackageVC = nil;
         
         [self setBackgroundColor:[UIColor clearColor]];
         
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:@" qunartalk-ios-client"];
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : ua, @"User-Agent":ua}];
         } else {
