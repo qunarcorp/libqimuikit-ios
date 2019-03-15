@@ -152,7 +152,7 @@
 
 - (void)getGroupList {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             [[QIMKit sharedInstance] getIncrementMucList:0];
         } else {
             [[QIMKit sharedInstance] quickJoinAllGroup];

@@ -68,6 +68,7 @@
 #import "QIMEmotionManagerView.h"
 #endif
 
+#import "QIMIPadWindowManager.h"
 #import "QIMAuthorizationManager.h"
 
 @interface NSAttributedString (EmojiExtension)
@@ -264,11 +265,35 @@ static QIMTextBar *__consultTextBar = nil;
 static QIMTextBar *__consultServerTextBar = nil;
 static QIMTextBar *__publicNumberTextBar = nil;
 
+static dispatch_once_t __norMalTextBarOnceToken;
+static dispatch_once_t __singleTextBarOnceToken;
+static dispatch_once_t __groupTextBarOnceToken;
+static dispatch_once_t __robotTextBarOnceToken;
+static dispatch_once_t __consultTextBarOnceToken;
+static dispatch_once_t __consultServerTextBarOnceToken;
+static dispatch_once_t __publicNumberTextBarOnceToken;
+
++ (void)clearALLTextBar {
+    __robotTextBar = nil;
+    __norMalTextBar = nil;
+    __singleTextBar = nil;
+    __groupTextBar = nil;
+    __consultTextBar = nil;
+    __consultServerTextBar = nil;
+    __publicNumberTextBar = nil;
+    __norMalTextBarOnceToken = 0;
+    __singleTextBarOnceToken = 0;
+    __groupTextBarOnceToken = 0;
+    __robotTextBarOnceToken = 0;
+    __consultTextBarOnceToken = 0;
+    __consultServerTextBarOnceToken = 0;
+    __publicNumberTextBarOnceToken = 0;
+}
+
 + (instancetype)sharedIMTextBarWithBounds:(CGRect)bounds WithExpandViewType:(QIMTextBarExpandViewType)expandType {
     switch (expandType) {
         case QIMTextBarExpandViewTypeRobot: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__robotTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __robotTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -282,8 +307,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypePublicNumber: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__publicNumberTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __publicNumberTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -297,8 +321,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypeGroup: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__groupTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __groupTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -312,8 +335,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypeConsult: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__consultTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __consultTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -327,8 +349,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypeConsultServer: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__consultTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __consultServerTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -342,8 +363,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypeSingle: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__singleTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __singleTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -357,8 +377,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         default: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__norMalTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __norMalTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -1752,8 +1771,15 @@ static QIMTextBar *__publicNumberTextBar = nil;
         picker.colsInPortrait = 4;
         picker.colsInLandscape = 5;
         picker.minimumInteritemSpacing = 2.0;
-        [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
-//        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:picker animated:YES completion:nil];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
+//            UIViewController *vc = (UIViewController *)self.delegate;
+//            [vc presentViewController:picker animated:YES completion:nil];
+//            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+        } else {
+            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+        }
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }

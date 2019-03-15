@@ -44,7 +44,7 @@
         if (self.myOwnerProfile) {
             NSArray *section0 = @[@(QCUserProfileHeader), @(QCUserProfileUserSignature), @(QCUserProfileMyQrcode)];
             NSArray *section1 = @[];
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 section1 = @[@(QCUserProfileUserName), @(QCUserProfileUserId), @(QCUserProfileDepartment)];
             } else {
                 section1 = @[@(QCUserProfileUserName), @(QCUserProfileUserId)];
@@ -55,7 +55,7 @@
             NSArray *section0 = @[@(QCUserProfileUserInfo)];
             NSArray *section1 = @[@(QCUserProfileRemark)];
             NSArray *section2 = @[@(QCUserProfileUserId)];
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 section2 = @[@(QCUserProfileUserId), @(QCUserProfileDepartment)];
             }
             NSArray *section3 = @[@(QCUserProfileRNView)];
@@ -63,7 +63,7 @@
             [_dataSource addObject:section0];
             [_dataSource addObject:section1];
             [_dataSource addObject:section2];
-            if ([[QIMKit sharedInstance] qimNav_OpsHost].length > 0 && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([[QIMKit sharedInstance] qimNav_OpsHost].length > 0 && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 [_dataSource addObject:section3];
                 [_dataSource addObject:section4];
             }

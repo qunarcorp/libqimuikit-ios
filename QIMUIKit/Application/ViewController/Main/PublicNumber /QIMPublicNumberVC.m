@@ -16,6 +16,7 @@
 #import "QIMPublicNumberCardVC.h"
 #import "QIMMicroTourGuideVC.h"
 #import "QIMNavBackBtn.h"
+#import "QIMIPadWindowManager.h"
 
 @interface QIMPublicNumberVC ()<UITableViewDataSource,UITableViewDelegate,UISearchControllerDelegate,UISearchDisplayDelegate,UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UIAlertViewDelegate>{
     
@@ -75,7 +76,11 @@
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+    }
 }
 
 #pragma mark - init UI

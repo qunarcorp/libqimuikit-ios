@@ -152,15 +152,41 @@ CGFloat maxFullContentHeight = 0;
     _organLab.centerY = self.headImageView.centerY;
     _rIdLabe.centerY = self.headImageView.centerY;
     CGFloat bottom = self.headImageView.bottom;
+//<<<<<<< HEAD
     
     NSString *texg = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.moment.content.content];
-   QIMMessageModel *msg = [[QIMMessageModel alloc] init];
+    QIMMessageModel *msg = [[QIMMessageModel alloc] init];
     msg.message = texg;
     msg.messageId = self.moment.momentId;
-    QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
-    CGFloat textH = textContainer.textHeight;
-    self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 20, textContainer.textHeight);
-    _contentLabel.textContainer = textContainer;
+    
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
+        CGFloat textH = textContainer.textHeight;
+        self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, [[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20, textContainer.textHeight);
+        _contentLabel.textContainer = textContainer;
+
+    } else {
+        
+        QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
+        CGFloat textH = textContainer.textHeight;
+        self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 20, textContainer.textHeight);
+        _contentLabel.textContainer = textContainer;
+    }
+ /*
+=======
+    _contentLabel.text = self.moment.content.content;
+    [_contentLabel sizeToFit];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        CGFloat textH = [_contentLabel getHeightWithWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20];
+        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:([[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20)];
+        self.contentLabel.height = textH;
+    } else {
+        CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
+        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
+        self.contentLabel.height = textH;
+    }
+>>>>>>> startalk2.0
+    */
 
     bottom = _contentLabel.bottom + 8;
 

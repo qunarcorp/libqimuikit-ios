@@ -93,6 +93,8 @@
 #endif
 #import "QIMAuthorizationManager.h"
 #import "QIMSearchRemindView.h"
+#import "QIMIPadWindowManager.h"
+
 #define kPageCount 20
 
 #define kReSendMsgAlertViewTag 10000
@@ -400,9 +402,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         _addGroupMember = [[UIButton alloc] initWithFrame:CGRectMake(40, 2, 37, 37)];
         [_addGroupMember setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0e0" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
         [_addGroupMember setAccessibilityIdentifier:@"QIMGroupCard"];
-        [_addGroupMember addTarget:self
-                            action:@selector(addPersonToPgrup:)
-                  forControlEvents:UIControlEventTouchUpInside];
+        [_addGroupMember addTarget:self action:@selector(addPersonToPgrup:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _addGroupMember;
 }
@@ -459,7 +459,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)initUI {
-    
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     self.view.backgroundColor = [UIColor qtalkChatBgColor];
   
     [[QIMEmotionSpirits sharedInstance] setTableView:_tableView];
@@ -666,6 +668,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     [[QIMKit sharedInstance] setCurrentSessionUserId:self.chatId];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     if (self.chatType == ChatType_GroupChat) {
@@ -831,6 +836,41 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     //发送快捷回复
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendQuickReplyContent:) name:kNotificationSendQuickReplyContent object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadIPadViewFrame:) name:@"reloadIPadViewFrame" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarOrientationChange:)name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+}
+
+#pragma mark - 重新修改frame
+- (void)reloadFrame {
+    
+    _tableView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.frame), self.view.height - 59);
+    QIMVerboseLog(@"%@",NSStringFromCGRect(_tableView.frame));
+    _tableViewFrame = _tableView.frame;
+    _rootViewFrame = self.view.frame;
+    [[QIMMessageCellCache sharedInstance] clearUp];
+    [_tableView setValue:nil forKey:@"reusableTableCells"];
+    [self.textBar removeAllSubviews];
+    [self.textBar removeFromSuperview];
+    self.textBar = nil;
+    [QIMTextBar clearALLTextBar];
+    [self.view addSubview:self.textBar];
+    [self refreshTableView];
+}
+
+#pragma mark - 监听屏幕旋转
+
+- (void)statusBarOrientationChange:(NSNotification *)notification {
+    QIMVerboseLog(@"屏幕发送旋转 : %@", notification);
+    [self reloadIPadViewFrame:notification];
+}
+
+- (void)reloadIPadViewFrame:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.preferredContentSize = CGSizeMake([[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]);
+        [self reloadFrame];
+    });
 }
 
 - (void)forceReloadGroupMessages:(NSNotification *)notify {
@@ -1130,7 +1170,11 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -1306,8 +1350,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         fileManagerVC.messageSaveType = ChatType_GroupChat;
         
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
-        
-        [self presentViewController:nav animated:YES completion:nil];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
+        } else {
+            [self presentViewController:nav animated:YES completion:nil];
+        }
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
         
         //分享名片
@@ -1361,7 +1409,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
             UserLocationViewController *userLct = [[UserLocationViewController alloc] init];
             userLct.delegate = self;
-            [self.navigationController presentViewController:userLct animated:YES completion:nil];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+            } else {
+                [self.navigationController presentViewController:userLct animated:YES completion:nil];
+            }
         };
         [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_TouPiao]) {

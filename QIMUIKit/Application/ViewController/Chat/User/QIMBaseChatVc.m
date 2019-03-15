@@ -26,6 +26,7 @@
 #import "UserLocationViewController.h"
 #import "QIMTextContainer.h"
 #import "QIMImageStorage.h"
+#import "QIMIPadWindowManager.h"
 
 #if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
     #import "QIMWebRTCClient.h"
@@ -334,7 +335,11 @@
 }
 
 - (void)leftBarBtnClicked:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+    }
 }
 
 //SwipeBack

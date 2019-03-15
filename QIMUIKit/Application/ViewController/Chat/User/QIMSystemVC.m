@@ -43,6 +43,7 @@
 #import "QIMNavBackBtn.h"
 #import "QIMMessageTableViewManager.h"
 #import "QIMMWPhotoBrowser.h"
+#import "QIMIPadWindowManager.h"
 
  @interface QIMSystemVC()<QTalkMessageTableScrollViewDelegate, UIGestureRecognizerDelegate,QIMSingleChatCellDelegate,QIMSingleChatVoiceCellDelegate,NSXMLParserDelegate,QIMMWPhotoBrowserDelegate,QIMMsgBaloonBaseCellDelegate,PNNoticeCellDelegate,PNOrderMsgCellDelegate>
 {
@@ -112,6 +113,9 @@
 }
 
 - (void)setUI {
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     [self.view setBackgroundColor:[UIColor qtalkChatBgColor]];
     [self setupNav];
     [self.view addSubview:self.tableView];
@@ -187,7 +191,7 @@
 {
     [self.messageManager.dataSource removeAllObjects];
     __weak typeof(self) weakSelf = self;
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         NSString *domain = [[QIMKit sharedInstance] getDomain];
         [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
@@ -219,7 +223,11 @@
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+    }
 }
 
 
@@ -556,7 +564,7 @@ static CGPoint tableOffsetPoint;
 
 - (void)loadNewSystemMsgList {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
                 CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
                 NSRange range = NSMakeRange(0, [list count]);

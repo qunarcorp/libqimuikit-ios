@@ -210,8 +210,10 @@
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
             [clientNavServerConfigs addObject:qtalkNav];
             [clientNavServerConfigs addObject:publicQTalkNav];
-        } else {
+        } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
             [clientNavServerConfigs addObject:qchatNav];
+        } else {
+            
         }
     }
     return clientNavServerConfigs;
@@ -265,7 +267,7 @@
                         [[QIMKit sharedInstance] setUserObject:self.navConfigs forKey:@"QC_NavAllDicts"];
                         [[QIMKit sharedInstance] setUserObject:navUrlDict forKey:@"QC_CurrentNavDict"];
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:nil];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:navUrlDict];
                         });
                     } else {
                         [self onCancel];
@@ -378,7 +380,6 @@
     NSString *navUrl = [willEditedNavDict objectForKey:QIMNavUrlKey];
     NSString *navName = [willEditedNavDict objectForKey:QIMNavNameKey];
     NSString *name = [NSString stringWithFormat:@"%@ : %@", navName, navUrl];
-//    [QIMFastEntrance showQRCodeWithUserId:navUrl withName:name withType:QRCodeType_ClientNav];
     [QIMFastEntrance showQRCodeWithQRId:navUrl withType:QRCodeType_ClientNav];
 }
 
@@ -413,11 +414,15 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row <= 1) {
-
-        return NO;
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+        return YES;
+    } else {
+        if (indexPath.row <= 1) {
+            
+            return NO;
+        }
+        return YES;
     }
-    return YES;
 }
 
 - (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
