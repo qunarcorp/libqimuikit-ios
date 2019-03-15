@@ -60,14 +60,11 @@
     NSString * infoStr = self.message.extendInformation.length <= 0 ? self.message.message : self.message.extendInformation;
     if (infoStr.length > 0) {
         NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
-        NSDictionary * userInfoDic = [[[QIMUserInfoUtil sharedInstance] userInfoDic] objectForKey:infoDic[@"Open_User"]];
-        if (userInfoDic == nil) {
-            userInfoDic = [[QIMKit sharedInstance] getUserInfoByRTX:infoDic[@"Open_User"]];
-            [[[QIMUserInfoUtil sharedInstance] userInfoDic] setQIMSafeObject:userInfoDic forKey:infoDic[@"Open_User"]];
-        }
+        NSString *Open_User = [infoDic objectForKey:@"Open_User"];
+        NSString *openUserName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:Open_User];
         
         NSMutableAttributedString * mulStr = [[NSMutableAttributedString alloc] initWithString:@""];
-        [mulStr appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@支付了你的",userInfoDic[@"Name"]] attributes:@{ NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:12]}]];
+        [mulStr appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@支付了你的",(openUserName.length > 0) ? openUserName : [[Open_User componentsSeparatedByString:@"@"] firstObject]] attributes:@{ NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:12]}]];
         NSString *typeStr = [infoDic objectForKey:@"Typestr"];
         [mulStr appendAttributedString:[[NSAttributedString alloc] initWithString:typeStr?typeStr:@"AA收款" attributes:@{ NSForegroundColorAttributeName:[UIColor redColor],NSFontAttributeName:[UIFont systemFontOfSize:12]}]];
         int balance = [infoDic[@"Balance"] intValue];

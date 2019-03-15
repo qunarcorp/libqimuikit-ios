@@ -42,11 +42,10 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        self.backgroundView = nil;
-        self.backgroundColor = [UIColor whiteColor];
-        self.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.selectedBackgroundView = nil;
-        self.contentView.backgroundColor = [UIColor qtalkChatBgColor];
+        self.selectionStyle = UITableViewCellSelectionStyleDefault;
+        UIView* view = [[UIView alloc]initWithFrame:self.contentView.frame];
+        view.backgroundColor=[UIColor clearColor];
+        self.selectedBackgroundView = view;
         
         _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kCellWidth, kCellHeight)];
         [self.backView addSubview:_bgView];
