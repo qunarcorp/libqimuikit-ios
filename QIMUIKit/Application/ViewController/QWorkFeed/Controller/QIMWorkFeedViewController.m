@@ -241,7 +241,7 @@
     QIMWorkMomentModel *lastModel = [self.workMomentList lastObject];
     QIMVerboseLog(@"lastModel : %@", lastModel);
     
-    [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:[lastModel.createTime longLongValue] withUserXmppId:self.userId WithLimit:20 WithOffset:self.workMomentList.count withFirstLocalMoment:NO WithComplete:^(NSArray * _Nonnull array) {
+    [[QIMKit sharedInstance] getWorkMoreMomentWithLastMomentTime:[lastModel.createTime longLongValue] withUserXmppId:self.userId WithLimit:20 WithOffset:self.workMomentList.count withFirstLocalMoment:NO WithComplete:^(NSArray * _Nonnull array) {
         if (array.count) {
             for (NSDictionary *momentDic in array) {
                 QIMWorkMomentModel *model = [weakSelf getMomentModelWithDic:momentDic];
