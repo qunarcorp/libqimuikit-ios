@@ -181,7 +181,9 @@ static CGPoint tableOffsetPoint;
 }
 
 - (void)reloadCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment {
-    [self.commentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationMiddle];
+    [UIView animateWithDuration:0.3 animations:^{
+       [self.commentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }];
 }
 
 - (void)removeCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment {
@@ -301,7 +303,7 @@ static CGPoint tableOffsetPoint;
                                         range:[titleText rangeOfString:commentNumStr]];
                 [titleLabel setAttributedText:attributedText];
             } else {
-//                [titleLabel setText:@"全部评论"];
+                
             }
         }
     } else {
@@ -313,7 +315,7 @@ static CGPoint tableOffsetPoint;
                                     range:[titleText rangeOfString:commentNumStr]];
             [titleLabel setAttributedText:attributedText];
         } else {
-//            [titleLabel setText:@"全部评论"];
+
         }
     }
 

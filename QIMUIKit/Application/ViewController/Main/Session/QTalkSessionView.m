@@ -454,7 +454,7 @@
     
       if (_willRefreshTableView) {
         
-//        dispatch_async(self.reloadListViewQueue, ^{
+        dispatch_async(self.reloadListViewQueue, ^{
             @autoreleasepool {
                 QIMVerboseLog(@"啊啊啊你倒是刷新呀");
                 NSDictionary *friendDic = [[QIMKit sharedInstance] getLastFriendNotify];
@@ -527,7 +527,7 @@
                     }
                 });
             }
-//        });
+        });
     }
 }
 
@@ -1108,9 +1108,8 @@
         NSArray *arr = [NSArray arrayWithArray:_recentContactArray];
         NSMutableArray *temoNotReadList = [[NSMutableArray alloc] initWithCapacity:3];
         for (NSDictionary *infoDic in arr) {
-            NSString *jid = [[infoDic objectForKey:@"XmppId"] copy];
-            NSInteger count = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid];
-            if (count > 0) {
+            NSInteger unreadCount = [[infoDic objectForKey:@"UnreadCount"] integerValue];
+            if (unreadCount > 0) {
                 [temoNotReadList addObject:[NSIndexPath indexPathForRow:i inSection:0]];
             }
             i++;

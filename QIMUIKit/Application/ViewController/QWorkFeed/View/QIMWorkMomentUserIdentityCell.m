@@ -13,6 +13,8 @@
 
 @property (nonatomic, strong) UIButton *replaceBtn;
 
+@property (nonatomic, strong) UILabel *canNotReplaceLabel;
+
 @end
 
 @implementation QIMWorkMomentUserIdentityCell
@@ -24,11 +26,23 @@
         [_replaceBtn setTitleColor:[UIColor qim_colorWithHex:0xBFBFBF] forState:UIControlStateDisabled];
         [_replaceBtn setTitle:@"换一换" forState:UIControlStateNormal];
         [_replaceBtn setTitle:@"换一换" forState:UIControlStateDisabled];
-        [_replaceBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3d3" size:21 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateNormal];
-        [_replaceBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3d3" size:21 color:[UIColor qim_colorWithHex:0xBFBFBF]]] forState:UIControlStateDisabled];
+        [_replaceBtn.titleLabel setFont:[UIFont systemFontOfSize:13]];
+        [_replaceBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3d3" size:13 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateNormal];
+        [_replaceBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3d3" size:13 color:[UIColor qim_colorWithHex:0xBFBFBF]]] forState:UIControlStateDisabled];
         [_replaceBtn addTarget:self action:@selector(replaceAnony:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _replaceBtn;
+}
+
+- (UILabel *)canNotReplaceLabel {
+    if (!_canNotReplaceLabel) {
+        _canNotReplaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+        _canNotReplaceLabel.text = @"您已发帖，花名不可换";
+        _canNotReplaceLabel.font = [UIFont systemFontOfSize:13];
+        _canNotReplaceLabel.textAlignment = NSTextAlignmentRight;
+        _canNotReplaceLabel.textColor = [UIColor qim_colorWithHex:0xBFBFBF];
+    }
+    return _canNotReplaceLabel;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -52,11 +66,12 @@
 
 - (void)setUserIdentityReplaceable:(BOOL)replaceable {
     if (replaceable == YES) {
-        self.replaceBtn.frame = CGRectMake(SCREEN_WIDTH - 100, 30, 80, 30);
+        self.replaceBtn.frame = CGRectMake(SCREEN_WIDTH - 90, self.contentView.bottom - 30, 80, 15);
         [self.contentView addSubview:self.replaceBtn];
         self.replaceBtn.enabled = YES;
     } else {
-        
+        self.canNotReplaceLabel.frame = CGRectMake(SCREEN_WIDTH - 175, self.contentView.bottom - 30, 160, 15);
+        [self.contentView addSubview:self.canNotReplaceLabel];
     }
 }
 
