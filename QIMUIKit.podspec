@@ -46,6 +46,11 @@ Pod::Spec.new do |s|
     me.dependency 'QIMUIKit/PublicUIHeader'
   end
     
+  s.subspec 'QIMUISDK' do |uisdk|
+    uisdk.public_header_files = "QIMSDK/QIMSDK/**/*.{h}"
+    uisdk.source_files = "QIMSDK/QIMSDK/*.{h,m}"
+  end
+  
   s.subspec 'QIMCells' do |cells|
       cells.public_header_files = "QIMUIKit/QTalkMessageBaloon/**/*.{h}"
       cells.source_files = "QIMUIKit/QTalkMessageBaloon/**/*.{h,m,c}"
