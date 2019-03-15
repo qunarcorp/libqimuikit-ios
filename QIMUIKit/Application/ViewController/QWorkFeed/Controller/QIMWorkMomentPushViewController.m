@@ -408,6 +408,7 @@
                 QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
                 QIMVerboseLog(@"momentDic: %@", momentDic);
                 QIMVerboseLog(@"imageList : %@", imageList);
+                [momentDic setObject:@(7) forKey:@"postType"];
                 [[QIMKit sharedInstance] pushNewMomentWithMomentDic:momentDic];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[QIMProgressHUD sharedInstance] closeHUD];

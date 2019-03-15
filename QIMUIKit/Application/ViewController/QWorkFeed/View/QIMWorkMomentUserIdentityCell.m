@@ -24,8 +24,8 @@
         [_replaceBtn setTitleColor:[UIColor qim_colorWithHex:0xBFBFBF] forState:UIControlStateDisabled];
         [_replaceBtn setTitle:@"换一换" forState:UIControlStateNormal];
         [_replaceBtn setTitle:@"换一换" forState:UIControlStateDisabled];
-        [_replaceBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e337" size:21 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateNormal];
-        [_replaceBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e337" size:21 color:[UIColor qim_colorWithHex:0xBFBFBF]]] forState:UIControlStateDisabled];
+        [_replaceBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3d3" size:21 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateNormal];
+        [_replaceBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3d3" size:21 color:[UIColor qim_colorWithHex:0xBFBFBF]]] forState:UIControlStateDisabled];
         [_replaceBtn addTarget:self action:@selector(replaceAnony:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _replaceBtn;
@@ -55,12 +55,6 @@
         self.replaceBtn.frame = CGRectMake(SCREEN_WIDTH - 100, 30, 80, 30);
         [self.contentView addSubview:self.replaceBtn];
         self.replaceBtn.enabled = YES;
-        /*
-        if (self.userIdentitySelected) {
-            self.replaceBtn.enabled = YES;
-        } else {
-            self.replaceBtn.enabled = NO;
-        }*/
     } else {
         
     }
