@@ -108,11 +108,10 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *cellId = [NSString stringWithFormat:@"cellId"];
     QIMWorkNoticeMessageModel *model = [self.noticeMsgs objectAtIndex:indexPath.row];
-    QIMWorkMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+    QIMWorkMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:model.uuid];
     if (!cell) {
-        cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellId];
+        cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:model.uuid];
         [cell setNoticeMsgModel:model];
         [cell setContentModel:[self getContentModelWithMomentUUId:model.postUUID]];
     }

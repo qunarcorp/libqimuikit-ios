@@ -391,11 +391,15 @@ CGFloat maxLimitHeight = 0;
         _attachCommentListView.width = SCREEN_WIDTH - self.nameLab.left;
         _attachCommentListView.height = 300;
         _attachCommentListView.height = [_attachCommentListView getWorkAttachCommentListViewHeight];
-        _showMoreLabel.frame = CGRectMake(_attachCommentListView.left, _attachCommentListView.bottom + 5, _attachCommentListView.width, 15);
-        [self.contentView addSubview:_showMoreLabel];
-        _showMoreLabel.hidden = NO;
-        [_showMoreLabel setText:[NSString stringWithFormat:@"查看全部%ld条评论", self.moment.commentsNum]];
-        _moment.rowHeight = _showMoreLabel.bottom + 18;
+        if (self.moment.commentsNum > 5) {
+            _showMoreLabel.frame = CGRectMake(_attachCommentListView.left, _attachCommentListView.bottom + 5, _attachCommentListView.width, 15);
+            [self.contentView addSubview:_showMoreLabel];
+            _showMoreLabel.hidden = NO;
+            [_showMoreLabel setText:[NSString stringWithFormat:@"查看全部%ld条评论", self.moment.commentsNum]];
+            _moment.rowHeight = _showMoreLabel.bottom + 18;
+        } else {
+            _moment.rowHeight = _attachCommentListView.bottom + 10;
+        }
     } else {
         _attachCommentListView.height = 0;
         _attachCommentListView.hidden = YES;

@@ -34,12 +34,14 @@
 }
 
 - (void)deleteChildComment:(NSNotification *)notify {
-    QIMWorkCommentModel *childComment = (QIMWorkCommentModel *)notify.object;
-    if ([childComment.parentCommentUUID isEqualToString:self.commentModel.commentUUID] || [childComment.superParentUUID isEqualToString:self.commentModel.commentUUID]) {
-        NSArray *childComments = [self getChildComments];
-        self.commentModel.childComments = childComments;
-        [self.childCommentListView setChildCommentList:childComments];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMWorkCommentModel *childComment = (QIMWorkCommentModel *)notify.object;
+        if ([childComment.parentCommentUUID isEqualToString:self.commentModel.commentUUID] || [childComment.superParentUUID isEqualToString:self.commentModel.commentUUID]) {
+            NSArray *childComments = [self getChildComments];
+            self.commentModel.childComments = childComments;
+            [self.childCommentListView setChildCommentList:childComments];
+        }
+    });
 }
 
 - (NSArray *)getChildComments {
@@ -133,6 +135,8 @@
     // 头像视图
     if (self.isChildComment == YES) {
         _headImageView.frame = CGRectMake(self.leftMagin, 10, 23, 23);
+        _headImageView.layer.masksToBounds = YES;
+        _headImageView.layer.cornerRadius = _headImageView.width / 2.0f;
         _nameLab.frame = CGRectMake(_headImageView.right+10, _headImageView.top, 50, 20);
         _nameLab.font = [UIFont boldSystemFontOfSize:14.0];
     }
@@ -167,6 +171,7 @@
         }
         [self.headImageView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
         self.nameLab.text = anonymousName;
+        [self.nameLab sizeToFit];
         self.nameLab.textColor = [UIColor qim_colorWithHex:0x999999];
         self.organLab.hidden = YES;
     }
