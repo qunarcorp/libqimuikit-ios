@@ -1426,21 +1426,34 @@
 }
 
 - (void)refreshChatBGImageView {
+    
+    if (!_chatBGImageView) {
+        
+        _chatBGImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 40)];
+        _chatBGImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _chatBGImageView.clipsToBounds = YES;
+    }
+    
     NSMutableDictionary *chatBGImageDic = [[QIMKit sharedInstance] userObjectForKey:@"chatBGImageDic"];
     if (chatBGImageDic) {
-        [_tableView setBackgroundColor:[UIColor clearColor]];
+        
+        [self.tableView setBackgroundColor:[UIColor clearColor]];
         UIImage *image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:[NSString stringWithFormat:@"chatBGImageFor_%@", self.chatId]]];
         if (!image) {
+            
             image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:@"chatBGImageFor_Common"]];
         }
         if (image) {
-            self.chatBGImageView.image = image;
-            [self.view insertSubview:self.chatBGImageView belowSubview:_tableView];
+            
+            _chatBGImageView.image = image;
+            [self.view insertSubview:_chatBGImageView belowSubview:self.tableView];
         } else {
-            [self.chatBGImageView removeFromSuperview];
+            
+            [_chatBGImageView removeFromSuperview];
         }
     } else {
-        [_tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
+        
+        [self.tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
     }
 }
 
