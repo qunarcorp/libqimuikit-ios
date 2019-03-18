@@ -137,7 +137,7 @@
     } else {
         
     }
-//    [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
+    [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
 }
 
 - (void)backBtnClick:(id)sender {
@@ -146,7 +146,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLocalMomentReadState:) name:kNotify_RN_QTALK_SUGGEST_WorkFeed_UPDATE object:nil];
 }
 
 - (void)setupNav {
@@ -164,6 +163,8 @@
     if (self.userId.length <= 0) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadNoticeMsg:) name:kPBPresenceCategoryNotifyWorkNoticeMessage object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadLocalWorkFeed:) name:kNotifyReloadWorkFeed object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OpenQIMWorkFeedDetail:) name:@"OpenQIMWorkFeedDetail" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadMomentAttachCommentList:) name:kNotifyReloadWorkFeedAttachCommentList object:nil];
     }
 }
 
@@ -171,13 +172,13 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
     [self registerNotifications];
-    [[QIMKit sharedInstance] updateWorkNoticePOSTMessageReadState];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [self reloadRemoteRecenteMoments];
     });
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -192,8 +193,34 @@
     return index;
 }
 
-- (void)updateLocalMomentReadState:(NSNotification *)notify {
-    [[QIMKit sharedInstance] updateWorkNoticePOSTMessageReadState];
+- (NSInteger)getIndexOfMomentId:(NSString *)momentId {
+    NSInteger index = 0;
+    for (NSInteger i = 0; i < self.workMomentList.count; i++) {
+        QIMWorkMomentModel *tempMomentModel = [self.workMomentList objectAtIndex:i];
+        if ([tempMomentModel.momentId isEqualToString:momentId]) {
+            index = i;
+        }
+    }
+    return index;
+}
+
+- (void)reloadMomentAttachCommentList:(NSNotification *)notify {
+    NSDictionary *data = notify.object;
+    NSString *postId = [data objectForKey:@"postId"];
+    NSInteger momentIndex = [self getIndexOfMomentId:postId];
+    if (momentIndex >= 0 && momentIndex < self.workMomentList.count) {
+        [self.mainTableView reloadData];
+    }
+}
+
+- (void)OpenQIMWorkFeedDetail:(NSNotification *)notify {
+    NSString *momentId = notify.object;
+    if (momentId.length > 0) {
+        QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
+        detailVc.momentId = momentId;
+        self.notNeedReloadMomentView = YES;
+        [self.navigationController pushViewController:detailVc animated:YES];
+    }
 }
 
 //加载本地最近的帖子

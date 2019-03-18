@@ -205,6 +205,21 @@
 - (void)loadComments {
 
     __weak typeof(self) weakSelf = self;
+    [[QIMKit sharedInstance] getRemoteRecentHotCommentsWithMomentId:self.momentId withHotCommentCallBack:^(NSArray *hotComments) {
+        if ([hotComments isKindOfClass:[NSArray class]]) {
+            [weakSelf.commentListView.hotCommentModels removeAllObjects];
+            NSMutableArray *hotCommentIds = [NSMutableArray arrayWithCapacity:3];
+            for (NSDictionary *commentDic in hotComments) {
+                QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
+                [hotCommentIds addObject:model.commentUUID];
+                [weakSelf.commentListView.hotCommentModels addObject:model];
+            }
+            [[QIMKit sharedInstance] setHotCommentUUIds:hotCommentIds ForMomentId:self.momentId];
+            [weakSelf.commentListView reloadCommentsData];
+        } else {
+            [[QIMKit sharedInstance] setHotCommentUUIds:@[] ForMomentId:self.momentId];
+        }
+    }];
     [[QIMKit sharedInstance] getRemoteRecentNewCommentsWithMomentId:self.momentId withNewCommentCallBack:^(NSArray *comments) {
         if (comments) {
             [weakSelf.commentListView.commentModels removeAllObjects];
@@ -223,19 +238,6 @@
                 //没有拉回来热评和普通评论，加载本地
                 [self loadLocalComments];
             }
-        }
-    }];
-    [[QIMKit sharedInstance] getRemoteRecentHotCommentsWithMomentId:self.momentId withHotCommentCallBack:^(NSArray *hotComments) {
-        if ([hotComments isKindOfClass:[NSArray class]]) {
-            [weakSelf.commentListView.hotCommentModels removeAllObjects];
-            NSMutableArray *hotCommentIds = [NSMutableArray arrayWithCapacity:3];
-            for (NSDictionary *commentDic in hotComments) {
-                QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
-                [hotCommentIds addObject:model.commentUUID];
-                [weakSelf.commentListView.hotCommentModels addObject:model];
-            }
-            [[QIMKit sharedInstance] setHotCommentUUIds:hotCommentIds ForMomentId:self.momentId];
-            [weakSelf.commentListView reloadCommentsData];
         }
     }];
 }
@@ -324,11 +326,12 @@
                                                                    NSLog(@"buttonIndex : %d", buttonIndex);
                                                                    if (buttonIndex == 1) {
                                                                        //删评论
-                                                                       [[QIMKit sharedInstance] deleteRemoteCommentWithComment:commentModel.commentUUID withPostUUId:commentModel.postUUID withSuperParentUUId:commentModel.superParentUUID withCallback:^(BOOL success) {
+                                                                       [[QIMKit sharedInstance] deleteRemoteCommentWithComment:commentModel.commentUUID withPostUUId:commentModel.postUUID withSuperParentUUId:commentModel.superParentUUID withCallback:^(BOOL success, NSInteger superStatus) {
                                                                            if (success) {
                                                                                dispatch_async(dispatch_get_main_queue(), ^{
                                                                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteChildCommentModel" object:commentModel];
-                                                                                   [strongSelf.commentListView reloadCommentWithIndexPath:indexPath withIsHotComment:NO];
+                                                                                   [strongSelf.commentListView reloadCommentsData];
+//                                                                                   [strongSelf.commentListView reloadCommentWithIndexPath:indexPath withIsHotComment:NO];
                                                                                });
                                                                            } else {
                                                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"删除评论失败"];
@@ -390,9 +393,9 @@
                                                                        NSLog(@"buttonIndex : %d", buttonIndex);
                                                                        if (buttonIndex == 1) {
                                                                            //删评论
-                                                                           [[QIMKit sharedInstance] deleteRemoteCommentWithComment:commentModel.commentUUID withPostUUId:commentModel.postUUID withSuperParentUUId:commentModel.superParentUUID withCallback:^(BOOL success) {
+                                                                           [[QIMKit sharedInstance] deleteRemoteCommentWithComment:commentModel.commentUUID withPostUUId:commentModel.postUUID withSuperParentUUId:commentModel.superParentUUID withCallback:^(BOOL success, NSInteger superStatus) {
                                                                                if (success) {
-                                                                                   [strongSelf.commentListView removeCommentWithIndexPath:indexPath withIsHotComment:isHotComment];
+                                                                                   [strongSelf.commentListView removeCommentWithIndexPath:indexPath withIsHotComment:isHotComment withSuperStatus:superStatus];
                                                                                } else {
                                                                                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"删除评论失败"];
                                                                                }

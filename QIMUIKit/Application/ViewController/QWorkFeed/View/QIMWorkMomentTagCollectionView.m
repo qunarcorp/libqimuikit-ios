@@ -24,6 +24,11 @@
     return self;
 }
 
+- (void)setMomentTag:(NSInteger)momentTag {
+    _momentTag = momentTag;
+    [self reloadData];
+}
+
 - (CGFloat)getWorkMomentTagCollectionViewHeight {
     [self layoutIfNeeded];
     return self.contentSize.height;
@@ -43,15 +48,17 @@
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
     UILabel *label = [[UILabel alloc] initWithFrame:cell.bounds];
     if ([number integerValue] == 1) {
+        [cell removeAllSubviews];
         [label setText:@"置顶"];
         [label setTextColor:[UIColor qim_colorWithHex:0x00CABE]];
         label.layer.borderColor = [UIColor qim_colorWithHex:0x00CABE].CGColor;
     } else if ([number integerValue] == 2) {
+        [cell removeAllSubviews];
         [label setText:@"热帖"];
         [label setTextColor:[UIColor qim_colorWithHex:0xF9A539]];
         label.layer.borderColor = [UIColor qim_colorWithHex:0xF9A539].CGColor;
     } else {
-        
+        [cell removeAllSubviews];
     }
     [label setFont:[UIFont systemFontOfSize:11]];
     [label setTextAlignment:NSTextAlignmentCenter];

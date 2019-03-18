@@ -10,6 +10,7 @@
 #import "QIMWorkMomentLabel.h"
 #import "QIMWorkMomentParser.h"
 #import "QIMWorkMomentModel.h"
+#import "QIMWorkCommentModel.h"
 #import "QIMWorkMomentContentModel.h"
 #import "QIMWorkMomentPicture.h"
 #import "QIMWorkMomentImageListView.h"
@@ -41,6 +42,7 @@ CGFloat maxLimitHeight = 0;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMomentDetail:) name:kNotifyReloadWorkFeedDetail object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMomentLike:) name:kNotifyReloadWorkFeedLike object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMomentUI:) name:kNotifyReloadWorkFeedCommentNum object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMomentAttachCommentList:) name:kNotifyReloadWorkFeedAttachCommentList object:nil];
     }
     return self;
 }
@@ -57,6 +59,7 @@ CGFloat maxLimitHeight = 0;
     momentModel.content = conModel;
     momentModel.isFullText = self.moment.isFullText;
     if ([momentModel.momentId isEqualToString:self.moment.momentId]) {
+        momentModel.attachCommentList = self.moment.attachCommentList;
         [self setMoment:momentModel];
     }
 }
@@ -77,6 +80,21 @@ CGFloat maxLimitHeight = 0;
     if ([postId isEqualToString:self.moment.momentId]) {
         self.moment.commentsNum = [[data objectForKey:@"postCommentNum"] integerValue];
         [self updateCommentUI];
+    }
+}
+
+- (void)updateMomentAttachCommentList:(NSNotification *)notify {
+    NSDictionary *data = notify.object;
+    NSString *postId = [data objectForKey:@"postId"];
+    if ([postId isEqualToString:self.moment.momentId]) {
+        NSArray *attachCommentList = [data objectForKey:@"attachCommentList"];
+        NSMutableArray *attachCommentModelList = [NSMutableArray arrayWithCapacity:3];
+        for (NSDictionary *attachCommentDic in attachCommentList) {
+            QIMWorkCommentModel *commentModel = [QIMWorkCommentModel yy_modelWithDictionary:attachCommentDic];
+            [attachCommentModelList addObject:commentModel];
+        }
+        self.moment.attachCommentList = attachCommentModelList;
+        [self updateAttachCommentList];
     }
 }
 
@@ -143,13 +161,6 @@ CGFloat maxLimitHeight = 0;
     _controlBtn.centerY = _nameLab.centerY;
     [_controlBtn addTarget:self action:@selector(controlPanelClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_controlBtn];
-    
-    _controlDebugBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    _controlDebugBtn.frame = CGRectMake(_controlBtn.left - 30, _nameLab.top, 19, 19);
-    [_controlDebugBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1cd" size:28 color:[UIColor redColor]]] forState:UIControlStateNormal];
-    _controlDebugBtn.centerY = _nameLab.centerY;
-    [_controlDebugBtn addTarget:self action:@selector(controlDebugPanelClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:_controlDebugBtn];
     
     // 正文视图
     _contentLabel = [[QIMWorkMomentLabel alloc] init];
@@ -234,12 +245,6 @@ CGFloat maxLimitHeight = 0;
     } else {
         self.controlBtn.hidden = YES;
     }
-    if ([[[QIMKit sharedInstance] qimNav_getDebugers] containsObject:[QIMKit getLastUserName]]) {
-        
-        self.controlDebugBtn.hidden = NO;
-    } else {
-        self.controlDebugBtn.hidden = YES;
-    }
     _showAllBtn.hidden = YES;
     if (moment.isAnonymous == NO) {
         
@@ -280,7 +285,6 @@ CGFloat maxLimitHeight = 0;
     _rIdLabe.centerY = self.headImageView.centerY;
     
     CGFloat bottom = self.headImageView.bottom;
-//<<<<<<< HEAD
     _tagCollectionView.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 80, 24);
     _tagCollectionView.momentTag = self.moment.postType.integerValue;
     _tagCollectionView.height = [_tagCollectionView getWorkMomentTagCollectionViewHeight];
@@ -319,16 +323,6 @@ CGFloat maxLimitHeight = 0;
     }
     
     CGFloat textH = textContainer.textHeight;
-    /*
-=======
-    _contentLabel.text = moment.content.content;
-    [_contentLabel sizeToFit];
-    CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        textH = [_contentLabel getHeightWithWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20];
-    }
->>>>>>> startalk2.0
-    */
     if(self.alwaysFullText) {
         _showAllBtn.hidden = YES;
     } else {
@@ -380,7 +374,6 @@ CGFloat maxLimitHeight = 0;
     _timeLab.text = [timeDate qim_timeIntervalDescription];
     _timeLab.frame = CGRectMake(self.contentLabel.left, _rowHeight + 15, 60, 12);
     _timeLab.centerY = _commentBtn.centerY;
-//    _rowHeight = self.commentBtn.bottom + 24;
     [self updateAttachCommentList];
 }
 

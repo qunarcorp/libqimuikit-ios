@@ -47,6 +47,14 @@ RCT_EXPORT_METHOD(getWorkWorldItem:(NSDictionary *)param :(RCTResponseSenderBloc
     });
 }
 
+RCT_EXPORT_METHOD(getWorkWorldNotRead:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
+    NSInteger notReadMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    BOOL showNewPOST = NO;
+    NSLog(@"getWorkWorldItem : %d", notReadMsgCount);
+    NSDictionary *notReadMsgDic = @{@"notReadMsgCount":@(notReadMsgCount), @"showNewPost":@(showNewPOST)};
+    callback(@[notReadMsgDic ? notReadMsgDic : @{}]);
+}
+
 RCT_EXPORT_METHOD(openWorkWorld:(NSDictionary *)param) {
     [[QIMFastEntrance sharedInstance] openWorkFeedViewController];
 }
