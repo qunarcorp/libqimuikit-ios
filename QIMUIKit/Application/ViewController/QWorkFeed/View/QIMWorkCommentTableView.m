@@ -135,27 +135,34 @@ static CGPoint tableOffsetPoint;
             isNormalCommentModel = YES;
         }
     }
-    if (isHotCommentModel == NO) {
-        //评论的不是热门评论
-        if (isNormalCommentModel == YES) {
-            //评论的是普通评论
-            [self.commentModels replaceObjectAtIndex:indexPath.row withObject:commentModel];
-            [self reloadCommentWithIndexPath:indexPath withIsHotComment:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (isHotCommentModel == NO) {
+            //评论的不是热门评论
+            if (isNormalCommentModel == YES) {
+                //评论的是普通评论
+                QIMVerboseLog(@"评论的是普通评论 : %@", commentModel);
+                [self.commentModels replaceObjectAtIndex:indexPath.row withObject:commentModel];
+                [self reloadCommentsData];
+                //            [self reloadCommentWithIndexPath:indexPath withIsHotComment:NO];
+            } else {
+                //新评论，加的普通评论第一条
+                [self.commentModels insertObject:commentModel atIndex:0];
+                [self reloadCommentsData];
+                //            [self scrollCommentModelToTopIndex];
+            }
         } else {
-            //新评论，加的普通评论第一条
-            [self.commentModels insertObject:commentModel atIndex:0];
+            //评论的是热门评论，重新reload
+            [self.hotCommentModels replaceObjectAtIndex:indexPath.row withObject:commentModel];
             [self reloadCommentsData];
-            [self scrollCommentModelToTopIndex];
+            //        [self reloadCommentWithIndexPath:indexPath withIsHotComment:YES];
         }
-    } else {
-        //评论的是热门评论，重新reload
-        [self.hotCommentModels replaceObjectAtIndex:indexPath.row withObject:commentModel];
-        [self reloadCommentWithIndexPath:indexPath withIsHotComment:YES];
-    }
+    });
 }
 
 - (void)reloadCommentsData {
-    [self.commentTableView reloadData];
+    dispatch_async(dispatch_get_main_queue(), ^{
+       [self.commentTableView reloadData];
+    });
 }
 
 - (void)endRefreshingHeader {
@@ -181,23 +188,57 @@ static CGPoint tableOffsetPoint;
 }
 
 - (void)reloadCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment {
+//    [self.commentTableView beginUpdates];
     [UIView animateWithDuration:0.3 animations:^{
-       [self.commentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+       [self.commentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
     }];
+//    [self.commentTableView endUpdates];
 }
 
-- (void)removeCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment {
-
-    if (isHotComment) {
-        [self.hotCommentModels removeObjectAtIndex:indexPath.row];
-        [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        _commentHeaderView.hidden = NO;
-        [self.commentTableView setTableHeaderView:_commentHeaderView];
+- (void)removeCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment withSuperStatus:(NSInteger)superParentStatus {
+    
+    if (superParentStatus == 2) {
+        //2标识主评论已删除且没有了子评论在客户端可直接删除掉
+        if (isHotComment) {
+            [self.hotCommentModels removeObjectAtIndex:indexPath.row];
+            [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            _commentHeaderView.hidden = NO;
+            [self.commentTableView setTableHeaderView:_commentHeaderView];
+        } else {
+            [self.commentModels removeObjectAtIndex:indexPath.row];
+            [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            _commentHeaderView.hidden = NO;
+            [self.commentTableView setTableHeaderView:_commentHeaderView];
+        }
+    } else if (superParentStatus == 1) {
+        //1标识主评论已被删除但是还有子评论在客户端需标识该评论已被删除
+        //更新主评论为“该评论已被删除”
+        if (isHotComment) {
+            QIMWorkCommentModel *commentModel = [self.hotCommentModels objectAtIndex:indexPath.row];
+            commentModel.isDelete = YES;
+            [self.hotCommentModels replaceObjectAtIndex:indexPath.row withObject:commentModel];
+            [self.commentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        } else {
+            QIMWorkCommentModel *commentModel = [self.commentModels objectAtIndex:indexPath.row];
+            commentModel.isDelete = YES;
+            [self.commentModels replaceObjectAtIndex:indexPath.row withObject:commentModel];
+            [self.commentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+    } else if (superParentStatus == 0) {
+        //0主评论没有被删除,正常只删这一条评论
+        if (isHotComment) {
+            [self.hotCommentModels removeObjectAtIndex:indexPath.row];
+            [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            _commentHeaderView.hidden = NO;
+            [self.commentTableView setTableHeaderView:_commentHeaderView];
+        } else {
+            [self.commentModels removeObjectAtIndex:indexPath.row];
+            [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            _commentHeaderView.hidden = NO;
+            [self.commentTableView setTableHeaderView:_commentHeaderView];
+        }
     } else {
-        [self.commentModels removeObjectAtIndex:indexPath.row];
-        [self.commentTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        _commentHeaderView.hidden = NO;
-        [self.commentTableView setTableHeaderView:_commentHeaderView];
+        
     }
 }
 

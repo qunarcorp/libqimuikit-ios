@@ -538,11 +538,11 @@ static UIImage *__rightBallocImage = nil;
         menuList = [NSMutableArray array];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeObject:@(MA_Refer)];
-        [menuList removeObject:@(MA_Repeater)];
-        [menuList removeObject:@(MA_Delete)];
+//        [menuList removeObject:@(MA_Refer)];
+//        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Delete)];
         [menuList removeObject:@(MA_Forward)];
-        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Repeater)];
     }
     return menuList;
 }

@@ -42,7 +42,7 @@
     NSString *content = [exTrdDic objectForKey:@"content"];
     CGFloat cellHeight = 0.0f;
     if (content.length) {
-       QIMMessageModel *contentMsg = [[QIMMessageModel alloc] init];
+        QIMMessageModel *contentMsg = [[QIMMessageModel alloc] init];
         contentMsg.message = content;
         contentMsg.messageId = [NSString stringWithFormat:@"%@_content", message.messageId];
         contentMsg.messageDirection = message.messageDirection;
@@ -50,14 +50,13 @@
         textContainer.font = [UIFont systemFontOfSize:kHintTextFontSize];
         cellHeight += [textContainer getHeightWithFramesetter:nil width:textContainer.textWidth];
     }
-    /* Mark by DB
-    QIMMessageState state = [[QIMKit sharedInstance] getMessageStateWithMsgId:message.messageId];
-    if (state == MessageState_didControl) {
+    QIMMessageRemoteReadState readState = [[QIMKit sharedInstance] getReadStateWithMsgId:message.messageId];
+    if (readState & QIMMessageReadFlagDidControl) {
         return cellHeight + 50;
     } else {
         NSString *middleContent = [exTrdDic objectForKey:@"middleContent"];
         if (middleContent.length) {
-           QIMMessageModel *middleContentMsg = [[QIMMessageModel alloc] init];
+            QIMMessageModel *middleContentMsg = [[QIMMessageModel alloc] init];
             middleContentMsg.message = middleContent;
             middleContentMsg.messageId = [NSString stringWithFormat:@"%@_middleContent", message.messageId];
             middleContentMsg.messageDirection = message.messageDirection;
@@ -67,7 +66,6 @@
         }
         return cellHeight + 100;
     }
-    */
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -124,7 +122,7 @@
     
     NSDictionary *exTrdDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.extendInformation error:nil];
     NSString *msgContent = [exTrdDic objectForKey:@"content"];
-   QIMMessageModel *contentMsg = [[QIMMessageModel alloc] init];
+    QIMMessageModel *contentMsg = [[QIMMessageModel alloc] init];
     contentMsg.message = msgContent;
     contentMsg.messageId = [NSString stringWithFormat:@"%@_content", self.message.messageId];
     contentMsg.messageDirection = self.message.messageDirection;
@@ -143,16 +141,15 @@
     [self.backView setMessage:self.message];
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
     [self setBackViewWithWidth:[QIMMessageParser getCellWidth] + 40 WithHeight:height - 30];
-    /* Mark by DB
-    MessageState state = [[QIMKit sharedInstance] getMessageStateWithMsgId:self.message.messageId];
-    if (state != MessageState_didControl) {
+    QIMMessageReadFlag readState = [[QIMKit sharedInstance] getMessageStateWithMsgId:self.message.messageId];
+    if (readState & QIMMessageReadFlagDidControl) {
         self.panelBgView.frame = CGRectMake(10, self.msgContentLabel.bottom, [QIMMessageParser getCellWidth] + 40 - 20, self.backView.bottom - self.msgContentLabel.bottom - 35);
         self.lineView = [[UIView alloc] initWithFrame:CGRectMake(12, 5, cellWidth + 20 - 24, 1.0f)];
         self.lineView.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
         [self.panelBgView addSubview:self.lineView];
         
         NSString *middleContent = [exTrdDic objectForKey:@"middleContent"];
-       QIMMessageModel *middleContentMsg = [[QIMMessageModel alloc] init];
+        QIMMessageModel *middleContentMsg = [[QIMMessageModel alloc] init];
         middleContentMsg.message = middleContent;
         middleContentMsg.messageId = [NSString stringWithFormat:@"%@_middleContent", self.message.messageId];
         middleContentMsg.messageDirection = self.message.messageDirection;
@@ -175,7 +172,6 @@
         [self.panelBgView removeAllSubviews];
         [self.panelBgView removeFromSuperview];
     }
-    */
     [super refreshUI];
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
 }

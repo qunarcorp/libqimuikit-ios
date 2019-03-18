@@ -20,6 +20,7 @@
 #import "QIMFriendListSelectionVC.h"
 #import "QIMIconInfo.h"
 #import "NSBundle+QIMLibrary.h"
+#import "QIMIPadWindowManager.h"
 
 #define kKeywordSearchBarHeight 44
 
@@ -487,8 +488,12 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
     if (!self.isTransfer) {
-        QIMNavController *nav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        [nav popToRootVCThenPush:chatVC animated:YES];
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatVC];
+        } else {
+            QIMNavController *nav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+            [nav popToRootVCThenPush:chatVC animated:YES];
+        }
     }
 }
 
@@ -552,8 +557,12 @@
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
-    QIMNavController *nav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
-    [nav popToRootVCThenPush:chatGroupVC animated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatGroupVC];
+    } else {
+        QIMNavController *nav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+        [nav popToRootVCThenPush:chatGroupVC animated:YES];
+    }
 }
 
 @end

@@ -1774,9 +1774,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             picker.modalPresentationStyle = UIModalPresentationCurrentContext;
             [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
-//            UIViewController *vc = (UIViewController *)self.delegate;
-//            [vc presentViewController:picker animated:YES completion:nil];
-//            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
         } else {
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
         }

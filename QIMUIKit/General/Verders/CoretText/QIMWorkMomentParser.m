@@ -55,7 +55,6 @@
             [[QIMMessageCellCache sharedInstance] setObject:textContainer forKey:message.messageId];
         }
     }
-    //    QIMVerboseLog(@"return textContainerForMessage : %@", textContainer);
     return textContainer;
 }
 
@@ -131,9 +130,16 @@
             
             [storages addObject:[self parseImageRunFromDictinary:@{@"httpUrl":httpUrl?httpUrl:@"",@"width":@(width),@"height":@(height),@"range":NSStringFromRange(match.range)}]];
             
-        }
-        //链接link
-        else if ([type hasPrefix:@"url"]) {
+        } else if ([type hasPrefix:@"reply"]) {
+            //回复
+            NSString *replyStr = value;
+            if (replyStr.length) {
+                UIColor *replyColor = [UIColor qim_colorWithHex:0x999999];
+                NSInteger replyFontSize = 14;
+                [storages addObject:[self parseTextStorageFromDictinary:@{@"content":replyStr?replyStr:@"",@"fontSize":@(replyFontSize),@"color":replyColor}]];
+            }
+        } else if ([type hasPrefix:@"url"]) {
+            //链接link
             NSString * url  = value;
             if (url.length) {
                 UIColor *linkColor = [UIColor qim_colorWithHex:0x336cd5];

@@ -21,7 +21,7 @@
         self.delegate = self;
         self.dataSource = self;
         self.scrollEnabled = NO;
-        self.userInteractionEnabled = NO;
+//        self.userInteractionEnabled = NO;
         CGRect tableHeaderViewFrame = CGRectMake(0, 0, 0, 0.0001f);
         self.tableHeaderView = [[UIView alloc] initWithFrame:tableHeaderViewFrame];
         self.tableFooterView = [UIView new];
@@ -53,7 +53,7 @@
     QIMWorkAttachCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"attachCommentListCellId"];
     if (!cell) {
         cell = [[QIMWorkAttachCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"attachCommentListCellId"];
-        cell.userInteractionEnabled = NO;
+//        cell.userInteractionEnabled = NO;
     }
     [cell setLeftMargin:self.left];
     [cell setCommentModel:commentModel];
@@ -63,6 +63,13 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     QIMWorkCommentModel *commentModel = [self.attachCommentList objectAtIndex:indexPath.row];
     return commentModel.rowHeight;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"OpenQIMWorkFeedDetail" object:self.momentId];
+    });
 }
 
 @end

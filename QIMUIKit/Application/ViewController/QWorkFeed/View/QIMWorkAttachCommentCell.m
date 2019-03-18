@@ -8,6 +8,12 @@
 #import "QIMWorkAttachCommentCell.h"
 #import "QIMWorkMomentLabel.h"
 #import "QIMWorkCommentModel.h"
+#import "QIMEmotionManager.h"
+#import "QIMWorkMomentParser.h"
+
+@interface QIMWorkAttachCommentCell () <QIMAttributedLabelDelegate>
+
+@end
 
 @implementation QIMWorkAttachCommentCell
 
@@ -50,6 +56,7 @@
     _contentLabel = [[QIMWorkMomentLabel alloc] init];
     _contentLabel.font = [UIFont systemFontOfSize:14];
     _contentLabel.linesSpacing = 20.0f;
+    _contentLabel.delegate = self;
     _contentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
     [self.contentView addSubview:_contentLabel];
 }
@@ -77,10 +84,12 @@
     BOOL isChildComment = (commentModel.parentCommentUUID.length > 0) ? YES : NO;
     BOOL toisAnonymous = commentModel.toisAnonymous;
     NSString *replayNameStr = @"";
+    NSString *replayStr = @"";
     if (isChildComment) {
         if (toisAnonymous) {
             NSString *toAnonymousName = commentModel.toAnonymousName;
-            replayNameStr = [NSString stringWithFormat:@"回复 %@ ", toAnonymousName];
+            replayNameStr = [NSString stringWithFormat:@"回复%@：", toAnonymousName];
+            replayStr = [NSString stringWithFormat:@"[obj type=\"reply\" value=\"%@\"]",replayNameStr];
         } else {
             NSString *toUser = commentModel.toUser;
             NSString *toUserHost = commentModel.toHost;
@@ -89,24 +98,28 @@
             }
             NSString *toUserId = [NSString stringWithFormat:@"%@@%@", toUser, toUserHost];
             NSString *toUserName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:toUserId];
-            replayNameStr = [NSString stringWithFormat:@"回复 %@ ", toUserName];
+            replayNameStr = [NSString stringWithFormat:@"回复%@：", toUserName];
+            replayStr = [NSString stringWithFormat:@"[obj type=\"reply\" value=\"%@\"]",replayNameStr];
         }
     } else {
         replayNameStr = [NSString stringWithFormat:@""];
     }
     
-    NSString *likeString  = [NSString stringWithFormat:@"%@%@", replayNameStr, commentModel.content];
-    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:likeString];
-    [attributedText addAttributeFont:[UIFont systemFontOfSize:14]];
-    [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:14]} range:[likeString rangeOfString:replayNameStr]];
-    
-    _contentLabel.attributedText = attributedText;
-    rowHeight = self.contentLabel.bottom;
+    NSString *likeString  = [NSString stringWithFormat:@"%@%@", replayStr, commentModel.content];
     _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70 - self.leftMargin, 0, 60, 15);
     NSInteger likeNum = commentModel.likeNum;
     [_likeBtn setTitle:[NSString stringWithFormat:@"%ld 赞", likeNum] forState:UIControlStateNormal];
     _likeBtn.centerY = self.nameLab.centerY;
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 6) Width:(SCREEN_WIDTH - self.nameLab.left - self.leftMargin - _likeBtn.width - 20)];
+    
+    QIMMessageModel *msg = [[QIMMessageModel alloc] init];
+    msg.message = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:likeString];
+    msg.messageId = commentModel.commentUUID;
+    
+    QIMTextContainer *mainTextContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:self.likeBtn.left - self.nameLab.left withFontSize:14 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:6];
+    CGFloat textH = mainTextContainer.textHeight;
+    self.contentLabel.textContainer = mainTextContainer;
+    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 6) Width:(self.likeBtn.left - self.nameLab.left)];
+
     _commentModel.rowHeight = _contentLabel.bottom + 12;
 }
 
@@ -146,6 +159,26 @@
     [super setSelected:selected animated:animated];
     
     // Configure the view for the selected state
+}
+
+// 点击代理
+- (void)attributedLabel:(QIMAttributedLabel *)attributedLabel textStorageClicked:(id<QIMTextStorageProtocol>)textStorage atPoint:(CGPoint)point {
+    if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
+        QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
+        if (![storage.linkData length]) {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView show];
+        } else {
+            [QIMFastEntrance openWebViewForUrl:storage.linkData showNavBar:YES];
+        }
+    } else {
+        
+    }
+}
+
+// 长按代理 有多个状态 begin, changes, end 都会调用,所以需要判断状态
+- (void)attributedLabel:(QIMAttributedLabel *)attributedLabel textStorageLongPressed:(id<QIMTextStorageProtocol>)textStorage onState:(UIGestureRecognizerState)state atPoint:(CGPoint)point {
+    
 }
 
 @end

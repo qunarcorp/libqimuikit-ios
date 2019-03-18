@@ -563,7 +563,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)forwardBtnHandle:(id)sender {
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0 && ![[QIMKit sharedInstance] getIsIpad]) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *quickForwardAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"One-by-One Forward"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
             
@@ -1931,7 +1931,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     }
     
     if (event == MA_Repeater) {
-        //QIMContactSelectVC * controller = [[QIMContactSelectVC alloc] init];
         QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
         [controller setMessage:[QIMMessageParser reductionMessageForMessage:eventMsg]];
@@ -3125,6 +3124,9 @@ static CGPoint tableOffsetPoint;
             
             QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
             QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+            }
             controller.delegate = self;
             [[self navigationController] presentViewController:nav animated:YES completion:^{
                 [self cancelForwardHandle:nil];
@@ -3140,6 +3142,9 @@ static CGPoint tableOffsetPoint;
             QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
             QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
             [controller setMessageList:msgList];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+            }
             [[self navigationController] presentViewController:nav animated:YES completion:^{
                 [self cancelForwardHandle:nil];
             }];
