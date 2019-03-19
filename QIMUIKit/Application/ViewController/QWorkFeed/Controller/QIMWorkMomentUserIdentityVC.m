@@ -16,6 +16,8 @@
 
 @property (nonatomic, strong) NSMutableArray *userIdentityList;
 
+@property (nonatomic, strong) UIButton *saveBtn;
+
 @end
 
 @implementation QIMWorkMomentUserIdentityVC
@@ -53,6 +55,19 @@
     return _userIdentityList;
 }
 
+- (UIButton *)saveBtn {
+    if (!_saveBtn) {
+        _saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_saveBtn setFrame:CGRectMake(0, 0, 36, 18)];
+        [_saveBtn setTitle:@"确定" forState:UIControlStateNormal];
+        [_saveBtn setTitle:@"确定" forState:UIControlStateDisabled];
+        [_saveBtn setTitleColor:[UIColor qim_colorWithHex:0xBFBFBF] forState:UIControlStateDisabled];
+        [_saveBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
+        [_saveBtn addTarget:self action:@selector(didselectUserIdentity:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _saveBtn;
+}
+
 #pragma mark - life ctyle
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -68,6 +83,8 @@
     self.navigationItem.title = @"发帖身份";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3cd" size:20 color:[UIColor qim_colorWithHex:0x333333]]] style:UIBarButtonItemStylePlain target:self action:@selector(backBtnClick:)];
+    UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.saveBtn];
+    [[self navigationItem] setRightBarButtonItem:newMomentBtn];
 
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
     [self.view addSubview:self.userIdentityListView];
@@ -232,6 +249,26 @@
             });
         }
     }];
+}
+
+- (void)didselectUserIdentity:(id)sender {
+    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == YES) {
+        QIMWorkMomentUserIdentityModel *userIdentityModel = [self.userIdentityList lastObject];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:YES];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:userIdentityModel.anonymousName];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:userIdentityModel.anonymousPhoto];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:userIdentityModel.replaceable];
+    } else {
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
+        [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:NO];
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"kReloadUserIdentifier" object:nil];
+    });
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

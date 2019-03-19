@@ -79,7 +79,6 @@
 
 #pragma mark - init ui
 -(void)setupSearchBar{
-    //    [[QIMContactDatasourceManager getInstance] createUnMeregeDataSource];
     _searchBarKeyTmp = [[SearchBar alloc] initWithFrame:CGRectZero andButton:nil];
     [_searchBarKeyTmp setPlaceHolder:[NSBundle qim_localizedStringForKey:@"common_search_tips"]];
     [_searchBarKeyTmp setReturnKeyType:UIReturnKeySearch];
@@ -122,7 +121,7 @@
     for (QIMDatasourceItem *item in _searchResults) {
         [_searchTreeList addObject:item];
         if (item.isExpand) {
-            [_searchTreeList addObjectsFromArray:item.childNodesArray];
+            //            [_searchTreeList addObjectsFromArray:item.childNodesArray];
         }
     }
 }
@@ -186,7 +185,7 @@
             if (cell == nil) {
                 cell = [[QIMBuddyTitleCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier1];
                 [cell initSubControls];
-            } 
+            }
             NSString * userName  =  item.nodeName;
             [cell setUserName:userName];
             [cell setExpanded:item.isExpand];
@@ -244,23 +243,6 @@
             else
             {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    if (qtalkItem.childNodesArray.count <= 0) {
-                        NSArray *result = [_suggestOrganizationCacheDic objectForKey:qtalkItem.jid];
-                        if (result == nil) {
-                            result = [[QIMKit sharedInstance] getSuggestOrganizationBySuggestId:qtalkItem.jid];
-                            [_suggestOrganizationCacheDic setObject:result forKey:qtalkItem.jid];
-                        }
-                        [qtalkItem.childNodesArray removeAllObjects];
-                        for (NSDictionary *infoDic in result) {
-                            QIMDatasourceItem *item = [[QIMDatasourceItem alloc] init];
-                            [item setIsParentNode:NO];
-                            [item setNodeName:[infoDic objectForKey:@"W"]];
-                            [item setJid:[[infoDic objectForKey:@"U"] stringByAppendingFormat:@"@%@",[[QIMKit sharedInstance] getDomain]]];
-                            [item setNLevel:1];
-                            [item setParentNode:qtalkItem];
-                            [qtalkItem addChildNodesItem:item];
-                        }
-                    }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [qtalkItem setIsExpand:YES];
                         [self updateSearchTreeList];
@@ -289,7 +271,7 @@
             }
         }
     } else if ([[[QIMContactDatasourceManager getInstance] QtalkDataSourceItem] count] > 0 ) {
-        QIMDatasourceItem  * qtalkItem =    [[[QIMContactDatasourceManager getInstance] QtalkDataSourceItem] objectAtIndex:indexPath.row];
+        QIMDatasourceItem  * qtalkItem = [[[QIMContactDatasourceManager getInstance] QtalkDataSourceItem] objectAtIndex:indexPath.row];
         if ([qtalkItem isParentNode]) {
             if ([qtalkItem isExpand]) {
                 [[QIMContactDatasourceManager getInstance] collapseBranchAtIndex:indexPath.row];

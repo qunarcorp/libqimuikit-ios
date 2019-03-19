@@ -828,22 +828,19 @@
     NSString *jid = [infoDic objectForKey:@"XmppId"];
     NSString *name = [infoDic objectForKey:@"Name"];
     ChatType chatType = [[infoDic objectForKey:@"ChatType"] intValue];
-    NSInteger notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid];
+    NSInteger notReadCount = [[infoDic objectForKey:@"UnreadCount"] integerValue];
+    //Mark by DB
+//    NSInteger notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid];
     if (jid) {
         
         switch (chatType) {
                 
             case ChatType_GroupChat: {
                 QIMGroupChatVC *chatGroupVC = (QIMGroupChatVC *)[[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:jid];
-                /*
-                QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
-                [chatGroupVC setTitle:name];
-                [chatGroupVC setChatId:jid];
-                 */
                 [chatGroupVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatGroupVC setNotReadCount:notReadCount];
                 [chatGroupVC setReadedMsgTimeStamp:-1];
-                /*Mark by DB
+                /*
                 if (chatGroupVC.needShowNewMsgTagCell) {
                     
                     chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WithMsgDirection:QIMMessageDirection_Received WithReadedState:MessageState_didRead];
@@ -900,14 +897,6 @@
                 break;
             case ChatType_SingleChat: {
                 QIMChatVC *chatSingleVC = (QIMChatVC *)[[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
-                /*
-                QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
-                [chatSingleVC setStype:kSessionType_Chat];
-                [chatSingleVC setChatId:jid];
-                [chatSingleVC setName:name];
-                [chatSingleVC setChatInfoDict:infoDic];
-                [chatSingleVC setChatType:chatType];
-                */
                 NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
                 [chatSingleVC setTitle:remarkName ? remarkName : name];
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
