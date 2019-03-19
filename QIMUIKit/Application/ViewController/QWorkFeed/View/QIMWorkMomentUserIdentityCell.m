@@ -37,7 +37,7 @@
 - (UILabel *)canNotReplaceLabel {
     if (!_canNotReplaceLabel) {
         _canNotReplaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-        _canNotReplaceLabel.text = @"您已发帖，花名不可换";
+        _canNotReplaceLabel.text = @"花名已确定，不可更改";
         _canNotReplaceLabel.font = [UIFont systemFontOfSize:13];
         _canNotReplaceLabel.textAlignment = NSTextAlignmentRight;
         _canNotReplaceLabel.textColor = [UIColor qim_colorWithHex:0xBFBFBF];

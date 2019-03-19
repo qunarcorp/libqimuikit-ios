@@ -9,7 +9,7 @@
 #import "QIMBuddyTitleCell.h"
 #import "QIMBuddyItemCell.h"
 #import "QIMDatasourceItem.h"
-#import "QIMContactDatasourceManager.h"
+#import "QIMDatasourceItemManager.h"
 #import "NSBundle+QIMLibrary.h"
 
 @interface QIMOrganizationalVC () <UITableViewDelegate, UITableViewDataSource>
@@ -21,11 +21,11 @@
 @implementation QIMOrganizationalVC
 
 - (void)loadRosterList {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if ([[[QIMContactDatasourceManager getInstance] QtalkDataSourceItem] count] == 0) {
-            [[QIMContactDatasourceManager getInstance] createUnMeregeDataSource];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_TARGET_QUEUE_DEFAULT, 0), ^{
+        if ([[[[QIMDatasourceItemManager sharedInstance] getTotalItems] allKeys] count] <= 0) {
+            [[QIMDatasourceItemManager sharedInstance] createDataSource];
             dispatch_async(dispatch_get_main_queue(), ^{
-                [_tableView reloadData];
+                [self.tableView reloadData];
             });
         }
     });
@@ -84,23 +84,29 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    NSInteger count2 = [[[QIMContactDatasourceManager getInstance] QtalkDataSourceItem] count];
-    return count2;
+    NSInteger count = [[[QIMDatasourceItemManager sharedInstance] getQIMMergedRootBranch] count];
+    return count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    QIMDatasourceItem * item2 = [[[QIMContactDatasourceManager getInstance] QtalkDataSourceItem]  objectAtIndex:indexPath.row];
-    CGFloat height  = item2.isParentNode ? 38 : 60;
+    NSString *key = [[[QIMDatasourceItemManager sharedInstance] getQIMMergedRootBranch] objectAtIndex:indexPath.row];
+    QIMDatasourceItem *item = [[QIMDatasourceItemManager sharedInstance] getTotalDataSourceItemWithId:key];
+    if (!item) {
+        item = [[QIMDatasourceItemManager sharedInstance] getChildDataSourceItemWithId:key];
+    }
+    CGFloat height = (item.childNodesDict.count > 0) ? 38 : 60;
     return height;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    
-    QIMDatasourceItem * item = [[[QIMContactDatasourceManager getInstance] QtalkDataSourceItem] objectAtIndex:indexPath.row];
-    
-    if (item.isParentNode ) {
+    NSString *key = [[[QIMDatasourceItemManager sharedInstance] getQIMMergedRootBranch] objectAtIndex:indexPath.row];
+    QIMDatasourceItem *item = [[[QIMDatasourceItemManager sharedInstance] getTotalItems] objectForKey:key];
+    if (!item) {
+        item = [[QIMDatasourceItemManager sharedInstance] getChildDataSourceItemWithId:key];
+    }
+    if (item.childNodesDict.count > 0) {
         
         NSString *cellIdentifier1 = [NSString stringWithFormat:@"CONTACT_BUDDY_TITLE_%ld", (long)[item nLevel]];
         QIMBuddyTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier1];
@@ -108,14 +114,13 @@
             cell = [[QIMBuddyTitleCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier1];
             [cell initSubControls];
         }
-        NSString * userName  =  item.nodeName;
-        [cell setUserName:userName];
+        NSString * userName = item.nodeName;
+        [cell setUserName:[[userName componentsSeparatedByString:@"/"] lastObject]];
         [cell setExpanded:item.isExpand];
-        [cell setNLevel:(int32_t)item.nLevel];
+        [cell setNLevel:[userName componentsSeparatedByString:@"/"].count];
         [cell refresh];
         return cell;
-    }
-    else {
+    } else {
         static NSString *cellIdentifier2 = @"CONTACT_BUDDY";
         QIMBuddyItemCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier2];
         if (cell == nil) {
@@ -125,7 +130,7 @@
         NSString *jid      =   item.jid;
         NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
         [cell initSubControls];
-        [cell setNLevel:item.nLevel];
+        [cell setNLevel:[userName componentsSeparatedByString:@"/"].count];
         [cell setUserName:remarkName?remarkName:userName];
         [cell setJid:jid];
         [cell refrash];
@@ -136,31 +141,36 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if ([[[QIMContactDatasourceManager getInstance] QtalkDataSourceItem] count] > 0) {
-        QIMDatasourceItem *qtalkItem = [[[QIMContactDatasourceManager getInstance] QtalkDataSourceItem] objectAtIndex:indexPath.row];
-        if ([qtalkItem isParentNode]) {
-            if ([qtalkItem isExpand]) {
-                [[QIMContactDatasourceManager getInstance] collapseBranchAtIndex:indexPath.row];
-                id cell = [tableView cellForRowAtIndexPath:indexPath];
-                if ([cell isKindOfClass:[QIMBuddyTitleCell class]]) {
-                    [cell setExpanded:NO];
-                    [_tableView reloadData];
-                }
-            }
-            else {
-                [[QIMContactDatasourceManager getInstance] expandBranchAtIndex:indexPath.row];
-                id cell = [tableView cellForRowAtIndexPath:indexPath];
-                if ([cell isKindOfClass:[QIMBuddyTitleCell class]]) {
-                    [cell setExpanded:YES];
-                    [_tableView reloadData];
-                }
+    NSString *key = [[[QIMDatasourceItemManager sharedInstance] getQIMMergedRootBranch] objectAtIndex:indexPath.row];
+    
+    QIMDatasourceItem *item = [[[QIMDatasourceItemManager sharedInstance] getTotalItems] objectForKey:key];
+    if (!item) {
+        item = [[QIMDatasourceItemManager sharedInstance] getChildDataSourceItemWithId:key];
+    }
+    if (item.childNodesDict.count > 0) {
+        if ([item isExpand]) {
+            //合起
+            [[QIMDatasourceItemManager sharedInstance] collapseBranchAtIndex:indexPath.row];
+            id cell = [tableView cellForRowAtIndexPath:indexPath];
+            if ([cell isKindOfClass:[QIMBuddyTitleCell class]]) {
+                [cell setExpanded:NO];
+                [_tableView reloadData];
             }
         } else {
-            NSString *jid = qtalkItem.jid;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [QIMFastEntrance openUserCardVCByUserId:jid];
-            });
+            //展开
+            [[QIMDatasourceItemManager sharedInstance] expandBranchAtIndex:indexPath.row];
+            id cell = [tableView cellForRowAtIndexPath:indexPath];
+            if ([cell isKindOfClass:[QIMBuddyTitleCell class]]) {
+                [cell setExpanded:YES];
+                [_tableView reloadData];
+            }
         }
+    } else {
+        //普通用户或者无子结点
+        NSString *xmppId = item.jid;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [QIMFastEntrance openUserCardVCByUserId:xmppId];
+        });
     }
 }
 

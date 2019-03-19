@@ -334,11 +334,11 @@ static CGPoint tableOffsetPoint;
     
     if (self.hotCommentModels.count > 0) {
         if (section == 0) {
-            [titleLabel setText:@"热门评论"];
+            [titleLabel setText:@"热评"];
         } else {
             if (self.commentNum > 0 && self.commentModels.count) {
                 NSString *commentNumStr = [NSString stringWithFormat:@"（%ld）", self.commentNum];
-                NSString *titleText = [NSString stringWithFormat:@"全部评论%@", commentNumStr];
+                NSString *titleText = [NSString stringWithFormat:@"评论"];
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
                 [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:15]}
                                         range:[titleText rangeOfString:commentNumStr]];
@@ -350,7 +350,7 @@ static CGPoint tableOffsetPoint;
     } else {
         if (self.commentNum > 0 && self.commentModels.count) {
             NSString *commentNumStr = [NSString stringWithFormat:@"（%ld）", self.commentNum];
-            NSString *titleText = [NSString stringWithFormat:@"全部评论%@", commentNumStr];
+            NSString *titleText = [NSString stringWithFormat:@"评论"];
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
             [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:15]}
                                     range:[titleText rangeOfString:commentNumStr]];
