@@ -313,21 +313,23 @@
 }
 
 - (void)reloadLocalWorkFeed:(NSNotification *)notify {
-    NSArray *newPosts = notify.object;
-    if (newPosts.count > 0) {
-        [self.workMomentList removeAllObjects];
-        for (NSDictionary *momentDic in newPosts) {
-            QIMWorkMomentModel *model = [self getMomentModelWithDic:momentDic];
-            [self.workMomentList addObject:model];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *newPosts = notify.object;
+        if (newPosts.count > 0) {
+            [self.workMomentList removeAllObjects];
+            for (NSDictionary *momentDic in newPosts) {
+                QIMWorkMomentModel *model = [self getMomentModelWithDic:momentDic];
+                [self.workMomentList addObject:model];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.mainTableView reloadData];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+                [UIView animateWithDuration:0.2 animations:^{
+                    [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+                } completion:nil];
+            });
         }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.mainTableView reloadData];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
-            [UIView animateWithDuration:0.2 animations:^{
-                [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-            } completion:nil];
-        });
-    }
+    });
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

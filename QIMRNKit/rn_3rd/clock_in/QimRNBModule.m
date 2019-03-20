@@ -672,13 +672,7 @@ RCT_EXPORT_METHOD(sendEmail:(NSDictionary *)param) {
 RCT_EXPORT_METHOD(commentUser:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *userId = [param objectForKey:@"UserId"];
-        NSDictionary *userInfo = nil;
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-            [[QIMKit sharedInstance] getQChatUserInfoForUser:userId];
-            userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-        } else {
-            userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-        }
+        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
         NSData *userInfoData = [userInfo objectForKey:@"UserInfo"];
         NSDictionary *dic = [NSKeyedUnarchiver unarchiveObjectWithData:userInfoData];
         NSString *commentUrl = [dic objectForKey:@"commenturl"];
@@ -907,8 +901,9 @@ RCT_EXPORT_METHOD(getGroupInfo:(NSString *)groupId :(RCTResponseSenderBlock)call
 RCT_EXPORT_METHOD(saveGroupName:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
     NSString *groupId = [param objectForKey:@"GroupId"];
     NSString *groupName = [param objectForKey:@"GroupName"];
-    BOOL isSuccess = [[QIMKit sharedInstance] setMucVcardForGroupId:groupId WithNickName:groupName WithTitle:nil WithDesc:nil WithHeaderSrc:nil];
-    callback(@[@{@"ok" : @(isSuccess)}]);
+    [[QIMKit sharedInstance] setMucVcardForGroupId:groupId WithNickName:groupName WithTitle:nil WithDesc:nil WithHeaderSrc:nil withCallBack:^(BOOL successed) {
+        callback(@[@{@"ok" : @(successed)}]);
+    }];
 }
 
 // 设置群公告
@@ -916,8 +911,9 @@ RCT_EXPORT_METHOD(saveGroupTopic:(NSDictionary *)param :(RCTResponseSenderBlock)
     NSString *groupId = [param objectForKey:@"GroupId"];
     NSString *groupName = [param objectForKey:@"GroupName"];
     NSString *groupTopic = [param objectForKey:@"GroupTopic"];
-    BOOL isSuccess = [[QIMKit sharedInstance] setMucVcardForGroupId:groupId WithNickName:groupName WithTitle:groupTopic WithDesc:nil WithHeaderSrc:nil];
-    callback(@[@{@"ok" : @(isSuccess)}]);
+    [[QIMKit sharedInstance] setMucVcardForGroupId:groupId WithNickName:groupName WithTitle:groupTopic WithDesc:nil WithHeaderSrc:nil withCallBack:^(BOOL successed) {
+        callback(@[@{@"ok" : @(successed)}]);
+    }];
 }
 
 // 添加群成员
@@ -1075,8 +1071,9 @@ RCT_EXPORT_METHOD(savePersonalSignature:(NSDictionary *)params :(RCTResponseSend
     NSString *userId = [params objectForKey:@"UserId"];
     NSString *signature = [params objectForKey:@"PersonalSignature"];
     if ([userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-        [[QIMKit sharedInstance] updateUserSignatureForUser:userId signature:signature];
-        callback(@[@{@"ok":@(YES)}]);
+        [[QIMKit sharedInstance] updateUserSignature:signature withCallBack:^(BOOL successed) {
+            callback(@[@{@"ok":@(successed)}]);
+        }];
     } else {
         callback(@[@{@"ok":@(NO),@"message":@"无权访问"}]);
     }
@@ -1209,13 +1206,7 @@ RCT_EXPORT_METHOD(getContactsNick:(NSString *)xmppId :(RCTResponseSenderBlock)ca
     if (xmppId.length <= 0 || !xmppId) {
         return;
     }
-    NSDictionary *userInfo = nil;
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        [[QIMKit sharedInstance] getQChatUserInfoForUser:xmppId];
-        userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
-    } else {
-        userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
-    }
+    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
     NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:xmppId];
     NSString *userNickName = [userInfo objectForKey:@"Name"];
     NSString *name = remarkName.length ? remarkName : (userNickName.length ? userNickName : [xmppId componentsSeparatedByString:@"@"].firstObject);
@@ -1488,7 +1479,7 @@ RCT_EXPORT_METHOD(openSearchHistoryVc) {
     });
 }
 
-//清除缓存
+//清空会话列表
 RCT_EXPORT_METHOD(clearSessionList) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [[QIMKit sharedInstance] clearAllNoRead];
@@ -1588,8 +1579,6 @@ RCT_EXPORT_METHOD(openSwitchAccount) {
 - (void)reloginAccount {
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        //Comment by lilulucas.li
-        //        [[QIMKit sharedInstance] clearQC_IMManager];
         [QIMFastEntrance reloginAccount];
     });
 }
@@ -1652,6 +1641,7 @@ RCT_EXPORT_METHOD(getAppCache:(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(clearAppCache) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [[QIMDataController getInstance] removeAllImage];
+        [[QIMDataController getInstance] clearLogFiles];
     });
     [__innerCacheBridge.eventDispatcher sendAppEventWithName:@"QIM_AppCache_Will_Update" body:@{@"name": @"aaa"}];
 }

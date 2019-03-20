@@ -767,23 +767,13 @@
                 descLabel.text = [userInfo objectForKey:@"DescInfo"];
                 
             } else {
-                /*
                 NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.chatId];
-                
-                descLabel.text = [userInfo objectForKey:@"DescInfo"];
-                */
-                [[QIMKit sharedInstance] userProfilewithUserId:self.chatId
-                                                    needupdate:NO
-                                                     withBlock:^(NSDictionary *userinfo) {
-                                                         NSString *desc = [userinfo objectForKey:@"M"];
-                                                         if (desc && [desc length] > 0) {
-                                                             [descLabel setText:desc];
-                                                         } else {
-                                                             NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.chatId];
-                                                             
-                                                             descLabel.text = [userInfo objectForKey:@"DescInfo"];
-                                                         }
-                                                     }];
+                NSString *mood = [userInfo objectForKey:@"Mood"];
+                if (mood.length > 0) {
+                    [descLabel setText:mood];
+                } else {
+                    descLabel.text = [userInfo objectForKey:@"DescInfo"];
+                }
             }
         }
         [titleView addSubview:descLabel];

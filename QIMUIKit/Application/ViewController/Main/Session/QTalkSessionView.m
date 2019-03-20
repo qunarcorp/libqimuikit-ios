@@ -829,8 +829,6 @@
     NSString *name = [infoDic objectForKey:@"Name"];
     ChatType chatType = [[infoDic objectForKey:@"ChatType"] intValue];
     NSInteger notReadCount = [[infoDic objectForKey:@"UnreadCount"] integerValue];
-    //Mark by DB
-//    NSInteger notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid];
     if (jid) {
         
         switch (chatType) {

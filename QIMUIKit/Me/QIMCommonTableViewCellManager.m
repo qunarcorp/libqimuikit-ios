@@ -243,6 +243,7 @@
             break;
         case QIMCommonTableViewCellDataTypeClearCache: {
             [[QIMDataController getInstance] removeAllImage];
+            [[QIMDataController getInstance] clearLogFiles];
         }
             break;
         case QIMCommonTableViewCellDataTypeMconfig: {

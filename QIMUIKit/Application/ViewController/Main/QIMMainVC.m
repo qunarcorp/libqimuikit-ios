@@ -333,8 +333,11 @@
             count = [[QIMKit sharedInstance] getLeaveMsgNotReaderCount];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([QIMKit getQIMProjectType] != QIMProjectTypeQTalk) {
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 // 移动小红点 到 第三页
+                if (count == NO) {
+                    count = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+                }
                 [_tabBar setBadgeNumber:count ByItemIndex:3 showNumber:NO];
             } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant) {
                 [_tabBar setBadgeNumber:count ByItemIndex:2 showNumber:NO];

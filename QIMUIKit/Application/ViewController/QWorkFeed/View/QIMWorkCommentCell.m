@@ -98,7 +98,7 @@
     _organLab.layer.cornerRadius = 2.0f;
     _organLab.layer.masksToBounds = YES;
     _organLab.textAlignment = NSTextAlignmentCenter;
-//    [self.contentView addSubview:_organLab];
+    [self.contentView addSubview:_organLab];
     
     //点赞按钮
     _likeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -227,7 +227,7 @@
 
     NSString *likeString  = [NSString stringWithFormat:@"%@%@", replayStr, commentModel.content];
     if (commentModel.isDelete == YES) {
-        likeString = @"该评论已被删除";
+        likeString = [NSString stringWithFormat:@"[obj type=\"deleteComment\" value=\"%@\"]",@"该评论已被删除"];
     } else {
         
     }
@@ -238,14 +238,18 @@
     
     QIMTextContainer *textContainer = nil;
     if (self.isChildComment) {
-        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:self.likeBtn.left - self.nameLab.left withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:6];
+        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:self.likeBtn.left - self.nameLab.left withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
     } else {
-        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:self.likeBtn.left - self.nameLab.left withFontSize:14 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:6];
+        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:self.likeBtn.left - self.nameLab.left withFontSize:14 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
     }
     
     CGFloat textH = textContainer.textHeight;
     self.contentLabel.textContainer = textContainer;
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 16) Width:(self.likeBtn.left - self.nameLab.left)];
+    if (self.isChildComment) {
+        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 5) Width:(self.likeBtn.left - self.nameLab.left)];
+    } else {
+        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 16) Width:(self.likeBtn.left - self.nameLab.left)];
+    }
     [self updateChildCommentListView];
 }
 
@@ -265,7 +269,7 @@
         _childCommentListView.height = 0;
         _childCommentListView.parentCommentIndexPath = self.commentIndexPath;
         _childCommentListView.hidden = YES;
-        _commentModel.rowHeight = _contentLabel.bottom + 20;
+        _commentModel.rowHeight = _contentLabel.bottom + 10;
     }
 }
 

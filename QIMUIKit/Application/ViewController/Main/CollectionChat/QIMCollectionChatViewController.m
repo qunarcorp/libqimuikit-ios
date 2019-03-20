@@ -210,10 +210,6 @@
                 
             case ChatType_GroupChat: {
                 [[QIMKit sharedInstance] clearNotReadCollectionMsgByBindId:bindId WithUserId:jid];
-//                QIMGroupChatVC *chatGroupVC = (QIMGroupChatVC *)[[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:jid];
-//                [chatGroupVC setBindId:bindId];
-
-                
                 QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
                 [chatGroupVC setBindId:bindId];
                 [chatGroupVC setChatId:jid];
@@ -231,8 +227,6 @@
                 break;
             case ChatType_SingleChat: {
                 [[QIMKit sharedInstance] clearNotReadCollectionMsgByBindId:bindId WithUserId:jid];
-//                QIMChatVC *chatSingleVC = [[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
-//                [chatSingleVC setBindId:bindId];
                 
                 QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
                 [chatSingleVC setBindId:bindId];

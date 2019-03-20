@@ -49,6 +49,12 @@ CGFloat maxFullContentHeight = 0;
     return self;
 }
 
+- (void)setMomentModel:(QIMWorkMomentModel *)momentModel {
+    _momentModel = momentModel;
+    [self removeAllSubviews];
+    [self setupUI];
+}
+
 - (void)setupUI {
     // 头像视图
     _headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 43, 43)];
@@ -152,7 +158,6 @@ CGFloat maxFullContentHeight = 0;
     _organLab.centerY = self.headImageView.centerY;
     _rIdLabe.centerY = self.headImageView.centerY;
     CGFloat bottom = self.headImageView.bottom;
-//<<<<<<< HEAD
     
     NSString *texg = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.moment.content.content];
     QIMMessageModel *msg = [[QIMMessageModel alloc] init];
@@ -172,22 +177,6 @@ CGFloat maxFullContentHeight = 0;
         self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 20, textContainer.textHeight);
         _contentLabel.textContainer = textContainer;
     }
- /*
-=======
-    _contentLabel.text = self.moment.content.content;
-    [_contentLabel sizeToFit];
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        CGFloat textH = [_contentLabel getHeightWithWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20];
-        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:([[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20)];
-        self.contentLabel.height = textH;
-    } else {
-        CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
-        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
-        self.contentLabel.height = textH;
-    }
->>>>>>> startalk2.0
-    */
-
     bottom = _contentLabel.bottom + 8;
 
     if (self.moment.content.imgList.count > 0) {
