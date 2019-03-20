@@ -81,6 +81,7 @@
             }
                 break;
             case ChatType_CollectionChat: {
+                headerUrl = [[QIMKit sharedInstance] getUserHeaderSrcByUserId:realJid];
                 placeholderImage = [UIImage imageNamed:@"relation"];
             }
                 break;

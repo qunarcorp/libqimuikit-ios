@@ -55,6 +55,10 @@
         if (!momentDic.count) {
             [[QIMKit sharedInstance] getRemoteMomentDetailWithMomentUUId:self.momentId withCallback:^(NSDictionary *momentDic) {
                 _momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
+                self.momentView = nil;
+                self.momentView.momentModel = _momentModel;
+                self.commentListView.commentHeaderView = self.momentView;
+                [self.commentListView reloadCommentsData];
             }];
         } else {
             
@@ -66,22 +70,6 @@
         _momentModel.isFullText = YES;
     }
     return _momentModel;
-}
-
-- (QIMWorkMomentCell *)momentCell {
-    if (!_momentCell) {
-        _momentCell = [[QIMWorkMomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"QIMWorkMomentCell"];
-        _momentCell.selectionStyle = UITableViewCellSelectionStyleNone;
-        _momentCell.backgroundColor = [UIColor whiteColor];
-        _momentCell.delegate = self;
-        _momentCell.notShowControl = YES;
-        _momentCell.alwaysFullText = YES;
-        _momentCell.moment = self.momentModel;
-        _momentCell.likeActionHidden = YES;
-        _momentCell.commentActionHidden = YES;
-        _momentCell.height = self.momentModel.rowHeight;
-    }
-    return _momentCell;
 }
 
 - (QIMWorkMomentView *)momentView {
@@ -453,6 +441,7 @@
 
 - (void)loadNewComments {
     //下拉刷新
+    [[QIMKit sharedInstance] setHotCommentUUIds:@[] ForMomentId:self.momentId];
     __weak typeof(self) weakSelf = self;
     [[QIMKit sharedInstance] getRemoteMomentDetailWithMomentUUId:self.momentId withCallback:^(NSDictionary *momentDic) {
         if (momentDic.count > 0) {
@@ -461,7 +450,8 @@
             NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
             QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
             weakSelf.momentModel.content = conModel;
-            weakSelf.momentCell.moment = self.momentModel;
+            weakSelf.momentView.momentModel = self.momentModel;
+//            weakSelf.momentCell.moment = self.momentModel;
             weakSelf.commentListView.commentNum = self.momentModel.commentsNum;
             [weakSelf.commentListView reloadCommentsData];
             [weakSelf.commentListView endRefreshingHeader];

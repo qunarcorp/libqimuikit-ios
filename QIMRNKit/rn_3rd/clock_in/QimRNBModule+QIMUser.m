@@ -11,11 +11,6 @@
 @implementation QimRNBModule (QIMUser)
 
 + (NSDictionary *)qimrn_getUserInfoByUserId:(NSString *)userId {
-
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        [[QIMKit sharedInstance] getQChatUserInfoForUser:userId];
-    } else {
-    }
     NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
     NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
     NSString *headerSrc = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:userId];
@@ -32,11 +27,8 @@
     if (!userId || userId.length <= 0) {
         return @"这家伙很懒,什么都没留下";
     }
-    NSDictionary * usersInfo = [[QIMKit sharedInstance] getLocalProfileForUserId:userId];
-    if (!usersInfo) {
-        usersInfo = [[[QIMKit sharedInstance] getRemoteUserProfileForUserIds:@[userId]] objectForKey:userId];
-    }
-    NSString *mood = [usersInfo objectForKey:@"M"];
+    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
+    NSString *mood = [userInfo objectForKey:@"Mood"];
     return mood?mood:@"这家伙很懒,什么都没留下";
 }
 

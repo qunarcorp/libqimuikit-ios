@@ -188,8 +188,13 @@ const float colormatrix_yese[] = {
 
 - (void)initNaviBar
 {
-    _naviBar = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight([UIScreen mainScreen].bounds) - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT] + 5, CGRectGetWidth([UIScreen mainScreen].bounds), 44)];
-    _naviBar.backgroundColor = [UIColor qim_colorWithHex:0x414141 alpha:1.0];
+    if (self.fromAlum) {
+        _naviBar = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight([UIScreen mainScreen].bounds) - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 44, CGRectGetWidth([UIScreen mainScreen].bounds), 44)];
+    } else {
+        _naviBar = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 44, CGRectGetWidth([UIScreen mainScreen].bounds), 44)];
+    }
+//    _naviBar.backgroundColor = [UIColor qim_colorWithHex:0x414141 alpha:1.0];
+    _naviBar.backgroundColor = [UIColor redColor];
     [self.view addSubview:_naviBar];
     
     UIButton * cancelBtn = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -266,7 +271,8 @@ const float colormatrix_yese[] = {
     NSInteger i = 0;
     for (NSString * imageStr in _dataSource) {
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(80 * i, 0, 80, 80)];
-        imageView.image = [self getDuangImageWithIndexTag:i originalImage:[UIImage imageNamed:imageStr]];
+        imageView.image = nil;
+//        [self getDuangImageWithIndexTag:i originalImage:[UIImage imageNamed:imageStr]];
         imageView.tag = kImageTagFrom + i;
         imageView.userInteractionEnabled = YES;
         [_duangView addSubview:imageView];

@@ -72,9 +72,7 @@
     //        QIMGroupMemberWillUpdate
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateGroupMember:) name:@"QIMGroupMemberWillUpdate" object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMyPersonalSignature:) name:kUpdateMyPersonalSignature object:nil];
-
-    //开始上传头像
+    //update个性签名
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMyPersonalSignature:) name:kUpdateMyPersonalSignature object:nil];
 
     //上传头像结果 成功 ：{"ok":YES, "headerUrl":xxx} / 失败 : {"ok":NO}
@@ -218,7 +216,8 @@
 
 - (void)updateMyPersonalSignature:(NSNotification *)notify {
     
-    [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updatePersonalSignature" body:@{@"UserId":[[QIMKit sharedInstance] getLastJid], @"PersonalSignature":[QimRNBModule qimrn_getUserMoodByUserId:[[QIMKit sharedInstance] getLastJid]]}];
+    NSString *personalSignature = notify.object;
+    [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updatePersonalSignature" body:@{@"UserId":[[QIMKit sharedInstance] getLastJid], @"PersonalSignature":(personalSignature.length > 0) ? personalSignature : @""}];
 }
 
 - (void)updateMyPhotoSuccess:(NSNotification *)notify {

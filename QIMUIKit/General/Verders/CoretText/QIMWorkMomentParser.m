@@ -130,6 +130,14 @@
             
             [storages addObject:[self parseImageRunFromDictinary:@{@"httpUrl":httpUrl?httpUrl:@"",@"width":@(width),@"height":@(height),@"range":NSStringFromRange(match.range)}]];
             
+        } else if ([type hasPrefix:@"deleteComment"]) {
+            //删评
+            NSString *deleteStr = value;
+            if (deleteStr.length) {
+                UIColor *deleteColor = [UIColor redColor];
+                NSInteger deleteFontSize = 15;
+                [storages addObject:[self parseTextStorageFromDictinary:@{@"content":deleteStr?deleteStr:@"",@"fontSize":@(deleteFontSize),@"color":deleteColor}]];
+            }
         } else if ([type hasPrefix:@"reply"]) {
             //回复
             NSString *replyStr = value;
@@ -137,6 +145,22 @@
                 UIColor *replyColor = [UIColor qim_colorWithHex:0x999999];
                 NSInteger replyFontSize = 14;
                 [storages addObject:[self parseTextStorageFromDictinary:@{@"content":replyStr?replyStr:@"",@"fontSize":@(replyFontSize),@"color":replyColor}]];
+            }
+        } else if ([type hasPrefix:@"topMoment"]) {
+            //置顶
+            NSString *topMoment = value;
+            if (topMoment.length) {
+                UIColor *topColor = [UIColor qim_colorWithHex:0x389CFE];
+                NSInteger topFontSize = 15;
+                [storages addObject:[self parseTextStorageFromDictinary:@{@"content":topMoment?topMoment:@"",@"fontSize":@(topFontSize),@"color":topColor}]];
+            }
+        } else if ([type hasPrefix:@"hotMoment"]) {
+          //置热
+            NSString *hotMoment = value;
+            if (hotMoment.length) {
+                UIColor *hotColor = [UIColor qim_colorWithHex:0xFF6916];
+                NSInteger hotFontSize = 15;
+                [storages addObject:[self parseTextStorageFromDictinary:@{@"content":hotMoment?hotMoment:@"",@"fontSize":@(hotFontSize),@"color":hotColor}]];
             }
         } else if ([type hasPrefix:@"url"]) {
             //链接link

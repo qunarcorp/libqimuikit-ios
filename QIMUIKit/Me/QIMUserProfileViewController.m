@@ -193,21 +193,15 @@
 #pragma mark - life ctyle
 
 - (void)loadUserInfo {
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        [[QIMKit sharedInstance] getQChatUserInfoForUser:self.userId];
-        self.userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.userId];
-    } else {
-        self.userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.userId];
-    }
+    self.userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.userId];
 }
 
 - (void)getUserVcardInfo {
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSDictionary * usersInfo = [[QIMKit sharedInstance] getRemoteUserProfileForUserIds:@[weakSelf.userId]];
-        weakSelf.userVCardInfo = usersInfo[weakSelf.userId];
+        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:weakSelf.userId];
         dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.model.personalSignature = [weakSelf.userVCardInfo objectForKey:@"M"];
+            weakSelf.model.personalSignature = [userInfo objectForKey:@"Mood"];
             [weakSelf.tableView reloadData];
         });
     });

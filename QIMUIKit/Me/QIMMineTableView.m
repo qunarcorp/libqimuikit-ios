@@ -112,7 +112,7 @@
 
 - (void)loadUserInfo {
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        self.userInfo = [NSMutableDictionary dictionaryWithDictionary:[[QIMKit sharedInstance] getQChatUserInfoForUser:[QIMKit getLastUserName]]];
+        self.userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:[[QIMKit sharedInstance] getLastJid]];
         _userId = [[QIMKit sharedInstance] getLastJid];
         
         NSString *type = [_userInfo objectForKey:@"type"];
@@ -157,6 +157,7 @@
 - (void)getUserVcardInfo {
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        /* Mark by DB
         if (weakSelf.userId) {
             NSDictionary * usersInfo = [[QIMKit sharedInstance] getRemoteUserProfileForUserIds:@[weakSelf.userId]];
             if (usersInfo.count > 0) {
@@ -167,6 +168,7 @@
                 });
             }
         }
+        */
     });
 }
 

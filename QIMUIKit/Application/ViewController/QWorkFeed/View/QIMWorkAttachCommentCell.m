@@ -21,7 +21,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.backgroundView = nil;
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.selectedBackgroundView = nil;
         [self setupUI];
@@ -32,12 +32,12 @@
 - (void)setupUI {
     
     // 名字视图
-    _nameLab = [[UILabel alloc] initWithFrame:CGRectMake(0, 2, 50, 20)];
+    _nameLab = [[UILabel alloc] initWithFrame:CGRectMake(12, 5, 50, 20)];
     _nameLab.font = [UIFont boldSystemFontOfSize:14.0];
     _nameLab.textColor = [UIColor qim_colorWithHex:0x00CABE];
     _nameLab.backgroundColor = [UIColor clearColor];
     _nameLab.userInteractionEnabled = YES;
-    [self.contentView addSubview:_nameLab];
+//    [self.contentView addSubview:_nameLab];
     UITapGestureRecognizer *tapGesture2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickHead:)];
     [_nameLab addGestureRecognizer:tapGesture2];
     
@@ -49,7 +49,6 @@
     _likeBtn.layer.masksToBounds = YES;
     [_likeBtn.titleLabel setFont:[UIFont systemFontOfSize:11]];
     [_likeBtn setImageEdgeInsets:UIEdgeInsetsMake(0.0, -10, 0.0, 0.0)];
-    [_likeBtn addTarget:self action:@selector(didLikeComment:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_likeBtn];
     
     // 正文视图
@@ -58,6 +57,7 @@
     _contentLabel.linesSpacing = 20.0f;
     _contentLabel.delegate = self;
     _contentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
+    [_contentLabel setBackgroundColor:[UIColor qim_colorWithHex:0xF3F3F5]];
     [self.contentView addSubview:_contentLabel];
 }
 
@@ -66,19 +66,23 @@
         return;
     }
     _commentModel = commentModel;;
+    NSString *nameText = @"";
     BOOL isAnonymousComment = commentModel.isAnonymous;
     if (isAnonymousComment == NO) {
         
         //实名评论
         NSString *commentFromUserId = [NSString stringWithFormat:@"%@@%@", commentModel.fromUser, commentModel.fromHost];
-        _nameLab.text = [NSString stringWithFormat:@"%@：", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:commentFromUserId]];
-        [_nameLab sizeToFit];
+        nameText = [NSString stringWithFormat:@"%@：", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:commentFromUserId]];
+//        _nameLab.text = [NSString stringWithFormat:@"%@：", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:commentFromUserId]];
+//        [_nameLab sizeToFit];
     } else {
         //匿名评论
         NSString *anonymousName = commentModel.anonymousName;
-        self.nameLab.text = [NSString stringWithFormat:@"%@：", anonymousName];
-        self.nameLab.textColor = [UIColor qim_colorWithHex:0x999999];
+        nameText = [NSString stringWithFormat:@"%@：", anonymousName];
+//        self.nameLab.text = [NSString stringWithFormat:@"%@：", anonymousName];
+//        self.nameLab.textColor = [UIColor qim_colorWithHex:0x999999];
     }
+//    [self.nameLab sizeToFit];
     CGFloat rowHeight = 0;
     
     BOOL isChildComment = (commentModel.parentCommentUUID.length > 0) ? YES : NO;
@@ -88,7 +92,7 @@
     if (isChildComment) {
         if (toisAnonymous) {
             NSString *toAnonymousName = commentModel.toAnonymousName;
-            replayNameStr = [NSString stringWithFormat:@"回复%@：", toAnonymousName];
+            replayNameStr = [NSString stringWithFormat:@"%@回复%@", nameText, toAnonymousName];
             replayStr = [NSString stringWithFormat:@"[obj type=\"reply\" value=\"%@\"]",replayNameStr];
         } else {
             NSString *toUser = commentModel.toUser;
@@ -98,14 +102,15 @@
             }
             NSString *toUserId = [NSString stringWithFormat:@"%@@%@", toUser, toUserHost];
             NSString *toUserName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:toUserId];
-            replayNameStr = [NSString stringWithFormat:@"回复%@：", toUserName];
+            replayNameStr = [NSString stringWithFormat:@"%@回复%@", nameText, toUserName];
             replayStr = [NSString stringWithFormat:@"[obj type=\"reply\" value=\"%@\"]",replayNameStr];
         }
     } else {
-        replayNameStr = [NSString stringWithFormat:@""];
+        replayNameStr = [NSString stringWithFormat:@"%@", nameText];
+        replayStr = [NSString stringWithFormat:@"[obj type=\"reply\" value=\"%@\"]",replayNameStr];
     }
     
-    NSString *likeString  = [NSString stringWithFormat:@"%@%@", replayStr, commentModel.content];
+    NSString *likeString  = [NSString stringWithFormat:@"%@ %@", replayStr, commentModel.content];
     _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70 - self.leftMargin, 0, 60, 15);
     NSInteger likeNum = commentModel.likeNum;
     [_likeBtn setTitle:[NSString stringWithFormat:@"%ld 赞", likeNum] forState:UIControlStateNormal];
@@ -115,36 +120,11 @@
     msg.message = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:likeString];
     msg.messageId = commentModel.commentUUID;
     
-    QIMTextContainer *mainTextContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:self.likeBtn.left - self.nameLab.left withFontSize:14 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:6];
+    QIMTextContainer *mainTextContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:self.likeBtn.left - 12 withFontSize:14 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
     CGFloat textH = mainTextContainer.textHeight;
     self.contentLabel.textContainer = mainTextContainer;
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 6) Width:(self.likeBtn.left - self.nameLab.left)];
-
-    _commentModel.rowHeight = _contentLabel.bottom + 12;
-}
-
-- (void)didLikeComment:(UIButton *)sender {
-    BOOL likeFlag = !sender.selected;
-    [[QIMKit sharedInstance] likeRemoteCommentWithCommentId:self.commentModel.commentUUID withSuperParentUUID:self.commentModel.superParentUUID withMomentId:self.commentModel.postUUID withLikeFlag:likeFlag withCallBack:^(NSDictionary *responseDic) {
-        if (responseDic.count > 0) {
-            NSLog(@"点赞成功");
-            BOOL islike = [[responseDic objectForKey:@"isLike"] boolValue];
-            NSInteger likeNum = [[responseDic objectForKey:@"likeNum"] integerValue];
-            if (islike) {
-                sender.selected = YES;
-                [sender setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateSelected];
-            } else {
-                sender.selected = NO;
-                if (likeNum > 0) {
-                    [sender setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
-                } else {
-                    [sender setTitle:@"顶" forState:UIControlStateNormal];
-                }
-            }
-        } else {
-            NSLog(@"点赞失败");
-        }
-    }];
+    [self.contentLabel setFrameWithOrign:CGPointMake(12, 5) Width:(self.likeBtn.left - 12)];
+    _commentModel.rowHeight = _contentLabel.bottom + 5;
 }
 
 // 点击头像

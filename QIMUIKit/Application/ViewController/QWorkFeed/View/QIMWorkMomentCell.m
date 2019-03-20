@@ -52,50 +52,58 @@ CGFloat maxLimitHeight = 0;
 }
 
 - (void)updateMomentDetail:(NSNotification *)notify {
-    NSDictionary *momentDic = notify.object;
-    QIMWorkMomentModel *momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
-    NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
-    QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
-    momentModel.content = conModel;
-    momentModel.isFullText = self.moment.isFullText;
-    if ([momentModel.momentId isEqualToString:self.moment.momentId]) {
-        momentModel.attachCommentList = self.moment.attachCommentList;
-        [self setMoment:momentModel];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *momentDic = notify.object;
+        QIMWorkMomentModel *momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
+        NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
+        QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
+        momentModel.content = conModel;
+        momentModel.isFullText = self.moment.isFullText;
+        if ([momentModel.momentId isEqualToString:self.moment.momentId]) {
+            momentModel.attachCommentList = self.moment.attachCommentList;
+            [self setMoment:momentModel];
+        }
+    });
 }
 
 - (void)updateMomentLike:(NSNotification *)notify {
-    NSDictionary *data = notify.object;
-    NSString *postId = [data objectForKey:@"postId"];
-    if ([postId isEqualToString:self.moment.momentId]) {
-        self.moment.likeNum = [[data objectForKey:@"likeNum"] integerValue];
-        self.moment.isLike = [[data objectForKey:@"isLike"] boolValue];
-        [self updateLikeUI];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *data = notify.object;
+        NSString *postId = [data objectForKey:@"postId"];
+        if ([postId isEqualToString:self.moment.momentId]) {
+            self.moment.likeNum = [[data objectForKey:@"likeNum"] integerValue];
+            self.moment.isLike = [[data objectForKey:@"isLike"] boolValue];
+            [self updateLikeUI];
+        }
+    });
 }
 
 - (void)updateMomentUI:(NSNotification *)notify {
-    NSDictionary *data = notify.object;
-    NSString *postId = [data objectForKey:@"postId"];
-    if ([postId isEqualToString:self.moment.momentId]) {
-        self.moment.commentsNum = [[data objectForKey:@"postCommentNum"] integerValue];
-        [self updateCommentUI];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *data = notify.object;
+        NSString *postId = [data objectForKey:@"postId"];
+        if ([postId isEqualToString:self.moment.momentId]) {
+            self.moment.commentsNum = [[data objectForKey:@"postCommentNum"] integerValue];
+            [self updateCommentUI];
+        }
+    });
 }
 
 - (void)updateMomentAttachCommentList:(NSNotification *)notify {
-    NSDictionary *data = notify.object;
-    NSString *postId = [data objectForKey:@"postId"];
-    if ([postId isEqualToString:self.moment.momentId]) {
-        NSArray *attachCommentList = [data objectForKey:@"attachCommentList"];
-        NSMutableArray *attachCommentModelList = [NSMutableArray arrayWithCapacity:3];
-        for (NSDictionary *attachCommentDic in attachCommentList) {
-            QIMWorkCommentModel *commentModel = [QIMWorkCommentModel yy_modelWithDictionary:attachCommentDic];
-            [attachCommentModelList addObject:commentModel];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *data = notify.object;
+        NSString *postId = [data objectForKey:@"postId"];
+        if ([postId isEqualToString:self.moment.momentId]) {
+            NSArray *attachCommentList = [data objectForKey:@"attachCommentList"];
+            NSMutableArray *attachCommentModelList = [NSMutableArray arrayWithCapacity:3];
+            for (NSDictionary *attachCommentDic in attachCommentList) {
+                QIMWorkCommentModel *commentModel = [QIMWorkCommentModel yy_modelWithDictionary:attachCommentDic];
+                [attachCommentModelList addObject:commentModel];
+            }
+            self.moment.attachCommentList = attachCommentModelList;
+            [self updateAttachCommentList];
         }
-        self.moment.attachCommentList = attachCommentModelList;
-        [self updateAttachCommentList];
-    }
+    });
 }
 
 - (void)setUPUI {
@@ -149,7 +157,7 @@ CGFloat maxLimitHeight = 0;
     layout.minimumLineSpacing = 10;
     layout.minimumInteritemSpacing = 10;
     _tagCollectionView = [[QIMWorkMomentTagCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-    [self.contentView addSubview:_tagCollectionView];
+//    [self.contentView addSubview:_tagCollectionView];
     
     _controlBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
@@ -229,7 +237,7 @@ CGFloat maxLimitHeight = 0;
     [self.contentView addSubview:_commentBtn];
     
     _showMoreLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    _showMoreLabel.textColor = [UIColor qim_colorWithHex:0xBFBFBF];
+    _showMoreLabel.textColor = [UIColor qim_colorWithHex:0x00CABE];
     _showMoreLabel.font = [UIFont systemFontOfSize:14];
     
     // 最大高度限制
@@ -285,11 +293,37 @@ CGFloat maxLimitHeight = 0;
     _rIdLabe.centerY = self.headImageView.centerY;
     
     CGFloat bottom = self.headImageView.bottom;
+    /*
     _tagCollectionView.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 80, 24);
     _tagCollectionView.momentTag = self.moment.postType.integerValue;
     _tagCollectionView.height = [_tagCollectionView getWorkMomentTagCollectionViewHeight];
     bottom = _tagCollectionView.bottom;
+    */
 
+    NSMutableString *str = [[NSMutableString alloc] init];
+    NSArray *attay = [self getTrueValueIndexPaths];
+    for (NSInteger i = 0; i < attay.count; i++) {
+        NSNumber *number = [attay objectAtIndex:i];
+        if ([number integerValue] == 1) {
+//            [str setText:@"置顶"];
+//            str = @"置顶";
+            [str appendString:[NSString stringWithFormat:@"[obj type=\"topMoment\" value=\"%@\"]", @"[置顶]"]];
+            [str appendString:@" "];
+//            [label setTextColor:[UIColor qim_colorWithHex:0x00CABE]];
+//            label.layer.borderColor = [UIColor qim_colorWithHex:0x00CABE].CGColor;
+        } else if ([number integerValue] == 2) {
+            [str appendString:[NSString stringWithFormat:@"[obj type=\"hotMoment\" value=\"%@\"]", @"[热帖]"]];
+//            str = [NSString stringWithFormat:@"[obj type=\"topMoment\" value=\"%@\"]", @"[热帖]"];
+            [str appendString:@" "];
+//            [cell removeAllSubviews];
+//            [label setText:@"热帖"];
+//            [label setTextColor:[UIColor qim_colorWithHex:0xF9A539]];
+//            label.layer.borderColor = [UIColor qim_colorWithHex:0xF9A539].CGColor;
+        } else {
+//            [cell removeAllSubviews];
+        }
+    }
+    
     QIMWorkMomentContentType contentType = moment.content.type;
     NSString *content = moment.content.content;
     switch (contentType) {
@@ -313,6 +347,9 @@ CGFloat maxLimitHeight = 0;
     }
     QIMMessageModel *msg = [[QIMMessageModel alloc] init];
     msg.message = content;
+    if (str.length > 0) {
+        msg.message = [NSString stringWithFormat:@"%@%@", str, content];
+    }
     msg.messageId = moment.momentId;
     
     QIMTextContainer *textContainer = nil;
@@ -418,19 +455,13 @@ CGFloat maxLimitHeight = 0;
         _attachCommentListView.momentId = self.moment.momentId;
         _attachCommentListView.hidden = NO;
         _attachCommentListView.attachCommentList = self.moment.attachCommentList;
+        _attachCommentListView.unReadCount = self.moment.commentsNum;
         _attachCommentListView.origin = CGPointMake(self.nameLab.left, self.commentBtn.bottom + 24 + 5);
-        _attachCommentListView.width = SCREEN_WIDTH - self.nameLab.left;
+        _attachCommentListView.width = self.likeBtn.right - self.nameLab.left;
         _attachCommentListView.height = 300;
         _attachCommentListView.height = [_attachCommentListView getWorkAttachCommentListViewHeight];
-        if (self.moment.commentsNum > 5) {
-            _showMoreLabel.frame = CGRectMake(_attachCommentListView.left, _attachCommentListView.bottom + 5, _attachCommentListView.width, 15);
-            [self.contentView addSubview:_showMoreLabel];
-            _showMoreLabel.hidden = NO;
-            [_showMoreLabel setText:[NSString stringWithFormat:@"查看全部%ld条评论", self.moment.commentsNum]];
-            _moment.rowHeight = _showMoreLabel.bottom + 18;
-        } else {
-            _moment.rowHeight = _attachCommentListView.bottom + 10;
-        }
+        _attachCommentListView.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
+        _moment.rowHeight = _attachCommentListView.bottom + 10;
     } else {
         _attachCommentListView.height = 0;
         _attachCommentListView.hidden = YES;
@@ -550,6 +581,41 @@ CGFloat maxLimitHeight = 0;
     if (self.delegate && [self.delegate respondsToSelector:@selector(didAddComment:)]) {
         [self.delegate didAddComment:self];
     }
+}
+
+- (NSInteger)getValueAtBit {
+    NSInteger n = self.moment.postType.integerValue;
+    NSInteger count = 0;
+    while (n > 0) {
+        n = n & (n - 1);
+        count ++;
+    }
+    return count;
+}
+
+- (NSArray *)getTrueValueIndexPaths {
+    NSInteger n = self.moment.postType.integerValue;
+    NSInteger count = 0;
+    NSMutableArray *data = [NSMutableArray arrayWithCapacity:1];
+    NSInteger num = [self getBitWidth];
+    while (n > 0) {
+        num --;
+        if (n > 0 && num > 0) {
+            [data addObject:@(num)];
+        }
+        n = n & (n - 1);
+        count ++;
+    }
+    return data;
+}
+
+- (NSInteger)getBitWidth {
+    NSInteger i = 0;
+    NSInteger n = self.moment.postType.integerValue;
+    do {
+        ++i;
+    } while ((n >> i));
+    return i;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

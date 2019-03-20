@@ -59,7 +59,7 @@
         return;
     }
     if (![self.groupName isEqualToString:_textField.text]) {
-        [[QIMKit sharedInstance] setMucVcardForGroupId:self.groupId WithNickName:_textField.text WithTitle:nil WithDesc:nil WithHeaderSrc:nil];
+        [[QIMKit sharedInstance] setMucVcardForGroupId:self.groupId WithNickName:_textField.text WithTitle:nil WithDesc:nil WithHeaderSrc:nil withCallBack:nil];
     }
     [self.navigationController popViewControllerAnimated:YES];
 }

@@ -67,7 +67,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     QIMWorkCommentModel *commentModel = [self.childCommentList objectAtIndex:indexPath.row];
-    NSDictionary *postDic = @{@"ChildModel": commentModel, @"ParentIndexPath" : self.parentCommentIndexPath};
+    NSMutableDictionary *postDic = [NSMutableDictionary dictionaryWithCapacity:2];
+    [postDic setQIMSafeObject:commentModel forKey:@"ChildModel"];
+    [postDic setQIMSafeObject:self.parentCommentIndexPath forKey:@"ParentIndexPath"];
+//    NSDictionary *postDic = @{@"ChildModel": commentModel, @"ParentIndexPath" : self.parentCommentIndexPath};
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"beginControlChildCommentWithComment" object:postDic];
     });
