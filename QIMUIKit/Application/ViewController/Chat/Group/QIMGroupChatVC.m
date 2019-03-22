@@ -657,6 +657,15 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         [self synchronizeChatSession];
     });
+    if (!self.bindId) {
+        NSDictionary *groupVcardInfo = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
+        NSInteger groupCardVersion = [[groupVcardInfo objectForKey:@"LastUpdateTime"] integerValue];
+        if (groupCardVersion <= 0) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+               [[QIMKit sharedInstance] updateGroupCardByGroupId:self.chatId];
+            });
+        }
+    }
 }
 
 - (void)synchronizeChatSession {

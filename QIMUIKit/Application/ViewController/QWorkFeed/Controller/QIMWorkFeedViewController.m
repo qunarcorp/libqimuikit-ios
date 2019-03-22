@@ -206,22 +206,26 @@
 }
 
 - (void)reloadMomentAttachCommentList:(NSNotification *)notify {
-    NSDictionary *data = notify.object;
-    NSString *postId = [data objectForKey:@"postId"];
-    NSInteger momentIndex = [self getIndexOfMomentId:postId];
-    if (momentIndex >= 0 && momentIndex < self.workMomentList.count) {
-        [self.mainTableView reloadData];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *data = notify.object;
+        NSString *postId = [data objectForKey:@"postId"];
+        NSInteger momentIndex = [self getIndexOfMomentId:postId];
+        if (momentIndex >= 0 && momentIndex < self.workMomentList.count) {
+            [self.mainTableView reloadData];
+        }
+    });
 }
 
 - (void)OpenQIMWorkFeedDetail:(NSNotification *)notify {
-    NSString *momentId = notify.object;
-    if (momentId.length > 0) {
-        QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
-        detailVc.momentId = momentId;
-        self.notNeedReloadMomentView = YES;
-        [self.navigationController pushViewController:detailVc animated:YES];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *momentId = notify.object;
+        if (momentId.length > 0) {
+            QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
+            detailVc.momentId = momentId;
+            self.notNeedReloadMomentView = YES;
+            [self.navigationController pushViewController:detailVc animated:YES];
+        }
+    });
 }
 
 //加载本地最近的帖子

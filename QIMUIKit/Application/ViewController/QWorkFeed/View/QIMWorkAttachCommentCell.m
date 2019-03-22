@@ -31,16 +31,6 @@
 
 - (void)setupUI {
     
-    // 名字视图
-    _nameLab = [[UILabel alloc] initWithFrame:CGRectMake(12, 5, 50, 20)];
-    _nameLab.font = [UIFont boldSystemFontOfSize:14.0];
-    _nameLab.textColor = [UIColor qim_colorWithHex:0x00CABE];
-    _nameLab.backgroundColor = [UIColor clearColor];
-    _nameLab.userInteractionEnabled = YES;
-//    [self.contentView addSubview:_nameLab];
-    UITapGestureRecognizer *tapGesture2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickHead:)];
-    [_nameLab addGestureRecognizer:tapGesture2];
-    
     //点赞按钮
     _likeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_likeBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
@@ -73,16 +63,11 @@
         //实名评论
         NSString *commentFromUserId = [NSString stringWithFormat:@"%@@%@", commentModel.fromUser, commentModel.fromHost];
         nameText = [NSString stringWithFormat:@"%@：", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:commentFromUserId]];
-//        _nameLab.text = [NSString stringWithFormat:@"%@：", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:commentFromUserId]];
-//        [_nameLab sizeToFit];
     } else {
         //匿名评论
         NSString *anonymousName = commentModel.anonymousName;
         nameText = [NSString stringWithFormat:@"%@：", anonymousName];
-//        self.nameLab.text = [NSString stringWithFormat:@"%@：", anonymousName];
-//        self.nameLab.textColor = [UIColor qim_colorWithHex:0x999999];
     }
-//    [self.nameLab sizeToFit];
     CGFloat rowHeight = 0;
     
     BOOL isChildComment = (commentModel.parentCommentUUID.length > 0) ? YES : NO;
@@ -114,7 +99,6 @@
     _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70 - self.leftMargin, 0, 60, 15);
     NSInteger likeNum = commentModel.likeNum;
     [_likeBtn setTitle:[NSString stringWithFormat:@"%ld 赞", likeNum] forState:UIControlStateNormal];
-    _likeBtn.centerY = self.nameLab.centerY;
     
     QIMMessageModel *msg = [[QIMMessageModel alloc] init];
     msg.message = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:likeString];
@@ -125,14 +109,6 @@
     self.contentLabel.textContainer = mainTextContainer;
     [self.contentLabel setFrameWithOrign:CGPointMake(12, 5) Width:(self.likeBtn.left - 12)];
     _commentModel.rowHeight = _contentLabel.bottom + 5;
-}
-
-// 点击头像
-- (void)clickHead:(UITapGestureRecognizer *)gesture {
-    if (self.commentModel.isAnonymous == NO) {
-        NSString *userId = [NSString stringWithFormat:@"%@@%@", self.commentModel.fromUser, self.commentModel.fromHost];
-        [QIMFastEntrance openUserCardVCByUserId:userId];
-    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
