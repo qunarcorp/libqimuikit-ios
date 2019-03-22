@@ -331,7 +331,9 @@
         name = [dict objectForKey:@"name"];
     }
     NSString *jid = cell.jid;
-    NSDictionary *memberInfoDic = @{@"name":name.length?name:@"", @"jid":jid.length?jid:@""};
+    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
+    NSString *userName = [userInfo objectForKey:@"Name"];
+    NSDictionary *memberInfoDic = @{@"name":userName.length?userName:@"", @"jid":jid.length?jid:@""};
     if (_funBlock!=nil) {
         
         if (self.presentingViewController) {

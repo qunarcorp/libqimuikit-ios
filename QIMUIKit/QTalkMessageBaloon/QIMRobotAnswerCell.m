@@ -51,7 +51,8 @@
         cellHeight += [textContainer getHeightWithFramesetter:nil width:textContainer.textWidth];
     }
     QIMMessageRemoteReadState readState = [[QIMKit sharedInstance] getReadStateWithMsgId:message.messageId];
-    if (readState & QIMMessageReadFlagDidControl) {
+    QIMVerboseLog(@"readState : %ld", readState);
+    if (readState == 4) {
         return cellHeight + 50;
     } else {
         NSString *middleContent = [exTrdDic objectForKey:@"middleContent"];
@@ -102,11 +103,9 @@
         NSArray *msgIds = [notifyDic objectForKey:@"MsgIds"];
         for (NSDictionary *msgDict in msgIds) {
             NSString *msgId = [msgDict objectForKey:@"id"];
-            QIMMessageSendState state = (QIMMessageSendState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
+            QIMMessageRemoteReadState state = (QIMMessageRemoteReadState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
             if ([msgId isEqualToString:self.message.messageId]) {
-                if (state > self.message.messageSendState) {
-                    self.message.messageSendState = state;
-                }
+                self.message.messageReadState = state;
                 if (self.delegate && [self.delegate respondsToSelector:@selector(refreshRobotAnswerMessageCell:)]) {
                     [self.delegate refreshRobotAnswerMessageCell:self];
                 }
@@ -142,7 +141,15 @@
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
     [self setBackViewWithWidth:[QIMMessageParser getCellWidth] + 40 WithHeight:height - 30];
     QIMMessageReadFlag readState = [[QIMKit sharedInstance] getMessageStateWithMsgId:self.message.messageId];
-    if (readState & QIMMessageReadFlagDidControl) {
+    QIMVerboseLog(@"readState2 : %ld", readState);
+
+    if (readState == 4) {
+        [self.lineView removeFromSuperview];
+        [self.panelBgView removeAllSubviews];
+        [self.panelBgView removeFromSuperview];
+        [self.middleContentLabel removeFromSuperview];
+        [self.controllPanelBgView removeFromSuperview];
+    } else {
         self.panelBgView.frame = CGRectMake(10, self.msgContentLabel.bottom, [QIMMessageParser getCellWidth] + 40 - 20, self.backView.bottom - self.msgContentLabel.bottom - 35);
         self.lineView = [[UIView alloc] initWithFrame:CGRectMake(12, 5, cellWidth + 20 - 24, 1.0f)];
         self.lineView.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
@@ -167,10 +174,6 @@
         [self.panelBgView addSubview:self.middleContentLabel];
         self.controllPanelBgView.frame = CGRectMake(0, self.middleContentLabel.bottom + 10, self.panelBgView.width, 20);
         [self setupControlButton];
-    } else {
-        [self.lineView removeFromSuperview];
-        [self.panelBgView removeAllSubviews];
-        [self.panelBgView removeFromSuperview];
     }
     [super refreshUI];
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
@@ -259,7 +262,7 @@
         if (self.delegate && [self.delegate respondsToSelector:@selector(refreshRobotAnswerMessageCell:)]) {
             [self.delegate refreshRobotAnswerMessageCell:self];
         }
-        [[QIMKit sharedInstance] sendControlStateWithMessagesIdArray:@[self.message.messageId] WithXmppId:self.message.from];
+        [[QIMKit sharedInstance] sendReadStateWithMessagesIdArray:@[self.message.messageId] WithMessageReadFlag:QIMMessageReadFlagDidControl WithXmppId:self.message.from];
     } withFailedCallBack:^(NSError *error) {
         
     }];

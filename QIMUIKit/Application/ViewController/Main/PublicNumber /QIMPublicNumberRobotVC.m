@@ -870,7 +870,8 @@
     if (message.messageType == QIMMessageType_LocalShare) {
         [self sendMessage:message.message WithInfo:message.extendInformation ForMsgType:message.messageType];
     }else if (message.messageType == QIMMessageType_Voice){
-        NSDictionary *infoDic = [message getMsgInfoDic];
+//        NSDictionary *infoDic = [message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
         NSString *fileName = [infoDic objectForKey:@"FileName"];
         NSString *filePath = [infoDic objectForKey:@"filepath"];
         NSNumber *Seconds = [infoDic objectForKey:@"Seconds"];
@@ -901,7 +902,8 @@
     }else if (message.messageType == QIMMessageType_CardShare){
         [self sendMessage:message.message WithInfo:message.extendInformation ForMsgType:message.messageType];
     }else if (message.messageType == QIMMessageType_SmallVideo){
-        NSDictionary *infoDic = [message getMsgInfoDic];
+//        NSDictionary *infoDic = [message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
         NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:[infoDic objectForKey:@"ThumbName"]?[infoDic objectForKey:@"ThumbName"]:@""];
         UIImage *image = [UIImage imageWithContentsOfFile:filePath];
         
@@ -1403,11 +1405,7 @@
                 cell = [[QIMOpenPlatformCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
                 [cell setDelegate:self];
             }
-            //            [cell setTagStr:[NSString stringWithFormat:@"#%@#",@"东京"]];
-            //            [cell setContent:message.message];
-            //            [cell setMsgTime:message.messageDate];
-            //            [cell setLinkUrl:@"http://www.baidu.com/"];
-            if (message.extendInformation) {
+            if (message.extendInformation.length > 0) {
                 message.message = message.extendInformation;
             }
             [cell setMessage:message];
@@ -1919,12 +1917,14 @@ static CGPoint tableOffsetPoint;
         nc.modalTransitionStyle    = UIModalTransitionStyleCrossDissolve;
         [self presentViewController:nc animated:YES completion:nil];
     } else if(message.messageType == QIMMessageType_Text || message.messageType == QIMMessageType_Image || message.messageType == QIMMessageType_ImageNew){
+        /*
         vc = [[QIMPreviewMsgVC alloc] init];
         [(QIMPreviewMsgVC *)vc setMessage:message];
         QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:vc];
         [nc setNavigationBarHidden:YES];
         nc.modalTransitionStyle    = UIModalTransitionStyleCrossDissolve;
         [self presentViewController:nc animated:YES completion:nil];
+        */
     }
 }
 

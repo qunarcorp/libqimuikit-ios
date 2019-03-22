@@ -145,7 +145,7 @@
             [dateArray addObject:timeStr];
         }
         NSMutableDictionary *msgDic = [NSMutableDictionary dictionaryWithCapacity:3];
-        NSDictionary *fileExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation ? msg.extendInformation : msg.message error:nil];
+        NSDictionary *fileExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation.length > 0 ? msg.extendInformation : msg.message error:nil];
         if (!fileExtendInfoDic) {
             continue;
         }
@@ -226,7 +226,7 @@
             [dateArray addObject:timeStr];
         }
         NSMutableDictionary *msgDic = [NSMutableDictionary dictionaryWithCapacity:3];
-        NSDictionary *linkExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation ? msg.extendInformation : msg.message error:nil];
+        NSDictionary *linkExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation.length > 0 ? msg.extendInformation : msg.message error:nil];
         if (!linkExtendInfoDic) {
             continue;
         }

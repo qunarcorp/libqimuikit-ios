@@ -25,7 +25,6 @@
 #import "QIMUserInfoModel.h"
 #import "QCGroupModel.h"
 #import "QIMMenuView.h"
-#import "QIMFriendListViewController.h"
 #import "QIMServiceStatusViewController.h"
 
 @interface QIMCommonTableViewCellManager ()

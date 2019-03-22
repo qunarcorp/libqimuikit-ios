@@ -241,7 +241,7 @@
         QIMMessageType msgType = msg.messageType;
         if (msgType == QIMMessageType_SmallVideo) {
             
-            NSDictionary *videoExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation ? msg.extendInformation : msg.message error:nil];
+            NSDictionary *videoExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation.length > 0 ? msg.extendInformation : msg.message error:nil];
             if (!videoExtendInfoDic) {
                 continue;
             }

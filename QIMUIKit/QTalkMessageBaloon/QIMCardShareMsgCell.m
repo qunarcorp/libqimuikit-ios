@@ -71,7 +71,7 @@
 
 - (void)tapGesHandle:(UITapGestureRecognizer *)tap{
     if (self.message.messageSendState == QIMMessageSendState_Faild) {
-        if (self.message.extendInformation) {
+        if (self.message.extendInformation.length > 0) {
             self.message.message = self.message.extendInformation;
         }
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
@@ -86,7 +86,7 @@
 - (void)refreshUI {
     
     self.backView.message = self.message;
-    if (self.message.extendInformation) {
+    if (self.message.extendInformation.length > 0) {
         self.message.message = self.message.extendInformation;
     }
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];

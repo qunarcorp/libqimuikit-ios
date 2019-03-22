@@ -451,7 +451,6 @@
             QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
             weakSelf.momentModel.content = conModel;
             weakSelf.momentView.momentModel = self.momentModel;
-//            weakSelf.momentCell.moment = self.momentModel;
             weakSelf.commentListView.commentNum = self.momentModel.commentsNum;
             [weakSelf.commentListView reloadCommentsData];
             [weakSelf.commentListView endRefreshingHeader];

@@ -70,7 +70,7 @@
     
     _c2BMessage = message;
     NSDictionary *grabSingleDic = nil;
-    if (message.extendInformation) {
+    if (message.extendInformation.length > 0) {
         grabSingleDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
     } else {
         grabSingleDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];

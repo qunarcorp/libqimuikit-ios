@@ -120,7 +120,7 @@
 - (void)refreshUI {
     
     self.backView.message = self.message;
-    if (self.message.extendInformation) {
+    if (self.message.extendInformation.length > 0) {
         self.message.message = self.message.extendInformation;
     }
     float backWidth = kCellWidth + kBackViewCap + 2;

@@ -384,6 +384,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(revokeMsgHandle:) name:kRevokeMsg object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(markNameUpdate:) name:kMarkNameUpdate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(atallChangeHandle:) name:kAtALLChange object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(atallChangeHandle:) name:kAtMeChange object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateGroupNotMindState:) name:kGroupMsgRemindDic object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateGroupNickName:) name:kCollectionGroupNickNameChanged object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUI:) name:kUserVCardUpdate object:nil];
@@ -630,6 +631,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             NSString *messageId = [revokeMsgDic objectForKey:@"messageId"];
             NSString *userJid = [revokeMsgDic objectForKey:@"fromId"];
             NSString *message = [revokeMsgDic objectForKey:@"message"];
+            message = @"撤回了一条消息";
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
                 NSDictionary * userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userJid];
                 NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userJid];

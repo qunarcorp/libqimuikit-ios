@@ -73,7 +73,7 @@
     CGFloat maxWidth = screenW - 2*kIMChatMargin;
     float cellHeight = 0;
     float cellWidth = maxWidth;
-    NSString * jsonStr = msg.extendInformation ? msg.extendInformation : msg.message;
+    NSString * jsonStr = msg.extendInformation.length > 0 ? msg.extendInformation : msg.message;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:jsonStr error:nil];
     if (infoDic == nil && jsonStr.length) {
         infoDic = @{@"content":jsonStr?jsonStr:@""};
@@ -205,7 +205,7 @@
 - (void)setMessage:(QIMMessageModel *)message {
     [super setMessage:message];
     _hintContainer = [[QIMMessageCellCache sharedInstance] getObjectForKey:[message.messageId stringByAppendingString:@"_hints"]];
-    NSString * jsonStr = self.message.extendInformation ? self.message.extendInformation : self.message.message;
+    NSString * jsonStr = self.message.extendInformation.length > 0 ? self.message.extendInformation : self.message.message;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:jsonStr error:nil];
     if (infoDic && infoDic[@"content"]) {
         if ([infoDic[@"content"] length]) {
@@ -227,7 +227,7 @@
     } else {
         [_textLabel setFrameWithOrign:CGPointMake(0,0) Width:[QIMMessageParser getCellWidth]];
     }
-    NSString *jsonStr = self.message.extendInformation ? self.message.extendInformation : self.message.message;
+    NSString *jsonStr = self.message.extendInformation.length > 0 ? self.message.extendInformation : self.message.message;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:jsonStr error:nil];
     CGFloat maxWidth = screenW - 2*kIMChatMargin;
     float backWidth = maxWidth;
@@ -400,7 +400,7 @@
     NSArray * items = nil;
     NSString *listTip = nil;
     int initSize = 0;
-    NSString * jsonStr = self.message.extendInformation ? self.message.extendInformation : self.message.message;
+    NSString * jsonStr = self.message.extendInformation.length > 0 ? self.message.extendInformation : self.message.message;
     if (jsonStr.length) {
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:jsonStr error:nil];
         NSString * type = [infoDic[@"listArea"] objectForKey:@"type"];

@@ -148,13 +148,11 @@ static CGPoint tableOffsetPoint;
                 //新评论，加的普通评论第一条
                 [self.commentModels insertObject:commentModel atIndex:0];
                 [self reloadCommentsData];
-                //            [self scrollCommentModelToTopIndex];
             }
         } else {
             //评论的是热门评论，重新reload
             [self.hotCommentModels replaceObjectAtIndex:indexPath.row withObject:commentModel];
             [self reloadCommentsData];
-            //        [self reloadCommentWithIndexPath:indexPath withIsHotComment:YES];
         }
     });
 }
@@ -188,11 +186,9 @@ static CGPoint tableOffsetPoint;
 }
 
 - (void)reloadCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment {
-//    [self.commentTableView beginUpdates];
     [UIView animateWithDuration:0.3 animations:^{
        [self.commentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
     }];
-//    [self.commentTableView endUpdates];
 }
 
 - (void)removeCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment withSuperStatus:(NSInteger)superParentStatus {

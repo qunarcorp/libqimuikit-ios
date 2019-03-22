@@ -180,29 +180,6 @@
 
 - (void)openSingleChat:(NSString *)jid{
     [QIMFastEntrance openSingleChatVCByUserId:jid];
-    
-    
-//    NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
-    /*
-    NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByName:jid];
-    if (userInfoDic == nil) {
-        [[QIMKit sharedInstance] updateUserHeaderImageWithXmppId:jid];
-        userInfoDic = [[QIMKit sharedInstance] getUserInfoByName:jid];
-    } */
-    /*
-    if (userInfoDic) {
-        NSString *xmppId = [userInfoDic objectForKey:@"XmppId"];
-        NSString *name = [userInfoDic objectForKey:@"Name"];
-        [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId];
-        QIMChatVC * chatVC  = [[QIMChatVC alloc] init];
-        [chatVC setStype:kSessionType_Chat];
-        [chatVC setChatId:xmppId];
-        [chatVC setName:name];
-        [chatVC setTitle:name];
-        [chatVC setChatType:ChatType_SingleChat];
-        [self.navigationController popToRootVCThenPush:chatVC animated:YES];
-    }
-     */
 }
 
 - (void)openGroupChat:(NSString *)jid{
@@ -210,14 +187,6 @@
     if (groupDic) {
         NSString *jid = [groupDic objectForKey:@"GroupId"];
         [QIMFastEntrance openGroupChatVCByGroupId:jid];
-        /*
-        NSString *name = [groupDic objectForKey:@"Name"];
-        [[QIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
-        QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
-        [chatGroupVC setTitle:name];
-        [chatGroupVC setChatId:jid];
-        [self.navigationController popToRootVCThenPush:chatGroupVC animated:YES];
-         */
     }
 }
 

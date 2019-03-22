@@ -63,7 +63,7 @@
     self.selectedBackgroundView.frame = CGRectMake(0, 0, 30, self.contentView.height);
     
     self.backView.message = self.message;
-    if (self.message.extendInformation) {
+    if (self.message.extendInformation.length > 0) {
         self.message.message = self.message.extendInformation;
     }
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
