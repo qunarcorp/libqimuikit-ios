@@ -90,8 +90,12 @@
     return _searchBar;
 }
 
++ (BOOL)checkMainVC {
+    return __mainVc != nil;
+}
+
+static QIMMainVC *__mainVc = nil;
 + (instancetype)sharedInstanceWithSkipLogin:(BOOL)skipLogin {
-    static QIMMainVC *__mainVc = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         __mainVc = [[QIMMainVC alloc] init];

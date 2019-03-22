@@ -1108,6 +1108,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 [self.contentLabel setAttributedText:str];
             });
         });
+    } else {
+        [self.contentLabel setText:@"收到了一条消息"];
     }
     self.notReadCount = [[self.infoDic objectForKey:@"UnreadCount"] integerValue];
     [self refreshNotReadCount];

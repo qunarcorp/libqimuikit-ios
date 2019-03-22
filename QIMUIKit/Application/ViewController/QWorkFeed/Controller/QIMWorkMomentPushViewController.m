@@ -367,12 +367,27 @@
     }
 }
 
+//判断内容是否全部为空格  YES 全部为空格
+- (BOOL)isEmpty:(NSString *)str {
+    if (!str) {
+        return true;
+    } else {
+        NSCharacterSet *set = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+        NSString *trimedString = [str stringByTrimmingCharactersInSet:set];
+        if ([trimedString length] == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
+    }
+}
+
 - (void)pushNewMoment:(id)sender {
     QIMVerboseLog(@"发布了一条新动态");
     
     BOOL selectPhoto = (self.selectPhotos.count == 1) && ([[self.selectPhotos firstObject] isEqualToString:@"Q_Work_Add"]);
     
-    if (self.textView.text.length <= 0 && selectPhoto)  {
+    if ((self.textView.text.length <= 0 || [self isEmpty:self.textView.text]) && selectPhoto)  {
         UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"请尽情发挥吧..." preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             

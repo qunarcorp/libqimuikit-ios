@@ -96,10 +96,9 @@
     }
     
     NSString *likeString  = [NSString stringWithFormat:@"%@ %@", replayStr, commentModel.content];
-    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70 - self.leftMargin, 0, 60, 15);
+    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70 - self.leftMargin, 8, 60, 15);
     NSInteger likeNum = commentModel.likeNum;
     [_likeBtn setTitle:[NSString stringWithFormat:@"%ld 赞", likeNum] forState:UIControlStateNormal];
-    
     QIMMessageModel *msg = [[QIMMessageModel alloc] init];
     msg.message = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:likeString];
     msg.messageId = commentModel.commentUUID;

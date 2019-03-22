@@ -369,10 +369,13 @@ static UIImage *__rightBallocImage = nil;
     }
     if (self.message.messageDirection == QIMMessageDirection_Sent) {
         //这里只有单聊，Consult（单人会话）显示消息状态
-        if ((self.chatType == ChatType_SingleChat || self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) && ![[QIMKit sharedInstance] isMiddleVirtualAccountWithJid:self.message.to]) {
+        if (![[QIMKit sharedInstance] isMiddleVirtualAccountWithJid:self.message.to]) {
             if ([[QIMKit sharedInstance] qimNav_Showmsgstat]) {
                 [self.contentView addSubview:self.messgaeStateLabel];
             }
+        }
+        if (self.message.messageSendState == QIMMessageSendState_Waiting || self.message.messageSendState == QIMMessageSendState_Faild) {
+            self.message.messageSendState = [[QIMKit sharedInstance] getMessageStateWithMsgId:self.message.messageId];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             switch (self.message.messageSendState) {
@@ -408,16 +411,7 @@ static UIImage *__rightBallocImage = nil;
             }
         });
     } else {
-        /*
-        switch (self.message.messageSendState) {
-            case QIMMessageSendState_didRead: {
-                //                QIMVerboseLog(@"接收到的消息【%@】已读", self.message.messageId);
-            }
-                break;
-            default:
-                break;
-        }
-        */
+
     }
 }
 
