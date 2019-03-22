@@ -77,7 +77,7 @@
         {
             _titleLabel.textColor = [UIColor whiteColor];
             _imageView.frame = CGRectMake(self.backView.left + 10, self.backView.top + 5, 24, 24);
-            _titleLabel.frame = CGRectMake(_imageView.right + 5, 5, self.backView.width - 10, self.backView.height);
+            _titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top, self.backView.width - 10, self.backView.height);
             _titleLabel.textColor = [UIColor qim_rightBallocFontColor];
         }
             break;

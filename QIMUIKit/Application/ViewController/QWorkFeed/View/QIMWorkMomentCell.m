@@ -265,10 +265,14 @@ CGFloat maxLimitHeight = 0;
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
         NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
         NSString *showDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
-        _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @"";
-        [_organLab sizeToFit];
-        [_organLab sizeThatFits:CGSizeMake(_organLab.width, _organLab.height)];
-        _organLab.height = 20;
+        if (showDp.length > 0) {
+            _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @"";
+            [_organLab sizeToFit];
+            [_organLab sizeThatFits:CGSizeMake(_organLab.width, _organLab.height)];
+            _organLab.height = 20;
+        } else {
+            _organLab.hidden = YES;
+        }
         
         _rIdLabe.frame = CGRectMake(self.organLab.right + 5, self.nameLab.top, 20, 20);
         _rIdLabe.text = [NSString stringWithFormat:@"%ld", moment.rId];

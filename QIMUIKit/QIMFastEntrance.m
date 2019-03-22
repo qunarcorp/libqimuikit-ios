@@ -169,11 +169,13 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)showMainVc {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:NO];
-        QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
-        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
-    });
+    if ([QIMMainVC checkMainVC] == NO) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:NO];
+            QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
+            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
+        });
+    }
 }
 
 - (UIView *)getQIMSessionListViewWithBaseFrame:(CGRect)frame {

@@ -1055,6 +1055,7 @@
             default:
                 break;
         }
+        [[QIMMessageCellCache sharedInstance] clearUp];
         [self loadData];
     }
 }
@@ -2772,6 +2773,7 @@
             else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                 NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:text WithOriginExtendInfo:nil WithUserId:self.chatId];
                 msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
+                [[QIMKit sharedInstance] saveMsg:msg ByJid:self.chatId];
             }
 #endif
             else {
