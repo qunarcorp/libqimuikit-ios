@@ -83,6 +83,7 @@
     showMoreLabel.text = [NSString stringWithFormat:@"查看全部%ld条评论 >", self.unReadCount];
     [bgView addSubview:showMoreLabel];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openWorkMomentDetailNotify:)];
+    showMoreLabel.userInteractionEnabled = YES;
     [showMoreLabel addGestureRecognizer:tap];
     return bgView;
 }

@@ -13,8 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkAttachCommentCell : UITableViewCell
 
-@property (nonatomic, strong) UILabel *nameLab;
-
 @property (nonatomic, strong) UIButton *likeBtn;
 
 @property (nonatomic, assign) CGFloat leftMargin;
