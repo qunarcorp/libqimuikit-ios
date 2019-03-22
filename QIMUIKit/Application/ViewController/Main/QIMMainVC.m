@@ -256,8 +256,10 @@
 }
 
 - (void)otherPlatformLogin:(NSNotification *)notify {
-    BOOL online = [notify.object boolValue];
-    [self.sessionView updateOtherPlatFrom:online];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        BOOL online = [notify.object boolValue];
+        [self.sessionView updateOtherPlatFrom:online];
+    });
 }
 
 - (void)appWorkStateChange:(NSNotification *)notify {

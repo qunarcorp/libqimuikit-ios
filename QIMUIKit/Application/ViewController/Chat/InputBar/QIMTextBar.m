@@ -1789,27 +1789,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeCamera];
-    
-#pragma --qam
-    /*
-     AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-     if (authStatus == AVAuthorizationStatusRestricted || authStatus ==AVAuthorizationStatusDenied)
-     {
-     //无权限
-     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"温馨提示" message:@"请前往“设置-QTalk-相机”,开启访问权限。" preferredStyle:UIAlertControllerStyleAlert];
-     UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-     
-     }];
-     [alertController addAction:cancelAction];
-     [(UIViewController *)self.delegate presentViewController:alertController animated:YES completion:nil];
-     return;
-     }
-     
-     CameraViewController * cameraVC = [[CameraViewController alloc] init];
-     cameraVC.delegate = self;
-     QIMNavController * nav = [[QIMNavController alloc] initWithRootViewController:cameraVC];
-     [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
-     */
 }
 
 //判断内容是否全部为空格  YES 全部为空格
@@ -1854,8 +1833,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                 [self.delegate setKeyBoardHeight:216 + _myTextView.frame.size.height - 30 WithScrollToBottom:_isScrollToBottom];
             }
         }
-        //        _isExpand = NO;
-        //        [_myTextView resignFirstResponder];
     }
     else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(emptyText:)]) {

@@ -15,6 +15,10 @@
 
 @property (nonatomic, assign) BOOL needUpdateNotReadList;
 
+@property (nonatomic, assign) BOOL notShowHeader;
+
+@property (nonatomic, assign) BOOL showNotReadList;
+
 - (instancetype)initWithFrame:(CGRect)frame withRootViewController:(QIMMainVC *)rootVc;
 
 - (void)prepareNotReaderIndexPathList;
@@ -24,6 +28,8 @@
 - (void)sessionViewWillAppear;
 
 - (void)updateOtherPlatFrom:(BOOL)flag;
+
+- (void)setSessionViewHeader:(UIView *)headerView;
 
 - (void)updateSessionHeaderViewWithShowNetWorkBar:(BOOL)showNetWorkBar;
 

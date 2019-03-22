@@ -56,7 +56,7 @@
 
 - (void)tapGesHandle:(UITapGestureRecognizer *)tap{
     if (self.message.messageSendState == QIMMessageSendState_Faild) {
-        if (self.message.extendInformation) {
+        if (self.message.extendInformation.length > 0) {
             self.message.message = self.message.extendInformation;
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:kXmppStreamReSendMessage object:self.message];

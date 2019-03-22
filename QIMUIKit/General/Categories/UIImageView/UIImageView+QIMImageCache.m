@@ -29,7 +29,7 @@
 - (void)qim_setImageWithJid:(NSString *)jid WithRealJid:(NSString *)realJid WithChatType:(ChatType)chatType placeholderImage:(UIImage *)placeholder {
     __block NSString *headerUrl = nil;
     __block UIImage *placeholderImage = placeholder;
-    dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
+//    dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
 
         switch (chatType) {
             case ChatType_SingleChat: {
@@ -108,7 +108,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sd_setImageWithURL:headerUrl placeholderImage:placeholderImage];
         });
-    });
+//    });
 }
 
 - (void)qim_setCollectionImageWithJid:(NSString *)jid WithChatType:(ChatType)chatType {

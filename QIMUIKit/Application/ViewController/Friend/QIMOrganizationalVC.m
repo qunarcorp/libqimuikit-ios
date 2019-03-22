@@ -69,6 +69,14 @@
         [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithCustomView:button]];
         [button addTarget:self action:@selector(inviteMemberToCompany:) forControlEvents:UIControlEventTouchUpInside];
     }
+    if (self.shareCard == YES) {
+        UIBarButtonItem *rightBar = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(goBack:)];
+        [[self navigationItem] setRightBarButtonItem:rightBar];
+    }
+}
+
+- (void)goBack:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)inviteMemberToCompany:(id)sender {
@@ -168,9 +176,20 @@
     } else {
         //普通用户或者无子结点
         NSString *xmppId = item.jid;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [QIMFastEntrance openUserCardVCByUserId:xmppId];
-        });
+        if (self.shareCard == YES) {
+            if (self.shareCardDelegate && [self.shareCardDelegate respondsToSelector:@selector(selectShareContactWithJid:)]) {
+                [self.shareCardDelegate selectShareContactWithJid:xmppId];
+            }
+            if (self.shareCard == YES) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                });
+            }
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [QIMFastEntrance openUserCardVCByUserId:xmppId];
+            });
+        }
     }
 }
 

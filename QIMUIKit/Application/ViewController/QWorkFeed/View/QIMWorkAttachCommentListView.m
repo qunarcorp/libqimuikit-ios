@@ -70,7 +70,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"OpenQIMWorkFeedDetail" object:self.momentId];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"openWorkMomentDetailNotify" object:self.momentId];
     });
 }
 
@@ -82,6 +82,8 @@
     showMoreLabel.font = [UIFont systemFontOfSize:14];
     showMoreLabel.text = [NSString stringWithFormat:@"查看全部%ld条评论 >", self.unReadCount];
     [bgView addSubview:showMoreLabel];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openWorkMomentDetailNotify:)];
+    [showMoreLabel addGestureRecognizer:tap];
     return bgView;
 }
 
@@ -91,6 +93,12 @@
     } else {
         return 0.000001f;
     }
+}
+
+- (void)openWorkMomentDetailNotify:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"openWorkMomentDetailNotify" object:self.momentId];
+    });
 }
 
 @end

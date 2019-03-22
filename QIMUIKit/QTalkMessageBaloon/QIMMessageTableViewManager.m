@@ -148,7 +148,7 @@
             case QIMMessageType_product: {
                 
                 NSDictionary *productDic = nil;
-                if (message.extendInformation) {
+                if (message.extendInformation.length > 0) {
                     productDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
                 } else {
                     productDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
@@ -504,7 +504,7 @@
             }
             cell.chatType = self.chatType;
             NSDictionary *proDic = nil;
-            if (message.extendInformation) {
+            if (message.extendInformation.length > 0) {
                 proDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
             } else {
                 proDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
@@ -584,7 +584,7 @@
             cell.message = message;
             cell.chatType = self.chatType;
             NSDictionary *proDic = nil;
-            if (message.extendInformation) {
+            if (message.extendInformation.length > 0) {
                 proDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
             } else {
                 proDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];

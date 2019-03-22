@@ -246,7 +246,8 @@
 {
     if (!_isPlaying) {
         _isPlaying = YES;
-        NSDictionary *infoDic = [self.message getMsgInfoDic];
+//        NSDictionary *infoDic = [self.message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
         NSString *fileName = [infoDic objectForKey:@"FileName"];
         NSString *httpUrl = [infoDic objectForKey:@"HttpUrl"];
         _voiceTime = [[infoDic objectForKey:@"Seconds"] integerValue];

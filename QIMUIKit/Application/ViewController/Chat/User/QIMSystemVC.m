@@ -197,13 +197,11 @@
         [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
             [self.messageManager.dataSource addObjectsFromArray:list];
             [weakSelf.tableView reloadData];
-//            [weakSelf scrollToBottom_tableView];
         }];
     } else {
         [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
             [self.messageManager.dataSource addObjectsFromArray:list];
             [weakSelf.tableView reloadData];
-//            [weakSelf scrollToBottom_tableView];
         }];
     }
     [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:self.chatId];

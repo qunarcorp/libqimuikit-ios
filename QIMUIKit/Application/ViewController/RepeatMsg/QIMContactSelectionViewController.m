@@ -11,7 +11,6 @@
 #import "QIMContactUserCell.h"
 #import "SearchBar.h"
 #import "QIMGroupListVC.h"
-#import "QIMUserListVC.h"
 #import "QIMGroupChatVC.h"
 #import "QIMChatVC.h"
 #import "QIMBuddyItemCell.h"
@@ -24,7 +23,7 @@
 
 #define kKeywordSearchBarHeight 44
 
-@interface QIMContactSelectionViewController ()<UITableViewDataSource,UITableViewDelegate,SearchBarDelgt,UIGestureRecognizerDelegate,QIMGroupListVCDelegate,QIMUserListVCDelegate,QIMFriendListSelectionVCDelegate>{
+@interface QIMContactSelectionViewController ()<UITableViewDataSource,UITableViewDelegate,SearchBarDelgt,UIGestureRecognizerDelegate,QIMGroupListVCDelegate,QIMFriendListSelectionVCDelegate>{
     UITableView     * _tableView;
     NSMutableArray *_itemArray;
     SearchBar *_searchBarKeyTmp;

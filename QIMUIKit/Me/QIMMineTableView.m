@@ -157,18 +157,15 @@
 - (void)getUserVcardInfo {
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        /* Mark by DB
         if (weakSelf.userId) {
-            NSDictionary * usersInfo = [[QIMKit sharedInstance] getRemoteUserProfileForUserIds:@[weakSelf.userId]];
+            NSDictionary * usersInfo = [[QIMKit sharedInstance] getUserInfoByUserId:@[weakSelf.userId]];
             if (usersInfo.count > 0) {
-                weakSelf.userVCardInfo = [NSDictionary dictionaryWithDictionary:usersInfo[weakSelf.userId]];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    weakSelf.model.personalSignature = [weakSelf.userVCardInfo objectForKey:@"M"];
+                    weakSelf.model.personalSignature = [usersInfo objectForKey:@"Mood"];
                     [weakSelf.tableView reloadData];
                 });
             }
         }
-        */
     });
 }
 

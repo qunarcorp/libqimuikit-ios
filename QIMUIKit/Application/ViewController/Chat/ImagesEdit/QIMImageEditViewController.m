@@ -193,8 +193,7 @@ const float colormatrix_yese[] = {
     } else {
         _naviBar = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 44, CGRectGetWidth([UIScreen mainScreen].bounds), 44)];
     }
-//    _naviBar.backgroundColor = [UIColor qim_colorWithHex:0x414141 alpha:1.0];
-    _naviBar.backgroundColor = [UIColor redColor];
+    _naviBar.backgroundColor = [UIColor qim_colorWithHex:0x414141 alpha:1.0];
     [self.view addSubview:_naviBar];
     
     UIButton * cancelBtn = [UIButton buttonWithType:UIButtonTypeSystem];

@@ -77,9 +77,6 @@ static QTalk *__global_qtalk = nil;
 //    QIMMessageType_Markdown
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSourceCodeCell" ForMessageType:QIMMessageType_Markdown];
     [[QIMKit sharedInstance] setMsgShowText:@"[Markdown]" ForMessageType:QIMMessageType_Markdown];
-    // burn after read
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMBurnAfterReadMsgCell" ForMessageType:QIMMessageType_BurnAfterRead];
-    [[QIMKit sharedInstance] setMsgShowText:@"[阅后即焚消息]" ForMessageType:QIMMessageType_BurnAfterRead];
     
     // red pack
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRedPackCell" ForMessageType:QIMMessageType_RedPack];

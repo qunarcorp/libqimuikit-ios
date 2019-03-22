@@ -18,6 +18,7 @@
 #import "QIMMWPhotoBrowser.h"
 #import "QIMPhotoBrowserNavController.h"
 #import "LCActionSheet.h"
+#import "QIMMessageCellCache.h"
 #import <YYModel/YYModel.h>
 #import <MJRefresh/MJRefresh.h>
 
@@ -163,9 +164,9 @@
     if (self.userId.length <= 0) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadNoticeMsg:) name:kPBPresenceCategoryNotifyWorkNoticeMessage object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadLocalWorkFeed:) name:kNotifyReloadWorkFeed object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OpenQIMWorkFeedDetail:) name:@"OpenQIMWorkFeedDetail" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadMomentAttachCommentList:) name:kNotifyReloadWorkFeedAttachCommentList object:nil];
     }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OpenQIMWorkFeedDetail:) name:@"openWorkMomentDetailNotify" object:nil];
 }
 
 - (void)viewDidLoad {
@@ -257,6 +258,7 @@
                     QIMWorkMomentModel *model = [weakSelf getMomentModelWithDic:momentDic];
                     [weakSelf.workMomentList addObject:model];
                 }
+                [[QIMMessageCellCache sharedInstance] clearUp];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.mainTableView reloadData];
                     [weakSelf.mainTableView.mj_header endRefreshing];
@@ -517,6 +519,16 @@
         self.currentModel = nil;
         self.notNeedReloadMomentView = YES;
     }];
+}
+
+- (void)didOpenWorkMomentDetailVc:(NSNotification *)notify {
+    NSString *momentId = notify.object;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
+        detailVc.momentId = momentId;;
+        self.notNeedReloadMomentView = YES;
+        [self.navigationController pushViewController:detailVc animated:YES];
+    });
 }
 
 // 评论

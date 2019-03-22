@@ -209,7 +209,8 @@ static NSArray *_sentImageArray = nil;
 
 - (void)doChatVCRefresh
 {
-    NSDictionary *infoDic = [self.message getMsgInfoDic];
+//    NSDictionary *infoDic = [self.message getMsgInfoDic];
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     int voiceLength = [[infoDic objectForKey:@"Seconds"] intValue];
     int minute = voiceLength / 60 ;
     int sec = voiceLength % 60;
@@ -303,7 +304,8 @@ static NSArray *_sentImageArray = nil;
 
 - (void)doGroupChatVCRefresh
 {
-    NSDictionary *infoDic = [self.message getMsgInfoDic];
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+//    [self.message getMsgInfoDic];
     int voiceLength = [[infoDic objectForKey:@"Seconds"] intValue];
     int minute = voiceLength / 60;
     int sec = voiceLength % 60;

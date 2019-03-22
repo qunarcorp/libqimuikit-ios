@@ -82,7 +82,8 @@
 
 - (void)displayPhoto:(UITapGestureRecognizer *)tap {
     
-    NSDictionary *infoDic = [self.message getMsgInfoDic];
+//    NSDictionary *infoDic = [self.message getMsgInfoDic];
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     if (infoDic) {
         NSString *filePath = [infoDic objectForKey:@"filePath"];
         NSString *httpUrl = [infoDic objectForKey:@"httpUrl"];
@@ -107,7 +108,8 @@
         
         UIImage *image = nil;
         CGSize size;
-        NSDictionary *infoDic = [self.message getMsgInfoDic];
+//        NSDictionary *infoDic = [self.message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
         if (infoDic) {
             NSString *filePath = [infoDic objectForKey:@"thumbFilePath"];           //???????????why,在哪里设置的
             NSString *httpUrl = [infoDic objectForKey:@"thumbUrl"];

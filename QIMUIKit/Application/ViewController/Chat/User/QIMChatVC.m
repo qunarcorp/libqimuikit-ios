@@ -36,6 +36,7 @@
 #import "QIMMWPhotoBrowser.h"
 #import "QIMRedPackageView.h"
 #import "QIMIPadWindowManager.h"
+#import "QIMOrganizationalVC.h"
 
 #define kPageCount 20
 #define kReSendMsgAlertViewTag 10000
@@ -57,9 +58,6 @@
 #import "QIMPreviewMsgVC.h"
 
 #import "QIMEmotionSpirits.h"
-
-#import "QIMUserListVC.h"
-
 #import "QIMWebView.h"
 
 
@@ -135,7 +133,7 @@
 
 #endif
 
-@interface QIMChatVC () <UIGestureRecognizerDelegate, QIMSingleChatCellDelegate, QIMSingleChatVoiceCellDelegate, QIMMWPhotoBrowserDelegate, QIMRemoteAudioPlayerDelegate, QIMMsgBaloonBaseCellDelegate, QIMChatBGImageSelectControllerDelegate, QIMContactSelectionViewControllerDelegate, QIMInputPopViewDelegate, QIMUserListVCDelegate, QIMPushProductViewControllerDelegate, UIActionSheetDelegate, UserLocationViewControllerDelegate, QIMNotReadMsgTipViewsDelegate, QIMTextBarDelegate, QIMPNActionRichTextCellDelegate, QIMPNRichTextCellDelegate, PNNoticeCellDelegate, PlayVoiceManagerDelegate, QIMAttributedLabelDelegate, UIViewControllerPreviewingDelegate, QTalkMessageTableScrollViewDelegate, QIMRobotQuestionCellDelegate, QIMRobotAnswerCellLoadDelegate> {
+@interface QIMChatVC () <UIGestureRecognizerDelegate, QIMSingleChatCellDelegate, QIMSingleChatVoiceCellDelegate, QIMMWPhotoBrowserDelegate, QIMRemoteAudioPlayerDelegate, QIMMsgBaloonBaseCellDelegate, QIMChatBGImageSelectControllerDelegate, QIMContactSelectionViewControllerDelegate, QIMInputPopViewDelegate, QIMPushProductViewControllerDelegate, UIActionSheetDelegate, UserLocationViewControllerDelegate, QIMNotReadMsgTipViewsDelegate, QIMTextBarDelegate, QIMPNActionRichTextCellDelegate, QIMPNRichTextCellDelegate, PNNoticeCellDelegate, PlayVoiceManagerDelegate, QIMAttributedLabelDelegate, UIViewControllerPreviewingDelegate, QTalkMessageTableScrollViewDelegate, QIMRobotQuestionCellDelegate, QIMRobotAnswerCellLoadDelegate, QIMOrganizationalVCDelegate> {
     
     bool _isReloading;
     
@@ -1898,12 +1896,12 @@
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ChatTransfer]) {
         [QIMFastEntrance openTransferConversation:self.virtualJid withVistorId:self.chatId];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
-        //        //分享名片
-        QIMUserListVC *listVC = [[QIMUserListVC alloc] init];
-        [listVC setDelegate:self];
-        listVC.isTransfer = YES;
+        //分享名片
+        QIMOrganizationalVC *listVc = [[QIMOrganizationalVC alloc] init];
+        [listVc setShareCard:YES];
+        [listVc setShareCardDelegate:self];
         _expandViewItemType = QIMTextBarExpandViewItemType_ShareCard;
-        QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:listVC];
+        QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:listVc];
         [[self navigationController] presentViewController:nav animated:YES completion:^{
             
         }];
@@ -2032,7 +2030,8 @@
             [self sendMessage:message.message WithInfo:message.extendInformation ForMsgType:message.messageType];
         }
     } else if (message.messageType == QIMMessageType_Voice) {
-        NSDictionary *infoDic = [message getMsgInfoDic];
+//        NSDictionary *infoDic = [message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
         NSString *fileName = [infoDic objectForKey:@"FileName"];
         NSString *filePath = [infoDic objectForKey:@"filepath"];
         NSNumber *Seconds = [infoDic objectForKey:@"Seconds"];
@@ -2072,7 +2071,8 @@
             [self sendMessage:message.message WithInfo:message.extendInformation ForMsgType:message.messageType];
         }
     } else if (message.messageType == QIMMessageType_SmallVideo) {
-        NSDictionary *infoDic = [message getMsgInfoDic];
+//        NSDictionary *infoDic = [message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
         NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:[infoDic objectForKey:@"ThumbName"] ? [infoDic objectForKey:@"ThumbName"] : @""];
         UIImage *image = [UIImage imageWithContentsOfFile:filePath];
         
@@ -2418,7 +2418,7 @@
 
 #pragma mark -
 
-#pragma mark - QIMUserListVCDelegate
+#pragma mark - QIMOrganizationalVCDelegate
 
 - (void)endTransferChatSession{
     [[QIMProgressHUD sharedInstance] closeHUD];
@@ -2426,7 +2426,7 @@
     _hasServerTransferFeedback = NO;
 }
 
-- (void)selectContactWithJid:(NSString *)jid {
+- (void)selectShareContactWithJid:(NSString *)jid {
     if (_expandViewItemType == QIMTextBarExpandViewItemType_ShareCard) {
         //分享名片 选择的user
         NSDictionary *infoDic = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
@@ -2439,7 +2439,7 @@
 }
 
 #pragma mark - QIMInputPopViewDelegate
-
+/*
 - (void)inputPopView:(QIMInputPopView *)view willBackWithText:(NSString *)text {
     _inputPopViewIsShow = NO;
     _transferReason = text;
@@ -2455,6 +2455,7 @@
 - (void)cancelForQIMInputPopView:(QIMInputPopView *)view {
     _inputPopViewIsShow = NO;
 }
+*/
 
 #pragma mark - text bar delegate
 
@@ -2497,7 +2498,11 @@
     [msg setMessageType:QIMMessageType_SmallVideo];
     [msg setMessageDate:([[NSDate date] timeIntervalSince1970] - [[QIMKit sharedInstance] getServerTimeDiff]) * 1000];
     [msg setFrom:[[QIMKit sharedInstance] getLastJid]];
+    [msg setRealJid:self.chatId];
     [msg setMessage:msgContent];
+    [msg setTo:self.chatId];
+    [msg setPlatform:IMPlatform_iOS];
+    [msg setMessageSendState:QIMMessageSendState_Waiting];
     
     NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
     if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
@@ -2510,15 +2515,16 @@
         msg.message = @"此为阅后即焚消息，该终端不支持阅后即焚~~";
         msg.messageType = QIMMessageType_BurnAfterRead;
     }
-    if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
-        [msg setTo:self.virtualJid];
-        [msg setRealJid:self.chatId];
-    }
-    else {
-        [msg setTo:self.chatId];
-        /* Mark By DB */
-//        [[QIMKit sharedInstance] insertMessageWithMsgId:msg.messageId WithXmppId:self.chatId WithFrom:msg.from WithTo:msg.to WithContent:msg.message WithExtendInfo:msg.extendInformation WithPlatform:msg.platform WithMsgType:msg.messageType WithMsgState:msg.messageSendState WithMsgDirection:msg.messageDirection WithMsgDate:msg.messageDate WithReadedTag:0 WithMsgRaw:msg.msgRaw WithRealJid:msg.realJid WithChatType:msg.chatType];
-    }
+//    if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
+//        [msg setTo:self.virtualJid];
+//        [msg setRealJid:self.chatId];
+//    }
+//    else {
+//        [msg setTo:self.chatId];
+//        [[QIMKit sharedInstance] saveMsg:msg ByJid:self.chatId];
+////        [[QIMKit sharedInstance] insertMessageWithMsgId:msg.messageId WithXmppId:self.chatId WithFrom:msg.from WithTo:msg.to WithContent:msg.message WithExtendInfo:msg.extendInformation WithPlatform:msg.platform WithMsgType:msg.messageType WithMsgState:msg.messageSendState WithMsgDirection:msg.messageDirection WithMsgDate:msg.messageDate WithReadedTag:0 WithMsgRaw:msg.msgRaw WithRealJid:msg.realJid WithChatType:msg.chatType];
+//    }
+    [[QIMKit sharedInstance] saveMsg:msg ByJid:self.chatId];
     if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
         [[QIMKit sharedInstance] updateMessageWithExtendInfo:msg.extendInformation ForMsgId:msg.messageId];
     }
@@ -3679,12 +3685,14 @@ static CGPoint tableOffsetPoint;
         nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [self presentViewController:nc animated:YES completion:nil];
     } else if (message.messageType == QIMMessageType_Text || message.messageType == QIMMessageType_Image || message.messageType == QIMMessageType_ImageNew) {
+        /*
         vc = [[QIMPreviewMsgVC alloc] init];
         [(QIMPreviewMsgVC *) vc setMessage:message];
         QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:vc];
         [nc setNavigationBarHidden:YES];
         nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [self presentViewController:nc animated:YES completion:nil];
+        */
     }
 }
 
