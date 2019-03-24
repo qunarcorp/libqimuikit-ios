@@ -146,6 +146,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLocalMomentReadState:) name:kNotify_RN_QTALK_SUGGEST_WorkFeed_UPDATE object:nil];
 }
 
 - (void)setupNav {
@@ -170,6 +171,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
     [self registerNotifications];
+    [[QIMKit sharedInstance] updateWorkNoticePOSTMessageReadState];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [self reloadRemoteRecenteMoments];
     });
@@ -188,6 +190,10 @@
         }
     }
     return index;
+}
+
+- (void)updateLocalMomentReadState:(NSNotification *)notify {
+    [[QIMKit sharedInstance] updateWorkNoticePOSTMessageReadState];
 }
 
 //加载本地最近的帖子
@@ -303,6 +309,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotify_RN_QTALK_SUGGEST_WorkFeed_UPDATE object:nil];
 }
 
 - (void)jumpToAddNewMomentVc {
