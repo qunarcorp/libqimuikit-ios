@@ -332,7 +332,6 @@ static UIImage *__rightBallocImage = nil;
             [self.contentView addSubview:self.messgaeRealStateLabel];
         }
         BOOL readFlag = (self.message.messageReadState & QIMMessageRemoteReadStateDidReaded) == QIMMessageRemoteReadStateDidReaded;
-        QIMVerboseLog(@"ReadFlag : %ld, self.message.messageReadState : %d", readFlag, self.message.messageReadState);
         if (readFlag) {
             [self.indicatorView stopAnimating];
             self.indicatorView.hidden = YES;
@@ -355,7 +354,7 @@ static UIImage *__rightBallocImage = nil;
                 self.indicatorView.hidden = YES;
                 self.messgaeStateLabel.hidden = NO;
                 self.statusButton.hidden = YES;
-                self.messgaeStateLabel.text = @"已送达";
+                self.messgaeStateLabel.text = @"未读";
                 self.messgaeStateLabel.textColor = [UIColor qim_colorWithHex:0x15b0f9 alpha:1.0];
             }
         }
@@ -377,17 +376,21 @@ static UIImage *__rightBallocImage = nil;
         if (self.message.messageSendState == QIMMessageSendState_Waiting || self.message.messageSendState == QIMMessageSendState_Faild) {
             self.message.messageSendState = [[QIMKit sharedInstance] getMessageStateWithMsgId:self.message.messageId];
         }
+        if ([[[QIMKit sharedInstance] qimNav_getDebugers] containsObject:[QIMKit getLastUserName]]) {
+            self.messgaeRealStateLabel.frame = CGRectMake(self.backView.left - 80, self.backView.top, 70, 24);
+            [self.contentView addSubview:self.messgaeRealStateLabel];
+        }
         dispatch_async(dispatch_get_main_queue(), ^{
             switch (self.message.messageSendState) {
                 case QIMMessageSendState_Waiting: {
                     self.indicatorView.center = CGPointMake(self.backView.left - 24, self.backView.centerY);
                     [self.contentView addSubview:self.indicatorView];
                     [self.indicatorView startAnimating];
-                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"发送中 %@", self.message.messageId];
+                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@" %@-%@", @"发送中", self.message.messageId];
                 }
                     break;
                 case QIMMessageSendState_Faild: {
-                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"消息发送失败 %@", self.message.messageId];
+                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@"%@-%@", @"消息发送失败", self.message.messageId];
                     [self.indicatorView stopAnimating];
                     self.indicatorView.hidden = YES;
                     self.statusButton.center = CGPointMake(self.backView.left - 24, self.backView.centerY);
