@@ -72,6 +72,8 @@
 
 @end
 
+static BOOL _mainVCReShow = YES;
+
 @implementation QIMMainVC
 
 - (UISearchBar *)searchBar {
@@ -88,6 +90,14 @@
         [_searchBar setBackgroundColor:[UIColor qim_colorWithHex:0xEEEEEE]];
     }
     return _searchBar;
+}
+
++ (void)setMainVCReShow:(BOOL)mainVCReShow {
+    _mainVCReShow = mainVCReShow;
+}
+
++ (BOOL)getMainVCReShow {
+    return _mainVCReShow;
 }
 
 + (BOOL)checkMainVC {
@@ -111,6 +121,7 @@ static QIMMainVC *__mainVc = nil;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _mainVCReShow = NO;
     /*
      if (@available(iOS 10.3, *)) {
      [self changeIcon];
