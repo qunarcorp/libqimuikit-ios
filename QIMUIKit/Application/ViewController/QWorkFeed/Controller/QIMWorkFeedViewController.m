@@ -171,7 +171,6 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
     [self registerNotifications];
-    [[QIMKit sharedInstance] updateWorkNoticePOSTMessageReadState];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [self reloadRemoteRecenteMoments];
     });
@@ -193,7 +192,6 @@
 }
 
 - (void)updateLocalMomentReadState:(NSNotification *)notify {
-    [[QIMKit sharedInstance] updateWorkNoticePOSTMessageReadState];
 }
 
 //加载本地最近的帖子
