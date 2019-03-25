@@ -332,7 +332,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         SEL sel = NSSelectorFromString(@"getVCWithParam:");
         UIViewController *vc = nil;
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"GroupCard", @"properties":@{@"groupId":groupId}, @"permissions":@([[QIMKit sharedInstance] isGroupOwner:groupId])};
+            QIMGroupIdentity groupIdentity = [[QIMKit sharedInstance] GroupIdentityForUser:[[QIMKit sharedInstance] getLastJid] byGroup:groupId];
+            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"GroupCard", @"properties":@{@"groupId":groupId}, @"permissions":@(groupIdentity)};
             vc = [RunC performSelector:sel withObject:param];
         }
         return vc;
@@ -360,7 +361,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"GroupCard", @"properties":@{@"groupId":groupId, @"permissions":@(isGroupOwner)}};
+            QIMGroupIdentity groupIdentity = [[QIMKit sharedInstance] GroupIdentityForUser:[[QIMKit sharedInstance] getLastJid] byGroup:groupId];
+            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"GroupCard", @"properties":@{@"groupId":groupId, @"permissions":@(groupIdentity)}};
             [RunC performSelector:sel withObject:param];
         }
     } else {
