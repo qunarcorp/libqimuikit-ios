@@ -366,9 +366,9 @@ static UIImage *__rightBallocImage = nil;
     if (self.chatType == ChatType_PublicNumber) {
         return;
     }
-    if (self.message.messageDirection == QIMMessageDirection_Sent && self.message.chatType != ChatType_GroupChat && self.message.chatType != ChatType_System && self.chatType != ChatType_GroupChat && self.chatType != ChatType_System && self.chatType != ChatType_CollectionChat) {
+    if (self.message.messageDirection == QIMMessageDirection_Sent) {
         //这里只有单聊，Consult（单人会话）显示消息状态
-        if (![[QIMKit sharedInstance] isMiddleVirtualAccountWithJid:self.message.to]) {
+        if (![[QIMKit sharedInstance] isMiddleVirtualAccountWithJid:self.message.to] && self.message.chatType != ChatType_GroupChat && self.message.chatType != ChatType_System && self.chatType != ChatType_GroupChat && self.chatType != ChatType_System && self.chatType != ChatType_CollectionChat) {
             if ([[QIMKit sharedInstance] qimNav_Showmsgstat]) {
                 [self.contentView addSubview:self.messgaeStateLabel];
             }
