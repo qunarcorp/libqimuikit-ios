@@ -130,7 +130,9 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
     NSString *userId = [QIMKit getLastUserName];
     NSString *httpHost = [[QIMKit sharedInstance] qimNav_Javaurl];
     BOOL WorkFeedEntrance = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
-    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState":@(projectType) /*@([[QIMKit sharedInstance] isMerchant]) */, @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(WorkFeedEntrance)}];
+    BOOL notNeedShowLeaderInfo = [[[QIMKit sharedInstance] userObjectForKey:@"notNeedShowLeaderInfo"] boolValue];
+    BOOL notNeedShowEmailInfo = [[[QIMKit sharedInstance] userObjectForKey:@"notNeedShowEmailInfo"] boolValue];
+    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState":@(projectType) /*@([[QIMKit sharedInstance] isMerchant]) */, @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(WorkFeedEntrance), @"notNeedShowLeaderInfo":@(notNeedShowLeaderInfo), @"notNeedShowEmailInfo":@(notNeedShowEmailInfo)}];
     QIMVerboseLog(@"AppConfig : %@", appConfig);
     success(appConfig);
 }
@@ -331,7 +333,6 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -845,6 +846,25 @@ RCT_EXPORT_METHOD(getGroupMember:(NSString *)groupId :(RCTResponseSenderBlock)ca
             [[QIMKit sharedInstance] syncgroupMember:groupId];
         });
     });
+}
+
+RCT_EXPORT_METHOD(selectMemberFromGroup:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
+    NSString *groupId = [param objectForKey:@"groupId"];
+    NSString *searchText = [param objectForKey:@"searchText"];
+    NSArray *userList = [[QIMKit sharedInstance] qimDB_getGroupMember:groupId BySearchStr:searchText];
+
+    callback(@[@{@"UserList" : userList, @"ok" : @(YES)}]);
+}
+
+RCT_EXPORT_METHOD(selectGroupMemberForKick:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
+    callback(@[@{@"show" : @(!NO)}]);
+}
+
+RCT_EXPORT_METHOD(kickGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
+    NSString *groupId = [param objectForKey:@"groupId"];
+    NSArray *selectGroupMemebers = [param objectForKey:@"members"];
+    QIMVerboseLog(@"kickGroupMember : %@ - %@", groupId, selectGroupMemebers);
+    callback(@[@{@"show" : @(!NO)}]);
 }
 
 RCT_EXPORT_METHOD(showRedView:(RCTResponseSenderBlock)callback) {

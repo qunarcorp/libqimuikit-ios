@@ -55,7 +55,6 @@
     
     [self.fromPhotoBrowser dismissViewControllerAnimated:NO completion:^{
         NSString *str = _symbol.data;
-//        QIMNavController *rootNav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
         UINavigationController *rootNav = [[UIApplication sharedApplication] visibleNavigationController];
         if ([str qim_hasPrefixHttpHeader]) {
             QIMWebView *webVC = [[QIMWebView alloc] init];

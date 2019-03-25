@@ -24,27 +24,23 @@
         NSDictionary *dictionaryQuery = [[url query] qim_dictionaryFromQueryComponents];
         if ([host.lowercaseString isEqualToString:@"group"]) {
             NSString *groupId = [dictionaryQuery objectForKey:@"id"];
-            id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-            if ([nav isKindOfClass:[QIMNavController class]]) {
-                if (groupId.length > 0) {
-                    QIMGroupCardVC *GVC = [[QIMGroupCardVC alloc] init];
-                    GVC.groupId = groupId;
-                    [nav popToRootVCThenPush:GVC animated:YES];
-                } else {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"无法识别该信息。" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-                    [alertView show];
-                }
+            id nav = [[UIApplication sharedApplication] visibleNavigationController];
+            if (groupId.length > 0) {
+                QIMGroupCardVC *GVC = [[QIMGroupCardVC alloc] init];
+                GVC.groupId = groupId;
+                [nav popToRootVCThenPush:GVC animated:YES];
+            } else {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"无法识别该信息。" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                [alertView show];
             }
         } else if ([host.lowercaseString isEqualToString:@"user"]){
-            id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-            if ([nav isKindOfClass:[QIMNavController class]]) {
-                NSString *userId = [dictionaryQuery objectForKey:@"id"];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [QIMFastEntrance openUserCardVCByUserId:userId];
-                });
-            }
+            id nav = [[UIApplication sharedApplication] visibleNavigationController];
+            NSString *userId = [dictionaryQuery objectForKey:@"id"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [QIMFastEntrance openUserCardVCByUserId:userId];
+            });
         } else if ([host.lowercaseString isEqualToString:@"robot"]){
-            id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+            id nav = [[UIApplication sharedApplication] visibleNavigationController];
             if ([nav isKindOfClass:[QIMNavController class]]) {
                 NSString *publicNumberId = [dictionaryQuery objectForKey:@"id"];
                 NSString *publicNumberType = [dictionaryQuery objectForKey:@"type"];
@@ -88,7 +84,7 @@
             NSString *loginType = [qdrcodeLoginQuery objectForKey:@"type"];     //登录平台的类型
             NSString *loginPlatIcon = [qdrcodeLoginQuery objectForKey:@"iconurl"];  //登录平台的icon
             if (loginKey && loginVersion && loginplatForm) {
-                id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+                id nav = [[UIApplication sharedApplication] visibleNavigationController];
                 QIMQRCodeLoginVC *qrcodeLoginVc = [[QIMQRCodeLoginVC alloc] init];
                 if (loginType.length > 0) {
                     qrcodeLoginVc.platForm = [NSString stringWithFormat:@"%@ ", loginType];
@@ -125,7 +121,7 @@
 }
 
 + (void)decodeQCodeStr:(NSString *)str {
-    id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    id nav = [[UIApplication sharedApplication] visibleNavigationController];
     if ([str qim_hasPrefixHttpHeader]) {
         QIMWebView *webVC = [[QIMWebView alloc] init];
         [webVC setUrl:str];
