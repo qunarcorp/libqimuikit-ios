@@ -64,7 +64,7 @@ static QIMImageManager *__manager = nil;
             
         }
     } else {
-        headerUrl = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:@"singleHeaderDefault" ofType:@"png"];
+        headerUrl = [QIMKit defaultUserHeaderImagePath];
     }
     NSString *path = [[SDImageCache sharedImageCache] defaultCachePathForKey:headerUrl];
     if ([[NSFileManager defaultManager] fileExistsAtPath:path] && path.length > 0) {

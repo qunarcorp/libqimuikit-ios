@@ -32,7 +32,6 @@
     if (userInfo.count && [rootViewController isKindOfClass:QIMMainVCClass]) {
         NSString * userId = userInfo[@"userid"];
         if (userId.length) {
-            UINavigationController * navC = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
             if ([[[QIMKit sharedInstance] getCurrentSessionUserId] isEqualToString:userId]) {
                 return;
             }

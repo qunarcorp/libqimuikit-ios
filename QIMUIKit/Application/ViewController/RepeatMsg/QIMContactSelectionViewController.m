@@ -487,8 +487,13 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
     if (!self.isTransfer) {
-        QIMNavController *nav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        [nav popToRootVCThenPush:chatVC animated:YES];
+        id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+        if ([nav isKindOfClass:[QIMNavController class]]) {
+            [nav popToRootVCThenPush:chatVC animated:YES];
+        } else {
+            nav = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            [nav popToRootVCThenPush:chatVC animated:YES];
+        }
     }
 }
 
@@ -552,8 +557,13 @@
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
-    QIMNavController *nav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
-    [nav popToRootVCThenPush:chatGroupVC animated:YES];
+    id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    if ([nav isKindOfClass:[QIMNavController class]]) {
+        [nav popToRootVCThenPush:chatGroupVC animated:YES];
+    } else {
+        nav = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        [nav popToRootVCThenPush:chatGroupVC animated:YES];
+    }
 }
 
 @end
