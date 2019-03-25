@@ -852,19 +852,74 @@ RCT_EXPORT_METHOD(selectMemberFromGroup:(NSDictionary *)param :(RCTResponseSende
     NSString *groupId = [param objectForKey:@"groupId"];
     NSString *searchText = [param objectForKey:@"searchText"];
     NSArray *userList = [[QIMKit sharedInstance] qimDB_getGroupMember:groupId BySearchStr:searchText];
+    
+    NSMutableArray *array = [NSMutableArray array];
+    for (NSDictionary *userDic in userList) {
+        NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+        NSString *xmppId = [userDic objectForKey:@"xmppjid"];
+        NSString *name = [userDic objectForKey:@"name"];
+        NSString *headerUri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:xmppId];
+        if (headerUri.length <= 0) {
+            headerUri = [QIMKit defaultUserHeaderImagePath];
+        }
+        [dic setQIMSafeObject:xmppId forKey:@"xmppId"];
+        [dic setQIMSafeObject:name forKey:@"name"];
+        [dic setQIMSafeObject:headerUri forKey:@"headerUri"];
+        [array addObject:dic];
+    }
 
-    callback(@[@{@"UserList" : userList, @"ok" : @(YES)}]);
+    callback(@[@{@"UserList" : array, @"ok" : @(YES)}]);
 }
 
 RCT_EXPORT_METHOD(selectGroupMemberForKick:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
-    callback(@[@{@"show" : @(!NO)}]);
+    NSString *groupId = [param objectForKey:@"groupId"];
+    NSInteger affiliation = [[param objectForKey:@"affiliation"] integerValue];
+    
+    NSArray *userList = [[QIMKit sharedInstance] qimDB_getGroupMember:groupId WithGroupIdentity:affiliation];
+    
+    NSMutableArray *array = [NSMutableArray array];
+    for (NSDictionary *userDic in userList) {
+        NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+        NSString *xmppId = [userDic objectForKey:@"xmppjid"];
+        NSString *name = [userDic objectForKey:@"name"];
+        NSString *headerUri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:xmppId];
+        if (headerUri.length <= 0) {
+            headerUri = [QIMKit defaultUserHeaderImagePath];
+        }
+        [dic setQIMSafeObject:xmppId forKey:@"xmppId"];
+        [dic setQIMSafeObject:name forKey:@"name"];
+        [dic setQIMSafeObject:headerUri forKey:@"headerUri"];
+        [array addObject:dic];
+    }
+
+    callback(@[@{@"UserList" : array, @"ok" : @(YES)}]);
 }
 
 RCT_EXPORT_METHOD(kickGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
     NSString *groupId = [param objectForKey:@"groupId"];
-    NSArray *selectGroupMemebers = [param objectForKey:@"members"];
-    QIMVerboseLog(@"kickGroupMember : %@ - %@", groupId, selectGroupMemebers);
-    callback(@[@{@"show" : @(!NO)}]);
+    NSDictionary *selectGroupMemebers = [param objectForKey:@"members"];
+    BOOL kickSuccess = NO;
+    for (NSDictionary *groupMemberDic in [selectGroupMemebers allValues]) {
+        NSString *name = [groupMemberDic objectForKey:@"name"];
+        NSString *xmppId = [groupMemberDic objectForKey:@"xmppId"];
+        kickSuccess = [[QIMKit sharedInstance] removeGroupMemberWithName:name WithJid:xmppId ForGroupId:groupId];
+    }
+    if (kickSuccess == YES) {
+        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"closeKickMembers" body:@{}];
+        NSString *str = @"踢出群成员成功";
+        dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+            });
+        });
+    } else {
+        NSString *str = @"踢出群成员失败";
+        dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+            });
+        });
+    }
 }
 
 RCT_EXPORT_METHOD(showRedView:(RCTResponseSenderBlock)callback) {
