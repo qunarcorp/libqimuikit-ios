@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)endAddComment;
 
-- (void)beginControlCommentWithComment:(QIMWorkCommentModel *)commentModel withIndexPath:(NSIndexPath *)indexPath;
+- (void)beginControlCommentWithComment:(QIMWorkCommentModel *)commentModel withIsHotComment:(BOOL)isHotComment withIndexPath:(NSIndexPath *)indexPath;
 
 - (void)beginAddCommentWithComment:(QIMWorkCommentModel *)commentModel;
 
@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)scrollTheTableViewForCommentWithKeyboardHeight:(CGFloat)keyboardHeight;
 
+- (void)reloadUploadCommentWithModel:(QIMWorkCommentModel *)commentModel;
+
 - (void)reloadCommentsData;
 
 - (void)endRefreshingHeader;
@@ -50,7 +52,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)scrollCommentModelToTopIndex;
 
-- (void)removeCommentWithIndexPath:(NSIndexPath *)indexPath;
+- (void)reloadCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment;
+
+- (void)removeCommentWithIndexPath:(NSIndexPath *)indexPath withIsHotComment:(BOOL)isHotComment withSuperStatus:(NSInteger)superParentStatus;
 
 @end
 

@@ -19,7 +19,7 @@
 
 @interface QIMCustomTabBar : UIView
 
-- (id)initWithItemCount:(NSUInteger)count WihtFrame:(CGRect)frame;
+- (id)initWithItemCount:(NSUInteger)count WithFrame:(CGRect)frame;
 
 @property (nonatomic,assign) id<QIMCustomTabBarDelegate> delegate;
 @property (nonatomic,readonly,assign) NSUInteger itemCount;

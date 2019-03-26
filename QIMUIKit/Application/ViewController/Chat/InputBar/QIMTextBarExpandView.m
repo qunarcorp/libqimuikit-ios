@@ -77,7 +77,7 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
                     [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
                 }
             }
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 if (hasSingle && QIMTextBarExpandViewTypeSingle & self.type) {
                     [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
                 }
@@ -116,7 +116,7 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_quickReply" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_quick_reply"] ForItemId:QIMTextBarExpandViewItem_QuickReply];
      }
      #if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 
          if (self.type & QIMTextBarExpandViewTypeSingle) {
              [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_videoCall" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_videoCall"] ForItemId:QIMTextBarExpandViewItem_VideoCall];
@@ -140,7 +140,7 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
      }
     [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_red_pack" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_red_package"] ForItemId:QIMTextBarExpandViewItem_RedPack];
     
-     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aa_collection_icon" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_aa"] ForItemId:QIMTextBarExpandViewItem_AACollection];
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_share_nameplate" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_share_card"] ForItemId:QIMTextBarExpandViewItem_ShareCard];
      }

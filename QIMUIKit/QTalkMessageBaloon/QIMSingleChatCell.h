@@ -9,16 +9,16 @@
 #import "QIMCommonUIFramework.h"
 
 #define kTextLabelTag       9999
-@class Message;
+@class QIMMessageModel;
 @protocol QIMSingleChatCellDelegate <NSObject>
 @required
 - (void)processEvent:(int)event withMessage:(id) message;
-- (void)browserMessage:(Message *)message;
+- (void)browserMessage:(QIMMessageModel *)message;
 @end
 
 @interface QIMSingleChatCell : UITableViewCell
 
-@property (nonatomic, retain) Message *message;
+@property (nonatomic, retain)QIMMessageModel *message;
 @property (nonatomic, assign) CGFloat frameWidth;
 @property (nonatomic, weak) id<QIMSingleChatCellDelegate> delegate;
 @property (nonatomic, assign) NSInteger imageIndex;

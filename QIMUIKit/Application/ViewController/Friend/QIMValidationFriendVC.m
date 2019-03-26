@@ -44,7 +44,7 @@
         [alertView show];
         return;
     }
-    [[QIMKit sharedInstance] validationFriendWihtXmppId:self.xmppId WithReason:_validationTextView.text];
+    [[QIMKit sharedInstance] validationFriendWithXmppId:self.xmppId WithReason:_validationTextView.text];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 

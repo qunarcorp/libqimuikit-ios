@@ -82,7 +82,8 @@
 
 - (void)displayPhoto:(UITapGestureRecognizer *)tap {
     
-    NSDictionary *infoDic = [self.message getMsgInfoDic];
+//    NSDictionary *infoDic = [self.message getMsgInfoDic];
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     if (infoDic) {
         NSString *filePath = [infoDic objectForKey:@"filePath"];
         NSString *httpUrl = [infoDic objectForKey:@"httpUrl"];
@@ -107,7 +108,8 @@
         
         UIImage *image = nil;
         CGSize size;
-        NSDictionary *infoDic = [self.message getMsgInfoDic];
+//        NSDictionary *infoDic = [self.message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
         if (infoDic) {
             NSString *filePath = [infoDic objectForKey:@"thumbFilePath"];           //???????????why,在哪里设置的
             NSString *httpUrl = [infoDic objectForKey:@"thumbUrl"];
@@ -150,15 +152,15 @@
         
         CGFloat backWidth = width + kMsgImageViewLeft * 2 + 5, backHeight = height + kMsgImageViewTop * 2;
         
-        switch (self.message.messageState) {
-            case MessageState_Waiting:
+        switch (self.message.messageSendState) {
+            case QIMMessageSendState_Waiting:
             {
                 [_errorButton setHidden:YES];
                 [_waittingView setHidden:NO];
                 [_waittingView startAnimating];
             }
                 break;
-            case MessageState_Faild:
+            case QIMMessageSendState_Faild:
             {
                 [_errorButton setHidden:NO];
                 [_waittingView setHidden:YES];
@@ -174,7 +176,7 @@
                 break;
         } 
         
-        if (self.message.messageDirection == MessageDirection_Received) {
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
             
             [_msgImageView setFrame:CGRectMake(kMsgImageViewLeft + 5, kMsgImageViewTop, width, height)];
             
@@ -195,7 +197,7 @@
             [_backView setFrame:frame];
             [_backView setImage:[[QIMSingleChatImageTools sharedInstance] getSentBg]];
             
-            [_errorButton setHidden:self.message.messageState != MessageState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
             CGRect errorFrame = _errorButton.frame;
             errorFrame.origin.x = _backView.frame.origin.x - kBackViewCap - errorFrame.size.width;
             errorFrame.origin.y = _backView.frame.origin.y;

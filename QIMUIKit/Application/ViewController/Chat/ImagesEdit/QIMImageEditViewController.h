@@ -20,6 +20,8 @@
 
 @property (nonatomic, assign) id<QIMImageEditViewControllerDelegate> delegate;
 
+@property (nonatomic, assign) BOOL fromAlum;
+
 - (instancetype)initWithImage:(UIImage *)image;
 
 @end

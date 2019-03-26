@@ -10,7 +10,7 @@
 @class QIMMsgBaloonBaseCell;
 @interface QIMDefalutMessageCell : QIMMsgBaloonBaseCell
 
-@property (nonatomic, strong) Message *message;
+@property (nonatomic, strong)QIMMessageModel *message;
 
 @property (nonatomic, strong) YLImageView *HeaderView;  //用户头像
 

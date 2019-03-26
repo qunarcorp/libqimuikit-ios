@@ -170,7 +170,11 @@
 "user_push" = "Push提醒";
 "user_send_msg" = "发送消息";
 "user_add_friend" = "加为好友";
+"remove_to_blacklist" = "移除黑名单";
+"add_to_blacklist" = "添加到黑名单";
+"Complaint" = "投诉";
 "user_delete_friend" = "删除好友";
+"send_message" = "发送消息";
 "user_camera" = "拍照";
 "user_from_album" = "从相册中选择";
 "user_selected" = "选择";

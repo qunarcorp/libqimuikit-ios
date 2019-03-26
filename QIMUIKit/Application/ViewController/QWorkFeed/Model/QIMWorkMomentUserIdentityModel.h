@@ -20,6 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *anonymousPhoto;   //匿名头像
 
+@property (nonatomic, assign) BOOL mockAnonymous;       //Mock匿名
+
+@property (nonatomic, assign) BOOL replaceable;         //匿名头像换一换
+
 @end
 
 @interface QIMWorkMomentUserIdentityManager : NSObject
@@ -33,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *anonymousName;    //匿名名称
 
 @property (nonatomic, copy) NSString *anonymousPhoto;   //匿名头像
+
+@property (nonatomic, assign) BOOL replaceable;         //匿名头像换一换
 
 @end
 

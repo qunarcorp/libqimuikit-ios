@@ -29,9 +29,9 @@
 
 @implementation QIMRTCChatCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
-    return kRTCCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == MessageDirection_Received) ? 40 : 20);
+    return kRTCCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == QIMMessageDirection_Received) ? 40 : 20);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -55,8 +55,8 @@
 }
 
 - (void)tapGesHandle:(UITapGestureRecognizer *)tap{
-    if (self.message.messageState == MessageState_Faild) {
-        if (self.message.extendInformation) {
+    if (self.message.messageSendState == QIMMessageSendState_Faild) {
+        if (self.message.extendInformation.length > 0) {
             self.message.message = self.message.extendInformation;
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:kXmppStreamReSendMessage object:self.message];
@@ -71,11 +71,11 @@
     
     float backWidth = kRTCCellWidth;
     float backHeight = kRTCCellHeight;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
 
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             _titleLabel.textColor = [UIColor blackColor];
             _imageView.frame = CGRectMake(self.backView.left + 16, self.backView.top + 5, 24, 24);
             _titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top, self.backView.width - 40 - 10, self.backView.height);
@@ -83,7 +83,7 @@
             _titleLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             _titleLabel.textColor = [UIColor whiteColor];
             _imageView.frame = CGRectMake(self.backView.left + 10, self.backView.top + 5, 24, 24);
             _titleLabel.frame = CGRectMake(_imageView.right + 5, 5, self.backView.width - 40 - 10, self.backView.height);

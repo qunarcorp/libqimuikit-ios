@@ -15,7 +15,7 @@
 @property (nonatomic, strong) NSString *stype;
 @property (nonatomic, strong) NSString *name;
 
-- (void)refreshCellForMsg : (Message *)msg;
+- (void)refreshCellForMsg : (QIMMessageModel *)msg;
 
 - (void)sendMessage:(NSString *)message WithInfo:(NSString *)info ForMsgType:(int)msgType;
 

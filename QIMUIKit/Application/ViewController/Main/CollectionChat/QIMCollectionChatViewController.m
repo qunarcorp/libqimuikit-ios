@@ -210,28 +210,21 @@
                 
             case ChatType_GroupChat: {
                 [[QIMKit sharedInstance] clearNotReadCollectionMsgByBindId:bindId WithUserId:jid];
-//                QIMGroupChatVC *chatGroupVC = (QIMGroupChatVC *)[[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:jid];
-//                [chatGroupVC setBindId:bindId];
-
-                
                 QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
                 [chatGroupVC setBindId:bindId];
                 [chatGroupVC setChatId:jid];
                 [chatGroupVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatGroupVC setNotReadCount:notReadCount];
                 [chatGroupVC setReadedMsgTimeStamp:-1];
-                
                 if (chatGroupVC.needShowNewMsgTagCell) {
                     
-                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WithRealJid:chatGroupVC.chatId WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
                 }
                 return chatGroupVC;
             }
                 break;
             case ChatType_SingleChat: {
                 [[QIMKit sharedInstance] clearNotReadCollectionMsgByBindId:bindId WithUserId:jid];
-//                QIMChatVC *chatSingleVC = [[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
-//                [chatSingleVC setBindId:bindId];
                 
                 QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
                 [chatSingleVC setBindId:bindId];
@@ -246,9 +239,8 @@
                 [chatSingleVC setNotReadCount:notReadCount];
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatSingleVC.chatId WithRealJid:chatSingleVC.chatId WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
                 }
-                
                 return chatSingleVC;
             }
                 break;

@@ -18,7 +18,7 @@
     UILabel         * _descLabel;
 }
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     NSString * infoStr = message.extendInformation.length <= 0 ? message.message : message.extendInformation;
     NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
     bool showas667 = [[infoDic objectForKey:@"showas667"] boolValue];
@@ -74,13 +74,13 @@
     self.selectedBackgroundView.frame = self.contentView.frame;
     NSString * infoStr = self.message.extendInformation.length <= 0 ? self.message.message : self.message.extendInformation;
     NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
-    CGFloat cellHeight = [QIMCommonTrdInfoCell getCellHeightWihtMessage:self.message chatType:self.chatType];
+    CGFloat cellHeight = [QIMCommonTrdInfoCell getCellHeightWithMessage:self.message chatType:self.chatType];
     CGFloat cellWidth = kCommonTrdInfoCellWidth;
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:cellWidth WihtHeight:cellHeight - 10];
+    [self setBackViewWithWidth:cellWidth WithHeight:cellHeight - 10];
     float imgWidth = 40;
     
-    CGFloat titleLeft = (self.message.messageDirection == MessageDirection_Sent) ? 15 : 25;
+    CGFloat titleLeft = (self.message.messageDirection == QIMMessageDirection_Sent) ? 15 : 25;
     NSString *title = [infoDic objectForKey:@"title"];
     NSString *desc = [infoDic objectForKey:@"desc"];
     NSString *linkUrl = [infoDic objectForKey:@"linkurl"];
@@ -110,11 +110,11 @@
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;
@@ -125,7 +125,11 @@
         [menuList addObject:@(MA_CopyOriginMsg)];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeAllObjects];
+//        [menuList removeObject:@(MA_Refer)];
+//        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Delete)];
+        [menuList removeObject:@(MA_Forward)];
+//        [menuList removeObject:@(MA_Repeater)];
     }
     return menuList;
 }

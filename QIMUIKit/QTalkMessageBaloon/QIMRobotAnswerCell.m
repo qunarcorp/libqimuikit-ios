@@ -36,13 +36,13 @@
 
 @implementation QIMRobotAnswerCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType {
     
     NSDictionary *exTrdDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
     NSString *content = [exTrdDic objectForKey:@"content"];
     CGFloat cellHeight = 0.0f;
     if (content.length) {
-        Message *contentMsg = [[Message alloc] init];
+        QIMMessageModel *contentMsg = [[QIMMessageModel alloc] init];
         contentMsg.message = content;
         contentMsg.messageId = [NSString stringWithFormat:@"%@_content", message.messageId];
         contentMsg.messageDirection = message.messageDirection;
@@ -50,13 +50,14 @@
         textContainer.font = [UIFont systemFontOfSize:kHintTextFontSize];
         cellHeight += [textContainer getHeightWithFramesetter:nil width:textContainer.textWidth];
     }
-    MessageState state = [[QIMKit sharedInstance] getMessageStateWithMsgId:message.messageId];
-    if (state == MessageState_didControl) {
+    QIMMessageRemoteReadState readState = [[QIMKit sharedInstance] getReadStateWithMsgId:message.messageId];
+    QIMVerboseLog(@"readState : %ld", readState);
+    if (readState == 4) {
         return cellHeight + 50;
     } else {
         NSString *middleContent = [exTrdDic objectForKey:@"middleContent"];
         if (middleContent.length) {
-            Message *middleContentMsg = [[Message alloc] init];
+            QIMMessageModel *middleContentMsg = [[QIMMessageModel alloc] init];
             middleContentMsg.message = middleContent;
             middleContentMsg.messageId = [NSString stringWithFormat:@"%@_middleContent", message.messageId];
             middleContentMsg.messageDirection = message.messageDirection;
@@ -102,11 +103,9 @@
         NSArray *msgIds = [notifyDic objectForKey:@"MsgIds"];
         for (NSDictionary *msgDict in msgIds) {
             NSString *msgId = [msgDict objectForKey:@"id"];
-            MessageState state = (MessageState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
+            QIMMessageRemoteReadState state = (QIMMessageRemoteReadState)[[notifyDic objectForKey:@"State"] unsignedIntegerValue];
             if ([msgId isEqualToString:self.message.messageId]) {
-                if (state > self.message.messageState) {
-                    self.message.messageState = state;
-                }
+                self.message.messageReadState = state;
                 if (self.delegate && [self.delegate respondsToSelector:@selector(refreshRobotAnswerMessageCell:)]) {
                     [self.delegate refreshRobotAnswerMessageCell:self];
                 }
@@ -122,7 +121,7 @@
     
     NSDictionary *exTrdDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.extendInformation error:nil];
     NSString *msgContent = [exTrdDic objectForKey:@"content"];
-    Message *contentMsg = [[Message alloc] init];
+    QIMMessageModel *contentMsg = [[QIMMessageModel alloc] init];
     contentMsg.message = msgContent;
     contentMsg.messageId = [NSString stringWithFormat:@"%@_content", self.message.messageId];
     contentMsg.messageDirection = self.message.messageDirection;
@@ -131,25 +130,33 @@
     self.msgContentLabel.delegate = self.delegate;
     self.msgContentLabel.textContainer = _msgContentContainer;
     if (_msgContentContainer) {
-        [self.msgContentLabel setFrameWithOrign:CGPointMake((MessageDirection_Received == self.message.messageDirection) ? 25 :10, 16) Width:[QIMMessageParser getCellWidth]];
+        [self.msgContentLabel setFrameWithOrign:CGPointMake((QIMMessageDirection_Received == self.message.messageDirection) ? 25 :10, 16) Width:[QIMMessageParser getCellWidth]];
     }else {
         [self.msgContentLabel setFrameWithOrign:CGPointMake(0, 0) Width:[QIMMessageParser getCellWidth]];
     }
     float cellWidth = [QIMMessageParser getCellWidth];
-    float height = [QIMRobotAnswerCell getCellHeightWihtMessage:self.message chatType:self.message.chatType - 20];
+    float height = [QIMRobotAnswerCell getCellHeightWithMessage:self.message chatType:self.message.chatType - 20];
     
     [self.backView setMessage:self.message];
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
-    [self setBackViewWithWidth:[QIMMessageParser getCellWidth] + 40 WihtHeight:height - 30];
-    MessageState state = [[QIMKit sharedInstance] getMessageStateWithMsgId:self.message.messageId];
-    if (state != MessageState_didControl) {
+    [self setBackViewWithWidth:[QIMMessageParser getCellWidth] + 40 WithHeight:height - 30];
+    QIMMessageReadFlag readState = [[QIMKit sharedInstance] getMessageStateWithMsgId:self.message.messageId];
+    QIMVerboseLog(@"readState2 : %ld", readState);
+
+    if (readState == 4) {
+        [self.lineView removeFromSuperview];
+        [self.panelBgView removeAllSubviews];
+        [self.panelBgView removeFromSuperview];
+        [self.middleContentLabel removeFromSuperview];
+        [self.controllPanelBgView removeFromSuperview];
+    } else {
         self.panelBgView.frame = CGRectMake(10, self.msgContentLabel.bottom, [QIMMessageParser getCellWidth] + 40 - 20, self.backView.bottom - self.msgContentLabel.bottom - 35);
         self.lineView = [[UIView alloc] initWithFrame:CGRectMake(12, 5, cellWidth + 20 - 24, 1.0f)];
         self.lineView.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
         [self.panelBgView addSubview:self.lineView];
         
         NSString *middleContent = [exTrdDic objectForKey:@"middleContent"];
-        Message *middleContentMsg = [[Message alloc] init];
+        QIMMessageModel *middleContentMsg = [[QIMMessageModel alloc] init];
         middleContentMsg.message = middleContent;
         middleContentMsg.messageId = [NSString stringWithFormat:@"%@_middleContent", self.message.messageId];
         middleContentMsg.messageDirection = self.message.messageDirection;
@@ -158,7 +165,7 @@
         self.middleContentLabel.delegate = self.delegate;
         self.middleContentLabel.textContainer = _middleContentContainer;
         if (_middleContentContainer) {
-            [self.middleContentLabel setFrameWithOrign:CGPointMake((MessageDirection_Received == self.message.messageDirection) ? 20 :5, 16) Width:[QIMMessageParser getCellWidth]];
+            [self.middleContentLabel setFrameWithOrign:CGPointMake((QIMMessageDirection_Received == self.message.messageDirection) ? 20 :5, 16) Width:[QIMMessageParser getCellWidth]];
         } else {
             [self.middleContentLabel setFrameWithOrign:CGPointMake(0,0) Width:[QIMMessageParser getCellWidth]];
         }
@@ -167,10 +174,6 @@
         [self.panelBgView addSubview:self.middleContentLabel];
         self.controllPanelBgView.frame = CGRectMake(0, self.middleContentLabel.bottom + 10, self.panelBgView.width, 20);
         [self setupControlButton];
-    } else {
-        [self.lineView removeFromSuperview];
-        [self.panelBgView removeAllSubviews];
-        [self.panelBgView removeFromSuperview];
     }
     [super refreshUI];
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
@@ -259,7 +262,7 @@
         if (self.delegate && [self.delegate respondsToSelector:@selector(refreshRobotAnswerMessageCell:)]) {
             [self.delegate refreshRobotAnswerMessageCell:self];
         }
-        [[QIMKit sharedInstance] sendControlStateWithMessagesIdArray:@[self.message.messageId] WithXmppId:self.message.from];
+        [[QIMKit sharedInstance] sendReadStateWithMessagesIdArray:@[self.message.messageId] WithMessageReadFlag:QIMMessageReadFlagDidControl WithXmppId:self.message.from];
     } withFailedCallBack:^(NSError *error) {
         
     }];

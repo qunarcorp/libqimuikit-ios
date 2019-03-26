@@ -7,6 +7,16 @@
 
 #import "QIMCommonUIFramework.h"
 
+@protocol QIMOrganizationalVCDelegate <NSObject>
+
+- (void)selectShareContactWithJid:(NSString *)jid;
+
+@end
+
 @interface QIMOrganizationalVC : QTalkViewController
+
+@property (nonatomic, assign) BOOL shareCard;
+
+@property (nonatomic, weak) id <QIMOrganizationalVCDelegate> shareCardDelegate;
 
 @end

@@ -64,16 +64,16 @@
 @implementation QIMRobotQuestionCell
 @dynamic delegate;
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)msg chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)msg chatType:(ChatType)chatType {
     return [self consultRbtCellHeightForMsg:msg];
 }
 
-+ (CGFloat)consultRbtCellHeightForMsg:(Message *)msg {
++ (CGFloat)consultRbtCellHeightForMsg:(QIMMessageModel *)msg {
     CGFloat screenW = [UIScreen mainScreen].bounds.size.width;
     CGFloat maxWidth = screenW - 2*kIMChatMargin;
     float cellHeight = 0;
     float cellWidth = maxWidth;
-    NSString * jsonStr = msg.extendInformation ? msg.extendInformation : msg.message;
+    NSString * jsonStr = msg.extendInformation.length > 0 ? msg.extendInformation : msg.message;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:jsonStr error:nil];
     if (infoDic == nil && jsonStr.length) {
         infoDic = @{@"content":jsonStr?jsonStr:@""};
@@ -202,10 +202,10 @@
     return self;
 }
 
-- (void)setMessage:(Message *)message {
+- (void)setMessage:(QIMMessageModel *)message {
     [super setMessage:message];
     _hintContainer = [[QIMMessageCellCache sharedInstance] getObjectForKey:[message.messageId stringByAppendingString:@"_hints"]];
-    NSString * jsonStr = self.message.extendInformation ? self.message.extendInformation : self.message.message;
+    NSString * jsonStr = self.message.extendInformation.length > 0 ? self.message.extendInformation : self.message.message;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:jsonStr error:nil];
     if (infoDic && infoDic[@"content"]) {
         if ([infoDic[@"content"] length]) {
@@ -223,11 +223,11 @@
     _textLabel.delegate = self.delegate;
     _textLabel.textContainer = _textContainer;
     if (_textContainer) {
-        [_textLabel setFrameWithOrign:CGPointMake((MessageDirection_Received == self.message.messageDirection) ? kQCIMMsgCellCtntMargin :kQCIMMsgCellCtntMargin - 3,kQCIMMsgCellCtntMargin) Width:[QIMMessageParser getCellWidth]];
+        [_textLabel setFrameWithOrign:CGPointMake((QIMMessageDirection_Received == self.message.messageDirection) ? kQCIMMsgCellCtntMargin :kQCIMMsgCellCtntMargin - 3,kQCIMMsgCellCtntMargin) Width:[QIMMessageParser getCellWidth]];
     } else {
         [_textLabel setFrameWithOrign:CGPointMake(0,0) Width:[QIMMessageParser getCellWidth]];
     }
-    NSString *jsonStr = self.message.extendInformation ? self.message.extendInformation : self.message.message;
+    NSString *jsonStr = self.message.extendInformation.length > 0 ? self.message.extendInformation : self.message.message;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:jsonStr error:nil];
     CGFloat maxWidth = screenW - 2*kIMChatMargin;
     float backWidth = maxWidth;
@@ -353,7 +353,7 @@
 //        backHeight = _listBGView.bottom;
     }
     _bgView.frame = CGRectMake(0, 0, screenW, originY + 5);
-//    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+//    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     
     //hints
 //    if (_hintContainer) {
@@ -400,7 +400,7 @@
     NSArray * items = nil;
     NSString *listTip = nil;
     int initSize = 0;
-    NSString * jsonStr = self.message.extendInformation ? self.message.extendInformation : self.message.message;
+    NSString * jsonStr = self.message.extendInformation.length > 0 ? self.message.extendInformation : self.message.message;
     if (jsonStr.length) {
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:jsonStr error:nil];
         NSString * type = [infoDic[@"listArea"] objectForKey:@"type"];

@@ -19,7 +19,11 @@
 @implementation QIMWorkMomentNotifyView
 
 - (instancetype)initWithNewMsgCount:(NSInteger)msgCount {
-    self = [super initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 54)];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 54)];
+    } else {
+        self = [super initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 54)];
+    }
     if (self) {
         self.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F9];
         

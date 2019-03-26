@@ -109,12 +109,19 @@
         [imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"q_work_placeholder"]];
     }
     self.width = SCREEN_WIDTH - 60 - 20;
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        self.width = [[UIScreen mainScreen] qim_rightWidth] - 60 - 20;
+    }
     self.height = imageView.bottom;
 }
 
 - (CGSize)getSingleSize:(CGSize)singleSize {
     CGFloat max_width = SCREEN_WIDTH - 80;
     CGFloat max_height = SCREEN_WIDTH - 80;
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        max_width = [[UIScreen mainScreen] qim_rightWidth] - 80;
+        max_height = [[UIScreen mainScreen] qim_rightWidth] - 80;
+    }
     CGFloat image_width = singleSize.width;
     CGFloat image_height = singleSize.height;
     

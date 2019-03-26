@@ -21,7 +21,7 @@
 @property (nonatomic, weak) id<QIMContactSelectionViewControllerDelegate> delegate;
 
 @property (nonatomic, assign) BOOL ExternalForward;
-@property (nonatomic, strong) Message *message;
+@property (nonatomic, strong)QIMMessageModel *message;
 @property (nonatomic, strong) NSArray *messageList;
 
 @property (nonatomic, assign) BOOL      isTransfer;//是否是会话转移

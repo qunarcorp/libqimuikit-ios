@@ -10,6 +10,8 @@
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkMomentLabel.h"
 #import "QIMMarginLabel.h"
+#import "QIMWorkMomentParser.h"
+#import "QIMEmotionManager.h"
 
 CGFloat maxFullContentHeight = 0;
 
@@ -45,6 +47,12 @@ CGFloat maxFullContentHeight = 0;
         [self setupUI];
     }
     return self;
+}
+
+- (void)setMomentModel:(QIMWorkMomentModel *)momentModel {
+    _momentModel = momentModel;
+    [self removeAllSubviews];
+    [self setupUI];
 }
 
 - (void)setupUI {
@@ -123,10 +131,14 @@ CGFloat maxFullContentHeight = 0;
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
         NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
         NSString *showDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
-        _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @" 未知 ";
-        [_organLab sizeToFit];
-        [_organLab sizeThatFits:CGSizeMake(_organLab.width, _organLab.height)];
-        _organLab.height = 20;
+        if (showDp.length > 0) {
+            _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @"";
+            [_organLab sizeToFit];
+            [_organLab sizeThatFits:CGSizeMake(_organLab.width, _organLab.height)];
+            _organLab.height = 20;
+        } else {
+            _organLab.hidden = YES;
+        }
         
         _rIdLabe.frame = CGRectMake(self.organLab.right + 5, self.nameLab.top, 20, 20);
         _rIdLabe.text = [NSString stringWithFormat:@"%ld", self.moment.rId];
@@ -150,11 +162,25 @@ CGFloat maxFullContentHeight = 0;
     _organLab.centerY = self.headImageView.centerY;
     _rIdLabe.centerY = self.headImageView.centerY;
     CGFloat bottom = self.headImageView.bottom;
-    _contentLabel.text = self.moment.content.content;
-    [_contentLabel sizeToFit];
-    CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
-    self.contentLabel.height = textH;
+    
+    NSString *texg = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.moment.content.content];
+    QIMMessageModel *msg = [[QIMMessageModel alloc] init];
+    msg.message = texg;
+    msg.messageId = self.moment.momentId;
+    
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
+        CGFloat textH = textContainer.textHeight;
+        self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, [[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20, textContainer.textHeight);
+        _contentLabel.textContainer = textContainer;
+
+    } else {
+        
+        QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
+        CGFloat textH = textContainer.textHeight;
+        self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 20, textContainer.textHeight);
+        _contentLabel.textContainer = textContainer;
+    }
     bottom = _contentLabel.bottom + 8;
 
     if (self.moment.content.imgList.count > 0) {

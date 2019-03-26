@@ -53,7 +53,7 @@
     _groupList = [[NSMutableArray alloc] initWithArray:[[QIMKit sharedInstance] getGroupList]];
     
     [self initWithNav];
-//    [self initWihtUI];
+//    [self initWithUI];
     [self initTableView];
     [self setupSearchBar];
     
@@ -81,7 +81,7 @@
     [self.navigationItem setTitle:@"加入群组"];
 }
 
-//- (void)initWihtUI{
+//- (void)initWithUI{
 //    
 //    _groupNameField = [[UITextField alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110, _navbar.bottom + 40, 220, 40)];
 //    [_groupNameField setBorderStyle:UITextBorderStyleNone];

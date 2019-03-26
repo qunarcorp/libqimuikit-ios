@@ -9,10 +9,13 @@
 #import "QIMCommonUIFramework.h"
 @class QIMWorkMomentLabel;
 @class QIMWorkCommentModel;
+@class QIMWorkChildCommentListView;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkCommentCell : UITableViewCell
+
+@property (nonatomic, strong) NSIndexPath *commentIndexPath;
 
 @property (nonatomic, strong) UIImageView *headImageView;
 
@@ -24,9 +27,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) UILabel *replyNameLabel;
 
+@property (nonatomic, assign) BOOL isChildComment;
+
+@property (nonatomic, assign) CGFloat leftMagin;
+
 @property (nonatomic, strong) QIMWorkMomentLabel *contentLabel;
 
 @property (nonatomic, strong) QIMWorkCommentModel *commentModel;
+
+@property (nonatomic, strong) QIMWorkChildCommentListView *childCommentListView;
 
 @end
 

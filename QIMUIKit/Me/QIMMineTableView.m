@@ -59,7 +59,7 @@
     
 
     NSArray<QIMCommonTableViewCellData *> *section3 = @[];
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         section3 =  @[
                       [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"explore_tab_sign_in_check"] iconName:@"\U0000f1b7" cellDataType:QIMCommonTableViewCellDataTypeAttendance],[[QIMCommonTableViewCellData alloc] initWithTitle:@"QTalk Token" iconName:@"\U0000f1b7" cellDataType:QIMCommonTableViewCellDataTypeTotpToken],
                       [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"explore_tab_my_file"] iconName:@"\U0000e213" cellDataType:QIMCommonTableViewCellDataTypeMyFile],
@@ -71,7 +71,7 @@
                                                  ];
     [_dataSource addObject:section0];
     [_dataSource addObject:section1];
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && [[QIMKit sharedInstance] qimNav_ShowOA]) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat && [[QIMKit sharedInstance] qimNav_ShowOA]) {
         [_dataSource addObject:section2];
     }
     [_dataSource addObject:section3];
@@ -112,7 +112,7 @@
 
 - (void)loadUserInfo {
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        self.userInfo = [NSMutableDictionary dictionaryWithDictionary:[[QIMKit sharedInstance] getQChatUserInfoForUser:[QIMKit getLastUserName]]];
+        self.userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:[[QIMKit sharedInstance] getLastJid]];
         _userId = [[QIMKit sharedInstance] getLastJid];
         
         NSString *type = [_userInfo objectForKey:@"type"];
@@ -158,11 +158,10 @@
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (weakSelf.userId) {
-            NSDictionary * usersInfo = [[QIMKit sharedInstance] getRemoteUserProfileForUserIds:@[weakSelf.userId]];
+            NSDictionary * usersInfo = [[QIMKit sharedInstance] getUserInfoByUserId:@[weakSelf.userId]];
             if (usersInfo.count > 0) {
-                weakSelf.userVCardInfo = [NSDictionary dictionaryWithDictionary:usersInfo[weakSelf.userId]];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    weakSelf.model.personalSignature = [weakSelf.userVCardInfo objectForKey:@"M"];
+                    weakSelf.model.personalSignature = [usersInfo objectForKey:@"Mood"];
                     [weakSelf.tableView reloadData];
                 });
             }

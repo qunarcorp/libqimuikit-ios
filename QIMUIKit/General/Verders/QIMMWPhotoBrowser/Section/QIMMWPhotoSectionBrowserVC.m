@@ -232,7 +232,7 @@
 - (NSArray *)splitLocalMediasWithLocalMsg:(NSArray *)localMsgs {
     NSMutableDictionary *msgsMap = [[NSMutableDictionary alloc] initWithCapacity:3];
     NSMutableArray *dateArray = [NSMutableArray arrayWithCapacity:3];
-    for (Message * msg in localMsgs) {
+    for (QIMMessageModel * msg in localMsgs) {
         NSString *timeStr = [self getTimeStr:msg.messageDate];
         if (![dateArray containsObject:timeStr]) {
             [dateArray addObject:timeStr];
@@ -241,7 +241,7 @@
         QIMMessageType msgType = msg.messageType;
         if (msgType == QIMMessageType_SmallVideo) {
             
-            NSDictionary *videoExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation ? msg.extendInformation : msg.message error:nil];
+            NSDictionary *videoExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation.length > 0 ? msg.extendInformation : msg.message error:nil];
             if (!videoExtendInfoDic) {
                 continue;
             }
@@ -677,14 +677,11 @@
     if (self.selectMediaArray.count) {
         NSMutableArray *msgList = [NSMutableArray arrayWithCapacity:1];
         for (QIMMWPhoto *photo in self.selectMediaArray) {
-            Message *msg = [Message new];
+            QIMMessageModel *msg = [QIMMessageModel new];
             [msg setMessageType:QIMMessageType_Text];
             NSString *msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\"]", photo.photoURL.absoluteString];
             [msg setMessage:msgText];
             [msgList addObject:msg];
-            
-//            Message *msg = (Message *)photo.photoMsg;
-//            [msgList addObject:[QIMMessageParser reductionMessageForMessage:msg]];
         }
         QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];

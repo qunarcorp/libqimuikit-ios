@@ -112,10 +112,10 @@
     id temp = [self.dataSource objectAtIndex:indexPath.row];
     if ([temp isKindOfClass:[NSString class]]) {
         
-    } else if (![temp isKindOfClass:[Message class]]) {
+    } else if (![temp isKindOfClass:[QIMMessageModel class]]) {
         
     } else {
-        Message *message = temp;
+       QIMMessageModel *message = temp;
         NSString *msgContent = message.message;
         NSString *extendInfo = message.extendInformation;
         switch (message.messageType) {
@@ -125,7 +125,7 @@
                 NSDictionary *infoDic = [productDic objectForKey:@"data"];
                 NSString *url = [productDic objectForKey:@"url"];
                 if (infoDic.count > 0) {
-                    if (MessageDirection_Received == message.messageType || QIMMessageType_CNote == message.messageType) {
+                    if (QIMMessageDirection_Received == message.messageType || QIMMessageType_CNote == message.messageType) {
                         return [QIMProductInfoCell getCellHeight];
                     } else {
                         message.message = [NSString stringWithFormat:@"[obj type=\"url\" value=\"%@\"]", url];
@@ -148,7 +148,7 @@
             case QIMMessageType_product: {
                 
                 NSDictionary *productDic = nil;
-                if (message.extendInformation) {
+                if (message.extendInformation.length > 0) {
                     productDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
                 } else {
                     productDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
@@ -168,15 +168,15 @@
             case QIMMessageType_CommonTrdInfoPer:
             case QIMMessageType_CommonTrdInfo: {
                 
-                CGFloat height = [QIMCommonTrdInfoCell getCellHeightWihtMessage:message chatType:self.chatType] + 20;
+                CGFloat height = [QIMCommonTrdInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
                 return height;
             }
                 break;
             case QIMMessageType_Forecast: {
-                return [QIMForecastCell getCellHeightWihtMessage:message chatType:self.chatType] + 20;
+                return [QIMForecastCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
             }
             case QIMMessageType_GroupNotify: {
-                return [QIMChatNotifyInfoCell getCellHeightWihtMessage:message chatType:self.chatType] + 20;
+                return [QIMChatNotifyInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
             }
                 break;
             case QIMMessageType_Text:
@@ -184,12 +184,12 @@
             case QIMMessageType_ImageNew:{
                 
                 QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == MessageDirection_Received ? 36 : 25) + 10;
+                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == QIMMessageDirection_Received ? 36 : 25) + 10;
             }
                 break;
             case QIMMessageType_NewAt: {
                 QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == MessageDirection_Received ? 36 : 25) + 10;
+                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == QIMMessageDirection_Received ? 36 : 25) + 10;
             }
                 break;
             case QIMMessageType_NewMsgTag: {
@@ -206,13 +206,13 @@
                 if (self.chatType == ChatType_Consult) {
                     return 0;
                 } else {
-                    return [TransferInfoCell getCellHeightWihtMessage:message chatType:self.chatType];
+                    return [TransferInfoCell getCellHeightWithMessage:message chatType:self.chatType];
                 }
             }
                 break;
             case QIMMessageType_TransChatToCustomer_Feedback:
             case QIMMessageType_TransChatToCustomerService_Feedback:{
-                return [TransferInfoCell getCellHeightWihtMessage:message chatType:self.chatType];
+                return [TransferInfoCell getCellHeightWithMessage:message chatType:self.chatType];
             }
                 break;
             case PublicNumberMsgType_Notice: {
@@ -234,14 +234,14 @@
             }
                 break;
             case QIMMessageTypeMeetingRemind: {
-                return [QIMMeetingRemindCell getCellHeightWihtMessage:temp chatType:self.chatType] + 35;
+                return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 35;
             }
                 break;
             default: {
                 
                 Class someClass = [[QIMKit sharedInstance] getRegisterMsgCellClassForMessageType:message.messageType];
                 if (someClass) {
-                    CGFloat height = [someClass getCellHeightWihtMessage:temp chatType:self.chatType] + 5;
+                    CGFloat height = [someClass getCellHeightWithMessage:temp chatType:self.chatType] + 5;
                     return height;
                 } else {
                     QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
@@ -259,14 +259,14 @@
         if (!self.forwardSelectedMsgs) {
             self.forwardSelectedMsgs = [[NSMutableSet alloc] initWithCapacity:5];
         }
-        Message *msg = [self.dataSource objectAtIndex:indexPath.row];
+       QIMMessageModel *msg = [self.dataSource objectAtIndex:indexPath.row];
         if ([self.canForwardMsgTypeArray containsObject:@(msg.messageType)]) {
             [self.forwardSelectedMsgs addObject:msg];
         }
         [self updateForwardBtnState];
         return;
     }
-    Message *msg = [self.dataSource objectAtIndex:indexPath.row];
+   QIMMessageModel *msg = [self.dataSource objectAtIndex:indexPath.row];
     
     switch (msg.messageType) {
         case QIMMessageType_RedPack:
@@ -433,7 +433,7 @@
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView.editing) {
-        Message *msg = [self.dataSource objectAtIndex:indexPath.row];
+       QIMMessageModel *msg = [self.dataSource objectAtIndex:indexPath.row];
         if (!self.forwardSelectedMsgs) {
             self.forwardSelectedMsgs = [[NSMutableSet alloc] initWithCapacity:5];
         }
@@ -450,7 +450,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger row = [indexPath row];
-    Message *msg = [self.dataSource objectAtIndex:indexPath.row];
+   QIMMessageModel *msg = [self.dataSource objectAtIndex:indexPath.row];
     if (tableView.editing) {
         if (!self.forwardSelectedMsgs) {
             self.forwardSelectedMsgs = [[NSMutableSet alloc] initWithCapacity:5];
@@ -459,20 +459,6 @@
             [cell setSelected:YES animated:NO];
         } else {
             [cell setSelected:NO animated:NO];
-        }
-    }
-    
-    if (row < self.dataSource.count) {
-        
-        Message *message = [self.dataSource objectAtIndex:indexPath.row];
-        if (message.messageType == QIMMessageType_Text) {
-            if (message.readTag != 1) {
-                [[QIMEmotionSpirits sharedInstance] playQIMEmotionSpiritsWithMessage:message.message];
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                   [[QIMKit sharedInstance] updateMessageReadStateWithMsgId:message.messageId];
-                });
-                [message setReadTag:1];
-            }
         }
     }
 }
@@ -486,7 +472,7 @@
     }
     BOOL isvisable = [[tableView indexPathsForVisibleRows] containsObject:indexPath];
     id temp = [self.dataSource objectAtIndex:row];
-    Message *message = temp;
+   QIMMessageModel *message = temp;
 //    QIMVerboseLog(@"解密会话状态 : %lu,   %d", (unsigned long)[[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId], message.messageType);
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
     if (([[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId] > QIMEncryptChatStateNone) && message.messageType == QIMMessageType_Encrypt) {
@@ -518,7 +504,7 @@
             }
             cell.chatType = self.chatType;
             NSDictionary *proDic = nil;
-            if (message.extendInformation) {
+            if (message.extendInformation.length > 0) {
                 proDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
             } else {
                 proDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
@@ -598,7 +584,7 @@
             cell.message = message;
             cell.chatType = self.chatType;
             NSDictionary *proDic = nil;
-            if (message.extendInformation) {
+            if (message.extendInformation.length > 0) {
                 proDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
             } else {
                 proDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
@@ -746,7 +732,7 @@
                 [cell setDelegate:self.ownerVc];
                 [cell setMessage:message];
                 BOOL isRead = [[QIMVoiceNoReadStateManager sharedVoiceNoReadStateManager] isReadWithMsgId:message.messageId ChatId:self.chatId];
-                if (message.messageDirection == MessageDirection_Received) {
+                if (message.messageDirection == QIMMessageDirection_Received) {
                     [[QIMVoiceNoReadStateManager sharedVoiceNoReadStateManager] setVoiceNoReadStateWithMsgId:message.messageId ChatId:self.chatId withState:isRead];
                 }
                 cell.isGroupVoice = YES;
@@ -1005,7 +991,7 @@
     }
     if (tableView.editing) {
         id temp = [self.dataSource objectAtIndex:indexPath.row];
-        Message *message = temp;
+       QIMMessageModel *message = temp;
         if ([self.canForwardMsgTypeArray containsObject:@(message.messageType)]) {
             return YES;
         }
@@ -1015,7 +1001,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     id temp = [self.dataSource objectAtIndex:indexPath.row];
-    Message *message = temp;
+   QIMMessageModel *message = temp;
     QIMVerboseLog(@"commit msg : %@", message);
 }
 

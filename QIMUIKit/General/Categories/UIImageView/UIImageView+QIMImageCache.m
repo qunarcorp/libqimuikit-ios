@@ -29,7 +29,7 @@
 - (void)qim_setImageWithJid:(NSString *)jid WithRealJid:(NSString *)realJid WithChatType:(ChatType)chatType placeholderImage:(UIImage *)placeholder {
     __block NSString *headerUrl = nil;
     __block UIImage *placeholderImage = placeholder;
-    dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
+//    dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
 
         switch (chatType) {
             case ChatType_SingleChat: {
@@ -81,6 +81,7 @@
             }
                 break;
             case ChatType_CollectionChat: {
+                headerUrl = [[QIMKit sharedInstance] getUserHeaderSrcByUserId:realJid];
                 placeholderImage = [UIImage imageNamed:@"relation"];
             }
                 break;
@@ -107,7 +108,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sd_setImageWithURL:headerUrl placeholderImage:placeholderImage];
         });
-    });
+//    });
 }
 
 - (void)qim_setCollectionImageWithJid:(NSString *)jid WithChatType:(ChatType)chatType {
@@ -176,7 +177,7 @@
     [self sd_setImageWithURL:url placeholderImage:placeholder];
 }
 
-- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletionBlock)completedBlock {
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDExternalCompletionBlock)completedBlock {
     [self sd_setImageWithURL:url placeholderImage:placeholder completed:completedBlock];
 }
 
