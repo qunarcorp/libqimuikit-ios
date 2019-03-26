@@ -743,7 +743,7 @@
                 NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
                 if (token.length <= 0) {
                     NSDictionary *tokenDic = [QIMKit getUserTokenWithUserName:userName
-                                                                  WihtVerifyCode:validCode];
+                                                                  WithVerifyCode:validCode];
                     int statusId = (tokenDic && [[tokenDic allKeys] containsObject:@"status_id"]) ?
                     [[tokenDic objectForKey:@"status_id"] intValue] : -1;
                     

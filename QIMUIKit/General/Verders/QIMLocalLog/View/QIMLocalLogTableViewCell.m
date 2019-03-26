@@ -39,7 +39,7 @@
         NSString *fileName = [logFilePath lastPathComponent];        
         [self.nameLabel setText:fileName];
         [self.sizeLabel setText:fileSizeStr];
-        [self.fileIcon setImage:[QIMFileIconTools getFileIconWihtExtension:fileName.pathExtension]];
+        [self.fileIcon setImage:[QIMFileIconTools getFileIconWithExtension:fileName.pathExtension]];
     }
 }
 

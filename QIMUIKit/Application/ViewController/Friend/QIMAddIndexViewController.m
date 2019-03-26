@@ -158,7 +158,7 @@ static NSInteger limitCount = 15;
     self.stringsArray = [NSMutableArray arrayWithCapacity:5];
     [[QIMHttpRequestMonitor sharedInstance] syncRunBlock:^{
         
-        NSString *urlStr = @"https://qt.qunar.com/s/qtalk/domainlist.php?t=qtalk";
+        NSString *urlStr = @"https://qim.qunar.com/s/qtalk/domainlist.php?t=qtalk";
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
            urlStr = [urlStr stringByReplacingOccurrencesOfString:@"qtalk" withString:@"qchat"];
         }
@@ -178,7 +178,7 @@ static NSInteger limitCount = 15;
             self.objectsArray = responseDict[@"data"][@"domains"];
         }
         
-    } url:@"https://qt.qunar.com/s/qtalk/domainlist.php"];
+    } url:@"https://qim.qunar.com/s/qtalk/domainlist.php"];
     for (NSDictionary *dict in self.objectsArray) {
         if (dict) {
             if (dict[@"name"]) {

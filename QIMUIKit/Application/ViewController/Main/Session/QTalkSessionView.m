@@ -29,6 +29,7 @@
 #import "QIMCustomPopViewController.h"
 #import "QIMCustomPresentationController.h"
 #import "QIMCustomPopManager.h"
+#import "QIMIPadWindowManager.h"
 
 #if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
 
@@ -44,7 +45,7 @@
 @end
 #endif
 
-@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate> {
+@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate, UISearchBarDelegate> {
     MBProgressHUD *_tipHUD;
     BOOL _canWrite;
     CABasicAnimation *_writingAnimation;
@@ -99,6 +100,8 @@
 @property (nonatomic, strong) UIViewController *tempRootVc;
 
 @property (nonatomic, strong) NSArray *moreActionArray;
+
+@property (nonatomic, strong) UISearchBar *searchBar;
 
 @end
 
@@ -161,25 +164,34 @@
 
 - (UIView *)tableViewHeaderView {
     
-    CGFloat appendHeight = 0.0f;
-    for (UIView *appendView in self.appendHeaderViews) {
-        appendHeight += appendView.height;
+    if (self.notShowHeader == YES) {
+        return nil;
+    } else {
+        CGFloat appendHeight = 0.0f;
+        for (UIView *appendView in self.appendHeaderViews) {
+            appendHeight += appendView.height;
+        }
+        
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, ([self.rootViewController isKindOfClass:[QIMMainVC class]] ? self.rootViewController.searchBar.height : 0) + appendHeight)];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            headerView.frame = CGRectMake(0, 0, self.tableView.width, self.searchBar.height + appendHeight);
+        }
+        UIView *logoView = [[UIView alloc] initWithFrame:CGRectMake(0, - self.tableView.height, self.tableView.width, self.tableView.height)];
+        [logoView setBackgroundColor:[UIColor qim_colorWithHex:0x787878 alpha:1]];
+        [headerView addSubview:logoView];
+        if ([self.rootViewController isKindOfClass:[QIMMainVC class]] && [[QIMKit sharedInstance] getIsIpad] == NO) {
+            [headerView addSubview:self.rootViewController.searchBar];
+        } else {
+            [headerView addSubview:self.searchBar];
+        }
+        for (UIView *appendView in self.appendHeaderViews) {
+            UIView *lastView = headerView.subviews.lastObject;
+            CGRect appendViewFrame = CGRectMake(appendView.origin.x, lastView.bottom, appendView.width, appendView.height);
+            [appendView setFrame:appendViewFrame];
+            [headerView addSubview:appendView];
+        }
+        return headerView;
     }
-    
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, ([self.rootViewController isKindOfClass:[QIMMainVC class]] ? self.rootViewController.searchBar.height : 0) + appendHeight)];
-    UIView *logoView = [[UIView alloc] initWithFrame:CGRectMake(0, - self.tableView.height, self.tableView.width, self.tableView.height)];
-    [logoView setBackgroundColor:[UIColor qim_colorWithHex:0x787878 alpha:1]];
-    [headerView addSubview:logoView];
-    if ([self.rootViewController isKindOfClass:[QIMMainVC class]]) {
-        [headerView addSubview:self.rootViewController.searchBar];
-    }
-    for (UIView *appendView in self.appendHeaderViews) {
-        UIView *lastView = headerView.subviews.lastObject;
-        CGRect appendViewFrame = CGRectMake(appendView.origin.x, lastView.bottom, appendView.width, appendView.height);
-        [appendView setFrame:appendViewFrame];
-        [headerView addSubview:appendView];
-    }
-    return headerView;
 }
 
 - (UITableView *)tableView {
@@ -230,7 +242,7 @@
     NSString *wikiHost = [[QIMKit sharedInstance] qimNav_WikiUrl];
     self.moreActionArray = [[NSMutableArray alloc] initWithCapacity:3];
     NSArray *moreActionImages = nil;
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         if (qCloudHost.length > 0 && wikiHost.length > 0) {
             self.moreActionArray = @[@"扫一扫", @"发起聊天", @"一键已读", @"随记", @"Wiki"];
             moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e23f" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1b7" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e455" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
@@ -269,6 +281,43 @@
         _moreBtn = moreActionBtn;
     }
     return _moreBtn;
+}
+
+- (UISearchBar *)searchBar {
+    if (!_searchBar) {
+        _searchBar = [[UISearchBar alloc] init];
+        _searchBar.delegate = self;
+        [_searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+        [_searchBar sizeToFit];
+        _searchBar.placeholder = [NSBundle qim_localizedStringForKey:@"search_bar_placeholder"];
+        [_searchBar setTintColor:[UIColor spectralColorBlueColor]];
+        if ([_searchBar respondsToSelector:@selector(setBarTintColor:)]) {
+            [_searchBar setBarTintColor:[UIColor qim_colorWithHex:0xEEEEEE alpha:1.0]];
+        }
+        [_searchBar setBackgroundColor:[UIColor qim_colorWithHex:0xEEEEEE]];
+    }
+    return _searchBar;
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    
+#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CATransition *animation = [CATransition animation];
+        animation.duration = 0.4f;   //时间间隔
+        animation.fillMode = kCAFillModeForwards;
+        animation.type = @"rippleEffect";
+        //动画效果
+        animation.subtype = kCATransitionFromTop;   //动画方向
+        UINavigationController *rootNav = [[QIMIPadWindowManager sharedInstance] getLeftMainVcNav];
+        [rootNav.view.layer addAnimation:animation forKey:@"animation"];
+        UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
+        [rootNav.view.layer addAnimation:animation forKey:nil];
+        [rootNav pushViewController:reactVC animated:YES];
+    });
+    return NO;
+#endif
+    return YES;
 }
 
 - (void)doMoreAction:(id)sender {
@@ -315,6 +364,10 @@
 
 - (void)showFileTrans {
     [[QIMFastEntrance sharedInstance] openFileTransMiddleVC];
+}
+
+- (void)setSessionViewHeader:(UIView *)headerView {
+    [self.tableView setTableHeaderView:headerView];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -409,11 +462,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *notifyStr = notify.object;
         QIMVerboseLog(@"收到刷新列表页的通知 : %@", notify);
-//        if ([notifyStr isEqualToString:@"ForceRefresh"]) {
-//            [self.tableView reloadData];
-//        } else {
-//            [self refreshTableView];
-//        }
         [self refreshTableView];
     });
 }
@@ -428,7 +476,6 @@
 #pragma mark - notify
 
 - (void)onChatRoomDestroy:(NSNotification *)notify {
-//    QIMVerboseLog(@"收到通知中心onChatRoomDestroy通知 : %@", notify);
     NSString *groupId = nil;
     id obj = notify.object;
     if ([obj isKindOfClass:[NSString class]]) {
@@ -451,7 +498,6 @@
             message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupId];
         }
     }
-    message = [message stringByAppendingFormat:@"原因:%@", reason];
     [self refreshTableView];
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
     [alertView show];
@@ -466,7 +512,12 @@
                 QIMVerboseLog(@"啊啊啊你倒是刷新呀");
                 NSDictionary *friendDic = [[QIMKit sharedInstance] getLastFriendNotify];
                 NSInteger friendNotifyCount = [[QIMKit sharedInstance] getFriendNotifyCount];
-                NSArray *temp = [[QIMKit sharedInstance] getSessionList];
+                NSArray *temp = nil;
+                if (self.showNotReadList == YES) {
+                    temp = [[QIMKit sharedInstance] getNotReadSessionList];
+                } else {
+                    temp = [[QIMKit sharedInstance] getSessionList];
+                }
                 NSMutableArray *tempStickList = [NSMutableArray array];
                 NSMutableArray *normalList = [NSMutableArray array];
                 BOOL isAddFN = NO;
@@ -523,7 +574,6 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     weakSelf.recentContactArray = [NSMutableArray array];
-//                    [weakSelf.recentContactArray addObjectsFromArray:tempStickList];
                     [weakSelf.recentContactArray addObjectsFromArray:normalList];
                     if (_willForceTableView) {
                         QIMVerboseLog(@"列表页强制刷新了!!!");
@@ -672,8 +722,12 @@
             }
             NSLog(@"跳转的RootVc3 ：%@ ", rootNav);
             NSLog(@"跳转的PushVc : %@", pushVc);
-            pushVc.hidesBottomBarWhenPushed = YES;
-            [rootNav pushViewController:pushVc animated:YES];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                [[QIMIPadWindowManager sharedInstance] showDetailViewController:pushVc];
+            } else {
+                pushVc.hidesBottomBarWhenPushed = YES;
+                [rootNav pushViewController:pushVc animated:YES];
+            }
         }
         _willRefreshTableView = YES;
     }
@@ -782,25 +836,22 @@
     NSString *jid = [infoDic objectForKey:@"XmppId"];
     NSString *name = [infoDic objectForKey:@"Name"];
     ChatType chatType = [[infoDic objectForKey:@"ChatType"] intValue];
-    NSInteger notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid];
+    NSInteger notReadCount = [[infoDic objectForKey:@"UnreadCount"] integerValue];
     if (jid) {
         
         switch (chatType) {
                 
             case ChatType_GroupChat: {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                    [[QIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
+                });
                 QIMGroupChatVC *chatGroupVC = (QIMGroupChatVC *)[[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:jid];
-                /*
-                QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
-                [chatGroupVC setTitle:name];
-                [chatGroupVC setChatId:jid];
-                 */
                 [chatGroupVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatGroupVC setNotReadCount:notReadCount];
                 [chatGroupVC setReadedMsgTimeStamp:-1];
-                
                 if (chatGroupVC.needShowNewMsgTagCell) {
                     
-                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WithRealJid:chatGroupVC.chatId WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
                 }
                 return chatGroupVC;
             }
@@ -853,14 +904,6 @@
                 break;
             case ChatType_SingleChat: {
                 QIMChatVC *chatSingleVC = (QIMChatVC *)[[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
-                /*
-                QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
-                [chatSingleVC setStype:kSessionType_Chat];
-                [chatSingleVC setChatId:jid];
-                [chatSingleVC setName:name];
-                [chatSingleVC setChatInfoDict:infoDic];
-                [chatSingleVC setChatType:chatType];
-                */
                 NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
                 [chatSingleVC setTitle:remarkName ? remarkName : name];
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
@@ -868,7 +911,7 @@
                 [chatSingleVC setNotReadCount:notReadCount];
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
                 }
                 return chatSingleVC;
             }
@@ -876,37 +919,7 @@
             case ChatType_Consult:
             {
                 NSString *xmppId = [infoDic objectForKey:@"XmppId"];
-                /*
-                NSString *uId = [xmppId componentsSeparatedByString:@"@"].firstObject;
-                NSString *realJid = [infoDic objectForKey:@"RealJid"];
-                if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-                    NSString *getRealJid = [[QIMKit sharedInstance] getRealJidForVirtual:xmppId];
-                    if (getRealJid.length) {
-                        realJid = getRealJid;
-                    }
-                } else {
-                    if ([[[QIMKit sharedInstance] getVirtualList] containsObject:uId]) {
-                        realJid = [[QIMKit sharedInstance] getRealJidForVirtual:uId];
-                        realJid = [NSString stringWithFormat:@"%@@%@",realJid,[[QIMKit sharedInstance] getDomain]];
-                    }
-                    if (realJid == nil) {
-                        realJid = [infoDic objectForKey:@"RealJid"];
-                    }
-                    if (realJid == nil) {
-                        realJid = xmppId;
-                    }
-                }
-                */
                 QIMChatVC *chatSingleVC = (QIMChatVC *)[[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
-                /*
-                QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
-                [chatSingleVC setStype:kSessionType_Chat];
-                [chatSingleVC setChatId:xmppId];
-                [chatSingleVC setVirtualJid:xmppId];
-                [chatSingleVC setName:name];
-                [chatSingleVC setChatInfoDict:infoDic];
-                [chatSingleVC setChatType:chatType];
-                */
                 //备注
                 NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
                 [chatSingleVC setTitle:remarkName ? remarkName : name];
@@ -915,7 +928,7 @@
                 [chatSingleVC setNotReadCount:notReadCount];
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
                 }
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                     [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:xmppId];
@@ -940,7 +953,7 @@
                 [chatSingleVC setNotReadCount:notReadCount];
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:realJid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
                 }
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                     [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:realJid];
@@ -1138,9 +1151,8 @@
         NSArray *arr = [NSArray arrayWithArray:_recentContactArray];
         NSMutableArray *temoNotReadList = [[NSMutableArray alloc] initWithCapacity:3];
         for (NSDictionary *infoDic in arr) {
-            NSString *jid = [[infoDic objectForKey:@"XmppId"] copy];
-            NSInteger count = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid];
-            if (count > 0) {
+            NSInteger unreadCount = [[infoDic objectForKey:@"UnreadCount"] integerValue];
+            if (unreadCount > 0) {
                 [temoNotReadList addObject:[NSIndexPath indexPathForRow:i inSection:0]];
             }
             i++;

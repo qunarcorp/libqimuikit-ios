@@ -66,7 +66,6 @@
     _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _scrollView.maximumZoomScale=2.0;
     _scrollView.minimumZoomScale=0.5;
-//    [_scrollView setBackgroundColor:[UIColor redColor]];
     [_scrollView setDelegate:self];
     [self.view addSubview:_scrollView];
     CGFloat scale = MIN(_scrollView.width / self.sourceImage.size.width, _scrollView.height / self.sourceImage.size.height);
@@ -143,6 +142,7 @@
 - (void)onImageEditClick:(UIButton *)btn
 {
     QIMImageEditViewController * imageEditVC = [[QIMImageEditViewController alloc] initWithImage:_sourceImage];
+    imageEditVC.fromAlum = YES;
     imageEditVC.delegate = self;
     [self.navigationController pushViewController:imageEditVC animated:YES];
 }

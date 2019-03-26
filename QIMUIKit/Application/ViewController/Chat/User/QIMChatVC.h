@@ -15,7 +15,7 @@
 @property (nonatomic, assign) ChatType chatType;
 @property (nonatomic, strong) NSString *virtualJid;
 
-- (void)refreshCellForMsg : (Message *)msg;
+- (void)refreshCellForMsg : (QIMMessageModel *)msg;
 
 - (void)refreshTableViewCell:(UITableViewCell * )cell;
 

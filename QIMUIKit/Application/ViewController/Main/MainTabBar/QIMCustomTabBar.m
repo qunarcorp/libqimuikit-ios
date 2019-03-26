@@ -114,7 +114,7 @@
     return self;
 }
 
-- (id)initWithItemCount:(NSUInteger)count WihtFrame:(CGRect)frame{
+- (id)initWithItemCount:(NSUInteger)count WithFrame:(CGRect)frame{
     _itemCount = count;
     self = [self initWithFrame:frame];
     if (self) {

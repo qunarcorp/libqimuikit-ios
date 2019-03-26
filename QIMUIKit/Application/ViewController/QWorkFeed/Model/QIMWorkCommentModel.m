@@ -11,8 +11,13 @@
 @implementation QIMWorkCommentModel
 
 + (NSDictionary *)modelCustomPropertyMapper {
-    return @{@"rId": @"id"
+    return @{@"rId": @"id",
+             @"childComments": @"newChild"
              };
+}
+
++ (NSDictionary *)modelContainerPropertyGenericClass {
+    return @{@"childComments" : @"QIMWorkCommentModel" };
 }
 
 - (NSString *)description{

@@ -31,7 +31,7 @@
         NSString *reason = [presenceDic objectForKey:@"reason"];
         if ([result isEqualToString:@"success"]) {
             [self openChatSession];
-            [[QIMKit sharedInstance] sendMessage:@"我通过了你的朋友验证请求，现在我们可以开始聊天了" WithInfo:nil ToUserId:jid WihtMsgType:QIMMessageType_Text];
+            [[QIMKit sharedInstance] sendMessage:@"我通过了你的朋友验证请求，现在我们可以开始聊天了" WithInfo:nil ToUserId:jid WithMsgType:QIMMessageType_Text];
         } else {
             [[self progressHUD] hide:YES];
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"添加好友失败,原因:%@。",reason] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
@@ -109,7 +109,7 @@
     return _progressHUD;
 }
 
-- (void)agreeAddFriendWihtUserInfoDic:(NSDictionary *)userInfoDic{
+- (void)agreeAddFriendWithUserInfoDic:(NSDictionary *)userInfoDic{
     NSString *xmppId = [userInfoDic objectForKey:@"XmppId"];
     if (xmppId.length > 0) {
         _currentAgreeDic = userInfoDic;

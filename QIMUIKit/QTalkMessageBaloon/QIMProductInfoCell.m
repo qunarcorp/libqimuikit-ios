@@ -99,7 +99,7 @@
 - (void)refreshUI{
 
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:QIMProductInfoWidth WihtHeight:QIMProductInfoHeight];
+    [self setBackViewWithWidth:QIMProductInfoWidth WithHeight:QIMProductInfoHeight];
     [_headerImageView qim_setImageWithURL:[NSURL URLWithString:self.headerUrl] placeholderImage:[UIImage imageNamed:@"v_aroundTravel_default"]];
     [_titleLabel setText:self.title];
     [_subTitleLabel setText:self.subTitle];
@@ -114,13 +114,13 @@
     }
     
     [_priceStrLabel setAttributedText:priceStr];
-    CGFloat leftOffset = (self.message.messageDirection == MessageDirection_Sent) ? 15 : 20;
+    CGFloat leftOffset = (self.message.messageDirection == QIMMessageDirection_Sent) ? 15 : 20;
     _titleLabel.frame = CGRectMake(leftOffset, 10, self.backView.width - leftOffset - 10, 60);
     _headerImageView.frame = CGRectMake(_titleLabel.left, _titleLabel.bottom + 5, QIMProductInfoImageWidth, QIMProductInfoImageWidth);
 
     _subTitleLabel.frame = CGRectMake(_headerImageView.right + 10, _titleLabel.bottom + 5, self.backView.width - _headerImageView.right - 20 , 20);
     _priceStrLabel.frame = CGRectMake(_headerImageView.right + 10, _subTitleLabel.bottom + 5, self.backView.width - _headerImageView.right - 20, 20);
-    _lineView.frame =  (self.message.messageDirection == MessageDirection_Sent) ? CGRectMake(leftOffset - 15, self.backView.height - 18, QIMProductInfoWidth - leftOffset + 5.0f, 0.5f) : CGRectMake(leftOffset - 10, self.backView.height - 18, QIMProductInfoWidth - leftOffset + 10.0f, 0.5f);
+    _lineView.frame =  (self.message.messageDirection == QIMMessageDirection_Sent) ? CGRectMake(leftOffset - 15, self.backView.height - 18, QIMProductInfoWidth - leftOffset + 5.0f, 0.5f) : CGRectMake(leftOffset - 10, self.backView.height - 18, QIMProductInfoWidth - leftOffset + 10.0f, 0.5f);
     _platFormIconView.frame = CGRectMake(_lineView.left + 10, _lineView.bottom + 1.5f, 15, 15);
     _platFormLabel.frame = CGRectMake(_platFormIconView.right + 5, _lineView.bottom, QIMProductInfoWidth, 18);
 

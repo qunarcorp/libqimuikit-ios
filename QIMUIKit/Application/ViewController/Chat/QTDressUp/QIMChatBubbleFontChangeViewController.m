@@ -184,36 +184,40 @@ typedef enum {
         [_placeholderMsgs removeAllObjects];
     }
     
-    Message * msg = [Message new];
+    QIMMessageModel * msg = [QIMMessageModel new];
     msg.messageId = [QIMUUIDTools UUID];
     msg.messageType = QIMMessageType_Text;
     msg.message = [NSBundle qim_localizedStringForKey:@"custom_bubble_preview"];
-    msg.messageDirection = MessageDirection_Sent;
-    msg.nickName = [QIMKit getLastUserName];
+    msg.messageDirection = QIMMessageDirection_Sent;
+    msg.messageSendState = QIMMessageSendState_Success;
+//    msg.nickName = [QIMKit getLastUserName];
     [_placeholderMsgs addObject:msg];
     
-    Message * msg1 = [Message new];
+    QIMMessageModel * msg1 = [QIMMessageModel new];
     msg1.messageId = [QIMUUIDTools UUID];
     msg1.messageType = QIMMessageType_Text;
     msg1.message = [NSBundle qim_localizedStringForKey:@"Custom_Color_Choose_Btn"];
-    msg1.messageDirection = MessageDirection_Received;
-    msg1.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
+    msg1.messageDirection = QIMMessageDirection_Received;
+    msg1.messageSendState = QIMMessageSendState_Success;
+//    msg1.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
     [_placeholderMsgs addObject:msg1];
     
-    Message * msg2 = [Message new];
+    QIMMessageModel * msg2 = [QIMMessageModel new];
     msg2.messageId = [QIMUUIDTools UUID];
     msg2.messageType = QIMMessageType_Text;
     msg2.message = [NSBundle qim_localizedStringForKey:@"Custom_Color_FeedBack"];
-    msg2.messageDirection = MessageDirection_Received;
-    msg2.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
+    msg2.messageDirection = QIMMessageDirection_Received;
+    msg2.messageSendState = QIMMessageSendState_Success;
+//    msg2.nickName = [NSBundle qim_localizedStringForKey:@"qtalk_team"];
     [_placeholderMsgs addObject:msg2];
     
-    Message * msg3 = [Message new];
+    QIMMessageModel * msg3 = [QIMMessageModel new];
     msg3.messageId = [QIMUUIDTools UUID];
     msg3.messageType = QIMMessageType_Text;
     msg3.message = [NSBundle qim_localizedStringForKey:@"thanks"];
-    msg3.messageDirection = MessageDirection_Sent;
-    msg3.nickName = [QIMKit getLastUserName];
+    msg3.messageDirection = QIMMessageDirection_Sent;
+    msg3.messageSendState = QIMMessageSendState_Success;
+//    msg3.nickName = [QIMKit getLastUserName];
     [_placeholderMsgs addObject:msg3];
 }
 
@@ -359,7 +363,7 @@ typedef enum {
 
 - (void)refresh{
     [self initSettingView];
-    for (Message * msg in _placeholderMsgs) {
+    for (QIMMessageModel * msg in _placeholderMsgs) {
         [[QIMMessageCellCache sharedInstance] removeObjectForKey:msg.messageId];
     }
     [_dispalyTableView reloadData];
@@ -387,13 +391,13 @@ typedef enum {
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    Message * message = [_placeholderMsgs objectAtIndex:indexPath.row];
+   QIMMessageModel * message = [_placeholderMsgs objectAtIndex:indexPath.row];
     QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + (message.messageDirection == MessageDirection_Sent?30:60);
+    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + (message.messageDirection == QIMMessageDirection_Sent ? 30 : 60);
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    Message * message = [_placeholderMsgs objectAtIndex:indexPath.row];
+   QIMMessageModel * message = [_placeholderMsgs objectAtIndex:indexPath.row];
     NSString *cellIdentifier = [NSString stringWithFormat:@"Cell text %@",@(message.messageDirection)];
     QIMGroupChatCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (cell == nil) {

@@ -34,7 +34,7 @@
 }
 
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     return kCellHeight + 20 + (chatType == ChatType_GroupChat ? 20 : 0);
 }
 
@@ -42,11 +42,10 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        self.backgroundView = nil;
-        self.backgroundColor = [UIColor whiteColor];
-        self.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.selectedBackgroundView = nil;
-        self.contentView.backgroundColor = [UIColor qtalkChatBgColor];
+        self.selectionStyle = UITableViewCellSelectionStyleDefault;
+        UIView* view = [[UIView alloc]initWithFrame:self.contentView.frame];
+        view.backgroundColor=[UIColor clearColor];
+        self.selectedBackgroundView = view;
         
         _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kCellWidth, kCellHeight)];
         [self.backView addSubview:_bgView];
@@ -121,13 +120,13 @@
 - (void)refreshUI {
     
     self.backView.message = self.message;
-    if (self.message.extendInformation) {
+    if (self.message.extendInformation.length > 0) {
         self.message.message = self.message.extendInformation;
     }
     float backWidth = kCellWidth + kBackViewCap + 2;
     float backHeight = kCellHeight + 1;
     
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     NSString *fileName = [infoDic objectForKey:@"FileName"];
@@ -150,7 +149,7 @@
     NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileMd5?fileMd5:@""]];
 
     NSString *fileState = [NSBundle qim_localizedStringForKey:@"common_sent"];
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:nil]) {
             fileState = [NSBundle qim_localizedStringForKey:@"common_not_download"];
         } else {
@@ -163,13 +162,13 @@
         fileName = [NSBundle qim_localizedStringForKey:@"common_old_file"];
         fileSize = @"0.00B";
     }
-    UIImage *icon = [QIMFileIconTools getFileIconWihtExtension:fileName.pathExtension];
+    UIImage *icon = [QIMFileIconTools getFileIconWithExtension:fileName.pathExtension];
     [_iconImageView setImage:icon];
     [_fileNameLabel setText:fileName];
     [_fileSizeLabel setText:fileSize];
     [_fileStateLabel setText:fileState];
     [_fileNameLabel alignTop];
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         [_bgView setLeft:kBackViewCap+2];
         [_fileNameLabel setTextColor:[UIColor qim_colorWithHex:0x212121]];
         [_fileSizeLabel setTextColor:[UIColor qim_colorWithHex:0x9E9E9E]];
@@ -187,11 +186,11 @@
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;
@@ -202,7 +201,11 @@
         [menuList addObject:@(MA_CopyOriginMsg)];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeAllObjects];
+//        [menuList removeObject:@(MA_Refer)];
+//        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Delete)];
+        [menuList removeObject:@(MA_Forward)];
+//        [menuList removeObject:@(MA_Repeater)];
     }
     return menuList;
 }

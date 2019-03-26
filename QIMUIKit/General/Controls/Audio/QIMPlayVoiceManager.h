@@ -10,7 +10,7 @@
 #define kNotifyBeginToPlay                @"kNotifyBeginToPlay"
 #define kNotifyEndPlay                    @"kNotifyEndPlay"
 
-@class Message;
+@class QIMMessageModel;
 
 @protocol PlayVoiceManagerDelegate <NSObject>
 

@@ -53,7 +53,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self.view setBackgroundColor:self.message.messageDirection == MessageDirection_Sent ? [UIColor qim_rightBallocColor] : [UIColor qim_leftBallocColor]];
+    [self.view setBackgroundColor:self.message.messageDirection == QIMMessageDirection_Sent ? [UIColor qim_rightBallocColor] : [UIColor qim_leftBallocColor]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageDidLoaded:) name:@"refreshTableView" object:nil];
     
@@ -207,7 +207,7 @@
 //    [_voiceCell setMessage:self.message];
 //    _voiceCell.isGroupVoice = NO;
 //    [_voiceCell refreshUI];
-//    _voiceCell.frame = CGRectMake(0, (self.view.height - [QIMSingleChatVoiceCell getCellHeightWihtMessage:self.message chatType:self.message.messageSaveType]) / 2, self.view.width, 100);
+//    _voiceCell.frame = CGRectMake(0, (self.view.height - [QIMSingleChatVoiceCell getCellHeightWithMessage:self.message chatType:self.message.messageSaveType]) / 2, self.view.width, 100);
 //    [self.view addSubview:_voiceCell];
     
     _voiceFireBGView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 120, 120)];
@@ -246,7 +246,8 @@
 {
     if (!_isPlaying) {
         _isPlaying = YES;
-        NSDictionary *infoDic = [self.message getMsgInfoDic];
+//        NSDictionary *infoDic = [self.message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
         NSString *fileName = [infoDic objectForKey:@"FileName"];
         NSString *httpUrl = [infoDic objectForKey:@"HttpUrl"];
         _voiceTime = [[infoDic objectForKey:@"Seconds"] integerValue];

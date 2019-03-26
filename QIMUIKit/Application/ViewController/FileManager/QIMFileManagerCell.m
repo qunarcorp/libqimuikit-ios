@@ -19,7 +19,7 @@
     UILabel                 * _descLabel;//显示时间 联系人
     UILabel                 * _statusLabel;
     
-    Message                 * _message;
+    QIMMessageModel                 * _message;
     BOOL                    _selected;
     UIImageView             * _selectBtn;
 }
@@ -75,7 +75,7 @@
     return self;
 }
 
-- (void)setCellMessage:(Message *)message
+- (void)setCellMessage:(QIMMessageModel *)message
 {
     _message = message;
     
@@ -93,7 +93,7 @@
     
     NSString *fileState = [NSBundle qim_localizedStringForKey:@"common_sent"];
     NSString * peopleStr =nil;
-    if (message.messageDirection == MessageDirection_Received) {
+    if (message.messageDirection == QIMMessageDirection_Received) {
         peopleStr = [NSString stringWithFormat:@"%@%@", [NSBundle qim_localizedStringForKey:@"common_from"],message.from];
         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:nil]) {
             fileState = [NSBundle qim_localizedStringForKey:@"common_not_download"];
@@ -122,7 +122,7 @@
     _sizeLabel.text = fileSize;
     _descLabel.text = [NSString stringWithFormat:@"%@ %@",date,peopleStr];
     _statusLabel.text = fileState;
-    _fileIcon.image = [QIMFileIconTools getFileIconWihtExtension:fileName.pathExtension];
+    _fileIcon.image = [QIMFileIconTools getFileIconWithExtension:fileName.pathExtension];
 }
 
 -(void)layoutSubviews

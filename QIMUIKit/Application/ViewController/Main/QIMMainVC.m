@@ -72,6 +72,8 @@
 
 @end
 
+static BOOL _mainVCReShow = YES;
+
 @implementation QIMMainVC
 
 - (UISearchBar *)searchBar {
@@ -90,8 +92,20 @@
     return _searchBar;
 }
 
++ (void)setMainVCReShow:(BOOL)mainVCReShow {
+    _mainVCReShow = mainVCReShow;
+}
+
++ (BOOL)getMainVCReShow {
+    return _mainVCReShow;
+}
+
++ (BOOL)checkMainVC {
+    return __mainVc != nil;
+}
+
+static QIMMainVC *__mainVc = nil;
 + (instancetype)sharedInstanceWithSkipLogin:(BOOL)skipLogin {
-    static QIMMainVC *__mainVc = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         __mainVc = [[QIMMainVC alloc] init];
@@ -107,6 +121,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _mainVCReShow = NO;
     /*
      if (@available(iOS 10.3, *)) {
      [self changeIcon];
@@ -150,7 +165,7 @@
     //        [self peQTalkSuggestRNJumpManagerrformSelector:@selector(autoLogin) withObject:nil afterDelay:0.3];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
     //    }
-    if (([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) && self.skipLogin) {
+    if (([QIMKit getQIMProjectType] != QIMProjectTypeQChat) && self.skipLogin) {
         [self autoLogin];
     }
 #if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
@@ -256,8 +271,10 @@
 }
 
 - (void)otherPlatformLogin:(NSNotification *)notify {
-    BOOL online = [notify.object boolValue];
-    [self.sessionView updateOtherPlatFrom:online];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        BOOL online = [notify.object boolValue];
+        [self.sessionView updateOtherPlatFrom:online];
+    });
 }
 
 - (void)appWorkStateChange:(NSNotification *)notify {
@@ -325,7 +342,7 @@
     QIMVerboseLog(@"收到通知中心updateExploreNotReadCount通知 : ", notify);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         __block BOOL count = NO;
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             if (notify) {
                 count = [notify.object boolValue];
             }
@@ -333,8 +350,11 @@
             count = [[QIMKit sharedInstance] getLeaveMsgNotReaderCount];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 // 移动小红点 到 第三页
+                if (count == NO) {
+                    count = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+                }
                 [_tabBar setBadgeNumber:count ByItemIndex:3 showNumber:NO];
             } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant) {
                 [_tabBar setBadgeNumber:count ByItemIndex:2 showNumber:NO];
@@ -419,7 +439,7 @@
         default:
             break;
     }
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk || ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant)) {
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk || [QIMKit getQIMProjectType] == QIMProjectTypeStartalk || ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant)) {
         [self updateExploreNotReadCount:nil];
     }
 }
@@ -444,11 +464,10 @@
         [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_travel"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e403" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e402" size:28 color:[UIColor qtalkIconSelectColor]]]}];
     }
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_contact"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3e3" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4d8" size:28 color:[UIColor qtalkIconSelectColor]]]}];
-    
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_discover"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4be" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4bd" size:28 color:[UIColor qtalkIconSelectColor]]]}];
     
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_myself"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e29b" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e29c" size:28 color:[UIColor qtalkIconSelectColor]]]}];
-    _tabBar = [[QIMCustomTabBar alloc] initWithItemCount:self.totalTabBarArray.count WihtFrame:CGRectMake(0, _rootView.height - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT] - 3.5, _rootView.width, kTabBarHeight)];
+    _tabBar = [[QIMCustomTabBar alloc] initWithItemCount:self.totalTabBarArray.count WithFrame:CGRectMake(0, _rootView.height - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT] - 3.5, _rootView.width, kTabBarHeight)];
     [_tabBar setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
     [_tabBar setDelegate:self];
     [_tabBar setSelectedIndex:0];
@@ -626,7 +645,7 @@
 #pragma mark - Custom Tabbar Delegate
 
 - (void)customTabBar:(QIMCustomTabBar *)tabBar longPressAtIndex:(NSUInteger)index {
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         switch (index) {
             case 0:
                 if (tabBar.selectedIndex != 0) {
@@ -861,9 +880,10 @@
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_contact"]]) {
         
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_contact"]];
-        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.addFriendBtn];
-        [self.navigationItem setRightBarButtonItem:rightBarItem];
-        
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
+            UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.addFriendBtn];
+            [self.navigationItem setRightBarButtonItem:rightBarItem];
+        }
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]]) {
         
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]];

@@ -43,6 +43,7 @@
 #import "QIMNavBackBtn.h"
 #import "QIMMessageTableViewManager.h"
 #import "QIMMWPhotoBrowser.h"
+#import "QIMIPadWindowManager.h"
 
  @interface QIMSystemVC()<QTalkMessageTableScrollViewDelegate, UIGestureRecognizerDelegate,QIMSingleChatCellDelegate,QIMSingleChatVoiceCellDelegate,NSXMLParserDelegate,QIMMWPhotoBrowserDelegate,QIMMsgBaloonBaseCellDelegate,PNNoticeCellDelegate,PNOrderMsgCellDelegate>
 {
@@ -112,6 +113,9 @@
 }
 
 - (void)setUI {
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     [self.view setBackgroundColor:[UIColor qtalkChatBgColor]];
     [self setupNav];
     [self.view addSubview:self.tableView];
@@ -187,19 +191,17 @@
 {
     [self.messageManager.dataSource removeAllObjects];
     __weak typeof(self) weakSelf = self;
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         NSString *domain = [[QIMKit sharedInstance] getDomain];
         [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
             [self.messageManager.dataSource addObjectsFromArray:list];
             [weakSelf.tableView reloadData];
-//            [weakSelf scrollToBottom_tableView];
         }];
     } else {
-        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WihtLimit:kPageCount WithOffset:0 WihtComplete:^(NSArray *list) {
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
             [self.messageManager.dataSource addObjectsFromArray:list];
             [weakSelf.tableView reloadData];
-//            [weakSelf scrollToBottom_tableView];
         }];
     }
     [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:self.chatId];
@@ -219,7 +221,11 @@
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+    }
 }
 
 
@@ -416,7 +422,7 @@
 - (void)updateMessageList:(NSNotification *)notify{
     
     if ([self.chatId isEqualToString:notify.object]) {
-        Message *msg = [notify.userInfo objectForKey:@"message"];
+       QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         
         if (msg) {
             [self.messageManager.dataSource addObject:msg];
@@ -488,8 +494,8 @@ static CGPoint tableOffsetPoint;
             
         }];
     }else if (event == MA_Delete){
-        for (Message * msg in self.messageManager.dataSource) {
-            if ([msg.messageId isEqualToString:[(Message *)message messageId]]) {
+        for (QIMMessageModel * msg in self.messageManager.dataSource) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *)message messageId]]) {
                 NSInteger index = [self.messageManager.dataSource indexOfObject:msg];
                 [self.messageManager.dataSource removeObject:msg];
                 [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -500,9 +506,9 @@ static CGPoint tableOffsetPoint;
         
     } else if (event == MA_Favorite) {
         
-        for (Message *msg in self.messageManager.dataSource) {
+        for (QIMMessageModel *msg in self.messageManager.dataSource) {
             
-            if ([msg.messageId isEqualToString:[(Message *)message messageId]]) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *)message messageId]]) {
                 
                 
                 [[QIMMyFavoitesManager sharedMyFavoritesManager] setMyFavoritesArrayWithMsg:message];
@@ -556,7 +562,7 @@ static CGPoint tableOffsetPoint;
 
 - (void)loadNewSystemMsgList {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
                 CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
                 NSRange range = NSMakeRange(0, [list count]);
@@ -570,7 +576,7 @@ static CGPoint tableOffsetPoint;
                 [_tableView.mj_header endRefreshing];
             }];
         } else {
-            [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WihtLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WihtComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
                     NSRange range = NSMakeRange(0, [list count]);
@@ -626,7 +632,7 @@ static CGPoint tableOffsetPoint;
     NSInteger imageIndex = 0;
     NSInteger cellIndex  = 0;
     NSArray *tempDataSource = [NSArray arrayWithArray:self.messageManager.dataSource];
-    for (Message *msg in tempDataSource) {
+    for (QIMMessageModel *msg in tempDataSource) {
         if (![msg isKindOfClass:[NSString class]]) {
             TextCellCache *cache = [_cellSizeDic objectForKey:msg.messageId];
             if (cache) {

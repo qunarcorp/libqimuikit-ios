@@ -54,7 +54,7 @@
 
 - (void)onSaveGroupName{ 
     if (![self.groupTopic isEqualToString:_textView.text]) {
-        [[QIMKit sharedInstance] setMucVcardForGroupId:self.groupId WithNickName:nil WithTitle:_textView.text WithDesc:nil WithHeaderSrc:nil];
+        [[QIMKit sharedInstance] setMucVcardForGroupId:self.groupId WithNickName:nil WithTitle:_textView.text WithDesc:nil WithHeaderSrc:nil withCallBack:nil];
     }
     [self.navigationController popViewControllerAnimated:YES];
 }

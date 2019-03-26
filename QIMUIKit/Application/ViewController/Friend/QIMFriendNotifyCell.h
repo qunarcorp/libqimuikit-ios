@@ -10,7 +10,7 @@
 
 @protocol QIMFriendNotifyCellDelete <NSObject>
 @optional
-- (void)agreeAddFriendWihtUserInfoDic:(NSDictionary *)userInfoDic;
+- (void)agreeAddFriendWithUserInfoDic:(NSDictionary *)userInfoDic;
 @end
 
 @interface QIMFriendNotifyCell : UITableViewCell

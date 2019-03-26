@@ -9,7 +9,7 @@
 @class QIMMsgBaloonBaseCell;
 @interface QIMRTCChatCell : QIMMsgBaloonBaseCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType;
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType;
 
 - (void)refreshUI;
 

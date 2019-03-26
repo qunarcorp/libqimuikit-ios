@@ -23,7 +23,7 @@
 
 @implementation QIMRedPackDescCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message  chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message  chatType:(ChatType)chatType{
     return  30;
 }
 
@@ -67,16 +67,14 @@
 //    Typestr    //红包类型字符串 例:普通红包
 //    Balance    //红包剩余个数，如果为0则为抢完了例:0
     NSString * infoStr = self.message.extendInformation.length <= 0 ? self.message.message : self.message.extendInformation;
+    QIMVerboseLog(@"红包Info：%@", infoStr);
     if (infoStr.length > 0) {
         NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
-        NSDictionary * userInfoDic = [[[QIMUserInfoUtil sharedInstance] userInfoDic] objectForKey:infoDic[@"Open_User"]];
-        if (userInfoDic == nil) {
-            userInfoDic = [[QIMKit sharedInstance] getUserInfoByRTX:infoDic[@"Open_User"]];
-            [[[QIMUserInfoUtil sharedInstance] userInfoDic] setQIMSafeObject:userInfoDic forKey:infoDic[@"Open_User"]];
-        }
+        NSString *Open_User = [infoDic objectForKey:@"Open_User"];
+        NSString *openUserName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:Open_User];
         
         NSMutableAttributedString * mulStr = [[NSMutableAttributedString alloc] initWithString:@""];
-        [mulStr appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@抢到了你的",userInfoDic[@"Name"]] attributes:@{ NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:12]}]];
+        [mulStr appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@抢到了你的",(openUserName.length > 0) ? openUserName : [[Open_User componentsSeparatedByString:@"@"] firstObject]] attributes:@{ NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:12]}]];
         NSString *typeStr = [infoDic objectForKey:@"Typestr"];
         [mulStr appendAttributedString:[[NSAttributedString alloc] initWithString:typeStr?typeStr:@"红包" attributes:@{ NSForegroundColorAttributeName:[UIColor redColor],NSFontAttributeName:[UIFont systemFontOfSize:12]}]];
         int balance = [infoDic[@"Balance"] intValue];

@@ -9,6 +9,7 @@
 #import "QIMCommonUIFramework.h"
 
 @class QIMWorkMomentContentModel;
+@class QIMWorkCommentModel;
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkMomentModel : NSObject
@@ -33,6 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) QIMWorkMomentContentModel *content;  //Moment内容
 
+@property (nonatomic, strong) NSArray <QIMWorkCommentModel *> *attachCommentList;   //附带的评论List
+
 @property (nonatomic, strong) NSString *atList;         //艾特列表
 
 @property (nonatomic, assign) BOOL isDelete;            //是否已删除
@@ -46,6 +49,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGFloat rowHeight;        //Moment高度
 
 @property (nonatomic, assign) BOOL isFullText;          //是否展开全文
+
+@property (nonatomic, strong) NSNumber *postType;       //帖子状态，1：正常，2：置顶，4：置热
+
+@property (nonatomic, strong) NSNumber *reviewStatus;   //审核状态
 
 @end
 

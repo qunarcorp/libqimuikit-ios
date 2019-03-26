@@ -142,7 +142,7 @@
             if ([self.userId rangeOfString:@"@conference."].location != NSNotFound) {
                 [[QIMKit sharedInstance] beginShareLocationToGroupId:self.userId WithShareLocationId:self.shareLocationId];
             }else{
-                Message * msg = [[QIMKit sharedInstance] beginShareLocationToUserId:self.userId WithShareLocationId:self.shareLocationId];
+               QIMMessageModel * msg = [[QIMKit sharedInstance] beginShareLocationToUserId:self.userId WithShareLocationId:self.shareLocationId];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate
                                                                     object:self.userId
                                                                   userInfo:@{@"message":msg}];
@@ -557,7 +557,7 @@
 }
 
 - (void)updateShareLocationMsg:(NSNotification *)noti{
-    Message * msg = [noti.userInfo objectForKey:@"message"];
+   QIMMessageModel * msg = [noti.userInfo objectForKey:@"message"];
     if ([msg.to isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
         CLLocationDirection mapAngle = -_mapView.camera.heading;
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.message error:nil];

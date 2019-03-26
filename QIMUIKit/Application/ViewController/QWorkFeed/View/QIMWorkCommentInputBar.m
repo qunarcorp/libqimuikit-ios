@@ -239,6 +239,21 @@
     }
 }
 
+//判断内容是否全部为空格  YES 全部为空格
+- (BOOL)isEmpty:(NSString *)str {
+    if (!str) {
+        return true;
+    } else {
+        NSCharacterSet *set = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+        NSString *trimedString = [str stringByTrimmingCharactersInSet:set];
+        if ([trimedString length] == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
+    }
+}
+
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     if (textView == self.commentTextView && [text isEqualToString:@"\n"]){ //判断输入的字是否是回车，即按下return
         NSLog(@"text : %@", text);
@@ -251,7 +266,7 @@
 }
 
 - (void)sendComment {
-    if (self.commentTextView.text.length > 0) {
+    if (self.commentTextView.text.length > 0 && ![self isEmpty:self.commentTextView.text]) {
         [self.delegate didaddCommentWithStr:self.commentTextView.text];
         self.commentTextView.text = nil;
         [self.commentTextView resignFirstResponder];

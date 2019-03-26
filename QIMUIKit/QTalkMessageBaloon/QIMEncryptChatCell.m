@@ -32,9 +32,9 @@
 @implementation QIMEncryptChatCell
 
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
-    return kEncryptChatCellHeight + ((message.messageDirection == MessageDirection_Received) ? 40 : 20);
+    return kEncryptChatCellHeight + ((message.messageDirection == QIMMessageDirection_Received) ? 40 : 20);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -62,10 +62,10 @@
     
     float backWidth = kEncryptChatCellWidth;
     float backHeight = kEncryptChatCellHeight;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             _titleLabel.textColor = [UIColor blackColor];
             _imageView.frame = CGRectMake(self.backView.left + 16, self.backView.top + 5, 24, 24);
@@ -73,11 +73,11 @@
             _titleLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             _titleLabel.textColor = [UIColor whiteColor];
             _imageView.frame = CGRectMake(self.backView.left + 10, self.backView.top + 5, 24, 24);
-            _titleLabel.frame = CGRectMake(_imageView.right + 5, 5, self.backView.width - 10, self.backView.height);
+            _titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top, self.backView.width - 10, self.backView.height);
             _titleLabel.textColor = [UIColor qim_rightBallocFontColor];
         }
             break;

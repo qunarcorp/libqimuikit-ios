@@ -204,14 +204,16 @@
         
         clientNavServerConfigs = [NSMutableArray arrayWithCapacity:5];
         NSString *tempNavName = [NSString stringWithFormat:@"%@导航", [QIMKit getQIMProjectTitleName]];
-        NSDictionary *qtalkNav = @{QIMNavNameKey:tempNavName, QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
-        NSDictionary *publicQTalkNav = @{QIMNavNameKey:@"Qunar公共域导航", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/publicnav?c=qunar.com"};
-        NSDictionary *qchatNav = @{QIMNavNameKey:@"QChat导航", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qchat/nav"};
+        NSDictionary *qtalkNav = @{QIMNavNameKey:tempNavName, QIMNavUrlKey:@"https://qim.qunar.com/package/static/qtalk/nav"};
+        NSDictionary *publicQTalkNav = @{QIMNavNameKey:@"Qunar公共域导航", QIMNavUrlKey:@"https://qim.qunar.com/package/static/qtalk/publicnav?c=qunar.com"};
+        NSDictionary *qchatNav = @{QIMNavNameKey:@"QChat导航", QIMNavUrlKey:@"https://qim.qunar.com/package/static/qchat/nav"};
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
             [clientNavServerConfigs addObject:qtalkNav];
             [clientNavServerConfigs addObject:publicQTalkNav];
-        } else {
+        } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
             [clientNavServerConfigs addObject:qchatNav];
+        } else {
+            
         }
     }
     return clientNavServerConfigs;
@@ -265,7 +267,7 @@
                         [[QIMKit sharedInstance] setUserObject:self.navConfigs forKey:@"QC_NavAllDicts"];
                         [[QIMKit sharedInstance] setUserObject:navUrlDict forKey:@"QC_CurrentNavDict"];
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:nil];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:navUrlDict];
                         });
                     } else {
                         [self onCancel];
@@ -378,7 +380,6 @@
     NSString *navUrl = [willEditedNavDict objectForKey:QIMNavUrlKey];
     NSString *navName = [willEditedNavDict objectForKey:QIMNavNameKey];
     NSString *name = [NSString stringWithFormat:@"%@ : %@", navName, navUrl];
-//    [QIMFastEntrance showQRCodeWithUserId:navUrl withName:name withType:QRCodeType_ClientNav];
     [QIMFastEntrance showQRCodeWithQRId:navUrl withType:QRCodeType_ClientNav];
 }
 
@@ -413,11 +414,15 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row <= 1) {
-
-        return NO;
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+        return YES;
+    } else {
+        if (indexPath.row <= 1) {
+            
+            return NO;
+        }
+        return YES;
     }
-    return YES;
 }
 
 - (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {

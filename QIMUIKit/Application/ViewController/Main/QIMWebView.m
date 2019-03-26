@@ -169,7 +169,7 @@ static NSString *__default_ua = nil;
     NSURL *url = _webView.request.URL;
     QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
     QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
-    Message *message = [Message new];
+    QIMMessageModel *message = [QIMMessageModel new];
     [message setMessageType:QIMMessageType_Text];
     [message setMessage:[NSString stringWithFormat:@"[obj type=\"url\" value=\"%@\"]", [url absoluteString]]];
     [controller setMessage:message];
@@ -260,7 +260,7 @@ static NSString *__default_ua = nil;
         _webView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], self.view.height);
     }
     if (self.needAuth) {
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:@" qunartalk-ios-client"];
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : ua, @"User-Agent":ua}];
         } else {
@@ -285,8 +285,6 @@ static NSString *__default_ua = nil;
     [_webView setScalesPageToFit:YES];
     [_webView setMultipleTouchEnabled:YES];
     [self.view addSubview:_webView];
-//    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"CKEditor5Edit" ofType:@"html"];
-//    self.htmlString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
     if (self.htmlString) {
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
@@ -809,10 +807,6 @@ static NSString *__default_ua = nil;
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    if (navigationType==UIWebViewNavigationTypeBackForward) {
-        [self goBack];
-    }
-//    _requestUrl = [request URL];
     NSString *urlStr = [[request URL] absoluteString];
     NSArray * components = [urlStr componentsSeparatedByString:@":"];
     if ([urlStr hasPrefix:@"qchatiphone://"] && components.count > 1) {
@@ -860,6 +854,9 @@ static NSString *__default_ua = nil;
         if ([[[components objectAtIndex:1] lowercaseString] hasPrefix:@"//close"]) {
             [self quitItemHandle:nil];
             return NO;
+        } else if ([[components objectAtIndex:1] hasPrefix:@"//publicNav/resetpwdSuccessed"]) {
+            [QIMFastEntrance reloginAccount];
+            return NO;
         }
     } else if ([urlStr hasPrefix:@"qtalkaphone://"]  && components.count > 1) {
 //        qtalkaphone://uploadNoteImage?fileName=2AE022E5-34DF-416A-8EB4-F29CBB7FCFB4.jpeg&fileStr=data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD/
@@ -885,7 +882,7 @@ static NSString *__default_ua = nil;
             NSString *fileBaseStr = [[[[fileStr componentsSeparatedByString:@";"] lastObject] componentsSeparatedByString:@","] lastObject];
             NSData *decodedImgData = [[NSData alloc] initWithBase64EncodedString:fileBaseStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
             NSLog(@"%@", fileBaseStr);
-            NSString *fileUrl = [QIMHttpApi updateLoadFile:decodedImgData WithMsgId:[QIMUUIDTools UUID] WithMsgType:1 WihtPathExtension:nil];
+            NSString *fileUrl = [QIMHttpApi updateLoadFile:decodedImgData WithMsgId:[QIMUUIDTools UUID] WithMsgType:1 WithPathExtension:nil];
             NSLog(@"fileUrl : %@", fileUrl);
             if (![fileUrl qim_hasPrefixHttpHeader]) {
                 fileUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileUrl];

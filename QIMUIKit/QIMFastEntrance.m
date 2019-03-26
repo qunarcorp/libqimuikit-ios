@@ -35,6 +35,7 @@
 #import "QIMZBarViewController.h"
 #import "QIMJumpURLHandle.h"
 #import "QIMLoginVC.h"
+#import "QIMPublicLogin.h"
 #import "QIMMainVC.h"
 #import "QIMLoginViewController.h"
 #import "QIMWebLoginVC.h"
@@ -43,6 +44,8 @@
 #import "QIMFileTransMiddleVC.h"
 #if defined (QIMIPadEnable) && QIMIPadEnable == 1
     #import "IPAD_RemoteLoginVC.h"
+    #import "IPAD_NAVViewController.h"
+    #import "QIMIPadWindowManager.h"
 #endif
 #import "QIMWatchDog.h"
 #import "QIMUUIDTools.h"
@@ -91,7 +94,14 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (UINavigationController *)getQIMFastEntranceRootNav {
     QIMVerboseLog(@"getQIMFastEntranceRootNav: %@", _sharedInstance.rootNav);
     if (!self.rootNav) {
-        self.rootNav = [[self getQIMFastEntranceRootVc] navigationController];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            self.rootNav = [[QIMIPadWindowManager sharedInstance] getDetailNav];
+        } else {
+            self.rootNav = [[self getQIMFastEntranceRootVc] navigationController];
+        }
+    }
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        self.rootNav = [[QIMIPadWindowManager sharedInstance] getDetailNav];
     }
     return self.rootNav;
 }
@@ -104,7 +114,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (void)launchMainControllerWithWindow:(UIWindow *)window {
     QIMVerboseLog(@"开始加载主界面");
     CFAbsoluteTime startTime = [[QIMWatchDog sharedInstance] startTime];
-    if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 #if defined (QIMIPadEnable) && QIMIPadEnable == 1
         IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
         [window setRootViewController:ipadVc];
@@ -130,9 +140,18 @@ static QIMFastEntrance *_sharedInstance = nil;
                 QIMNavController *navController = [[QIMNavController alloc] initWithRootViewController:mainVc];
                 [window setRootViewController:navController];
             } else {
-                QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-                [window setRootViewController:nav];
+                if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                    QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                    [QIMMainVC setMainVCReShow:YES];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [window setRootViewController:nav];
+                } else {
+                    QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                    [QIMMainVC setMainVCReShow:YES];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [window setRootViewController:nav];
+
+                }
             }
         }
     }
@@ -152,11 +171,13 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)showMainVc {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:NO];
-        QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
-        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
-    });
+    if ([QIMMainVC checkMainVC] == NO || [QIMMainVC getMainVCReShow] == YES) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:NO];
+            QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
+            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
+        });
+    }
 }
 
 - (UIView *)getQIMSessionListViewWithBaseFrame:(CGRect)frame {
@@ -226,9 +247,9 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         //打开用户名片页
         //导航返回的RNUserCardView 为YES时，默认打开RN 名片页
-        if ([[QIMKit sharedInstance] getIsIpad]) {
-            
-        } else {
+//        if ([[QIMKit sharedInstance] getIsIpad]) {
+//            
+//        } else {
 #if defined (QIMRNEnable) && QIMRNEnable == 1
             
             if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
@@ -246,7 +267,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 #if defined (QIMRNEnable) && QIMRNEnable == 1
             }
 #endif
-        }
+//        }
     });
 }
 
@@ -292,13 +313,13 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         //打开用户名片页
         //导航返回的RNUserCardView 为YES时，默认打开RN 名片页
-        if ([[QIMKit sharedInstance] getIsIpad]) {
-            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
-            SEL sel = NSSelectorFromString(@"openSingleChatByJid:");
-            if ([RunC respondsToSelector:sel]) {
-                [RunC performSelector:sel withObject:userId];
-            }
-        } else {
+//        if ([[QIMKit sharedInstance] getIsIpad]) {
+//            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
+//            SEL sel = NSSelectorFromString(@"openSingleChatByJid:");
+//            if ([RunC respondsToSelector:sel]) {
+//                [RunC performSelector:sel withObject:userId];
+//            }
+//        } else {
 #if defined (QIMRNEnable) && QIMRNEnable == 1
             
             if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
@@ -316,7 +337,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 #if defined (QIMRNEnable) && QIMRNEnable == 1
             }
 #endif
-        }
+//        }
     });
 }
 
@@ -519,20 +540,20 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)openGroupChatVCByGroupId:(NSString *)groupId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([[QIMKit sharedInstance] getIsIpad]) {
-            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
-            SEL sel = NSSelectorFromString(@"openGrouChatByGroupId:");
-            if ([RunC respondsToSelector:sel]) {
-                [RunC performSelector:sel withObject:groupId];
-            }
-        } else {
+//        if ([[QIMKit sharedInstance] getIsIpad]) {
+//            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
+//            SEL sel = NSSelectorFromString(@"openGrouChatByGroupId:");
+//            if ([RunC respondsToSelector:sel]) {
+//                [RunC performSelector:sel withObject:groupId];
+//            }
+//        } else {
             UIViewController *chatGroupVC = [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:groupId];
             UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
             if (!navVC) {
                 navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
             }
             [navVC pushViewController:chatGroupVC animated:YES];
-        }
+//        }
     });
 }
 
@@ -649,7 +670,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     if ([RunC respondsToSelector:sel]) {
         canParse = [[RunC performSelector:sel withObject:reactInfoDic] boolValue];
     }
-    if (canParse && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if (canParse && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         NSString *reacturl = reactInfoDic[@"reacturl"];
         NSURL *url = [NSURL URLWithString:[reacturl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
@@ -1069,7 +1090,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
             break;
         case QRCodeType_ClientNav: {
-            
+            qrName = qrId;
         }
             break;
         default:
@@ -1081,7 +1102,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)showQRCodeWithQRId:(NSString *)qrId withType:(QRCodeType)qrcodeType {
     if (qrId.length <= 0) {
-        NSAssert(qrId, @"UserId is nil, Please Check it");
+        NSAssert(qrId, @"qrId is nil, Please Check it");
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *qrVC = [[QIMFastEntrance sharedInstance] getQRCodeWithQRId:qrId withType:qrcodeType];
@@ -1104,22 +1125,38 @@ static QIMFastEntrance *_sharedInstance = nil;
         [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
         [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-                QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-                [remoteVC quit];
-                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+            if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+#if defined (QIMIPadEnable) && QIMIPadEnable == 1
+                IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
+                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
+#endif
             } else {
-                if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
-                    QIMLoginViewController *loginViewController = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
-                    [loginViewController setLinkUrl:nil];
-                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginViewController];
-                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+                    if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                        QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                        [QIMMainVC setMainVCReShow:YES];
+                        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                    } else {
+                        QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                        [QIMMainVC setMainVCReShow:YES];
+                        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                    }
                 } else {
-                    QIMWebLoginVC *loginVC = [[QIMWebLoginVC alloc] init];
-                    [loginVC clearLoginCookie];
-                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVC];
-                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                    if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
+                        QIMLoginViewController *loginViewController = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
+                        [loginViewController setLinkUrl:nil];
+                        [QIMMainVC setMainVCReShow:YES];
+                        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+                        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                    } else {
+                        QIMWebLoginVC *loginVC = [[QIMWebLoginVC alloc] init];
+                        [loginVC clearLoginCookie];
+                        [QIMMainVC setMainVCReShow:YES];
+                        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVC];
+                        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                    }
                 }
             }
         });
@@ -1141,22 +1178,38 @@ static QIMFastEntrance *_sharedInstance = nil;
             [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-                    QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
-                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-                    [remoteVC quit];
-                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+#if defined (QIMIPadEnable) && QIMIPadEnable == 1
+                    IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
+                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
+#endif
                 } else {
-                    if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
-                        QIMLoginViewController *loginViewController = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
-                        [loginViewController setLinkUrl:nil];
-                        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginViewController];
-                        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+                        if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                            QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                            [QIMMainVC setMainVCReShow:YES];
+                            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                        } else {
+                            QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                            [QIMMainVC setMainVCReShow:YES];
+                            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                        }
                     } else {
-                        QIMWebLoginVC *loginVC = [[QIMWebLoginVC alloc] init];
-                        [loginVC clearLoginCookie];
-                        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVC];
-                        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                        if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
+                            QIMLoginViewController *loginViewController = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
+                            [loginViewController setLinkUrl:nil];
+                            [QIMMainVC setMainVCReShow:YES];
+                            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+                            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                        } else {
+                            QIMWebLoginVC *loginVC = [[QIMWebLoginVC alloc] init];
+                            [loginVC clearLoginCookie];
+                            [QIMMainVC setMainVCReShow:YES];
+                            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVC];
+                            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                        }
                     }
                 }
             });
@@ -1172,21 +1225,39 @@ static QIMFastEntrance *_sharedInstance = nil;
 + (void)reloginAccount {
     dispatch_async(dispatch_get_main_queue(), ^{
         [[QIMKit sharedInstance] setNeedTryRelogin:NO];
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+#if defined (QIMIPadEnable) && QIMIPadEnable == 1
             [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
-            QIMLoginVC * remoteVC = [[QIMLoginVC alloc] init];
-            [remoteVC quit];
-            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:remoteVC];
+            IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
+            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
+#endif
         } else {
-            if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
-                QIMLoginViewController *loginVC = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
-                [loginVC setLinkUrl:nil];
-                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:loginVC];
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+                [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
+                [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
+                if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                    QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                } else {
+                    QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                    [QIMMainVC setMainVCReShow:YES];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                }
             } else {
-                QIMWebLoginVC *loginVC = [[QIMWebLoginVC alloc] init];
-                [loginVC clearLoginCookie];
-                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:loginVC];
+                if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
+                    QIMLoginViewController *loginVC = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
+                    [QIMMainVC setMainVCReShow:YES];
+                    [loginVC setLinkUrl:nil];
+                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:loginVC];
+                } else {
+                    QIMWebLoginVC *loginVC = [[QIMWebLoginVC alloc] init];
+                    [QIMMainVC setMainVCReShow:YES];
+                    [loginVC clearLoginCookie];
+                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:loginVC];
+                }
             }
         }
     });
@@ -1207,7 +1278,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     }];
 }
 
-- (UIViewController *)getContactSelectionVC:(Message *)msg withExternalForward:(BOOL)externalForward {
+- (UIViewController *)getContactSelectionVC:(QIMMessageModel *)msg withExternalForward:(BOOL)externalForward {
     QIMContactSelectionViewController *controllerVc = [[QIMContactSelectionViewController alloc] init];
     controllerVc.ExternalForward = YES;
     [controllerVc setMessage:msg];
@@ -1290,7 +1361,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     if (fileUrl.length <= 0 || fileName.length <= 0 || fileSize.length <= 0) {
         return;
     }
-    Message *fileMsg = [[Message alloc] init];
+   QIMMessageModel *fileMsg = [[QIMMessageModel alloc] init];
     fileMsg.messageId = [QIMUUIDTools UUID];
     NSMutableDictionary *fileInfoDic = [[NSMutableDictionary alloc] init];
     [fileInfoDic setQIMSafeObject:fileUrl forKey:@"HttpUrl"];

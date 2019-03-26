@@ -25,7 +25,6 @@
 #import "QIMUserInfoModel.h"
 #import "QCGroupModel.h"
 #import "QIMMenuView.h"
-#import "QIMFriendListViewController.h"
 #import "QIMServiceStatusViewController.h"
 
 @interface QIMCommonTableViewCellManager ()
@@ -183,7 +182,7 @@
         case QIMCommonTableViewCellDataTypeSearchHistory: {
             QIMWebView *webView = [[QIMWebView alloc] init];
             [webView setUrl:[NSString stringWithFormat:@"%@/lookback/main_controller.php", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost]]];
-            //@"https://qt.qunar.com/lookback/main_controller.php"];
+            //@"https://qim.qunar.com/lookback/main_controller.php"];
             [self.rootVC.navigationController pushViewController:webView animated:YES];
         }
             break;
@@ -215,7 +214,6 @@
             break;
         case QIMCommonTableViewCellDataTypeGroupQRcode: {
             [QIMFastEntrance showQRCodeWithQRId:self.groupModel.groupId withType:QRCodeType_GroupQR];
-//            [QIMFastEntrance showQRCodeWithUserId:self.groupModel.groupId withName:self.groupModel.groupName withType:QRCodeType_GroupQR];
         }
             break;
         case QIMCommonTableViewCellDataTypeGroupLeave: {
@@ -244,6 +242,7 @@
             break;
         case QIMCommonTableViewCellDataTypeClearCache: {
             [[QIMDataController getInstance] removeAllImage];
+            [[QIMDataController getInstance] clearLogFiles];
         }
             break;
         case QIMCommonTableViewCellDataTypeMconfig: {

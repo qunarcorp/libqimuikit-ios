@@ -144,7 +144,6 @@ static QIMNotifyView *_notifyView = nil;
         NSString *type = [linkData objectForKey:@"type"];
         if ([type isEqualToString:@"request"]) {
             NSString *url = [linkData objectForKey:@"url"];
-            url = @"http://qt.qunar.com/healthcheck.html";
             if (url) {
                 
                 QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:[NSURL URLWithString:url]];

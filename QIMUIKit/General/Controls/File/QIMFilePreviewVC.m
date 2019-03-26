@@ -136,7 +136,7 @@
         
         UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake((self.view.width - 60)/2.0, 100, 60, 60)];
         [iconView setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
-        [iconView setImage:[QIMFileIconTools getFileIconWihtExtension:_fileName.pathExtension]];
+        [iconView setImage:[QIMFileIconTools getFileIconWithExtension:_fileName.pathExtension]];
         [_downloadView addSubview:iconView];
         
         UILabel *fileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, iconView.bottom + 10, self.view.width, 40)];
@@ -493,7 +493,7 @@
     
     UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake((self.view.width - 60)/2.0, 100, 60, 60)];
     [iconView setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
-    [iconView setImage:[QIMFileIconTools getFileIconWihtExtension:fileName.pathExtension]];
+    [iconView setImage:[QIMFileIconTools getFileIconWithExtension:fileName.pathExtension]];
     [_downloadView addSubview:iconView];
     
     UILabel *fileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, iconView.bottom + 10, self.view.width, 40)];

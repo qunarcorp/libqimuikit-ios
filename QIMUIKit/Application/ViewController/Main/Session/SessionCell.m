@@ -211,7 +211,7 @@ static NSDateFormatter  *__global_dateformatter;
         switch ([[_infoDic objectForKey:@"MsgType"] intValue]) {
             case QIMMessageType_File:
             {
-                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == MessageDirection_Received) {
+                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == QIMMessageDirection_Received) {
                     content = [NSString stringWithFormat:@"%@:[文件]", nickName];
                 } else {
                     content = @"[文件]";
@@ -220,7 +220,7 @@ static NSDateFormatter  *__global_dateformatter;
                 break;
             case QIMMessageType_Image:
             {
-                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == MessageDirection_Received) {
+                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == QIMMessageDirection_Received) {
                     content = [NSString stringWithFormat:@"%@:[图片]", nickName];
                 } else {
                     content = @"[图片]";
@@ -231,7 +231,7 @@ static NSDateFormatter  *__global_dateformatter;
             case QIMMessageType_Shock:
             {
                 
-                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == MessageDirection_Received) {
+                if ([[_infoDic objectForKey:@"MsgDirection"] intValue] == QIMMessageDirection_Received) {
                     content = [NSString stringWithFormat:@"%@:%@", nickName, message];
                 } else {
                     content = message;
@@ -311,35 +311,6 @@ static NSDateFormatter  *__global_dateformatter;
         }
         */
         [_headerView qim_setImageWithJid:_jid];
-        if ([[QIMKit sharedInstance] isUserOnline:self.jid]) {
-            if (self.hasAtCell) {
-                _onLineLabel.text = @"在线";
-                _onLineLabel.hidden = NO;
-            }
-        } else {
-            _onLineLabel.text = @"";
-            _onLineLabel.hidden = YES;
-        }
-        switch ([[QIMKit sharedInstance] getUserPrecenseStatus:self.jid]) {
-            case UserPrecenseStatus_Away:
-            {
-                UIImage *image = [UIImage imageNamed:@"Header+Search_Away_Normal"];
-                [_prefrenceImageView setHidden:NO];
-                [_prefrenceImageView setImage:image];
-            }
-                break;
-            case UserPrecenseStatus_Dnd:
-            {
-                UIImage *image = [UIImage imageNamed:@"Header+Search_Busy_Normal"];
-                [_prefrenceImageView setHidden:NO];
-                [_prefrenceImageView setImage:image];
-                
-            }
-                break;
-            default:
-                [_prefrenceImageView setHidden:YES];
-                break;
-        }
         
         switch ([[_infoDic objectForKey:@"MsgType"] intValue]) {
             case QIMMessageType_File:

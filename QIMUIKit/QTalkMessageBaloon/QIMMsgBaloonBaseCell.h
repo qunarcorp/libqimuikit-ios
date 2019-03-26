@@ -63,15 +63,15 @@
 
 @property (nonatomic, assign) CGFloat frameWidth;
 
-@property (nonatomic, strong) Message *message;
+@property (nonatomic, strong)QIMMessageModel *message;
 
 @property (nonatomic, assign) ChatType chatType;     //当前会话类型
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType;
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType;
 
 - (void)initBackViewAndHeaderName;
 
-- (void)setBackViewWithWidth:(CGFloat)backWidth WihtHeight:(CGFloat)backHeight;
+- (void)setBackViewWithWidth:(CGFloat)backWidth WithHeight:(CGFloat)backHeight;
 
 - (void)refreshUI;
 

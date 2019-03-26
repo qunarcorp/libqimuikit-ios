@@ -186,16 +186,16 @@
             icon.image = [[QIMKit sharedInstance] getPublicNumberHeaderImageByFileName:headerSrc];
             NSString *url = [NSString stringWithFormat:@"qtalk://robot?id=%@&type=robot",self.jid];
             QRCodeImageView.image = [QRCodeGenerator qrImageForString:url imageSize:QRCodeImageView.bounds.size.width];
-            [self.navigationItem setTitle:[NSString stringWithFormat:NSLocalizedString(@"qrcode_@_qrcode", @"%@的二维码"),self.name]];
+            [self.navigationItem setTitle:[NSString stringWithFormat:@"%@的二维码",self.name]];
         }
             break;
         case QRCodeType_ClientNav: {
-            [infoLabel setText:NSLocalizedString(@"qrcode_tips_client_nav", nil)];
+            [infoLabel setText:[NSBundle qim_localizedStringForKey:@"qrcode_tips_client_nav"]];
             nameLabel.text = self.name;
             icon.image = [UIImage imageNamed:@"setup_38x38_"];
             NSString *url = [NSString stringWithFormat:@"%@",self.jid];
             QRCodeImageView.image = [QRCodeGenerator qrImageForString:url imageSize:QRCodeImageView.bounds.size.width];
-            [self.navigationItem setTitle:[NSString stringWithFormat:NSLocalizedString(@"qrcode_@_qrcode", @"%@的二维码"),self.name]];
+            [self.navigationItem setTitle:[NSString stringWithFormat:@"%@的二维码",self.name]];
         }
             break;
         default:
