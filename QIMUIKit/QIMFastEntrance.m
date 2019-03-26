@@ -699,7 +699,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (UIViewController *)getRNSearchVC {
     
     
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if defined (QIMRNEnable) && QIMRNEnable == 1
     UIViewController *reactVC = [[NSClassFromString(@"QTalkSearchViewManager") alloc] init];
     return reactVC;
 #endif
@@ -707,7 +707,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)openRNSearchVC {
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if defined (QIMRNEnable) && QIMRNEnable == 1
     dispatch_async(dispatch_get_main_queue(), ^{
         CATransition *animation = [CATransition animation];
         animation.duration = 0.4f;   //时间间隔
