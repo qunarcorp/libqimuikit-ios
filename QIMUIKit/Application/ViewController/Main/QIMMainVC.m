@@ -720,7 +720,7 @@
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if defined (QIMRNEnable) && QIMRNEnable == 1
 
     [QIMFastEntrance openRNSearchVC];
     return NO;
