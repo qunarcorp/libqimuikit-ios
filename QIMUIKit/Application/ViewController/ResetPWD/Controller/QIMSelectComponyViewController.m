@@ -17,8 +17,6 @@
 
 @property (nonatomic, strong) UIView *lineView;
 
-@property (nonatomic, strong) UIButton *nextButton;
-
 @property (nonatomic, strong) UITableView *companyListView;
 
 @property (nonatomic, strong) NSMutableArray *companies;
@@ -49,19 +47,6 @@
         _lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
     }
     return _lineView;
-}
-
-- (UIButton *)nextButton {
-    if (!_nextButton) {
-        _nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _nextButton.layer.cornerRadius = 24.0f;
-        _nextButton.backgroundColor = [UIColor qim_colorWithHex:0xABE9E5];
-        [_nextButton setTitle:@"下一步" forState:UIControlStateNormal];
-        [_nextButton setTitle:@"下一步" forState:UIControlStateSelected];
-        [_nextButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_nextButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-    }
-    return _nextButton;
 }
 
 - (UITableView *)companyListView {
@@ -151,16 +136,6 @@
         make.right.mas_equalTo(self.companyTextField.mas_right);
         make.height.mas_equalTo(0.5);
     }];
-    
-    /*
-    [self.view addSubview:self.nextButton];
-    [self.nextButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.companyTextField.mas_bottom).mas_offset(44);
-        make.left.mas_offset(40);
-        make.right.mas_offset(-40);
-        make.height.mas_equalTo(48);
-    }];
-    */
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
