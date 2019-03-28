@@ -131,8 +131,12 @@ static const int companyTag = 10001;
         _userPwdTextField.secureTextEntry = YES;
         _userPwdTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         _userPwdTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        _userPwdTextField.returnKeyType = UIReturnKeyNext;
         _userPwdTextField.backgroundColor = [UIColor whiteColor];
+    }
+    if (self.companyModel) {
+        _userPwdTextField.returnKeyType = UIReturnKeyGo;
+    } else {
+        _userPwdTextField.returnKeyType = UIReturnKeyNext;
     }
     return _userPwdTextField;
 }
@@ -247,19 +251,6 @@ static const int companyTag = 10001;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadNavDicts:) name:@"NavConfigSettingChanged" object:nil];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
-    QIMVerboseLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
-    if (oldNavConfigUrlDict.count) {
-        self.multipleLogin = YES;
-        QIMPublicCompanyModel *companyModel = [[QIMPublicCompanyModel alloc] init];
-        companyModel.name = [oldNavConfigUrlDict objectForKey:QIMNavNameKey];
-        companyModel.domain = [oldNavConfigUrlDict objectForKey:QIMNavNameKey];
-        companyModel.nav = [oldNavConfigUrlDict objectForKey:QIMNavUrlKey];
-        self.companyModel = companyModel;
-    } else {
-        self.multipleLogin = NO;
-    }
-    
     [self setupUI];
     NSString *lastUserName = [QIMKit getLastUserName];
     NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
@@ -309,6 +300,16 @@ static const int companyTag = 10001;
     return YES;
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (self.userPwdTextField == textField) {
+        if (self.companyModel && self.userNameTextField.text.length) {
+            [self clickLogin:nil];
+        }
+    } else {
+        
+    }
+}
+
 - (void)updateLoginEnable:(BOOL)flag {
     [self.loginBtn setEnabled:flag];
 }
@@ -322,6 +323,19 @@ static const int companyTag = 10001;
 }
 
 - (void)setupUI {
+    NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
+    QIMVerboseLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
+    if (oldNavConfigUrlDict.count) {
+        self.multipleLogin = YES;
+        QIMPublicCompanyModel *companyModel = [[QIMPublicCompanyModel alloc] init];
+        companyModel.name = [oldNavConfigUrlDict objectForKey:QIMNavNameKey];
+        companyModel.domain = [oldNavConfigUrlDict objectForKey:QIMNavNameKey];
+        companyModel.nav = [oldNavConfigUrlDict objectForKey:QIMNavUrlKey];
+        self.companyModel = companyModel;
+    } else {
+        self.multipleLogin = NO;
+    }
+    
     [self.view addSubview:self.loginTitleLabel];
     [self.loginTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_offset(33);
@@ -631,13 +645,7 @@ static const int companyTag = 10001;
 
 - (void)reloadNavDicts:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary *navDict = notify.object;
-        NSString *navName = [navDict objectForKey:QIMNavNameKey];
-        NSString *navUrl = [navDict objectForKey:QIMNavUrlKey];
-        self.companyModel.name = navName;
-        self.companyModel.nav = navUrl;
-        self.companyShowLabel.text = navName;
-        self.companyTextField.text = navName;
+        [self setupUI];
     });
 }
 
