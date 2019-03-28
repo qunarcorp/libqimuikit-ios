@@ -114,7 +114,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (void)launchMainControllerWithWindow:(UIWindow *)window {
     QIMVerboseLog(@"开始加载主界面");
     CFAbsoluteTime startTime = [[QIMWatchDog sharedInstance] startTime];
-    if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+    if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
 #if defined (QIMIPadEnable) && QIMIPadEnable == 1
         IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
         [window setRootViewController:ipadVc];
@@ -173,9 +173,14 @@ static QIMFastEntrance *_sharedInstance = nil;
 + (void)showMainVc {
     if ([QIMMainVC checkMainVC] == NO || [QIMMainVC getMainVCReShow] == YES) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:NO];
-            QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
-            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                IPAD_QIMMainSplitVC *mainVC = [[IPAD_QIMMainSplitVC alloc] init];
+                [[QIMIPadWindowManager sharedInstance] setiPadRootVc:mainVC];
+            } else {
+                QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:NO];
+                QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
+                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
+            }
         });
     }
 }

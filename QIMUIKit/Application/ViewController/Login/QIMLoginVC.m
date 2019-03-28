@@ -452,7 +452,7 @@
         _settingBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.height - 44, self.view.width, 24)];
         [_settingBtn setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
         [_settingBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [_settingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_settingBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
         [_settingBtn setTitle:@"设置服务地址" forState:UIControlStateNormal];
         [_settingBtn setImage:[UIImage imageNamed:@"iconSetting"] forState:UIControlStateNormal];
         [_settingBtn addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];

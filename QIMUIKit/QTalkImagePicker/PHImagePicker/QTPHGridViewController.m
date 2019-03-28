@@ -498,7 +498,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
             options.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
             options.synchronous = YES;
             
-            [self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(184, 184) contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            [self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(92, 92) contentMode:PHImageContentModeAspectFit options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                 [cell.imageView setImage:result];
             }];
             
