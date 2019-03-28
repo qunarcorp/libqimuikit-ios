@@ -70,61 +70,63 @@
 }
 
 - (void)setupUI {
-    _navNickNameLable = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, self.view.width - 40, 20)];
-    [_navNickNameLable setText:@"导航服务器名称"];
+    _navNickNameLable = [[UILabel alloc] initWithFrame:CGRectMake(20, 30, self.view.width - 40, 20)];
+    [_navNickNameLable setText:@"导航名"];
     [_navNickNameLable setBackgroundColor:[UIColor clearColor]];
-    [_navNickNameLable setFont:[UIFont systemFontOfSize:14]];
-    [_navNickNameLable setTextColor:[UIColor qtalkTextLightColor]];
+    [_navNickNameLable setFont:[UIFont systemFontOfSize:16]];
+    [_navNickNameLable setTextColor:[UIColor blackColor]];
     [_navNickNameLable setTextAlignment:NSTextAlignmentLeft];
     [self.view addSubview:_navNickNameLable];
     
-    _navNickNameTextField = [[UITextField alloc] initWithFrame:CGRectMake(_navNickNameLable.left, _navNickNameLable.bottom + 10, _navNickNameLable.width, 36)];
+    UIView *navNickNameTextBgView = [[UIView alloc] initWithFrame:CGRectMake(_navNickNameLable.left, _navNickNameLable.bottom + 10, _navNickNameLable.width, 36)];
+    navNickNameTextBgView.layer.borderWidth = 1.0f;
+    navNickNameTextBgView.layer.borderColor = [UIColor qim_colorWithHex:0xDDDDDD].CGColor;
+    
+    _navNickNameTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _navNickNameLable.width - 10, 36)];
     [_navNickNameTextField setBackgroundColor:[UIColor clearColor]];
-    [_navNickNameTextField setBorderStyle:UITextBorderStyleRoundedRect];
     [_navNickNameTextField setFont:[UIFont systemFontOfSize:14]];
-    [_navNickNameTextField setTextColor:[UIColor qtalkTextBlackColor]];
-    [_navNickNameTextField setPlaceholder:@"我的导航服务器名称"];
+    [_navNickNameTextField setTextColor:[UIColor blackColor]];
+    [_navNickNameTextField setPlaceholder:@"请输入导航服务器名称或公司名"];
     if (self.navTitle.length > 0) {
         [_navNickNameTextField setText:self.navTitle];
     }
-    [self.view addSubview:_navNickNameTextField];
+    [self.view addSubview:navNickNameTextBgView];
+    [navNickNameTextBgView addSubview:_navNickNameTextField];
     [_navNickNameTextField becomeFirstResponder];
     
-    _navAddressLabel = [[UILabel alloc] initWithFrame:CGRectMake(_navNickNameTextField.left, _navNickNameTextField.bottom+10, _navNickNameTextField.width, 20)];
+    _navAddressLabel = [[UILabel alloc] initWithFrame:CGRectMake(navNickNameTextBgView.left, navNickNameTextBgView.bottom+30, navNickNameTextBgView.width, 20)];
     [_navAddressLabel setBackgroundColor:[UIColor clearColor]];
-    [_navAddressLabel setFont:[UIFont systemFontOfSize:14]];
-    [_navAddressLabel setTextColor:[UIColor qtalkTextLightColor]];
+    [_navAddressLabel setFont:[UIFont systemFontOfSize:16]];
+    [_navAddressLabel setTextColor:[UIColor blackColor]];
     [_navAddressLabel setTextAlignment:NSTextAlignmentLeft];
     [self.view addSubview:_navAddressLabel];
-    if ([[QIMKit sharedInstance] qimNav_Debug]) {
-        NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] init];
-        [attrStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"[测试环境]" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16],NSForegroundColorAttributeName:[UIColor redColor]}]];
-        [attrStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"导航服务器地址" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16],NSForegroundColorAttributeName:[UIColor qtalkTextBlackColor]}]];
-        [_navAddressLabel setAttributedText:attrStr];
-    } else {
-        [_navAddressLabel setText:@"导航服务器地址/域名"];
-    }
+    [_navAddressLabel setText:@"域名/服务器地址（必填）"];
     
-    _navAddressTextField = [[UITextField alloc] initWithFrame:CGRectMake(_navAddressLabel.left, _navAddressLabel.bottom + 10, _navAddressLabel.width - 45, 36)];
+    UIView *navAddressTextBgView = [[UIView alloc] initWithFrame:CGRectMake(_navAddressLabel.left, _navAddressLabel.bottom + 10, _navAddressLabel.width, 36)];
+    navAddressTextBgView.layer.borderWidth = 1.0f;
+    navAddressTextBgView.layer.borderColor = [UIColor qim_colorWithHex:0xDDDDDD].CGColor;
+    
+    _navAddressTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _navAddressLabel.width - 55, 36)];
     [_navAddressTextField setBackgroundColor:[UIColor clearColor]];
-    [_navAddressTextField setBorderStyle:UITextBorderStyleRoundedRect];
+
     [_navAddressTextField setFont:[UIFont systemFontOfSize:14]];
     [_navAddressTextField setTextColor:[UIColor qtalkTextBlackColor]];
     [_navAddressTextField setClearButtonMode:UITextFieldViewModeWhileEditing];
     if (self.navUrl) {
         [_navAddressTextField setText:self.navUrl];
     } else {
-        [_navAddressTextField setPlaceholder:@"请输入域名，如qunar.com"];
+        [_navAddressTextField setPlaceholder:@"请输入您的公司域名，如qunar.com"];
     }
-    [self.view addSubview:_navAddressTextField];
+    [navAddressTextBgView addSubview:_navAddressTextField];
     
     _qrcodeNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    _qrcodeNavBtn.frame = CGRectMake(_navAddressLabel.right - 36, _navAddressLabel.bottom + 10, 36, 36);
+    _qrcodeNavBtn.frame = CGRectMake(_navAddressTextField.right + 5, 0, 36, 36);
     _qrcodeNavBtn.layer.masksToBounds = YES;
     _qrcodeNavBtn.layer.cornerRadius = CGRectGetWidth(_qrcodeNavBtn.frame) / 2.0;
-    [_qrcodeNavBtn setImage:[UIImage imageNamed:@"qunar-qrcode_o"] forState:UIControlStateNormal];
+    [_qrcodeNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
     [_qrcodeNavBtn addTarget:self action:@selector(scanNav:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_qrcodeNavBtn];
+    [navAddressTextBgView addSubview:_qrcodeNavBtn];
+    [self.view addSubview:navAddressTextBgView];
 }
 
 - (void)scanNav:(id)sender {
@@ -132,13 +134,19 @@
     QIMZBarViewController *vc=[[QIMZBarViewController alloc] initWithBlock:^(NSString *str, BOOL isScceed) {
         if (isScceed) {
             QIMVerboseLog(@"str : %@", str);
-            weakSelf.navUrl = str;
             if ([str containsString:@"publicnav?c="]) {
                 str = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
+                weakSelf.navUrl = str;
+            } else if ([str containsString:@"confignavigation?configurl="]) {
+                NSString *base64NavUrl = [[str componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
+                str = [base64NavUrl qim_base64DecodedString];
+                weakSelf.navUrl = str;
+            } else {
+                weakSelf.navUrl = str;
             }
             _navAddressTextField.text = str;
             if (!_navNickNameTextField.text.length) {
-                _navNickNameTextField.text = str;
+                _navNickNameTextField.text = [[str.lastPathComponent componentsSeparatedByString:@"="] lastObject];
             }
         }
     }];
@@ -147,7 +155,7 @@
 
 - (void)setupNav {
     
-    self.title = self.navTitle.length > 0 ? self.navTitle : @"新增导航服务器";
+    self.title = self.navTitle.length > 0 ? self.navTitle : @"新增导航";
     UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     [self.navigationItem setLeftBarButtonItem:cancelItem];
     
@@ -164,7 +172,7 @@
     self.navUrl = _navAddressTextField.text;
     if (self.navUrl.length > 0) {
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        __block NSDictionary *userWillsaveNavDict = @{QIMNavNameKey:navHttpName?navHttpName:[[self.navUrl.lastPathComponent componentsSeparatedByString:@"="] lastObject], QIMNavUrlKey:self.navUrl};
+        __block NSDictionary *userWillsaveNavDict = @{QIMNavNameKey:(navHttpName.length > 0) ? navHttpName : [[self.navUrl.lastPathComponent componentsSeparatedByString:@"="] lastObject], QIMNavUrlKey:self.navUrl};
         [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_UserWillSaveNavDict"];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             BOOL success = [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithCheck:YES];
