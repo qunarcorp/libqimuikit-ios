@@ -17,6 +17,7 @@
 #import "QTalkVideoAssetViewController.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 #import "MBProgressHUD.h"
+#import "QIMWatchDog.h"
 #import "QTPHImagePickerManager.h"
 
 //Helper methods
@@ -480,6 +481,8 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    CFAbsoluteTime startTime1 = [[QIMWatchDog sharedInstance] startTime];
+
     QTPHGridViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:QTPHGridViewCellIdentifier
                                                              forIndexPath:indexPath];
     
@@ -493,16 +496,15 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
         //QIMVerboseLog(@"Image manager: Requesting FILL image for iPhone");
         @autoreleasepool {
             PHImageRequestOptions *options = [PHImageRequestOptions new];
-            options.networkAccessAllowed = YES;
+            options.networkAccessAllowed = NO;
             options.resizeMode = PHImageRequestOptionsResizeModeFast;
             options.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
-            options.synchronous = YES;
             
-            [self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(184, 184) contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            [self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(92, 92) contentMode:PHImageContentModeAspectFit options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                 [cell.imageView setImage:result];
             }];
             
-            [self.imageManager requestImageDataForAsset:asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+            [self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
                 //gif 图片
                 //这里不要直接用NSData赋值，相册图片过多时会导致OOM
                 if ([dataUTI isEqualToString:(__bridge NSString *)kUTTypeGIF]) {
@@ -537,7 +539,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     } else {
         cell.selected = NO;
     }
-    
+    QIMVerboseLog(@"获取加载相册耗时 : %llf", [[QIMWatchDog sharedInstance] escapedTimewithStartTime:startTime1]);
     return cell;
 }
 

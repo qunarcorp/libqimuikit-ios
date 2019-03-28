@@ -51,6 +51,7 @@
 #import "NSDate+Extension.h"
 #import "Toast.h"
 #import "QIMPublicRedefineHeader.h"
+#import "QIMIPadWindowManager.h"
 
 #if defined (QIMLogEnable) && QIMLogEnable == 1
 #import "QIMLocalLog.h"
@@ -427,7 +428,11 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
                   WithModule:(NSString *)module
               WithProperties:(NSDictionary *)properties{
     UIViewController *vc = [QimRNBModule getVCWithNavigation:navVC WithHiddenNav:hiddenNav WithBundleName:bundleName WithModule:module WithProperties:properties];
-    [navVC pushViewController:vc animated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [[QIMIPadWindowManager sharedInstance] showDetailViewController:vc];
+    } else {
+        [navVC pushViewController:vc animated:YES];
+    }
 }
 
 + (void)sendQIMRNWillShow {
