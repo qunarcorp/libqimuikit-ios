@@ -241,7 +241,7 @@ CGFloat maxLimitHeight = 0;
     _showMoreLabel.font = [UIFont systemFontOfSize:14];
     
     // 最大高度限制
-    maxLimitHeight = (_contentLabel.font.lineHeight) * 6 - 1.0;
+    maxLimitHeight = (_contentLabel.font.lineHeight) * 7.1;
 }
 
 - (void)setMoment:(QIMWorkMomentModel *)moment {
