@@ -8,7 +8,6 @@
 
 #import "QIMCommonUIFramework.h"
 
-//http://wiki.corp.qunar.com/confluence/pages/viewpage.action?pageId=182622458#id-1.数据上一些约定-搜索排序约定(groupPriority)：
 typedef enum {
     QRNSearchGroupPriorityUserList = 0,                 //联系人列表
     QRNSearchGroupPriorityGroupList = 1,                //群组列表

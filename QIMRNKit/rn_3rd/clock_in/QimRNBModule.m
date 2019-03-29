@@ -334,7 +334,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
 /**
  内嵌应用JSLocation
  */
-+ (NSURL *)getJsCodeLocation {
++ (NSURL *)getJsCodeLocation { 
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
