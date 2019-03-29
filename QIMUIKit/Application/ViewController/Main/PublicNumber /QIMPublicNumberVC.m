@@ -73,8 +73,8 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
-- (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
-{
+- (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
+    [self.view endEditing:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

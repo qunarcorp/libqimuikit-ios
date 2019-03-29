@@ -334,6 +334,7 @@
 }
 
 - (void)leftBarBtnClicked:(id)sender {
+    [self.view endEditing:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

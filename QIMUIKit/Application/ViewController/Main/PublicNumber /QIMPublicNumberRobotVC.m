@@ -448,8 +448,8 @@
     self.navigationItem.leftBarButtonItems = @[spaceItem,backBarBtn];
 }
 
-- (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
-{
+- (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
+    [self.view endEditing:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
