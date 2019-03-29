@@ -132,7 +132,6 @@
         [_textView setFont:[UIFont systemFontOfSize:17]];
         [_textView setTextColor:[UIColor qim_colorWithHex:0x333333]];
         [_textView setTintColor:[UIColor qim_colorWithHex:0x333333]];
-        _textView.delegate = self;
         UILabel *placeHolderLabel = [[UILabel alloc] init];
         placeHolderLabel.text = @"来吧，尽情发挥吧…";
         placeHolderLabel.numberOfLines = 0;
@@ -449,38 +448,6 @@
             });
         });
     }
-}
-
-#pragma mark - UITextViewDelegate
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if ([text isEqualToString:@"@"]) {
-        //@ 弹出联系人
-        QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
-        [qNoticeVC onQIMWorkFeedSelectUser:^(NSDictionary * _Nonnull userInfo) {
-            QIMVerboseLog(@"selectUserInfo : %@", userInfo);
-            if (userInfo.count > 0) {
-                NSString *name = [userInfo objectForKey:@"name"];
-                NSString *jid = [userInfo objectForKey:@"jid"];
-                NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
-                if ([[QIMKit sharedInstance] getIsIpad]) {
-                    memberName = [NSString stringWithFormat:@"%@ ", name];
-                }
-                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:memberName];
-                [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x336cd5], NSFontAttributeName:[UIFont systemFontOfSize:15]}
-                                        range:NSMakeRange(0, memberName.length)];
-                [self.textView.textStorage insertAttributedString:attributedText atIndex:self.textView.selectedRange.location];
-                self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location + self.textView.selectedRange.length + memberName.length + 1, 0);
-            } else {
-                NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] initWithString:@"@"];
-                [self.textView.textStorage insertAttributedString:textAtt atIndex:self.textView.selectedRange.location];
-                self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location + self.textView.selectedRange.length + 1, 0);
-            }
-        }];
-        QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
-        [self presentViewController:qtalNav animated:YES completion:nil];
-    }
-    return YES;
 }
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDatasource

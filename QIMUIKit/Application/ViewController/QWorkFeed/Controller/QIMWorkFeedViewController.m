@@ -207,12 +207,13 @@
 
 - (void)reloadMomentAttachCommentList:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary *data = notify.object;
-        NSString *postId = [data objectForKey:@"postId"];
-        NSInteger momentIndex = [self getIndexOfMomentId:postId];
-        if (momentIndex >= 0 && momentIndex < self.workMomentList.count) {
-            [self.mainTableView reloadData];
-        }
+        [self.mainTableView reloadData];
+//        NSDictionary *data = notify.object;
+//        NSString *postId = [data objectForKey:@"postId"];
+//        NSInteger momentIndex = [self getIndexOfMomentId:postId];
+//        if (momentIndex >= 0 && momentIndex < self.workMomentList.count) {
+//            [self.mainTableView reloadData];
+//        }
     });
 }
 

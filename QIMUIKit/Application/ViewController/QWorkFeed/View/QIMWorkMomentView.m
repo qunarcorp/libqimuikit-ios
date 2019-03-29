@@ -15,7 +15,7 @@
 
 CGFloat maxFullContentHeight = 0;
 
-@interface QIMWorkMomentView ()
+@interface QIMWorkMomentView () <QIMAttributedLabelDelegate>
 
 // 头像
 @property (nonatomic, strong) UIImageView *headImageView;
@@ -104,6 +104,7 @@ CGFloat maxFullContentHeight = 0;
     _contentLabel.font = [UIFont systemFontOfSize:15];
     _contentLabel.linesSpacing = 1.0f;
     _contentLabel.characterSpacing = 0.0f;
+    _contentLabel.delegate = self;
     _contentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
     [self addSubview:_contentLabel];
 
@@ -216,6 +217,26 @@ CGFloat maxFullContentHeight = 0;
         NSString *userId = [NSString stringWithFormat:@"%@@%@", self.moment.ownerId, self.moment.ownerHost];
         [QIMFastEntrance openUserCardVCByUserId:userId];
     }
+}
+
+// 点击代理
+- (void)attributedLabel:(QIMAttributedLabel *)attributedLabel textStorageClicked:(id<QIMTextStorageProtocol>)textStorage atPoint:(CGPoint)point {
+    if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
+        QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
+        if (![storage.linkData length]) {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView show];
+        } else {
+            [QIMFastEntrance openWebViewForUrl:storage.linkData showNavBar:YES];
+        }
+    } else {
+        
+    }
+}
+
+// 长按代理 有多个状态 begin, changes, end 都会调用,所以需要判断状态
+- (void)attributedLabel:(QIMAttributedLabel *)attributedLabel textStorageLongPressed:(id<QIMTextStorageProtocol>)textStorage onState:(UIGestureRecognizerState)state atPoint:(CGPoint)point {
+    
 }
 
 @end
