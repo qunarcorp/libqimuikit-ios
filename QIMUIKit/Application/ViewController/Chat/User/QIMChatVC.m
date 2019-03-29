@@ -1382,6 +1382,7 @@
 
 //左上角返回按钮
 - (void)leftBarBtnClicked:(id)sender {
+    [self.view endEditing:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

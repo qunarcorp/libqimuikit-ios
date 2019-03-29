@@ -1187,6 +1187,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
+    [self.view endEditing:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
