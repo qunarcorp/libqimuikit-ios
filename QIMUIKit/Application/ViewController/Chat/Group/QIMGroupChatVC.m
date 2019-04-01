@@ -871,7 +871,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)statusBarOrientationChange:(NSNotification *)notification {
     QIMVerboseLog(@"屏幕发送旋转 : %@", notification);
-    [self reloadIPadViewFrame:notification];
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        [self reloadIPadViewFrame:notification];
+    }
 }
 
 - (void)reloadIPadViewFrame:(NSNotification *)notify {
@@ -1171,8 +1173,8 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
         if (self.messageManager.dataSource.count > 0) {
-            
-            [[QIMKit sharedInstance] sendReadstateWithGroupLastMessageTime:[(QIMMessageModel *) self.messageManager.dataSource.lastObject messageDate] withGroupId:self.chatId];
+            long long groupLastMessage = [[QIMKit sharedInstance] getGroupLastMsgTimeWithGroupId:self.chatId];
+            [[QIMKit sharedInstance] sendReadstateWithGroupLastMessageTime:groupLastMessage withGroupId:self.chatId];
         }
     });
 }
