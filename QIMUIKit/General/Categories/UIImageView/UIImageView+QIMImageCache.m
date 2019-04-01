@@ -177,7 +177,7 @@
     [self sd_setImageWithURL:url placeholderImage:placeholder];
 }
 
-- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDExternalCompletionBlock)completedBlock {
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletionBlock)completedBlock {
     [self sd_setImageWithURL:url placeholderImage:placeholder completed:completedBlock];
 }
 

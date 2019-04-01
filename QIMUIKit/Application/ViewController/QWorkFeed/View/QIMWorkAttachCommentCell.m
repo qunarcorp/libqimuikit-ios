@@ -47,6 +47,7 @@
     _contentLabel.linesSpacing = 20.0f;
     _contentLabel.delegate = self;
     _contentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
+    _contentLabel.lineBreakMode = kCTLineBreakByTruncatingTail;
     [_contentLabel setBackgroundColor:[UIColor qim_colorWithHex:0xF3F3F5]];
     [self.contentView addSubview:_contentLabel];
 }
@@ -95,15 +96,15 @@
         replayStr = [NSString stringWithFormat:@"[obj type=\"reply\" value=\"%@\"]",replayNameStr];
     }
     
-    NSString *likeString  = [NSString stringWithFormat:@"%@ %@", replayStr, commentModel.content];
     _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70 - self.leftMargin, 8, 60, 15);
     NSInteger likeNum = commentModel.likeNum;
     [_likeBtn setTitle:[NSString stringWithFormat:@"%ld 赞", likeNum] forState:UIControlStateNormal];
     QIMMessageModel *msg = [[QIMMessageModel alloc] init];
-    msg.message = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:likeString];
+    msg.message = [NSString stringWithFormat:@"%@ %@", replayStr, [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:commentModel.content]];
     msg.messageId = commentModel.commentUUID;
     
-    QIMTextContainer *mainTextContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:self.likeBtn.left - 12 withFontSize:14 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
+    self.contentLabel.lineBreakMode = kCTLineBreakByTruncatingTail;
+    QIMTextContainer *mainTextContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:self.likeBtn.left - 12 withFontSize:14 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:3];
     CGFloat textH = mainTextContainer.textHeight;
     self.contentLabel.textContainer = mainTextContainer;
     [self.contentLabel setFrameWithOrign:CGPointMake(12, 5) Width:(self.likeBtn.left - 12)];
