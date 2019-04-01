@@ -3141,6 +3141,7 @@ static CGPoint tableOffsetPoint;
     QIMImageStorage *storage = [tempImageArr objectAtIndex:index];
     imageHttpUrl = storage.imageURL.absoluteString;
     NSData *imageData = [[QIMKit sharedInstance] getFileDataFromUrl:imageHttpUrl forCacheType:QIMFileCacheTypeColoction needUpdate:NO];
+    imageData = nil;
     if (imageData.length) {
         QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithImage:[UIImage qim_animatedImageWithAnimatedGIFData:imageData]];
         photo.photoData = imageData;
