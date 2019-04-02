@@ -249,6 +249,8 @@ static const int companyTag = 10001;
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadNavDicts:) name:@"NavConfigSettingChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(streamEnd:) name:@"kNotificationOutOfDate" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(streamEnd:) name:@"kNotificationStreamEnd" object:nil];
     self.view.backgroundColor = [UIColor whiteColor];
     
     [self setupUI];
@@ -541,17 +543,9 @@ static const int companyTag = 10001;
         });
     } else {
         NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-        if ([lastUserName length] > 0 && [token length] > 0) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
-                [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
-                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
-            });
-        } else {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
-            });
-        }
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
+        });
     }
 }
 
@@ -641,6 +635,10 @@ static const int companyTag = 10001;
             [self presentViewController:alert animated:YES completion:nil];
         }
     });
+}
+
+- (void)streamEnd:(NSNotification *)notify {
+    [[QIMProgressHUD sharedInstance] closeHUD];
 }
 
 - (void)reloadNavDicts:(NSNotification *)notify {

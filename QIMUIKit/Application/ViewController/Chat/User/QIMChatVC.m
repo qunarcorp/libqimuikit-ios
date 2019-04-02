@@ -499,7 +499,7 @@
     UIBarButtonItem * spaceItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     //将宽度设为负值
     spaceItem.width = -15;
-    //将两个BarButtonItem都返回给N
+    //将两个BarButtonItem都返回给 
     self.navigationItem.leftBarButtonItems = @[spaceItem,backBarBtn];
 }
 
@@ -1398,6 +1398,7 @@
 
 //左上角返回按钮
 - (void)leftBarBtnClicked:(id)sender {
+    [self.view endEditing:YES];
     if ([[QIMKit sharedInstance] getIsIpad] == NO) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {

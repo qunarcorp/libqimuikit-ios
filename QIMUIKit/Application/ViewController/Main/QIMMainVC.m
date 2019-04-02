@@ -116,7 +116,6 @@ static QIMMainVC *__mainVc = nil;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"kNotificationOutOfDate" object:nil];
 }
 
 - (void)viewDidLoad {
@@ -416,8 +415,6 @@ static QIMMainVC *__mainVc = nil;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alertOutOfDateMsg) name:@"kNotificationOutOfDate" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alertStreamEndMsg:) name:@"kNotificationStreamEnd" object:nil];
     [self.navigationController setNavigationBarHidden:NO animated:NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
     [self updateNavigationWithSelectIndex:_tabBar.selectedIndex];
@@ -819,7 +816,7 @@ static QIMMainVC *__mainVc = nil;
         }
     } else {
         QIMVerboseLog(@"lastUserName或userToken为空,回到登录页面");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotificationOutOfDateFromQTalkMainVc" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotificationOutOfDate" object:nil];
     }
 }
 
@@ -835,30 +832,6 @@ static QIMMainVC *__mainVc = nil;
         }
     });
     */
-}
-
-- (void)alertOutOfDateMsg {
-    QIMVerboseLog(@"收到OutOfDate ");
-    dispatch_async(dispatch_get_main_queue(), ^{
-        __block UIAlertController *alertOutOfDateVc = [UIAlertController alertControllerWithTitle:@"下线通知" message:@"你的账号由于某些原因被迫下线" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *quitAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"myself_tab_quit_log"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotificationOutOfDateFromQTalkMainVc" object:nil];
-        }];
-        [alertOutOfDateVc addAction:quitAction];
-        [self presentViewController:alertOutOfDateVc animated:YES completion:nil];
-    });
-}
-
-- (void)alertStreamEndMsg:(NSNotification *)notify {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *reason = notify.object;
-        __block UIAlertController *alertOutOfDateVc = [UIAlertController alertControllerWithTitle:@"下线通知" message:reason?reason:@"你的账号由于某些原因被迫下线" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [QIMFastEntrance signOutWithNoPush];
-        }];
-        [alertOutOfDateVc addAction:okAction];
-        [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:alertOutOfDateVc animated:YES completion:nil];
-    });
 }
 
 #pragma mark - Navigation

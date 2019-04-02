@@ -69,13 +69,13 @@ Pod::Spec.new do |s|
       photoBrowser.frameworks = 'ImageIO', 'QuartzCore', 'AssetsLibrary', 'MediaPlayer'
       photoBrowser.weak_frameworks = 'Photos'
 
-      photoBrowser.dependency 'MBProgressHUD'
-      photoBrowser.dependency 'DACircularProgress'
-
+      photoBrowser.dependency 'MBProgressHUD', '~> 0.9'
+      photoBrowser.dependency 'DACircularProgress', '~> 2.3'
+      
       # SDWebImage
       # 3.7.2 contains bugs downloading local files
       # https://github.com/rs/SDWebImage/issues/1109
-      photoBrowser.dependency 'SDWebImage'
+      photoBrowser.dependency 'SDWebImage', '~> 3.7', '!= 3.7.2'
       photoBrowser.dependency 'QIMUIKit/PublicUIHeader'
       photoBrowser.resource = ['QIMUIKit/General/Verders/QIMMWPhotoBrowser/Assets']
   end
