@@ -62,78 +62,6 @@
     }
     return _cancelItem;
 }
-
-/*
-- (SCLAlertView *)vaildPwdAlert {
-    _vaildPwdAlert = [[SCLAlertView alloc] init];
-    [_vaildPwdAlert setHorizontalButtons:YES];
-    
-    SCLTextView *vaildPwdBoxTextField = [_vaildPwdAlert addTextField:@"qunar.com"];
-    vaildPwdBoxTextField.keyboardType = UIKeyboardTypeASCIICapable;
-    vaildPwdBoxTextField.secureTextEntry = NO;
-    __weak __typeof(self) weakSelf = self;
-    
-    [_vaildPwdAlert addButton:@"确定" validationBlock:^BOOL{
-        if (vaildPwdBoxTextField.text.length == 0)
-        {
-            
-            [weakSelf promptUserWithShakeTextField:vaildPwdBoxTextField];
-            NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:@"域名不能为空" attributes:
-                                              @{NSForegroundColorAttributeName:[UIColor redColor],
-                                                }];
-            vaildPwdBoxTextField.attributedPlaceholder = attrString;
-            vaildPwdBoxTextField.text = @"";
-            [vaildPwdBoxTextField becomeFirstResponder];
-            return NO;
-        } else {
-            NSDictionary *currentNav = @{QIMNavNameKey:vaildPwdBoxTextField.text, QIMNavUrlKey:vaildPwdBoxTextField.text};
-            [[QIMKit sharedInstance] setUserObject:currentNav forKey:@"QC_CurrentNavDict"];
-            [weakSelf onSaveWithNavUrl:vaildPwdBoxTextField.text WithNavDict:currentNav needSaveAllDict:YES];
-        }
-        return YES;
-    } actionBlock:^{
-    }];
-    
-    SCLButton *cancelBtn = [_vaildPwdAlert addButton:@"取消" target:self selector:@selector(dismisssEncryptChatAlert)];
-    cancelBtn.buttonFormatBlock = ^NSDictionary* (void)
-    {
-        NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
-        
-        buttonConfig[@"backgroundColor"] = [UIColor qtalkIconSelectColor];
-        buttonConfig[@"textColor"] = [UIColor whiteColor];
-        return buttonConfig;
-    };
-    
-    SCLButton *continuebtn = [_vaildPwdAlert addButton:@"高级" target:self selector:@selector(advanceAddServer)];
-    continuebtn.buttonFormatBlock = ^NSDictionary* (void)
-    {
-        NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
-        
-        buttonConfig[@"backgroundColor"] = [UIColor qtalkIconSelectColor];
-        buttonConfig[@"textColor"] = [UIColor whiteColor];
-        return buttonConfig;
-    };
-    return _vaildPwdAlert;
-}
-
-
-- (void)promptUserWithShakeTextField:(UITextField *)textField {
-    CAKeyframeAnimation *animation = [CAKeyframeAnimation animation];
-    animation.keyPath = @"position.x";
-    //values 数组定义了表单应该到哪些位置。
-    animation.values = @[ @0, @15, @-15, @15, @0 ];
-    //设置 keyTimes 属性让我们能够指定关键帧动画发生的时间。它们被指定为关键帧动画总持续时间的一个分数。
-    animation.keyTimes = @[ @0, @(1 / 6.0), @(3 / 6.0), @(5 / 6.0), @1 ];
-    animation.duration = 0.4;
-    animation.additive = YES;
-    [textField.layer addAnimation:animation forKey:@"shake"];
-}
-
-- (void)dismisssEncryptChatAlert {
-    _vaildPwdAlert = nil;
-    self.addNavServerBtn.enabled = YES;
-}
-*/
  
 - (void)initUI {
     
@@ -171,7 +99,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadNavDicts) name:NavConfigSettingChanged object:nil];
-    self.navConfigs = [self navServerConfigs];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarOrientationChange:)name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    self.navConfigs = [[QIMKit sharedInstance] qimNav_localNavConfigs];
     [self initUI];
     if (![[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"]) {
         
@@ -179,6 +108,28 @@
         [self.tableView reloadData];
     }
 }
+
+#pragma mark - 重新修改frame
+- (void)reloadIPadViewFrame {
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        _tableView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.frame), self.view.height - 59);
+        QIMVerboseLog(@"%@",NSStringFromCGRect(_tableView.frame));
+        [_tableView setValue:nil forKey:@"reusableTableCells"];
+        [self.tableView reloadData];
+        [self.addNavServerBtn removeFromSuperview];
+        self.addNavServerBtn = nil;
+        [[UIApplication sharedApplication].keyWindow addSubview:self.addNavServerBtn];
+        self.addNavServerBtn.enabled = YES;
+    }
+}
+
+#pragma mark - 监听屏幕旋转
+
+- (void)statusBarOrientationChange:(NSNotification *)notification {
+    QIMVerboseLog(@"屏幕发送旋转 : %@", notification);
+    [self reloadIPadViewFrame];
+}
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -199,31 +150,9 @@
     _vaildPwdAlert = nil;
 }
 
-- (NSMutableArray *)navServerConfigs {
-    
-    NSMutableArray *clientNavServerConfigs = [NSMutableArray arrayWithArray:[[QIMKit sharedInstance] userObjectForKey:@"QC_NavAllDicts"]];
-    if (!clientNavServerConfigs.count) {
-        
-        clientNavServerConfigs = [NSMutableArray arrayWithCapacity:5];
-        NSString *tempNavName = [NSString stringWithFormat:@"%@导航", [QIMKit getQIMProjectTitleName]];
-        NSDictionary *qtalkNav = @{QIMNavNameKey:tempNavName, QIMNavUrlKey:@"https://qim.qunar.com/package/static/qtalk/nav"};
-        NSDictionary *publicQTalkNav = @{QIMNavNameKey:@"Qunar公共域导航", QIMNavUrlKey:@"https://qim.qunar.com/package/static/qtalk/publicnav?c=qunar.com"};
-        NSDictionary *qchatNav = @{QIMNavNameKey:@"QChat导航", QIMNavUrlKey:@"https://qim.qunar.com/package/static/qchat/nav"};
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-            [clientNavServerConfigs addObject:qtalkNav];
-            [clientNavServerConfigs addObject:publicQTalkNav];
-        } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-            [clientNavServerConfigs addObject:qchatNav];
-        } else {
-            
-        }
-    }
-    return clientNavServerConfigs;
-}
-
 - (void)reloadNavDicts {
     
-    self.navConfigs = [self navServerConfigs];
+    self.navConfigs = [[QIMKit sharedInstance] qimNav_localNavConfigs];
     [self.tableView reloadData];
 }
 
@@ -263,17 +192,11 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                 if (success) {
-                    QIMVerboseLog(@"登录导航Dict :%@", navUrlDict);
-                    if (needSaveAllDict) {
-                        [self.navConfigs addObject:navUrlDict];
-                        [[QIMKit sharedInstance] setUserObject:self.navConfigs forKey:@"QC_NavAllDicts"];
-                        [[QIMKit sharedInstance] setUserObject:navUrlDict forKey:@"QC_CurrentNavDict"];
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:navUrlDict];
-                        });
-                    } else {
+                    [[QIMKit sharedInstance] setUserObject:navUrlDict forKey:@"QC_CurrentNavDict"];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:navUrlDict];
                         [self onCancel];
-                    }
+                    });
                 } else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
                                                                         message:@"无可用的导航信息"
@@ -285,6 +208,7 @@
             });
         });
     } else {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"请输入有效的Nav地址!" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     }
@@ -294,7 +218,7 @@
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     if (self.tempNavDict.count) {
         NSString *navUrl = [self.tempNavDict objectForKey:QIMNavUrlKey];;
-        [self onSaveWithNavUrl:navUrl WithNavDict:self.tempNavDict needSaveAllDict:NO];
+        [self onSaveWithNavUrl:navUrl WithNavDict:self.tempNavDict needSaveAllDict:YES];
     } else {
         __block NSDictionary *navUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
         NSString *navUrl;
@@ -375,82 +299,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    /*
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    NSDictionary *dict = [self.navConfigs objectAtIndex:indexPath.row];
-    if (dict) {
-        cell.selected = YES;
-        [[QIMKit sharedInstance] setUserObject:dict forKey:@"QC_CurrentNavDict"];
-    }
-    [tableView reloadData];
-    [self onSave];
-    */
-}
-
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *willEditedNavDict = [self.navConfigs objectAtIndex:indexPath.row];
-    NSString *navUrl = [willEditedNavDict objectForKey:QIMNavUrlKey];
-    NSString *navName = [willEditedNavDict objectForKey:QIMNavNameKey];
-    NSString *name = [NSString stringWithFormat:@"%@ : %@", navName, navUrl];
-    [QIMFastEntrance showQRCodeWithQRId:navUrl withType:QRCodeType_ClientNav];
-}
-
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    NSString *sectionTitle = [self tableView:tableView titleForHeaderInSection:section];
-    if (sectionTitle == nil) {
-        return nil;
-    }
-    
-    UILabel *label = [[UILabel alloc] init];
-    label.frame = CGRectMake(10, 5, 320, 20);
-    label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor lightGrayColor];
-    label.shadowOffset = CGSizeMake(-1.0, 1.0);
-    label.font = [UIFont systemFontOfSize:14];
-    label.text = sectionTitle;
-    
-    UIView *view = [[UIView alloc] init];
-    [view addSubview:label];
-    UITapGestureRecognizer *debugTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(debugSetting:)];
-    debugTap.delegate = self;
-    debugTap.numberOfTouchesRequired = 1; //手指数
-    debugTap.numberOfTapsRequired = 10; //tap次数
-    [view addGestureRecognizer:debugTap];
-    return view;
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
-        return YES;
-    } else {
-        if (indexPath.row <= 1) {
-            
-            return NO;
-        }
-        return YES;
-    }
-}
-
-- (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
-    __weak __typeof(self) weakself = self;
-    UITableViewRowAction *deleteRowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"移除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        NSUInteger row = [indexPath row];
-        [weakself.navConfigs removeObjectAtIndex:row];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                         withRowAnimation:UITableViewRowAnimationAutomatic];
-        [[QIMKit sharedInstance] setUserObject:weakself.navConfigs forKey:@"QC_NavAllDicts"];
-    }];
-    UITableViewRowAction *editRowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"编辑" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-         NSDictionary *willEditedNavDict = [weakself.navConfigs objectAtIndex:indexPath.row];
-         QIMNavConfigSettingVC *settingVC = [[QIMNavConfigSettingVC alloc] init];
-         [settingVC setEditedNavDict:willEditedNavDict];
-         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:settingVC];
-         [weakself presentViewController:nav animated:YES completion:nil];
-    }];
-    editRowAction.backgroundColor = [UIColor qunarGrayColor];
-    return @[deleteRowAction, editRowAction];
 }
 
 #pragma mark - QIMNavConfigDelegate
@@ -507,17 +355,6 @@
     QIMNavConfigSettingVC *settingVC = [[QIMNavConfigSettingVC alloc] init];
     QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:settingVC];
     [self presentViewController:nav animated:YES completion:nil];
-//    [self.vaildPwdAlert showEdit:self title:@"新增配置" subTitle:@"请输入域名，如qunar.com" closeButtonTitle:nil duration:0];
-//    self.addNavServerBtn.enabled = NO;
-    
-}
-
-- (void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath{
-    QIMVerboseLog(@"willBeginEditingRowAtIndexPath");
-}
-
-- (void)tableView:(UITableView*)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath{
-    QIMVerboseLog(@"didEndEditingRowAtIndexPath");
 }
 
 #pragma mark - UIGestureRecognizerDelegate

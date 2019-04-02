@@ -450,6 +450,7 @@
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
 {
+    [self.view endEditing:YES];
     if ([[QIMKit sharedInstance] getIsIpad] == NO) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {

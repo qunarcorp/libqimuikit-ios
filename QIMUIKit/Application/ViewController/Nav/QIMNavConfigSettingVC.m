@@ -30,21 +30,7 @@
 
 - (NSMutableArray *)navConfigUrls {
     if (!_navConfigUrls) {
-        _navConfigUrls = [NSMutableArray arrayWithArray:[[QIMKit sharedInstance] userObjectForKey:@"QC_NavAllDicts"]];
-        if (!_navConfigUrls.count) {
-            NSString *tempNavName = [NSString stringWithFormat:@"%@导航", [QIMKit getQIMProjectTitleName]];
-            NSDictionary *qtalkNav = @{QIMNavNameKey:tempNavName, QIMNavUrlKey:@"https://qim.qunar.com/package/static/qtalk/nav"};
-            NSDictionary *publicQTalkNav = @{QIMNavNameKey:@"Qunar公共域导航", QIMNavUrlKey:@"https://qim.qunar.com/package/static/qtalk/publicnav?c=qunar.com"};
-            NSDictionary *qchatNav = @{QIMNavNameKey:@"QChat导航", QIMNavUrlKey:@"https://qim.qunar.com/package/static/qchat/nav"};
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-                [_navConfigUrls addObject:qtalkNav];
-                [_navConfigUrls addObject:publicQTalkNav];
-            } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-                [_navConfigUrls addObject:qchatNav];
-            } else {
-
-            }
-        }  
+        _navConfigUrls = [[QIMKit sharedInstance] qimNav_localNavConfigs];  
     }
     return _navConfigUrls;
 }
@@ -179,33 +165,11 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                 if (success) {
-                    BOOL containNavDict = NO;
-                    for (NSDictionary *dict in self.navConfigUrls) {
-                        if ([[dict objectForKey:QIMNavUrlKey] isEqualToString:self.navUrl]) {
-                            containNavDict = YES;
-                            break;
-                        }
-                    }
-                    if (containNavDict == NO || self.edited == YES) {
-                        if (self.edited == YES) {
-                            [self.navConfigUrls removeObject:self.navDict];
-                        }
-                        [self.navConfigUrls addObject:userWillsaveNavDict];
-                        [[QIMKit sharedInstance] setUserObject:self.navConfigUrls forKey:@"QC_NavAllDicts"];
-                        [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_CurrentNavDict"];
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:userWillsaveNavDict];
-                        });
-                        [self onCancel];
-                    } else {
-                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
-                                                                            message:@"已存在的导航地址"
-                                                                           delegate:nil
-                                                                  cancelButtonTitle:@"确定"
-                                                                  otherButtonTitles:nil];
-                        [alertView show];
-                    }
-                    
+                    [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_CurrentNavDict"];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:userWillsaveNavDict];
+                    });
+                    [self onCancel];
                 } else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
                                                                         message:@"无可用的导航信息"

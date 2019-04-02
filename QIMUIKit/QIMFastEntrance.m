@@ -134,7 +134,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         } else {
             NSString *userFullJid = [[QIMKit sharedInstance] getLastJid];
             NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-            if (userFullJid && userToken) {
+            if (userFullJid && userToken && ![[QIMKit sharedInstance] getIsIpad]) {
                 
                 QIMMainVC *mainVc = [QIMMainVC sharedInstanceWithSkipLogin:YES];
                 QIMNavController *navController = [[QIMNavController alloc] initWithRootViewController:mainVc];
@@ -526,7 +526,11 @@ static QIMFastEntrance *_sharedInstance = nil;
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         chatVC.hidesBottomBarWhenPushed = YES;
-        [navVC pushViewController:chatVC animated:YES];
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatVC];
+        } else {
+            [navVC pushViewController:chatVC animated:YES];
+        }
     });
 }
 
@@ -1291,12 +1295,18 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 - (void)openFileTransMiddleVC {
-    QIMFileTransMiddleVC *fileMiddleVc = [[QIMFileTransMiddleVC alloc] init];
-    UINavigationController *fileMiddleNav = [[UINavigationController alloc] initWithRootViewController:fileMiddleVc];
-    if (!self.rootVc) {
-        self.rootVc = [[UIApplication sharedApplication] visibleViewController];
-    }
-    [self.rootVc presentViewController:fileMiddleNav animated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMFileTransMiddleVC *fileMiddleVc = [[QIMFileTransMiddleVC alloc] init];
+        UINavigationController *fileMiddleNav = [[UINavigationController alloc] initWithRootViewController:fileMiddleVc];
+        if (!self.rootVc) {
+            self.rootVc = [[UIApplication sharedApplication] visibleViewController];
+        }
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            [[QIMIPadWindowManager sharedInstance] showDetailViewController:fileMiddleVc];
+        } else {
+            [self.rootVc presentViewController:fileMiddleNav animated:YES completion:nil];
+        }
+    });
 }
 
 - (void)browseBigHeader:(NSDictionary *)param {

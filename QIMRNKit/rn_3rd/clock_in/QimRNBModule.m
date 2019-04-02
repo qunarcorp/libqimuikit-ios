@@ -71,6 +71,9 @@
 - (instancetype)initWithBridge:(RCTBridge *)bridge moduleName:(NSString *)moduleName initialProperties:(NSDictionary *)initialProperties {
     if (self = [super initWithBridge:bridge moduleName:moduleName initialProperties:initialProperties]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadAccountInfo:) name:kNotifySwichUserSuccess object:nil];
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]);
+        }
     }
     return self;
 }
