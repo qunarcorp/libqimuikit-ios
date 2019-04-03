@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/17.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "PasswordBoxListVc.h"
 #import "NewPasswordBoxVc.h"
 #import "QIMNoteManager.h"
@@ -165,3 +165,4 @@
 }
 
 @end
+#endif

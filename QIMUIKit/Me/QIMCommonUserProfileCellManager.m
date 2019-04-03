@@ -51,17 +51,6 @@
             cellRowHeight = QCMineProfileCellHeight;
         }
             break;
-        case QCUserProfileRNView: {
-            
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
-            Class RunC = NSClassFromString(@"QTalkCardRNView");
-            SEL sel = NSSelectorFromString(@"getQtalkCardRNViewHeight");
-            if ([RunC respondsToSelector:sel]) {
-                cellRowHeight = [[RunC performSelector:sel] floatValue];
-            }
-#endif
-        }
-            break;
         case QCUserProfileDepartment: {
             CGSize size = [self.model.department qim_sizeWithFontCompatible:[UIFont systemFontOfSize:[[QIMCommonFont sharedInstance] currentFontSize] - 4] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width - 70, MAXFLOAT) lineBreakMode:NSLineBreakByCharWrapping];
             cellRowHeight = MAX([[QIMCommonFont sharedInstance] currentFontSize] + 32, size.height + 10);
@@ -103,7 +92,6 @@
 //            QCUserProfileDepartment,    //部门
 //            QCUserProfileComment,       //评论
 //            QCUserProfileSendMail,      //发送邮件
-//            QCUserProfileRNView,        //RN展示
 //            QCUserProfileCustom,        //自定义
         case QCUserProfileUserInfo: {
             [self onUserHeaderClick];
@@ -380,34 +368,6 @@
             cell.detailTextLabel.numberOfLines = 0;
             cell.textLabel.font = [UIFont fontWithName:FONT_NAME size:[[QIMCommonFont sharedInstance] currentFontSize] - 4];
             cell.detailTextLabel.font = [UIFont fontWithName:FONT_NAME size:[[QIMCommonFont sharedInstance] currentFontSize] - 4];
-            return cell;
-        }
-            break;
-        case QCUserProfileRNView: {
-            
-            static NSString *cellIdentifier = @"ReactViewCell";
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-            if (cell == nil) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-                [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-            #if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
-                Class RunC = NSClassFromString(@"QTalkCardRNView");
-                SEL sel = NSSelectorFromString(@"getQTalkCardRNViewWithFrameStr:withParam:");
-                SEL selH = NSSelectorFromString(@"getQtalkCardRNViewHeight");
-                CGFloat height = 0;
-                if ([RunC respondsToSelector:selH]) {
-                    height = [[RunC performSelector:selH] floatValue];
-                }
-                UIView *rnCardView = nil;
-                if ([RunC respondsToSelector:sel]) {
-                    CGRect rect = CGRectMake(0, 0, tableView.width, height);
-                    NSString *frameStr = NSStringFromCGRect(rect);
-                    rnCardView = [RunC performSelector:sel withObject:frameStr withObject:@{}];
-                }
-
-                [cell.contentView addSubview:rnCardView];
-            #endif
-            }
             return cell;
         }
             break;

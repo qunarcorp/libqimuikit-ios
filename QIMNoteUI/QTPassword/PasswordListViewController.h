@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#if __has_include("QIMNoteManager.h")
 @class QIMNoteModel;
 @interface PasswordListViewController : UIViewController
 
 - (void)setQIMNoteModel:(QIMNoteModel *)model;
 
 @end
+#endif

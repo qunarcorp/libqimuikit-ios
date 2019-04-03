@@ -5,7 +5,7 @@
 //  Created by lihuaqi on 2017/9/21.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "QTNoteCell.h"
 #import "QIMNoteModel.h"
 #import "QIMNoteUICommonFramework.h"
@@ -70,3 +70,4 @@
 }
 
 @end
+#endif

@@ -25,7 +25,7 @@
 #import "QIMMineTableView.h"
 #import "QIMNavBackBtn.h"
 #import "NSBundle+QIMLibrary.h"
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
 #import "QTalkSuggestRNJumpManager.h"
 #endif
 #import "Toast.h"
@@ -171,7 +171,7 @@ static dispatch_once_t __onceMainToken;
     if (([QIMKit getQIMProjectType] != QIMProjectTypeQChat) && self.skipLogin) {
         [self autoLogin];
     }
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
     [[QTalkSuggestRNJumpManager sharedInstance] setOwnerVC:self];
 #endif
 }
@@ -430,7 +430,7 @@ static dispatch_once_t __onceMainToken;
         case 1:
             break;
         case 2:
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
             [[NSNotificationCenter defaultCenter] postNotificationName:@"QTalkSuggestRNViewWillAppear" object:nil];
 #endif
             break;
@@ -514,7 +514,7 @@ static dispatch_once_t __onceMainToken;
 
 - (UIView *)travelView {
     if (!_travelView) {
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
         QIMVerboseLog(@"打开QIM RN 行程页面");
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"createQIMRNVCWithParam:");
@@ -532,7 +532,7 @@ static dispatch_once_t __onceMainToken;
 
 - (UIView *)userListView {
     if (!_userListView) {
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
         //导航中返回RNContactView == NO，展示Native界面
         QIMVerboseLog(@"RNContactView : %d", [[QIMKit sharedInstance] qimNav_RNContactView]);
         if ([[QIMKit sharedInstance] qimNav_RNContactView] == NO) {
@@ -574,7 +574,7 @@ static dispatch_once_t __onceMainToken;
         QIMVerboseLog(@"Domain : %@", [[QIMKit sharedInstance] qimNav_Domain]);
         if ([[QIMKit sharedInstance] qimNav_ShowOA] == YES || [[[QIMKit sharedInstance] qimNav_Domain] isEqualToString:@"ejabhost2"] || [[[QIMKit sharedInstance] qimNav_Domain] isEqualToString:@"ejabhost1"]) {
             QIMVerboseLog(@"打开OPS 发现页");
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
 
             Class RunC = NSClassFromString(@"QTalkSuggestRNView");
             SEL sel = NSSelectorFromString(@"initWithFrame:WithOwnnerVC:");
@@ -587,7 +587,7 @@ static dispatch_once_t __onceMainToken;
 #endif
         } else {
             QIMVerboseLog(@"打开QIM RN 发现页");
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
 
             Class RunC = NSClassFromString(@"QimRNBModule");
             SEL sel = NSSelectorFromString(@"createQIMRNVCWithParam:");
@@ -607,7 +607,7 @@ static dispatch_once_t __onceMainToken;
 - (UIView *)mineView {
     if (!_mineView) {
         
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
 
         //导航中返回RNMineView == NO，展示Native界面
         QIMVerboseLog(@"RNMineView : %d", [[QIMKit sharedInstance] qimNav_RNMineView]);
@@ -703,7 +703,7 @@ static dispatch_once_t __onceMainToken;
         
         [_contentView addSubview:self.userListView];
         [self.userListView setHidden:NO];
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel2 = NSSelectorFromString(@"sendQIMRNWillShow");
         if ([RunC respondsToSelector:sel2]) {
@@ -714,7 +714,7 @@ static dispatch_once_t __onceMainToken;
         
         [_contentView addSubview:self.rnSuggestView];
         [self.rnSuggestView setHidden:NO];
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
         [[NSNotificationCenter defaultCenter] postNotificationName:@"QTalkSuggestRNViewWillAppear" object:nil];
 #endif
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
@@ -740,7 +740,7 @@ static dispatch_once_t __onceMainToken;
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
 
     [QIMFastEntrance openRNSearchVC];
     return NO;

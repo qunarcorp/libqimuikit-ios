@@ -109,7 +109,7 @@
         }
             break;
         case QIMCommonTableViewCellDataTypeAttendance:{
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
             Class RunC = NSClassFromString(@"QimRNBModule");
             SEL sel = NSSelectorFromString(@"clockOnVC");
             UIViewController *vc = nil;
@@ -121,17 +121,9 @@
         }
             break;
         case QIMCommonTableViewCellDataTypeTotpToken:{
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
             [QIMFastEntrance openQIMRNVCWithModuleName:@"TOTP" WithProperties:@{}];
 #endif
-        }
-            break;
-        case QIMCommonTableViewCellDataTypeAccountInformation: {
-            dispatch_async(dispatch_get_main_queue(), ^{
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotify_QtalkSuggest_handle_opsapp_event" object:nil userInfo:@{@"module":@"user-info", @"initParam":@[]}];
-#endif
-            });
         }
             break;
         case QIMCommonTableViewCellDataTypeMyFile: {

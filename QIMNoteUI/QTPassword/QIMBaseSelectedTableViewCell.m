@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/20.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "QIMBaseSelectedTableViewCell.h"
 #import "QIMNoteUICommonFramework.h"
 
@@ -56,3 +56,4 @@
 
 
 @end
+#endif

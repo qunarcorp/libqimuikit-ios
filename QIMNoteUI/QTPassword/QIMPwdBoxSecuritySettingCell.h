@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#if __has_include("QIMNoteManager.h")
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMPwdBoxSecuritySettingCell : UITableViewCell
@@ -23,3 +23,4 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+#endif
