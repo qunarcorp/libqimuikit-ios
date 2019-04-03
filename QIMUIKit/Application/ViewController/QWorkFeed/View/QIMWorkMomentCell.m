@@ -388,16 +388,6 @@ CGFloat maxLimitHeight = 0;
         _contentLabel.textContainer = textContainer;
 
     }
-/*
-<<<<<<< HEAD
-=======
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:([[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20)];
-    }
-    self.contentLabel.height = textH;
->>>>>>> startalk2.0
-    */
     _showAllBtn.frame = CGRectMake(self.nameLab.left, _contentLabel.bottom + 5, 60, 20);
     if (_showAllBtn.hidden) {
         bottom = _contentLabel.bottom + 8;

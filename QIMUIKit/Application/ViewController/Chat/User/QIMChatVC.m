@@ -951,7 +951,9 @@
 
 - (void)statusBarOrientationChange:(NSNotification *)notification {
     QIMVerboseLog(@"屏幕发送旋转 : %@", notification);
-    [self reloadIPadViewFrame:notification];
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        [self reloadIPadViewFrame:notification];
+    }
 }
 
 - (void)reloadIPadViewFrame:(NSNotification *)notify {

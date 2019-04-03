@@ -374,7 +374,6 @@
 - (void)setupNav {
     self.title = @"图片与视频";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.chooseBtn];
-    self.navigationController.navigationBar.barTintColor = [UIColor redColor];
 }
 
 - (void)setupUI {

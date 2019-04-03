@@ -94,6 +94,10 @@ static BOOL _mainVCReShow = YES;
 
 + (void)setMainVCReShow:(BOOL)mainVCReShow {
     _mainVCReShow = mainVCReShow;
+    if (mainVCReShow) {
+        __mainVc = nil;
+        __onceMainToken = 0;
+    }
 }
 
 + (BOOL)getMainVCReShow {
@@ -105,9 +109,9 @@ static BOOL _mainVCReShow = YES;
 }
 
 static QIMMainVC *__mainVc = nil;
+static dispatch_once_t __onceMainToken;
 + (instancetype)sharedInstanceWithSkipLogin:(BOOL)skipLogin {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    dispatch_once(&__onceMainToken, ^{
         __mainVc = [[QIMMainVC alloc] init];
     });
     __mainVc.skipLogin = skipLogin;

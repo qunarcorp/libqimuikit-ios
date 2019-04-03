@@ -50,6 +50,7 @@
         [textContainer appendTextStorageArray:storages];
         textContainer.linesSpacing = 1.0f;
         textContainer.isWidthToFit = YES;
+        textContainer.lineBreakMode = kCTLineBreakByTruncatingTail;
         textContainer = [textContainer createTextContainerWithTextWidth:cellWidth];
         if (fromCache) {
             [[QIMMessageCellCache sharedInstance] setObject:textContainer forKey:message.messageId];
