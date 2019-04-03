@@ -10,7 +10,7 @@
 #import "QIMNavBar.h"
 #import "UIApplication+QIMApplication.h"
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
     #import "QIMNotifyManager.h"
     #import "QIMNotifyView.h"
@@ -187,7 +187,7 @@
 
 @end
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
 @interface QTalkViewController () <QIMNotifyManagerDelegate>
 
@@ -204,7 +204,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self registNSNotification];
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
     [[QIMNotifyManager shareNotifyManager] setNotifyManagerGlobalDelegate:self];
     
@@ -236,7 +236,7 @@
     return UIInterfaceOrientationPortrait;
 }
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
 - (void)closeNotifyView:(NSNotification *)notify {
     QIMVerboseLog(@"closeNotifyView : %@", notify);

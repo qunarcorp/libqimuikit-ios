@@ -17,7 +17,7 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "UIImageView+WebCache.h"
 #import "QIMEncryptChatCell.h"
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     #import "QIMEncryptChat.h"
 #endif
 
@@ -84,7 +84,7 @@
         default:
             break;
     }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
 
     QIMEncryptChatState state = [[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.message.from];
     QIMEncryptChatState state2 = [[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.message.to];

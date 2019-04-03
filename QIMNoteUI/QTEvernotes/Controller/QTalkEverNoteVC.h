@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#if __has_include("QIMNoteManager.h")
 typedef enum {
     ENUM_EverNote_TypeNew = 0,//新建
     ENUM_EverNote_TypeEdit//编辑
@@ -17,3 +18,4 @@ typedef enum {
 @property(nonatomic, assign) ENUM_EverNote_Type everNoteType;
 @property(nonatomic, strong) QIMNoteModel *evernoteSModel;
 @end
+#endif

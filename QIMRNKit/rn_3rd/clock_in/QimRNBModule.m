@@ -51,9 +51,11 @@
 #import "NSDate+Extension.h"
 #import "Toast.h"
 #import "QIMPublicRedefineHeader.h"
+#if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
+#endif
 
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
 #import "QIMLocalLog.h"
 #endif
 
@@ -435,7 +437,9 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
               WithProperties:(NSDictionary *)properties{
     UIViewController *vc = [QimRNBModule getVCWithNavigation:navVC WithHiddenNav:hiddenNav WithBundleName:bundleName WithModule:module WithProperties:properties];
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+#if __has_include("QIMIPadWindowManager.h")
         [[QIMIPadWindowManager sharedInstance] showDetailViewController:vc];
+#endif
     } else {
         [navVC pushViewController:vc animated:YES];
     }
@@ -1191,7 +1195,7 @@ RCT_EXPORT_METHOD(sendAdviceMessage:(NSDictionary *)adviceParam :(RCTResponseSen
     
     NSString *adviceMsg = [adviceParam objectForKey:@"adviceText"];
     BOOL logSelected = [[adviceParam objectForKey:@"logSelected"] boolValue];
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     callback(@[@{@"ok":@(YES)}]);
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{

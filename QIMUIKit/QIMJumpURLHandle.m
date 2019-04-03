@@ -107,7 +107,7 @@
             }
         }
     } else if ([url.scheme.lowercaseString isEqualToString:@"qpr"]) {
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
         UIViewController *reactVC = nil;
         Class RunC = NSClassFromString(@"RNSchemaParse");
         SEL sel = NSSelectorFromString(@"handleOpsasppSchema:");

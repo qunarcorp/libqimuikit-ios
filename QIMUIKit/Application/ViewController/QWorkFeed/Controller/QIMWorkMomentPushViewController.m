@@ -30,7 +30,9 @@
 #import "QIMProgressHUD.h"
 #import "QIMEmotionManager.h"
 #import "QIMWorkFeedAtNotifyViewController.h"
+#if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
+#endif
 
 @interface QIMWorkMomentPushUserIdentityCell : UITableViewCell
 

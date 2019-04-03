@@ -21,7 +21,6 @@ typedef enum {
     QCUserProfileDepartment,    //部门
     QCUserProfileComment,       //评论
     QCUserProfileSendMail,      //发送邮件
-    QCUserProfileRNView,        //RN展示
     QCUserProfileCustom,        //自定义
 } QCUserProfileType;
 

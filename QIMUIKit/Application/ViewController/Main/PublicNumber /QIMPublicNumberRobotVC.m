@@ -61,7 +61,9 @@
 #import "QIMMessageParser.h"
 #import "QIMTextContainer.h"
 #import "QIMNavBackBtn.h"
+#if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
+#endif
 #define kPageCount 20
 #define kReSendMsgAlertViewTag 10000
 
@@ -454,7 +456,9 @@
     if ([[QIMKit sharedInstance] getIsIpad] == NO) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
+#if __has_include("QIMIPadWindowManager.h")
         [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+#endif
     }
 }
 

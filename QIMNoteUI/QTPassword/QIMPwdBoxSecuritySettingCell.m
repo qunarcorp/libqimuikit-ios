@@ -5,7 +5,7 @@
 //  Created by 李露 on 10/12/18.
 //  Copyright © 2018 QIM. All rights reserved.
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "QIMPwdBoxSecuritySettingCell.h"
 #import "QIMNoteUICommonFramework.h"
 
@@ -63,3 +63,4 @@
 }
 
 @end
+#endif

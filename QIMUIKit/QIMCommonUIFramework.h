@@ -28,11 +28,11 @@
 #import "QIMIconInfo.h"
 #import "QIMDeviceManager.h"
 
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     #import "QIMEncryptChat.h"
 #endif
 
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     #import "QIMLocalLog.h"
 #endif
 

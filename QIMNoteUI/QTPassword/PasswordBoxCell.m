@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/19.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "PasswordBoxCell.h"
 #import "QIMNoteModel.h"
 #import "QIMNoteUICommonFramework.h"
@@ -104,3 +104,4 @@
 }
 
 @end
+#endif

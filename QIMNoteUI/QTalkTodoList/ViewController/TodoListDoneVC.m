@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/27.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "TodoListDoneVC.h"
 #import "QIMNoteManager.h"
 #import "QIMNoteModel.h"
@@ -222,3 +222,4 @@
 }
 
 @end
+#endif

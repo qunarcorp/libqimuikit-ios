@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#if __has_include("QIMNoteManager.h")
 
 @class QIMNoteModel;
 @interface TodoListSearchTableViewCell : UITableViewCell
@@ -14,3 +15,4 @@
 - (void)setTodoListModel:(QIMNoteModel *)model;
 
 @end
+#endif

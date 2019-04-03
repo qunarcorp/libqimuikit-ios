@@ -236,7 +236,7 @@
 }
 
 - (void)onFeedBack {
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     [[QIMLocalLog sharedInstance] submitFeedBackWithContent:nil withUserInitiative:NO];
 #endif
 }

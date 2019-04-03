@@ -43,7 +43,9 @@
 #import "QIMNavBackBtn.h"
 #import "QIMMessageTableViewManager.h"
 #import "QIMMWPhotoBrowser.h"
+#if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
+#endif
 
  @interface QIMSystemVC()<QTalkMessageTableScrollViewDelegate, UIGestureRecognizerDelegate,QIMSingleChatCellDelegate,QIMSingleChatVoiceCellDelegate,NSXMLParserDelegate,QIMMWPhotoBrowserDelegate,QIMMsgBaloonBaseCellDelegate,PNNoticeCellDelegate,PNOrderMsgCellDelegate>
 {
@@ -225,7 +227,9 @@
     if ([[QIMKit sharedInstance] getIsIpad] == NO) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
+#if __has_include("QIMIPadWindowManager.h")
         [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+#endif
     }
 }
 

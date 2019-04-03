@@ -14,7 +14,7 @@
 #import "QIMJSONSerializer.h"
 #import "NSBundle+QIMLibrary.h"
 
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
 #import "QIMLocalLog.h"
 #endif
 #import "QIMLocalLogTableViewCell.h"
@@ -169,7 +169,7 @@
 }
 
 - (void)sendLogAlertMessage {
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     NSMutableArray *logArray = [NSMutableArray arrayWithCapacity:5];
     for (NSInteger i = 0; i < self.selectArray.count; i++) {
         NSDictionary *logFileDict = self.selectArray[i];

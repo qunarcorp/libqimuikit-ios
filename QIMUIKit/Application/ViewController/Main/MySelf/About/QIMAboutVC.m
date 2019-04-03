@@ -16,7 +16,7 @@
 #import "QIMContactManager.h"
 #import "NSBundle+QIMLibrary.h"
 
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
 
 #import "QIMLocalLogViewController.h"
 #import "QIMLocalLog.h"
@@ -95,7 +95,7 @@
     }
 
     //记录本地日志
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
     if (logType == QIMLocalLogTypeOpened) {
         [_dataSource addObject:@"isLogging"];
@@ -243,7 +243,7 @@
 }
 
 - (void)showLoggingAction:(UIGestureRecognizer *)gesture {
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     __weak typeof(self) weakSelf = self;
     if (![self.dataSource containsObject:@"isLogging"]) {
         UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"确认开始记录App性能数据吗？再次点击屏幕五下关闭！！！" preferredStyle:UIAlertControllerStyleAlert];

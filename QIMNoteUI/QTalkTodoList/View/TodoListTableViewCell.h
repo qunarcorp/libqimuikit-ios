@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#if __has_include("QIMNoteManager.h")
 #import "MGSwipeTableCell.h"
 
 @class QIMNoteModel;
@@ -21,3 +22,4 @@
 - (void)refreshUI;
 
 @end
+#endif
