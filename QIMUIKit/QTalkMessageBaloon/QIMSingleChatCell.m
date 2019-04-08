@@ -350,7 +350,6 @@ static double _global_message_cell_width = 0;
             
             
             [_backView setMenuActionTypeList:menuList];
-//            [_textLabel setTextColor:[UIColor qim_leftBallocFontColor]];
             [_backView setImage:[QIMMsgBaloonBaseCell leftBallocImage]];
             
         }
@@ -360,8 +359,6 @@ static double _global_message_cell_width = 0;
             CGRect frame = {{self.frameWidth - kBackViewCap - backWidth,kBackViewCap},{backWidth,backHeight}};
             [_backView setFrame:frame];
             NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
-//            if (self.message.messageSendState == QIMMessageSendState_Success || self.message.messageSendState == MessageState_didRead || self.message.messageSendState == MessageState_none) {
-            //Mark by DB
             if (self.message.messageSendState == QIMMessageSendState_Success) {
 
                 if (self.textContainer.textStorages.count > 0 && [self hasTextWithArray:self.textContainer.textStorages]) {
@@ -376,9 +373,7 @@ static double _global_message_cell_width = 0;
             }
             [_backView setMenuActionTypeList:menuList];
 
-//            [_textLabel setTextColor:[UIColor qim_rightBallocFontColor]];
             [_backView setImage:[QIMMsgBaloonBaseCell rightBallcoImage]];
-            //            dispatch_async(dispatch_get_main_queue(), ^{
             if (self.message.messageSendState == QIMMessageSendState_Waiting) {
                 _actIndView.frame = CGRectMake(_backView.left - 30, _backView.bottom - 35, 30, 30);
                 [_actIndView startAnimating];
@@ -388,13 +383,11 @@ static double _global_message_cell_width = 0;
             }else{
                 [_actIndView stopAnimating];
             }
-            //            });
         }
             break;
         default:
             break;
     }
-//    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (self.message.propress / 100.0f));
     float moveSpace = 38;
     CGRect rect = _backView.frame;
     if (self.editing) {
