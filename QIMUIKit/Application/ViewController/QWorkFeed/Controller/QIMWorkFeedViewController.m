@@ -510,7 +510,7 @@
         
     }
     if (imageUrl.length > 0) {
-        NSURL *url = [NSURL URLWithString:[@"https://qim.qunar.com/file/v2/download/temp/new/32265cd9ed9d3249629b2578cd5fb955.gif?name=32265cd9ed9d3249629b2578cd5fb955.gif" stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSURL *url = [NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
     } else {
         return nil;

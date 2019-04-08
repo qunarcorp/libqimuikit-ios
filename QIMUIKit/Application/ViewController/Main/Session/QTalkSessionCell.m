@@ -41,8 +41,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 @property (nonatomic, strong) UILabel *nameLabel;           //Name
 
-@property (nonatomic, strong) UILabel *msgStateLabel;       //消息发送状态Label
-
 @property (nonatomic, strong) UILabel *contentLabel;        //消息Content
 
 @property (nonatomic, strong) UILabel *timeLabel;           //消息时间戳
@@ -223,15 +221,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     return _nameLabel;
 }
 
-- (UILabel *)msgStateLabel {
-    if (!_msgStateLabel) {
-        _msgStateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 15, 40, 20)];
-        _msgStateLabel.font = [UIFont fontWithName:@"QTalk-QChat" size:20];//设置label的字体
-        _msgStateLabel.backgroundColor = [UIColor redColor];
-    }
-    return _msgStateLabel;
-}
-
 - (UILabel *)contentLabel {
     
     if (!_contentLabel) {
@@ -319,7 +308,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     } else {
         [_notReadNumButton hiddenBadgeButton:YES];
         [self.contentView addSubview:self.muteNotReadView];
-        [_notReadNumButton setBadgeColor:[UIColor qunarRedColor]];
+        if (self.chatType == ChatType_GroupChat) {
+            [_notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
+        } else {
+            [_notReadNumButton setBadgeColor:[UIColor qunarRedColor]];
+        }
     }
 }
 
@@ -836,7 +829,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
     CGFloat timeLabelMaxX = CGRectGetMaxX(self.timeLabel.frame);
     CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 25;
-    
+    if (self.bindId) {
+        self.notReadCount = [[QIMKit sharedInstance] getNotReadCollectionMsgCountByBindId:self.bindId WithUserId:self.jid];
+    }
     __block NSString *countStr = nil;
     if (self.notReadCount > 0) {
         if (self.notReadCount > 99) {

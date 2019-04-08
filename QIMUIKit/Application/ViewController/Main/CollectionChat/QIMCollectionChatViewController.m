@@ -182,7 +182,6 @@
     }
     cell.bindId = bindId;
     cell.infoDic = infoDic;
-//    [cell refreshUI];
     return cell;
 }
 
@@ -200,12 +199,12 @@
 }
 
 - (QTalkViewController *)sessionViewDidSelectRowAtIndexPath:(NSIndexPath *)indexPath infoDic:(NSDictionary *)infoDic BindId:(NSString *)bindId{
-    /*
-     Mark by DB
+    
+//     Mark by DB
     NSString *jid = [infoDic objectForKey:@"XmppId"];
     NSString *name = [infoDic objectForKey:@"Name"];
     ChatType chatType = [[infoDic objectForKey:@"ChatType"] intValue];
-    NSInteger notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid];
+    NSInteger notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid WithRealJid:jid];
     if (jid) {
         switch (chatType) {
                 
@@ -249,7 +248,6 @@
                 break;
         }
     }
-    */
     return nil;
 }
 
