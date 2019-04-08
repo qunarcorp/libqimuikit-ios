@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/20.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "PwdBoxSecuritySettingVc.h"
 #import "QIMPwdBoxSecuritySettingCell.h"
 #import "QIMNoteUICommonFramework.h"
@@ -125,3 +125,4 @@
 }
 
 @end
+#endif

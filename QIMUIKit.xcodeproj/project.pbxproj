@@ -1006,6 +1006,8 @@
 		2CC93BB821EC33C800EEC47D /* HSV.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CC93B4921EC33C800EEC47D /* HSV.h */; };
 		2CC93BB921EC33C800EEC47D /* KZUnitSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC93B4A21EC33C800EEC47D /* KZUnitSlider.m */; };
 		2CC93BBA21EC33C800EEC47D /* KZColorPickerHSWheel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC93B4B21EC33C800EEC47D /* KZColorPickerHSWheel.m */; };
+		2CCD79BB224A22E6006D5207 /* QIMNacConfigTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCD79B9224A22E6006D5207 /* QIMNacConfigTableViewCell.h */; };
+		2CCD79BC224A22E6006D5207 /* QIMNacConfigTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD79BA224A22E6006D5207 /* QIMNacConfigTableViewCell.m */; };
 		2CE738D521343855007D164D /* UIImageView+QIMImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE738D321343855007D164D /* UIImageView+QIMImageCache.h */; };
 		2CE738D621343855007D164D /* UIImageView+QIMImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE738D421343855007D164D /* UIImageView+QIMImageCache.m */; };
 		2CE738D921343876007D164D /* QIMImageManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE738D721343876007D164D /* QIMImageManager.h */; };
@@ -2004,6 +2006,8 @@
 		2CC93B4921EC33C800EEC47D /* HSV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSV.h; sourceTree = "<group>"; };
 		2CC93B4A21EC33C800EEC47D /* KZUnitSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KZUnitSlider.m; sourceTree = "<group>"; };
 		2CC93B4B21EC33C800EEC47D /* KZColorPickerHSWheel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KZColorPickerHSWheel.m; sourceTree = "<group>"; };
+		2CCD79B9224A22E6006D5207 /* QIMNacConfigTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMNacConfigTableViewCell.h; sourceTree = "<group>"; };
+		2CCD79BA224A22E6006D5207 /* QIMNacConfigTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMNacConfigTableViewCell.m; sourceTree = "<group>"; };
 		2CE738D321343855007D164D /* UIImageView+QIMImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImageView+QIMImageCache.h"; sourceTree = "<group>"; };
 		2CE738D421343855007D164D /* UIImageView+QIMImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+QIMImageCache.m"; sourceTree = "<group>"; };
 		2CE738D721343876007D164D /* QIMImageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMImageManager.h; sourceTree = "<group>"; };
@@ -3490,6 +3494,8 @@
 			children = (
 				2C8AFB0720B1D51A00CF98EB /* QIMNavConfigManagerVC.h */,
 				2C8AFB0520B1D51A00CF98EB /* QIMNavConfigManagerVC.m */,
+				2CCD79B9224A22E6006D5207 /* QIMNacConfigTableViewCell.h */,
+				2CCD79BA224A22E6006D5207 /* QIMNacConfigTableViewCell.m */,
 				2C8AFB0820B1D51A00CF98EB /* QIMNavConfigSettingVC.h */,
 				2C8AFB0620B1D51A00CF98EB /* QIMNavConfigSettingVC.m */,
 			);
@@ -4461,6 +4467,7 @@
 				2C8AFDB520B1D51C00CF98EB /* QIMFYDepartmentTableViewCell.h in Headers */,
 				2C8AFD7D20B1D51C00CF98EB /* QIMColorfulBubbleCell.h in Headers */,
 				2C8AFDD420B1D51C00CF98EB /* QIMQRCodeCell.h in Headers */,
+				2CCD79BB224A22E6006D5207 /* QIMNacConfigTableViewCell.h in Headers */,
 				2C14835E213D626F009D4AE3 /* UINavigationController+QIMOrientation.h in Headers */,
 				2C8AFD0D20B1D51B00CF98EB /* QIMMyEmotionsManagerViewController.h in Headers */,
 				2CC93BAD21EC33C800EEC47D /* KZColorCompareView.h in Headers */,
@@ -5357,6 +5364,7 @@
 				2C8AFDC020B1D51C00CF98EB /* QIMGroupCreateVC.m in Sources */,
 				2C099BB821C0EE2C00F7692A /* QIMMWPhotoSectionBrowserVC.m in Sources */,
 				2C8AFF5720B1D8AB00CF98EB /* QIMRedPackDescCell.m in Sources */,
+				2CCD79BC224A22E6006D5207 /* QIMNacConfigTableViewCell.m in Sources */,
 				2C8AFE6F20B1D51C00CF98EB /* QIMPushProductViewController.m in Sources */,
 				2C8AFD7C20B1D51C00CF98EB /* QIMDressUpController.m in Sources */,
 				2CC93B7D21EC33C800EEC47D /* TodoListDownArrowHeader.m in Sources */,

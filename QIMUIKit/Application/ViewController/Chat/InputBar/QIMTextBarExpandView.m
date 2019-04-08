@@ -113,7 +113,7 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
      //快捷回复按钮只有在ConsultServer中展示
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_quickReply" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_quick_reply"] ForItemId:QIMTextBarExpandViewItem_QuickReply];
      }
-     #if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCMeetingClient.h")
         if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 
          if (self.type & QIMTextBarExpandViewTypeSingle) {

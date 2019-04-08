@@ -29,16 +29,18 @@
 #import "QIMCustomPopViewController.h"
 #import "QIMCustomPresentationController.h"
 #import "QIMCustomPopManager.h"
+#if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
+#endif
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
 #import "QIMNotifyManager.h"
 #endif
 
 #define kClearAllNotReadMsg 1002
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
 @interface QTalkSessionView () <QIMNotifyManagerDelegate>
 
@@ -301,7 +303,7 @@
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
     dispatch_async(dispatch_get_main_queue(), ^{
         CATransition *animation = [CATransition animation];
         animation.duration = 0.4f;   //时间间隔
@@ -309,11 +311,13 @@
         animation.type = @"rippleEffect";
         //动画效果
         animation.subtype = kCATransitionFromTop;   //动画方向
+#if __has_include("QIMIPadWindowManager.h")
         UINavigationController *rootNav = [[QIMIPadWindowManager sharedInstance] getLeftMainVcNav];
         [rootNav.view.layer addAnimation:animation forKey:@"animation"];
         UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
         [rootNav.view.layer addAnimation:animation forKey:nil];
         [rootNav pushViewController:reactVC animated:YES];
+#endif
     });
     return NO;
 #endif
@@ -452,7 +456,7 @@
 
 - (void)sessionViewWillAppear {
     [self refreshTableView];
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
     [[QIMNotifyManager shareNotifyManager] setNotifyManagerGlobalDelegate:self];
 #endif
@@ -723,7 +727,9 @@
             NSLog(@"跳转的RootVc3 ：%@ ", rootNav);
             NSLog(@"跳转的PushVc : %@", pushVc);
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+#if __has_include("QIMIPadWindowManager.h")
                 [[QIMIPadWindowManager sharedInstance] showDetailViewController:pushVc];
+#endif
             } else {
                 pushVc.hidesBottomBarWhenPushed = YES;
                 [rootNav pushViewController:pushVc animated:YES];
@@ -1235,7 +1241,7 @@
     }
 }
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
 - (void)showGloablNotifyWithView:(QIMNotifyView *)view {
     QIMVerboseLog(@"showGloablNotifyWithViewDelegate :%@", view);

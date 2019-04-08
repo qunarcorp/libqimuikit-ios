@@ -25,7 +25,7 @@
 #import "QIMWebView.h"
 #import "QIMPublicNumberCardVC.h"
 #import "QIMUserProfileViewController.h"
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
 #import "QTalkNotesCategoriesVc.h"
 #endif
 #import <MessageUI/MFMailComposeViewController.h>
@@ -42,7 +42,9 @@
 #import "QIMQRCodeViewDisplayController.h"
 #import "QIMContactSelectionViewController.h"
 #import "QIMFileTransMiddleVC.h"
-#if defined (QIMIPadEnable) && QIMIPadEnable == 1
+
+#if __has_include("QIMIPadWindowManager.h")
+
     #import "IPAD_RemoteLoginVC.h"
     #import "IPAD_NAVViewController.h"
     #import "QIMIPadWindowManager.h"
@@ -95,13 +97,17 @@ static QIMFastEntrance *_sharedInstance = nil;
     QIMVerboseLog(@"getQIMFastEntranceRootNav: %@", _sharedInstance.rootNav);
     if (!self.rootNav) {
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+#if __has_include("QIMIPadWindowManager.h")
             self.rootNav = [[QIMIPadWindowManager sharedInstance] getDetailNav];
+#endif
         } else {
             self.rootNav = [[self getQIMFastEntranceRootVc] navigationController];
         }
     }
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+#if __has_include("QIMIPadWindowManager.h")
         self.rootNav = [[QIMIPadWindowManager sharedInstance] getDetailNav];
+#endif
     }
     return self.rootNav;
 }
@@ -114,8 +120,8 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (void)launchMainControllerWithWindow:(UIWindow *)window {
     QIMVerboseLog(@"开始加载主界面");
     CFAbsoluteTime startTime = [[QIMWatchDog sharedInstance] startTime];
-    if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-#if defined (QIMIPadEnable) && QIMIPadEnable == 1
+    if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
+#if __has_include("QIMIPadWindowManager.h")
         IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
         [window setRootViewController:ipadVc];
 #endif
@@ -134,7 +140,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         } else {
             NSString *userFullJid = [[QIMKit sharedInstance] getLastJid];
             NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-            if (userFullJid && userToken) {
+            if (userFullJid && userToken && ![[QIMKit sharedInstance] getIsIpad]) {
                 
                 QIMMainVC *mainVc = [QIMMainVC sharedInstanceWithSkipLogin:YES];
                 QIMNavController *navController = [[QIMNavController alloc] initWithRootViewController:mainVc];
@@ -173,9 +179,16 @@ static QIMFastEntrance *_sharedInstance = nil;
 + (void)showMainVc {
     if ([QIMMainVC checkMainVC] == NO || [QIMMainVC getMainVCReShow] == YES) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:NO];
-            QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
-            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+#if __has_include("QIMIPadWindowManager.h")
+                IPAD_QIMMainSplitVC *mainVC = [[IPAD_QIMMainSplitVC alloc] init];
+                [[QIMIPadWindowManager sharedInstance] setiPadRootVc:mainVC];
+#endif
+            } else {
+                QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:NO];
+                QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
+                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
+            }
         });
     }
 }
@@ -215,8 +228,8 @@ static QIMFastEntrance *_sharedInstance = nil;
     if ([[QIMKit sharedInstance] getIsIpad]) {
         
     } else {
-#if defined (QIMRNEnable) && QIMRNEnable == 1
-        
+#if __has_include("QimRNBModule.h")
+
         if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
             Class RunC = NSClassFromString(@"QimRNBModule");
             SEL sel = NSSelectorFromString(@"getVCWithParam:");
@@ -231,7 +244,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             QIMUserProfileViewController *userProfileVc = [[QIMUserProfileViewController alloc] init];
             userProfileVc.userId = userId;
             return userProfileVc;
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
         }
 #endif
     }
@@ -250,8 +263,8 @@ static QIMFastEntrance *_sharedInstance = nil;
 //        if ([[QIMKit sharedInstance] getIsIpad]) {
 //            
 //        } else {
-#if defined (QIMRNEnable) && QIMRNEnable == 1
-            
+#if __has_include("QimRNBModule.h")
+
             if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
                 Class RunC = NSClassFromString(@"QimRNBModule");
                 SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
@@ -264,7 +277,7 @@ static QIMFastEntrance *_sharedInstance = nil;
                 QIMUserProfileViewController *userProfileVc = [[QIMUserProfileViewController alloc] init];
                 userProfileVc.userId = userId;
                 [navVC pushViewController:userProfileVc animated:YES];
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
             }
 #endif
 //        }
@@ -281,8 +294,8 @@ static QIMFastEntrance *_sharedInstance = nil;
     if ([[QIMKit sharedInstance] getIsIpad]) {
         
     } else {
-#if defined (QIMRNEnable) && QIMRNEnable == 1
-        
+#if __has_include("QimRNBModule.h")
+
         if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
             
             Class RunC = NSClassFromString(@"QimRNBModule");
@@ -298,7 +311,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             QIMUserProfileViewController *userProfileVc = [[QIMUserProfileViewController alloc] init];
             userProfileVc.userId = userId;
             return userProfileVc;
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
         }
 #endif
     }
@@ -320,8 +333,8 @@ static QIMFastEntrance *_sharedInstance = nil;
 //                [RunC performSelector:sel withObject:userId];
 //            }
 //        } else {
-#if defined (QIMRNEnable) && QIMRNEnable == 1
-            
+#if __has_include("QimRNBModule.h")
+
             if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
                 Class RunC = NSClassFromString(@"QimRNBModule");
                 SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
@@ -334,7 +347,7 @@ static QIMFastEntrance *_sharedInstance = nil;
                 QIMUserProfileViewController *userProfileVc = [[QIMUserProfileViewController alloc] init];
                 userProfileVc.userId = userId;
                 [navVC pushViewController:userProfileVc animated:YES];
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
             }
 #endif
 //        }
@@ -342,8 +355,8 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 - (UIViewController *)getQIMGroupCardVCByGroupId:(NSString *)groupId {
-#if defined (QIMRNEnable) && QIMRNEnable == 1
-    
+#if __has_include("QimRNBModule.h")
+
     if ([[QIMKit sharedInstance] qimNav_RNGroupCardView]) {
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
@@ -362,7 +375,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         QIMGroupCardVC *groupCardVC = [[QIMGroupCardVC alloc] init];
         [groupCardVC setGroupId:groupId];
         return groupCardVC;
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
     }
 #endif
     return nil;
@@ -370,8 +383,8 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)openQIMGroupCardVCByGroupId:(NSString *)groupId {
     
-#if defined (QIMRNEnable) && QIMRNEnable == 1
-    
+#if __has_include("QimRNBModule.h")
+
     if ([[QIMKit sharedInstance] qimNav_RNGroupCardView]) {
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
@@ -393,7 +406,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         [navVC pushViewController:groupCardVC animated:YES];
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
     }
 #endif
 }
@@ -521,7 +534,13 @@ static QIMFastEntrance *_sharedInstance = nil;
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         chatVC.hidesBottomBarWhenPushed = YES;
-        [navVC pushViewController:chatVC animated:YES];
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+#if __has_include("QIMIPadWindowManager.h")
+            [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatVC];
+#endif
+        } else {
+            [navVC pushViewController:chatVC animated:YES];
+        }
     });
 }
 
@@ -663,7 +682,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (BOOL)handleOpsasppSchema:(NSDictionary *)reactInfoDic {
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
     BOOL canParse = NO;
     Class RunC = NSClassFromString(@"RNSchemaParse");
     SEL sel = NSSelectorFromString(@"canHandleURL:");
@@ -717,8 +736,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 - (UIViewController *)getRNSearchVC {
     
-    
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
     UIViewController *reactVC = [[NSClassFromString(@"QTalkSearchViewManager") alloc] init];
     return reactVC;
 #endif
@@ -726,7 +744,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)openRNSearchVC {
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
     dispatch_async(dispatch_get_main_queue(), ^{
         CATransition *animation = [CATransition animation];
         animation.duration = 0.4f;   //时间间隔
@@ -895,8 +913,8 @@ static QIMFastEntrance *_sharedInstance = nil;
                             WithHiddenNav:(BOOL)hiddenNav
                                WithModule:(NSString *)module
                            WithProperties:(NSDictionary *)properties {
-#if defined (QIMRNEnable) && QIMRNEnable == 1
-    
+#if __has_include("QimRNBModule.h")
+
     Class RunC = NSClassFromString(@"QimRNBModule");
     SEL sel = NSSelectorFromString(@"getVCWithParam:");
     UIViewController *vc = nil;
@@ -911,7 +929,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)openQIMRNVCWithModuleName:(NSString *)moduleName WithProperties:(NSDictionary *)properties {
     dispatch_async(dispatch_get_main_queue(), ^{
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
@@ -967,7 +985,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 - (UIViewController *)getQTalkNotesVC {
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     QTalkNotesCategoriesVc *notesCategoriesVc = [[QTalkNotesCategoriesVc alloc] init];
     return notesCategoriesVc;
 #endif
@@ -975,7 +993,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)openQTalkNotesVC {
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     dispatch_async(dispatch_get_main_queue(), ^{
         QTalkNotesCategoriesVc *notesCategoriesVc = [[QTalkNotesCategoriesVc alloc] init];
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
@@ -1025,7 +1043,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
         NSMutableDictionary *properties = [NSMutableDictionary dictionary];
         [properties setQIMSafeObject:@"" forKey:@"Screen"];
         [properties setQIMSafeObject:[[QIMKit sharedInstance] getLastJid] forKey:@"from"];
@@ -1049,7 +1067,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
@@ -1062,7 +1080,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)openMyAccountInfo {
     dispatch_async(dispatch_get_main_queue(), ^{
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotify_QtalkSuggest_handle_opsapp_event object:nil userInfo:@{@"module":@"user-info", @"initParam":@[]}];
 #endif
     });
@@ -1126,7 +1144,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
         dispatch_async(dispatch_get_main_queue(), ^{
             if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-#if defined (QIMIPadEnable) && QIMIPadEnable == 1
+#if __has_include("QIMIPadWindowManager.h")
                 IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
                 [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
 #endif
@@ -1179,7 +1197,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-#if defined (QIMIPadEnable) && QIMIPadEnable == 1
+#if __has_include("QIMIPadWindowManager.h")
                     IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
                     [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
 #endif
@@ -1226,7 +1244,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
         [[QIMKit sharedInstance] setNeedTryRelogin:NO];
         if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-#if defined (QIMIPadEnable) && QIMIPadEnable == 1
+#if __has_include("QIMIPadWindowManager.h")
             [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
             IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
@@ -1286,12 +1304,20 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 - (void)openFileTransMiddleVC {
-    QIMFileTransMiddleVC *fileMiddleVc = [[QIMFileTransMiddleVC alloc] init];
-    UINavigationController *fileMiddleNav = [[UINavigationController alloc] initWithRootViewController:fileMiddleVc];
-    if (!self.rootVc) {
-        self.rootVc = [[UIApplication sharedApplication] visibleViewController];
-    }
-    [self.rootVc presentViewController:fileMiddleNav animated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMFileTransMiddleVC *fileMiddleVc = [[QIMFileTransMiddleVC alloc] init];
+        UINavigationController *fileMiddleNav = [[UINavigationController alloc] initWithRootViewController:fileMiddleVc];
+        if (!self.rootVc) {
+            self.rootVc = [[UIApplication sharedApplication] visibleViewController];
+        }
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+#if __has_include("QIMIPadWindowManager.h")
+            [[QIMIPadWindowManager sharedInstance] showDetailViewController:fileMiddleVc];
+#endif
+        } else {
+            [self.rootVc presentViewController:fileMiddleNav animated:YES completion:nil];
+        }
+    });
 }
 
 - (void)browseBigHeader:(NSDictionary *)param {
@@ -1386,8 +1412,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
-#if defined (QIMRNEnable) && QIMRNEnable == 1
-        
+#if __has_include("QimRNBModule.h")
+
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {

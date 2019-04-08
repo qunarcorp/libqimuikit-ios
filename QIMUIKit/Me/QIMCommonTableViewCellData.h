@@ -14,7 +14,6 @@ typedef enum {
     QIMCommonTableViewCellDataTypeBalanceInquiry,       //余额查询
     QIMCommonTableViewCellDataTypeAttendance,           //签到打卡
     QIMCommonTableViewCellDataTypeTotpToken,            //Totp Token
-    QIMCommonTableViewCellDataTypeAccountInformation,   //个人信息
     QIMCommonTableViewCellDataTypeMyFile,               //我的文件
     QIMCommonTableViewCellDataTypeFeedback,             //意见反馈
     QIMCommonTableViewCellDataTypeSetting,              //设置

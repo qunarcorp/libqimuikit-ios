@@ -132,9 +132,9 @@
         }
         _imageView = [[YLImageView alloc] init];
         [_imageView sd_setImageWithURL:_imageURL placeholderImage:[UIImage imageNamed:@"PhotoDownloadfailedSmall"] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-            //            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
-            //            [self.progressLabel setText:progress];
-            //            NSLog(@"下载图片进度 : %ld", progress);
+//            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
+//            [self.progressLabel setText:progress];
+//            NSLog(@"下载图片进度 : %ld", progress);
         } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             
             CGRect fitRect = [self rectFitOriginSize:image.size byRect:rect];
@@ -146,8 +146,6 @@
                     _imageView = [[YLImageView alloc] initWithFrame:fitRect];
                     _imageView.image = image;
                     [self.ownerView addSubview:_imageView];
-                } else {
-                    QIMVerboseLog(@"加载图片失败 : %@", error);
                 }
             });
             return;

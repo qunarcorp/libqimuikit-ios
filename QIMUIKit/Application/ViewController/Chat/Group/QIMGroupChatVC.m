@@ -87,12 +87,14 @@
 #import "QIMNavBackBtn.h"
 #import "QIMMWPhotoBrowser.h"
 #import "QIMMessageTableViewManager.h"
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCMeetingClient.h")
     #import "QIMWebRTCMeetingClient.h"
 #endif
 #import "QIMAuthorizationManager.h"
 #import "QIMSearchRemindView.h"
+#if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
+#endif
 
 #define kPageCount 20
 
@@ -1179,10 +1181,13 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
+    [self.view endEditing:YES];
     if ([[QIMKit sharedInstance] getIsIpad] == NO) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
+#if __has_include("QIMIPadWindowManager.h")
         [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+#endif
     }
 }
 
@@ -1345,7 +1350,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         }
         [self.textBar updateFilrStatus:isOn];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_VideoCall]) {
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCMeetingClient.h")
         [[QIMWebRTCMeetingClient sharedInstance] setGroupId:self.chatId];
         NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
         NSString *groupName = [groupCardDic objectForKey:@"Name"];
@@ -1361,7 +1366,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
             [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
+#endif
         } else {
             [self presentViewController:nav animated:YES completion:nil];
         }
@@ -1420,7 +1427,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             userLct.delegate = self;
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                 userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
                 [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+#endif
             } else {
                 [self.navigationController presentViewController:userLct animated:YES completion:nil];
             }
@@ -2857,7 +2866,7 @@ static CGPoint tableOffsetPoint;
                                            });
                                        }];
     });
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
     if (self.loadCount >= 3 && !self.reloadSearchRemindView && !self.bindId) {
         self.searchRemindView = [[QIMSearchRemindView alloc] initWithChatId:self.chatId withRealJid:nil withChatType:self.chatType];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToConverstaionSearch)];

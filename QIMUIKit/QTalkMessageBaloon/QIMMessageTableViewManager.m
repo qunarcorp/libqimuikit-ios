@@ -40,12 +40,12 @@
 #import "QIMWebView.h"
 #import "QIMOriginMessageParser.h"
 
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
 #import "QIMWebRTCClient.h"
 #import "QIMWebRTCMeetingClient.h"
 #endif
 
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
 #import "QIMEncryptChat.h"
 #endif
 
@@ -405,8 +405,8 @@
         }
             break;
         case QIMMessageTypeWebRtcMsgTypeVideoMeeting: {
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
-            
+#if __has_include("QIMWebRTCClient.h")
+
             NSString *infoStr = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
             if (infoStr.length > 0) {
                 NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
@@ -418,7 +418,7 @@
         }
             break;
         case QIMWebRTC_MsgType_Video: {
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
             [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
 //            [[QIMWebRTCClient sharedInstance] setHeaderImage:[[QIMKit sharedInstance] getUserHeaderImageByUserId:self.chatId]];
             [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:YES isCaller:YES];
@@ -474,7 +474,7 @@
     id temp = [self.dataSource objectAtIndex:row];
    QIMMessageModel *message = temp;
 //    QIMVerboseLog(@"解密会话状态 : %lu,   %d", (unsigned long)[[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId], message.messageType);
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     if (([[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId] > QIMEncryptChatStateNone) && message.messageType == QIMMessageType_Encrypt) {
         
         NSInteger msgType = [[QIMEncryptChat sharedInstance] getMessageTypeWithEncryptMsg:message WithUserId:self.chatId];

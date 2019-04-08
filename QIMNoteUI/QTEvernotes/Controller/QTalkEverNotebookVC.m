@@ -5,7 +5,7 @@
 //  Created by lihuaqi on 2017/9/19.
 //  Copyright © 2017年 lihuaqi. All rights reserved.
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "QTalkEverNotebookVC.h"
 #import "QTalkEverNoteListVC.h"
 #import <SCLAlertView-Objective-C/SCLAlertView.h>
@@ -264,3 +264,4 @@ typedef enum {
 */
 
 @end
+#endif

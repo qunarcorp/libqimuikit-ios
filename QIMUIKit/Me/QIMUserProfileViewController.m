@@ -58,14 +58,12 @@
             if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 section2 = @[@(QCUserProfileUserId), @(QCUserProfileDepartment)];
             }
-            NSArray *section3 = @[@(QCUserProfileRNView)];
-            NSArray *section4 = @[@(QCUserProfileComment), @(QCUserProfileSendMail)];
+            NSArray *section3 = @[@(QCUserProfileComment), @(QCUserProfileSendMail)];
             [_dataSource addObject:section0];
             [_dataSource addObject:section1];
             [_dataSource addObject:section2];
             if ([[QIMKit sharedInstance] qimNav_OpsHost].length > 0 && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 [_dataSource addObject:section3];
-                [_dataSource addObject:section4];
             }
         }
     }
@@ -225,7 +223,7 @@
 }
 
 - (void)registerNSNotifications {
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeRNCardViewHeight:) name:@"kNotify_RN_QTALK_CARD_ViewHeight_UPDATE" object:nil];
 #endif
 }

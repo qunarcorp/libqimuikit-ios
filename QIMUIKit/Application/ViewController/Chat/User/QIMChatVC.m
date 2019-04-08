@@ -35,7 +35,9 @@
 #import "SDImageCache.h"
 #import "QIMMWPhotoBrowser.h"
 #import "QIMRedPackageView.h"
+#if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
+#endif
 #import "QIMOrganizationalVC.h"
 
 #define kPageCount 20
@@ -89,21 +91,19 @@
 #import "QIMNotifyView.h"
 #import "QIMRedMindView.h"
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
-
+#if __has_include("QIMNotifyManager.h")
     #import "QIMNotifyManager.h"
-
 #endif
 
 #import "YLGIFImage.h"
 #import "QIMExportMsgManager.h"
 #import "QIMContactManager.h"
 
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
     #import "QIMWebRTCClient.h"
 #endif
 
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     #import "QIMNoteManager.h"
     #import "QIMEncryptChat.h"
     #import "QIMNoteModel.h"
@@ -117,7 +117,7 @@
 #import "QIMRobotAnswerCell.h"
 #import "QIMSearchRemindView.h"
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
 @interface QIMChatVC () <QIMNotifyManagerDelegate>
 
@@ -125,7 +125,7 @@
 
 #endif
 
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
 
 @interface QIMChatVC () <QIMEncryptChatReloadViewDelegate>
 
@@ -186,7 +186,7 @@
 
 @property(nonatomic, assign) BOOL isNoReadVoice;
 
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
 
 @property(nonatomic, assign) QIMEncryptChatState encryptChatState;   //加密状态
 #endif
@@ -499,7 +499,7 @@
     UIBarButtonItem * spaceItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     //将宽度设为负值
     spaceItem.width = -15;
-    //将两个BarButtonItem都返回给N
+    //将两个BarButtonItem都返回给 
     self.navigationItem.leftBarButtonItems = @[spaceItem,backBarBtn];
 }
 
@@ -825,7 +825,7 @@
     [self setupNavBar];
     self.loadCount = 0;
 #warning 通知会话
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
     [[QIMNotifyManager shareNotifyManager] setNotifyManagerSpecifiedDelegate:self];
 #endif
@@ -833,7 +833,7 @@
         self.chatType = ChatType_CollectionChat;
     }
 #warning 加密会话
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     [QIMEncryptChat sharedInstance].delegate = self;
 
     self.isEncryptChat = [[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId];
@@ -1026,7 +1026,7 @@
     QIMNotifyView *notifyView = nofity.object;
     [notifyView removeFromSuperview];
 }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
 
 - (void)reloadBaseViewWithUserId:(NSString *)userId WithEncryptChatState:(QIMEncryptChatState)encryptChatState {
     if ([self.chatId isEqualToString:userId]) {
@@ -1361,7 +1361,7 @@
 
 //右上角加密
 - (void)encryptChat:(id)sender {
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     [[QIMEncryptChat sharedInstance] doSomeEncryptChatWithUserId:self.chatId];
 #endif
 }
@@ -1400,10 +1400,13 @@
 
 //左上角返回按钮
 - (void)leftBarBtnClicked:(id)sender {
+    [self.view endEditing:YES];
     if ([[QIMKit sharedInstance] getIsIpad] == NO) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
+#if __has_include("QIMIPadWindowManager.h")
         [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+#endif
     }
 }
 
@@ -1449,7 +1452,7 @@
 }
 
 - (void)dealloc {
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     [[QIMEncryptChat sharedInstance] setEncryptChatLeaveTimeWithUserId:self.chatId WithTime:[NSDate timeIntervalSinceReferenceDate]];
 #endif
     [[QIMNavBackBtn sharedInstance] removeTarget:self action:@selector(leftBarBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -1787,7 +1790,7 @@
                         msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:self.chatType msgType:QIMMessageType_Text];
                         [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
                     }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
                     else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                         NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:msgText WithOriginExtendInfo:nil WithUserId:self.chatId];
                         msg = [[QIMKit sharedInstance] sendMessage:@"[加密收藏表情消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
@@ -1827,7 +1830,7 @@
                                     msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:self.chatType msgType:QIMMessageType_Text];
                                     [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
                                 }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
                                 else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                                     NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:msgText WithOriginExtendInfo:nil WithUserId:self.chatId];
                                     msg = [[QIMKit sharedInstance] sendMessage:@"[加密收藏表情消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
@@ -1892,7 +1895,9 @@
         QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
             [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
+#endif
         } else {
             [self presentViewController:nav animated:YES completion:nil];
         }
@@ -1932,14 +1937,16 @@
             userLct.delegate = self;
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                 userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
                 [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+#endif
             } else {
                 [self.navigationController presentViewController:userLct animated:YES completion:nil];
             }
         };
         [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
     } else if ([trId isEqualToString:QIMTextBarExpandViewItem_VideoCall]) {
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
         [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
         [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:YES isCaller:YES];
 #endif
@@ -2563,7 +2570,7 @@
         if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
             msg = [[QIMKit sharedInstance] createMessageWithMsg:message extenddInfo:info userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:msgType forMsgId:_resendMsg.messageId willSave:YES];
         }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
         else if (self.encryptChatState == QIMEncryptChatStateEncrypting) {
             msg = [[QIMKit sharedInstance] sendMessage:message WithInfo:info ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
         }
@@ -2581,7 +2588,7 @@
             if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                 [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
             }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
             else if (self.encryptChatState == QIMEncryptChatStateEncrypting) {
                 
             }
@@ -2628,7 +2635,7 @@
                 if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                     msg = [[QIMKit sharedInstance] createMessageWithMsg:@"此为阅后即焚消息，该终端不支持阅后即焚~~" extenddInfo:extendInformation userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:QIMMessageType_BurnAfterRead forMsgId:[QIMUUIDTools UUID] willSave:YES];
                 }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
                 else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                     NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:@"此为阅后即焚消息，该终端不支持阅后即焚~~" WithOriginExtendInfo:extendInformation WithUserId:self.chatId];
                     msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息阅后即焚iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
@@ -2646,7 +2653,7 @@
                 if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                     msg = [[QIMKit sharedInstance] createMessageWithMsg:msg.message extenddInfo:msg.extendInformation userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:msg.messageType forMsgId:msg.messageId willSave:YES];
                 }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
                 else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                     
                 }
@@ -2658,7 +2665,7 @@
                 if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                     msg = [[QIMKit sharedInstance] createMessageWithMsg:text extenddInfo:normalEmotionExtendInfoStr userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:QIMMessageType_ImageNew forMsgId:[QIMUUIDTools UUID] willSave:YES];
                 }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
                 else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                     NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_ImageNew WithOriginBody:text WithOriginExtendInfo:normalEmotionExtendInfoStr WithUserId:self.chatId];
                     msg = [[QIMKit sharedInstance] sendMessage:@"[加密表情消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
@@ -2678,7 +2685,7 @@
                     if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                         msg = [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
                     }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
                     else if (self.encryptChatState == QIMEncryptChatStateEncrypting) {
                         
                         if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
@@ -2741,7 +2748,7 @@
             if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                 msg = [[QIMKit sharedInstance] createMessageWithMsg:@"此为阅后即焚消息，该终端不支持阅后即焚~~" extenddInfo:extendInformation userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:QIMMessageType_BurnAfterRead forMsgId:[QIMUUIDTools UUID] willSave:YES];
             }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
             else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                 NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:@"此为阅后即焚消息，该终端不支持阅后即焚~~" WithOriginExtendInfo:extendInformation WithUserId:self.chatId];
                 msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息阅后即焚iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
@@ -2759,7 +2766,7 @@
             if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                 msg = [[QIMKit sharedInstance] createMessageWithMsg:msg.message extenddInfo:msg.extendInformation userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:msg.messageType forMsgId:msg.messageId willSave:YES];
             }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
             else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                 
             }
@@ -2771,7 +2778,7 @@
             if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                 msg = [[QIMKit sharedInstance] createMessageWithMsg:text extenddInfo:nil userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:QIMMessageType_Text forMsgId:[QIMUUIDTools UUID] willSave:YES];
             }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
             else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
                 NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:text WithOriginExtendInfo:nil WithUserId:self.chatId];
                 msg = [[QIMKit sharedInstance] sendMessage:@"[加密文本消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
@@ -2792,7 +2799,7 @@
                 if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                     msg = [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
                 }
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
                 else if (self.encryptChatState == QIMEncryptChatStateEncrypting) {
                     
                     if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
@@ -3143,6 +3150,7 @@ static CGPoint tableOffsetPoint;
     QIMImageStorage *storage = [tempImageArr objectAtIndex:index];
     imageHttpUrl = storage.imageURL.absoluteString;
     NSData *imageData = [[QIMKit sharedInstance] getFileDataFromUrl:imageHttpUrl forCacheType:QIMFileCacheTypeColoction needUpdate:NO];
+    imageData = nil;
     if (imageData.length) {
         QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithImage:[UIImage qim_animatedImageWithAnimatedGIFData:imageData]];
         photo.photoData = imageData;
@@ -3275,7 +3283,7 @@ static CGPoint tableOffsetPoint;
             }];
         }
     });
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
     if (self.loadCount >= 3 && !self.reloadSearchRemindView && !self.bindId) {
         NSString *userId = nil;
         NSString *realJid = nil;
@@ -3520,14 +3528,14 @@ static CGPoint tableOffsetPoint;
     } else {
         NSString *origintMsg = [NSString stringWithFormat:@"{\"%@\":\"%@\", \"%@\":\"%@\", \"%@\":%@,\"%@\":\"%@\"}", @"HttpUrl", voiceUrl, @"FileName", filename, @"Seconds", [NSNumber numberWithInt:duration], @"filepath", filepath];
         
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
         if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
             NSString *encrypeMsg = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Voice WithOriginBody:origintMsg WithOriginExtendInfo:nil WithUserId:self.chatId];
             [self sendMessage:@"iOS加密语音消息" WithInfo:encrypeMsg ForMsgType:QIMMessageType_Encrypt];
         } else {
 #endif
             [self sendMessage:origintMsg WithInfo:nil ForMsgType:QIMMessageType_Voice];
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
         }
 #endif
     }

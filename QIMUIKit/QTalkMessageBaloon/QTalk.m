@@ -122,7 +122,7 @@ static QTalk *__global_qtalk = nil;
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSingleChatTimestampCell" ForMessageType:QIMMessageType_Revoke];
     [[QIMKit sharedInstance] setMsgShowText:@"撤回了一条消息" ForMessageType:QIMMessageType_Revoke];
     
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
     //语音聊天
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMWebRTC_MsgType_Audio];
     //视频聊天
@@ -132,7 +132,7 @@ static QTalk *__global_qtalk = nil;
     
     [[QIMKit sharedInstance] setMsgShowText:@"[视频聊天]" ForMessageType:QIMWebRTC_MsgType_Video];
 #endif
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
     //视频会议
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
 

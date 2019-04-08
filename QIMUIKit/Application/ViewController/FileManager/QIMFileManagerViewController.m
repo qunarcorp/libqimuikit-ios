@@ -132,14 +132,14 @@
 
 - (void)sendBtnHandle:(UIButton *)sender
 {
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
 
     //获取加密状态
     QIMEncryptChatState encryptState = [[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.userId];
 #endif
     for (QIMMessageModel * message in _selectArr) {
        QIMMessageModel *msg = message;
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
         if (encryptState == QIMEncryptChatStateEncrypting) {
             NSString *encryptContent = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:[msg messageType] WithOriginBody:msg.message WithOriginExtendInfo:msg.extendInformation WithUserId:self.userId];
             msg.message = @"加密文件消息iOS";
