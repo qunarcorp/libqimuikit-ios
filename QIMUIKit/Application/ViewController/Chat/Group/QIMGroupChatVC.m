@@ -1173,8 +1173,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
         if (self.messageManager.dataSource.count > 0) {
-            long long groupLastMessage = [[QIMKit sharedInstance] getGroupLastMsgTimeWithGroupId:self.chatId];
-            [[QIMKit sharedInstance] sendReadstateWithGroupLastMessageTime:groupLastMessage withGroupId:self.chatId];
+            [[QIMKit sharedInstance] clearNotReadMsgByGroupId:self.chatId];
         }
     });
 }

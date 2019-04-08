@@ -821,7 +821,9 @@ RCT_EXPORT_METHOD(deleteUserFriend:(NSDictionary *)param) {
 @implementation QimRNBModule(GroupCard)
 
 RCT_EXPORT_METHOD(clearImessage:(NSDictionary *)params) {
-    
+    QIMVerboseLog(@"param : %@", params);
+    NSString *xmppId = [params objectForKey:@"xmppId"];
+    [[QIMKit sharedInstance] deleteMessageWithXmppId:xmppId];
 }
 
 // 获取群二维码图片
