@@ -7,7 +7,7 @@
 //
 
 #import "QIMWorkFeedAtNotifyViewController.h"
-#import "SessionCell.h"
+#import "QIMAtUserTableViewCell.h"
 #import "SearchBar.h"
 #import "NSBundle+QIMLibrary.h"
 #import <MJRefresh/MJRefresh.h>
@@ -128,9 +128,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"Cell";
-    SessionCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    QIMAtUserTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (cell == nil) {
-        cell = [[SessionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell = [[QIMAtUserTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     
     if (self.searchBar.text.length > 0) {
@@ -138,7 +138,6 @@
         NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:[dict objectForKey:@"XmppId"]];
         
         [cell setJid:[dict objectForKey:@"XmppId"]];
-        [cell setHasAtCell:YES];
         [cell setName:remarkName?remarkName:[dict objectForKey:@"Name"]];
         [cell refreshUI];
     } else {
@@ -158,7 +157,6 @@
         NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
         NSString * name  = remarkName?remarkName:realUserName;
         [cell setJid:jid];
-        [cell setHasAtCell:YES];
         [cell setName:name];
         [cell refreshUI];
     }
@@ -166,12 +164,12 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [SessionCell getCellHeight];
+    return [QIMAtUserTableViewCell getCellHeight];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    SessionCell *cell = (SessionCell *)[tableView cellForRowAtIndexPath:indexPath];
+    QIMAtUserTableViewCell *cell = (QIMAtUserTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     NSMutableDictionary * dict  = [NSMutableDictionary dictionaryWithCapacity:3];
     NSString * name  = nil;
     if (self.searchBar.text.length > 0) {
