@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#if __has_include("QIMNoteManager.h")
 @interface PasswordHistoryViewController : UIViewController
 
 - (void)setHistoryModels:(NSArray *)models;
@@ -15,3 +15,4 @@
 @property (nonatomic, copy) NSString *pk;
 
 @end
+#endif

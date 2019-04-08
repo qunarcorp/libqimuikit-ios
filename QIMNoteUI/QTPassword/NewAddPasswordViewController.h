@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#if __has_include("QIMNoteManager.h")
 #import "QIMNoteModel.h"
 
 @interface NewAddPasswordViewController : UIViewController
@@ -20,3 +21,4 @@
 @property (nonatomic, assign) NSInteger QID;
 
 @end
+#endif

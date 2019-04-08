@@ -10,20 +10,20 @@
 #import "QIMUUIDTools.h"
 #import "QIMJSONSerializer.h"
 #import "QIMCollectionFaceManager.h"
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
     #import "QIMWebRTCClient.h"
     #import "QIMWebRTCMeetingClient.h"
 #endif
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
     #import "QIMNotifyManager.h"
 #endif
 
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     #import "QIMLocalLog.h"
 #endif
 
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
     #import "QTalkSuggestRNJumpManager.h"
 #endif
 
@@ -64,7 +64,7 @@ static QIMNotificationManager *_notificationManager = nil;
 //单人音视频
 - (void)callVideoAudio:(NSNotification *)notify {
     
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
     NSDictionary *infoDic = notify.object;
     int msgType = [[infoDic objectForKey:@"type"] intValue];
     NSString *jid = [infoDic objectForKey:@"from"];
@@ -84,7 +84,7 @@ static QIMNotificationManager *_notificationManager = nil;
 //群组音视频
 - (void)meetingAudioVideoConference:(NSNotification *)notify {
     
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCMeetingClient.h")
     NSDictionary *infoDic = notify.object;
     
     if (![[QIMWebRTCMeetingClient sharedInstance] hasOpenRoom]) {
@@ -100,21 +100,21 @@ static QIMNotificationManager *_notificationManager = nil;
 }
 
 - (void)submitLog:(NSNotification *)notify {
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     NSString *conent = notify.object;
     [[QIMLocalLog sharedInstance] submitFeedBackWithContent:conent withUserInitiative:NO];
 #endif
 }
 
 - (void)showGlobalNotify:(NSNotification *)notify {
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
     NSDictionary *notifyMsg = notify.object;
     [[QIMNotifyManager shareNotifyManager] showGlobalNotifyWithMessage:notifyMsg];
 #endif
 }
 
 - (void)showSpecifiedNotify:(NSNotification *)notify {
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
     NSDictionary *notifyMsg = notify.object;
     [[QIMNotifyManager shareNotifyManager] showChatNotifyWithMessage:notifyMsg];
 #endif

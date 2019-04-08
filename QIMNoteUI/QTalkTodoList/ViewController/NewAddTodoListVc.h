@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#if __has_include("QIMNoteManager.h")
 #import "QIMNoteModel.h"
 
 @interface NewAddTodoListVc : UIViewController
@@ -16,3 +17,4 @@
 - (void)setTodoListModel:(QIMNoteModel *)model;
 
 @end
+#endif

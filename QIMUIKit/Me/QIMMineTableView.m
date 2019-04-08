@@ -55,26 +55,21 @@
     NSArray<QIMCommonTableViewCellData *> *section1 = @[[[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"myself_tab_red_package"] iconName:@"\U0000f0e4"   cellDataType:QIMCommonTableViewCellDataTypeMyRedEnvelope],
                                                  [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"myself_tab_balance"] iconName:@"\U0000f0f1" cellDataType:QIMCommonTableViewCellDataTypeBalanceInquiry],
                                                  ];
-    NSArray<QIMCommonTableViewCellData *> *section2 = @[[[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"explore_tab_account_information"] iconName:@"\U0000f0e2" cellDataType:QIMCommonTableViewCellDataTypeAccountInformation]];
-    
 
-    NSArray<QIMCommonTableViewCellData *> *section3 = @[];
+    NSArray<QIMCommonTableViewCellData *> *section2 = @[];
     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-        section3 =  @[
+        section2 =  @[
                       [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"explore_tab_sign_in_check"] iconName:@"\U0000f1b7" cellDataType:QIMCommonTableViewCellDataTypeAttendance],[[QIMCommonTableViewCellData alloc] initWithTitle:@"QTalk Token" iconName:@"\U0000f1b7" cellDataType:QIMCommonTableViewCellDataTypeTotpToken],
                       [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"explore_tab_my_file"] iconName:@"\U0000e213" cellDataType:QIMCommonTableViewCellDataTypeMyFile],
                       ];
     } else {
-        section3 = @[[[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"explore_tab_my_file"] iconName:@"\U0000e213" cellDataType:QIMCommonTableViewCellDataTypeMyFile]];
+        section2 = @[[[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"explore_tab_my_file"] iconName:@"\U0000e213" cellDataType:QIMCommonTableViewCellDataTypeMyFile]];
     }
     NSArray<QIMCommonTableViewCellData *> *section4 = @[[[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"myself_tab_setting"] iconName:@"\U0000f0ed" cellDataType:QIMCommonTableViewCellDataTypeSetting],
                                                  ];
     [_dataSource addObject:section0];
     [_dataSource addObject:section1];
-    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat && [[QIMKit sharedInstance] qimNav_ShowOA]) {
-        [_dataSource addObject:section2];
-    }
-    [_dataSource addObject:section3];
+    [_dataSource addObject:section2];
     [_dataSource addObject:section4];
     return _dataSource;
 }

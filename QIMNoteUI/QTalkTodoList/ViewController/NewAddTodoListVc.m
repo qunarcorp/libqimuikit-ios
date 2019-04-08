@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/27.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "NewAddTodoListVc.h"
 #import "QIMWSDatePickerView.h"
 #import "QIMNoteUICommonFramework.h"
@@ -189,3 +189,4 @@
 }
 
 @end
+#endif

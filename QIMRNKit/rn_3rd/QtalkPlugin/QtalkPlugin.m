@@ -59,4 +59,19 @@ RCT_EXPORT_METHOD(openWorkWorld:(NSDictionary *)param) {
     [[QIMFastEntrance sharedInstance] openWorkFeedViewController];
 }
 
+//打开笔记本
+RCT_EXPORT_METHOD(openNoteBook:(NSDictionary *)param) {
+    [QIMFastEntrance openQTalkNotesVC];
+}
+
+//打开文件助手
+RCT_EXPORT_METHOD(openFileTransfer:(NSDictionary *)param) {
+    [[QIMFastEntrance sharedInstance] openFileTransMiddleVC];
+}
+
+//打开行程
+RCT_EXPORT_METHOD(openScan:(NSDictionary *)param) {
+    [QIMFastEntrance openQRCodeVC];
+}
+
 @end

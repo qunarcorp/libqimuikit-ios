@@ -26,7 +26,7 @@
 "tab_title_myself" = "我的";
 
 //Navigation server
-"nav_title_configManager" = "导航服务器管理";
+"nav_title_configManager" = "导航地址列表";
 "nav_title_debug_configManager" = "Debug导航服务器";
 "nav_server_nickName" = "导航服务器名称";
 "nav_server_address" = "导航服务器地址";

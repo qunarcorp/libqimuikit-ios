@@ -67,8 +67,9 @@
 #import "QTPHImagePickerController.h"
 #import "QIMEmotionManagerView.h"
 #endif
-
+#if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
+#endif
 #import "QIMAuthorizationManager.h"
 
 @interface NSAttributedString (EmojiExtension)
@@ -1773,7 +1774,9 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         picker.minimumInteritemSpacing = 2.0;
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
             [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
+#endif
         } else {
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
         }

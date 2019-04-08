@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/17.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "NewPasswordBoxVc.h"
 #import "QIMNoteModel.h"
 #import "AESCrypt.h"
@@ -29,7 +29,6 @@
 @end
 
 @implementation NewPasswordBoxVc
-
 
 - (UITextField *)nameTextField {
     if (!_nameTextField) {
@@ -203,3 +202,4 @@
 }
 
 @end
+#endif
