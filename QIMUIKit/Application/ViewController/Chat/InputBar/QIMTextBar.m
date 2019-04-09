@@ -946,9 +946,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     NSString *name = [memberInfoDic objectForKey:@"name"];
                     NSString *jid = [memberInfoDic objectForKey:@"jid"];
                     NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
-                    if ([[QIMKit sharedInstance] getIsIpad]) {
-                        memberName = [NSString stringWithFormat:@"%@ ", name];
-                    }
 
                     QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
                     atTextAttachment.groupMemberName = name;
@@ -970,11 +967,10 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                 }
             }];            
             if ([[QIMKit sharedInstance] getIsIpad]) {
-                Class RunC = NSClassFromString(@"QIMIPadWindowManager");
-                SEL sel = NSSelectorFromString(@"detaiPushViewController:");
-                if ([RunC respondsToSelector:sel]) {
-                    [RunC performSelector:sel withObject:qNoticeVC];
-                }
+                qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qNoticeVC animated:YES completion:nil];
+#endif
             } else {
                 QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
                 [(UIViewController *)weakSelf.delegate presentViewController:qtalNav animated:YES completion:nil];

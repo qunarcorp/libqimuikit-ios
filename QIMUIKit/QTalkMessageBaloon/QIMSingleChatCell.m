@@ -208,13 +208,6 @@ static double _global_message_cell_width = 0;
             //添加为表情
         case MA_Collection: {
             
-            
-            //
-            // 因为咱们有两种格式，所以需要根据情况来判定url
-            // 1. http://qim.qunar.com/cgi_bin/get_file.pl?name=md5.jpg
-            // 2. http://qim.qunar.com/file/v2/download/temp/md5.jpg
-            // 楼下的做法只能处理第二种
-            
             for (QIMImageStorage * imageStorage in self.textContainer.textStorages) {
                 
                 
@@ -223,11 +216,18 @@ static double _global_message_cell_width = 0;
                     return;
                 } else {
                     
-                    NSURL *imageUrl = imageStorage.imageURL;
-                    
-                    [[QIMKit sharedInstance] getPermUrlWithTempUrl:[imageUrl absoluteString] PermHttpUrl:^(NSString *httpPermUrl) {
-                        [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:httpPermUrl];
-                    }];
+                    NSString *imageUrl = imageStorage.imageURL.absoluteString;
+                    QIMVerboseLog(@"收藏表情后的地址为 : %@", httpPermUrl);
+                    if (![imageUrl containsString:@"null"] && imageUrl.length > 0) {
+                        if (![imageUrl qim_hasPrefixHttpHeader]) {
+                            imageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrl];
+                        }
+                        [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:imageUrl];
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionUpdateHandleFailedNotification object:nil];
+                        });
+                    }
                 }
             }
         }
