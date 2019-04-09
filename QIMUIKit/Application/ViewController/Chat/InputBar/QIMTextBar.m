@@ -968,8 +968,10 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             }];            
             if ([[QIMKit sharedInstance] getIsIpad]) {
                 qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+                QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+                qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
 #if __has_include("QIMIPadWindowManager.h")
-                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qNoticeVC animated:YES completion:nil];
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
 #endif
             } else {
                 QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
