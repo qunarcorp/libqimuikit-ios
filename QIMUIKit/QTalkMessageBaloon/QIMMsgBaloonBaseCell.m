@@ -494,7 +494,7 @@ static UIImage *__rightBallocImage = nil;
                     return;
                 } else {
                     NSString *imageUrl = imageStorage.imageURL.absoluteString;
-                    QIMVerboseLog(@"收藏表情后的地址为 : %@", httpPermUrl);
+                    QIMVerboseLog(@"收藏表情后的地址为 : %@", imageUrl);
                     if (![imageUrl containsString:@"null"] && imageUrl.length > 0) {
                         if (![imageUrl qim_hasPrefixHttpHeader]) {
                             imageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrl];
