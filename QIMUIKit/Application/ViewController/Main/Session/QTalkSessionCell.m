@@ -209,13 +209,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_nameLabel) {
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 12, [UIScreen mainScreen].bounds.size.width - 145, NAME_LABEL_FONT + 2)];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 12, [[UIScreen mainScreen] qim_leftWidth] - 145, NAME_LABEL_FONT + 2)];
         _nameLabel.font = [UIFont boldSystemFontOfSize:NAME_LABEL_FONT];
         _nameLabel.textColor = [UIColor qim_colorWithHex:0x0 alpha:1];
         _nameLabel.backgroundColor = [UIColor clearColor];
     }
     if (NAME_LABEL_FONT + 2 != _nameLabel.height) {
-        _nameLabel.frame = CGRectMake(70, 12, [UIScreen mainScreen].bounds.size.width - 145, NAME_LABEL_FONT + 2);
+        _nameLabel.frame = CGRectMake(70, 12, [[UIScreen mainScreen] qim_leftWidth] - 145, NAME_LABEL_FONT + 2);
         _nameLabel.font = [UIFont boldSystemFontOfSize:NAME_LABEL_FONT];
     }
     return _nameLabel;
@@ -243,14 +243,14 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_timeLabel) {
         
-        _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 85, self.nameLabel.bottom - 16, 75, CONTENT_LABEL_FONT)];
+        _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 85, self.nameLabel.bottom - 16, 75, CONTENT_LABEL_FONT)];
         _timeLabel.font = [UIFont fontWithName:FONT_NAME size:CONTENT_LABEL_FONT-2];
         _timeLabel.textColor = [UIColor qim_colorWithHex:0xa1a1a1 alpha:1];
         _timeLabel.backgroundColor = [UIColor clearColor];
         _timeLabel.textAlignment = NSTextAlignmentRight;
     }
     if (CONTENT_LABEL_FONT + 5 != _timeLabel.height) {
-        _timeLabel.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 70, self.nameLabel.bottom - 16, 60, CONTENT_LABEL_FONT);
+        _timeLabel.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 70, self.nameLabel.bottom - 16, 60, CONTENT_LABEL_FONT);
     }
     
     return _timeLabel;
@@ -260,7 +260,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_muteView) {
         
-        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 35, self.timeLabel.bottom + 15, 20, 20)];
+        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 35, self.timeLabel.bottom + 15, 20, 20)];
         _muteView.layer.cornerRadius = _muteView.width / 2.0;
         _muteView.clipsToBounds = YES;
         _muteView.backgroundColor = self.backgroundColor;
@@ -269,54 +269,42 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 }
 
 - (void)setUpNotReadNumButtonWithFrame:(CGRect)frame withBadgeString:(NSString *)badgeString {
-    if (!CGRectEqualToRect(frame, self.notReadNumButton.frame) && !CGRectEqualToRect(frame, CGRectZero)) {
-        [self.notReadNumButton removeFromSuperview];
-        self.notReadNumButton = nil;
-        _notReadNumButton = [[QIMBadgeButton alloc] initWithFrame:frame];
+    self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
+    if (self.chatType == ChatType_GroupChat) {
+        [self.notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
+    }
+    [self.notReadNumButton setBadgeString:badgeString];
+    __weak typeof(self) weakSelf = self;
+    [self.notReadNumButton setDidClickBlock:^(QIMBadgeButton * badgeButton) {
+        [weakSelf clearNotRead];
+    }];
+    [self.notReadNumButton setDidDisappearBlock:^(QIMBadgeButton * badgeButton) {
+        [weakSelf clearNotRead];
+    }];
+    __block BOOL groupState = NO;
+    if (!self.isReminded) {
+        [self.notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
+    } else {
+        [self.notReadNumButton hiddenBadgeButton:YES];
+        [self.contentView addSubview:self.muteNotReadView];
+        if (self.chatType == ChatType_GroupChat) {
+            [self.notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
+        } else {
+            [self.notReadNumButton setBadgeColor:[UIColor qunarRedColor]];
+        }
+    }
+}
+
+- (QIMBadgeButton *)notReadNumButton {
+    if (!_notReadNumButton) {
+        _notReadNumButton = [[QIMBadgeButton alloc] initWithFrame:CGRectMake(self.timeLabel.right - 35, 11, 35, 20)];
         [_notReadNumButton setBadgeFont:[UIFont systemFontOfSize:14]];
         _notReadNumButton.isShowSpringAnimation = YES;
         _notReadNumButton.isShowBomAnimation = YES;
         _notReadNumButton.right = self.timeLabel.right;
         _notReadNumButton.centerY = self.contentLabel.centerY;
         [self.contentView insertSubview:_notReadNumButton atIndex:0];
-    } else {
-        if (!_notReadNumButton) {
-            _notReadNumButton = [[QIMBadgeButton alloc] initWithFrame:CGRectMake(self.timeLabel.right - 35, 11, 35, 20)];
-            [_notReadNumButton setBadgeFont:[UIFont systemFontOfSize:14]];
-            _notReadNumButton.isShowSpringAnimation = YES;
-            _notReadNumButton.isShowBomAnimation = YES;
-            _notReadNumButton.right = self.timeLabel.right;
-            _notReadNumButton.centerY = self.contentLabel.centerY;
-            [self.contentView insertSubview:_notReadNumButton atIndex:0];
-        }
     }
-    self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
-    if (self.chatType == ChatType_GroupChat) {
-        [_notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
-    }
-    [_notReadNumButton setBadgeString:badgeString];
-    __weak typeof(self) weakSelf = self;
-    [_notReadNumButton setDidClickBlock:^(QIMBadgeButton * badgeButton) {
-        [weakSelf clearNotRead];
-    }];
-    [_notReadNumButton setDidDisappearBlock:^(QIMBadgeButton * badgeButton) {
-        [weakSelf clearNotRead];
-    }];
-    __block BOOL groupState = NO;
-    if (!self.isReminded) {
-        [_notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
-    } else {
-        [_notReadNumButton hiddenBadgeButton:YES];
-        [self.contentView addSubview:self.muteNotReadView];
-        if (self.chatType == ChatType_GroupChat) {
-            [_notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
-        } else {
-            [_notReadNumButton setBadgeColor:[UIColor qunarRedColor]];
-        }
-    }
-}
-
-- (QIMBadgeButton *)notReadNumButton {
     return _notReadNumButton;
 }
 
@@ -461,34 +449,35 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 #pragma mark - kMsgNotReadCountChange 更新Cell未读数
 - (void)updateCellNotReadCount:(NSNotification *)notify {
-
-    NSDictionary *notifyDic = notify.object;
-    BOOL ForceRefresh = [notifyDic objectForKey:@"ForceRefresh"];
-    if (ForceRefresh == YES) {
-        NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
-        NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
-        self.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:self.chatType];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self refreshNotReadCount];
-        });
-        return;
-    }
-    if (!self.bindId) {
-        NSString *notifyJid = [notifyDic objectForKey:@"XmppId"];
-        NSString *notifyRealJid = [notifyDic objectForKey:@"RealJid"];
-        NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
-        NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
-        if ([notifyJid isEqualToString:xmppId] && [notifyRealJid isEqualToString:realJid]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *notifyDic = notify.object;
+        BOOL ForceRefresh = [[notifyDic objectForKey:@"ForceRefresh"] boolValue];
+        if (ForceRefresh == YES) {
+            NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
+            NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
             self.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:self.chatType];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self refreshNotReadCount];
             });
+            return;
         }
-    } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self refreshNotReadCount];
-        });
-    }
+        if (!self.bindId) {
+            NSString *notifyJid = [notifyDic objectForKey:@"XmppId"];
+            NSString *notifyRealJid = [notifyDic objectForKey:@"RealJid"];
+            NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
+            NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
+            if ([notifyJid isEqualToString:xmppId] && [notifyRealJid isEqualToString:realJid]) {
+                self.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:self.chatType];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self refreshNotReadCount];
+                });
+            }
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self refreshNotReadCount];
+            });
+        }
+    });
 }
 
 - (void)updateRemindState:(NSNotification *)notify {
@@ -840,6 +829,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         else {
             countStr = [NSString stringWithFormat:@"%ld", self.notReadCount];
         }
+    } else {
+        countStr = @"";
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         if (countStr.length > 0) {

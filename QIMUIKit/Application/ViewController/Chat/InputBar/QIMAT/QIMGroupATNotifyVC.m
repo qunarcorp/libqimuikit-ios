@@ -333,7 +333,10 @@
     NSString *userName = [userInfo objectForKey:@"Name"];
     NSDictionary *memberInfoDic = @{@"name":userName.length?userName:@"", @"jid":jid.length?jid:@""};
     if (_funBlock!=nil) {
-        
+        [self dismissViewControllerAnimated:YES completion:^{
+            _funBlock(memberInfoDic);
+        }];
+        /*
         if (self.presentingViewController) {
             [self dismissViewControllerAnimated:YES completion:^{
                 _funBlock(memberInfoDic);
@@ -342,11 +345,16 @@
             _funBlock(memberInfoDic);
             [self.navigationController popViewControllerAnimated:YES];
         }
+        */
     }
 }
 
 - (void)atAllAction:(UIButton *)sender {
     if (_funBlock!=nil) {
+        [self dismissViewControllerAnimated:YES completion:^{
+            _funBlock(@{@"name":@"all"});
+        }];
+        /*
         if (self.presentingViewController) {
             [self dismissViewControllerAnimated:YES completion:^{
                 _funBlock(@{@"name":@"all"});
@@ -355,6 +363,7 @@
             _funBlock(@{@"name":@"all"});
             [self.navigationController popViewControllerAnimated:YES];
         }
+        */
     }
 }
 
@@ -363,6 +372,10 @@
 }
 
 -(void)goBack:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:^{
+        _funBlock(@{});
+    }];
+    /*
     if (self.presentingViewController) {
         [self dismissViewControllerAnimated:YES completion:^{
             _funBlock(@{});
@@ -372,6 +385,7 @@
         _funBlock(@{});
         [self.navigationController popViewControllerAnimated:YES];
     }
+    */
 }
 
 @end

@@ -176,7 +176,7 @@
         
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, ([self.rootViewController isKindOfClass:[QIMMainVC class]] ? self.rootViewController.searchBar.height : 0) + appendHeight)];
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            headerView.frame = CGRectMake(0, 0, self.tableView.width, self.searchBar.height + appendHeight);
+            headerView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_leftWidth], self.searchBar.height + appendHeight);
         }
         UIView *logoView = [[UIView alloc] initWithFrame:CGRectMake(0, - self.tableView.height, self.tableView.width, self.tableView.height)];
         [logoView setBackgroundColor:[UIColor qim_colorWithHex:0x787878 alpha:1]];
