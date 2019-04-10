@@ -901,6 +901,7 @@
 }
 
 - (void)initNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadChatData) name:@"reloadMessageChat" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(expandViewItemHandleNotificationHandle:) name:kExpandViewItemHandleNotification object:nil];
     //消息发送成功
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msgDidSendNotificationHandle:) name:kXmppStreamDidSendMessage object:nil];
@@ -965,6 +966,13 @@
         userId = self.chatId;
     }
     [[QIMKit sharedInstance] synchronizeChatSessionWithUserId:userId WithChatType:self.chatType WithRealJid:realJid];
+}
+
+- (void)reloadChatData {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.messageManager.dataSource removeAllObjects];
+        [self.tableView reloadData];
+    });
 }
 
 - (void)forceReloadSingleMessages:(NSNotification *)notify {
@@ -1276,7 +1284,7 @@
                     });
                 }];
             } else {
-                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:0 WihtComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:0                                              WithNeedReload:NO WihtComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.messageManager.dataSource removeAllObjects];
                         [self.messageManager.dataSource addObjectsFromArray:list];
@@ -2174,7 +2182,7 @@
                 });
             }];
         } else {
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:0 WihtComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:0 WithNeedReload:YES WihtComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.messageManager.dataSource removeAllObjects];
                     [self.messageManager.dataSource addObjectsFromArray:list];
@@ -3263,7 +3271,7 @@ static CGPoint tableOffsetPoint;
             }];
         } else {
 
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count WihtComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WihtLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count WithNeedReload:YES WihtComplete:^(NSArray *list) {
                 if (list.count > 0) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         

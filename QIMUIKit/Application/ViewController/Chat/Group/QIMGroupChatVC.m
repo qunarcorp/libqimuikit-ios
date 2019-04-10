@@ -770,6 +770,10 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)initNotifications {
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadChatData) name:@"reloadMessageChat" object:nil];
+
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(expandViewItemHandleNotificationHandle:)
                                                  name:kExpandViewItemHandleNotification
@@ -883,6 +887,13 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     //发送快捷回复
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendQuickReplyContent:) name:kNotificationSendQuickReplyContent object:nil];
+}
+
+- (void)reloadChatData {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.messageManager.dataSource removeAllObjects];
+        [self.tableView reloadData];
+    });
 }
 
 - (void)forceReloadGroupMessages:(NSNotification *)notify {
@@ -1148,6 +1159,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                 WithRealJid:nil
                                                   WihtLimit:kPageCount
                                                  WithOffset:0
+                                             WithNeedReload:NO
                                                WihtComplete:^(NSArray *list) {
                                                    //                                                     [self updateGroupUsersHeadImgForMsgs:list];
                                                    dispatch_async(dispatch_get_main_queue(), ^{
@@ -2275,7 +2287,8 @@ static CGPoint tableOffsetPoint;
 - (void)updateHistoryMessageList:(NSNotification *)notify {
     
     if ([self.chatId isEqualToString:notify.object]) {
-        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WihtLimit:kPageCount WithOffset:0 WihtComplete:^(NSArray *list) {
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WihtLimit:kPageCount WithOffset:0                                             WithNeedReload:YES
+ WihtComplete:^(NSArray *list) {
             [self updateGroupUsersHeadImgForMsgs:list];
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
@@ -2878,6 +2891,7 @@ static CGPoint tableOffsetPoint;
                                         WithRealJid:nil
                                           WihtLimit:kPageCount
                                          WithOffset:(int) weakSelf.messageManager.dataSource.count
+                                     WithNeedReload:YES
                                        WihtComplete:^(NSArray *list) {
                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                CGFloat offsetY = weakSelf.tableView.contentSize.height - weakSelf.tableView.contentOffset.y;
