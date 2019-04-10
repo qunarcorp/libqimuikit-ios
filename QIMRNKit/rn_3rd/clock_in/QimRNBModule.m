@@ -132,9 +132,11 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
     BOOL WorkFeedEntrance = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
     BOOL notNeedShowLeaderInfo = [[[QIMKit sharedInstance] userObjectForKey:@"notNeedShowLeaderInfo"] boolValue];
     BOOL notNeedShowEmailInfo = [[[QIMKit sharedInstance] userObjectForKey:@"notNeedShowEmailInfo"] boolValue];
+    BOOL notNeedShowFriendBtn = [[[QIMKit sharedInstance] userObjectForKey:@"notNeedShowFriendBtn"] boolValue];
+    notNeedShowFriendBtn = YES;
     NSNumber *isShowGroupQRCode = [[QIMKit sharedInstance] userObjectForKey:@"isShowGroupQRCode"];
     NSNumber *isShowLocalQuickSearch = [[QIMKit sharedInstance] userObjectForKey:@"isShowLocalQuickSearch"];
-    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState":@(projectType) /*@([[QIMKit sharedInstance] isMerchant]) */, @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(WorkFeedEntrance), @"notNeedShowLeaderInfo":@(notNeedShowLeaderInfo), @"notNeedShowEmailInfo":@(notNeedShowEmailInfo), @"isShowGroupQRCode": isShowGroupQRCode ?  @([isShowGroupQRCode boolValue]) : @(YES), @"isShowLocalQuickSearch": isShowLocalQuickSearch ? @([isShowLocalQuickSearch boolValue]) : @(YES)}];
+    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState":@(projectType) /*@([[QIMKit sharedInstance] isMerchant]) */, @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(WorkFeedEntrance), @"notNeedShowLeaderInfo":@(notNeedShowLeaderInfo), @"notNeedShowEmailInfo":@(notNeedShowEmailInfo), @"notNeedShowFriendBtn": @(notNeedShowFriendBtn), @"isShowGroupQRCode": isShowGroupQRCode ?  @([isShowGroupQRCode boolValue]) : @(YES), @"isShowLocalQuickSearch": isShowLocalQuickSearch ? @([isShowLocalQuickSearch boolValue]) : @(YES)}];
     QIMVerboseLog(@"AppConfig : %@", appConfig);
     success(appConfig);
 }
@@ -334,7 +336,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
 /**
  内嵌应用JSLocation
  */
-+ (NSURL *)getJsCodeLocation { 
++ (NSURL *)getJsCodeLocation {
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -718,30 +720,6 @@ RCT_EXPORT_METHOD(browseBigHeader:(NSDictionary *)param :(RCTResponseSenderBlock
 RCT_EXPORT_METHOD(openUserChat:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *userId = [param objectForKey:@"UserId"];
-        /*
-        NSString *userId = [param objectForKey:@"UserId"];
-        NSString *name = [param objectForKey:@"Name"];
-        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-        if (!navVC) {
-            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-        }
-        ChatType chatType = [[QIMKit sharedInstance] openChatSessionByUserId:userId];
-        QIMChatVC *chatVC = [[QIMChatVC alloc] init];
-        [chatVC setStype:kSessionType_Chat];
-        [chatVC setChatId:userId];
-        [chatVC setName:name];
-        [chatVC setTitle:name];
-        [chatVC setChatType:chatType];
-        if (chatType == ChatType_Consult) {
-            [chatVC setVirtualJid:userId];
-        }
-        //备注
-        NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
-        [chatVC setTitle:remarkName ? remarkName : name];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-        [navVC popToRootVCThenPush:chatVC animated:YES];
-        */
         [QIMFastEntrance openSingleChatVCByUserId:userId];
     });
 }
@@ -826,7 +804,11 @@ RCT_EXPORT_METHOD(deleteUserFriend:(NSDictionary *)param) {
 @implementation QimRNBModule(GroupCard)
 
 RCT_EXPORT_METHOD(clearImessage:(NSDictionary *)params) {
-    
+    NSString *xmppId = [params objectForKey:@"xmppId"];
+    [[QIMKit sharedInstance] deleteMessageWithXmppId:xmppId];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadMessageChat" object:xmppId];
+    });
 }
 
 // 获取群二维码图片
@@ -1035,6 +1017,11 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
                                                if (finish) {
                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                        [[QIMKit sharedInstance] clearNotReadMsgByGroupId:groupId];
+                                                       UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                                                       if (!navVC) {
+                                                           navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+                                                       }
+                                                       [navVC popToRootViewControllerAnimated:NO];
                                                        [QIMFastEntrance openGroupChatVCByGroupId:groupId];
                                                        /*
                                                        QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
@@ -1239,21 +1226,6 @@ RCT_EXPORT_METHOD(takePhoto) {
 RCT_EXPORT_METHOD(openDeveloperChat) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [QIMFastEntrance openSingleChatVCByUserId:@"lilulucas.li@ejabhost1"];
-        /*
-//        UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-        if (!navVC) {
-            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-        }
-        QIMChatVC *chatVC = [[QIMChatVC alloc] init];
-        [chatVC setStype:kSessionType_Chat];
-        [chatVC setChatId:@"lilulucas.li@ejabhost1"];
-        [chatVC setName:@"李露lucas"];
-        [chatVC setTitle:@"李露lucas"];
-        [chatVC setChatType:ChatType_SingleChat];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-        [navVC popToRootVCThenPush:chatVC animated:YES];
-        */
     });
 }
 
