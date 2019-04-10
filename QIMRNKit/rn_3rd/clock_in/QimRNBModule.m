@@ -339,7 +339,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-//    return [NSURL URLWithString:@"http://100.80.128.187:8081/index.ios.bundle?platform=ios&dev=true"];
+//    return [NSURL URLWithString:@"http://100.80.128.252:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -1789,6 +1789,43 @@ RCT_EXPORT_METHOD(getTripAreaAvailableRoom:(NSDictionary *)params :(RCTResponseS
         if (result.count) {
             callback(@[@{@"ok" : @(YES), @"roomList" : result ? result : @[]}]);
         }
+    }];
+}
+
+RCT_EXPORT_METHOD(getTripCity:(RCTResponseSenderBlock)callback) {
+    [[QIMKit sharedInstance] getAllCityList:^(NSArray *allCitys) {
+        NSMutableArray *array = [NSMutableArray arrayWithCapacity:3];
+        for (NSDictionary *cityDic in allCitys) {
+            NSMutableDictionary *cityNewDic = [NSMutableDictionary dictionaryWithCapacity:2];
+            NSString *cityName = [cityDic objectForKey:@"cityName"];
+            NSString *cityId = [cityDic objectForKey:@"id"];
+            [cityNewDic setQIMSafeObject:cityName forKey:@"CityName"];
+            [cityNewDic setQIMSafeObject:cityId forKey:@"CityId"];
+            [array addObject:cityNewDic];
+        }
+        callback(@[@{@"ok" : @(YES), @"cityList" : array ? array : @[]}]);
+    }];
+}
+
+RCT_EXPORT_METHOD(getNewTripArea:(NSDictionary *)params :(RCTResponseSenderBlock)callback) {
+    [[QIMKit sharedInstance] getAreaByCityId:params :^(NSArray *availableRooms) {
+        NSMutableArray *rooms = [NSMutableArray arrayWithCapacity:3];
+        for (NSDictionary *roomDic in availableRooms) {
+            NSMutableDictionary *roomNewDic = [NSMutableDictionary dictionaryWithCapacity:2];
+            NSString *areaId = [roomDic objectForKey:@"areaID"];
+            NSString *areaName = [roomDic objectForKey:@"areaName"];
+            NSString *eveningEnds = [roomDic objectForKey:@"eveningEnds"];
+            NSString *morningStarts = [roomDic objectForKey:@"morningStarts"];
+            NSString *description = [roomDic objectForKey:@"description"];
+            
+            [roomNewDic setQIMSafeObject:areaId forKey:@"AddressNumber"];
+            [roomNewDic setQIMSafeObject:areaName forKey:@"AddressName"];
+            [roomNewDic setQIMSafeObject:morningStarts forKey:@"rStartTime"];
+            [roomNewDic setQIMSafeObject:eveningEnds forKey:@"rEndTime"];
+
+            [rooms addObject:roomNewDic];
+        }
+        callback(@[@{@"ok" : @(YES), @"areaList" : rooms ? rooms : @[]}]);
     }];
 }
 
