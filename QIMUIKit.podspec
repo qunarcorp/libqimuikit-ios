@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "3.0.1"
+  s.version      = "3.0.2"
   s.summary      = "QIM App UI 9.0+ version"
   s.description  = <<-DESC
                    QIM UI
@@ -103,7 +103,7 @@ Pod::Spec.new do |s|
     rn.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Public/QIMRNKit/**\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/../node_modules\" \"$(PODS_ROOT)/../node_modules/react-native/ReactCommon/yoga\""}
     rn.resource = 'QIMRNKit/QIMRNKit.bundle'
     rn.frameworks = 'UIKit', 'Foundation'
-    rn.dependency 'QIMReactNativeLibrary'
+    rn.dependency 'QIMReactNativeLibrary', '~> 0.54'
   end
   
   s.subspec 'QIMUIKit-NORN' do |norn|
