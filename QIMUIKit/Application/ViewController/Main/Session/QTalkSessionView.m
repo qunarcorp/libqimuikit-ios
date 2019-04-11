@@ -304,21 +304,8 @@
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
 #if __has_include("RNSchemaParse.h")
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CATransition *animation = [CATransition animation];
-        animation.duration = 0.4f;   //时间间隔
-        animation.fillMode = kCAFillModeForwards;
-        animation.type = @"rippleEffect";
-        //动画效果
-        animation.subtype = kCATransitionFromTop;   //动画方向
-#if __has_include("QIMIPadWindowManager.h")
-        UINavigationController *rootNav = [[QIMIPadWindowManager sharedInstance] getLeftMainVcNav];
-        [rootNav.view.layer addAnimation:animation forKey:@"animation"];
-        UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
-        [rootNav.view.layer addAnimation:animation forKey:nil];
-        [rootNav pushViewController:reactVC animated:YES];
-#endif
-    });
+    
+    [QIMFastEntrance openRNSearchVC];
     return NO;
 #endif
     return YES;

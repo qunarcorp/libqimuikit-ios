@@ -757,11 +757,21 @@ static QIMFastEntrance *_sharedInstance = nil;
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
 #if __has_include("QIMIPadWindowManager.h")
-        UINavigationController *rootNav = [[QIMIPadWindowManager sharedInstance] getLeftMainVcNav];
-        [rootNav.view.layer addAnimation:animation forKey:@"animation"];
-        UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
-        [rootNav.view.layer addAnimation:animation forKey:nil];
-        [rootNav pushViewController:reactVC animated:YES];
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            UINavigationController *rootNav = [[QIMIPadWindowManager sharedInstance] getLeftMainVcNav];
+            [rootNav.view.layer addAnimation:animation forKey:@"animation"];
+            UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
+            [rootNav.view.layer addAnimation:animation forKey:nil];
+            [rootNav pushViewController:reactVC animated:YES];
+        } else {
+            [navVC.view.layer addAnimation:animation forKey:@"animation"];
+            UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
+            [navVC.view.layer addAnimation:animation forKey:nil];
+            navVC.delegate = self;
+            [navVC pushViewController:reactVC animated:YES];
+            [navVC setNavigationBarHidden:YES animated:YES];
+            navVC.delegate = nil;
+        }
 #else
         [navVC.view.layer addAnimation:animation forKey:@"animation"];
         UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
