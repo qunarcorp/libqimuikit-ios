@@ -26,7 +26,7 @@
 #import "QIMNavBackBtn.h"
 #import "NSBundle+QIMLibrary.h"
 #if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
-#import "QTalkSuggestRNJumpManager.h"
+#import "QTalkSuggestRNJumpManager.h" 
 #endif
 #import "Toast.h"
 
