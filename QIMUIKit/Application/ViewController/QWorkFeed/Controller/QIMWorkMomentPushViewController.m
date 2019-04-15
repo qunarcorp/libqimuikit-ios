@@ -29,10 +29,12 @@
 #import "MBProgressHUD.h"
 #import "QIMProgressHUD.h"
 #import "QIMEmotionManager.h"
+#import "QTalkTipsView.h"
 #import "QIMWorkFeedAtNotifyViewController.h"
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
+#import <Toast/Toast.h>
 
 @interface QIMWorkMomentPushUserIdentityCell : UITableViewCell
 
@@ -396,7 +398,7 @@
         [alertVc addAction:okAction];
         [self.navigationController presentViewController:alertVc animated:YES completion:nil];
     } else {
-        [self showProgressHUDWithMessage:@"动态上传中..."];
+//        [self showProgressHUDWithMessage:@"动态上传中..."];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self showProgressHUDWithMessage:@"动态上传中..."];
             NSMutableDictionary *momentDic = [NSMutableDictionary dictionaryWithCapacity:3];
@@ -442,11 +444,21 @@
                 QIMVerboseLog(@"momentDic: %@", momentDic);
                 QIMVerboseLog(@"imageList : %@", imageList);
                 [momentDic setObject:@(7) forKey:@"postType"];
-                [[QIMKit sharedInstance] pushNewMomentWithMomentDic:momentDic];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[QIMProgressHUD sharedInstance] closeHUD];
-                });
-                [self goBack:nil];
+                [[QIMKit sharedInstance] pushNewMomentWithMomentDic:momentDic withCallBack:^(BOOL successed) {
+                    if (successed == NO) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self hideProgressHUD:YES];
+                        });
+                        [self goBack:nil];
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self hideProgressHUD:YES];
+                            dispatch_after(3, dispatch_get_main_queue(), ^{
+                               [QTalkTipsView showTips:[NSString stringWithFormat:@"发布驼圈失败，请稍后重试"] InView:self.view];
+                            });
+                        });
+                    }
+                }];
             });
         });
     }
