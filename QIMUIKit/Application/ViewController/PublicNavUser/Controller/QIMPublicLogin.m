@@ -310,6 +310,7 @@ static const int companyTag = 10001;
     } else {
         
     }
+    return YES;
 }
 
 - (void)updateLoginEnable:(BOOL)flag {
