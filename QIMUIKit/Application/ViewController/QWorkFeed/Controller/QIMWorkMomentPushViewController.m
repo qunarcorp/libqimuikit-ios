@@ -445,7 +445,7 @@
                 QIMVerboseLog(@"imageList : %@", imageList);
                 [momentDic setObject:@(7) forKey:@"postType"];
                 [[QIMKit sharedInstance] pushNewMomentWithMomentDic:momentDic withCallBack:^(BOOL successed) {
-                    if (successed == NO) {
+                    if (successed) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self hideProgressHUD:YES];
                         });
