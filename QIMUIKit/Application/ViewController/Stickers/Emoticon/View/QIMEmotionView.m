@@ -380,10 +380,16 @@ static NSString *collectionCellId = @"CollectionCellId";
             NSString *fileName = [[QIMKit sharedInstance] getFileNameFromUrl:fileUrl];
             
             if (fileName || !cell.tag) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionHandleNotification
-                                                                    object:fileUrl];
+                if (self.emotionViewDelegate && [self.emotionViewDelegate respondsToSelector:@selector(didSelectCollectionEmotion:)]) {
+                    [self.emotionViewDelegate didSelectCollectionEmotion:fileUrl];
+                }
+//                [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionHandleNotification
+//                                                                    object:fileUrl];
             } else {
                 if (cell.tag) {
+                    if (self.emotionViewDelegate && [self.emotionViewDelegate respondsToSelector:@selector(didSelectCollectionEmotion:)]) {
+                        [self.emotionViewDelegate didSelectCollectionEmotion:nil];
+                    }
                     [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionNotFoundHandleNotification object:nil];
                 }
             }

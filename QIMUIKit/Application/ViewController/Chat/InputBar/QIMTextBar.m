@@ -1087,6 +1087,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         if (collectionViewBg == nil) {
             collectionViewBg = [[QIMEmotionManagerView alloc] initWithFrame:CGRectMake(0, 0, self.width, 220 - 38.5) WithPkId:kEmotionCollectionPKId];
             collectionViewBg.hidden = YES;
+            collectionViewBg.delegate = self;
             [self.faceViewsDic setObject:collectionViewBg forKey:kEmotionCollectionPKId];
         } else {
             [collectionViewBg removeFromSuperview];
@@ -2067,6 +2068,18 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 - (void)SendTheFaceStr:(NSString *)faceStr withPackageId:(NSString *)packageId {
     if (self.delegate && [self.delegate respondsToSelector:@selector(sendNormalEmotion:WithPackageId:)]) {
         [self.delegate sendNormalEmotion:faceStr WithPackageId:packageId];
+    }
+}
+
+- (void)SendTheCollectionFaceStr:(NSString *)faceStr {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(sendCollectionFaceStr:)]) {
+        [self.delegate sendCollectionFaceStr:faceStr];
+    }
+}
+
+- (void)didSelectFaildCollectionFace {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(clickFaildCollectionFace)]) {
+        [self.delegate clickFaildCollectionFace];
     }
 }
 

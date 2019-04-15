@@ -19,6 +19,8 @@ typedef enum {
 
 - (void)didSelectNormalEmotion:(NSString *)faceName;
 
+- (void)didSelectCollectionEmotion:(NSString *)collectionUrl;
+
 - (void)changePageControlIndex:(NSInteger)pageIndex;
 
 @end
