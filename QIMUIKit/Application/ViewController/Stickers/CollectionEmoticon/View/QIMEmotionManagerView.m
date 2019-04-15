@@ -84,6 +84,18 @@
     }
 }
 
+- (void)didSelectCollectionEmotion:(NSString *)fileUrl {
+    if (fileUrl.length > 0) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(SendTheCollectionFaceStr:)]) {
+            [self.delegate SendTheCollectionFaceStr:fileUrl];
+        }
+    } else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectFaildCollectionFace)]) {
+            [self.delegate didSelectFaildCollectionFace];
+        }
+    }
+}
+
 - (void)changePageControlIndex:(NSInteger)pageIndex {
     self.pageControl.currentPage = pageIndex;
 }

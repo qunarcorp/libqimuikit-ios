@@ -38,6 +38,8 @@ typedef enum {
 - (void)sendText:(NSString *)text;
 - (void)emptyText:(NSString *)text;
 - (void)sendNormalEmotion:(NSString *)faceStr WithPackageId:(NSString *)packageId;
+- (void)sendCollectionFaceStr:(NSString *)faceStr;
+- (void)clickFaildCollectionFace;
 @optional
 - (void)sendImageUrl:(NSString *)imageUrl;
 - (void)sendImageData:(NSData *)imageData;
