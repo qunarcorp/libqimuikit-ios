@@ -66,7 +66,7 @@
 
 - (void)setUserIdentityReplaceable:(BOOL)replaceable {
     if (replaceable == YES) {
-        self.replaceBtn.frame = CGRectMake(SCREEN_WIDTH - 90, self.contentView.bottom - 30, 80, 15);
+        self.replaceBtn.frame = CGRectMake(SCREEN_WIDTH - 90, self.contentView.bottom - 30, 90, 30);
         [self.contentView addSubview:self.replaceBtn];
         self.replaceBtn.enabled = YES;
     } else {

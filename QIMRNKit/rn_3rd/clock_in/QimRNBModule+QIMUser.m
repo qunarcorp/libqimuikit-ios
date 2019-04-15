@@ -14,12 +14,14 @@
     NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
     NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
     NSString *headerSrc = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:userId];
+    NSString *mood = [userInfo objectForKey:@"Mood"];
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
     [properties setObject:userId forKey:@"UserId"];
     [properties setObject:[userInfo objectForKey:@"Name"]?[userInfo objectForKey:@"Name"]:[userId componentsSeparatedByString:@"@"].firstObject forKey:@"Name"];
     [properties setObject:headerSrc?headerSrc:@"" forKey:@"HeaderUri"];
     [properties setObject:remarkName?remarkName:@"" forKey:@"Remarks"];
     [properties setObject:[userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"" forKey:@"Department"];
+    [properties setObject:mood ? mood : @"这家伙很懒,什么都没留下" forKey:@"Mood"];
     return properties;
 }
 

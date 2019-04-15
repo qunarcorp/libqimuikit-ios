@@ -156,14 +156,14 @@ CGFloat maxLimitHeight = 0;
     layout.itemSize = CGSizeMake(34, 17);
     layout.minimumLineSpacing = 10;
     layout.minimumInteritemSpacing = 10;
-    _tagCollectionView = [[QIMWorkMomentTagCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+//    _tagCollectionView = [[QIMWorkMomentTagCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
 //    [self.contentView addSubview:_tagCollectionView];
     
     _controlBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        _controlBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 15 - 19, _nameLab.top, 19, 19);
+        _controlBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 15 - 25, _nameLab.top, 28, 30);
     } else {
-        _controlBtn.frame = CGRectMake(SCREEN_WIDTH - 15 - 19, _nameLab.top, 19, 19);
+        _controlBtn.frame = CGRectMake(SCREEN_WIDTH - 15 - 25, _nameLab.top, 28, 30);
     }
     [_controlBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1cd" size:28 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
     _controlBtn.centerY = _nameLab.centerY;

@@ -339,7 +339,6 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-//    return [NSURL URLWithString:@"http://100.80.128.252:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -613,7 +612,7 @@ RCT_EXPORT_METHOD(getUserLead:(NSString *)userId :(RCTResponseSenderBlock)callba
         NSDictionary *properties = [QimRNBModule qimrn_getUserLeaderInfoByUserId:userId];
         callback(@[@{@"UserInfo":properties ? properties : @{}}]);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[QIMKit sharedInstance] getRemoteUserWorkInfoWithUserId:userId];
+            [[QIMKit sharedInstance] getRemoteUserWorkInfoWithUserId:userId withCallBack:nil];
         });
     }
 }
@@ -633,38 +632,39 @@ RCT_EXPORT_METHOD(showUserPhoneNumber:(NSDictionary *)param) {
     NSString *userId = [[[param objectForKey:@"UserId"] componentsSeparatedByString:@"@"] firstObject];
     if (!showNumberId) {
         showNumberId = userId;
-        NSString *phoneNumberStr = [[QIMKit sharedInstance] getPhoneNumberWithUserId:userId];
-        if (phoneNumberStr.length > 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSString *message = [NSString stringWithFormat:@"手机号:%@", phoneNumberStr];
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *copyAction = [UIAlertAction actionWithTitle:@"复制" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    [[UIPasteboard generalPasteboard] setString:phoneNumberStr];
-                    showNumberId = nil;
-                }];
-                UIAlertAction *telAction = [UIAlertAction actionWithTitle:@"呼叫" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"tel:%@", phoneNumberStr]];
-                    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-                        [[UIApplication sharedApplication] openURL:url];
+        [[QIMKit sharedInstance] getPhoneNumberWithUserId:userId withCallBack:^(NSString *phoneNumberStr) {
+            if (phoneNumberStr.length > 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *message = [NSString stringWithFormat:@"手机号:%@", phoneNumberStr];
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction *copyAction = [UIAlertAction actionWithTitle:@"复制" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        [[UIPasteboard generalPasteboard] setString:phoneNumberStr];
                         showNumberId = nil;
-                    } else {
-                        QIMVerboseLog(@"当前设备不支持呼叫");
-                        showNumberId = nil;
-                    }
-                }];
-                [alert addAction:copyAction];
-                [alert addAction:telAction];
-//                UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-                UIViewController *rootVc = [[UIApplication sharedApplication] visibleViewController];
-                [rootVc presentViewController:alert animated:YES completion:nil];
-            });
-        } else {
-            showNumberId = nil;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"没有查询到相应记录" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                [alert show];
-            });
-        }
+                    }];
+                    UIAlertAction *telAction = [UIAlertAction actionWithTitle:@"呼叫" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"tel:%@", phoneNumberStr]];
+                        if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                            [[UIApplication sharedApplication] openURL:url];
+                            showNumberId = nil;
+                        } else {
+                            QIMVerboseLog(@"当前设备不支持呼叫");
+                            showNumberId = nil;
+                        }
+                    }];
+                    [alert addAction:copyAction];
+                    [alert addAction:telAction];
+                    //                UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
+                    UIViewController *rootVc = [[UIApplication sharedApplication] visibleViewController];
+                    [rootVc presentViewController:alert animated:YES completion:nil];
+                });
+            } else {
+                showNumberId = nil;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"没有查询到相应记录" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alert show];
+                });
+            }
+        }];
     }
 }
 
@@ -672,7 +672,6 @@ RCT_EXPORT_METHOD(showUserPhoneNumber:(NSDictionary *)param) {
 RCT_EXPORT_METHOD(sendEmail:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *userId = [param objectForKey:@"UserId"];
-//        UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];

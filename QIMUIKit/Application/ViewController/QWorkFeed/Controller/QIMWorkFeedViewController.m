@@ -574,4 +574,9 @@
     [self.navigationController pushViewController:msgVc animated:YES];
 }
 
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    [[SDImageCache sharedImageCache] clearMemory];
+}
+
 @end

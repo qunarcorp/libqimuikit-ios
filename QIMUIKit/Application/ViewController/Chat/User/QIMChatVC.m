@@ -116,6 +116,7 @@
 #import "MJRefreshNormalHeader.h"
 #import "QIMRobotAnswerCell.h"
 #import "QIMSearchRemindView.h"
+#import "YYModel.h"
 
 #if __has_include("QIMNotifyManager.h")
 
@@ -3041,13 +3042,10 @@
                 NSString *originMsg = [[QIMOriginMessageParser shareParserOriginMessage] getOriginPBMessageWithMsgId:msg.messageId];
                 if (originMsg.length > 0) {
                     [[UIPasteboard generalPasteboard] setString:originMsg];
+                } else {
+                    NSString *modelStr = [msg yy_modelToJSONString];
+                    [[UIPasteboard generalPasteboard] setString:modelStr];
                 }
-                /*
-                NSDictionary *originMsgDic = [[QIMOriginMessageParser shareParserOriginMessage] getOriginMessageWithMsgId:msg.messageId];
-                NSString *originMsgStr = [[QIMJSONSerializer sharedInstance] serializeObject:originMsgDic];
-                if (originMsgStr.length > 0) {
-                    [[UIPasteboard generalPasteboard] setString:originMsgStr];
-                } */
             }
         }
     }

@@ -179,7 +179,7 @@
     NSDictionary *userLeaderInfo = [QimRNBModule qimrn_getUserLeaderInfoByUserId:userId];
     if (userId.length > 0 && userLeaderInfo.count > 0) {
         QIMVerboseLog(@"updateLeaderInfo : %@", userLeaderInfo);
-        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateLeader" body:@{@"LeaderInfo":userLeaderInfo ? userLeaderInfo : @{}}];
+        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateLeader" body:@{@"LeaderInfo":userLeaderInfo ? userLeaderInfo : @{}, @"UserId": userId ? userId : @""}];
     }
 }
 

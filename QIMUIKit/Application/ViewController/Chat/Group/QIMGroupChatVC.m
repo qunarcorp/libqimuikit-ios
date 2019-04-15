@@ -25,6 +25,7 @@
 #import "QIMOriginMessageParser.h"
 #import "QIMOrganizationalVC.h"
 #import "QIMMenuImageView.h"
+#import "YYModel.h"
 
 #import "QIMVoiceRecordingView.h"
 
@@ -2040,6 +2041,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                 NSString *originMsg = [[QIMOriginMessageParser shareParserOriginMessage] getOriginPBMessageWithMsgId:msg.messageId];
                 if (originMsg.length > 0) {
                     [[UIPasteboard generalPasteboard] setString:originMsg];
+                } else {
+                    NSString *modelStr = [msg yy_modelToJSONString];
+                    [[UIPasteboard generalPasteboard] setString:modelStr];
                 }
             }
         }

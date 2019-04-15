@@ -313,19 +313,19 @@ static NSString *__default_ua = nil;
             NSString *quserId = [QIMKit getLastUserName];
             [qckeyCookieProperties setObject:qckey forKey:NSHTTPCookieValue];
             [qckeyCookieProperties setObject:@"q_ckey" forKey:NSHTTPCookieName];
-            [qckeyCookieProperties setObject:@".qunar.com" forKey:NSHTTPCookieDomain];
+            [qckeyCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
             [qckeyCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
             
             [quCookieProperties setObject:quserId forKey:NSHTTPCookieValue];
             [quCookieProperties setObject:@"q_u" forKey:NSHTTPCookieName];
-            [quCookieProperties setObject:@".qunar.com" forKey:NSHTTPCookieDomain];
+            [quCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [quCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
             [quCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
             
             [qnmCookieProperties setObject:quserId forKey:NSHTTPCookieValue];
             [qnmCookieProperties setObject:@"q_nm" forKey:NSHTTPCookieName];
-            [qnmCookieProperties setObject:@".qunar.com" forKey:NSHTTPCookieDomain];
+            [qnmCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [qnmCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
             [qnmCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
             
@@ -344,7 +344,7 @@ static NSString *__default_ua = nil;
             NSString *qckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
             [qckeyCookieProperties setObject:qckey forKey:NSHTTPCookieValue];
             [qckeyCookieProperties setObject:@"q_ckey" forKey:NSHTTPCookieName];
-            [qckeyCookieProperties setObject:@".qunar.com" forKey:NSHTTPCookieDomain];
+            [qckeyCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
             [qckeyCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
             NSHTTPCookie*qckeyCookie = [NSHTTPCookie cookieWithProperties:qckeyCookieProperties];
@@ -363,7 +363,7 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *qcookieProperties = [NSMutableDictionary dictionary];
                 [qcookieProperties setQIMSafeObject:@"_q" forKey:NSHTTPCookieName];
                 [qcookieProperties setQIMSafeObject:qCookie forKey:NSHTTPCookieValue];
-                [qcookieProperties setQIMSafeObject:@".qunar.com"forKey:NSHTTPCookieDomain];
+                [qcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost]forKey:NSHTTPCookieDomain];
                 [qcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
                 [qcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
@@ -373,7 +373,7 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *vcookieProperties = [NSMutableDictionary dictionary];
                 [vcookieProperties setObject:@"_v" forKey:NSHTTPCookieName];
                 [vcookieProperties setQIMSafeObject:vCookie forKey:NSHTTPCookieValue];
-                [vcookieProperties setObject:@".qunar.com"forKey:NSHTTPCookieDomain];
+                [vcookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [vcookieProperties setObject:@"/" forKey:NSHTTPCookiePath];
                 [vcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
                 
@@ -383,7 +383,7 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *tcookieProperties = [NSMutableDictionary dictionary];
                 [tcookieProperties setQIMSafeObject:@"_t" forKey:NSHTTPCookieName];
                 [tcookieProperties setQIMSafeObject:tCookie forKey:NSHTTPCookieValue];
-                [tcookieProperties setQIMSafeObject:@".qunar.com"forKey:NSHTTPCookieDomain];
+                [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [tcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
                 [tcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
@@ -398,13 +398,13 @@ static NSString *__default_ua = nil;
             
             [ucookieProperties setObject:u forKey:NSHTTPCookieValue];
             [ucookieProperties setObject:@"_u" forKey:NSHTTPCookieName];
-            [ucookieProperties setValue:@".qunar.com" forKey:NSHTTPCookieDomain];
+            [ucookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [ucookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
             [ucookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
             
             [kcookieProperties setObject:k forKey:NSHTTPCookieValue];
             [kcookieProperties setObject:@"_k" forKey:NSHTTPCookieName];
-            [kcookieProperties setValue:@".qunar.com" forKey:NSHTTPCookieDomain];
+            [kcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [kcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
             [kcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
             
@@ -419,7 +419,7 @@ static NSString *__default_ua = nil;
             
             [dcookieProperties setObject:domain forKey:NSHTTPCookieValue];
             [dcookieProperties setObject:@"q_d" forKey:NSHTTPCookieName];
-            [dcookieProperties setValue:@".qunar.com" forKey:NSHTTPCookieDomain];
+            [dcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [dcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
             [dcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
             
@@ -437,7 +437,7 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *qcookieProperties = [NSMutableDictionary dictionary];
                 [qcookieProperties setQIMSafeObject:@"_q" forKey:NSHTTPCookieName];
                 [qcookieProperties setQIMSafeObject:qCookie forKey:NSHTTPCookieValue];
-                [qcookieProperties setQIMSafeObject:@".qunar.com"forKey:NSHTTPCookieDomain];
+                [qcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [qcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
                 [qcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
@@ -447,7 +447,7 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *vcookieProperties = [NSMutableDictionary dictionary];
                 [vcookieProperties setObject:@"_v" forKey:NSHTTPCookieName];
                 [vcookieProperties setQIMSafeObject:vCookie forKey:NSHTTPCookieValue];
-                [vcookieProperties setObject:@".qunar.com"forKey:NSHTTPCookieDomain];
+                [vcookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [vcookieProperties setObject:@"/" forKey:NSHTTPCookiePath];
                 [vcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
                 
@@ -457,7 +457,7 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *tcookieProperties = [NSMutableDictionary dictionary];
                 [tcookieProperties setQIMSafeObject:@"_t" forKey:NSHTTPCookieName];
                 [tcookieProperties setQIMSafeObject:tCookie forKey:NSHTTPCookieValue];
-                [tcookieProperties setQIMSafeObject:@".qunar.com"forKey:NSHTTPCookieDomain];
+                [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [tcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
                 [tcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
@@ -469,7 +469,7 @@ static NSString *__default_ua = nil;
                 
                 [dcookieProperties setObject:domain forKey:NSHTTPCookieValue];
                 [dcookieProperties setObject:@"q_d" forKey:NSHTTPCookieName];
-                [dcookieProperties setValue:@".qunar.com" forKey:NSHTTPCookieDomain];
+                [dcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [dcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
                 [dcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
                 NSHTTPCookie *dcookie = [NSHTTPCookie cookieWithProperties:dcookieProperties];
@@ -482,7 +482,7 @@ static NSString *__default_ua = nil;
                 
                 [dcookieProperties setObject:domain forKey:NSHTTPCookieValue];
                 [dcookieProperties setObject:@"q_d" forKey:NSHTTPCookieName];
-                [dcookieProperties setValue:@".qunar.com" forKey:NSHTTPCookieDomain];
+                [dcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [dcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
                 [dcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
                 
@@ -490,7 +490,7 @@ static NSString *__default_ua = nil;
                 NSString *qckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
                 [qckeyCookieProperties setObject:qckey forKey:NSHTTPCookieValue];
                 [qckeyCookieProperties setObject:@"q_ckey" forKey:NSHTTPCookieName];
-                [qckeyCookieProperties setObject:@".qunar.com" forKey:NSHTTPCookieDomain];
+                [qckeyCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
                 [qckeyCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
                 
