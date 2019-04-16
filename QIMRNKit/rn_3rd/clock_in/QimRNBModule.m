@@ -339,6 +339,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
+    return [NSURL URLWithString:@"http://100.80.128.202:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -1774,14 +1775,15 @@ RCT_EXPORT_METHOD(getTripAreaAvailableRoom:(NSDictionary *)params :(RCTResponseS
             NSString *roomName = [roomInfo objectForKey:@"roomName"];
             NSInteger capacity = [[roomInfo objectForKey:@"capacity"] integerValue];
             NSString *description = [roomInfo objectForKey:@"description"];
-            BOOL canUse = [roomInfo objectForKey:@"canUse"];
+            BOOL canUse = [[roomInfo objectForKey:@"canUse"] boolValue];
             NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
             [dic setQIMSafeObject:@(areaId) forKey:@"AddressNumber"];
             [dic setQIMSafeObject:roomName forKey:@"RoomName"];
             [dic setQIMSafeObject:@(roomId) forKey:@"RoomNumber"];
             [dic setQIMSafeObject:description forKey:@"RoomDetails"];
             [dic setQIMSafeObject:@(capacity) forKey:@"RoomCapacity"];
-            if (canUse) {
+            if (canUse == 0) {
+//                "canUse": 0//是否可用0:可用;1:不可用
                 [result addObject:dic];
             }
         }
