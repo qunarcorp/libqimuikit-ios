@@ -1774,14 +1774,14 @@ RCT_EXPORT_METHOD(getTripAreaAvailableRoom:(NSDictionary *)params :(RCTResponseS
             NSString *roomName = [roomInfo objectForKey:@"roomName"];
             NSInteger capacity = [[roomInfo objectForKey:@"capacity"] integerValue];
             NSString *description = [roomInfo objectForKey:@"description"];
-            BOOL canUse = [roomInfo objectForKey:@"canUse"];
+            NSInteger canUse = [[roomInfo objectForKey:@"canUse"] integerValue];
             NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
             [dic setQIMSafeObject:@(areaId) forKey:@"AddressNumber"];
             [dic setQIMSafeObject:roomName forKey:@"RoomName"];
             [dic setQIMSafeObject:@(roomId) forKey:@"RoomNumber"];
             [dic setQIMSafeObject:description forKey:@"RoomDetails"];
             [dic setQIMSafeObject:@(capacity) forKey:@"RoomCapacity"];
-            if (canUse) {
+            if (canUse == 0) {
                 [result addObject:dic];
             }
         }
