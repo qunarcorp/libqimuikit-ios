@@ -505,21 +505,24 @@ static UIImage *__rightBallocImage = nil;
         case MA_Collection: {
             for (QIMImageStorage * imageStorage in self.textContainer.textStorages) {
                 
+                
                 if (![imageStorage isKindOfClass:[QIMImageStorage class]]) {
                     
                     return;
                 } else {
-                    NSURL *imageUrl = imageStorage.imageURL;
-                    [[QIMKit sharedInstance] getPermUrlWithTempUrl:[imageUrl absoluteString] PermHttpUrl:^(NSString *httpPermUrl) {
-                        QIMVerboseLog(@"收藏表情后的地址为 : %@", httpPermUrl);
-                        if (![httpPermUrl containsString:@"null"] && httpPermUrl.length > 0) {
-                            [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:httpPermUrl];
-                        } else {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionUpdateHandleFailedNotification object:nil];
-                            });
+                    
+                    NSString *imageUrl = imageStorage.imageURL.absoluteString;
+                    QIMVerboseLog(@"收藏表情后的地址为 : %@", imageUrl);
+                    if (![imageUrl containsString:@"null"] && imageUrl.length > 0) {
+                        if (![imageUrl qim_hasPrefixHttpHeader]) {
+                            imageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrl];
                         }
-                    }];
+                        [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:imageUrl];
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionUpdateHandleFailedNotification object:nil];
+                        });
+                    }
                 }
             }
         }
