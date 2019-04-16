@@ -74,4 +74,9 @@ RCT_EXPORT_METHOD(openScan:(NSDictionary *)param) {
     [QIMFastEntrance openQRCodeVC];
 }
 
+//获取发现页应用列表
+RCT_EXPORT_METHOD(getFoundInfo:(RCTResponseSenderBlock)callback) {
+    callback(@[@""]);
+}
+
 @end
