@@ -1856,8 +1856,8 @@ RCT_EXPORT_METHOD(createTrip:(NSDictionary *)params :(RCTResponseSenderBlock)cal
     [newParam setObject:newMemberList forKey:@"memberList"];
     [newParam setObject:@(111) forKey:@"updateTime"];
     [newParam setObject:[[QIMKit sharedInstance] getLastJid] forKey:@"tripInviter"];
-    [[QIMKit sharedInstance] createTrip:newParam callBack:^(BOOL success) {
-        callback(@[@{@"ok" : @(success)}]);
+    [[QIMKit sharedInstance] createTrip:newParam callBack:^(BOOL success, NSString *errMsg) {
+        callback(@[@{@"ok" : @(success), @"errMsg":errMsg?errMsg:@""}]);
     }];
 }
 
