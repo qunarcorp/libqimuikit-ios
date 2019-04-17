@@ -1114,7 +1114,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
             if (self.fastMsgTimeStamp > 0) {
-                [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil FromTimeStamp:self.fastMsgTimeStamp WithComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId FromTimeStamp:self.fastMsgTimeStamp WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
                         //标记已读
