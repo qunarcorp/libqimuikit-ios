@@ -1208,19 +1208,24 @@
         realJid = self.chatId;
     } else {
         userId = self.chatId;
+        realJid = self.chatId;
     }
     [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:realJid FromTimeStamp:_readedMsgTimeStamp WithComplete:^(NSArray *list) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.messageManager.dataSource removeAllObjects];
-            [self.messageManager.dataSource addObjectsFromArray:list];
-            [weakSelf checkAddNewMsgTag];
-            [_tableView reloadData];
+        if (list.count) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.messageManager.dataSource removeAllObjects];
+                [self.messageManager.dataSource addObjectsFromArray:list];
+                [weakSelf checkAddNewMsgTag];
+                [_tableView reloadData];
+                [weakSelf hiddenNotReadTipView];
+                [weakSelf addImageToImageList];
+                if (self.messageManager.dataSource.count > 0) {
+                    [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:(0) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+                }
+            });
+        } else {
             [weakSelf hiddenNotReadTipView];
-            [weakSelf addImageToImageList];
-            if (self.messageManager.dataSource.count > 0) {
-                [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:(0) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            }
-        });
+        }
     }];
 }
 
