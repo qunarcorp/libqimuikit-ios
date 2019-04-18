@@ -18,8 +18,8 @@
 
 typedef enum {
     QIMAppTypeInner = 1,    //内部应用
-    QIMAppExternal, //外部App
-    QIMAppTypeH5,   //H5 App
+    QIMAppExternal = 2, //外部App
+    QIMAppTypeH5 = 3,   //H5 App
 } QIMAppType;
 
 static RCTBridge *__innerCacheBridge = nil;

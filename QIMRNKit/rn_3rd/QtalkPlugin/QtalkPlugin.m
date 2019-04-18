@@ -9,6 +9,7 @@
 
 #import "QtalkPlugin.h"
 #import "QIMFastEntrance.h"
+#import "QIMJSONSerializer.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTBridge.h>
@@ -76,7 +77,66 @@ RCT_EXPORT_METHOD(openScan:(NSDictionary *)param) {
 
 //获取发现页应用列表
 RCT_EXPORT_METHOD(getFoundInfo:(RCTResponseSenderBlock)callback) {
-    callback(@[@""]);
+    NSString *foundListStr = [[QIMKit sharedInstance] getLocalFoundNavigation];
+    NSArray *foundList = [[QIMJSONSerializer sharedInstance] deserializeObject:foundListStr error:nil];
+    NSMutableArray *mutableGroupItems = [NSMutableArray arrayWithCapacity:3];
+    NSMutableDictionary *mutableResult = [NSMutableDictionary dictionaryWithCapacity:1];
+    
+    for (NSDictionary *groupItemDic in foundList) {
+        
+        NSMutableDictionary *newGroupDic = [NSMutableDictionary dictionaryWithCapacity:2];
+        
+        NSInteger groupId = [[groupItemDic objectForKey:@"groupId"] integerValue];
+        NSString *groupName = [groupItemDic objectForKey:@"groupName"];
+        NSString *groupIcon = [groupItemDic objectForKey:@"groupIcon"];
+        NSArray *groupItems = [groupItemDic objectForKey:@"members"];
+        
+        [newGroupDic setObject:@(groupId) forKey:@"groupId"];
+        [newGroupDic setObject:groupName forKey:@"groupName"];
+        [newGroupDic setObject:groupIcon forKey:@"groupIcon"];
+
+        
+        NSMutableArray *newGroupItems = [NSMutableArray arrayWithCapacity:3];
+        if ([groupItems isKindOfClass:[NSArray class]]) {
+            for (NSDictionary *childItemDic in groupItems) {
+                NSInteger appType = [[childItemDic objectForKey:@"appType"] integerValue];
+                NSString *bundle = [childItemDic objectForKey:@"bundle"];
+                NSString *bundleUrls = [childItemDic objectForKey:@"bundleUrls"];
+                NSString *entrance = [childItemDic objectForKey:@"entrance"];
+                NSString *memberAction = [childItemDic objectForKey:@"memberAction"];
+                NSString *memberIcon = [childItemDic objectForKey:@"memberIcon"];
+                NSInteger memberId = [childItemDic objectForKey:@"memberId"];
+                NSString *memberName = [childItemDic objectForKey:@"memberName"];
+                NSString *module = [childItemDic objectForKey:@"module"];
+                NSString *navTitle = [childItemDic objectForKey:@"navTitle"];
+                NSString *properties = [childItemDic objectForKey:@"properties"];
+                BOOL showNativeNav = [[childItemDic objectForKey:@"showNativeNav"] boolValue];
+                
+                NSMutableDictionary *newChildItemDic = [NSMutableDictionary dictionaryWithCapacity:3];
+                [newChildItemDic setObject:[NSString stringWithFormat:@"%ld", appType] forKey:@"AppType"];
+                [newChildItemDic setObject:bundle forKey:@"Bundle"];
+                [newChildItemDic setObject:bundleUrls forKey:@"BundleUrls"];
+                [newChildItemDic setObject:entrance forKey:@"Entrance"];
+                [newChildItemDic setObject:memberAction forKey:@"memberAction"];
+                [newChildItemDic setObject:memberIcon forKey:@"memberIcon"];
+                [newChildItemDic setObject:@(memberId) forKey:@"memberId"];
+                [newChildItemDic setObject:memberName forKey:@"memberName"];
+                [newChildItemDic setObject:module forKey:@"Module"];
+                [newChildItemDic setObject:navTitle forKey:@"navTitle"];
+                [newChildItemDic setObject:properties forKey:@"appParams"];
+                [newChildItemDic setObject:@(showNativeNav) forKey:@"showNativeNav"];
+                
+                [newGroupItems addObject:newChildItemDic];
+            }
+            [newGroupDic setObject:newGroupItems forKey:@"members"];
+            [mutableGroupItems addObject:newGroupDic];
+        }
+        [mutableResult setObject:@(YES) forKey:@"isOk"];
+        [mutableResult setObject:mutableGroupItems forKey:@"data"];
+    }
+    callback(@[mutableResult ? mutableResult : @{}]);
+
+    NSLog(@"foundList : %@", foundListStr);
 }
 
 @end
