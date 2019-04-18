@@ -149,8 +149,16 @@
         UIImageView *pcIconView = [[UIImageView alloc] initWithFrame:CGRectMake(18, 8, 24, 24)];
         pcIconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f491" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]];
         [_otherPlatformView addSubview:pcIconView];
-        UILabel *pcTipLabel = [[UILabel alloc] initWithFrame:CGRectMake(pcIconView.right + 24, 10, 108, 20)];
-        pcTipLabel.text = @"桌面QTalk已登录";
+        UILabel *pcTipLabel = [[UILabel alloc] initWithFrame:CGRectMake(pcIconView.right + 24, 10, 300, 20)];
+        NSString *platTitle = @"QTalk";
+        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            platTitle = @"QTalk";
+        } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+            platTitle = @"QChat";
+        } else {
+            platTitle = @"Startalk";
+        }
+        pcTipLabel.text = [NSString stringWithFormat:@"桌面%@已登录", platTitle];
         pcTipLabel.textColor = [UIColor qim_colorWithHex:0x616161];
         pcTipLabel.font = [UIFont systemFontOfSize:14];
         [_otherPlatformView addSubview:pcTipLabel];

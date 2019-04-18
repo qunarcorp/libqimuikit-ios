@@ -391,6 +391,7 @@ static const int companyTag = 10001;
             make.right.mas_equalTo(self.userNameTextField.mas_right);
             make.height.mas_equalTo(1);
         }];
+        [self updateLoginUI];
     } else {
         
         //第一次登录，展示公司TextField，不展示切换公司按钮
