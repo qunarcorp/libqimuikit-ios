@@ -93,7 +93,7 @@
             headerUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], headerUrl];
         } else {
 
-            if (!headerUrl.length && (jid || realJid)) {
+            if (!headerUrl.length && ![headerUrl isEqualToString:@""] && (jid || realJid)) {
                 if (chatType == ChatType_GroupChat) {
                     [[QIMKit sharedInstance] updateGroupCard:@[jid]];
                 } else if (chatType == ChatType_ConsultServer) {
