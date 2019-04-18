@@ -173,7 +173,6 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
             BOOL check = [[QIMRNExternalAppManager sharedInstance] checkQIMRNExternalAppWithBundleName:bundleName BundleVersion:bundleVersion];
             if (check) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-//                    UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
                     UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
                     if (!navVC) {
                         navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
@@ -191,7 +190,6 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
                         [[QIMProgressHUD sharedInstance] closeHUD];
                     });
                     dispatch_async(dispatch_get_main_queue(), ^{
-//                        UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
                         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
                         if (!navVC) {
                             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
@@ -208,15 +206,26 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
             }
         }
             break;
+        case QIMAppTypeH5: {
+            NSString *webUrl = [params objectForKey:@"memberAction"];
+            BOOL shownav = [[params objectForKey:@"showNativeNav"] boolValue];
+            if (webUrl.length > 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   [QIMFastEntrance openWebViewForUrl:webUrl showNavBar:shownav];
+                });
+            }
+        }
+            break;
         default: {
+            /*
             dispatch_async(dispatch_get_main_queue(), ^{
-//                UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
                 UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
                 if (!navVC) {
                     navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
                 }
                 [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:YES WithBundleName:bundleName WithModule:moduleName WithProperties:properties];
             });
+            */
         }
             break;
     }
@@ -339,7 +348,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-//    return [NSURL URLWithString:@"http://100.80.128.202:8081/index.ios.bundle?platform=ios&dev=true"];
+    return [NSURL URLWithString:@"http://100.80.128.202:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
