@@ -97,12 +97,14 @@
 "Setting_tab_Help" = "Help & Feedback";
 "Setting_tab_aboutQTalk" = "About QTalk";
 "Setting_tab_aboutQChat" = "About QChat";
+"Setting_tab_aboutStartalk" = "About Startalk";
 "Setting_tab_Logout" = "Logout";
 
 //About Tab
 
 "About_nav_title_QTalk" = "About QTalk";
 "About_nav_title_QChat" = "About QChat";
+"About_nav_title_Startalk" = "About Startalk";
 "About_nav_back" = "Back";
 "About_tab_rate" = "Rate";
 "About_tab_function" = "功能介绍";

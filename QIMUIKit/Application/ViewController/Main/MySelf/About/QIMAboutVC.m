@@ -98,7 +98,7 @@
 #if __has_include("QIMLocalLog.h")
     QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
     if (logType == QIMLocalLogTypeOpened) {
-        [_dataSource addObject:@"isLogging"];
+//        [_dataSource addObject:@"isLogging"];
         [_dataSource addObject:@"Instruments"];
       }
 #endif
@@ -249,7 +249,7 @@
         UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"确认开始记录App性能数据吗？再次点击屏幕五下关闭！！！" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIAlertActionStyleCancel handler:nil];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [weakSelf.dataSource addObject:@"isLogging"];
+//            [weakSelf.dataSource addObject:@"isLogging"];
             //发送日志(本地数据库,UserDefault, 本地QIMVerboseLog日志)
             [weakSelf.dataSource addObject:@"Instruments"];
             [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
@@ -272,8 +272,10 @@
     
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
         self.title = [NSBundle qim_localizedStringForKey:@"About_nav_title_QTalk"];
+    } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+        self.title  =[NSBundle qim_localizedStringForKey:@"About_nav_title_QChat"];
     } else {
-        self.title = [NSBundle qim_localizedStringForKey:@"About_nav_title_QChat"];
+        self.title = [NSBundle qim_localizedStringForKey:@"About_nav_title_Startalk"];
     }
     self.navigationController.navigationBar.translucent = NO;
 }

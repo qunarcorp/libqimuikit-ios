@@ -126,6 +126,7 @@
 //About
 "About_nav_title_QTalk" = "关于QTalk";
 "About_nav_title_QChat" = "关于QChat";
+"About_nav_title_Startalk" = "关于Startalk";
 "About_nav_back" = "返回";
 "About_tab_rate" = "去评分";
 "About_tab_function" = "功能介绍";
