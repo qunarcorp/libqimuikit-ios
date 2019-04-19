@@ -70,9 +70,14 @@ RCT_EXPORT_METHOD(openFileTransfer:(NSDictionary *)param) {
     [[QIMFastEntrance sharedInstance] openFileTransMiddleVC];
 }
 
-//打开行程
+//打开扫一扫
 RCT_EXPORT_METHOD(openScan:(NSDictionary *)param) {
     [QIMFastEntrance openQRCodeVC];
+}
+
+//打开行程
+RCT_EXPORT_METHOD(openTravelCalendar:(NSDictionary *)param) {
+    [QIMFastEntrance openTravelCalendarVc];
 }
 
 //获取发现页应用列表

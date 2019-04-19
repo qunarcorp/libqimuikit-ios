@@ -183,7 +183,14 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
                             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
                         }
                         NSDictionary *rnProperties = [[QIMJSONSerializer sharedInstance] deserializeObject:properties error:nil];
-                        [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:rnProperties];
+                        @try {
+                            [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:rnProperties];
+                        } @catch (NSException *exception) {
+                            QIMVerboseLog(@"exception1 - %@", exception);
+                        } @finally {
+                            QIMVerboseLog(@"finally -");
+                        }
+                        
                     });
                 } else {
                     //Download
@@ -201,7 +208,14 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
                                 navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
                             }
                             NSDictionary *rnProperties = [[QIMJSONSerializer sharedInstance] deserializeObject:properties error:nil];
-                            [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:properties];
+                            @try {
+                                [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:properties];
+                            } @catch (NSException *exception) {
+                                QIMVerboseLog(@"exception2 - %@", exception);
+                            } @finally {
+                                QIMVerboseLog(@"finally");
+                            }
+                            
                         });
                     } else {
                         QIMVerboseLog(@"更新失败");
@@ -353,7 +367,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-    return [NSURL URLWithString:@"http://100.80.128.202:8081/index.ios.bundle?platform=ios&dev=true"];
+//    return [NSURL URLWithString:@"http://100.80.128.202:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -926,7 +940,9 @@ RCT_EXPORT_METHOD(kickGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock
     for (NSDictionary *groupMemberDic in [selectGroupMemebers allValues]) {
         NSString *name = [groupMemberDic objectForKey:@"name"];
         NSString *xmppId = [groupMemberDic objectForKey:@"xmppId"];
-        kickSuccess = [[QIMKit sharedInstance] removeGroupMemberWithName:name WithJid:xmppId ForGroupId:groupId];
+        NSDictionary *groupMemberInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
+        NSString *memberName = [groupMemberInfo objectForKey:@"Name"];
+        kickSuccess = [[QIMKit sharedInstance] removeGroupMemberWithName:memberName WithJid:xmppId ForGroupId:groupId];
     }
     if (kickSuccess == YES) {
         [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"closeKickMembers" body:@{}];

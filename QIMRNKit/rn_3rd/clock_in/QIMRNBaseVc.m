@@ -210,7 +210,8 @@
     NSString *groupId = notify.object;
     if (groupId.length > 0) {
         NSArray *groupmembers = [QimRNBModule qimrn_getGroupMembersByGroupId:groupId];
-        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateGroupMember" body:@{@"GroupId":groupId, @"GroupMembers": groupmembers?groupmembers:@[]}];
+        QIMGroupIdentity groupIdentity = [[QIMKit sharedInstance] GroupIdentityForUser:[[QIMKit sharedInstance] getLastJid] byGroup:groupId];
+        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateGroupMember" body:@{@"GroupId":groupId, @"GroupMembers": groupmembers?groupmembers:@[], @"permissions":@(groupIdentity)}];
     }
 }
 
