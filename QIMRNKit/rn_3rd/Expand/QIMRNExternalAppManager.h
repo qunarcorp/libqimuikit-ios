@@ -10,6 +10,9 @@
 @interface QIMRNExternalAppManager : NSObject
 
 + (instancetype)sharedInstance;
+
+- (BOOL)checkQIMRNExternalAppWithBundleUrl:(NSString *)bundleUrl;
+
 /**
  检查当前版本的Bundle是否存在
 

@@ -164,44 +164,52 @@ RCT_EXPORT_METHOD(updateNavTitle:(NSString *)navTitle) {
 RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)success) {
     NSString *bundleName = [params objectForKey:@"Bundle"];
     NSString *moduleName = [params objectForKey:@"Module"];
-    NSDictionary *properties = [params objectForKey:@"Properties"];
+    NSString *properties = [params objectForKey:@"Properties"];
     QIMAppType AppType = [[params objectForKey:@"AppType"] integerValue];
     NSString *bundleVersion = [params objectForKey:@"Version"];
+    BOOL showNativeNav = [[params objectForKey:@"showNativeNav"] boolValue];
     switch (AppType) {
         case QIMAppExternal: {
             //本地Check
-            BOOL check = [[QIMRNExternalAppManager sharedInstance] checkQIMRNExternalAppWithBundleName:bundleName BundleVersion:bundleVersion];
-            if (check) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-                    if (!navVC) {
-                        navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-                    }
-                    [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:YES WithBundleName:bundleName WithModule:moduleName WithProperties:properties];
-                });
-            } else {
-                //Download
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"正在下载/更新应用"];
-                });
-                BOOL updateSuccess = [[QIMRNExternalAppManager sharedInstance] downloadQIMRNExternalAppWithBundleParams:params];
-                if (updateSuccess) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[QIMProgressHUD sharedInstance] closeHUD];
-                    });
+            NSString *bundleUrl = [params objectForKey:@"BundleUrls"];
+            if (bundleUrl.length > 0) {
+                NSString *bundleMd5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrl] stringByAppendingFormat:@".jsbundle"];
+//                [[SDImageCache sharedImageCache] defaultCachePathForKey:bundleUrl];
+                BOOL check = [[QIMRNExternalAppManager sharedInstance] checkQIMRNExternalAppWithBundleUrl:bundleUrl];
+                if (check) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
                         if (!navVC) {
                             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
                         }
-                        [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:YES WithBundleName:bundleName WithModule:moduleName WithProperties:properties];
+                        NSDictionary *rnProperties = [[QIMJSONSerializer sharedInstance] deserializeObject:properties error:nil];
+                        [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:rnProperties];
                     });
                 } else {
-                    QIMVerboseLog(@"更新失败");
+                    //Download
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"打开应用失败，请移步网络状态良好的地方打开"];
-                        [[QIMProgressHUD sharedInstance] closeHUD];
+                        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"正在下载/更新应用"];
                     });
+                    BOOL updateSuccess = [[QIMRNExternalAppManager sharedInstance] downloadQIMRNExternalAppWithBundleParams:params];
+                    if (updateSuccess) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[QIMProgressHUD sharedInstance] closeHUD];
+                        });
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                            if (!navVC) {
+                                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+                            }
+                            NSDictionary *rnProperties = [[QIMJSONSerializer sharedInstance] deserializeObject:properties error:nil];
+                            [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:properties];
+                        });
+                    } else {
+                        QIMVerboseLog(@"更新失败");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"打开应用失败，请移步网络状态良好的地方打开"];
+                            [[QIMProgressHUD sharedInstance] closeHUD];
+                        });
+                    }
                 }
             }
         }
@@ -217,7 +225,6 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
         }
             break;
         default: {
-            /*
             dispatch_async(dispatch_get_main_queue(), ^{
                 UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
                 if (!navVC) {
@@ -225,7 +232,6 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
                 }
                 [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:YES WithBundleName:bundleName WithModule:moduleName WithProperties:properties];
             });
-            */
         }
             break;
     }
@@ -280,7 +286,6 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
         [QIMFastEntrance openOrganizationalVC];
     } else if ([nativeName isEqualToString:@"NativeSetting"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-//            UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
             UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
             if (!navVC) {
                 navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
@@ -334,7 +339,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  外部应用JSLocation
  */
 + (NSURL *)getOuterJsLocation:(NSString *)bundleName {
-    NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [NSString stringWithFormat:@"%@.jsbundle", bundleName]];
+    NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [NSString stringWithFormat:@"%@", bundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
         QIMVerboseLog(@"本地缓存的更新包地址 : %@", localJSCodeFileStr);
     } else {
