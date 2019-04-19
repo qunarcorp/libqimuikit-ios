@@ -1473,4 +1473,21 @@ static QIMFastEntrance *_sharedInstance = nil;
     });
 }
 
++ (void)openTravelCalendarVc {
+#if __has_include("QimRNBModule.h")
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        Class RunC = NSClassFromString(@"QimRNBModule");
+        SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
+        if ([RunC respondsToSelector:sel]) {
+            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(NO), @"module":@"TravelCalendar"};
+            [RunC performSelector:sel withObject:param];
+        }
+    });
+#endif
+}
+
 @end

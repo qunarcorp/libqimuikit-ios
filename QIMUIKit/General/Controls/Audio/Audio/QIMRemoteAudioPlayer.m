@@ -140,7 +140,7 @@
         //在这里开启红外感应，用于切换听筒和外放语音 //添加近距离事件监听，添加前需先设置为YES，如果设置完后读取还是NO的话，说明当前设备没有近距离传感器
         [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
         //默认开启 外放模式
-        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
         if ([UIDevice currentDevice].proximityMonitoringEnabled == YES) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sensorStateChange:) name:UIDeviceProximityStateDidChangeNotification object:nil];
         } else {
@@ -169,8 +169,8 @@
         //设置为通过听筒输出
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
     } else { //没有黑屏
-        //设置为外放输出，并判断是否已播放完成。若已不再播放，则关闭传感器
-        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+        //设置为外放输出，并判断是否已播放完成。若已不再播放，则关闭传感器  , 会被静音键静音
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
         if (!self.player || ![self.player isPlaying]) {
             [[UIDevice currentDevice] setProximityMonitoringEnabled:NO];
             [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceProximityStateDidChangeNotification object:nil];

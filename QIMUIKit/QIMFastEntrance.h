@@ -141,4 +141,6 @@
 
 - (void)openUserWorkWorldWithParam:(NSDictionary *)param;
 
++ (void)openTravelCalendarVc;
+
 @end

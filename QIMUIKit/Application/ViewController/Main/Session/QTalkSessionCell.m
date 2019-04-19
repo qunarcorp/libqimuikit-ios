@@ -269,6 +269,27 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 }
 
 - (void)setUpNotReadNumButtonWithFrame:(CGRect)frame withBadgeString:(NSString *)badgeString {
+    if (!CGRectEqualToRect(frame, self.notReadNumButton.frame) && !CGRectEqualToRect(frame, CGRectZero)) {
+        [self.notReadNumButton removeFromSuperview];
+        self.notReadNumButton = nil;
+        _notReadNumButton = [[QIMBadgeButton alloc] initWithFrame:frame];
+        [_notReadNumButton setBadgeFont:[UIFont systemFontOfSize:14]];
+        _notReadNumButton.isShowSpringAnimation = YES;
+        _notReadNumButton.isShowBomAnimation = YES;
+        _notReadNumButton.right = self.timeLabel.right;
+        _notReadNumButton.centerY = self.contentLabel.centerY;
+        [self.contentView insertSubview:_notReadNumButton atIndex:0];
+    } else {
+        if (!_notReadNumButton) {
+            _notReadNumButton = [[QIMBadgeButton alloc] initWithFrame:CGRectMake(self.timeLabel.right - 35, 11, 35, 20)];
+            [_notReadNumButton setBadgeFont:[UIFont systemFontOfSize:14]];
+            _notReadNumButton.isShowSpringAnimation = YES;
+            _notReadNumButton.isShowBomAnimation = YES;
+            _notReadNumButton.right = self.timeLabel.right;
+            _notReadNumButton.centerY = self.contentLabel.centerY;
+            [self.contentView insertSubview:_notReadNumButton atIndex:0];
+        }
+    }
     self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
     if (self.chatType == ChatType_GroupChat) {
         [self.notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
@@ -296,15 +317,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 }
 
 - (QIMBadgeButton *)notReadNumButton {
-    if (!_notReadNumButton) {
-        _notReadNumButton = [[QIMBadgeButton alloc] initWithFrame:CGRectMake(self.timeLabel.right - 35, 11, 35, 20)];
-        [_notReadNumButton setBadgeFont:[UIFont systemFontOfSize:14]];
-        _notReadNumButton.isShowSpringAnimation = YES;
-        _notReadNumButton.isShowBomAnimation = YES;
-        _notReadNumButton.right = self.timeLabel.right;
-        _notReadNumButton.centerY = self.contentLabel.centerY;
-        [self.contentView insertSubview:_notReadNumButton atIndex:0];
-    }
     return _notReadNumButton;
 }
 
