@@ -164,53 +164,68 @@ RCT_EXPORT_METHOD(updateNavTitle:(NSString *)navTitle) {
 RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)success) {
     NSString *bundleName = [params objectForKey:@"Bundle"];
     NSString *moduleName = [params objectForKey:@"Module"];
-    NSDictionary *properties = [params objectForKey:@"Properties"];
+    NSString *properties = [params objectForKey:@"Properties"];
     QIMAppType AppType = [[params objectForKey:@"AppType"] integerValue];
     NSString *bundleVersion = [params objectForKey:@"Version"];
+    BOOL showNativeNav = [[params objectForKey:@"showNativeNav"] boolValue];
     switch (AppType) {
         case QIMAppExternal: {
             //本地Check
-            BOOL check = [[QIMRNExternalAppManager sharedInstance] checkQIMRNExternalAppWithBundleName:bundleName BundleVersion:bundleVersion];
-            if (check) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-//                    UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-                    UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-                    if (!navVC) {
-                        navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-                    }
-                    [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:YES WithBundleName:bundleName WithModule:moduleName WithProperties:properties];
-                });
-            } else {
-                //Download
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"正在下载/更新应用"];
-                });
-                BOOL updateSuccess = [[QIMRNExternalAppManager sharedInstance] downloadQIMRNExternalAppWithBundleParams:params];
-                if (updateSuccess) {
+            NSString *bundleUrl = [params objectForKey:@"BundleUrls"];
+            if (bundleUrl.length > 0) {
+                NSString *bundleMd5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrl] stringByAppendingFormat:@".jsbundle"];
+//                [[SDImageCache sharedImageCache] defaultCachePathForKey:bundleUrl];
+                BOOL check = [[QIMRNExternalAppManager sharedInstance] checkQIMRNExternalAppWithBundleUrl:bundleUrl];
+                if (check) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [[QIMProgressHUD sharedInstance] closeHUD];
-                    });
-                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
                         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
                         if (!navVC) {
                             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
                         }
-                        [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:YES WithBundleName:bundleName WithModule:moduleName WithProperties:properties];
+                        NSDictionary *rnProperties = [[QIMJSONSerializer sharedInstance] deserializeObject:properties error:nil];
+                        [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:rnProperties];
                     });
                 } else {
-                    QIMVerboseLog(@"更新失败");
+                    //Download
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"打开应用失败，请移步网络状态良好的地方打开"];
-                        [[QIMProgressHUD sharedInstance] closeHUD];
+                        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"正在下载/更新应用"];
                     });
+                    BOOL updateSuccess = [[QIMRNExternalAppManager sharedInstance] downloadQIMRNExternalAppWithBundleParams:params];
+                    if (updateSuccess) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[QIMProgressHUD sharedInstance] closeHUD];
+                        });
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                            if (!navVC) {
+                                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+                            }
+                            NSDictionary *rnProperties = [[QIMJSONSerializer sharedInstance] deserializeObject:properties error:nil];
+                            [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:properties];
+                        });
+                    } else {
+                        QIMVerboseLog(@"更新失败");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"打开应用失败，请移步网络状态良好的地方打开"];
+                            [[QIMProgressHUD sharedInstance] closeHUD];
+                        });
+                    }
                 }
+            }
+        }
+            break;
+        case QIMAppTypeH5: {
+            NSString *webUrl = [params objectForKey:@"memberAction"];
+            BOOL shownav = [[params objectForKey:@"showNativeNav"] boolValue];
+            if (webUrl.length > 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   [QIMFastEntrance openWebViewForUrl:webUrl showNavBar:shownav];
+                });
             }
         }
             break;
         default: {
             dispatch_async(dispatch_get_main_queue(), ^{
-//                UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
                 UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
                 if (!navVC) {
                     navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
@@ -271,7 +286,6 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
         [QIMFastEntrance openOrganizationalVC];
     } else if ([nativeName isEqualToString:@"NativeSetting"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-//            UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
             UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
             if (!navVC) {
                 navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
@@ -325,7 +339,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  外部应用JSLocation
  */
 + (NSURL *)getOuterJsLocation:(NSString *)bundleName {
-    NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [NSString stringWithFormat:@"%@.jsbundle", bundleName]];
+    NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [NSString stringWithFormat:@"%@", bundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
         QIMVerboseLog(@"本地缓存的更新包地址 : %@", localJSCodeFileStr);
     } else {
@@ -339,6 +353,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
+    return [NSURL URLWithString:@"http://100.80.128.202:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -1010,6 +1025,9 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
     //如果是群组情况直接添加
     BOOL isGroup = [[param objectForKey:@"isGroup"] boolValue];
     NSDictionary *selectMembers = [param objectForKey:@"members"];
+    if (selectMembers.count <= 0) {
+        return;
+    }
     NSMutableArray *memberIds = [NSMutableArray arrayWithCapacity:5];
     
     NSMutableString *groupName = [NSMutableString stringWithString:[selectMembers count] > 1 ? @"":@"群组("];
@@ -1044,21 +1062,7 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                        [[QIMKit sharedInstance] clearNotReadMsgByGroupId:groupId];
                                                        [QIMFastEntrance openGroupChatVCByGroupId:groupId];
-                                                       /*
-                                                       QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
-                                                       [chatGroupVC setTitle:groupName];
-                                                       [chatGroupVC setChatId:groupId];
-                                                       [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotifySelectTab" object:@(0)];
-//                                                        QIMNavController *navVC = (QIMNavController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-                                                       UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-                                                       if (!navVC) {
-                                                           navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-                                                       }
-                                                       [navVC pushViewController:chatGroupVC animated:YES];
-                                                       [[NSNotificationCenter defaultCenter] postNotificationName:kGroupNickNameChanged object:@[groupId]];
-                                                       */
                                                    });
-                               
                                                } else {
                                                    
                                                }
@@ -1107,7 +1111,8 @@ RCT_EXPORT_METHOD(destructionGroup:(NSString *)groupId :(RCTResponseSenderBlock)
 RCT_EXPORT_METHOD(selectUserListByText:(NSDictionary *)params :(RCTResponseSenderBlock)callback) {
     NSString *groupId = [params objectForKey:@"groupId"];
     NSString *searchText = [params objectForKey:@"searchText"];
-    NSArray *users = [[QIMKit sharedInstance] searchUserBySearchStr:searchText notInGroup:groupId];
+//    NSArray *users = [[QIMKit sharedInstance] searchUserBySearchStr:searchText notInGroup:groupId];
+    NSArray *users = [[QIMKit sharedInstance] searchUserListBySearchStr:searchText];
     NSMutableArray *properties = [NSMutableArray arrayWithCapacity:3];
 
     for (NSDictionary *memberDic in users) {
@@ -1116,9 +1121,11 @@ RCT_EXPORT_METHOD(selectUserListByText:(NSDictionary *)params :(RCTResponseSende
         NSString *userId = [memberDic objectForKey:@"UserId"];
         NSString *xmppId = [memberDic objectForKey:@"XmppId"];
         NSString *uri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:xmppId];
+        BOOL hasInGroup = [[QIMKit sharedInstance] isGroupMemberByUserId:xmppId ByGroupId:groupId];
         [dic setQIMSafeObject:name forKey:@"name"];
         [dic setQIMSafeObject:xmppId forKey:@"xmppId"];
         [dic setQIMSafeObject:uri forKey:@"headerUri"];
+        [dic setQIMSafeObject:@(hasInGroup) forKey:@"hasInGroup"];
         [properties addObject:dic];
     }
     
@@ -1857,6 +1864,7 @@ RCT_EXPORT_METHOD(getTripAreaAvailableRoom:(NSDictionary *)params :(RCTResponseS
             [dic setQIMSafeObject:description forKey:@"RoomDetails"];
             [dic setQIMSafeObject:@(capacity) forKey:@"RoomCapacity"];
             if (canUse == 0) {
+//                "canUse": 0//是否可用0:可用;1:不可用
                 [result addObject:dic];
             }
         }

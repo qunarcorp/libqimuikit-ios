@@ -568,7 +568,19 @@ static dispatch_once_t __onceMainToken;
 
 - (UIView *)rnSuggestView {
     if (!_rnSuggestView) {
+#if __has_include("QimRNBModule.h")
         
+        Class RunC = NSClassFromString(@"QimRNBModule");
+        SEL sel = NSSelectorFromString(@"createQIMRNVCWithParam:");
+        UIViewController *vc = nil;
+        if ([RunC respondsToSelector:sel]) {
+            NSDictionary *param = @{@"module":@"FoundPage", @"properties":@{@"domain":[[QIMKit sharedInstance] getDomain]}};
+            vc = [RunC performSelector:sel withObject:param];
+        }
+        _rnSuggestView = [vc view];
+        [_rnSuggestView setFrame:CGRectMake(0, 0, _contentView.width, _contentView.height)];
+#endif
+        /*
         //导航中返回showOA == YES / QChat，展示OPS OA界面
         QIMVerboseLog(@"showOA : %d", [[QIMKit sharedInstance] qimNav_ShowOA]);
         QIMVerboseLog(@"Domain : %@", [[QIMKit sharedInstance] qimNav_Domain]);
@@ -600,6 +612,7 @@ static dispatch_once_t __onceMainToken;
             [_rnSuggestView setFrame:CGRectMake(0, 0, _contentView.width, _contentView.height)];
 #endif
         }
+        */
     }
     return _rnSuggestView;
 }
