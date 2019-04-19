@@ -950,6 +950,9 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
     //如果是群组情况直接添加
     BOOL isGroup = [[param objectForKey:@"isGroup"] boolValue];
     NSDictionary *selectMembers = [param objectForKey:@"members"];
+    if (selectMembers.count <= 0) {
+        return;
+    }
     NSMutableArray *memberIds = [NSMutableArray arrayWithCapacity:5];
     
     NSMutableString *groupName = [NSMutableString stringWithString:[selectMembers count] > 1 ? @"":@"群组("];
@@ -984,21 +987,7 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                        [[QIMKit sharedInstance] clearNotReadMsgByGroupId:groupId];
                                                        [QIMFastEntrance openGroupChatVCByGroupId:groupId];
-                                                       /*
-                                                       QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
-                                                       [chatGroupVC setTitle:groupName];
-                                                       [chatGroupVC setChatId:groupId];
-                                                       [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotifySelectTab" object:@(0)];
-//                                                        QIMNavController *navVC = (QIMNavController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-                                                       UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-                                                       if (!navVC) {
-                                                           navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-                                                       }
-                                                       [navVC pushViewController:chatGroupVC animated:YES];
-                                                       [[NSNotificationCenter defaultCenter] postNotificationName:kGroupNickNameChanged object:@[groupId]];
-                                                       */
                                                    });
-                               
                                                } else {
                                                    
                                                }
@@ -1047,7 +1036,8 @@ RCT_EXPORT_METHOD(destructionGroup:(NSString *)groupId :(RCTResponseSenderBlock)
 RCT_EXPORT_METHOD(selectUserListByText:(NSDictionary *)params :(RCTResponseSenderBlock)callback) {
     NSString *groupId = [params objectForKey:@"groupId"];
     NSString *searchText = [params objectForKey:@"searchText"];
-    NSArray *users = [[QIMKit sharedInstance] searchUserBySearchStr:searchText notInGroup:groupId];
+//    NSArray *users = [[QIMKit sharedInstance] searchUserBySearchStr:searchText notInGroup:groupId];
+    NSArray *users = [[QIMKit sharedInstance] searchUserListBySearchStr:searchText];
     NSMutableArray *properties = [NSMutableArray arrayWithCapacity:3];
 
     for (NSDictionary *memberDic in users) {
@@ -1056,9 +1046,11 @@ RCT_EXPORT_METHOD(selectUserListByText:(NSDictionary *)params :(RCTResponseSende
         NSString *userId = [memberDic objectForKey:@"UserId"];
         NSString *xmppId = [memberDic objectForKey:@"XmppId"];
         NSString *uri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:xmppId];
+        BOOL hasInGroup = [[QIMKit sharedInstance] isGroupMemberByUserId:xmppId ByGroupId:groupId];
         [dic setQIMSafeObject:name forKey:@"name"];
         [dic setQIMSafeObject:xmppId forKey:@"xmppId"];
         [dic setQIMSafeObject:uri forKey:@"headerUri"];
+        [dic setQIMSafeObject:@(hasInGroup) forKey:@"hasInGroup"];
         [properties addObject:dic];
     }
     
