@@ -274,6 +274,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    QIMVerboseLog(@"即将进入发帖页面匿名名称 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName]);
+    QIMVerboseLog(@"即将进入发帖页面匿名状态 : %d", [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]);
+    QIMVerboseLog(@"即将进入发帖页面匿名头像地址 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto]);
     [self.panelListView reloadData];
 }
 
@@ -337,9 +340,14 @@
     dispatch_async(dispatch_get_main_queue(), ^{
        [self.view endEditing:YES];
     });
+    __weak QIMWorkMomentPushViewController *weakSelf = self;
     [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
+        __typeof(self) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
         QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
-        picker.delegate = self;
+        picker.delegate = strongSelf;
         picker.title = @"选取照片";
         picker.customDoneButtonTitle = @"";
         picker.customCancelButtonTitle = @"取消";
@@ -350,7 +358,7 @@
         picker.minimumInteritemSpacing = 2.0;
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             picker.modalPresentationStyle = UIModalPresentationCurrentContext;
-            [self presentViewController:picker animated:YES completion:nil];
+            [strongSelf presentViewController:picker animated:YES completion:nil];
         } else {
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
         }
@@ -398,7 +406,7 @@
         [alertVc addAction:okAction];
         [self.navigationController presentViewController:alertVc animated:YES completion:nil];
     } else {
-//        [self showProgressHUDWithMessage:@"动态上传中..."];
+        [self showProgressHUDWithMessage:@"动态上传中..."];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self showProgressHUDWithMessage:@"动态上传中..."];
             NSMutableDictionary *momentDic = [NSMutableDictionary dictionaryWithCapacity:3];
@@ -422,7 +430,7 @@
             for (id imageData in self.selectPhotos) {
                 if ([imageData isKindOfClass:[NSData class]]) {
                     dispatch_group_enter(group);
-                    NSString *fileUrl = [QIMKit updateLoadFile:imageData WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_Image WithPathExtension:@"png"];
+                    NSString *fileUrl = [QIMKit updateLoadMomentFile:imageData WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_Image WithPathExtension:@"png"];
                     if (fileUrl.length > 0) {
                         NSDictionary *imageDic = @{@"addTime":@(0), @"data":fileUrl};
                         [imageList addObject:imageDic];

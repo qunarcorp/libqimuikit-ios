@@ -35,7 +35,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 @property (nonatomic, assign) BOOL isStick;
 
-@property (nonatomic, assign) BOOL isReminded;
+@property (nonatomic, assign) BOOL isReminded;              //是否为免打扰
 
 @property (nonatomic, strong) UIImageView *headerView;      //头像
 
@@ -293,6 +293,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
     if (self.chatType == ChatType_GroupChat) {
         [self.notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
+    } else {
+        [self.notReadNumButton setBadgeColor:[UIColor qunarRedColor]];
     }
     [self.notReadNumButton setBadgeString:badgeString];
     __weak typeof(self) weakSelf = self;
@@ -308,11 +310,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     } else {
         [self.notReadNumButton hiddenBadgeButton:YES];
         [self.contentView addSubview:self.muteNotReadView];
-        if (self.chatType == ChatType_GroupChat) {
-            [self.notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
-        } else {
-            [self.notReadNumButton setBadgeColor:[UIColor qunarRedColor]];
-        }
     }
 }
 
