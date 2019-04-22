@@ -306,7 +306,7 @@ CGFloat maxLimitHeight = 0;
 
     NSMutableString *str = [[NSMutableString alloc] init];
     NSArray *attay = [self getTrueValueIndexPaths];
-    for (NSInteger i = 0; i < attay.count; i++) {
+    for (NSInteger i = attay.count - 1; i >= 0; i--) {
         NSNumber *number = [attay objectAtIndex:i];
         if ([number integerValue] == 1) {
 //            [str setText:@"置顶"];
