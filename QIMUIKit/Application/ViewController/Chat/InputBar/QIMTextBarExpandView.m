@@ -15,6 +15,10 @@
 #import "UIImageView+WebCache.h"
 #import "NSBundle+QIMLibrary.h"
 #import "UIApplication+QIMApplication.h"
+#if __has_include("QIMAutoTracker.h")
+#import "QIMAutoTracker.h"
+#endif
+
 
 static NSMutableDictionary *__trdExtendInfoDic = nil;
 
@@ -213,7 +217,12 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
     NSString *sendId = [view accessibilityIdentifier];
     NSDictionary *trdDic = [[QIMKit sharedInstance] getExpandItemsForTrdextendId:sendId];
     NSString *trdId = [trdDic objectForKey:@"trdextendId"];
+    NSString *trdName = [trdDic objectForKey:@"title"];
+
     NSArray *textBarOpenIds = @[QIMTextBarExpandViewItem_Photo, QIMTextBarExpandViewItem_Camera, QIMTextBarExpandViewItem_QuickReply];
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:trdId withDescription:trdName?trdName:trdId];
+#endif
     if ([textBarOpenIds containsObject:trdId] && self.delegate && [self.delegate respondsToSelector:@selector(didClickExpandItemForTrdextendId:)]) {
         //这里由TextBar打开
         [self.delegate didClickExpandItemForTrdextendId:trdId];

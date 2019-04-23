@@ -28,6 +28,9 @@
 #if __has_include("RNSchemaParse.h")
 #import "QTalkSuggestRNJumpManager.h"
 #endif
+#if __has_include("QIMAutoTracker.h")
+#import "QIMAutoTracker.h"
+#endif
 #import "Toast.h"
 
 #define kTabBarHeight   49
@@ -709,13 +712,22 @@ static dispatch_once_t __onceMainToken;
         
         [_contentView addSubview:self.sessionView];
         [_sessionView setHidden:NO];
+#if __has_include("QIMAutoTracker.h")
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"conversation" withDescription:@"会话"];
+#endif
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_travel"]]) {
         [_contentView addSubview:self.travelView];
         [_travelView setHidden:NO];
+#if __has_include("QIMAutoTracker.h")
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"route" withDescription:@"行程"];
+#endif
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_contact"]]) {
         
         [_contentView addSubview:self.userListView];
         [self.userListView setHidden:NO];
+#if __has_include("QIMAutoTracker.h")
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"address list" withDescription:@"通讯录"];
+#endif
 #if __has_include("QimRNBModule.h")
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel2 = NSSelectorFromString(@"sendQIMRNWillShow");
@@ -727,6 +739,11 @@ static dispatch_once_t __onceMainToken;
         
         [_contentView addSubview:self.rnSuggestView];
         [self.rnSuggestView setHidden:NO];
+#if __has_include("QIMAutoTracker.h")
+
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"discovery" withDescription:@"发现"];
+#endif
+
 #if __has_include("RNSchemaParse.h")
         [[NSNotificationCenter defaultCenter] postNotificationName:@"QTalkSuggestRNViewWillAppear" object:nil];
 #endif
@@ -734,6 +751,9 @@ static dispatch_once_t __onceMainToken;
         
         [_contentView addSubview:self.mineView];
         [_mineView setHidden:NO];
+#if __has_include("QIMAutoTracker.h")
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"mine" withDescription:@"我的"];
+#endif
     } else {
         
     }
@@ -754,7 +774,10 @@ static dispatch_once_t __onceMainToken;
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
 #if __has_include("RNSchemaParse.h")
+#if __has_include("QIMAutoTracker.h")
 
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"search" withDescription:@"搜索"];
+#endif
     [QIMFastEntrance openRNSearchVC];
     return NO;
 #endif
@@ -914,11 +937,17 @@ static dispatch_once_t __onceMainToken;
 
 - (void)scanQrcode:(id)sender {
     [QIMFastEntrance openQRCodeVC];
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"RichScan" withDescription:@"扫一扫"];
+#endif
 }
 
 - (void)addNewFriend:(id)sender {
     QIMAddIndexViewController *indexVC = [[QIMAddIndexViewController alloc] init];
     [self.navigationController pushViewController:indexVC animated:YES];
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"add a contact" withDescription:@"添加联系人"];
+#endif
 }
 
 - (void)refreshSwitchAccount:(NSNotification *)notify {

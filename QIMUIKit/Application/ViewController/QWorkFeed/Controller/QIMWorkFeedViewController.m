@@ -21,6 +21,9 @@
 #import "QIMMessageCellCache.h"
 #import <YYModel/YYModel.h>
 #import <MJRefresh/MJRefresh.h>
+#if __has_include("QIMAutoTracker.h")
+#import "QIMAutoTracker.h"
+#endif
 
 @interface QIMWorkFeedViewController () <UITableViewDelegate, UITableViewDataSource, QIMWorkMomentNotifyViewDelegtae>
 
@@ -176,6 +179,9 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [self reloadRemoteRecenteMoments];
     });
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"tuocircle" withDescription:@"驼圈"];
+#endif
 }
 
 - (void)dealloc {
