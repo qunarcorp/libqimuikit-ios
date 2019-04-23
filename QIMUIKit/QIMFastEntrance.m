@@ -203,9 +203,9 @@ static QIMFastEntrance *_sharedInstance = nil;
         if ([MFMailComposeViewController canSendMail]) {
             MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
             controller.mailComposeDelegate = self;
-            [controller setToRecipients:@[[NSString stringWithFormat:@"%@@qunar.com",[[userId componentsSeparatedByString:@"@"] firstObject]]]];
+            [controller setToRecipients:@[[NSString stringWithFormat:@"%@@%@",[[userId componentsSeparatedByString:@"@"] firstObject], [[QIMKit sharedInstance] qimNav_Email]]]];
             [controller setSubject:[NSString stringWithFormat:@"From %@",[[QIMKit sharedInstance] getMyNickName]]];
-            [controller setMessageBody:@"\r\r\r\r\r\r\r\r\r\r\r From Iphone QTalk." isHTML:NO];
+            [controller setMessageBody:[NSString stringWithFormat:@"\r\r\r\r\r\r\r\r\r\r\r From Iphone %@.", [QIMKit getQIMProjectTitleName]] isHTML:NO];
             if (rootVc) {
                 [rootVc presentViewController:controller animated:YES completion:nil];
             } else {
