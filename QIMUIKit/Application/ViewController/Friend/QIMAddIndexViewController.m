@@ -17,7 +17,7 @@
 #import "SearchBar.h"
 
 static NSInteger limitCount = 15;
-@interface QIMAddIndexViewController ()<UITableViewDataSource,UITableViewDelegate,SearchBarDelgt>{
+@interface QIMAddIndexViewController ()<UITableViewDataSource,UITableViewDelegate,SearchBarDelgt, UIPickerViewDelegate, UIPickerViewDataSource>{
     UILabel         * _justDoItLabel;
     NSDictionary    * _infoDic;
 }
@@ -44,6 +44,8 @@ static NSInteger limitCount = 15;
 @property (nonatomic, strong) SearchBar *searchBar;
 
 @property (nonatomic, strong) UIView *emptyView;
+
+@property (nonatomic, strong) UIPickerView *pickerView;
 
 @end
 
@@ -118,6 +120,16 @@ static NSInteger limitCount = 15;
         [_searchBar setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 49)];
     }
     return _searchBar;
+}
+
+- (UIPickerView *)pickerView {
+    if (!_pickerView) {
+        _pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 260, self.view.width, 260)];
+        _pickerView.backgroundColor = [UIColor redColor];
+        _pickerView.delegate = self;
+        _pickerView.dataSource = self;
+    }
+    return _pickerView;
 }
 
 - (void)viewDidLoad {
@@ -211,6 +223,10 @@ static NSInteger limitCount = 15;
 
 - (void)selectDomain {
 //    [self.searchBar resignFirstResponder];
+    
+    [self.view addSubview:self.pickerView];
+    
+    /*
     [UIView animateWithDuration:0.3 animations:^{
         [self.view endEditing:YES];
         [MMPickerView dismissWithCompletion:^(NSString *str) {
@@ -237,6 +253,7 @@ static NSInteger limitCount = 15;
             QIMVerboseLog(@"selectDomainUrlRow === %@", selectedString);
         }];
     }];
+    */
 }
 
 - (UITableView *)tableView {
@@ -352,19 +369,9 @@ static NSInteger limitCount = 15;
 }
 
 //前往回话列表
-- (void)openChatSession
-{
+- (void)openChatSession {
     [[QIMKit sharedInstance] openChatSessionByUserId:_infoDic[@"XmppId"]];
     [QIMFastEntrance openSingleChatVCByUserId:_infoDic[@"XmppId"]];
-    /*
-    QIMChatVC * chatVC  = [[QIMChatVC alloc] init];
-    [chatVC setStype:kSessionType_Chat];
-    [chatVC setChatId:_infoDic[@"XmppId"]];
-    [chatVC setName:_infoDic[@"Name"]];
-    [chatVC setTitle:_infoDic[@"Name"]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-    [self.navigationController popToRootVCThenPush:chatVC animated:YES];
-     */
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -422,6 +429,30 @@ static NSInteger limitCount = 15;
 }
 
 - (void)searchBarBarButtonClicked:(SearchBar *)searchBar {
+}
+
+#pragma mark - UIPickerViewDelegate
+
+#pragma mark - UIPickerViewDataSource
+
+// returns the number of 'columns' to display.
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+
+// returns the # of rows in each component..
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return _stringsArray.count;
+}
+
+
+//返回当前行的内容,此处是将数组中数值添加到滚动的那个显示栏上
+-(NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    return @"测试";
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    QIMVerboseLog(@"didSelectRow: %ld", row);
 }
 
 @end

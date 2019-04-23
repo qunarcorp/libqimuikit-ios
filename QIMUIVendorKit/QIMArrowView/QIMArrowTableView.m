@@ -66,6 +66,7 @@
     cell.backgroundColor = [UIColor clearColor];
     cell.myImageView.image = self.images[indexPath.row];
     cell.descLabel.text = self.dataArray[indexPath.row];
+    cell.accessibilityIdentifier = self.dataArray[indexPath.row];
     cell.descLabel.font = [UIFont systemFontOfSize:14];
     cell.descLabel.numberOfLines = 0;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
