@@ -58,6 +58,9 @@
 #if __has_include("QIMLocalLog.h")
 #import "QIMLocalLog.h"
 #endif
+#if __has_include("QIMAutoTracker.h")
+#import "QIMAutoTracker.h"
+#endif
 
 #define MyRedBag @"MyRedBag"
 #define BalanceInquiry @"BalanceInquiry"
@@ -822,6 +825,9 @@ RCT_EXPORT_METHOD(addUserFriend:(NSDictionary *)param) {
                 break;
         }
     });
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"add friends" withDescription:@"添加好友"];
+#endif
 }
 
 RCT_EXPORT_METHOD(deleteUserFriend:(NSDictionary *)param) {
@@ -852,6 +858,9 @@ RCT_EXPORT_METHOD(deleteUserFriend:(NSDictionary *)param) {
         [delteFriendSheetVC addAction:deleteAction];
         [navVC presentViewController:delteFriendSheetVC animated:YES completion:nil];
     });
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"delete friend" withDescription:@"删除好友"];
+#endif
 }
 
 @end
@@ -1306,6 +1315,9 @@ RCT_EXPORT_METHOD(sendAdviceMessage:(NSDictionary *)adviceParam :(RCTResponseSen
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
        [[QIMLocalLog sharedInstance] submitFeedBackWithContent:adviceMsg WithLogSelected:logSelected];
     });
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"Suggestions" withDescription:@"建议反馈"];
+#endif
 #endif
 }
 
@@ -1761,6 +1773,9 @@ RCT_EXPORT_METHOD(clearAppCache) {
 //退出登录
 RCT_EXPORT_METHOD(logout) {
     [QIMFastEntrance signOut];
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"log out" withDescription:@"退出登录"];
+#endif
 }
 
 @end
@@ -1936,6 +1951,9 @@ RCT_EXPORT_METHOD(tripMemberCheck:(NSDictionary *)params :(RCTResponseSenderBloc
 
 RCT_EXPORT_METHOD(createTrip:(NSDictionary *)params :(RCTResponseSenderBlock)callback) {
     QIMVerboseLog(@"createTrip : %@", params);
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"create itinerary" withDescription:@"创建行程"];
+#endif
     NSMutableDictionary *newParam = [[NSMutableDictionary alloc] initWithDictionary:params];
     NSMutableArray *newMemberList = [[NSMutableArray alloc] init];
     NSArray *memberList = [params objectForKey:@"memberList"];

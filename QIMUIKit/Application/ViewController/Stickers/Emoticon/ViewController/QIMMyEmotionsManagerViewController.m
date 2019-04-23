@@ -182,7 +182,9 @@ static NSString *cellID = @"QIMMyEmotionsManagerCell";
     
     NSMutableArray *newCollectionFaceList = [NSMutableArray array];
     [newCollectionFaceList addObject:@"kEmotionCollectionPKId"];
-    [newCollectionFaceList addObject:@"qunar_camel"];
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
+        [newCollectionFaceList addObject:@"qunar_camel"];
+    }
     [newCollectionFaceList addObject:@"EmojiOne"];
     for (NSDictionary *emotion in self.dataList) {
         if ([[emotion[@"pkgid"] stringValue] isEqualToString:@"kEmotionCollectionPKId"] || [[emotion[@"pkgid"] stringValue] isEqualToString:@"qunar_camel"] || [[emotion[@"pkgid"] stringValue] isEqualToString:@"EmojiOne"]) {

@@ -37,6 +37,9 @@
 
 #import "QIMNotifyManager.h"
 #endif
+#if __has_include("QIMAutoTracker.h")
+#import "QIMAutoTracker.h"
+#endif
 
 #define kClearAllNotReadMsg 1002
 
@@ -1221,15 +1224,30 @@
     NSString *moreActionId = [self.moreActionArray objectAtIndex:index];
     if ([moreActionId isEqualToString:@"扫一扫"]) {
         [QIMFastEntrance openQRCodeVC];
+#if __has_include("QIMAutoTracker.h")
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"RichScan" withDescription:@"扫一扫"];
+#endif
     } else if ([moreActionId isEqualToString:@"发起聊天"]) {
         [QIMFastEntrance openQIMGroupListVC];
+#if __has_include("QIMAutoTracker.h")
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"StarToTalk" withDescription:@"发起聊天"];
+#endif
     } else if ([moreActionId isEqualToString:@"一键已读"]) {
         [self oneKeyRead];
+#if __has_include("QIMAutoTracker.h")
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"A key has been read" withDescription:@"一键已读"];
+#endif
     } else if ([moreActionId isEqualToString:@"随记"]) {
         [QIMFastEntrance openQTalkNotesVC];
+#if __has_include("QIMAutoTracker.h")
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"note" withDescription:@"随记"];
+#endif
     } else if ([moreActionId isEqualToString:@"Wiki"]) {
         if ([[QIMKit sharedInstance] qimNav_WikiUrl].length > 0) {
             [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_WikiUrl] showNavBar:YES];
+#if __has_include("QIMAutoTracker.h")
+            [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"note" withDescription:@"wiki"];
+#endif
         }
     } else {
         
