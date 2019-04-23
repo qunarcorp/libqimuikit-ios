@@ -2008,8 +2008,7 @@ static CGPoint tableOffsetPoint;
                 }
                 [self.fixedImageArray addObject:storage.imageURL];
                 index = 0;
-                //                browser.imageUrl = storage.imageURL;
-                return;
+                
             } else {
                 
             }
