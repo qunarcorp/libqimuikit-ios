@@ -270,7 +270,8 @@ const float colormatrix_yese[] = {
     NSInteger i = 0;
     for (NSString * imageStr in _dataSource) {
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(80 * i, 0, 80, 80)];
-        imageView.image = [self getDuangImageWithIndexTag:i originalImage:[UIImage imageNamed:imageStr]];
+        imageView.image =nil;
+//        [self getDuangImageWithIndexTag:i originalImage:[UIImage imageNamed:imageStr]];
         imageView.tag = kImageTagFrom + i;
         imageView.userInteractionEnabled = YES;
         [_duangView addSubview:imageView];

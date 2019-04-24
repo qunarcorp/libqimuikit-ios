@@ -71,6 +71,7 @@
 #import "QIMIPadWindowManager.h"
 #endif
 #import "QIMAuthorizationManager.h"
+#import "QIMImagePickerController.h"
 
 @interface NSAttributedString (EmojiExtension)
 - (NSString *)getPlainString;
@@ -1761,6 +1762,16 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 - (void)onPhotoButtonClick:(UIButton *)sender{
     [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
+        QIMImagePickerController *pickerVc = [[QIMImagePickerController alloc] initWithMaxImagesCount:9 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            pickerVc.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:pickerVc animated:YES completion:nil];
+#endif
+        } else {
+            [[[UIApplication sharedApplication] visibleViewController] presentViewController:pickerVc animated:YES completion:nil];
+        }
+        /*
         QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
         picker.delegate = self;
         picker.title = @"选取照片";
@@ -1779,6 +1790,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         } else {
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
         }
+        */
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }
