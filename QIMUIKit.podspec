@@ -82,8 +82,9 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'QIMUIVendorKit' do |vendorkit|
-    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}']
-    vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib']
+    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMImagePickerController/**/*{h,m}']
+    vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib', 'QIMUIVendorKit/QIMImagePickerController/**/*.{bundle}']
+    vendorkit.frameworks   = 'Photos'
   end
 
 
@@ -149,7 +150,6 @@ Pod::Spec.new do |s|
   s.dependency 'AMapSearch'
   s.dependency 'AMapLocation'
   s.dependency 'AMap3DMap'
-#  s.dependency 'MMPickerView'
   s.dependency 'SCLAlertView-Objective-C'
   s.dependency 'MMMarkdown'
   s.dependency 'Toast' 
