@@ -118,6 +118,8 @@
 #import "QIMRobotAnswerCell.h"
 #import "QIMSearchRemindView.h"
 
+#import "ChatBgManager.h"
+
 #if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
 
 @interface QIMChatVC () <QIMNotifyManagerDelegate>
@@ -489,6 +491,7 @@
         _tableView.allowsMultipleSelectionDuringEditing = YES;
         [_tableView setAccessibilityIdentifier:@"MessageTableView"];
         _tableView.mj_header = [QIMMessageRefreshHeader messsageHeaderWithRefreshingTarget:self refreshingAction:@selector(loadMoreMessageData)];
+        [self refreshChatBGImageView];
     }
     return _tableView;
 }
@@ -649,7 +652,7 @@
  
     [[QIMEmotionSpirits sharedInstance] setTableView:_tableView];
     [self loadData];
-    [self refreshChatBGImageView];
+//    [self refreshChatBGImageView];
     
     //添加整个view的点击事件，当点击页面空白地方时，输入框收回
     UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandler:)];
@@ -1422,16 +1425,18 @@
             image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:@"chatBGImageFor_Common"]];
         }
         if (image) {
-            
             _chatBGImageView.image = image;
             [self.view insertSubview:_chatBGImageView belowSubview:self.tableView];
         } else {
-            
-            [_chatBGImageView removeFromSuperview];
+            [ChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+                _chatBGImageView.image = bgImage;
+            }];
         }
     } else {
-        
-        [self.tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
+        [ChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+            _chatBGImageView.image = bgImage;
+            _tableView.backgroundView = _chatBGImageView;
+        }];
     }
 }
 
