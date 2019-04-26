@@ -164,6 +164,8 @@
 		2C363B2E215E12C7003BA9FF /* QIMCommonUIFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C363B2D215E12C7003BA9FF /* QIMCommonUIFramework.h */; };
 		2C4AA84B20D0BED90022B023 /* QIMAppWindowManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4AA84920D0BED90022B023 /* QIMAppWindowManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2C4AA84C20D0BED90022B023 /* QIMAppWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4AA84A20D0BED90022B023 /* QIMAppWindowManager.m */; };
+		2C4FCFAE2271F64000C5806D /* QIMSearchBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4FCFAC2271F64000C5806D /* QIMSearchBar.h */; };
+		2C4FCFAF2271F64000C5806D /* QIMSearchBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4FCFAD2271F64000C5806D /* QIMSearchBar.m */; };
 		2C53B14A20B283F100F1253C /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C53B14920B283F000F1253C /* AddressBook.framework */; };
 		2C53B14C20B283F600F1253C /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C53B14B20B283F600F1253C /* AddressBookUI.framework */; };
 		2C53B14E20B283FC00F1253C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C53B14D20B283FC00F1253C /* AudioToolbox.framework */; };
@@ -914,6 +916,8 @@
 		2CA51439227086880093E9DC /* QIMPhotoPreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA5141A227086880093E9DC /* QIMPhotoPreviewController.h */; };
 		2CA5143C227086BC0093E9DC /* UIImage+QIMImagePicker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA5143A227086BC0093E9DC /* UIImage+QIMImagePicker.h */; };
 		2CA5143D227086BC0093E9DC /* UIImage+QIMImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA5143B227086BC0093E9DC /* UIImage+QIMImagePicker.m */; };
+		2CA5144022718E3D0093E9DC /* QIMUIColorConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA5143F22718E3D0093E9DC /* QIMUIColorConfig.h */; };
+		2CA5144222718E550093E9DC /* QIMUIFontConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA5144122718E550093E9DC /* QIMUIFontConfig.h */; };
 		2CAFA2EF211ABCB5001F6D97 /* QIMQuickReplyExpandView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CAFA2ED211ABCB5001F6D97 /* QIMQuickReplyExpandView.h */; };
 		2CAFA2F0211ABCB5001F6D97 /* QIMQuickReplyExpandView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CAFA2EE211ABCB5001F6D97 /* QIMQuickReplyExpandView.m */; };
 		2CAFA2F3211AC76C001F6D97 /* QIMQuickReplySubTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CAFA2F1211AC76C001F6D97 /* QIMQuickReplySubTableView.h */; };
@@ -1195,6 +1199,8 @@
 		2C363B2D215E12C7003BA9FF /* QIMCommonUIFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMCommonUIFramework.h; sourceTree = "<group>"; };
 		2C4AA84920D0BED90022B023 /* QIMAppWindowManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMAppWindowManager.h; sourceTree = "<group>"; };
 		2C4AA84A20D0BED90022B023 /* QIMAppWindowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMAppWindowManager.m; sourceTree = "<group>"; };
+		2C4FCFAC2271F64000C5806D /* QIMSearchBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMSearchBar.h; sourceTree = "<group>"; };
+		2C4FCFAD2271F64000C5806D /* QIMSearchBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMSearchBar.m; sourceTree = "<group>"; };
 		2C53B14920B283F000F1253C /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		2C53B14B20B283F600F1253C /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		2C53B14D20B283FC00F1253C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -1947,6 +1953,8 @@
 		2CA5141A227086880093E9DC /* QIMPhotoPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMPhotoPreviewController.h; sourceTree = "<group>"; };
 		2CA5143A227086BC0093E9DC /* UIImage+QIMImagePicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+QIMImagePicker.h"; sourceTree = "<group>"; };
 		2CA5143B227086BC0093E9DC /* UIImage+QIMImagePicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+QIMImagePicker.m"; sourceTree = "<group>"; };
+		2CA5143F22718E3D0093E9DC /* QIMUIColorConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMUIColorConfig.h; sourceTree = "<group>"; };
+		2CA5144122718E550093E9DC /* QIMUIFontConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMUIFontConfig.h; sourceTree = "<group>"; };
 		2CAFA2ED211ABCB5001F6D97 /* QIMQuickReplyExpandView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMQuickReplyExpandView.h; sourceTree = "<group>"; };
 		2CAFA2EE211ABCB5001F6D97 /* QIMQuickReplyExpandView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMQuickReplyExpandView.m; sourceTree = "<group>"; };
 		2CAFA2F1211AC76C001F6D97 /* QIMQuickReplySubTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMQuickReplySubTableView.h; sourceTree = "<group>"; };
@@ -2460,6 +2468,7 @@
 		2C8AF86B20B1D3D400CF98EB /* QIMUIKit */ = {
 			isa = PBXGroup;
 			children = (
+				2CA5143E22718E220093E9DC /* QIMUIConfig */,
 				2C8AF9AF20B1D51A00CF98EB /* Application */,
 				2C8AF87520B1D51900CF98EB /* General */,
 				2C8AF86D20B1D3D400CF98EB /* Info.plist */,
@@ -2522,6 +2531,8 @@
 			children = (
 				2C8AF87920B1D51900CF98EB /* SearchBar.h */,
 				2C8AF87820B1D51900CF98EB /* SearchBar.m */,
+				2C4FCFAC2271F64000C5806D /* QIMSearchBar.h */,
+				2C4FCFAD2271F64000C5806D /* QIMSearchBar.m */,
 			);
 			path = SearchBar;
 			sourceTree = "<group>";
@@ -3969,6 +3980,15 @@
 			path = QIMImagePickerController;
 			sourceTree = "<group>";
 		};
+		2CA5143E22718E220093E9DC /* QIMUIConfig */ = {
+			isa = PBXGroup;
+			children = (
+				2CA5143F22718E3D0093E9DC /* QIMUIColorConfig.h */,
+				2CA5144122718E550093E9DC /* QIMUIFontConfig.h */,
+			);
+			path = QIMUIConfig;
+			sourceTree = "<group>";
+		};
 		2CAFA2EC211ABC29001F6D97 /* QIMQuickReply */ = {
 			isa = PBXGroup;
 			children = (
@@ -4320,6 +4340,7 @@
 				2C8AFF3720B1D8AB00CF98EB /* QTImagePreviewController.h in Headers */,
 				2C8AFD9B20B1D51C00CF98EB /* QIMMessageBrowserVC.h in Headers */,
 				2C8AFF6020B1D8AB00CF98EB /* QIMLocationCell.h in Headers */,
+				2C4FCFAE2271F64000C5806D /* QIMSearchBar.h in Headers */,
 				2CC93B9D21EC33C800EEC47D /* QIMArrowCellTableViewCell.h in Headers */,
 				2C8AFCE920B1D51B00CF98EB /* QIMOrganizationalVC.h in Headers */,
 				2C8AFCDA20B1D51B00CF98EB /* QIMFriendNodeItem.h in Headers */,
@@ -4391,6 +4412,7 @@
 				2C8AFDA820B1D51C00CF98EB /* QIMMenuImageView.h in Headers */,
 				2C8AFD5520B1D51C00CF98EB /* QIMImageDoodleView.h in Headers */,
 				2CC93B9B21EC33C800EEC47D /* QIMArrowView.h in Headers */,
+				2CA5144022718E3D0093E9DC /* QIMUIColorConfig.h in Headers */,
 				2C8AFDA320B1D51C00CF98EB /* QIMNotifyView.h in Headers */,
 				2C8AFE7620B1D51C00CF98EB /* QIMPublicNumberCardCommonCell.h in Headers */,
 				2C8AFC0E20B1D51B00CF98EB /* ShareLocationViewController.h in Headers */,
@@ -4681,6 +4703,7 @@
 				2C8AFE0820B1D51C00CF98EB /* QIMAboutVC.h in Headers */,
 				2C8AFCB820B1D51B00CF98EB /* QIMCommonUserInfoHeaderCell.h in Headers */,
 				2CC93B8921EC33C800EEC47D /* QIMNoteUICommonFramework.h in Headers */,
+				2CA5144222718E550093E9DC /* QIMUIFontConfig.h in Headers */,
 				2C8AFCD620B1D51B00CF98EB /* QIMFriendNotifyCell.h in Headers */,
 				2C8AFD7020B1D51C00CF98EB /* QIMMicroTourGuideCell.h in Headers */,
 				2C06A08322045DF6000CAF37 /* QTPHImagePickerManager.h in Headers */,
@@ -5123,6 +5146,7 @@
 				2C06A07B22045DE8000CAF37 /* QIMWorkMessageCell.m in Sources */,
 				2C8AFE8120B1D51C00CF98EB /* QIMPublicNumberOrderMsgCell.m in Sources */,
 				2C8AFBE320B1D51B00CF98EB /* QIMContactsManager8.m in Sources */,
+				2C4FCFAF2271F64000C5806D /* QIMSearchBar.m in Sources */,
 				2C06A07622045DE8000CAF37 /* QIMWorkCommentInputBar.m in Sources */,
 				2C8AFDD320B1D51C00CF98EB /* QIMGroupPassworCell.m in Sources */,
 				2C8AFF3520B1D8AB00CF98EB /* QTImageAssetTools.m in Sources */,

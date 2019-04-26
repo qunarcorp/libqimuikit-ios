@@ -29,6 +29,8 @@
 #import "QIMCustomPopViewController.h"
 #import "QIMCustomPresentationController.h"
 #import "QIMCustomPopManager.h"
+#import "QIMSearchBar.h"
+
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
@@ -106,7 +108,9 @@
 
 @property (nonatomic, strong) NSArray *moreActionArray;
 
-@property (nonatomic, strong) UISearchBar *searchBar;
+//@property (nonatomic, strong) UISearchBar *searchBar;
+
+@property (nonatomic, strong) QIMSearchBar *searchBar;
 
 @end
 
@@ -147,12 +151,12 @@
 
 - (UIView *)otherPlatformView {
     if (!_otherPlatformView) {
-        _otherPlatformView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 40)];
-        _otherPlatformView.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE alpha:1.0];
+        _otherPlatformView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 49)];
+        _otherPlatformView.backgroundColor = qim_otherPlatformViewBgColor;
         UIImageView *pcIconView = [[UIImageView alloc] initWithFrame:CGRectMake(18, 8, 24, 24)];
-        pcIconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f491" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]];
+        pcIconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_otherPlatformViewIcon_font size:20 color:qim_otherPlatformViewIconColor]];
         [_otherPlatformView addSubview:pcIconView];
-        UILabel *pcTipLabel = [[UILabel alloc] initWithFrame:CGRectMake(pcIconView.right + 24, 10, 300, 20)];
+        UILabel *pcTipLabel = [[UILabel alloc] initWithFrame:CGRectMake(pcIconView.right + 15, 10, 300, 20)];
         NSString *platTitle = @"QTalk";
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
             platTitle = @"QTalk";
@@ -162,15 +166,19 @@
             platTitle = @"Startalk";
         }
         pcTipLabel.text = [NSString stringWithFormat:@"桌面%@已登录", platTitle];
-        pcTipLabel.textColor = [UIColor qim_colorWithHex:0x616161];
+        pcTipLabel.textColor = qim_otherPlatformViewTextColor;
         pcTipLabel.font = [UIFont systemFontOfSize:14];
         [_otherPlatformView addSubview:pcTipLabel];
         
-        UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(self.right - 11 - 14, 12, 14, 14)];
-        arrowView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3c8" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]];
+        UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(self.right - 5 - 34, 7.5, 34, 34)];
+        arrowView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_otherPlatformViewArrow_font size:34 color:qim_otherPlatformViewRightArrowColor]];
         [_otherPlatformView addSubview:arrowView];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFileTrans)];
         [_otherPlatformView addGestureRecognizer:tap];
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _otherPlatformView.height - 0.5f, _otherPlatformView.width, 0.5f)];
+        lineView.backgroundColor = [UIColor qim_colorWithHex:0xEAEAEA];
+        [_otherPlatformView addSubview:lineView];
     }
     return _otherPlatformView;
 }
@@ -193,7 +201,7 @@
         [logoView setBackgroundColor:[UIColor qim_colorWithHex:0x787878 alpha:1]];
         [headerView addSubview:logoView];
         if ([self.rootViewController isKindOfClass:[QIMMainVC class]] && [[QIMKit sharedInstance] getIsIpad] == NO) {
-            [headerView addSubview:self.rootViewController.searchBar];
+            [headerView addSubview:self.searchBar];
         } else {
             [headerView addSubview:self.searchBar];
         }
@@ -212,7 +220,7 @@
     if (!_tableView) {
         
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.width, self.height) style:UITableViewStylePlain];
-        _tableView.backgroundColor = [UIColor qim_colorWithHex:0xf5f5f5 alpha:1.0f];
+        _tableView.backgroundColor = qim_sessionViewBgColor;
         _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.showsVerticalScrollIndicator = YES;
@@ -223,7 +231,7 @@
         _tableView.estimatedRowHeight = 0;
         _tableView.estimatedSectionHeaderHeight = 0;
         _tableView.estimatedSectionFooterHeight = 0;
-        _tableView.separatorInset = UIEdgeInsetsMake(0, 12, 0, 0.5);           //top left bottom right 左右边距相同
+        _tableView.separatorInset = UIEdgeInsetsMake(0, 74, 0, 0.5);           //top left bottom right 左右边距相同
         _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         _tableView.tableFooterView = [UIView new];
         if (@available(iOS 11.0, *)) {
@@ -255,6 +263,9 @@
     NSString *wikiHost = [[QIMKit sharedInstance] qimNav_WikiUrl];
     self.moreActionArray = [[NSMutableArray alloc] initWithCapacity:3];
     NSArray *moreActionImages = nil;
+    self.moreActionArray       = @[ @"扫一扫", @"未读消息", @"发起聊天", @"一键已读"];
+    moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_scan_font size:28 color:qim_rightArrowImageColor]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_notread_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_gototalk_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_clearnotread_font size:28 color:qim_rightArrowImageColor]]];
+    /*
     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         if (qCloudHost.length > 0 && wikiHost.length > 0) {
             self.moreActionArray = @[@"扫一扫", @"发起聊天", @"一键已读", @"随记", @"Wiki"];
@@ -272,15 +283,16 @@
         self.moreActionArray       = @[@"扫一扫", @"发起聊天"];
         moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
     }
+    */
     //    e23f
     point = CGPointMake(rect3.origin.x + rect3.size.width / 2 ,rect3.origin.y + rect3.size.height / 2);
-    _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:120 Height:45 * self.moreActionArray.count Type:Type_UpRight Color:[UIColor colorWithRed:0.2737 green:0.2737 blue:0.2737 alpha:1.0] ];
+    _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:135 Height:50 * self.moreActionArray.count Type:Type_UpRight Color:[UIColor whiteColor]];
     _arrowPopView.dataArray = self.moreActionArray;
-    _arrowPopView.backView.layer.cornerRadius = 5;
+    _arrowPopView.backView.layer.cornerRadius = 5.0f;
     _arrowPopView.images = moreActionImages;
-    _arrowPopView.row_height      = 45;
+    _arrowPopView.row_height      = 50;
     _arrowPopView.delegate        = self;
-    _arrowPopView.titleTextColor  = [UIColor colorWithRed:0.2669 green:0.765 blue:1.0 alpha:1.0];
+    _arrowPopView.titleTextColor  = qim_rightArrowTitleColor;
     return _arrowPopView;
 }
 
@@ -288,14 +300,22 @@
     if (!_moreBtn) {
         UIButton *moreActionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         moreActionBtn.frame = CGRectMake(0, 0, 28, 28);
-        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3e1" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
-        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3e1" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateSelected];
+        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_rightMoreBtn_font size:24 color:qim_rightMoreBtnColor]] forState:UIControlStateNormal];
+        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_rightMoreBtn_font size:24 color:qim_rightMoreBtnColor]] forState:UIControlStateSelected];
         [moreActionBtn addTarget:self action:@selector(doMoreAction:) forControlEvents:UIControlEventTouchUpInside];
         _moreBtn = moreActionBtn;
     }
     return _moreBtn;
 }
 
+- (QIMSearchBar *)searchBar {
+    if (!_searchBar) {
+        _searchBar = [[QIMSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.width, 66)];
+    }
+    return _searchBar;
+}
+
+/*
 - (UISearchBar *)searchBar {
     if (!_searchBar) {
         _searchBar = [[UISearchBar alloc] init];
@@ -311,6 +331,7 @@
     }
     return _searchBar;
 }
+*/
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
@@ -1249,6 +1270,8 @@
             [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"note" withDescription:@"wiki"];
 #endif
         }
+    } else if ([moreActionId isEqualToString:@"未读消息"]) {
+        [QIMFastEntrance openNotReadMessageVC];
     } else {
         
     }

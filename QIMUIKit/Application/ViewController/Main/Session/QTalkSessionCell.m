@@ -168,7 +168,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 + (CGFloat)getCellHeight{
     
-    return NAME_LABEL_FONT + CONTENT_LABEL_FONT + 40;
+    return 71;
 }
 
 #pragma mark - setter and getter

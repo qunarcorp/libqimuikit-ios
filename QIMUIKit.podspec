@@ -28,27 +28,36 @@ Pod::Spec.new do |s|
     ph.source_files = "QIMUIKit/QIMNotificationManager*.{h,m,c,mm}", "QIMUIKit/QIMJumpURLHandle*.{h,m,c,mm}", "QIMUIKit/QIMFastEntrance*.{h,m,c,mm}", "QIMUIKit/QIMAppWindowManager*.{h,m,c,mm}", "QIMUIKit/QIMCommonUIFramework*.*{h,m,c,mm}", "QIMUIKit/QIMRemoteNotificationManager*.{h,m,c,mm}"
   end
 
+  s.subspec 'QIMAppUIConfig' do |config|
+    config.public_header_files = "QIMUIKit/QIMUIConfig/**/*.{h}"
+    config.source_files = "QIMUIKit/QIMUIConfig/**/*.{h,m}"
+  end
+  
   s.subspec 'QIMAppUI' do |app|
     app.public_header_files = "QIMUIKit/Application/**/*.{h}"
     app.source_files = "QIMUIKit/Application/**/*.{h,m,c,mm}"
     app.dependency 'QIMUIKit/PublicUIHeader'
+    app.dependency 'QIMUIKit/QIMAppUIConfig'
   end
 
   s.subspec 'QIMGeneralUI' do |generalUI|
     generalUI.public_header_files = "QIMUIKit/General/**/*.{h}"
     generalUI.source_files = "QIMUIKit/General/**/*.{h,m,c,mm}"
     generalUI.dependency 'QIMUIKit/PublicUIHeader'
+    generalUI.dependency 'QIMUIKit/QIMAppUIConfig'
   end
 
   s.subspec 'QIMMeUI' do |me|
     me.public_header_files = "QIMUIKit/Me/**/*.{h}"
     me.source_files = "QIMUIKit/Me/**/*.{h,m,c,mm}"
     me.dependency 'QIMUIKit/PublicUIHeader'
+    me.dependency 'QIMUIKit/QIMAppUIConfig'
   end
     
   s.subspec 'QIMUISDK' do |uisdk|
     uisdk.public_header_files = "QIMSDK/QIMSDK/**/*.{h}"
     uisdk.source_files = "QIMSDK/QIMSDK/*.{h,m}"
+    uisdk.dependency 'QIMUIKit/QIMAppUIConfig'
   end
 
   s.subspec 'QIMCells' do |cells|
@@ -56,12 +65,14 @@ Pod::Spec.new do |s|
       cells.source_files = "QIMUIKit/QTalkMessageBaloon/**/*.{h,m,c}"
       cells.resource_bundles = {'QIMSourceCode' => ['QIMUIKit/QTalkMessageBaloon/**/*.{html,js,css}']}
       cells.dependency 'QIMUIKit/PublicUIHeader'
+      cells.dependency 'QIMUIKit/QIMAppUIConfig'
   end
 
   s.subspec 'ImagePicker' do |imagePicker|
       imagePicker.public_header_files = "QIMUIKit/QTalkImagePicker/**/*{h}"
       imagePicker.source_files = "QIMUIKit/QTalkImagePicker/**/*{h,m,c}"
       imagePicker.dependency 'QIMUIKit/PublicUIHeader'
+      imagePicker.dependency 'QIMUIKit/QIMAppUIConfig'
   end
 
   s.subspec 'QIMMWPhotoBrowser' do |photoBrowser|
@@ -72,6 +83,7 @@ Pod::Spec.new do |s|
       photoBrowser.dependency 'MBProgressHUD', '~> 0.9'
       photoBrowser.dependency 'DACircularProgress', '~> 2.3'
       photoBrowser.dependency 'QIMUIKit/PublicUIHeader'
+      photoBrowser.dependency 'QIMUIKit/QIMAppUIConfig'
       
       # SDWebImage
       # 3.7.2 contains bugs downloading local files
@@ -82,8 +94,10 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'QIMUIVendorKit' do |vendorkit|
-    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMImagePickerController/**/*{h,m}']
-    vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib', 'QIMUIVendorKit/QIMImagePickerController/**/*.{bundle}']
+    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}']
+#    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMImagePickerController/**/*{h,m}']
+    vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib']
+#    vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib', 'QIMUIVendorKit/QIMImagePickerController/**/*.{bundle}']
     vendorkit.frameworks   = 'Photos'
   end
 
@@ -94,6 +108,8 @@ Pod::Spec.new do |s|
     note.resource = ["QIMNoteUI/CKEditor5.bundle", "QIMNoteUI/QTPassword/EditPasswordView.xib"]
     note.dependency 'QIMUIKit/QIMUIVendorKit'
     note.dependency 'QIMUIKit/PublicUIHeader'
+    note.dependency 'QIMUIKit/QIMAppUIConfig'
+
   end
 
   s.subspec 'QIMRN' do |rn|
@@ -111,6 +127,7 @@ Pod::Spec.new do |s|
     puts '.......引用QIMUIKit-NORN源码........'
     norn.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMUIKit.xcassets", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle"
     norn.dependency 'QIMUIKit/PublicUIHeader'
+    norn.dependency 'QIMUIKit/QIMAppUIConfig'
     norn.dependency 'QIMUIKit/QIMUISDK'
     norn.dependency 'QIMUIKit/QIMAppUI'
     norn.dependency 'QIMUIKit/QIMGeneralUI'
@@ -126,6 +143,7 @@ Pod::Spec.new do |s|
     puts '.......引用QIMUIKit-FULL源码........'
     full.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMUIKit.xcassets", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle", "QIMRNKit/QIMRNKit.bundle"
     full.dependency 'QIMUIKit/PublicUIHeader'
+    full.dependency 'QIMUIKit/QIMAppUIConfig'
     full.dependency 'QIMUIKit/QIMUISDK'
     full.dependency 'QIMUIKit/QIMAppUI'
     full.dependency 'QIMUIKit/QIMGeneralUI'

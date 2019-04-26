@@ -402,7 +402,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     if (!_addGroupMember) {
         
         _addGroupMember = [[UIButton alloc] initWithFrame:CGRectMake(40, 2, 37, 37)];
-        [_addGroupMember setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0e0" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
+        [_addGroupMember setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_groupchat_rightCard_font size:24 color:qim_groupchat_rightCard_Color]] forState:UIControlStateNormal];
         [_addGroupMember setAccessibilityIdentifier:@"QIMGroupCard"];
         [_addGroupMember addTarget:self action:@selector(addPersonToPgrup:) forControlEvents:UIControlEventTouchUpInside];
     }
