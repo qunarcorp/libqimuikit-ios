@@ -339,7 +339,6 @@
     if (!rootNav) {
         rootNav = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
     }
-    pushVc.hidesBottomBarWhenPushed = YES;
     [rootNav pushViewController:pushVc animated:YES];
     [self updateNotReadMsgList];
 }

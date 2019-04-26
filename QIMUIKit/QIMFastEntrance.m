@@ -431,7 +431,6 @@ static QIMFastEntrance *_sharedInstance = nil;
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         UIViewController *chatVc = [[QIMFastEntrance sharedInstance] getFastChatVCByXmppId:userId WithRealJid:realJid WithChatType:chatType WithFastMsgTimeStamp:fastMsgTime];
-        chatVc.hidesBottomBarWhenPushed = YES;
         [navVC pushViewController:chatVc animated:YES];
     });
 }
@@ -502,7 +501,6 @@ static QIMFastEntrance *_sharedInstance = nil;
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
-        chatVC.hidesBottomBarWhenPushed = YES;
         [navVC pushViewController:chatVC animated:YES];
     });
 }

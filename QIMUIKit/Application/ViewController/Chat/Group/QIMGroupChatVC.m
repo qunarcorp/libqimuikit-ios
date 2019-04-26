@@ -1234,7 +1234,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     if (!_chatBGImageView) {
         
-        _chatBGImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 40)];
+        _chatBGImageView = [[UIImageView alloc] initWithFrame:_tableView.bounds];
         _chatBGImageView.contentMode = UIViewContentModeScaleAspectFill;
         _chatBGImageView.clipsToBounds = YES;
     }

@@ -882,27 +882,36 @@ RCT_EXPORT_METHOD(selectGroupMemberForKick:(NSDictionary *)param :(RCTResponseSe
 RCT_EXPORT_METHOD(kickGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
     NSString *groupId = [param objectForKey:@"groupId"];
     NSDictionary *selectGroupMemebers = [param objectForKey:@"members"];
-    BOOL kickSuccess = NO;
-    for (NSDictionary *groupMemberDic in [selectGroupMemebers allValues]) {
-        NSString *name = [groupMemberDic objectForKey:@"name"];
-        NSString *xmppId = [groupMemberDic objectForKey:@"xmppId"];
-        kickSuccess = [[QIMKit sharedInstance] removeGroupMemberWithName:name WithJid:xmppId ForGroupId:groupId];
-    }
-    if (kickSuccess == YES) {
-        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"closeKickMembers" body:@{}];
-        NSString *str = @"踢出群成员成功";
+    if (selectGroupMemebers.count <= 0) {
+        NSString *str = @"请选择要踢出的成员";
         dispatch_async(dispatch_get_main_queue(), ^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
                 [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
             });
         });
     } else {
-        NSString *str = @"踢出群成员失败";
-        dispatch_async(dispatch_get_main_queue(), ^{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
-                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+        BOOL kickSuccess = NO;
+        for (NSDictionary *groupMemberDic in [selectGroupMemebers allValues]) {
+            NSString *name = [groupMemberDic objectForKey:@"name"];
+            NSString *xmppId = [groupMemberDic objectForKey:@"xmppId"];
+            kickSuccess = [[QIMKit sharedInstance] removeGroupMemberWithName:name WithJid:xmppId ForGroupId:groupId];
+        }
+        if (kickSuccess == YES) {
+            [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"closeKickMembers" body:@{}];
+            NSString *str = @"踢出群成员成功";
+            dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
+                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                });
             });
-        });
+        } else {
+            NSString *str = @"踢出群成员失败";
+            dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
+                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                });
+            });
+        }
     }
 }
 
