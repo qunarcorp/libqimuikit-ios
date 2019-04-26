@@ -65,6 +65,8 @@
 
 @property (nonatomic, strong) UIButton *scanBtn;
 
+@property (nonatomic, strong) UIButton *momentBtn;
+
 @property (nonatomic, copy) NSString *navTitle;
 
 @property (nonatomic, copy) NSString *appNetWorkTitle;
@@ -266,8 +268,9 @@ static dispatch_once_t __onceMainToken;
                 weakSelf.navTitle = nil;
                 [[QIMNavBackBtn sharedInstance] updateNotReadCount:0];
             } else {
-                NSString *appName = [QIMKit getQIMProjectTitleName];
-                weakSelf.navTitle = [NSString stringWithFormat:@"%@(%ld)", appName, (long)appCount];
+//                NSString *appName = [QIMKit getQIMProjectTitleName];
+//                weakSelf.navTitle = [NSString stringWithFormat:@"%@(%ld)", appName, (long)appCount];
+                weakSelf.navTitle = @"消息";
                 [[QIMNavBackBtn sharedInstance] updateNotReadCount:appCount];
             }
             [weakSelf updateNavBarAppCount];
@@ -455,7 +458,7 @@ static dispatch_once_t __onceMainToken;
     _rootView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
     [_rootView setAutoresizesSubviews:YES];
     [_rootView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];
-    [_rootView setBackgroundColor:[UIColor qim_colorWithHex:0xfafafa alpha:1.0]];
+    [_rootView setBackgroundColor:qim_mainRootViewBgColor];
     [_rootView setContentMode:UIViewContentModeScaleToFill];
     [self.view addSubview:_rootView];
 }
@@ -463,14 +466,18 @@ static dispatch_once_t __onceMainToken;
 - (void)initTotalTabBarArray {
     //这里用Id做tabBar的唯一标示，可以防止PM突然让改个顺序，加个tab
     self.totalTabBarArray = [NSMutableArray arrayWithCapacity:4];
-    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_chat"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f3" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3e4" size:28 color:[UIColor qtalkIconSelectColor]]]}];
+    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_chat"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_chat_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_chat_font size:28 color:qim_tabImageSelectedColor]]}];
+    /*
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString]  isEqualToString:@"appstore"]) {
-        [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_travel"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e403" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e402" size:28 color:[UIColor qtalkIconSelectColor]]]}];
+        [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_travel"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_travel_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_travel_font size:28 color:qim_tabImageSelectedColor]]}];
     }
-    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_contact"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3e3" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4d8" size:28 color:[UIColor qtalkIconSelectColor]]]}];
-    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_discover"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4be" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f4bd" size:28 color:[UIColor qtalkIconSelectColor]]]}];
+    */
+    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_contact"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_contact_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_contact_font size:28 color:qim_tabImageSelectedColor]]}];
+    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_discover"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_discover_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_discover_font size:28 color:qim_tabImageSelectedColor]]}];
     
-    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_myself"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e29b" size:28 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e29c" size:28 color:[UIColor qtalkIconSelectColor]]]}];
+    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_moment"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageSelectedColor]]}];
+    
+    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_myself"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_myself_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_myself_font size:28 color:qim_tabImageSelectedColor]]}];
     _tabBar = [[QIMCustomTabBar alloc] initWithItemCount:self.totalTabBarArray.count WithFrame:CGRectMake(0, _rootView.height - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT] - 3.5, _rootView.width, kTabBarHeight)];
     [_tabBar setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
     [_tabBar setDelegate:self];
@@ -487,8 +494,8 @@ static dispatch_once_t __onceMainToken;
         [_tabBar setTitle:title ByItemIndex:i];
         [_tabBar setNormalImage:normalImage ByItemIndex:i];
         [_tabBar setSelectedImage:selectImage ByItemIndex:i];
-        [_tabBar setNormalTitleColor:[UIColor qim_colorWithHex:0x616161 alpha:1.0] ByItemIndex:i];
-        [_tabBar setSelectedTitleColor:[UIColor qtalkIconSelectColor] ByItemIndex:i];
+        [_tabBar setNormalTitleColor:qim_tabTitleNormalColor ByItemIndex:i];
+        [_tabBar setSelectedTitleColor:qim_tabTitleSelectedColor ByItemIndex:i];
         [_tabBar setAccessibilityIdentifier:title ByItemIndex:i];
     }
 }
@@ -499,7 +506,7 @@ static dispatch_once_t __onceMainToken;
     _contentView = [[UIView alloc] initWithFrame:frame];
     [_contentView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin];
     [_contentView setContentMode:UIViewContentModeScaleToFill];
-    [_contentView setBackgroundColor:[UIColor qim_colorWithHex:0xfafafa alpha:1.0]];
+    [_contentView setBackgroundColor:qim_mainRootViewBgColor];
     [_rootView addSubview:_contentView];
     [self initTotalTabBarArray];
 }
@@ -747,6 +754,8 @@ static dispatch_once_t __onceMainToken;
 #if __has_include("RNSchemaParse.h")
         [[NSNotificationCenter defaultCenter] postNotificationName:@"QTalkSuggestRNViewWillAppear" object:nil];
 #endif
+    } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]]) {
+        
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
         
         [_contentView addSubview:self.mineView];
@@ -907,6 +916,13 @@ static dispatch_once_t __onceMainToken;
             
         }
         
+    } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]]) {
+        
+        
+        [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]];
+        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.momentBtn];
+        [self.navigationItem setRightBarButtonItem:rightBarItem];
+
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
         
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]];
@@ -939,6 +955,17 @@ static dispatch_once_t __onceMainToken;
     return _scanBtn;
 }
 
+- (UIButton *)momentBtn {
+    if (!_momentBtn) {
+        _momentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _momentBtn.frame = CGRectMake(0, 0, 28, 28);
+        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_moment_font size:24 color:qim_nav_moment_color]] forState:UIControlStateNormal];
+        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_moment_font size:24 color:qim_nav_moment_color]] forState:UIControlStateSelected];
+        [_momentBtn addTarget:self action:@selector(myOwnerMoment:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _momentBtn;
+}
+
 - (void)scanQrcode:(id)sender {
     [QIMFastEntrance openQRCodeVC];
 #if __has_include("QIMAutoTracker.h")
@@ -951,6 +978,13 @@ static dispatch_once_t __onceMainToken;
     [self.navigationController pushViewController:indexVC animated:YES];
 #if __has_include("QIMAutoTracker.h")
     [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"add a contact" withDescription:@"添加联系人"];
+#endif
+}
+
+- (void)myOwnerMoment:(id)sender {
+    [[QIMFastEntrance sharedInstance] openUserWorkWorldWithParam:@{@"UserId":[[QIMKit sharedInstance] getLastJid]}];
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"push my moment" withDescription:@"进去我的驼圈"];
 #endif
 }
 

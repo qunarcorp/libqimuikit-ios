@@ -594,7 +594,7 @@
     UIView *rightItemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
     UIButton *cardButton = [[UIButton alloc] initWithFrame:CGRectMake(rightItemView.right - 30, 9, 30, 30)];
     [cardButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-    [cardButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0eb" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
+    [cardButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_singlechat_rightCard_font size:24 color:qim_singlechat_rightCard_Color]] forState:UIControlStateNormal];
     [cardButton setAccessibilityIdentifier:@"rightUserCardBtn"];
     [cardButton addTarget:self action:@selector(onCardClick) forControlEvents:UIControlEventTouchUpInside];
     [rightItemView addSubview:cardButton];

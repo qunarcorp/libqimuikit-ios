@@ -49,7 +49,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        self.backgroundColor = [UIColor qim_colorWithHex:0xfafafa alpha:1.0];
+        self.backgroundColor = qim_mainRootViewBgColor;
         
         UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.width, self.height)];
         [self addSubview:toolbar];
@@ -63,7 +63,7 @@
         for (int i = 0 ; i < _itemCount ; i++ ) {
             
             UIView *tapView = [[UIView alloc] initWithFrame:CGRectMake(buttonWidth*i, 2, buttonWidth, self.height)];
-            [tapView setBackgroundColor:[UIColor qim_colorWithHex:0xfafafa alpha:1.0]];
+            [tapView setBackgroundColor:qim_mainRootViewBgColor];
             [tapView setTag:kItemViewPirex+i];
             [self addSubview:tapView];
             
@@ -80,7 +80,7 @@
             longGes.allowableMovement = 1000;
             [tapView addGestureRecognizer:longGes];
             
-             [singleTapGestureRecognizer requireGestureRecognizerToFail:doubleTapGestureRecognizer];
+            [singleTapGestureRecognizer requireGestureRecognizerToFail:doubleTapGestureRecognizer];
             CustomTabBarButton *itemButton = [[CustomTabBarButton alloc] initWithFrame:CGRectMake(buttonWidth*i, 2, buttonWidth, self.height)];
             [itemButton setTag:kItemButtonPirex+i];
             [itemButton addTarget:self action:@selector(onItemClick:) forControlEvents:UIControlEventTouchUpInside];

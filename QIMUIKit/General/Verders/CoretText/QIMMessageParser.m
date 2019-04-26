@@ -196,7 +196,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
         else if ([type hasPrefix:@"url"]) {
             NSString * url  = value;
             if (url.length) {
-                UIColor * textColor = direction == QIMMessageDirection_Sent ? [UIColor qim_colorWithHex:0x00fffd alpha:1.0] : [UIColor qim_colorWithHex:0x009ad6 alpha:1.0];
+                UIColor * textColor = direction == QIMMessageDirection_Sent ? qim_messageLinkurl_color : qim_messageLinkurl_color;
                 [storages addObject:[self parseLinkRunFromDictinary:@{@"content":url?url:@"",@"fontSize":@(kMessageTextFontSize),@"color":textColor,@"linkUrl":url?url:@"",@"range":NSStringFromRange(match.range)}]];
             }
         }
@@ -312,7 +312,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
                 NSString *url = [[match URL] absoluteString];
                 NSRange urlRange = [match range];
                 if (urlRange.location + urlRange.length <= tStr.length && urlRange.length + urlRange.location > 0) {
-                    UIColor *linkTextColor = direction == QIMMessageDirection_Sent ? [UIColor qim_colorWithHex:0x00fffd alpha:1.0] : [UIColor qim_colorWithHex:0x009ad6 alpha:1.0];
+                    UIColor *linkTextColor = direction == QIMMessageDirection_Sent ? qim_messageLinkurl_color : qim_messageLinkurl_color;
                     [storages addObject:[self parseLinkRunFromDictinary:@{@"content":url?url:@"",@"fontSize":@(kMessageTextFontSize),@"color":linkTextColor,@"linkUrl":url,@"range":NSStringFromRange(match.range)}]];
                     startLoc = match.range.location + match.range.length;
                 }
@@ -320,7 +320,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
                 NSString *phoneNumber = [match phoneNumber];
                 NSRange phoneNumberRange = [match range];
                 if (phoneNumberRange.location + phoneNumberRange.length <= tStr.length && phoneNumberRange.length + phoneNumberRange.location > 0) {
-                    UIColor * phoneNumColor = direction == QIMMessageDirection_Sent ? [UIColor qim_colorWithHex:0x00fffd alpha:1.0] : [UIColor qim_colorWithHex:0x009ad6 alpha:1.0];
+                    UIColor * phoneNumColor = direction == QIMMessageDirection_Sent ? qim_messageLinkurl_color : qim_messageLinkurl_color;
                     [storages addObject:[self parsePhoneNumberRunFromDictionary:@{@"content":phoneNumber?phoneNumber:@"", @"fontSize":@(kMessageTextFontSize), @"phoneNumColor":phoneNumColor}]];
                     startLoc = match.range.location + match.range.length;
                 }

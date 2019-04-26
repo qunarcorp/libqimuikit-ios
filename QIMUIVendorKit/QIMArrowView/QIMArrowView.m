@@ -8,7 +8,7 @@
 
 #import "QIMArrowView.h"
 
-#define Length 5
+#define Length 6.5
 #define RGB(r, g, b)    [UIColor colorWithRed:(r)/255.f green:(g)/255.f blue:(b)/255.f alpha:1.f]
 #define SPACE 15
 

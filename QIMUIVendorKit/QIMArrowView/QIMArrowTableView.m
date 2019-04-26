@@ -31,11 +31,12 @@
     
     if (!_tableView) {
         
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0,self.width, self.height - 1) style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 10, self.width, self.height - 1) style:UITableViewStylePlain];
         _tableView.dataSource = self;
-        _tableView.backgroundColor = [UIColor clearColor];
+        _tableView.backgroundColor = [UIColor whiteColor];
         _tableView.delegate = self;
         _tableView.scrollEnabled = NO;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     }
     return _tableView;
 }
@@ -61,16 +62,16 @@
     static NSString *cellIdentifier = @"cellIdentifier2";
     QIMArrowCellTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
-        cell = [[[NSBundle mainBundle] loadNibNamed:@"QIMArrowCellTableViewCell" owner:self options:nil] lastObject];
+        cell = [[QIMArrowCellTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     cell.backgroundColor = [UIColor clearColor];
-    cell.myImageView.image = self.images[indexPath.row];
-    cell.descLabel.text = self.dataArray[indexPath.row];
+    cell.iconView.image = self.images[indexPath.row];
+    cell.titleLabel.text = self.dataArray[indexPath.row];
     cell.accessibilityIdentifier = self.dataArray[indexPath.row];
-    cell.descLabel.font = [UIFont systemFontOfSize:14];
-    cell.descLabel.numberOfLines = 0;
+    cell.titleLabel.font = [UIFont systemFontOfSize:15];
+    cell.titleLabel.numberOfLines = 0;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.descLabel.textColor = [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0];
+    cell.titleLabel.textColor = [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0];
     if (self.dataArray.count == 1) {
         self.tableView.bounces = NO;
     }

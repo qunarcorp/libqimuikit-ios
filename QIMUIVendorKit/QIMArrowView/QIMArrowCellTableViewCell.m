@@ -8,11 +8,23 @@
 
 #import "QIMArrowCellTableViewCell.h"
 
+@interface QIMArrowCellTableViewCell ()
+
+@end
+
 @implementation QIMArrowCellTableViewCell
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    // Initialization code
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        self.iconView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 6, 28, 28)];
+        self.iconView.backgroundColor = [UIColor whiteColor];
+        [self.contentView addSubview:self.iconView];
+        
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.iconView.frame) + 8, 10, 100, 20)];
+        [self.contentView addSubview:self.titleLabel];
+    }
+    return self;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
