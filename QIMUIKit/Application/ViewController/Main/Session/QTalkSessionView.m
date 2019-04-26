@@ -671,7 +671,6 @@
             }
             NSLog(@"跳转的RootVc3 ：%@ ", rootNav);
             NSLog(@"跳转的PushVc : %@", pushVc);
-            pushVc.hidesBottomBarWhenPushed = YES;
             [rootNav pushViewController:pushVc animated:YES];
         }
         _willRefreshTableView = YES;
