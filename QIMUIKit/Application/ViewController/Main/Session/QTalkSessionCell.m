@@ -39,6 +39,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 @property (nonatomic, strong) UIImageView *headerView;      //头像
 
+@property (nonatomic, strong) UIImageView *stickView;       //置顶标示View
+
 @property (nonatomic, strong) UILabel *nameLabel;           //Name
 
 @property (nonatomic, strong) UILabel *contentLabel;        //消息Content
@@ -183,6 +185,14 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     return _headerView;
 }
 
+- (UIImageView *)stickView {
+    if (!_stickView) {
+        _stickView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 11, 11)];
+        _stickView.image = [UIImage imageNamed:@"qim_sessionlist_sticky"];
+    }
+    return _stickView;
+}
+
 - (UIImageView *)muteNotReadView {
     if (!_muteNotReadView) {
         _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake(self.headerView.right - 5, self.headerView.top - 5, 10, 10)];
@@ -321,7 +331,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_deleteBtn) {
         
-        _deleteBtn = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        _deleteBtn = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"移除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
             
             if (self.sessionScrollDelegate && [self.sessionScrollDelegate respondsToSelector:@selector(deleteSession:)]) {
                 
@@ -346,7 +356,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         }
         [self.containingTableView setEditing:NO animated:YES];
     }];
-    _stickyBtn.backgroundColor = [UIColor grayColor];
+    _stickyBtn.backgroundColor = [UIColor qim_colorWithHex:0xC8C9CB];
     
     return _stickyBtn;
 }
@@ -1110,8 +1120,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     [self refreshNotReadCount];
     self.needRefreshNotReadCount = NO;
     if (self.isStick) {
-        [self setBackgroundColor:[UIColor spectralColorLightColor]];
+        _stickView.hidden = NO;
+        [self addSubview:self.stickView];
+//        [self setBackgroundColor:[UIColor spectralColorLightColor]];
     } else {
+        _stickView.hidden = YES;
         [self setBackgroundColor:[UIColor whiteColor]];
     }
 }

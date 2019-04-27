@@ -138,7 +138,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     UIImageView *_chatBGImageView;
     
     NSMutableDictionary *_gUserNameColorDic;
-   QIMMessageModel *_resendMsg;
+    QIMMessageModel *_resendMsg;
     
     NSString *_replyMsgId;
     NSString *_replyUser;

@@ -40,6 +40,16 @@
 #define qim_nav_moment_color   [UIColor qim_colorWithHex:0x666666 alpha:1.0]    //驼圈右上角
 
 #define qim_messageText_color  [UIColor qim_colorWithHex:0x333333 alpha:1.0]    //文本消息颜色
-#define qim_messageLinkurl_color [UIColor qim_colorWithHex:0x48A3FF alpha:1.0]         //link颜色
+#define qim_messageLinkurl_color [UIColor qim_colorWithHex:0x48A3FF alpha:1.0]         //link颜色back
+
+#define qim_backButtonTextBgColor [UIColor qim_colorWithHex:0xF2F2F2 alpha:1.0]     //返回按钮字体bg
+#define qim_backButtonTextBgColor [UIColor qim_colorWithHex:0xF2F2F2 alpha:1.0]     //返回按钮字体bg
+#define qim_backButtonTextColor [UIColor qim_colorWithHex:0xA1A1A1 alpha:1.0]     //返回按钮字体Color
+
+#define qim_messageLeftBubbleBgColor [UIColor qim_colorWithHex:0xFEFFFE alpha:1.0] //左侧气泡颜色
+#define qim_messageRightBubbleBgColor [UIColor qim_colorWithHex:0xC5EAEE alpha:1.0] //右侧气泡颜色
+
+#define qim_messageLeftBubbleTextColor [UIColor qim_colorWithHex:0x333333 alpha:1.0] //左侧气泡字体颜色
+#define qim_messageRightBubbleTextColor [UIColor qim_colorWithHex:0x555555 alpha:1.0] //右侧气泡字体颜色
 
 #endif /* QIMUIColorConfig_h */

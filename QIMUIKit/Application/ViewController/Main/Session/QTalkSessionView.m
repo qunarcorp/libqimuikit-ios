@@ -52,7 +52,7 @@
 @end
 #endif
 
-@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate, UISearchBarDelegate> {
+@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate, UISearchBarDelegate, QIMSearchBarDelegate> {
     MBProgressHUD *_tipHUD;
     BOOL _canWrite;
     CABasicAnimation *_writingAnimation;
@@ -193,7 +193,7 @@
             appendHeight += appendView.height;
         }
         
-        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, ([self.rootViewController isKindOfClass:[QIMMainVC class]] ? self.rootViewController.searchBar.height : 0) + appendHeight)];
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, ([self.rootViewController isKindOfClass:[QIMMainVC class]] ? self.searchBar.height : 0) + appendHeight)];
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             headerView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_leftWidth], self.searchBar.height + appendHeight);
         }
@@ -311,6 +311,7 @@
 - (QIMSearchBar *)searchBar {
     if (!_searchBar) {
         _searchBar = [[QIMSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.width, 66)];
+        _searchBar.delegate = self;
     }
     return _searchBar;
 }
@@ -1299,6 +1300,19 @@
 #endif
 - (void)updateTableViewHeaderView {
     [self.tableView setTableHeaderView:[self tableViewHeaderView]];
+}
+
+#pragma mark - QIMSearchBarDelegate
+
+- (void)qim_searchBarBecomeFirstResponder {
+    
+#if __has_include("RNSchemaParse.h")
+#if __has_include("QIMAutoTracker.h")
+    
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"search" withDescription:@"搜索"];
+#endif
+    [QIMFastEntrance openRNSearchVC];
+#endif
 }
 
 @end

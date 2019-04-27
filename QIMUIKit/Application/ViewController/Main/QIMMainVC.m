@@ -23,6 +23,7 @@
 #import "QIMZBarViewController.h"
 #import "QIMJumpURLHandle.h"
 #import "QIMMineTableView.h"
+#import "QIMWorkFeedViewController.h"
 #import "QIMNavBackBtn.h"
 #import "NSBundle+QIMLibrary.h"
 #if __has_include("RNSchemaParse.h")
@@ -51,6 +52,7 @@
 @property (nonatomic, strong) UIView *travelView;
 @property (nonatomic, strong) UIView *userListView;
 @property (nonatomic, strong) UIView *rnSuggestView;
+@property (nonatomic, strong) UIView *momentView;
 @property (nonatomic, strong) UIView *mineView;
 
 @property (nonatomic, strong) UIButton *searchDemissionBtn;
@@ -627,6 +629,14 @@ static dispatch_once_t __onceMainToken;
     return _rnSuggestView;
 }
 
+- (UIView *)momentView {
+    if (!_momentView) {
+        QIMWorkFeedViewController *workfeedVc = [[QIMWorkFeedViewController alloc] init];
+        _momentView = [workfeedVc view];
+    }
+    return _momentView;
+}
+
 - (UIView *)mineView {
     if (!_mineView) {
         
@@ -709,6 +719,7 @@ static dispatch_once_t __onceMainToken;
     [_travelView setHidden:YES];
     [_userListView setHidden:YES];
     [_rnSuggestView setHidden:YES];
+    [_momentView setHidden:YES];
     [_mineView setHidden:YES];
     [self updateNavigationWithSelectIndex:index];
     
@@ -755,6 +766,9 @@ static dispatch_once_t __onceMainToken;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"QTalkSuggestRNViewWillAppear" object:nil];
 #endif
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]]) {
+        
+        [_contentView addSubview:self.momentView];
+        [self.momentView setHidden:NO];
         
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
         

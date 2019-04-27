@@ -367,7 +367,7 @@ CGFloat maxLimitHeight = 0;
     if(self.alwaysFullText) {
         _showAllBtn.hidden = YES;
     } else {
-        if (textH > maxLimitHeight) {
+        if (textContainer.totalNumLine > 6) {
             if (!self.isFullText) {
                 [self.showAllBtn setTitle:@"全文" forState:UIControlStateNormal];
             } else {
@@ -382,11 +382,11 @@ CGFloat maxLimitHeight = 0;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, [[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20, textContainer.textHeight);
         _contentLabel.textContainer = textContainer;
-
+        
     } else {
         self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 20, textContainer.textHeight);
         _contentLabel.textContainer = textContainer;
-
+        
     }
     _showAllBtn.frame = CGRectMake(self.nameLab.left, _contentLabel.bottom + 5, 60, 20);
     if (_showAllBtn.hidden) {
