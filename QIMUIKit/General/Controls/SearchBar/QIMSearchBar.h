@@ -10,7 +10,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol QIMSearchBarDelegate <NSObject>
+
+- (void)qim_searchBarBecomeFirstResponder;
+
+@end
+
 @interface QIMSearchBar : UIView
+
+@property (nonatomic, weak) id <QIMSearchBarDelegate> delegate;
 
 @end
 

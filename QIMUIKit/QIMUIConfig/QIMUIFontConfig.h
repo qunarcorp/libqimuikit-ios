@@ -21,8 +21,8 @@
 #define qim_arrow_gototalk_font      @"\U0000e738"     //发起聊天
 #define qim_arrow_clearnotread_font @"\U0000e73b" //一键已读
 
-#define qim_otherPlatformViewIcon_font @"\U0000f491"              //其他平台已登录Icon
-#define qim_otherPlatformViewArrow_font @"\U0000f3c8"              //其他平台已登录Icon
+#define qim_otherPlatformViewIcon_font @"\U0000e751"              //其他平台已登录Icon
+#define qim_otherPlatformViewArrow_font @"\U0000f3c8"              //其他平台已登录Arrow Icon
 
 #define qim_otherPlatformViewTextColor [UIColor qim_colorWithHex:0x888888 alpha:1.0]    //其他平台已登录TextColor
 

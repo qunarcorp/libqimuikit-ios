@@ -12,7 +12,7 @@
 #define kLinkColor       [UIColor colorWithRed:0/255.0 green:91/255.0 blue:255/255.0 alpha:1]
 
 // this code quote TTTAttributedLabel
-static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstraints(CTFramesetterRef framesetter, NSAttributedString *attributedString, CGSize size, NSUInteger numberOfLines) {
+static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstraints(CTFramesetterRef framesetter, NSAttributedString *attributedString, CGSize size, NSUInteger numberOfLines, NSUInteger *totalNum) {
     CFRange rangeToSize = CFRangeMake(0, (CFIndex)[attributedString length]);
     CGSize constraints = CGSizeMake(size.width, MAXFLOAT);
     
@@ -24,7 +24,8 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
         CFArrayRef lines = CTFrameGetLines(frame);
         
         if (CFArrayGetCount(lines) > 0) {
-            NSInteger lastVisibleLineIndex = MIN((CFIndex)numberOfLines, CFArrayGetCount(lines)) - 1;
+            *totalNum = CFArrayGetCount(lines);
+            NSInteger lastVisibleLineIndex = MIN((CFIndex)numberOfLines, *totalNum) - 1;
             CTLineRef lastVisibleLine = CFArrayGetValueAtIndex(lines, lastVisibleLineIndex);
             
             CFRange rangeToLayout = CTLineGetStringRange(lastVisibleLine);
@@ -457,11 +458,12 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
         CFRetain(framesetter);
     }
     
+    NSUInteger totalNum = 0;
     // 获得建议的size
-    CGSize suggestedSize = CTFramesetterSuggestFrameSizeForAttributedStringWithConstraints(framesetter, _attString, CGSizeMake(width,MAXFLOAT), _numberOfLines);
+    CGSize suggestedSize = CTFramesetterSuggestFrameSizeForAttributedStringWithConstraints(framesetter, _attString, CGSizeMake(width,MAXFLOAT), _numberOfLines, &totalNum);
     
     CFRelease(framesetter);
-
+    self.totalNumLine = totalNum;
     return CGSizeMake(_isWidthToFit ? suggestedSize.width : width, suggestedSize.height+1);
 }
 

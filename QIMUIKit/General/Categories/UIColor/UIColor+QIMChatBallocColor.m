@@ -13,7 +13,7 @@
 + (UIColor *)qim_leftBallocColor{
     NSDictionary * infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
-        return [UIColor qim_colorWithHex:0xd3ecf5 alpha:1.0];
+        return qim_messageLeftBubbleBgColor;
     }
     return [UIColor qim_colorWithHex:[infoDic[kOtherBubbleColor][@"colorHex"] integerValue] alpha:[infoDic[kOtherBubbleColor][@"alpha"] floatValue]];
 }
@@ -21,7 +21,7 @@
 + (UIColor *)qim_leftBallocFontColor{
     NSDictionary *infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
-        return [UIColor qim_colorWithHex:0x000000 alpha:1.0];
+        return qim_messageLeftBubbleTextColor;
     }
     CGFloat alpha = [infoDic[kOtherFontColor][@"alpha"] floatValue];
     if (alpha == 0) {
@@ -37,7 +37,7 @@
 + (UIColor *)qim_rightBallocColor{
     NSDictionary * infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
-        return [UIColor qim_colorWithHex:0xe6e6e6 alpha:1.0];
+        return qim_messageRightBubbleBgColor;
     }
     return [UIColor qim_colorWithHex:[infoDic[kMyBubbleColor][@"colorHex"] integerValue] alpha:[infoDic[kMyBubbleColor][@"alpha"] floatValue]];
 }
@@ -45,7 +45,7 @@
 + (UIColor *)qim_rightBallocFontColor{
     NSDictionary * infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
-        return [UIColor qim_colorWithHex:0x000000 alpha:1.0];
+        return qim_messageRightBubbleTextColor;
     }
     CGFloat alpha = [infoDic[kMyFontColor][@"alpha"] floatValue];
     if (alpha == 0) {

@@ -25,6 +25,8 @@
     if (!_searchBgView) {
         _searchBgView = [[UIView alloc] initWithFrame:CGRectZero];
         _searchBgView.backgroundColor = qim_listSearchBgViewColor;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToSearchVc:)];
+        [_searchBgView addGestureRecognizer:tap];
     }
     return _searchBgView;
 }
@@ -66,6 +68,12 @@
         
     }
     return self;
+}
+
+- (void)jumpToSearchVc:(UITapGestureRecognizer *)tap {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(qim_searchBarBecomeFirstResponder)]) {
+        [self.delegate qim_searchBarBecomeFirstResponder];
+    }
 }
 
 @end
