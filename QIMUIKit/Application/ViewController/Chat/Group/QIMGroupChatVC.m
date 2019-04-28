@@ -292,7 +292,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [_tableView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
         _tableView.delegate = self.messageManager;
         _tableView.dataSource = self.messageManager;
-        [_tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
+        [_tableView setBackgroundColor:qim_chatBgColor];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_11_0
         _tableView.estimatedRowHeight = 0;
@@ -1233,7 +1233,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         }
     } else {
         
-        [self.tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
+        [self.tableView setBackgroundColor:qim_chatBgColor];
     }
 }
 

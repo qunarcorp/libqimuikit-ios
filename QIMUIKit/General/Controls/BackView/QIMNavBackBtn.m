@@ -24,7 +24,7 @@ static QIMNavBackBtn *__backBtn = nil;
     self = [super initWithFrame:frame];
     if (self) {
         [self setAccessibilityIdentifier:@"QIMNavBackBtn"];
-        [self setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3cd" size:18 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
+        [self setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_backButton_font size:18 color:qim_backButtonColor]] forState:UIControlStateNormal];
         self.titleLabel.backgroundColor = qim_backButtonTextBgColor;
         [self setTitleColor:qim_backButtonTextColor forState:UIControlStateNormal];
         self.titleLabel.layer.cornerRadius = 10.5f;
@@ -58,10 +58,10 @@ static QIMNavBackBtn *__backBtn = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (appCount > 0 && appCount <= 99) {
             [self setTitle:[NSString stringWithFormat:@"%ld", (unsigned long)appCount] forState:UIControlStateNormal];
-            self.titleLabel.backgroundColor = [UIColor qim_colorWithHex:0xdddddd];
+            self.titleLabel.backgroundColor = qim_backButtonTextBgColor;
         } else if (appCount > 99) {
             [self setTitle:@"99+" forState:UIControlStateNormal];
-            self.titleLabel.backgroundColor = [UIColor qim_colorWithHex:0xdddddd];
+            self.titleLabel.backgroundColor = qim_backButtonTextBgColor;
         } else {
             [self setTitle:@"" forState:UIControlStateNormal];
             [self.titleLabel setBackgroundColor:[UIColor clearColor]];

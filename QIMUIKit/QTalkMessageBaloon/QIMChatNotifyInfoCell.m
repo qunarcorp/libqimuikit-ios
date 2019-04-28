@@ -54,7 +54,7 @@ static double _global_message_cell_width = 0;
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         
         self.bgImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        [self.bgImageView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"im_time_bg"] stretchableImageWithLeftCapWidth:6 topCapHeight:6]];
+        [self.bgImageView setImage:[[UIImage imageNamed:@"im_time_bg"] stretchableImageWithLeftCapWidth:6 topCapHeight:6]];
         [self.bgImageView setUserInteractionEnabled:YES];
         [self.contentView addSubview:self.bgImageView];
         

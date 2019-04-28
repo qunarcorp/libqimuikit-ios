@@ -477,7 +477,7 @@
         [_tableView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
         _tableView.delegate = self.messageManager;
         _tableView.dataSource = self.messageManager;
-        [_tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
+        [_tableView setBackgroundColor:qim_chatBgColor];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_11_0
         _tableView.estimatedRowHeight = 0;
@@ -647,7 +647,7 @@
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
     }
-    self.view.backgroundColor = [UIColor qtalkChatBgColor];
+    self.view.backgroundColor = qim_chatBgColor;
  
     [[QIMEmotionSpirits sharedInstance] setTableView:_tableView];
     [self loadData];
@@ -736,7 +736,7 @@
     if (self.isEncryptChat) {
         titleLabel.text = [titleLabel.text stringByAppendingString:@"【加密中】"];
     }
-    titleLabel.textColor = [UIColor blackColor];
+    titleLabel.textColor = qim_singlechat_title_color;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.font = [UIFont boldSystemFontOfSize:18];
@@ -745,10 +745,10 @@
     [titleView addSubview:titleLabel];
     if (self.chatType != ChatType_Consult) {
         UILabel *descLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 27, 200, 12)];
-        descLabel.textColor = [UIColor blackColor];
+        descLabel.textColor = qim_singlechat_desc_color;
         descLabel.textAlignment = NSTextAlignmentCenter;
         descLabel.backgroundColor = [UIColor clearColor];
-        descLabel.font = [UIFont systemFontOfSize:10];
+        descLabel.font = [UIFont systemFontOfSize:11];
         descLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         if (self.chatType == ChatType_ConsultServer) {
             NSDictionary *virtualDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.virtualJid];
@@ -1449,7 +1449,7 @@
         }
     } else {
         
-        [self.tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
+        [self.tableView setBackgroundColor:qim_chatBgColor];
     }
 }
 
