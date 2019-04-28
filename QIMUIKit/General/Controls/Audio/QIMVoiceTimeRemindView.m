@@ -43,7 +43,7 @@
     
     CGRect backRect = CGRectMake(self.frame.size.width/2-60/2, (self.frame.size.height-50)/2-60/2, 60, 60);
     _imageView = [[UIImageView alloc] initWithFrame:backRect];
-    [_imageView setImage:[UIImage imageNamed:@"registered_icon_quxiao"]];
+    [_imageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"registered_icon_quxiao"]];
     [self addSubview:_imageView];
     
     _textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height-50, self.frame.size.width, 50)];

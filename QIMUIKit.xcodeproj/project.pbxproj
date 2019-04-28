@@ -875,6 +875,8 @@
 		2C8AFF8820B1DC0700CF98EB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8AFF8720B1DC0700CF98EB /* UIKit.framework */; };
 		2C8AFF8A20B1DC1300CF98EB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8AFF8920B1DC1300CF98EB /* Foundation.framework */; };
 		2C8AFF8C20B1DC1700CF98EB /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8AFF8B20B1DC1700CF98EB /* AVFoundation.framework */; };
+		2C95C45D2275A7DD00FDBB8D /* UIImage+QIMUIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C95C45B2275A7DD00FDBB8D /* UIImage+QIMUIKit.h */; };
+		2C95C45E2275A7DD00FDBB8D /* UIImage+QIMUIKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C95C45C2275A7DD00FDBB8D /* UIImage+QIMUIKit.m */; };
 		2C95DE3321785EFC0090BC54 /* QIMBaseChatVc.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C95DE3121785EFB0090BC54 /* QIMBaseChatVc.m */; };
 		2C95DE3421785EFC0090BC54 /* QIMBaseChatVc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C95DE3221785EFB0090BC54 /* QIMBaseChatVc.h */; };
 		2C95DE3721785F1B0090BC54 /* QIMChatNewVc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C95DE3521785F1B0090BC54 /* QIMChatNewVc.h */; };
@@ -1912,6 +1914,8 @@
 		2C8AFF8720B1DC0700CF98EB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2C8AFF8920B1DC1300CF98EB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8AFF8B20B1DC1700CF98EB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		2C95C45B2275A7DD00FDBB8D /* UIImage+QIMUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+QIMUIKit.h"; sourceTree = "<group>"; };
+		2C95C45C2275A7DD00FDBB8D /* UIImage+QIMUIKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+QIMUIKit.m"; sourceTree = "<group>"; };
 		2C95DE3121785EFB0090BC54 /* QIMBaseChatVc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMBaseChatVc.m; sourceTree = "<group>"; };
 		2C95DE3221785EFB0090BC54 /* QIMBaseChatVc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMBaseChatVc.h; sourceTree = "<group>"; };
 		2C95DE3521785F1B0090BC54 /* QIMChatNewVc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMChatNewVc.h; sourceTree = "<group>"; };
@@ -2908,6 +2912,8 @@
 				2C8AF98620B1D51900CF98EB /* UIImage+QIMButtonIcon.m */,
 				2C8AF98920B1D51900CF98EB /* UIImage+QIMIconFont.h */,
 				2C8AF98720B1D51900CF98EB /* UIImage+QIMIconFont.m */,
+				2C95C45B2275A7DD00FDBB8D /* UIImage+QIMUIKit.h */,
+				2C95C45C2275A7DD00FDBB8D /* UIImage+QIMUIKit.m */,
 			);
 			path = UIImage;
 			sourceTree = "<group>";
@@ -4610,6 +4616,7 @@
 				2C8AFD7D20B1D51C00CF98EB /* QIMColorfulBubbleCell.h in Headers */,
 				2C8AFDD420B1D51C00CF98EB /* QIMQRCodeCell.h in Headers */,
 				2CCD79BB224A22E6006D5207 /* QIMNacConfigTableViewCell.h in Headers */,
+				2C95C45D2275A7DD00FDBB8D /* UIImage+QIMUIKit.h in Headers */,
 				2C14835E213D626F009D4AE3 /* UINavigationController+QIMOrientation.h in Headers */,
 				2C8AFD0D20B1D51B00CF98EB /* QIMMyEmotionsManagerViewController.h in Headers */,
 				2CC93BAD21EC33C800EEC47D /* KZColorCompareView.h in Headers */,
@@ -5105,6 +5112,7 @@
 				2C8AFBE620B1D51B00CF98EB /* LvtuAutoImageView.m in Sources */,
 				2C8AFCA620B1D51B00CF98EB /* QIMIconFont.m in Sources */,
 				2C8AFC3720B1D51B00CF98EB /* QIMDrawStorage.m in Sources */,
+				2C95C45E2275A7DD00FDBB8D /* UIImage+QIMUIKit.m in Sources */,
 				2C8AFE1120B1D51C00CF98EB /* QIMGroupNickNameHelper.m in Sources */,
 				2C8AFC2F20B1D51B00CF98EB /* QIMPhoneNumberTextStorage.m in Sources */,
 				2C8AFE8C20B1D51C00CF98EB /* QTalkSessionView.m in Sources */,

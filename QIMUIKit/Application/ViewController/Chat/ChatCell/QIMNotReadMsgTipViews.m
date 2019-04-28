@@ -46,7 +46,7 @@
         [self addSubview:_backView];
         
         _leftArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_backView.left - 5, ([self getHeight] - 14)/2.0, 14, 14)];
-        [_leftArrowImageView setImage:[UIImage imageNamed:@"left_arrow"]];
+        [_leftArrowImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"left_arrow"]];
         [self addSubview:_leftArrowImageView];
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(_leftArrowImageView.right, 0, self.width - 10 - (_backView.left - 5), [self getHeight])];

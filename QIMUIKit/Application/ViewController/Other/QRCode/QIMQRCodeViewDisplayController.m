@@ -34,7 +34,7 @@
 }
 
 - (UIImage *)activityImage {
-    return [UIImage imageNamed:@"Action_Share"];
+    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"Action_Share"];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -124,7 +124,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xf1f1f1 alpha:1];
     
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
     [self.navigationItem setRightBarButtonItem:rightItem];
     
     _backView = [[UIView alloc]initWithFrame:CGRectMake(40, (self.view.height-self.view.frame.size.width - 20)/2.0, self.view.frame.size.width - 80, self.view.frame.size.width - 20)];
@@ -192,7 +192,7 @@
         case QRCodeType_ClientNav: {
             [infoLabel setText:[NSBundle qim_localizedStringForKey:@"qrcode_tips_client_nav"]];
             nameLabel.text = self.name;
-            icon.image = [UIImage imageNamed:@"setup_38x38_"];
+            icon.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"setup_38x38_"];
             NSString *url = [NSString stringWithFormat:@"%@",self.jid];
             QRCodeImageView.image = [QRCodeGenerator qrImageForString:url imageSize:QRCodeImageView.bounds.size.width];
             [self.navigationItem setTitle:[NSString stringWithFormat:@"%@的二维码",self.name]];

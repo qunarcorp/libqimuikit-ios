@@ -86,7 +86,7 @@
     if (_selectFlagView == nil) {
         _selectFlagView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
         _selectFlagView.center = _maskView.center;
-        _selectFlagView.image = [UIImage imageNamed:@"AlbumCellRedSelected"];
+        _selectFlagView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"AlbumCellRedSelected"];
         _selectFlagView.hidden = YES;
         [self addSubview:_selectFlagView];
     }
@@ -127,7 +127,7 @@
         [itemView setImageSize:CGSizeMake(itemWidth / 3.0f, itemWidth / 3.0f)];
         
         //添加按钮
-        itemImage = [UIImage imageNamed:@"EmotionEditorAdd"];
+        itemImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"EmotionEditorAdd"];
     } else {
         
         [itemView setIsAdd:NO];

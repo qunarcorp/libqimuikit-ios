@@ -112,17 +112,17 @@ static SkinManager *__global_SkinManager = nil;
             break;
         case SkinMainBg_clover:
         {
-            color = [UIColor colorWithPatternImage:[UIImage imageNamed:@"clover"]];
+            color = [UIColor colorWithPatternImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"clover"]];
         }
             break;
         case SkinMainBg_colorful_mood:
         {
-            color = [UIColor colorWithPatternImage:[UIImage imageNamed:@"colorful_mood"]];
+            color = [UIColor colorWithPatternImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"colorful_mood"]];
         }
             break;
         case SkinMainBg_winter_feeling:
         {
-            color = [UIColor colorWithPatternImage:[UIImage imageNamed:@"winter_feeling"]];
+            color = [UIColor colorWithPatternImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"winter_feeling"]];
         }
             break;
         default:

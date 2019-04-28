@@ -68,11 +68,11 @@ static NSArray *_sentImageArray = nil;
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         
         if (_receiveImageArray == nil) {
-            _receiveImageArray = [[NSArray alloc] initWithObjects:[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon1"],[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon2"],[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon3"],[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon4"], nil];
+            _receiveImageArray = [[NSArray alloc] initWithObjects:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon1"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon2"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon3"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon4"], nil];
         }
         
         if (_sentImageArray == nil) {
-            _sentImageArray = [[NSArray alloc] initWithObjects:[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon1"],[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon2"],[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon3"],[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon4"], nil];
+            _sentImageArray = [[NSArray alloc] initWithObjects:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon1"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon2"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon3"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon4"], nil];
         }
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onClick)];
@@ -100,7 +100,7 @@ static NSArray *_sentImageArray = nil;
         
         _errorButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 17, 17)];
         [_errorButton setHidden:YES];
-        [_errorButton setImage:[UIImage imageNamed:@"SignUpError"] forState:UIControlStateNormal];
+        [_errorButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"SignUpError"] forState:UIControlStateNormal];
         [_errorButton addTarget:self action:@selector(resendMessage) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_errorButton];
         
@@ -231,12 +231,12 @@ static NSArray *_sentImageArray = nil;
             
             CGRect frame = {{kBackViewCap+45,kCellHeightCap / 2.0},{frameWeight,kBackViewHeight}};
             [self.backView setFrame:frame];
-            UIImage *imageFriend = [UIImage imageNamed:@"chat_Avoice_bg"];
+            UIImage *imageFriend = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_Avoice_bg"];
             
             [self.backView setImage:[imageFriend stretchableImageWithLeftCapWidth:20 topCapHeight:17]];
             
             [_voiceImageView setFrame:CGRectMake(kVoiceImageLeft, kVoiceImageTop, kVoiceImageWidth, kVoiceImageHeight)];
-            [_voiceImageView setImage:[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon1"]];
+            [_voiceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon1"]];
             [_voiceImageView setAnimationImages:_receiveImageArray];
             [_voiceImageView setAnimationDuration:1];
             
@@ -255,14 +255,14 @@ static NSArray *_sentImageArray = nil;
             
             CGRect frame = {{self.frameWidth - kBackViewCap - frameWeight - 45,kBackViewCap},{frameWeight,kBackViewHeight}};
             [self.backView setFrame:frame];
-            UIImage *imageMyself = [UIImage imageNamed:@"chat_Bvoice_bg"];
+            UIImage *imageMyself = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_Bvoice_bg"];
             
             [self.backView setImage:[imageMyself stretchableImageWithLeftCapWidth:20 topCapHeight:15]];
             
             
             CGRect voiceImageFrame = CGRectMake(self.backView.frame.size.width-kVoiceImageWidth-KVoiceImageRight-8, kVoiceImageTop, kVoiceImageWidth, kVoiceImageHeight);
             [_voiceImageView setFrame:voiceImageFrame];
-            [_voiceImageView setImage:[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon1"]];
+            [_voiceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon1"]];
             [_voiceImageView setAnimationImages:_sentImageArray];
             [_voiceImageView setAnimationDuration:1];
             
@@ -331,12 +331,12 @@ static NSArray *_sentImageArray = nil;
 
             CGRect frame = {{kBackViewCap+45,kCellHeightCap / 2.0+20},{frameWeight,kBackViewHeight}};
             [self.backView setFrame:frame];
-            UIImage *imageFriend = [UIImage imageNamed:@"chat_Avoice_bg"];
+            UIImage *imageFriend = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_Avoice_bg"];
             
             [self.backView setImage:[imageFriend stretchableImageWithLeftCapWidth:20 topCapHeight:15]];
             
             [_voiceImageView setFrame:CGRectMake(kVoiceImageLeft, kVoiceImageTop, kVoiceImageWidth, kVoiceImageHeight)];
-            [_voiceImageView setImage:[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon1"]];
+            [_voiceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon1"]];
             [_voiceImageView setAnimationImages:_receiveImageArray];
             [_voiceImageView setAnimationDuration:1];
             
@@ -353,13 +353,13 @@ static NSArray *_sentImageArray = nil;
             
             CGRect frame = {{self.frameWidth - kBackViewCap - frameWeight - 45,kBackViewCap},{frameWeight,kBackViewHeight}};
             [self.backView setFrame:frame];
-            UIImage *imageMyself = [UIImage imageNamed:@"chat_Bvoice_bg"];
+            UIImage *imageMyself = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_Bvoice_bg"];
             
             [self.backView setImage:[imageMyself stretchableImageWithLeftCapWidth:20 topCapHeight:15]];
             
             CGRect voiceImageFrame = CGRectMake(self.backView.frame.size.width-kVoiceImageWidth-KVoiceImageRight-8, kVoiceImageTop, kVoiceImageWidth, kVoiceImageHeight);
             [_voiceImageView setFrame:voiceImageFrame];
-            [_voiceImageView setImage:[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon1"]];
+            [_voiceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon1"]];
             [_voiceImageView setAnimationImages:_sentImageArray];
             [_voiceImageView setAnimationDuration:1];
             

@@ -36,7 +36,7 @@
     if ([searchBar respondsToSelector:@selector(setBarTintColor:)]) {
         [searchBar setBarTintColor:[UIColor qim_colorWithHex:0xe6e7e9 alpha:1.0]];
     }
-    [searchBar setBackgroundImage:[UIImage imageNamed:@"searchbar_bg"]];
+    [searchBar setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"searchbar_bg"]];
     return searchBar;
 }
 
@@ -222,7 +222,7 @@
             headerView.backgroundColor = [UIColor whiteColor];
             
             YLImageView * addFrientIcon = [[YLImageView alloc] initWithFrame:CGRectMake(15, 15, 30, 30)];
-            addFrientIcon.image = [UIImage imageNamed:@"findPeople"];
+            addFrientIcon.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"findPeople"];
             [headerView addSubview:addFrientIcon];
             
             _justDoItLabel = [[UILabel alloc] initWithFrame:CGRectMake(addFrientIcon.right + 10, 0, self.view.width - addFrientIcon.right - 20, 60)];
@@ -269,7 +269,7 @@
             headerView.backgroundColor = [UIColor whiteColor];
             
             YLImageView * addFrientIcon = [[YLImageView alloc] initWithFrame:CGRectMake(15, 15, 30, 30)];
-            addFrientIcon.image = [UIImage imageNamed:@"findPeople"];
+            addFrientIcon.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"findPeople"];
             [headerView addSubview:addFrientIcon];
             
             _justDoItLabel = [[UILabel alloc] initWithFrame:CGRectMake(addFrientIcon.right + 10, 0, self.view.width - addFrientIcon.right - 20, 60)];

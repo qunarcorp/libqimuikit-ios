@@ -290,7 +290,7 @@
     NSMutableArray *bomArry = [NSMutableArray array];
     for (int i =0; i < 4; i++) {
         NSString *imgName = [NSString stringWithFormat:@"bomb%d",i];
-        UIImage *img  = [UIImage imageNamed:imgName];
+        UIImage *img  = [UIImage qim_imageNamedFromQIMUIKitBundle:imgName];
         if (img) {
             [bomArry addObject:img];
         }

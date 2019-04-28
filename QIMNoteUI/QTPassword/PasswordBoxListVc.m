@@ -86,11 +86,11 @@
 - (void)setupNav {
     
     UIButton *createPwdBoxButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 7, 30, 30)];
-    [createPwdBoxButton setImage:[UIImage imageNamed:@"new_somthing_icon"] forState:UIControlStateNormal];
+    [createPwdBoxButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"new_somthing_icon"] forState:UIControlStateNormal];
     [createPwdBoxButton addTarget:self action:@selector(addPasswordBox) forControlEvents:UIControlEventTouchUpInside];
     
     UIBarButtonItem *newPwdBoxItem = [[UIBarButtonItem alloc] initWithCustomView:createPwdBoxButton];
-    UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"PasswordBox_setting-normal"] style:UIBarButtonItemStyleDone target:self action:@selector(PasswordBoxSecuritySetting)];
+    UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PasswordBox_setting-normal"] style:UIBarButtonItemStyleDone target:self action:@selector(PasswordBoxSecuritySetting)];
     [self.navigationItem setRightBarButtonItems:@[settingItem ,newPwdBoxItem]];
 }
 

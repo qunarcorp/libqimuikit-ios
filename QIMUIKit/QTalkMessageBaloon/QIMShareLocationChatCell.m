@@ -39,7 +39,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"locationSharing_Icon_Location_Main"]];
+        _imageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_Location_Main"]];
         _imageView.clipsToBounds = YES;
         _imageView.userInteractionEnabled = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;

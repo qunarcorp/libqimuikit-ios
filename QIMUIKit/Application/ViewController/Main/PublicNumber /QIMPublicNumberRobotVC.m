@@ -231,7 +231,7 @@
         NSDictionary *notSendDic = [[QIMKit sharedInstance] getNotSendTextByJid:self.robotJId];
         [_textBar setQIMAttributedTextWithItems:notSendDic[@"inputItems"]];
         [_textBar.layer setBorderColor:[UIColor qim_colorWithHex:0xadadad alpha:1].CGColor];
-        [_textBar setTextViewBackgroundImage:[[UIImage imageNamed:@"chat_bottom_textfield"] stretchableImageWithLeftCapWidth:5 topCapHeight:5]];
+        [_textBar setTextViewBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_textfield"] stretchableImageWithLeftCapWidth:5 topCapHeight:5]];
         [self updateBottomView];
     }
     return _textBar;
@@ -614,8 +614,8 @@
     [_actionBottomView addSubview:lineView];
     
     UIButton *showTextBarBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
-    [showTextBarBtn setBackgroundImage:[UIImage imageNamed:@"Mode_listtotext"] forState:UIControlStateNormal];
-    [showTextBarBtn setBackgroundImage:[UIImage imageNamed:@"Mode_listtotextHL"] forState:UIControlStateHighlighted];
+    [showTextBarBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_listtotext"] forState:UIControlStateNormal];
+    [showTextBarBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_listtotextHL"] forState:UIControlStateHighlighted];
     [showTextBarBtn addTarget:self action:@selector(onShowTextBarClick:) forControlEvents:UIControlEventTouchUpInside];
     [_actionBottomView addSubview:showTextBarBtn];
     
@@ -634,22 +634,22 @@
         [mainButton setTitle:mainaction forState:UIControlStateNormal];
         [mainButton setBackgroundImage:[UIImage qim_imageFromColor:[UIColor qtalkTableDefaultColor]] forState:UIControlStateHighlighted];
         if (subActions.count > 0) {
-            [mainButton setImage:[UIImage imageNamed:@"Mode_textmenuicon"] forState:UIControlStateNormal];
+            [mainButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_textmenuicon"] forState:UIControlStateNormal];
             UIView *subActionView = [[UIView alloc] initWithFrame:CGRectMake(startX, _actionBottomView.bottom, width, 0)];
             [self.view insertSubview:subActionView aboveSubview:_tableView];
             [mainButton setSubActionView:subActionView];
             
             CGFloat bianWidth = (subActionView.width-18)/2.0;
             UIImageView *leftBgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bianWidth, 0)];
-            [leftBgView setImage:[[UIImage imageNamed:@"Mode_more_frame_left"] stretchableImageWithLeftCapWidth:15 topCapHeight:32]];
+            [leftBgView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_more_frame_left"] stretchableImageWithLeftCapWidth:15 topCapHeight:32]];
             [subActionView addSubview:leftBgView];
             
             UIImageView *rightBgView = [[UIImageView alloc] initWithFrame:CGRectMake(subActionView.width-bianWidth, 0, bianWidth, 0)];
-            [rightBgView setImage:[[UIImage imageNamed:@"Mode_more_frame_right"] stretchableImageWithLeftCapWidth:15 topCapHeight:32]];
+            [rightBgView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_more_frame_right"] stretchableImageWithLeftCapWidth:15 topCapHeight:32]];
             [subActionView addSubview:rightBgView];
             
             UIImageView *middleView = [[UIImageView alloc] initWithFrame:CGRectMake(bianWidth, 0, 18, 0)];;
-            [middleView setImage:[[UIImage imageNamed:@"Mode_more_frame_middle"] stretchableImageWithLeftCapWidth:9 topCapHeight:32]];
+            [middleView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_more_frame_middle"] stretchableImageWithLeftCapWidth:9 topCapHeight:32]];
             [subActionView addSubview:middleView];
             
             CGFloat cap = 10;
@@ -660,7 +660,7 @@
                 ActionButton *button = [[ActionButton alloc] initWithFrame:CGRectMake(0, startY, width, 32)];
                 [button setActionContent:actioncontent];
                 [button setOwerView:subActionView];
-                [button setBackgroundImage:[[UIImage imageNamed:@"Mode_more_frame_Choose"] stretchableImageWithLeftCapWidth:40 topCapHeight:16] forState:UIControlStateHighlighted];
+                [button setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_more_frame_Choose"] stretchableImageWithLeftCapWidth:40 topCapHeight:16] forState:UIControlStateHighlighted];
                 [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
                 [button setTitleColor:[UIColor qtalkTextBlackColor] forState:UIControlStateNormal];
                 [button setTitle:subaction forState:UIControlStateNormal];
@@ -1751,11 +1751,11 @@ static CGPoint tableOffsetPoint;
         
         notificationView = [[UIView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, self.textBar.frame.origin.y - 50, 100, 40)];
         backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-        [backImageView setImage:[UIImage imageNamed:@"notificationToast"]];
+        [backImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"notificationToast"]];
         [notificationView addSubview:backImageView];
         
         UIImageView *messageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 7, 20, 20)];
-        [messageImageView setImage:[UIImage imageNamed:@"notificationToastCommentIcon"]];
+        [messageImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"notificationToastCommentIcon"]];
         
         [notificationView addSubview:messageImageView];
         if (commentCountLabel == nil) {

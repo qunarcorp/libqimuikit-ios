@@ -61,7 +61,7 @@
         
         _errorButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 17, 17)];
         [_errorButton setHidden:YES];
-        [_errorButton setImage:[UIImage imageNamed:@"SignUpError"] forState:UIControlStateNormal];
+        [_errorButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"SignUpError"] forState:UIControlStateNormal];
         [_errorButton addTarget:self action:@selector(resendMessage) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_errorButton];
         

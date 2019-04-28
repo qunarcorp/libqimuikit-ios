@@ -102,7 +102,7 @@
     switch (self.message.messageDirection) {
         case QIMMessageDirection_Received:
         {
-            UIImage *image = [UIImage imageNamed:@"redPackLeftBalloon"];
+            UIImage *image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"redPackLeftBalloon"];
             CGFloat width = image.size.width / 2.0;
             CGFloat height = image.size.height / 2.0;
             [self.backView setImage:[image stretchableImageWithLeftCapWidth:width topCapHeight: height]];
@@ -111,7 +111,7 @@
             break;
         case QIMMessageDirection_Sent:
         {
-            UIImage *image = [UIImage imageNamed:@"redPackRightBalloon"];
+            UIImage *image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"redPackRightBalloon"];
             CGFloat width = image.size.width / 2.0;
             CGFloat height = image.size.height / 2.0;
             [self.backView setImage:[image stretchableImageWithLeftCapWidth:width topCapHeight: height]];

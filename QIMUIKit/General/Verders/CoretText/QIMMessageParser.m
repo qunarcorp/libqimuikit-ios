@@ -20,14 +20,15 @@
 #import "QIMEmotionManager.h"
 #import "QIMCommonFont.h"
 
-#define kMessageTextFontSize        ([[QIMCommonFont sharedInstance] currentFontSize] - 4)
+#define kMessageTextFontSize        15
+//([[QIMCommonFont sharedInstance] currentFontSize] - 4)
 #define kThumbMaxWidth              [UIScreen mainScreen].bounds.size.width / 3
 #define kThumbMaxHeight             [UIScreen mainScreen].bounds.size.width / 3
 
 #define kCellWidth                 IS_Ipad ? ([UIScreen mainScreen].qim_rightWidth  * 240 / 320) : ([UIScreen mainScreen].bounds.size.width * 3/5)
 
-#define kNomalFontName              @"FZLTHJW--GB1-0" //@"MarkerFelt-Thin"
-#define kLinkFontName               @"CourierNewPS-ItalicMT"
+//#define kNomalFontName              @"FZLTHJW--GB1-0" //@"MarkerFelt-Thin"
+//#define kLinkFontName               @"CourierNewPS-ItalicMT"
 
 typedef void (^QCParseCompleteBlock)(NSDictionary * info);
 
@@ -78,11 +79,13 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
         textContainer = [[QIMTextContainer alloc] init];
         if (message.messageType == QIMMessageType_GroupNotify) {
             textContainer.textColor = [UIColor whiteColor];
-            textContainer.font = [UIFont fontWithName:kNomalFontName size:12];
+            textContainer.font = [UIFont systemFontOfSize:12];
+//            [UIFont fontWithName:kNomalFontName size:12];
         }else{
             UIColor * textColor = message.messageDirection == QIMMessageDirection_Sent ? [UIColor qim_rightBallocFontColor] : [UIColor qim_leftBallocFontColor];
             textContainer.textColor = textColor;
-            textContainer.font = [UIFont fontWithName:kNomalFontName size:kMessageTextFontSize];
+            textContainer.font = [UIFont systemFontOfSize:kMessageTextFontSize];
+//            [UIFont fontWithName:kNomalFontName size:kMessageTextFontSize];
         }
         [textContainer appendTextStorageArray:storages];
         textContainer.linesSpacing = 2;
@@ -235,7 +238,6 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
                 NSData *imageData = [[QIMEmotionManager sharedInstance] getEmotionThumbIconDataWithImageStr:imageName];
                 emotionImage = [YLGIFImage imageWithData:imageData scale:0.5];
                 emotionImageSize = CGSizeMake(48, 48);
-                //                emotionImage = [[QIMEmotionManager sharedInstance] getEmotionThumbIconWithImageStr:imageName BySize:CGSizeMake(50, 50)];
             }
             if (!emotionImage) {
                 [[QIMEmotionManager sharedInstance] getEmotionImageFromHttpForPkId:pkId shortcut:value signKey:msgId];
@@ -342,7 +344,8 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
     textStorage.text = dic[@"content"];
     float fontSize = [dic[@"fontSize"] floatValue];
     if (fontSize > 0) {
-        textStorage.font = [UIFont fontWithName:kNomalFontName size:fontSize];
+        textStorage.font = [UIFont systemFontOfSize:fontSize];
+//        [UIFont fontWithName:kNomalFontName size:fontSize];
     }
     textStorage.textColor = dic[@"color"];
     
@@ -375,7 +378,8 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
     linkStorage.text = dic[@"content"];
     float fontSize = [dic[@"fontSize"] floatValue];
     if (fontSize > 0) {
-        linkStorage.font = [UIFont fontWithName:kLinkFontName size:fontSize];
+        linkStorage.font = [UIFont systemFontOfSize:fontSize];
+//        [UIFont fontWithName:kLinkFontName size:fontSize];
     }
     linkStorage.textColor = dic[@"color"];
     linkStorage.linkData = dic[@"linkUrl"];
@@ -389,7 +393,8 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
     phoneNumberStorage.text = dic[@"content"];
     float fontSize = [dic[@"fontSize"] floatValue];
     if (fontSize > 0) {
-        phoneNumberStorage.font = [UIFont fontWithName:kLinkFontName size:fontSize];
+        phoneNumberStorage.font = [UIFont systemFontOfSize:fontSize];
+//        [UIFont fontWithName:kLinkFontName size:fontSize];
     }
     phoneNumberStorage.textColor = dic[@"phoneNumColor"];
     phoneNumberStorage.phoneNumData = dic[@"content"];

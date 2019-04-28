@@ -313,7 +313,7 @@ NSString * const MMtoolbarBackgroundImage = @"toolbarBackgroundImage";
     customPickerView = [[UIView alloc] initWithFrame: frame];
     
 //   UIImageView *patternImageView = [[UIImageView alloc] initWithFrame:frame];
-//   patternImageView.image = [[UIImage imageNamed:@"texture"] resizableImageWithCapInsets:UIEdgeInsetsZero];
+//   patternImageView.image = [[UIImage qim_imageNamedFromQIMUIKitBundle:@"texture"] resizableImageWithCapInsets:UIEdgeInsetsZero];
 //    [customPickerView addSubview:patternImageView];
     
     if (_yValueFromTop == 0.0f) {

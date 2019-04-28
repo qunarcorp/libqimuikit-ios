@@ -51,7 +51,7 @@
 }
 
 -(void)refreshCellWithModel:(QIMNoteModel *)model {
-    _iconImgV.image = [UIImage imageNamed:@"evernote_note"];
+    _iconImgV.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"evernote_note"];
 //    _titleLb.text = [NSString stringWithFormat:@"%ld & %ld---%@",(long)model.q_id,(long)model.qs_id,model.qs_title? model.qs_title:@""];
 //    _desLb.text =  [NSString stringWithFormat:@"%ld & %ld---%@",(long)model.c_id,(long)model.cs_id,model.qs_introduce?model.qs_introduce:@""];
     _titleLb.text = [NSString stringWithFormat:@"%@",model.qs_title? model.qs_title:@""];

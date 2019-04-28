@@ -48,7 +48,7 @@
     
     [_nameLabel  setFrame:CGRectMake(addionWidth + 50, 10, 200, 20)];
     [parentLayer setFrame:CGRectMake(addionWidth+28, 8, 24, 24)];
-    parentLayer.contents = (id)[UIImage imageNamed:@"triangleSmall"].CGImage;
+    parentLayer.contents = (id)[UIImage qim_imageNamedFromQIMUIKitBundle:@"triangleSmall"].CGImage;
 }
 
 - (void)drawRect:(CGRect)rect {

@@ -7,6 +7,7 @@
 //
 
 #import "UIImageView+QIMImageCache.h"
+#import "UIImage+QIMUIKit.h"
 
 @implementation UIImageView (QIMImageCache)
 
@@ -48,22 +49,22 @@
                 break;
             case ChatType_System: {
                 if ([jid hasPrefix:@"FriendNotify"]) {
-                    placeholderImage = [UIImage imageNamed:@"conversation_address-book_avatar"];
+                    placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"conversation_address-book_avatar"];
                 } else {
                     if ([jid hasPrefix:@"rbt-notice"]) {
-                        placeholderImage = [UIImage imageNamed:@"rbt_notice"];
+                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt_notice"];
                     } else if ([jid hasPrefix:@"rbt-qiangdan"]) {
-                        placeholderImage = [UIImage imageNamed:@"rbt-qiangdan"];
+                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-qiangdan"];
                     } else if ([jid hasPrefix:@"rbt-zhongbao"]) {
-                        placeholderImage = [UIImage imageNamed:@"rbt-qiangdan"];
+                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-qiangdan"];
                     } else {
-                        placeholderImage = [UIImage imageNamed:@"icon_speaker_h39"];
+                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
                     }
                 }
             }
                 break;
             case ChatType_PublicNumber: {
-                placeholderImage = [UIImage imageNamed:@"ReadVerified_icon"];
+                placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"ReadVerified_icon"];
             }
                 break;
             case ChatType_Consult: {
@@ -82,7 +83,7 @@
                 break;
             case ChatType_CollectionChat: {
                 headerUrl = [[QIMKit sharedInstance] getUserHeaderSrcByUserId:realJid];
-                placeholderImage = [UIImage imageNamed:@"relation"];
+                placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"relation"];
             }
                 break;
                 

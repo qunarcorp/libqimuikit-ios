@@ -758,6 +758,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 - (void)chatToolBar:(QIMChatToolBar *)toolBar voiceBtnPressed:(BOOL)select keyBoardState:(BOOL)change
 {
 //    QIMVerboseLog(@"第n次点击语音");
+    /*
     if (select && change == NO) {
         self.voiceView.hidden = NO;
         _quickReplyExpandView.hidden = YES;
@@ -775,6 +776,20 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             [self updateAssociateTableViewFrame];
             [[NSNotificationCenter defaultCenter] postNotificationName:kQIMTextBarIsFirstResponder object:nil];
+        }];
+    }
+    */
+    if (select && change == NO) {
+        
+        [UIView animateWithDuration:0.25 animations:^{
+            
+            self.lastChatKeyboardY = self.frame.origin.y;
+            CGFloat y = self.frame.origin.y;
+            y = [self getSuperViewH] - self.chatToolBar.frame.size.height;
+            self.frame = CGRectMake(0, y, self.frame.size.width, self.frame.size.height);
+            
+            [self updateAssociateTableViewFrame];
+            
         }];
     }
 }
@@ -1192,8 +1207,8 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     if (!_referButton) {
         
         _referButton = [[UIButton alloc] initWithFrame:CGRectMake(3, 0, 30, 30)];
-        [_referButton setImage:[UIImage imageNamed:@"chat_bottom_refer"] forState:UIControlStateNormal];
-        [_referButton setImage:[UIImage imageNamed:@"chat_bottom_refer"] forState:UIControlStateSelected];
+        [_referButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_refer"] forState:UIControlStateNormal];
+        [_referButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_refer"] forState:UIControlStateSelected];
         [_referButton addTarget:self action:@selector(referBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _referButton;
@@ -1223,7 +1238,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         
         CGFloat btnWidth = 38.5;
         _addEmotionsBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.expandPanel.height - 38.5, btnWidth, 36 + 2.5)];
-        [_addEmotionsBtn setImage:[UIImage imageNamed:@"Card_AddIcon"] forState:UIControlStateNormal];
+        [_addEmotionsBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Card_AddIcon"] forState:UIControlStateNormal];
         [_addEmotionsBtn setBackgroundImage:normalImage forState:UIControlStateNormal];
         [_addEmotionsBtn addTarget:self action:@selector(addEmotionBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -1236,7 +1251,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 - (UIButton *)collectEmotionBtn {
     
     NSString * currentPKId = [[QIMEmotionManager sharedInstance] currentPackageId];
-    UIImage * colBtnImage = [UIImage imageNamed:@"braceletLiked"];
+    UIImage * colBtnImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"braceletLiked"];
     
     if (!_collectEmotionBtn) {
         
@@ -1357,7 +1372,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     if (on) {
         if (!_fireButton) {
             _fireButton = [[UIButton alloc] initWithFrame:CGRectMake(_myTextView.right - 28, _myTextView.top + 2.5, 25, 25)];
-            [_fireButton setImage:[UIImage imageNamed:@"iconfont-fire_select"] forState:UIControlStateNormal];
+            [_fireButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconfont-fire_select"] forState:UIControlStateNormal];
             [self addSubview:_fireButton];
         }
         [self bringSubviewToFront:_fireButton];
@@ -2713,8 +2728,8 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 #pragma mark - QIMVoiceChatViewDelegate
 
 //录制声音状态
--(void)voiceChatView:(QIMVoiceChatView *)voiceChatView RecordingAtStatus:(VoiceChatRecordingStatus)status
-{
+-(void)voiceChatView:(QIMVoiceChatView *)voiceChatView RecordingAtStatus:(VoiceChatRecordingStatus)status {
+    
     _recordingStatus = status;
     switch (status) {
         case VoiceChatRecordingStatusStart:
@@ -2730,28 +2745,24 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             [self.voiceOperator doVoiceRecordByFilename:self.fileName];
         }
             break;
-        case VoiceChatRecordingStatusRecording:
-        {
+        case VoiceChatRecordingStatusRecording: {
             
         }
             break;
-        case VoiceChatRecordingStatusEnd:
-        {
+        case VoiceChatRecordingStatusEnd: {
+            
             [self.voiceOperator finishRecoderWithSave:YES];
         }
             break;
-        case VoiceChatRecordingStatusCancel:
-        {
+        case VoiceChatRecordingStatusCancel: {
             [self.voiceOperator finishRecoderWithSave:NO];
         }
             break;
-        case VoiceChatRecordingStatusAudition:
-        {
+        case VoiceChatRecordingStatusAudition: {
             [self.voiceOperator finishRecoderWithSave:YES];
         }
             break;
-        case VoiceChatRecordingStatusSend:
-        {
+        case VoiceChatRecordingStatusSend: {
             [self sendVoice];
         }
             break;

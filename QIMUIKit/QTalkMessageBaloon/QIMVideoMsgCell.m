@@ -54,7 +54,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         [_imageView.layer setMasksToBounds:YES];
         [self.backView addSubview:_imageView];
         
-        _playIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"aio_short_video_icon_playable"]];
+        _playIconView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_short_video_icon_playable"]];
         [_imageView addSubview:_playIconView];
         
         _infoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 150, 20)];

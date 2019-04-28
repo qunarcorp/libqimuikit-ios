@@ -13,8 +13,8 @@
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
-#define NormalImage [UIImage imageNamed:@"PasswordBox_favorite_normal"]
-#define FavoriteImage [UIImage imageNamed:@"PasswordBox_favorite_selected"]
+#define NormalImage [UIImage qim_imageNamedFromQIMUIKitBundle:@"PasswordBox_favorite_normal"]
+#define FavoriteImage [UIImage qim_imageNamedFromQIMUIKitBundle:@"PasswordBox_favorite_selected"]
 
 @interface PasswordBoxCell ()
 {
@@ -42,7 +42,7 @@
 - (UIImageView *)selectBtn {
     if (!_selectBtn) {
         _selectBtn = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - 60, 0, 24, 24)];
-        [_selectBtn setImage:[UIImage imageNamed:@"common_checkbox_no_44px"]];
+        [_selectBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
         _selectBtn.centerY = self.contentView.centerY;
     }
     return _selectBtn;
@@ -61,7 +61,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         _selected = NO;
-        self.imageView.image = [UIImage imageNamed:@"explore_tab_passwordBox"];
+        self.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_passwordBox"];
     }
     return self;
 }
@@ -96,7 +96,7 @@
 
 - (void)setCellSelected:(BOOL)selected {
     _selected = selected;
-    [self.selectBtn setImage:selected ? [UIImage imageNamed:@"common_checkbox_yes_44px"] : [UIImage imageNamed:@"common_checkbox_no_44px"]];
+    [self.selectBtn setImage:selected ? [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_yes_44px"] : [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
 }
 
 - (BOOL)isCellSelected {

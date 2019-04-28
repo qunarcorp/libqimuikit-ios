@@ -251,7 +251,7 @@
         
         UIImageView * headView  = [[UIImageView alloc] init];
         [headView setFrame:CGRectMake(10, 8, 30, 30)];
-        [headView setImage:[UIImage imageNamed:@"singleHeaderDefault" ]];
+        [headView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"singleHeaderDefault" ]];
         [parentView addSubview:headView];
         
         if (groupNameTextField == nil) {
@@ -281,7 +281,7 @@
             
             UIImageView * arrowView =  [[UIImageView alloc] init];
             [arrowView setFrame:CGRectMake(self.view.frame.size.width - 30, 15, 20, 20)];
-            [arrowView setImage:[UIImage imageNamed:@"icon_arrow_r" ]];
+            [arrowView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_arrow_r" ]];
             [parentView addSubview:arrowView];
         }
         else if(indexPath.row == 1)
@@ -295,7 +295,7 @@
             
             UIImageView * arrowView =  [[UIImageView alloc] init];
             [arrowView setFrame:CGRectMake(self.view.frame.size.width - 30, 15, 20, 20)];
-            [arrowView setImage:[UIImage imageNamed:@"icon_arrow_r" ]];
+            [arrowView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_arrow_r" ]];
             [parentView addSubview:arrowView];
         }
     }

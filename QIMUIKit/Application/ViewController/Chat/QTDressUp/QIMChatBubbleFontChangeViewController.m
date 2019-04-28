@@ -261,7 +261,7 @@ typedef enum {
         
         
         UIButton * RGBInputBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [RGBInputBtn setImage:[UIImage imageNamed:@"rgb_input"] forState:UIControlStateNormal];
+        [RGBInputBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"rgb_input"] forState:UIControlStateNormal];
         RGBInputBtn.frame = CGRectMake(_picker.right - 30 - 30, 10, 30 , 30);
         [RGBInputBtn addTarget:self action:@selector(RGBInputBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [_picker addSubview:RGBInputBtn];

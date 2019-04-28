@@ -42,7 +42,7 @@ static NSString *__default_ua = nil;
 }
 
 - (UIImage *)activityImage {
-    return [UIImage imageNamed:@"Action_Share"];
+    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"Action_Share"];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -73,7 +73,7 @@ static NSString *__default_ua = nil;
     return [NSBundle qim_localizedStringForKey:@"common_open_in_safari"];
 }
 - (UIImage *)activityImage {
-    return [UIImage imageNamed:@"safari_button"];
+    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"safari_button"];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -104,7 +104,7 @@ static NSString *__default_ua = nil;
     return [NSBundle qim_localizedStringForKey:@"common_refresh"];
 }
 - (UIImage *)activityImage {
-    return [UIImage imageNamed:@"Action_Refresh"];
+    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"Action_Refresh"];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -234,12 +234,12 @@ static NSString *__default_ua = nil;
         UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
         [backButton setTitle:[NSBundle qim_localizedStringForKey:@"common_back"] forState:UIControlStateNormal];
         [backButton setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
-        [backButton setImage:[UIImage imageNamed:@"barbuttonicon_back"] forState:UIControlStateNormal];
+        [backButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_back"] forState:UIControlStateNormal];
         [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
         [leftItem addSubview:backButton];
         UIBarButtonItem *leftBarItem = [[UIBarButtonItem alloc] initWithCustomView:leftItem];
         [self.navigationController.navigationItem setLeftBarButtonItem:leftBarItem];
-        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
+        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
         [self.navigationItem setRightBarButtonItem:rightItem];
     }
     
@@ -789,7 +789,7 @@ static NSString *__default_ua = nil;
         UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
         [backButton setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         [backButton setTitle:[NSBundle qim_localizedStringForKey:@"common_back"] forState:UIControlStateNormal];
-        [backButton setImage:[UIImage imageNamed:@"barbuttonicon_back"] forState:UIControlStateNormal];
+        [backButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_back"] forState:UIControlStateNormal];
         [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
         [leftItem addSubview:backButton];
         if (_webView.canGoBack) {

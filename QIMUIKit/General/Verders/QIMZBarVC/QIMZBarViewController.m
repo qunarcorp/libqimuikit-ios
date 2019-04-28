@@ -36,7 +36,7 @@
     UIImageView*bgImageView;
     if (self.view.frame.size.height<500) {
         
-        UIImage*image= [UIImage imageNamed:@"qrcode_scan_bg_Green"];
+        UIImage*image= [UIImage qim_imageNamedFromQIMUIKitBundle:@"qrcode_scan_bg_Green"];
           bgImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height-64-100)];
         bgImageView.contentMode=UIViewContentModeTop;
         bgImageView.clipsToBounds=YES;
@@ -44,7 +44,7 @@
         bgImageView.image=image;
         bgImageView.userInteractionEnabled=YES;
     }else{
-        UIImage*image= [UIImage imageNamed:@"qrcode_scan_bg_Green_iphone5"];
+        UIImage*image= [UIImage qim_imageNamedFromQIMUIKitBundle:@"qrcode_scan_bg_Green_iphone5"];
         bgImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height-64-100)];
       //  bgImageView.contentMode=UIViewContentModeTop;
         bgImageView.clipsToBounds=YES;
@@ -64,13 +64,13 @@
     [bgImageView addSubview:label];
     
     _line = [[UIImageView alloc] initWithFrame:CGRectMake(50, 60, self.view.frame.size.width - 100, 2)];
-    _line.image = [UIImage imageNamed:@"qrcode_scan_light_green"];
+    _line.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"qrcode_scan_light_green"];
     [bgImageView addSubview:_line];
    
     
   //下方相册
     UIImageView*scanImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, bgImageView.frame.size.height+64, self.view.frame.size.width, 100)];
-    scanImageView.image=[UIImage imageNamed:@"qrcode_scan_bar"];
+    scanImageView.image=[UIImage qim_imageNamedFromQIMUIKitBundle:@"qrcode_scan_bar"];
     scanImageView.userInteractionEnabled=YES;
     [self.view addSubview:scanImageView];
     NSArray*unSelectImageNames=@[@"qrcode_scan_btn_photo_nor",@"qrcode_scan_btn_flash_nor",@"qrcode_scan_btn_myqrcode_nor"];
@@ -78,8 +78,8 @@
     
     for (int i=0; i<unSelectImageNames.count; i++) {
         UIButton*button=[UIButton buttonWithType:UIButtonTypeCustom];
-        [button setImage:[UIImage imageNamed:unSelectImageNames[i]] forState:UIControlStateNormal];
-        [button setImage:[UIImage imageNamed:selectImageNames[i]] forState:UIControlStateHighlighted];
+        [button setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:unSelectImageNames[i]] forState:UIControlStateNormal];
+        [button setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:selectImageNames[i]] forState:UIControlStateHighlighted];
         button.frame=CGRectMake(self.view.frame.size.width/3*i, 0, self.view.frame.size.width/3, 100);
         [scanImageView addSubview:button];
         if (i==0) {
@@ -96,7 +96,7 @@
     
     //假导航
     UIImageView *navImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 64)];
-    navImageView.image=[UIImage imageNamed:@"qrcode_scan_bar"];
+    navImageView.image=[UIImage qim_imageNamedFromQIMUIKitBundle:@"qrcode_scan_bar"];
     navImageView.userInteractionEnabled=YES;
     [self.view addSubview:navImageView];
     

@@ -85,7 +85,7 @@
     
     UIButton *newItemBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     newItemBtn.adjustsImageWhenHighlighted = NO;
-    [newItemBtn setImage:[UIImage imageNamed:@"new_somthing_icon"] forState:UIControlStateNormal];
+    [newItemBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"new_somthing_icon"] forState:UIControlStateNormal];
     [newItemBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
     [newItemBtn addTarget:self action:@selector(addNewItem:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -133,11 +133,11 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
     }
     if ([item isEqualToString:@"password"]) {
-        cell.imageView.image = [UIImage imageNamed:@"explore_tab_password"];
+        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
     } else if ([item isEqualToString:@"TodoList"]) {
-        cell.imageView.image = [UIImage imageNamed:@"explore_tab_todoList"];
+        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_todoList"];
     } else if ([item isEqualToString:@"Notes"]) {
-        cell.imageView.image = [UIImage imageNamed:@"explore_tab_notes"];
+        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_notes"];
     }
     cell.textLabel.text = [NSBundle qim_localizedStringForKey:item];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

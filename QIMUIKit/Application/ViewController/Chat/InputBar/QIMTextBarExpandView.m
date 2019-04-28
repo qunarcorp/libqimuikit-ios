@@ -179,12 +179,12 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
         UIImageView *locationButton = [[UIImageView alloc] initWithFrame:CGRectMake(page * _mainScrollView.width + (space + kItemWidth) * (i % 4) + space, (i / 4) * (kItemWidth + 10 + 25) + 10, kItemWidth, kItemWidth)];
         NSString *icon = [itemDic objectForKey:@"icon"];
         [locationButton setAccessibilityIdentifier:trId];
-        UIImage *defaultIcon = [UIImage imageNamed:@"textbar_common_icon"];
+        UIImage *defaultIcon = [UIImage qim_imageNamedFromQIMUIKitBundle:@"textbar_common_icon"];
         if (icon.length > 0) {
             [locationButton qim_setImageWithURL:[NSURL URLWithString:[icon stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:defaultIcon];
         } else {
             NSString *imageName = [itemDic objectForKey:@"ImageName"];
-            [locationButton setImage:[UIImage imageNamed:imageName]];
+            [locationButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:imageName]];
         }
         [locationButton setUserInteractionEnabled:YES];
         [_mainScrollView addSubview:locationButton];

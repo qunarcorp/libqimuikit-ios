@@ -63,7 +63,7 @@
         _userDescLabel.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:_userDescLabel];
     
-        _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"lbsshare_icon"]];
+        _imageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"lbsshare_icon"]];
         [self.contentView addSubview:_imageView];
     }
     return self;

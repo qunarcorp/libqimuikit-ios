@@ -7,10 +7,11 @@
 //
 
 #import "QIMChatRecorderView.h"
+#import "UIImage+QIMUIKit.h"
 
-#define kTrashImage1         [UIImage imageNamed:@"recorder_trash_can0"]
-#define kTrashImage2         [UIImage imageNamed:@"recorder_trash_can1"]
-#define kTrashImage3         [UIImage imageNamed:@"recorder_trash_can2"]
+#define kTrashImage1         [UIImage qim_imageNamedFromQIMUIKitBundle:@"recorder_trash_can0"]
+#define kTrashImage2         [UIImage qim_imageNamedFromQIMUIKitBundle:@"recorder_trash_can1"]
+#define kTrashImage3         [UIImage qim_imageNamedFromQIMUIKitBundle:@"recorder_trash_can2"]
 
 @interface QIMChatRecorderView(){
     NSArray         *peakImageAry;
@@ -43,10 +44,10 @@
 - (void)initilization{
     //初始化音量peak峰值图片数组
     peakImageAry = [[NSArray alloc]initWithObjects:
-                    [UIImage imageNamed:@"speaker_0"],
-                    [UIImage imageNamed:@"speaker_1"],
-                    [UIImage imageNamed:@"speaker_2"],
-                    [UIImage imageNamed:@"speaker_3"], nil];
+                    [UIImage qim_imageNamedFromQIMUIKitBundle:@"speaker_0"],
+                    [UIImage qim_imageNamedFromQIMUIKitBundle:@"speaker_1"],
+                    [UIImage qim_imageNamedFromQIMUIKitBundle:@"speaker_2"],
+                    [UIImage qim_imageNamedFromQIMUIKitBundle:@"speaker_3"], nil];
     trashImageAry = [[NSArray alloc]initWithObjects:kTrashImage1,kTrashImage2,kTrashImage3,kTrashImage2, nil];
 }
 

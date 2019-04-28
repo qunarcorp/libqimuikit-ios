@@ -46,7 +46,7 @@
         [self addSubview:_contentView];
         
         _imageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.width-220)/2.0, 80, 220, 220)];
-        [_imageView setImage:[UIImage imageNamed:@"audioplayer_big_bg"]];
+        [_imageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"audioplayer_big_bg"]];
         [self addSubview:_imageView];
         
         _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _imageView.bottom + 20, self.width, 20)];
@@ -60,9 +60,9 @@
         self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(5, _nameLabel.bottom + 20, self.width - 10, 2)];
         [self.progressSlider setMinimumValue:0];
         [self.progressSlider setMaximumValue:1];
-        [self.progressSlider setThumbImage:[UIImage imageNamed:@"player_progressbar_current"] forState:UIControlStateNormal];
-        [self.progressSlider setMinimumTrackImage:[UIImage imageNamed:@"player_progressbar"] forState:UIControlStateNormal];
-        [self.progressSlider setMaximumTrackImage:[UIImage imageNamed:@"player_progressbar_bg"] forState:UIControlStateNormal];
+        [self.progressSlider setThumbImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_progressbar_current"] forState:UIControlStateNormal];
+        [self.progressSlider setMinimumTrackImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_progressbar"] forState:UIControlStateNormal];
+        [self.progressSlider setMaximumTrackImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_progressbar_bg"] forState:UIControlStateNormal];
         [self.progressSlider addTarget:self action:@selector(updateValue:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:self.progressSlider];
         
@@ -118,7 +118,7 @@
 }
 
 - (void)play{
-    [_playOrPause setImage:[UIImage imageNamed:@"player_pause"] forState:UIControlStateNormal];
+    [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_pause"] forState:UIControlStateNormal];
     [self playClick:nil];
 }
 
@@ -279,11 +279,11 @@
 
 - (void)setPlayButtonImage:(BOOL)flag{
     if (flag) {
-        [_playOrPause setImage:[UIImage imageNamed:@"player_button_play_normal"] forState:UIControlStateNormal];
-        [_playOrPause setImage:[UIImage imageNamed:@"player_button_play_pressed"] forState:UIControlStateHighlighted];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_button_play_normal"] forState:UIControlStateNormal];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_button_play_pressed"] forState:UIControlStateHighlighted];
     } else {
-        [_playOrPause setImage:[UIImage imageNamed:@"player_button_stop_normal"] forState:UIControlStateNormal];
-        [_playOrPause setImage:[UIImage imageNamed:@"player_button_stop_pressed"] forState:UIControlStateHighlighted];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_button_stop_normal"] forState:UIControlStateNormal];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_button_stop_pressed"] forState:UIControlStateHighlighted];
     }
 }
 

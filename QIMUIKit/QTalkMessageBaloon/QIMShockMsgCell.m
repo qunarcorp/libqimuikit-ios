@@ -35,7 +35,7 @@
         _titleLabel.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:_titleLabel];
         
-        _flagView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_receive_shake"]];
+        _flagView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_receive_shake"]];
         [self.contentView addSubview:_flagView];
     }
     return self;

@@ -47,7 +47,7 @@
         [_openationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_openationButton setTitleColor:[UIColor qtalkTextLightColor] forState:UIControlStateDisabled];
         [_openationButton setTitle:@"已同意" forState:UIControlStateNormal];
-        [_openationButton setBackgroundImage:[UIImage imageNamed:@"AV_Check_start_button_normal@2x"] forState:UIControlStateNormal];
+        [_openationButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"AV_Check_start_button_normal@2x"] forState:UIControlStateNormal];
         [_openationButton setBackgroundImage:[UIImage qim_imageFromColor:[UIColor clearColor]] forState:UIControlStateDisabled];
         [_openationButton addTarget:self action:@selector(onAgreeClick) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_openationButton];

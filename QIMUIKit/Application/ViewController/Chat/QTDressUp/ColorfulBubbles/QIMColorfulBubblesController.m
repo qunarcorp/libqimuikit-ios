@@ -8,6 +8,7 @@
 
 #import "QIMColorfulBubblesController.h"
 #import "QIMColorfulBubbleCell.h"
+#import "UIImage+QIMUIKit.h"
 
 @interface QIMColorfulBubblesController ()<UITableViewDataSource,UITableViewDelegate,QIMColorfulBubbleCellDelegate>
 {
@@ -63,7 +64,7 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.delegate = self;
     }
-    [cell setBubbles:@[[UIImage imageNamed:[NSString stringWithFormat:@"balloon_left_%@",@(indexPath.row * 2 + 1)]],[UIImage imageNamed:[NSString stringWithFormat:@"balloon_left_%@",@(indexPath.row * 2 + 2)]]]];
+    [cell setBubbles:@[[UIImage qim_imageNamedFromQIMUIKitBundle:[NSString stringWithFormat:@"balloon_left_%@",@(indexPath.row * 2 + 1)]],[UIImage qim_imageNamedFromQIMUIKitBundle:[NSString stringWithFormat:@"balloon_left_%@",@(indexPath.row * 2 + 2)]]]];
     
     return cell;
 }

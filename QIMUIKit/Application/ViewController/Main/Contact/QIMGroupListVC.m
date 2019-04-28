@@ -62,7 +62,7 @@
     [self.view addSubview:_actionMenuView];
     
     UIImageView *bgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _actionMenuView.width, _actionMenuView.height)];
-    [bgView setImage:[[UIImage imageNamed:@"MoreFunctionFrame"] stretchableImageWithLeftCapWidth:10 topCapHeight:20]];
+    [bgView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"MoreFunctionFrame"] stretchableImageWithLeftCapWidth:10 topCapHeight:20]];
     [_actionMenuView addSubview:bgView];
     
     UIButton *addGroupButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 14, _actionMenuView.width-10, 20)];

@@ -8,6 +8,7 @@
 
 #import "QIMFriendSettingCell.h"
 #import "QIMCommonFont.h"
+#import "UIImage+QIMUIKit.h"
 
 @implementation QIMFriendSettingItem
 
@@ -46,7 +47,7 @@
         
         _selectedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, ([QIMFriendSettingCell getCellHeight] - 20)/2.0, 20, 20)];
         [_selectedImageView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
-        [_selectedImageView setImage:[UIImage imageNamed:@"chat_group_selected"]];
+        [_selectedImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_group_selected"]];
         [self.contentView addSubview:_selectedImageView];
     }
     return self;

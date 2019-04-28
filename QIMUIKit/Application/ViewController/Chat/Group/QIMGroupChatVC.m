@@ -450,10 +450,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     if (self.chatType == ChatType_GroupChat) {
         UIView *rightBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
         [rightBarView addSubview:self.addGroupMember];
+        /* 暂时取消右上角红点
         if (![[[QIMKit sharedInstance] userObjectForKey:kRightCardRemindNotification] boolValue]) {
             QIMRedMindView *redMindView = [[QIMRedMindView alloc] initWithBroView:self.addGroupMember withRemindNotificationName:kRightCardRemindNotification];
             [rightBarView addSubview:redMindView];
         }
+        */
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarView];
     } else {
         
@@ -960,7 +962,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [tipsLabel setText:[NSString stringWithFormat:@"%@正在共享位置", [userInfo objectForKey:@"Name"]]];
         [_joinShareLctView addSubview:tipsLabel];
         
-        UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Arrow"]];
+        UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Arrow"]];
         [arrowImageView setFrame:CGRectMake(_joinShareLctView.right - 40, (_joinShareLctView.height - arrowImageView.width) / 2.0, arrowImageView.width, arrowImageView.height)];
         [_joinShareLctView addSubview:arrowImageView];
         
@@ -2952,11 +2954,11 @@ static CGPoint tableOffsetPoint;
         
         notificationView = [[UIView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, self.textBar.frame.origin.y - 50, 100, 40)];
         backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-        [backImageView setImage:[UIImage imageNamed:@"notificationToast"]];
+        [backImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"notificationToast"]];
         [notificationView addSubview:backImageView];
         
         UIImageView *messageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 7, 20, 20)];
-        [messageImageView setImage:[UIImage imageNamed:@"notificationToastCommentIcon"]];
+        [messageImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"notificationToastCommentIcon"]];
         
         [notificationView addSubview:messageImageView];
         if (commentCountLabel == nil) {

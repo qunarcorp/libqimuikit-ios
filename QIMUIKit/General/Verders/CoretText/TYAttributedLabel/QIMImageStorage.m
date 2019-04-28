@@ -99,7 +99,7 @@
         }
     }else if (_imageName){
         // 图片网址
-        image = (YLGIFImage *)[UIImage imageNamed:_imageName];
+        image = (YLGIFImage *)[UIImage qim_imageNamedFromQIMUIKitBundle:_imageName];
         if (_cacheImageOnMemory) {
             _image = image;
         }
@@ -131,7 +131,7 @@
             height = self.size.height / 2.0f;
         }
         _imageView = [[YLImageView alloc] init];
-        [_imageView sd_setImageWithURL:_imageURL placeholderImage:[UIImage imageNamed:@"PhotoDownloadfailedSmall"] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        [_imageView sd_setImageWithURL:_imageURL placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
 //            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
 //            [self.progressLabel setText:progress];
 //            NSLog(@"下载图片进度 : %ld", progress);

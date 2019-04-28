@@ -254,15 +254,15 @@
     [self.view addSubview:navBgView];
     
     UIButton * closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [closeBtn setImage:[UIImage imageNamed:@"locationSharing_icon_close"] forState:UIControlStateNormal];
-    [closeBtn setImage:[UIImage imageNamed:@"locationSharing_icon_close_HL"] forState:UIControlStateHighlighted];
+    [closeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_icon_close"] forState:UIControlStateNormal];
+    [closeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_icon_close_HL"] forState:UIControlStateHighlighted];
     closeBtn.frame = CGRectMake(15, 30, 32, 32);
     [closeBtn addTarget:self action:@selector(closeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     [navBgView addSubview:closeBtn];
     
     UIButton * smallBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [smallBtn setImage:[UIImage imageNamed:@"locationSharing_icon_back"] forState:UIControlStateNormal];
-    [smallBtn setImage:[UIImage imageNamed:@"locationSharing_icon_back_HL"] forState:UIControlStateHighlighted];
+    [smallBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_icon_back"] forState:UIControlStateNormal];
+    [smallBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_icon_back_HL"] forState:UIControlStateHighlighted];
     smallBtn.frame = CGRectMake(navBgView.width - 32 - 15, 30, 32, 32);
     [smallBtn addTarget:self action:@selector(smallBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     [navBgView addSubview:smallBtn];
@@ -280,8 +280,8 @@
 - (void)initMyLocationBtn{
     if (_myLctBtn == nil) {
         _myLctBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_myLctBtn setImage:[UIImage imageNamed:@"locationSharing_mylocation"] forState:UIControlStateNormal];
-        [_myLctBtn setImage:[UIImage imageNamed:@"locationSharing_mylocation_HL"] forState:UIControlStateHighlighted];
+        [_myLctBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_mylocation"] forState:UIControlStateNormal];
+        [_myLctBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_mylocation_HL"] forState:UIControlStateHighlighted];
         _myLctBtn.frame = CGRectMake(20, self.view.height - 20 - 40, 40, 40);
         [_myLctBtn addTarget:self action:@selector(myLctBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:_myLctBtn];
@@ -291,8 +291,8 @@
 - (void)initFindDirectionBtn{
     if (_findDirection == nil) {
         _findDirection = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_findDirection setImage:[UIImage imageNamed:@"locationSharing_mylocation"] forState:UIControlStateNormal];
-        [_findDirection setImage:[UIImage imageNamed:@"locationSharing_mylocation_HL"] forState:UIControlStateHighlighted];
+        [_findDirection setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_mylocation"] forState:UIControlStateNormal];
+        [_findDirection setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_mylocation_HL"] forState:UIControlStateHighlighted];
         _findDirection.frame = CGRectMake(20, self.view.height - 20 - 40 - 20 - 40, 40, 40);
         [_findDirection addTarget:self action:@selector(findDirectionBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:_findDirection];
@@ -324,7 +324,7 @@
     for (NSString * userId in _annotationsDic.allKeys) {
         NSInteger index = [_annotationsDic.allKeys indexOfObject:userId];
         UIImageView * userBgView = [[UIImageView alloc] initWithFrame:CGRectMake((10 + 50) * index + 10, 0, 50, 50)];
-        userBgView.image = [UIImage imageNamed:@"locationSharing_avatar_bg"];
+        userBgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_avatar_bg"];
         [_userListView addSubview:userBgView];
         
         userBgView.userInteractionEnabled = YES;

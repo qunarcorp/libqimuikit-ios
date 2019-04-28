@@ -37,7 +37,7 @@
         _selected = NO;
         
         _selectBtn = [[UIImageView alloc] initWithFrame:CGRectZero];
-        [_selectBtn setImage:[UIImage imageNamed:@"common_checkbox_no_44px"]];
+        [_selectBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
         [self.contentView addSubview:_selectBtn];
         
         _fileIcon = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -151,7 +151,7 @@
 - (void)setCellSelected : (BOOL)selected
 {
     _selected = selected;
-    [_selectBtn setImage:selected ? [UIImage imageNamed:@"common_checkbox_yes_44px"] : [UIImage imageNamed:@"common_checkbox_no_44px"]];
+    [_selectBtn setImage:selected ? [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_yes_44px"] : [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
 }
 
 - (BOOL)isCellSelected

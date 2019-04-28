@@ -296,7 +296,7 @@
     
     UIImageView * headView  = [[UIImageView alloc] init];
     [headView setFrame:CGRectMake(10, 8, 30, 30)];
-    [headView setImage:[UIImage imageNamed:@"singleHeaderDefault" ]];
+    [headView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"singleHeaderDefault" ]];
     [bgView addSubview:headView];
     
     if (groupNameTextField == nil) {
