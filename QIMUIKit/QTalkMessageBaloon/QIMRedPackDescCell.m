@@ -43,7 +43,7 @@
         [self.contentView addSubview:_bgView];
         
         _flagView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        _flagView.image = [UIImage imageNamed:@"SystemMessages_HongbaoIcon"];
+        _flagView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"SystemMessages_HongbaoIcon"];
         [_bgView addSubview:_flagView];
         
         _descLabel = [[UILabel alloc] initWithFrame:CGRectZero];

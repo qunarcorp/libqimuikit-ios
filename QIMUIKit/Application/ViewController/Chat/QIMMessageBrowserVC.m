@@ -212,18 +212,18 @@
     
     _voiceFireBGView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 120, 120)];
     _voiceFireBGView.center = self.view.center;
-    _voiceFireBGView.image = [UIImage imageNamed:@"VoiceFire"];
+    _voiceFireBGView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"VoiceFire"];
     _voiceFireBGView.userInteractionEnabled = YES;
     [self.view addSubview:_voiceFireBGView];
     
     _voiceView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 120, 120)];
     _voiceView.center = _voiceFireBGView.center;
-    _voiceView.image = [UIImage imageNamed:@"iconfont-icon_voice"];
+    _voiceView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"iconfont-icon_voice"];
 //    [self.view insertSubview:_voiceView aboveSubview:_voiceFireBGView];
     
-    NSArray * receiveImageArray = [[NSArray alloc] initWithObjects:[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon1"],[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon2"],[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon3"],[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon4"], nil];
+    NSArray * receiveImageArray = [[NSArray alloc] initWithObjects:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon1"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon2"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon3"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon4"], nil];
     _voicePlayView = [[UIImageView alloc] initWithFrame:CGRectMake(20, _voiceFireBGView.bottom + 100, 20, 20)];
-    [_voicePlayView setImage:[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon1"]];
+    [_voicePlayView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon1"]];
     [_voicePlayView setAnimationImages:receiveImageArray];
     [_voicePlayView setAnimationDuration:1];
     [self.view addSubview:_voicePlayView];

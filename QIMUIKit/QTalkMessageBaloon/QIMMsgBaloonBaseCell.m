@@ -27,7 +27,7 @@ static UIImage *__rightBallocImage = nil;
     //return nil时，自动用贝塞尔曲线画气泡
     return nil;
     if (__leftBallocImage == nil) {
-        NSData *data = UIImagePNGRepresentation([UIImage imageNamed:@"leftBalloon"]);
+        NSData *data = UIImagePNGRepresentation([UIImage qim_imageNamedFromQIMUIKitBundle:@"leftBalloon"]);
         UIImage *image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
         CGFloat width = image.size.width / 2.0;
         CGFloat height = image.size.height / 2.0;
@@ -39,7 +39,7 @@ static UIImage *__rightBallocImage = nil;
 + (UIImage *)rightBallcoImage{
     return nil;
     if (__rightBallocImage == nil) {
-        NSData *data = UIImagePNGRepresentation([UIImage imageNamed:@"rightBalloon"]);
+        NSData *data = UIImagePNGRepresentation([UIImage qim_imageNamedFromQIMUIKitBundle:@"rightBalloon"]);
         UIImage *image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
         CGFloat width = image.size.width / 2.0;
         CGFloat height = image.size.height / 2.0;
@@ -165,7 +165,7 @@ static UIImage *__rightBallocImage = nil;
 - (UIButton *)statusButton {
     if (!_statusButton) {
         _statusButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_statusButton setImage:[UIImage imageNamed:@"MessageSendFail"] forState:UIControlStateNormal];
+        [_statusButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"MessageSendFail"] forState:UIControlStateNormal];
         _statusButton.contentMode = UIViewContentModeScaleAspectFit;
         _statusButton.frame = CGRectMake(self.backView.left - 30, 0, 24, 24);
         _statusButton.hidden = YES;

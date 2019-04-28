@@ -21,7 +21,7 @@
 - (UIImageView *)selectBtn {
     if (!_selectBtn) {
         _selectBtn = [[UIImageView alloc] initWithFrame:CGRectZero];
-        [_selectBtn setImage:[UIImage imageNamed:@"common_checkbox_no_44px"]];
+        [_selectBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
     }
     return _selectBtn;
 }
@@ -47,7 +47,7 @@
 
 - (void)setCellSelected:(BOOL)selected {
     _selected = selected;
-    [self.selectBtn setImage:selected ? [UIImage imageNamed:@"common_checkbox_yes_44px"] : [UIImage imageNamed:@"common_checkbox_no_44px"]];
+    [self.selectBtn setImage:selected ? [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_yes_44px"] : [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
 }
 
 - (BOOL)isCellSelected {

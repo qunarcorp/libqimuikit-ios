@@ -44,7 +44,7 @@
         [_rootView addSubview:_titleLabel];
         
         _QRicon = [[UIImageView alloc]initWithFrame:CGRectMake(_rootView.frame.size.width - 60, 12.5, _rootView.height - 25, _rootView.height - 25)];
-        _QRicon.image = [UIImage imageNamed:@"QRCode"];
+        _QRicon.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QRCode"];
         [_rootView addSubview:_QRicon];
         
         UIView *line = [[UIView alloc] initWithFrame:CGRectMake(10, _rootView.height - 0.5, _rootView.width - 10, 0.5)];

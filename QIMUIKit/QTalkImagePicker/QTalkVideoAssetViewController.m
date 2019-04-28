@@ -246,7 +246,7 @@
     [self.view addSubview:_bottomView];
     
     _playButton = [[UIButton alloc] initWithFrame:CGRectMake((self.view.width - 30)/2.0, 20, 30, 30)];
-    [_playButton setImage:[UIImage imageNamed:@"short_video_preview_play"] forState:UIControlStateNormal];
+    [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_play"] forState:UIControlStateNormal];
     [_playButton addTarget:self action:@selector(onPlayOrPause) forControlEvents:UIControlEventTouchUpInside];
     [_bottomView addSubview:_playButton];
     
@@ -385,11 +385,11 @@
 
 - (void)setPlayButtonImage:(BOOL)flag{
     if (flag) {
-        [_playButton setImage:[UIImage imageNamed:@"short_video_preview_play"] forState:UIControlStateNormal];
-        [_playButton setImage:[UIImage imageNamed:@"short_video_preview_play"] forState:UIControlStateHighlighted];
+        [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_play"] forState:UIControlStateNormal];
+        [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_play"] forState:UIControlStateHighlighted];
     } else {
-        [_playButton setImage:[UIImage imageNamed:@"short_video_preview_pause"] forState:UIControlStateNormal];
-        [_playButton setImage:[UIImage imageNamed:@"short_video_preview_pause"] forState:UIControlStateHighlighted];
+        [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_pause"] forState:UIControlStateNormal];
+        [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_pause"] forState:UIControlStateHighlighted];
     }
 }
 

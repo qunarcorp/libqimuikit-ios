@@ -407,9 +407,9 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         }
     } else {
         [cell setVideoLayout:NO];
-        cell.imageView3.image = [UIImage imageNamed:@"QTPHEmptyFolder"];
-        cell.imageView2.image = [UIImage imageNamed:@"QTPHEmptyFolder"];
-        cell.imageView1.image = [UIImage imageNamed:@"QTPHEmptyFolder"];
+        cell.imageView3.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTPHEmptyFolder"];
+        cell.imageView2.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTPHEmptyFolder"];
+        cell.imageView1.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTPHEmptyFolder"];
     }
     
     return cell;

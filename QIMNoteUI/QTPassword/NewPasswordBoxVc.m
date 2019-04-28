@@ -65,8 +65,8 @@
     if (!_agreeBtn) {
         _agreeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _agreeBtn.frame = CGRectMake(self.nameTextField.left, self.repeatPwdBoxField.bottom + 80, 18, 18);
-        [_agreeBtn setImage:[UIImage imageNamed:@"checkbox_normal"] forState:UIControlStateNormal];
-        [_agreeBtn setImage:[UIImage imageNamed:@"checkbox_click"] forState:UIControlStateSelected];
+        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_normal"] forState:UIControlStateNormal];
+        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_click"] forState:UIControlStateSelected];
         _agreeBtn.selected = NO;
         [_agreeBtn addTarget:self action:@selector(agreeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     }

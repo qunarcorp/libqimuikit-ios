@@ -110,7 +110,7 @@
     
     [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"contact_tab_public_number"]];
     
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"header_icon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"header_icon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
     [self.navigationItem setRightBarButtonItem:rightItem animated:YES];
 }
 
@@ -184,7 +184,7 @@
     [_moreView addSubview:_moreMenuView];
     
     UIImageView *imageBgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _moreMenuView.width, _moreMenuView.height)];
-    [imageBgView setImage:[[UIImage imageNamed:@"mailapp_Attach_list"] stretchableImageWithLeftCapWidth:15 topCapHeight:20]];
+    [imageBgView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"mailapp_Attach_list"] stretchableImageWithLeftCapWidth:15 topCapHeight:20]];
     [_moreMenuView addSubview:imageBgView];
     
     CGFloat startY = 0;
@@ -275,7 +275,7 @@
     if ([searchBar respondsToSelector:@selector(setBarTintColor:)]) {
         [searchBar setBarTintColor:[UIColor qim_colorWithHex:0xe6e7e9 alpha:1.0]];
     }
-    [searchBar setBackgroundImage:[UIImage imageNamed:@"searchbar_bg"]];
+    [searchBar setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"searchbar_bg"]];
     return searchBar;
 }
 

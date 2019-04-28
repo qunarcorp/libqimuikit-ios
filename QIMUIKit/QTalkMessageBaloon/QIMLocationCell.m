@@ -28,7 +28,7 @@
         self.detailTextLabel.textColor = [UIColor qtalkTextLightColor];
         
         _flagImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        _flagImageView.image = [UIImage imageNamed:@"locaton_checked"];
+        _flagImageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locaton_checked"];
         [self.contentView addSubview:_flagImageView];
     }
     return self;

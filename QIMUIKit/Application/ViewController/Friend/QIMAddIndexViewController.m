@@ -15,6 +15,7 @@
 #import "QIMHttpRequestMonitor.h"
 #import "NSBundle+QIMLibrary.h"
 #import "SearchBar.h"
+#import "UIImage+QIMUIKit.h"
 
 static NSInteger limitCount = 15;
 @interface QIMAddIndexViewController ()<UITableViewDataSource,UITableViewDelegate,SearchBarDelgt>{
@@ -143,7 +144,7 @@ static NSInteger limitCount = 15;
     self.emptyView.center = self.view.center;
     UIImageView *emptyIconView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 150, 100)];
     emptyIconView.backgroundColor = [UIColor whiteColor];
-    emptyIconView.image = [UIImage imageNamed:@"EmptyNotReadList"];
+    emptyIconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"EmptyNotReadList"];
     [self.emptyView addSubview:emptyIconView];
     UILabel *emptyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, emptyIconView.bottom + 5, 150, 25)];
     [emptyLabel setText:@"查无此人"];

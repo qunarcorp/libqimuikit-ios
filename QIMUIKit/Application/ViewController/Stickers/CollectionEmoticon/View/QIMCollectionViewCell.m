@@ -10,6 +10,7 @@
 #import "YLImageView.h"
 #import "QIMEmotionTip.h"
 #import "QIMCollectionFaceManager.h"
+#import "UIImage+QIMUIKit.h"
 
 @interface QIMCollectionViewCell ()
 
@@ -53,14 +54,14 @@
         
         if (self.tag == 0) {
         
-            self.emojiView.image = [UIImage imageNamed:@"EmoticonAddButton"];
+            self.emojiView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"EmoticonAddButton"];
 
         } else if (self.tag == -1) {
             self.emojiView.image = [UIImage new];
             self.userInteractionEnabled = NO;
         } else {
             
-            self.emojiView.image = [UIImage imageNamed:@"aio_ogactivity_default"];
+            self.emojiView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_ogactivity_default"];
             [[QIMCollectionFaceManager sharedInstance] showSmallImage:^(UIImage *downLoadImage) {
 
                 weakSelf.emojiView.image = downLoadImage;

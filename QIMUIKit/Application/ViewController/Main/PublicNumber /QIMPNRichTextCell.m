@@ -129,7 +129,7 @@
         [_readedAllLabel setText:@"阅读全文"];
         [_bgView addSubview:_readedAllLabel];
         
-        _arrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Arrow"]];
+        _arrowImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Arrow"]];
         [_bgView addSubview:_arrowImageView];
         
     }

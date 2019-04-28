@@ -21,6 +21,7 @@
 #import "YLGIFImage.h"
 
 #import "UIImageView+QIMImageCache.h"
+#import "UIImage+QIMUIKit.h"
 #import "UIColor+QIMChatBallocColor.h"
 #import "UIImage+QIMIconFont.h"
 #import "UIImage+QIMButtonIcon.h"

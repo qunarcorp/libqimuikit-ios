@@ -21,7 +21,7 @@
         _timestampButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _timestampButton.frame = CGRectMake(100, 3, SCREEN_WIDTH - 200, 20);
         [_timestampButton setUserInteractionEnabled:NO];
-        [_timestampButton setBackgroundImage:[[UIImage imageNamed:@"im_time_bg"] stretchableImageWithLeftCapWidth:6 topCapHeight:6] forState:UIControlStateNormal];
+        [_timestampButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"im_time_bg"] stretchableImageWithLeftCapWidth:6 topCapHeight:6] forState:UIControlStateNormal];
         [_timestampButton.titleLabel setFont:[UIFont systemFontOfSize:11]];
         [_timestampButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _timestampButton.hidden = YES;

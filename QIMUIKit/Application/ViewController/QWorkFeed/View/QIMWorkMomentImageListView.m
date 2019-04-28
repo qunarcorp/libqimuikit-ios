@@ -106,7 +106,7 @@
                       (int)96*2];
         }
 //        QIMVerboseLog(@"imageUrl : %@", imageUrl);
-        [imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"q_work_placeholder"]];
+        [imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_placeholder"]];
     }
     self.width = SCREEN_WIDTH - 60 - 20;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {

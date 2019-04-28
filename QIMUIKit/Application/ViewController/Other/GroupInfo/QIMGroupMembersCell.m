@@ -126,7 +126,7 @@
         }
     }
     //add
-    UIImageView * imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"mqz_add_picture"]];
+    UIImageView * imageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"mqz_add_picture"]];
     imageView.frame = CGRectMake(startX, _titleLabel.bottom + 10, kImageWidth, kImageWidth);
     imageView.layer.cornerRadius = kImageWidth / 2.0;
     imageView.userInteractionEnabled = YES;

@@ -130,7 +130,7 @@
         _connectionAlertView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 45)];
         _connectionAlertView.backgroundColor = [UIColor colorWithRed:253 green:228 blue:229 alpha:1.0];
         
-        UIImageView *alertView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"connect_alert_error"]];
+        UIImageView *alertView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"connect_alert_error"]];
         alertView.frame = CGRectMake(20, (CGRectGetHeight(_connectionAlertView.frame) - 28)/2, 28, 28);
         [_connectionAlertView addSubview:alertView];
         

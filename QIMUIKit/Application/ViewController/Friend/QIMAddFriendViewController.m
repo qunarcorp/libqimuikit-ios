@@ -117,7 +117,7 @@
         [headerView addSubview:descInfoLabel];
         
         YLImageView *arrowImageView = [[YLImageView alloc] initWithFrame:CGRectMake(contentView.width - 23, 20, 13, 20)];
-        [arrowImageView setImage:[UIImage imageNamed:@"arrow_right"]];
+        [arrowImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"arrow_right"]];
         [headerView addSubview:arrowImageView];
         
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, headerView.height-0.5, [UIScreen mainScreen].bounds.size.width, 0.5)];
@@ -158,7 +158,7 @@
         
         if (state == 1) {
             UIButton  *replyButton = [[UIButton alloc] initWithFrame:CGRectMake(contentView.width - 100, addMsgLabel.bottom + 10, 80, 25)];
-            [replyButton setBackgroundImage:[UIImage imageNamed:@"AV_Check_start_button_normal"] forState:UIControlStateNormal];
+            [replyButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"AV_Check_start_button_normal"] forState:UIControlStateNormal];
             [replyButton setTitle:@"回复" forState:UIControlStateNormal];
             [replyButton addTarget:self action:@selector(onReplyClick:) forControlEvents:UIControlEventTouchUpInside];
             [addMsgView addSubview:replyButton];

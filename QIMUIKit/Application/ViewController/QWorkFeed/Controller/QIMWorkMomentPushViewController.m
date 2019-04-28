@@ -500,7 +500,7 @@
     iconView.layer.masksToBounds = YES;
     if ([photoData isKindOfClass:[NSString class]]) {
         if ([photoData isEqualToString:@"Q_Work_Add"]) {
-            iconView.image = [UIImage imageNamed:@"q_work_add"];
+            iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_add"];
             iconView.backgroundColor = [UIColor whiteColor];
             [cell.contentView addSubview:iconView];
             [cell setCanDelete:NO];

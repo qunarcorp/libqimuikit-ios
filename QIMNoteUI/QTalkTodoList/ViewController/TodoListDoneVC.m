@@ -41,7 +41,7 @@
         
         UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
         searchButton.frame = CGRectMake(10, 10, 30, 30);
-        [searchButton setImage:[UIImage imageNamed:@"search_32x_32_"] forState:UIControlStateNormal];
+        [searchButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"search_32x_32_"] forState:UIControlStateNormal];
         
         UITextField *searchText = [[UITextField alloc] initWithFrame:CGRectMake(40, 2, [UIScreen mainScreen].bounds.size.width - 90, 48)];
         searchText.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -55,7 +55,7 @@
         
         UIButton *settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         settingBtn.frame = CGRectMake(searchText.right + 10, 10, 30, 30);
-        [settingBtn setImage:[UIImage imageNamed:@"setup_38x38_"] forState:UIControlStateNormal];
+        [settingBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"setup_38x38_"] forState:UIControlStateNormal];
         [settingBtn addTarget:self action:@selector(todoListSetting:) forControlEvents:UIControlEventTouchUpInside];
         [_headerView addSubview:settingBtn];
         self.settingBtn = settingBtn;
@@ -76,7 +76,7 @@
 - (UIImageView *)emptySearchImageView {
     if (!_emptySearchImageView) {
         _emptySearchImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.headerView.bottom, kEMPTYSEARCHIMAGEVIEWW, kEMPTYSEARCHIMAGEVIEWH)];
-        _emptySearchImageView.image = [UIImage imageNamed:@"noHistory-en_273x304_"];
+        _emptySearchImageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"noHistory-en_273x304_"];
         _emptySearchImageView.hidden = YES;
     }
     return _emptySearchImageView;

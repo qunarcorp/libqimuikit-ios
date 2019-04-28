@@ -61,7 +61,7 @@
         if (_iconFlagImgView == nil) {
             _iconFlagImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
             _iconFlagImgView.center = CGPointMake(_tolView.left, _tolView.center.y);
-            _iconFlagImgView.image = [UIImage imageNamed:@"dynamicfontprogress"];
+            _iconFlagImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"dynamicfontprogress"];
             [self addSubview:_iconFlagImgView];
         }
     }

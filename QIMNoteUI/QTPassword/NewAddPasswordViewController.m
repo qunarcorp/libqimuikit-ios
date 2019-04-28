@@ -173,7 +173,7 @@
         
         UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 50, 50)];
         iconView.contentMode = UIViewContentModeScaleAspectFit;
-        iconView.image = [UIImage imageNamed:@"explore_tab_password"];
+        iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
         [_headerView addSubview:iconView];
         iconView.centerY = _headerView.centerY;
         
@@ -333,7 +333,7 @@
 
 - (UISlider *)addPasswordRulesSliderWithMaximumValue:(float)maximumValue minimumValue:(float)minimumValue selector:(SEL)sel RuleTitleLabel:(UILabel *)label BaseView:(UIView *)baseView lastLineView:(UIView *)lineView {
     //滑块
-    UIImage *image = [self OriginImage:[UIImage imageNamed:@"dynamicfontprogress"] scaleToSize:CGSizeMake(24, 24)];
+    UIImage *image = [self OriginImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"dynamicfontprogress"] scaleToSize:CGSizeMake(24, 24)];
     UISlider *newSlider = [[UISlider alloc] initWithFrame:CGRectMake(label.right + 5, lineView.bottom + 8, 60, 45)];
     [newSlider setMinimumValue:maximumValue];
     [newSlider setMinimumValue:minimumValue];

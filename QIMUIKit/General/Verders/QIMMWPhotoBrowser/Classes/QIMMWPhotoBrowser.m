@@ -869,7 +869,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 [selectedButton setImage:[UIImage imageForResourcePath:@"QIMMWPhotoBrowser.bundle/ImageSelectedOff" ofType:@"png" inBundle:[NSBundle bundleForClass:[self class]]] forState:UIControlStateNormal];
                 UIImage *selectedOnImage;
                 if (self.customImageSelectedIconName) {
-                    selectedOnImage = [UIImage imageNamed:self.customImageSelectedIconName];
+                    selectedOnImage = [UIImage qim_imageNamedFromQIMUIKitBundle:self.customImageSelectedIconName];
                 } else {
                     selectedOnImage = [UIImage imageForResourcePath:@"QIMMWPhotoBrowser.bundle/ImageSelectedOn" ofType:@"png" inBundle:[NSBundle bundleForClass:[self class]]];
                 }

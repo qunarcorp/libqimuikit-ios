@@ -60,7 +60,7 @@
     
     UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 50, 50)];
     iconView.contentMode = UIViewContentModeScaleAspectFit;
-    iconView.image = [UIImage imageNamed:@"explore_tab_password"];
+    iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
     [headerView addSubview:iconView];
     iconView.centerY = headerView.centerY;
     

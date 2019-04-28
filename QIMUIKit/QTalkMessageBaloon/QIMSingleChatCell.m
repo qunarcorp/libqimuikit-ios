@@ -92,7 +92,7 @@ static double _global_message_cell_width = 0;
         _actIndView.hidesWhenStopped = YES;
         [self.contentView addSubview:_actIndView];
         
-        _msgSendFailedImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tips_message_failed"]];
+        _msgSendFailedImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"tips_message_failed"]];
         _msgSendFailedImageView.hidden = YES;
         _msgSendFailedImageView.userInteractionEnabled = YES;
         [self.contentView addSubview:_msgSendFailedImageView];

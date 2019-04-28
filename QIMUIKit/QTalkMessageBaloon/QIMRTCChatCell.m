@@ -39,7 +39,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"QIMRTCChatCell_Call"]];
+        _imageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"QIMRTCChatCell_Call"]];
         _imageView.clipsToBounds = YES;
         _imageView.userInteractionEnabled = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -96,13 +96,13 @@
     }
     if (self.message.messageType == QIMWebRTC_MsgType_Audio) {
         _titleLabel.text = @"发起了语音聊天";
-        _imageView.image = [UIImage imageNamed:@"QTalkRTCChatCell_Call"];
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Call"];
     } else if (self.message.messageType == QIMWebRTC_MsgType_Video) {
         _titleLabel.text = @"发起了视频聊天";
-        _imageView.image = [UIImage imageNamed:@"QTalkRTCChatCell_Video"];
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Video"];
     } else if (self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoMeeting) {
         _titleLabel.text = @"发起了视频会议";
-        _imageView.image = [UIImage imageNamed:@"QTalkRTCChatCell_Meeting"];
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Meeting"];
     }
 }
 

@@ -8,6 +8,7 @@
 
 #import "LvtuAutoImageView.h"
 #import "QIMDataController.h"
+#import "UIImage+QIMUIKit.h"
 
 #define kNetworkTaskTimeOut					60
 
@@ -163,7 +164,7 @@ static NSMutableArray *__tempUrlQueue = nil;
         if (self.defaultImage) {
             [super setImage:self.defaultImage];
         } else {
-            [super setImage:[UIImage imageNamed:@"newspaper_default"]];
+            [super setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"newspaper_default"]];
         }
         [_activityView stopAnimating];
     }

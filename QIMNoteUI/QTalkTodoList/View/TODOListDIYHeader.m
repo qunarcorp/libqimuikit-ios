@@ -36,7 +36,7 @@
     self.titleLabel = titleLabel;
 
     UIButton *clockBtn = [[UIButton alloc] init];
-    [clockBtn setImage:[UIImage imageNamed:@"随机_13x12_"] forState:UIControlStateNormal];
+    [clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"随机_13x12_"] forState:UIControlStateNormal];
     clockBtn.centerY = titleLabel.centerY;
     [self addSubview:clockBtn];
     self.clockBtn = clockBtn;

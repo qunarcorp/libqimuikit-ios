@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "KZColorCompareView.h"
+#import "UIImage+QIMUIKit.h"
 
 @interface KZColorCompareView ()
 @property (nonatomic, strong) CAShapeLayer *touchDownLayer;
@@ -63,7 +64,7 @@
 {
     if(!_checkerboardColor)
     {
-        self.checkerboardColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"checkerboard"]];
+        self.checkerboardColor = [UIColor colorWithPatternImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkerboard"]];
     }
     
     return _checkerboardColor;

@@ -188,7 +188,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (UIImageView *)stickView {
     if (!_stickView) {
         _stickView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 11, 11)];
-        _stickView.image = [UIImage imageNamed:@"qim_sessionlist_sticky"];
+        _stickView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"qim_sessionlist_sticky"];
     }
     return _stickView;
 }
@@ -208,7 +208,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (!_prefrenceImageView) {
         
         _prefrenceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.headerView.right - 15, self.headerView.bottom - 15, 15, 15)];
-        [_prefrenceImageView setImage:[UIImage imageNamed:@"hotline"]];
+        [_prefrenceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"hotline"]];
         [_prefrenceImageView setBackgroundColor:[UIColor whiteColor]];
         _prefrenceImageView.layer.masksToBounds = YES;
     }
@@ -866,7 +866,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
         }
         if (self.isReminded) {
-            [self.muteView setImage:[UIImage imageNamed:@"state-shield"]];
+            [self.muteView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"state-shield"]];
             self.muteView.hidden = NO;
         } else {
             self.muteView.hidden = YES;

@@ -133,7 +133,7 @@
     closeBtn.frame = CGRectMake(self.view.width - 60, self.view.height - 60, 45, 45);
     closeBtn.layer.masksToBounds = YES;
     closeBtn.layer.cornerRadius = CGRectGetWidth(closeBtn.frame) / 2.0;
-    [closeBtn setImage:[UIImage imageNamed:@"videoCall_btn_close"] forState:UIControlStateNormal];
+    [closeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"videoCall_btn_close"] forState:UIControlStateNormal];
     [closeBtn setBackgroundColor:[UIColor redColor]];
     [closeBtn addTarget:self action:@selector(exitTodoList:) forControlEvents:UIControlEventTouchUpInside];
     [[UIApplication sharedApplication].keyWindow addSubview:closeBtn];
@@ -187,7 +187,7 @@
 }
 
 - (UIImage *)favoriteButtonIcon:(QIMNoteModel *)model {
-    return (model.q_state == QIMNoteStateFavorite) ? [UIImage imageNamed:@"aboutMore_29x28_"] : [UIImage imageNamed:@"heart_16x14_"];
+    return (model.q_state == QIMNoteStateFavorite) ? [UIImage qim_imageNamedFromQIMUIKitBundle:@"aboutMore_29x28_"] : [UIImage qim_imageNamedFromQIMUIKitBundle:@"heart_16x14_"];
 }
 
 #pragma mark Swipe Delegate
@@ -235,7 +235,7 @@
         
         expansionSettings.fillOnTrigger = YES;
         CGFloat padding = 10;
-        MGSwipeButton * edit = [MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"编辑_12x13_"] backgroundColor:[UIColor whiteColor] padding:padding callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
+        MGSwipeButton * edit = [MGSwipeButton buttonWithTitle:@"" icon:[UIImage qim_imageNamedFromQIMUIKitBundle:@"编辑_12x13_"] backgroundColor:[UIColor whiteColor] padding:padding callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
             NewAddTodoListVc *editTodoListVc = [[NewAddTodoListVc alloc] init];
             [editTodoListVc setEdited:YES];
             [editTodoListVc setTodoListModel:todoListModel];
@@ -245,7 +245,7 @@
             return YES;
         }];
         
-        MGSwipeButton * trash = [MGSwipeButton buttonWithTitle:@"" icon:[UIImage imageNamed:@"删除_12x12_"] backgroundColor:[UIColor whiteColor] padding:padding callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
+        MGSwipeButton * trash = [MGSwipeButton buttonWithTitle:@"" icon:[UIImage qim_imageNamedFromQIMUIKitBundle:@"删除_12x12_"] backgroundColor:[UIColor whiteColor] padding:padding callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
             todoListModel.q_state = QIMNoteStateBasket;
             NSIndexPath *path = [_mainTableView indexPathForCell:cell];
             [_dataSource removeObjectAtIndex:path.row];

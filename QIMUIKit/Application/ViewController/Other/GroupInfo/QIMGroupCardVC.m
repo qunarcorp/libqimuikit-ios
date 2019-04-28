@@ -250,8 +250,8 @@
     
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [backBtn setFrame:CGRectMake(5, 25, 44, 44)];
-    [backBtn setImage:[UIImage imageNamed:@"titlebar_back_nor"] forState:UIControlStateNormal];
-    [backBtn setImage:[UIImage imageNamed:@"titlebar_back_pressed"] forState:UIControlStateHighlighted];
+    [backBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"titlebar_back_nor"] forState:UIControlStateNormal];
+    [backBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"titlebar_back_pressed"] forState:UIControlStateHighlighted];
     [backBtn addTarget:self action:@selector(goBack:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:backBtn];
     

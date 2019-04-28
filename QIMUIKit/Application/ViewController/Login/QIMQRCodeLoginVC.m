@@ -34,7 +34,7 @@
         if (self.iconUrl) {
             _platFormImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.iconUrl]];
         } else {
-            _platFormImageView.image = [UIImage imageNamed:@"qunar-pc_f"];
+            _platFormImageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"qunar-pc_f"];
         }
     }
     return _platFormImageView;

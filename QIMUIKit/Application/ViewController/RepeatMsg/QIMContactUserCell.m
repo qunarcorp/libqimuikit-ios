@@ -39,7 +39,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOnlineState) name:kNotifyUserOnlineStateUpdate object:nil];
         
         _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
-        [_headerView setImage:[UIImage imageNamed:@"singleHeaderDefault"]];
+        [_headerView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"singleHeaderDefault"]];
         _headerView.layer.masksToBounds = YES;
         _headerView.layer.cornerRadius  = 5;
         [_headerView setClipsToBounds:YES];

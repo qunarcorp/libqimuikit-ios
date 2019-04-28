@@ -205,9 +205,9 @@ const float colormatrix_yese[] = {
     
     _duangBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _duangBtn.frame = CGRectMake(70, 5, 34, 34);
-    [_duangBtn setImage:[UIImage imageNamed:@"aio_photo_filter"] forState:UIControlStateNormal];
-    [_duangBtn setImage:[UIImage imageNamed:@"aio_photo_filter_pressed"] forState:UIControlStateHighlighted];
-    [_duangBtn setImage:[UIImage imageNamed:@"aio_photo_filter_pressed"] forState:UIControlStateSelected];
+    [_duangBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_photo_filter"] forState:UIControlStateNormal];
+    [_duangBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_photo_filter_pressed"] forState:UIControlStateHighlighted];
+    [_duangBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_photo_filter_pressed"] forState:UIControlStateSelected];
     [_duangBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_duangBtn addTarget:self action:@selector(duangBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     _duangBtn.selected = YES;
@@ -216,18 +216,18 @@ const float colormatrix_yese[] = {
     _clipsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _clipsBtn.frame = CGRectMake(140, 5, 34, 34);
     [_clipsBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
-    [_clipsBtn setImage:[UIImage imageNamed:@"aio_photo_cut"] forState:UIControlStateNormal];
-    [_clipsBtn setImage:[UIImage imageNamed:@"aio_photo_cut_pressed"] forState:UIControlStateHighlighted];
-    [_clipsBtn setImage:[UIImage imageNamed:@"aio_photo_cut_pressed"] forState:UIControlStateSelected];
+    [_clipsBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_photo_cut"] forState:UIControlStateNormal];
+    [_clipsBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_photo_cut_pressed"] forState:UIControlStateHighlighted];
+    [_clipsBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_photo_cut_pressed"] forState:UIControlStateSelected];
     [_clipsBtn addTarget:self action:@selector(clipsBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     [_naviBar addSubview:_clipsBtn];
     
     _doodleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _doodleBtn.frame = CGRectMake(210, 5, 34, 34);
     [_doodleBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
-    [_doodleBtn setImage:[UIImage imageNamed:@"aio_photo_brush"] forState:UIControlStateNormal];
-    [_doodleBtn setImage:[UIImage imageNamed:@"aio_photo_brush_pressed"] forState:UIControlStateHighlighted];
-    [_doodleBtn setImage:[UIImage imageNamed:@"aio_photo_brush_pressed"] forState:UIControlStateSelected];
+    [_doodleBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_photo_brush"] forState:UIControlStateNormal];
+    [_doodleBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_photo_brush_pressed"] forState:UIControlStateHighlighted];
+    [_doodleBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_photo_brush_pressed"] forState:UIControlStateSelected];
     [_doodleBtn addTarget:self action:@selector(doodleBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     [_naviBar addSubview:_doodleBtn];
     
@@ -271,7 +271,7 @@ const float colormatrix_yese[] = {
     for (NSString * imageStr in _dataSource) {
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(80 * i, 0, 80, 80)];
         imageView.image =nil;
-//        [self getDuangImageWithIndexTag:i originalImage:[UIImage imageNamed:imageStr]];
+//        [self getDuangImageWithIndexTag:i originalImage:[UIImage qim_imageNamedFromQIMUIKitBundle:imageStr]];
         imageView.tag = kImageTagFrom + i;
         imageView.userInteractionEnabled = YES;
         [_duangView addSubview:imageView];
@@ -302,8 +302,8 @@ const float colormatrix_yese[] = {
     UIButton * orientationLeftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     orientationLeftBtn.frame = CGRectMake(_orientationView.width / 2 - 70, 10, 34, 34);
 //    [orientationLeftBtn setTitle:@"left" forState:UIControlStateNormal];
-    [orientationLeftBtn setImage:[UIImage imageNamed:@"pe_crop_left_ccw_normal"] forState:UIControlStateNormal];
-    [orientationLeftBtn setImage:[UIImage imageNamed:@"pe_crop_left_ccw_pressed"] forState:UIControlStateHighlighted];
+    [orientationLeftBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"pe_crop_left_ccw_normal"] forState:UIControlStateNormal];
+    [orientationLeftBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"pe_crop_left_ccw_pressed"] forState:UIControlStateHighlighted];
     [orientationLeftBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
     orientationLeftBtn.tag = kTurnLeftBtnTag;
     [orientationLeftBtn addTarget:self action:@selector(orientationBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
@@ -312,8 +312,8 @@ const float colormatrix_yese[] = {
     UIButton * orientationRightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     orientationRightBtn.frame = CGRectMake(_orientationView.width / 2 + 20, 10, 34, 34);
 //    [orientationRightBtn setTitle:@"right" forState:UIControlStateNormal];
-    [orientationRightBtn setImage:[UIImage imageNamed:@"pe_crop_right_ccw_normal"] forState:UIControlStateNormal];
-    [orientationRightBtn setImage:[UIImage imageNamed:@"pe_crop_right_ccw_pressed"] forState:UIControlStateHighlighted];
+    [orientationRightBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"pe_crop_right_ccw_normal"] forState:UIControlStateNormal];
+    [orientationRightBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"pe_crop_right_ccw_pressed"] forState:UIControlStateHighlighted];
     [orientationRightBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
     orientationRightBtn.tag = kTurnRightBtnTag;
     [orientationRightBtn addTarget:self action:@selector(orientationBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
@@ -331,9 +331,9 @@ const float colormatrix_yese[] = {
     UIButton * cleanBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     cleanBtn.frame = CGRectMake(10, (_toolBar.height - 34) / 2, 34, 34);
     [cleanBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
-    [cleanBtn setImage:[UIImage imageNamed:@"pe_doodle_eraser_normal"] forState:UIControlStateNormal];
-    [cleanBtn setImage:[UIImage imageNamed:@"pe_doodle_eraser_pressed"] forState:UIControlStateHighlighted];
-    [cleanBtn setImage:[UIImage imageNamed:@"pe_doodle_eraser_pressed"] forState:UIControlStateSelected];
+    [cleanBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"pe_doodle_eraser_normal"] forState:UIControlStateNormal];
+    [cleanBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"pe_doodle_eraser_pressed"] forState:UIControlStateHighlighted];
+    [cleanBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"pe_doodle_eraser_pressed"] forState:UIControlStateSelected];
     [cleanBtn addTarget:self action:@selector(cleanBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     [_doodleSelectBar addSubview:cleanBtn];
     

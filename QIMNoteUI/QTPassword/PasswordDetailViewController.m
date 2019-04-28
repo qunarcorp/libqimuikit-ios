@@ -12,6 +12,7 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import "QIMNoteModel.h"
 //#import "QIMMenuImageView.h"
+#import "UIImage+QIMUIKit.h"
 #import "AESCrypt.h"
 #import "QIMAES256.h"
 #import "QIMMenuView.h"
@@ -87,7 +88,7 @@
         
         UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 50, 50)];
         iconView.contentMode = UIViewContentModeScaleAspectFit;
-        iconView.image = [UIImage imageNamed:@"explore_tab_password"];
+        iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
         [_headerView addSubview:iconView];
         iconView.centerY = _headerView.centerY;
         
@@ -390,20 +391,20 @@
     }
     if ([item isEqualToString:@"Copy"]) {
         cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_copy"];
-        cell.imageView.image = [UIImage imageNamed:@"Password_copy"];
+        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"Password_copy"];
     } else if ([item isEqualToString:@"Share"]) {
         cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_share"];
-        cell.imageView.image = [UIImage imageNamed:@"Password_share"];
+        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"Password_share"];
     } else if ([item isEqualToString:@"Export"]) {
         cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_export"];
-        cell.imageView.image = [UIImage imageNamed:@"Password_export"];
+        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"Password_export"];
     } else if ([item isEqualToString:@"Favorite"]) {
         if (self.noteModel.qs_state == QIMNoteStateFavorite) {
             cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_removeFavorite"];
-            cell.imageView.image = [UIImage imageNamed:@"PasswordBox_favorite_selected"];
+            cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"PasswordBox_favorite_selected"];
         } else {
             cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_favorite"];
-            cell.imageView.image = [UIImage imageNamed:@"PasswordBox_favorite_normal"];
+            cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"PasswordBox_favorite_normal"];
         }
     }
     cell.textLabel.textColor = [UIColor systemBlueColor];

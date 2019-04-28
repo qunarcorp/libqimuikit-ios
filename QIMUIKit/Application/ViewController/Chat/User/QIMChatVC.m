@@ -348,11 +348,11 @@
         _notificationView = [[UIView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, _textBar.frame.origin.y - 50, 100, 40)];
         
         UIImageView *backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-        [backImageView setImage:[UIImage imageNamed:@"notificationToast"]];
+        [backImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"notificationToast"]];
         [_notificationView addSubview:backImageView];
         
         UIImageView *messageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 7, 20, 20)];
-        [messageImageView setImage:[UIImage imageNamed:@"notificationToastCommentIcon"]];
+        [messageImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"notificationToastCommentIcon"]];
         [_notificationView addSubview:messageImageView];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollToBottom_tableView)];
         [_notificationView addGestureRecognizer:tap];
@@ -1032,7 +1032,7 @@
             case QIMEncryptChatStateNone: {
                 self.isEncryptChat = NO;
                 _titleLabel.text = self.title;
-                [self.encryptBtn setImage:[UIImage imageNamed:@"apt-kaisuokongxin-f"] forState:UIControlStateNormal];
+                [self.encryptBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"apt-kaisuokongxin-f"] forState:UIControlStateNormal];
             }
                 break;
             case QIMEncryptChatStateEncrypting: {
@@ -1040,7 +1040,7 @@
                 QIMNoteModel *model = [[QIMNoteManager sharedInstance] getEncrptPwdBox];
                 self.pwd = [[QIMNoteManager sharedInstance] getChatPasswordWithUserId:self.chatId WithCid:model.c_id];
                 _titleLabel.text = [_titleLabel.text stringByAppendingString:@"【加密中】"];
-                [self.encryptBtn setImage:[UIImage imageNamed:@"apt-suokongxin-f"] forState:UIControlStateNormal];
+                [self.encryptBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"apt-suokongxin-f"] forState:UIControlStateNormal];
             }
                 break;
             case QIMEncryptChatStateDecrypted: {
@@ -1048,7 +1048,7 @@
                 QIMNoteModel *model = [[QIMNoteManager sharedInstance] getEncrptPwdBox];
                 self.pwd = [[QIMNoteManager sharedInstance] getChatPasswordWithUserId:self.chatId WithCid:model.c_id];
                 _titleLabel.text = [_titleLabel.text stringByAppendingString:@"【解密中】"];
-                [self.encryptBtn setImage:[UIImage imageNamed:@"apt-suokongxin-f"] forState:UIControlStateNormal];
+                [self.encryptBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"apt-suokongxin-f"] forState:UIControlStateNormal];
             }
                 break;
             default:
@@ -1634,7 +1634,7 @@
         [tipsLabel setText:[NSString stringWithFormat:@"%@正在共享位置", [userInfo objectForKey:@"Name"]]];
         [_joinShareLctView addSubview:tipsLabel];
         
-        UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"iconfont-arrow"]];
+        UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconfont-arrow"]];
         [arrowImageView setFrame:CGRectMake(_joinShareLctView.right - 40, (_joinShareLctView.height - arrowImageView.width) / 2.0, arrowImageView.width, arrowImageView.height)];
         [_joinShareLctView addSubview:arrowImageView];
     }];
@@ -1727,7 +1727,7 @@
         [tipsLabel setText:[NSString stringWithFormat:@"%@正在共享位置", [userInfo objectForKey:@"Name"]]];
         [_joinShareLctView addSubview:tipsLabel];
         
-        UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"iconfont-arrow"]];
+        UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconfont-arrow"]];
         [arrowImageView setFrame:CGRectMake(_joinShareLctView.right - 40, (_joinShareLctView.height - arrowImageView.width) / 2.0, arrowImageView.width, arrowImageView.height)];
         [_joinShareLctView addSubview:arrowImageView];
         

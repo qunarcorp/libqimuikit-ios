@@ -62,7 +62,7 @@
     BOOL exist = [[NSFileManager defaultManager] fileExistsAtPath:imageNamePath];
     if (exist) {
         
-        callback([UIImage imageNamed:imageNamePath]);
+        callback([UIImage qim_imageNamedFromQIMUIKitBundle:imageNamePath]);
         
     } else {
 
@@ -78,7 +78,7 @@
                         callback([UIImage imageWithData:data]);
                     } else {
                         
-                        callback([UIImage imageNamed:@"aio_ogactivity_default"]);
+                        callback([UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_ogactivity_default"]);
                     }
                 });
             }];
@@ -96,14 +96,14 @@
         callback([YLGIFImage imageWithContentsOfFile:imageNamePath]);
     } else {
         if (!imageName) {
-            callback([UIImage imageNamed:@"NetworkErrorHint"]);
+            callback([UIImage qim_imageNamedFromQIMUIKitBundle:@"NetworkErrorHint"]);
         } else {
             NSString *httpUrl = [[QIMCollectionFaceManager sharedInstance] getCollectionFaceHttpUrlWithIndex:index];
             [[QIMKit sharedInstance] downloadCollectionEmoji:httpUrl width:CollectionFaceWidth height:CollectionFaceHeight forCacheType:QIMFileCacheTypeColoction complation:^(NSData *data) {
                 if (data) {
                     callback([UIImage imageWithData:data]);
                 } else {
-                    callback([UIImage imageNamed:@"NetworkErrorHint"]);
+                    callback([UIImage qim_imageNamedFromQIMUIKitBundle:@"NetworkErrorHint"]);
                 }
             }];
         }

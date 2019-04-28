@@ -37,7 +37,7 @@ static NSString * const HIPMustachifyActivityType = @"com.qtalk.activity.QRCode"
 }
 
 - (UIImage *)activityImage {
-    return [UIImage imageNamed:@"QRCode"];
+    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"QRCode"];
 }
 
 - (void)decodeImage:(UIImage *)image{

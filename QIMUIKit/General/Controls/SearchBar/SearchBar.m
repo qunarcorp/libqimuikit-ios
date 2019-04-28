@@ -148,11 +148,11 @@
     
     // 设置Button的背景图片
     _buttonBack = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_buttonBack setBackgroundImage:[UIImage imageNamed:kNaviBackBarButtonNormalImageFile]
+    [_buttonBack setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:kNaviBackBarButtonNormalImageFile]
                            forState:UIControlStateNormal];
-    [_buttonBack setBackgroundImage:[UIImage imageNamed:kNaviBackBarButtonHighlightedImageFile]
+    [_buttonBack setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:kNaviBackBarButtonHighlightedImageFile]
                            forState:UIControlStateHighlighted];
-    [_buttonBack setBackgroundImage:[UIImage imageNamed:kNaviBackBarButtonDisableImageFile]
+    [_buttonBack setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:kNaviBackBarButtonDisableImageFile]
                            forState:UIControlStateDisabled];
     
     [_buttonBack addTarget:self

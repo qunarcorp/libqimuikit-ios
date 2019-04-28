@@ -35,7 +35,7 @@
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
-        [_headerView setImage:[UIImage imageNamed:@"singleHeaderDefault"]];
+        [_headerView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"singleHeaderDefault"]];
         _headerView.layer.masksToBounds = YES;
         _headerView.layer.cornerRadius  = _headerView.height / 2.0;
         _headerView.layer.borderWidth   = 1;

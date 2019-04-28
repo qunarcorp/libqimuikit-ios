@@ -91,19 +91,19 @@
     [self addImage:image range:range size:image.size];
 }
 
-- (void)addimageNamed:(NSString *)imageName range:(NSRange)range size:(CGSize)size alignment:(QCDrawAlignment)alignment
+- (void)addqim_imageNamedFromQIMUIKitBundle:(NSString *)imageName range:(NSRange)range size:(CGSize)size alignment:(QCDrawAlignment)alignment
 {
     [self addImageContent:imageName range:range size:size alignment:alignment];
 }
 
-- (void)addimageNamed:(NSString *)imageName range:(NSRange)range size:(CGSize)size
+- (void)addqim_imageNamedFromQIMUIKitBundle:(NSString *)imageName range:(NSRange)range size:(CGSize)size
 {
-    [self addimageNamed:imageName range:range size:size alignment:QCDrawAlignmentTop];
+    [self addqim_imageNamedFromQIMUIKitBundle:imageName range:range size:size alignment:QCDrawAlignmentTop];
 }
 
-- (void)addimageNamed:(NSString *)imageName range:(NSRange)range
+- (void)addqim_imageNamedFromQIMUIKitBundle:(NSString *)imageName range:(NSRange)range
 {
-    [self addimageNamed:imageName range:range size:CGSizeMake(self.font.pointSize, self.font.ascender)];
+    [self addqim_imageNamedFromQIMUIKitBundle:imageName range:range size:CGSizeMake(self.font.pointSize, self.font.ascender)];
     
 }
 
@@ -140,19 +140,19 @@
     [self appendImage:image size:image.size];
 }
 
-- (void)appendimageNamed:(NSString *)imageName size:(CGSize)size alignment:(QCDrawAlignment)alignment
+- (void)appendqim_imageNamedFromQIMUIKitBundle:(NSString *)imageName size:(CGSize)size alignment:(QCDrawAlignment)alignment
 {
     [self appendImageContent:imageName size:size alignment:alignment];
 }
 
-- (void)appendimageNamed:(NSString *)imageName size:(CGSize)size
+- (void)appendqim_imageNamedFromQIMUIKitBundle:(NSString *)imageName size:(CGSize)size
 {
-    [self appendimageNamed:imageName size:size alignment:QCDrawAlignmentTop];
+    [self appendqim_imageNamedFromQIMUIKitBundle:imageName size:size alignment:QCDrawAlignmentTop];
 }
 
-- (void)appendimageNamed:(NSString *)imageName
+- (void)appendqim_imageNamedFromQIMUIKitBundle:(NSString *)imageName
 {
-    [self appendimageNamed:imageName size:CGSizeMake(self.font.pointSize, self.font.ascender)];
+    [self appendqim_imageNamedFromQIMUIKitBundle:imageName size:CGSizeMake(self.font.pointSize, self.font.ascender)];
     
 }
 

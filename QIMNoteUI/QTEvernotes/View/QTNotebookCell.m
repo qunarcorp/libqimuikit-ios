@@ -51,7 +51,7 @@
 }
 
 -(void)refreshCellWithModel:(QIMNoteModel *)model {
-    _iconImgV.image = [UIImage imageNamed:@"evernote_notebook"];
+    _iconImgV.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"evernote_notebook"];
     _titleLb.text = [NSString stringWithFormat:@"%@",model.q_title? model.q_title:@""];
     _desLb.text =  [NSString stringWithFormat:@"%@",model.q_introduce?model.q_introduce:@""];
 }

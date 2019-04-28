@@ -32,7 +32,7 @@
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         
         _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 10, 10)];
-        [_imageView setImage:[UIImage imageNamed:@"buddy_header_arrow@2x"]];
+        [_imageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"buddy_header_arrow@2x"]];
         [self.contentView addSubview:_imageView];
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 10, self.width - 35 - 100, 20)];

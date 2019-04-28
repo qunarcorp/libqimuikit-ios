@@ -40,7 +40,7 @@
     if (!_iconView) {
         _iconView = [[UIImageView alloc] initWithFrame:CGRectMake(_headerImageView.right - 5, _headerImageView.bottom - 5, 5, 5)];
         _iconView.backgroundColor = [UIColor whiteColor];
-        _iconView.image = [UIImage imageNamed:@"q_work_triangle"];
+        _iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_triangle"];
     }
     return _iconView;
 }

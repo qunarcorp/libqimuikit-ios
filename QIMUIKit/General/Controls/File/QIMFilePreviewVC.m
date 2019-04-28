@@ -458,8 +458,8 @@
     
     _cancelDownButton = [[UIButton alloc] initWithFrame:CGRectMake(_progressView.right + 10, 0, 40, 40)];
     [_cancelDownButton setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
-    [_cancelDownButton setImage:[UIImage imageNamed:@"cancel_down"] forState:UIControlStateNormal];
-    [_cancelDownButton setImage:[UIImage imageNamed:@"cancel_down_pressed"] forState:UIControlStateHighlighted];
+    [_cancelDownButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"cancel_down"] forState:UIControlStateNormal];
+    [_cancelDownButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"cancel_down_pressed"] forState:UIControlStateHighlighted];
     [_cancelDownButton addTarget:self action:@selector(onCancelButton:) forControlEvents:UIControlEventTouchUpInside];
     [_progressBgView addSubview:_cancelDownButton];
 }

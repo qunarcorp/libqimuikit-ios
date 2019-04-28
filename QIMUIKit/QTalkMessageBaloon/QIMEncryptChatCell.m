@@ -42,7 +42,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"explore_tab_password"]];
+        _imageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"]];
         _imageView.clipsToBounds = YES;
         _imageView.userInteractionEnabled = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -100,7 +100,7 @@
 #else
     _titleLabel.text = @"[加密消息]";
 #endif
-    _imageView.image = [UIImage imageNamed:@"explore_tab_password"];
+    _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
     _imageView.centerY = self.backView.centerY;
 }
 

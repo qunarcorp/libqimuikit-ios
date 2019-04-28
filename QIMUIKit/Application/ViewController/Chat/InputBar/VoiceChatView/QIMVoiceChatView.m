@@ -54,10 +54,10 @@
         _voiceBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _voiceBtn.frame = CGRectMake(frame.size.width / 2 - kVoiceBtnWidth / 2, frame.size.height / 2 - kVoiceBtnWidth / 2 - 15, kVoiceBtnWidth, kVoiceBtnWidth);
         [_voiceBtn setAccessibilityIdentifier:@"recordVoiceBtn"];
-        [_voiceBtn setImage:[UIImage imageNamed:@"aio_voice_button_icon"] forState:UIControlStateNormal];
-        [_voiceBtn setImage:[UIImage imageNamed:@"aio_voice_button_icon"] forState:UIControlStateHighlighted];
-        [_voiceBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_button_nor"] forState:UIControlStateNormal];
-        [_voiceBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_button_press"] forState:UIControlStateHighlighted];
+        [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_icon"] forState:UIControlStateNormal];
+        [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_icon"] forState:UIControlStateHighlighted];
+        [_voiceBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_nor"] forState:UIControlStateNormal];
+        [_voiceBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_press"] forState:UIControlStateHighlighted];
 //        [_voiceBtn setBackgroundColor: [UIColor colorWithRed:92/255.0 green:197/255.0 blue:127/255.0 alpha:1/1.0]];
         [_voiceBtn addTarget:self action:@selector(recordBtnHandleForStart:withEvent:) forControlEvents:UIControlEventTouchDown];
         [_voiceBtn addTarget:self action:@selector(recordBtnHandle:withEvent:) forControlEvents:UIControlEventAllTouchEvents];
@@ -76,18 +76,18 @@
         
         _auditionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _auditionBtn.hidden = YES;
-        [_auditionBtn setImage:[UIImage imageNamed:@"aio_voice_operate_listen_nor"] forState:UIControlStateNormal];
-        [_auditionBtn setImage:[UIImage imageNamed:@"aio_voice_operate_listen_press"] forState:UIControlStateSelected];
-        [_auditionBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_operate_nor"] forState:UIControlStateNormal];
-        [_auditionBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_operate_press"] forState:UIControlStateSelected];
+        [_auditionBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_operate_listen_nor"] forState:UIControlStateNormal];
+        [_auditionBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_operate_listen_press"] forState:UIControlStateSelected];
+        [_auditionBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_operate_nor"] forState:UIControlStateNormal];
+        [_auditionBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_operate_press"] forState:UIControlStateSelected];
         [self addSubview:_auditionBtn];
         
         _delBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _delBtn.hidden = YES;
-        [_delBtn setImage:[UIImage imageNamed:@"aio_voice_operate_delete_nor"] forState:UIControlStateNormal];
-        [_delBtn setImage:[UIImage imageNamed:@"aio_voice_operate_delete_press"] forState:UIControlStateSelected];
-        [_delBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_operate_nor"] forState:UIControlStateNormal];
-        [_delBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_operate_press"] forState:UIControlStateSelected];
+        [_delBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_operate_delete_nor"] forState:UIControlStateNormal];
+        [_delBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_operate_delete_press"] forState:UIControlStateSelected];
+        [_delBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_operate_nor"] forState:UIControlStateNormal];
+        [_delBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_operate_press"] forState:UIControlStateSelected];
         [self addSubview:_delBtn];
         
         
@@ -155,7 +155,7 @@
         _delBtn.selected = NO;
     }
     
-    [_voiceBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_button_press"] forState:UIControlStateNormal];
+    [_voiceBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_press"] forState:UIControlStateNormal];
 }
 
 - (void)recordBtnHandleForStart:(UIButton * )btn withEvent:(UIEvent *)ev
@@ -203,8 +203,8 @@
             //试听 播放
             if (_voiceBtnStatus == VoiceBtnStatusAuditionStart) {
                 _voiceBtnStatus = VoiceBtnStatusAuditionStop;
-                [_voiceBtn setImage:[UIImage imageNamed:@"aio_record_stop_nor"] forState:UIControlStateNormal];
-                [_voiceBtn setImage:[UIImage imageNamed:@"aio_record_stop_press"] forState:UIControlStateHighlighted];
+                [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_stop_nor"] forState:UIControlStateNormal];
+                [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_stop_press"] forState:UIControlStateHighlighted];
                 if (self.delegate && [self.delegate respondsToSelector:@selector(playCurrentVoice)]) {
                      _remoteAudioPlayer = [(QIMTextBar *)self.delegate playCurrentVoice];
 
@@ -214,8 +214,8 @@
                 [_voiceGoalBar setPercent:0 animated:NO];
             }else if(_voiceBtnStatus == VoiceBtnStatusAuditionStop){
                 _voiceBtnStatus = VoiceBtnStatusAuditionStart;
-                [_voiceBtn setImage:[UIImage imageNamed:@"aio_record_play_nor"] forState:UIControlStateNormal];
-                [_voiceBtn setImage:[UIImage imageNamed:@"aio_record_play_press"] forState:UIControlStateHighlighted];
+                [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_play_nor"] forState:UIControlStateNormal];
+                [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_play_press"] forState:UIControlStateHighlighted];
                 if (self.delegate && [self.delegate respondsToSelector:@selector(stopCurrentVoice)]) {
                     [(QIMTextBar *)self.delegate stopCurrentVoice];
                     NSTimeInterval timeout = [(QIMTextBar *)self.delegate getCurrentVoiceTimeout];
@@ -254,10 +254,10 @@
         _cancelBtn.hidden = NO;
         _sendBtn.hidden = NO;
         
-        [_voiceBtn setImage:[UIImage imageNamed:@"aio_record_play_nor"] forState:UIControlStateNormal];
-        [_voiceBtn setImage:[UIImage imageNamed:@"aio_record_play_press"] forState:UIControlStateHighlighted];
-        [_voiceBtn setBackgroundImage:[UIImage imageNamed:@"aio_record_finish_button"] forState:UIControlStateNormal];
-        [_voiceBtn setBackgroundImage:[UIImage imageNamed:@"aio_record_finish_button"] forState:UIControlStateHighlighted];
+        [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_play_nor"] forState:UIControlStateNormal];
+        [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_play_press"] forState:UIControlStateHighlighted];
+        [_voiceBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_finish_button"] forState:UIControlStateNormal];
+        [_voiceBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_finish_button"] forState:UIControlStateHighlighted];
         if (self.delegate && [self.delegate respondsToSelector:@selector(voiceChatView:RecordingAtStatus:)]) {
             [self.delegate voiceChatView:self RecordingAtStatus:VoiceChatRecordingStatusAudition];
         }
@@ -287,7 +287,7 @@
     }
     _auditionBtn.hidden = YES;
     _delBtn.hidden = YES;
-    [_voiceBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_button_nor"] forState:UIControlStateNormal];
+    [_voiceBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_nor"] forState:UIControlStateNormal];
     if (self.delegate && [self.delegate respondsToSelector:@selector(voiceChatView:RecordingAtStatus:)]) {
         [self.delegate voiceChatView:self RecordingAtStatus:VoiceChatRecordingStatusCancel];
     }
@@ -301,8 +301,8 @@
 - (void)stopPlayVoice
 {
     _voiceBtnStatus = VoiceBtnStatusAuditionStart;
-    [_voiceBtn setImage:[UIImage imageNamed:@"aio_record_play_nor"] forState:UIControlStateNormal];
-    [_voiceBtn setImage:[UIImage imageNamed:@"aio_record_play_press"] forState:UIControlStateHighlighted];
+    [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_play_nor"] forState:UIControlStateNormal];
+    [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_record_play_press"] forState:UIControlStateHighlighted];
     [self playingRefresh];
     _canPlaying = NO;
     _voiceGoalBar.hidden = YES;
@@ -375,10 +375,10 @@
 
 - (void)resetVoiceBtn
 {
-    [_voiceBtn setImage:[UIImage imageNamed:@"aio_voice_button_icon"] forState:UIControlStateNormal];
-    [_voiceBtn setImage:[UIImage imageNamed:@"aio_voice_button_icon"] forState:UIControlStateHighlighted];
-    [_voiceBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_button_nor"] forState:UIControlStateNormal];
-    [_voiceBtn setBackgroundImage:[UIImage imageNamed:@"aio_voice_button_press"] forState:UIControlStateHighlighted];
+    [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_icon"] forState:UIControlStateNormal];
+    [_voiceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_icon"] forState:UIControlStateHighlighted];
+    [_voiceBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_nor"] forState:UIControlStateNormal];
+    [_voiceBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_voice_button_press"] forState:UIControlStateHighlighted];
     _voiceBtnStatus = VoiceBtnStatusNomal;
     
     _timeLabel.text = @"按住说话";

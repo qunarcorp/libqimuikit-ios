@@ -1655,11 +1655,11 @@ RCT_EXPORT_METHOD(openSwitchAccount) {
 }
 
 - (void)swicthAccount {
-    [[self swicthAccountAlert] showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage imageNamed:@"switch"] color:[UIColor brownColor] title:@"切换账号" subTitle:nil closeButtonTitle:@"取消" duration:0];
+    [[self swicthAccountAlert] showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage qim_imageNamedFromQIMUIKitBundle:@"switch"] color:[UIColor brownColor] title:@"切换账号" subTitle:nil closeButtonTitle:@"取消" duration:0];
 }
 
 - (void)showSwitchAccountView {
-    [[self swicthAccountAlert] showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage imageNamed:@"switch"] color:[UIColor brownColor] title:@"切换账号" subTitle:nil closeButtonTitle:@"取消" duration:0];
+    [[self swicthAccountAlert] showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage qim_imageNamedFromQIMUIKitBundle:@"switch"] color:[UIColor brownColor] title:@"切换账号" subTitle:nil closeButtonTitle:@"取消" duration:0];
 }
 
 - (void)swicthAccountWithAccount:(NSDictionary *)accountDict {

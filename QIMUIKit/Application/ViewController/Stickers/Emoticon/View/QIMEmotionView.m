@@ -249,12 +249,12 @@ static NSString *collectionCellId = @"CollectionCellId";
             }
             //如果不是最后一组并且row == 23时为删除按钮
             if ((indexPath.section!= self.devideDataSource.count - 1) && newRow == (kShowAllEmotionFaceNumPerLine * kShowAllEmotionFaceLines - 1)) {
-                cell.emojiView.image = [UIImage imageNamed:@"DeleteEmoticonBtn"];
+                cell.emojiView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"DeleteEmoticonBtn"];
                 cell.tag = -1;
                 [cell setAccessibilityIdentifier:@"-1"];
             } else if (indexPath.section == self.devideDataSource.count - 1 && newRow == [self.devideDataSource[indexPath.section] count]) {
                 //如果是最后一组并且newRow = 该组最后一张时为删除按钮
-                cell.emojiView.image = [UIImage imageNamed:@"DeleteEmoticonBtn"];
+                cell.emojiView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"DeleteEmoticonBtn"];
                 cell.tag = -1;
                 [cell setAccessibilityIdentifier:@"-1"];
                 cell.userInteractionEnabled = YES;
