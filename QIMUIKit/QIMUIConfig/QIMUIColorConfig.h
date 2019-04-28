@@ -46,6 +46,8 @@
 #define qim_backButtonTextBgColor [UIColor qim_colorWithHex:0xF2F2F2 alpha:1.0]     //返回按钮字体bg
 #define qim_backButtonTextColor [UIColor qim_colorWithHex:0xA1A1A1 alpha:1.0]     //返回按钮字体Color
 
+#define qim_chatBgColor [UIColor qim_colorWithHex:0xF0F3F5 alpha:1.0]   //会话背景色
+
 #define qim_messageLeftBubbleBgColor [UIColor qim_colorWithHex:0xFEFFFE alpha:1.0] //左侧气泡颜色
 #define qim_messageRightBubbleBgColor [UIColor qim_colorWithHex:0xC5EAEE alpha:1.0] //右侧气泡颜色
 

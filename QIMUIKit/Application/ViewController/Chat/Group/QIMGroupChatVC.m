@@ -464,7 +464,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
     }
-    self.view.backgroundColor = [UIColor qtalkChatBgColor];
+    self.view.backgroundColor = qim_chatBgColor;
   
     [[QIMEmotionSpirits sharedInstance] setTableView:_tableView];
     [self loadData];

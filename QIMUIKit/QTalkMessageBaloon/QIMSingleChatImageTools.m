@@ -27,7 +27,7 @@ static QIMSingleChatImageTools *__global_chat_image_tools = nil;
     self = [super init];
     if (self) {
         _sentImageBg = [[UIImage imageNamed:@"im_sent_msg_bg"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
-        _receivedImageBg = [[UIImage imageNamed:@"im_receive_msg_bg"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
+        _receivedImageBg = [[UIImage imageNamed:@"singleChatAddbg"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
     }
     return self;
 }
