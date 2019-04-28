@@ -128,14 +128,14 @@
 - (UIView *)connectionAlertView {
     if (!_connectionAlertView) {
         _connectionAlertView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 45)];
-        _connectionAlertView.backgroundColor = [UIColor colorWithRed:253 green:228 blue:229 alpha:1.0];
+        _connectionAlertView.backgroundColor = qim_sessionViewConnectionErrorViewBgColor;
         
         UIImageView *alertView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"connect_alert_error"]];
         alertView.frame = CGRectMake(20, (CGRectGetHeight(_connectionAlertView.frame) - 28)/2, 28, 28);
         [_connectionAlertView addSubview:alertView];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(alertView.frame) + 12, 0, 300, 45)];
-        label.textColor = [UIColor blackColor];
+        label.textColor = qim_sessionViewConnectionErrorTextColor;
         label.font = [UIFont systemFontOfSize:14];
         label.textAlignment = NSTextAlignmentLeft;
         label.text = @"当前网络不可用，请检查你的网络设置";

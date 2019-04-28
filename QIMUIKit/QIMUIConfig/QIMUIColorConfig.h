@@ -33,6 +33,9 @@
 #define qim_mainRootViewBgColor   [UIColor whiteColor] //主界面bg颜色
 
 #define qim_sessionViewBgColor [UIColor whiteColor] //会话列表页Bg颜色
+#define qim_sessionViewConnectionErrorViewBgColor    [UIColor qim_colorWithHex:0xFAE4E3 alpha:1.0]  //网络连接错误BgColor
+#define qim_sessionViewConnectionErrorTextColor    [UIColor qim_colorWithHex:0x666666 alpha:1.0]  //网络连接错误TextColor
+
 
 #define qim_groupchat_rightCard_Color    [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]       //群右上角
 #define qim_singlechat_rightCard_Color   [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]       //单人右上角
@@ -43,7 +46,7 @@
 #define qim_messageLinkurl_color [UIColor qim_colorWithHex:0x48A3FF alpha:1.0]         //link颜色back
 
 #define qim_backButtonTextBgColor [UIColor qim_colorWithHex:0xF2F2F2 alpha:1.0]     //返回按钮字体bg
-#define qim_backButtonTextBgColor [UIColor qim_colorWithHex:0xF2F2F2 alpha:1.0]     //返回按钮字体bg
+#define qim_backButtonColor [UIColor qim_colorWithHex:0x666666 alpha:1.0]     //返回按钮Color
 #define qim_backButtonTextColor [UIColor qim_colorWithHex:0xA1A1A1 alpha:1.0]     //返回按钮字体Color
 
 #define qim_chatBgColor [UIColor qim_colorWithHex:0xF0F3F5 alpha:1.0]   //会话背景色
@@ -53,5 +56,10 @@
 
 #define qim_messageLeftBubbleTextColor [UIColor qim_colorWithHex:0x333333 alpha:1.0] //左侧气泡字体颜色
 #define qim_messageRightBubbleTextColor [UIColor qim_colorWithHex:0x555555 alpha:1.0] //右侧气泡字体颜色
+
+#define qim_ChatTimestampCellBgColor   [UIColor qim_colorWithHex:0xD3D3D3 alpha:1.0] //右侧气泡字体颜色
+
+#define qim_singlechat_title_color  [UIColor qim_colorWithHex:0x333333 alpha:1.0]    //单人聊天titleColor
+#define qim_singlechat_desc_color   [UIColor qim_colorWithHex:0x999999 alpha:1.0]    //单人聊天descColor
 
 #endif /* QIMUIColorConfig_h */

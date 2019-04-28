@@ -71,7 +71,7 @@
         _mainTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
         _mainTableView.delegate = self;
         _mainTableView.dataSource = self;
-        _mainTableView.backgroundColor = [UIColor qtalkChatBgColor];
+        _mainTableView.backgroundColor = qim_chatBgColor;
         _mainTableView.tableFooterView = [UIView new];
         _mainTableView.separatorInset = UIEdgeInsetsMake(0,20, 0, 0);           //top left bottom right 左右边距相同
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;

@@ -94,7 +94,7 @@
         [_tableView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin |UIViewAutoresizingFlexibleBottomMargin];
         [_tableView setDelegate:self.messageManager];
         [_tableView setDataSource:self.messageManager];
-        [_tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
+        [_tableView setBackgroundColor:qim_chatBgColor];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_11_0
         _tableView.estimatedRowHeight = 0;
@@ -118,7 +118,7 @@
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
     }
-    [self.view setBackgroundColor:[UIColor qtalkChatBgColor]];
+    [self.view setBackgroundColor:qim_chatBgColor];
     [self setupNav];
     [self.view addSubview:self.tableView];
 }
