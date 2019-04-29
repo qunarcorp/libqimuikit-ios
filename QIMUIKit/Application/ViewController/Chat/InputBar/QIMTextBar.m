@@ -3021,4 +3021,76 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     }
 }
 
+#pragma mark - 录音Delegate
+/*
+_recordingStatus = status;
+switch (status) {
+    case VoiceChatRecordingStatusStart:
+    {
+        //设置文件名
+        self.fileName = [QIMUUIDTools UUID];
+        QIMVerboseLog(@"UUID == %@",self.fileName);
+        //开始录音
+        //            [recorderVC beginRecordByFileName:self.fileName];
+        if ([self.delegate respondsToSelector:@selector(beginDoVoiceRecord)]) {
+            [self.delegate beginDoVoiceRecord];
+        }
+        [self.voiceOperator doVoiceRecordByFilename:self.fileName];
+    }
+        break;
+    case VoiceChatRecordingStatusRecording: {
+        
+    }
+        break;
+    case VoiceChatRecordingStatusEnd: {
+        
+        [self.voiceOperator finishRecoderWithSave:YES];
+    }
+        break;
+    case VoiceChatRecordingStatusCancel: {
+        [self.voiceOperator finishRecoderWithSave:NO];
+    }
+        break;
+    case VoiceChatRecordingStatusAudition: {
+        [self.voiceOperator finishRecoderWithSave:YES];
+    }
+        break;
+    case VoiceChatRecordingStatusSend: {
+        [self sendVoice];
+    }
+        break;
+        
+    default:
+        break;
+}
+*/
+
+- (void)chatToolBarDidStartRecording:(QIMChatToolBar *)toolBar {
+    self.fileName = [QIMUUIDTools UUID];
+    QIMVerboseLog(@"UUID == %@",self.fileName);
+    //开始录音
+    //            [recorderVC beginRecordByFileName:self.fileName];
+    if ([self.delegate respondsToSelector:@selector(beginDoVoiceRecord)]) {
+        [self.delegate beginDoVoiceRecord];
+    }
+    [self.voiceOperator doVoiceRecordByFilename:self.fileName];
+
+}
+
+- (void)chatToolBarDidCancelRecording:(QIMChatToolBar *)toolBar {
+    [self.voiceOperator finishRecoderWithSave:NO];
+}
+
+- (void)chatToolBarDidFinishRecoding:(QIMChatToolBar *)toolBar {
+    [self.voiceOperator finishRecoderWithSave:YES];
+}
+
+- (void)chatToolBarWillCancelRecoding:(QIMChatToolBar *)toolBar {
+    [self.voiceOperator finishRecoderWithSave:NO];
+}
+
+- (void)chatToolBarContineRecording:(QIMChatToolBar *)toolBar {
+    
+}
+
 @end
