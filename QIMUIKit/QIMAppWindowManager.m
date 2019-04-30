@@ -21,3 +21,4 @@ static QIMAppWindowManager *_windowManager = nil;
 }
 
 @end
+
