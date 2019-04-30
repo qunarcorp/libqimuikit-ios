@@ -1,12 +1,12 @@
 //
-//  QIMWorkFeedViewController.m
+//  QIMWorkFeedView.m
 //  QIMUIKit
 //
-//  Created by lilu on 2019/1/2.
+//  Created by lilu on 2019/4/29.
 //  Copyright © 2019 QIM. All rights reserved.
 //
 
-#import "QIMWorkFeedViewController.h"
+#import "QIMWorkFeedView.h"
 #import "QIMWorkMomentPushViewController.h"
 #import "QIMWorkFeedDetailViewController.h"
 #import "QIMWorkMomentCell.h"
@@ -25,7 +25,7 @@
 #import "QIMAutoTracker.h"
 #endif
 
-@interface QIMWorkFeedViewController () <UITableViewDelegate, UITableViewDataSource, QIMWorkMomentNotifyViewDelegtae>
+@interface QIMWorkFeedView () <UITableViewDelegate, UITableViewDataSource, QIMWorkMomentNotifyViewDelegtae>
 
 @property (nonatomic, strong) UIButton *addNewMomentBtn;
 
@@ -45,13 +45,13 @@
 
 @end
 
-@implementation QIMWorkFeedViewController
+@implementation QIMWorkFeedView
 
 - (UIButton *)addNewMomentBtn {
     if (!_addNewMomentBtn) {
         _addNewMomentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _addNewMomentBtn.frame = CGRectMake(0, 0, 23, 23);
-        [_addNewMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addnewmoment_font size:28 color:qim_nav_addnewmoment_btnColor]] forState:UIControlStateNormal];
+        _addNewMomentBtn.frame = CGRectMake(SCREEN_WIDTH - 20 - 48, self.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 20 - 48, 48, 48);
+        [_addNewMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addnewmoment_font size:48 color:qim_nav_addnewmoment_btnColor]] forState:UIControlStateNormal];
         [_addNewMomentBtn addTarget:self action:@selector(jumpToAddNewMomentVc) forControlEvents:UIControlEventTouchUpInside];
     }
     return _addNewMomentBtn;
@@ -66,7 +66,7 @@
 
 - (UITableView *)mainTableView {
     if (!_mainTableView) {
-        _mainTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+        _mainTableView = [[UITableView alloc] initWithFrame:self.bounds style:UITableViewStyleGrouped];
         _mainTableView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _mainTableView.delegate = self;
         _mainTableView.dataSource = self;
@@ -87,7 +87,7 @@
 
 - (UIView *)loadFaildView {
     if (!_loadFaildView) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 54)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 54)];
         view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F9];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 90, 21)];
@@ -124,11 +124,37 @@
 
 #pragma mark - life ctyle
 
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self addSubview:self.mainTableView];
+        self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+        if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
+            [self.mainTableView reloadData];
+        } else {
+            
+        }
+        [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
+        
+        self.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
+        [self registerNotifications];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            [self reloadRemoteRecenteMoments];
+        });
+#if __has_include("QIMAutoTracker.h")
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"tuocircle" withDescription:@"驼圈"];
+#endif
+        [self addSubview:self.addNewMomentBtn];
+    }
+    return self;
+}
+
+/*
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     self.navigationController.navigationBar.barTintColor = [UIColor qim_colorWithHex:0xF7F7F7];
-
+    
     
     [self setupNav];
     
@@ -156,14 +182,13 @@
     self.title = (self.userId.length <= 0) ? @"驼圈" : [NSString stringWithFormat:@"%@的驼圈", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.userId]];
     if ([self.userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
         self.title = @"我的驼圈";
-        UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.addNewMomentBtn];
-        self.navigationItem.rightBarButtonItem = newMomentBtn;
     }
     if (self.userId.length <= 0) {
         UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.addNewMomentBtn];
         self.navigationItem.rightBarButtonItem = newMomentBtn;
     }
 }
+ */
 
 - (void)registerNotifications {
     if (self.userId.length <= 0) {
@@ -174,6 +199,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OpenQIMWorkFeedDetail:) name:@"openWorkMomentDetailNotify" object:nil];
 }
 
+/*
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
@@ -185,6 +211,7 @@
     [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"tuocircle" withDescription:@"驼圈"];
 #endif
 }
+*/
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
@@ -216,12 +243,12 @@
 - (void)reloadMomentAttachCommentList:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.mainTableView reloadData];
-//        NSDictionary *data = notify.object;
-//        NSString *postId = [data objectForKey:@"postId"];
-//        NSInteger momentIndex = [self getIndexOfMomentId:postId];
-//        if (momentIndex >= 0 && momentIndex < self.workMomentList.count) {
-//            [self.mainTableView reloadData];
-//        }
+        //        NSDictionary *data = notify.object;
+        //        NSString *postId = [data objectForKey:@"postId"];
+        //        NSInteger momentIndex = [self getIndexOfMomentId:postId];
+        //        if (momentIndex >= 0 && momentIndex < self.workMomentList.count) {
+        //            [self.mainTableView reloadData];
+        //        }
     });
 }
 
@@ -232,7 +259,7 @@
             QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
             detailVc.momentId = momentId;
             self.notNeedReloadMomentView = YES;
-            [self.navigationController pushViewController:detailVc animated:YES];
+            [self.rootVC.navigationController pushViewController:detailVc animated:YES];
         }
     });
 }
@@ -323,7 +350,7 @@
 - (void)reloadNoticeMsg:(NSNotification *)notify {
     self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
     dispatch_async(dispatch_get_main_queue(), ^{
-       [self.mainTableView reloadData];
+        [self.mainTableView reloadData];
     });
 }
 
@@ -347,6 +374,7 @@
     });
 }
 
+/*
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
@@ -355,6 +383,7 @@
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotify_RN_QTALK_SUGGEST_WorkFeed_UPDATE object:nil];
 }
+*/
 
 - (void)jumpToAddNewMomentVc {
     
@@ -363,11 +392,11 @@
         QIMNavController *newMomentNav = [[QIMNavController alloc] initWithRootViewController:newMomentVc];
         newMomentNav.modalPresentationStyle = UIModalPresentationCurrentContext;
         self.notNeedReloadMomentView = YES;
-        [self presentViewController:newMomentNav animated:YES completion:nil];
+        [self.rootVC presentViewController:newMomentNav animated:YES completion:nil];
     } else {
         QIMNavController *newMomentNav = [[QIMNavController alloc] initWithRootViewController:newMomentVc];
         self.notNeedReloadMomentView = YES;
-        [self presentViewController:newMomentNav animated:YES completion:nil];
+        [self.rootVC presentViewController:newMomentNav animated:YES completion:nil];
     }
 }
 
@@ -495,13 +524,13 @@
     QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:browser];
     nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     self.notNeedReloadMomentView = YES;
-    [self presentViewController:nc animated:YES completion:nil];
+    [self.rootVC presentViewController:nc animated:YES completion:nil];
 }
 
 #pragma mark - QIMMWPhotoBrowserDelegate
 
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(QIMMWPhotoBrowser *)photoBrowser {
-
+    
     return self.currentModel.content.imgList.count;
 }
 
@@ -540,7 +569,7 @@
         QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
         detailVc.momentId = momentId;;
         self.notNeedReloadMomentView = YES;
-        [self.navigationController pushViewController:detailVc animated:YES];
+        [self.rootVC.navigationController pushViewController:detailVc animated:YES];
     });
 }
 
@@ -549,7 +578,7 @@
     QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
     detailVc.momentId = cell.moment.momentId;
     self.notNeedReloadMomentView = YES;
-    [self.navigationController pushViewController:detailVc animated:YES];
+    [self.rootVC.navigationController pushViewController:detailVc animated:YES];
 }
 
 //查看原始帖子
@@ -579,12 +608,14 @@
     NSLog(@"跳进消息列表页面");
     QIMWorkFeedMessageViewController *msgVc = [[QIMWorkFeedMessageViewController alloc] init];
     self.notNeedReloadMomentView = YES;
-    [self.navigationController pushViewController:msgVc animated:YES];
+    [self.rootVC.navigationController pushViewController:msgVc animated:YES];
 }
 
+/*
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     [[SDImageCache sharedImageCache] clearMemory];
 }
+*/
 
 @end

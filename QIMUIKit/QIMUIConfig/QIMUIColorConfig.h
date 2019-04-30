@@ -62,4 +62,18 @@
 #define qim_singlechat_title_color  [UIColor qim_colorWithHex:0x333333 alpha:1.0]    //单人聊天titleColor
 #define qim_singlechat_desc_color   [UIColor qim_colorWithHex:0x999999 alpha:1.0]    //单人聊天descColor
 
+#define qim_groupchat_title_color   [UIColor qim_colorWithHex:0x333333 alpha:1.0]    //群聊天titleColor
+
+#define qim_chatsearchRemindViewTextColor    [UIColor qim_colorWithHex:0x666666 alpha:1.0]  //聊天会话内快捷搜索提示条TextColor
+#define qim_chatsearchRemindViewIconColor [UIColor qim_colorWithHex:0x0BCCC0 alpha:1.0] //聊天会话内快捷搜索提示条IconColor
+
+//MainVc导航item
+#define qim_nav_scan_btnColor       [UIColor qim_colorWithHex:0x666666 alpha:1.0]   //扫码二维码按钮Color
+#define qim_nav_addfriend_btnColor  [UIColor qim_colorWithHex:0x666666 alpha:1.0]   //添加好友按钮Color
+#define qim_nav_mymoment_btnColor   [UIColor qim_colorWithHex:0x666666 alpha:1.0]       //我的驼圈
+
+//驼圈
+
+#define qim_nav_addnewmoment_btnColor   [UIColor qim_colorWithHex:0x00CABE]      //新建驼圈按钮Color
+
 #endif /* QIMUIColorConfig_h */

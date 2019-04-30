@@ -312,12 +312,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     if (!_titleLabel) {
         
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, 200, 20)];
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
         _titleLabel.text = self.title;
-        _titleLabel.textColor = [UIColor blackColor];
+        _titleLabel.textColor = qim_groupchat_title_color;
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.font = [UIFont boldSystemFontOfSize:18];
+        _titleLabel.font = [UIFont systemFontOfSize:qim_groupchat_title_size];
         _titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     }
     return _titleLabel;
@@ -440,7 +440,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     }
     if (topic.length > 0) {
         self.descLabel.text = topic;
-        [self.titleView addSubview:self.descLabel];
+//        [self.titleView addSubview:self.descLabel];
         self.navigationItem.titleView = self.titleView;
     } else {
         

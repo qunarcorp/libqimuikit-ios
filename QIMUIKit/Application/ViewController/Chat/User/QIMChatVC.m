@@ -378,7 +378,13 @@
 
 - (UILabel *)titleLabel {
     if (!_titleLabel) {
-        
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, 200, 20)];
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.textColor = qim_singlechat_title_color;
+        _titleLabel.textAlignment = NSTextAlignmentCenter;
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.font = [UIFont boldSystemFontOfSize:qim_singlechat_title_size];
+        _titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     }
     return _titleLabel;
 }
@@ -696,8 +702,6 @@
     titleView.autoresizesSubviews = YES;
     titleView.backgroundColor = [UIColor clearColor];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, 200, 20)];
-    titleLabel.backgroundColor = [UIColor clearColor];
     if (self.chatType == ChatType_ConsultServer) {
         NSDictionary *infoDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.chatId];
         NSString *userName = [infoDic objectForKey:@"Name"];
@@ -732,17 +736,11 @@
             self.title = userId;
         }
     }
-    titleLabel.text = self.title;
+    self.titleLabel.text = self.title;
     if (self.isEncryptChat) {
-        titleLabel.text = [titleLabel.text stringByAppendingString:@"【加密中】"];
+        self.titleLabel.text = [self.titleLabel.text stringByAppendingString:@"【加密中】"];
     }
-    titleLabel.textColor = qim_singlechat_title_color;
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.font = [UIFont boldSystemFontOfSize:18];
-    titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _titleLabel = titleLabel;
-    [titleView addSubview:titleLabel];
+    [titleView addSubview:self.titleLabel];
     if (self.chatType != ChatType_Consult) {
         UILabel *descLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 27, 200, 12)];
         descLabel.textColor = qim_singlechat_desc_color;

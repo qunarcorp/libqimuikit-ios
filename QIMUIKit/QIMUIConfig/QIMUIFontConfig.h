@@ -34,8 +34,18 @@
 #define qim_groupchat_rightCard_font    @"\U0000f1cd"       //群右上角
 #define qim_singlechat_rightCard_font    @"\U0000f1cd"       //单人右上角
 
+#define qim_chatsearchRemindViewTextFont  @"\U0000e752"  //聊天会话内搜索Font
 
-#define qim_nav_moment_font             @"\U0000e737"       //驼圈
+
+//MainVc导航item
+#define qim_nav_scan_font       @"\U0000f0ca"   //扫码二维码按钮Color
+#define qim_nav_addfriend_font  @"\U0000f0f5"   //添加好友按钮Color
+#define qim_nav_mymoment_font   @"\U0000e737"       //我的驼圈
+
+//驼圈
+
+#define qim_nav_addnewmoment_font         @"\U0000e40d"       //新建驼圈
+#define qim_nav_mymoment_font             @"\U0000e737"       //我的驼圈
 
 
 #endif /* QIMUIFontConfig_h */

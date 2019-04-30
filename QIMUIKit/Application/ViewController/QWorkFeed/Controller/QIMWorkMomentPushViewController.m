@@ -31,6 +31,7 @@
 #import "QIMEmotionManager.h"
 #import "QTalkTipsView.h"
 #import "QIMWorkFeedAtNotifyViewController.h"
+#import "QIMATGroupMemberTextAttachment.h"
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
@@ -83,6 +84,8 @@
 @property (nonatomic, strong) UITextView *textView;
 
 @property (nonatomic, strong) QIMCollectionEmotionPanView *photoCollectionView;
+
+@property (nonatomic, strong) UILabel    *atLabel;
 
 @property (nonatomic, strong) UITableView *panelListView;
 
@@ -142,7 +145,7 @@
         placeHolderLabel.textColor = [UIColor qim_colorWithHex:0xBFBFBF];
         [placeHolderLabel sizeToFit];
         [_textView addSubview:placeHolderLabel];
-        // same font
+        // kvc 设置 placeholderLabel
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.3) {
             [_textView setValue:placeHolderLabel forKey:@"_placeholderLabel"];
         }
@@ -192,13 +195,29 @@
     return _photoCollectionView;
 }
 
+- (UILabel *)atLabel {
+    if (!_atLabel) {
+        _atLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 1, [[UIScreen mainScreen] qim_rightWidth], 51)];
+        _atLabel.text = @"     @ 提醒谁看";
+        _atLabel.textAlignment = NSTextAlignmentLeft;
+        _atLabel.backgroundColor = [UIColor whiteColor];
+        _atLabel.textColor = [UIColor qim_colorWithHex:0x333333];
+        _atLabel.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(atSomeone:)];
+        [_atLabel addGestureRecognizer:tap];
+    }
+    return _atLabel;
+}
+
 - (UITableView *)panelListView {
     if (!_panelListView) {
+        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 51, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
+        /*
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 500) style:UITableViewStylePlain];
         } else {
             _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 500) style:UITableViewStylePlain];
-        }
+        } */
         _panelListView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _panelListView.delegate = self;
         _panelListView.dataSource = self;
@@ -218,6 +237,7 @@
 - (NSMutableArray *)workmomentPushPanelModels {
     if (!_workmomentPushPanelModels) {
         _workmomentPushPanelModels = [NSMutableArray arrayWithCapacity:3];
+        
         QIMWorkMomentPanelModel *model1 = [[QIMWorkMomentPanelModel alloc] init];
         model1.icon = @"";
         model1.title = @"发帖身份";
@@ -334,6 +354,77 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+}
+
+- (void)atSomeone:(UITapGestureRecognizer *)tap {
+    QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
+    __weak __typeof(&*self) weakSelf = self;
+    //            [qNoticeVC setGroupID:self.chatId];
+    
+    [qNoticeVC onQIMWorkFeedSelectUser:^(NSArray *selectUsers) {
+        NSLog(@"selectUsers : %@", selectUsers);
+        for (NSString *userXmppJid in selectUsers) {
+            if (userXmppJid.length > 0) {
+                NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userXmppJid];
+                if (userInfo.count > 0) {
+                    NSString *name = [userInfo objectForKey:@"Name"];
+                    NSString *jid = [userInfo objectForKey:@"XmppId"];
+                    NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+                    
+                    QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
+                    atTextAttachment.groupMemberName = name;
+                    atTextAttachment.groupMemberJid = jid;
+                    
+                    NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] init];
+                    NSAttributedString *textAtt2 = [NSAttributedString attributedStringWithAttachment:atTextAttachment];
+                    [textAtt appendAttributedString:textAtt2];
+                    [textAtt appendAttributedString:[[NSAttributedString alloc] initWithString:memberName]];
+
+                    [textAtt addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17], NSForegroundColorAttributeName : [UIColor qim_colorWithHex:0x333333]} range:[memberName rangeOfString:memberName]];
+                    
+                    [self.textView.textStorage insertAttributedString:textAtt atIndex:self.textView.selectedRange.location];
+                    weakSelf.textView.selectedRange = NSMakeRange(weakSelf.textView.selectedRange.location + self.textView.selectedRange.length + memberName.length + 1, 0);
+                    [weakSelf resetTextStyle];
+                } else {
+                    QIMVerboseLog(@"未选择要艾特的群成员");
+                    weakSelf.textView.selectedRange = NSMakeRange(weakSelf.textView.selectedRange.location + self.textView.selectedRange.length + 1, 0);
+                    [weakSelf resetTextStyle];
+                }
+            }
+        }
+    }];
+    
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+        QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+        qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+        [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
+    } else {
+        [weakSelf.navigationController pushViewController:qNoticeVC animated:YES];
+    }
+}
+
+- (void)resetTextStyle {
+    //After changing text selection, should reset style.
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.firstLineHeadIndent = 0;    /**首行缩进宽度*/
+    if (self.textView.textStorage.length <= 0) {
+        NSDictionary *attributes = @{
+                                     NSFontAttributeName:[UIFont systemFontOfSize:17],
+                                     NSParagraphStyleAttributeName:paragraphStyle
+                                     };
+        self.textView.attributedText = [[NSAttributedString alloc] initWithString:@" " attributes:attributes];
+        self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:attributes];
+    }else{
+        NSRange wholeRange = NSMakeRange(0, self.textView.textStorage.length);
+        [self.textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
+        [self.textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17] range:wholeRange];
+        [self.textView.textStorage removeAttribute:NSParagraphStyleAttributeName range:wholeRange];
+    }
+    [self.textView setFont:[UIFont systemFontOfSize:17]];
 }
 
 - (void)onPhotoButtonClick:(UIButton *)sender{
@@ -547,10 +638,14 @@
         [headerView addSubview:self.textView];
         return headerView;
     } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
-        UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
-        headerView.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
-        [headerView addSubview:self.panelListView];
-        return headerView;
+        UICollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
+        footerView.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 1.0f)];
+        lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
+        [footerView addSubview:lineView];
+        [footerView addSubview:self.atLabel];
+        [footerView addSubview:self.panelListView];
+        return footerView;
     } else {
         return nil;
     }

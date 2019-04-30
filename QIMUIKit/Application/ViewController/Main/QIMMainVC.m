@@ -23,7 +23,7 @@
 #import "QIMZBarViewController.h"
 #import "QIMJumpURLHandle.h"
 #import "QIMMineTableView.h"
-#import "QIMWorkFeedViewController.h"
+#import "QIMWorkFeedView.h"
 #import "QIMNavBackBtn.h"
 #import "NSBundle+QIMLibrary.h"
 #if __has_include("RNSchemaParse.h")
@@ -631,8 +631,9 @@ static dispatch_once_t __onceMainToken;
 
 - (UIView *)momentView {
     if (!_momentView) {
-        QIMWorkFeedViewController *workfeedVc = [[QIMWorkFeedViewController alloc] init];
-        _momentView = [workfeedVc view];
+        QIMWorkFeedView *workfeedView = [[QIMWorkFeedView alloc] initWithFrame:CGRectMake(0, 0, _contentView.width, _contentView.height)];
+        workfeedView.rootVC = self;
+        _momentView = workfeedView;
     }
     return _momentView;
 }
@@ -949,8 +950,8 @@ static dispatch_once_t __onceMainToken;
     if (!_addFriendBtn) {
         UIButton *addFriendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         addFriendBtn.frame = CGRectMake(0, 0, 28, 28);
-        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0ca" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
-        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0ca" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateSelected];
+        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:24 color:qim_nav_addfriend_btnColor]] forState:UIControlStateNormal];
+        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:24 color:qim_nav_addfriend_btnColor]] forState:UIControlStateSelected];
         [addFriendBtn addTarget:self action:@selector(addNewFriend:) forControlEvents:UIControlEventTouchUpInside];
         _addFriendBtn = addFriendBtn;
     }
@@ -961,8 +962,8 @@ static dispatch_once_t __onceMainToken;
     if (!_scanBtn) {
         UIButton *scanBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         scanBtn.frame = CGRectMake(0, 0, 28, 28);
-        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
-        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateSelected];
+        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:24 color:qim_nav_scan_btnColor]] forState:UIControlStateNormal];
+        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:24 color:qim_nav_scan_btnColor]] forState:UIControlStateSelected];
         [scanBtn addTarget:self action:@selector(scanQrcode:) forControlEvents:UIControlEventTouchUpInside];
         _scanBtn = scanBtn;
     }
@@ -973,8 +974,8 @@ static dispatch_once_t __onceMainToken;
     if (!_momentBtn) {
         _momentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _momentBtn.frame = CGRectMake(0, 0, 28, 28);
-        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_moment_font size:24 color:qim_nav_moment_color]] forState:UIControlStateNormal];
-        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_moment_font size:24 color:qim_nav_moment_color]] forState:UIControlStateSelected];
+        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_mymoment_font size:24 color:qim_nav_moment_color]] forState:UIControlStateNormal];
+        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_mymoment_font size:24 color:qim_nav_moment_color]] forState:UIControlStateSelected];
         [_momentBtn addTarget:self action:@selector(myOwnerMoment:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _momentBtn;
