@@ -1070,8 +1070,13 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
     if (isGroup) {
         [[QIMKit sharedInstance] joinGroupWithBuddies:groupId groupName:@"" WithInviteMember:memberIds withCallback:^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                UINavigationController *nav = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-                [nav popViewControllerAnimated:YES];
+                [[QIMKit sharedInstance] clearNotReadMsgByGroupId:groupId];
+                UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                if (!navVC) {
+                    navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+                }
+                [navVC popToRootViewControllerAnimated:NO];
+                [QIMFastEntrance openGroupChatVCByGroupId:groupId];
             });
         }];
     } else {
