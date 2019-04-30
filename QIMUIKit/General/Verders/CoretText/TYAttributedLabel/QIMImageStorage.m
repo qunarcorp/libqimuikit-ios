@@ -136,7 +136,32 @@
 //            [self.progressLabel setText:progress];
 //            NSLog(@"下载图片进度 : %ld", progress);
         } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            
+            CGRect fitRect = rect;//[self rectFitOriginSize:image.size byRect:rect];
+            //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
+            //            fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (image) {
+                    [_imageView removeFromSuperview];
+                    _imageView = [[YLImageView alloc] initWithFrame:fitRect];
+                    [_imageView setBackgroundColor:[UIColor redColor]];
+                    UIImage *imageTemp = image;
+                    CGSize imageTempSize = imageTemp.size;
+                    CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
+                    CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
+                    if (imageRatio > rectRatio) {
+                        CGFloat scale = fitRect.size.width / fitRect.size.height;
+                        CGFloat imageWidth = imageTempSize.height * scale;
+                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                    } else {
+                        CGFloat scale = fitRect.size.height / fitRect.size.width;
+                        CGFloat imageHeight = scale * imageTemp.size.width;
+                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                    }
+                    _imageView.image = imageTemp;
+                    [self.ownerView addSubview:_imageView];
+                }
+            });
+            /*
             CGRect fitRect = [self rectFitOriginSize:image.size byRect:rect];
             //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
             fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
@@ -148,6 +173,7 @@
                     [self.ownerView addSubview:_imageView];
                 }
             });
+            */
             return;
         }];
     }

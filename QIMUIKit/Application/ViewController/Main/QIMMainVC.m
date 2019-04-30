@@ -188,6 +188,8 @@ static dispatch_once_t __onceMainToken;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNotReadCount) name:kMsgNotReadCountChange object:nil];
     //更新骆驼帮未读数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateExploreNotReadCount:) name:kExploreNotReadCountChange object:nil];
+    //更新驼圈未读数
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateWorkFeedNotReadCount:) name:kNotifyNotReadWorkCountChange object:nil];
     //更新App网络状态
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWorkStateChange:) name:kAppWorkStateChange object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifySelectTab:) name:kNotifySelectTab object:nil];
@@ -362,14 +364,26 @@ static dispatch_once_t __onceMainToken;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-                // 移动小红点 到 第三页
-                if (count == NO) {
-                    count = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
-                }
-                [_tabBar setBadgeNumber:count ByItemIndex:3 showNumber:NO];
+                // 发现页移动小红点 到 第二页
+                [_tabBar setBadgeNumber:count ByItemIndex:2 showNumber:NO];
             } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant) {
                 [_tabBar setBadgeNumber:count ByItemIndex:2 showNumber:NO];
             }
+        });
+    });
+}
+
+- (void)updateWorkFeedNotReadCount:(NSNotification *)notify {
+    QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __block BOOL count = NO;
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+            if (notify) {
+                count = [notify.object boolValue];
+            }
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_tabBar setBadgeNumber:count ByItemIndex:3 showNumber:NO];
         });
     });
 }

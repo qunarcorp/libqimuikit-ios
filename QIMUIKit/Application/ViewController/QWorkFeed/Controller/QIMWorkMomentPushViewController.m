@@ -359,7 +359,6 @@
 - (void)atSomeone:(UITapGestureRecognizer *)tap {
     QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
     __weak __typeof(&*self) weakSelf = self;
-    //            [qNoticeVC setGroupID:self.chatId];
     
     [qNoticeVC onQIMWorkFeedSelectUser:^(NSArray *selectUsers) {
         NSLog(@"selectUsers : %@", selectUsers);
@@ -513,9 +512,12 @@
                 [momentDic setObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto] forKey:@"AnonymousPhoto"];
             }
             
+            NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
+            NSString *finallyContent = [self getStringFromAttributedString:self.textView.attributedText WithOutAtInfo:&outATInfoArray];
+            
             NSMutableDictionary *momentContentDic = [[NSMutableDictionary alloc] initWithCapacity:3];
-            [momentContentDic setQIMSafeObject:self.textView.text forKey:@"content"];
-            [momentContentDic setQIMSafeObject:[[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.textView.text] forKey:@"exContent"];
+            [momentContentDic setQIMSafeObject:finallyContent forKey:@"content"];
+            [momentContentDic setQIMSafeObject:[[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:finallyContent] forKey:@"exContent"];
             NSMutableArray *imageList = [[NSMutableArray alloc] init];
             dispatch_group_t group = dispatch_group_create();
             for (id imageData in self.selectPhotos) {
@@ -531,14 +533,15 @@
             }
 //            NSDictionary *atDic = @{@"type":@(10001), @"data":@[@{@"jid": @"lilulucas.li@ejabhost1", @"text":@"lilulucas.li"}, @{@"jid": @"binz.zhang@ejabhost1", @"text":@"张滨"}]};
 //            NSArray *atArray = @[atDic];
+
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                 
                 [momentContentDic setQIMSafeObject:imageList forKey:@"imgList"];
                 [momentContentDic setQIMSafeObject:@(0) forKey:@"type"];
                 NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
                 [momentDic setObject:momentContent forKey:@"content"];
-//                [momentDic setObject:atArray forKey:@"atList"];
-//                QIMVerboseLog(@"AtArray: %@", atArray);
+                [momentDic setObject:outATInfoArray forKey:@"atList"];
+                QIMVerboseLog(@"outATInfoArray: %@", outATInfoArray);
                 QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
                 QIMVerboseLog(@"momentDic: %@", momentDic);
                 QIMVerboseLog(@"imageList : %@", imageList);
@@ -562,6 +565,45 @@
         });
     }
 }
+
+- (NSString *)getStringFromAttributedString:(NSAttributedString *)attributedString WithOutAtInfo:(NSMutableArray **)outAtInfo {
+    //最终纯文本
+    NSMutableString *plainString = [NSMutableString stringWithString:attributedString.string];
+    //替换下标的偏移量
+    __block NSUInteger base = 0;
+    
+    *outAtInfo = [NSMutableArray arrayWithCapacity:3];
+    NSMutableDictionary *atInfoDic = [NSMutableDictionary dictionaryWithCapacity:3];
+    NSMutableArray *atInfoList = [NSMutableArray array];
+    [atInfoDic setQIMSafeObject:atInfoList forKey:@"data"];
+    [atInfoDic setQIMSafeObject:@(10001) forKey:@"type"];
+    [*outAtInfo addObject:atInfoDic];
+    //遍历
+    [attributedString enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, attributedString.length) options:0 usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
+        if (value && [value isKindOfClass:[QIMATGroupMemberTextAttachment class]]) {
+            NSMutableDictionary *atDic = [NSMutableDictionary dictionary];
+            [atDic setQIMSafeObject:[(QIMATGroupMemberTextAttachment *)value groupMemberName] forKey:@"text"];
+            [atDic setQIMSafeObject:[(QIMATGroupMemberTextAttachment *)value groupMemberJid] forKey:@"jid"];
+            [atInfoList addObject:atDic];
+        }
+    }];
+    if (atInfoList.count <= 0) {
+        *outAtInfo = nil;
+    } else {
+        [atInfoDic setQIMSafeObject:atInfoList forKey:@"data"];
+    }
+    plainString = [NSMutableString stringWithString:[plainString stringByReplacingOccurrencesOfString:@"\U0000fffc" withString:@""]];
+    return plainString;
+}
+
+/*
+NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
+NSString *attributedText = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:[self.textBar getTextBarAttributedText] WithOutAtInfo:&outATInfoArray];
+//    NSString *attributedText = [self.textBar getSendAttributedText];
+if (attributedText.length > 0) {
+    text = attributedText;
+}
+*/
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDatasource
 
