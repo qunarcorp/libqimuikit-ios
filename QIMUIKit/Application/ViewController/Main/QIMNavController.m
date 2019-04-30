@@ -81,7 +81,7 @@
 - (void)goBack:(id)sender{
     [self popViewControllerAnimated:YES];
 }
-
+/*
 - (void) motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 
 {
@@ -115,6 +115,7 @@
         }
     }
 }
+*/
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

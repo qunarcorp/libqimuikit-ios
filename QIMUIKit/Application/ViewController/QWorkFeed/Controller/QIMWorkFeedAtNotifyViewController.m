@@ -7,7 +7,7 @@
 //
 
 #import "QIMWorkFeedAtNotifyViewController.h"
-#import "QIMAtUserTableViewCell.h"
+#import "QIMWorkFeedAtUserTableViewCell.h"
 #import "SearchBar.h"
 #import "NSBundle+QIMLibrary.h"
 #import <MJRefresh/MJRefresh.h>
@@ -16,7 +16,7 @@
 
 @property (nonatomic, strong) UITableView *mainTableView;
 
-@property (nonatomic, strong) NSMutableArray *dataSource;
+@property (nonatomic, strong) UIButton *complateBtn;
 
 @property (nonatomic, strong) SearchBar *searchBar;
 @property (nonatomic, strong) NSMutableArray *searchResults;
@@ -42,8 +42,6 @@
         _mainTableView.tableFooterView = [UIView new];
         _mainTableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);           //top left bottom right 左右边距相同
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        _mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(searchMoreUsers)];
-        _mainTableView.mj_footer.automaticallyHidden = YES;
     }
     return _mainTableView;
 }
@@ -57,16 +55,27 @@
         [_searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
         [_searchBar setDelegate:self];
         [_searchBar setText:nil];
-        [_searchBar setFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
+        [_searchBar setFrame:CGRectMake(0, 0, self.view.frame.size.width, 52)];
     }
     return _searchBar;
 }
 
-- (NSMutableArray *)dataSource {
-    if (!_dataSource) {
-        _dataSource = [NSMutableArray arrayWithCapacity:3];
+- (NSMutableArray *)selectUsers {
+    if (!_selectUsers) {
+        _selectUsers = [NSMutableArray arrayWithCapacity:3];
     }
-    return _dataSource;
+    return _selectUsers;
+}
+
+- (UIButton *)complateBtn {
+    if (!_complateBtn) {
+        _complateBtn = [[UIButton alloc] initWithFrame:CGRectZero];
+        [_complateBtn setTitleColor:[UIColor qim_colorWithHex:0x4DC1B5] forState:UIControlStateNormal];
+        [_complateBtn setTitle:@"完成" forState:UIControlStateNormal];
+        _complateBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+        [_complateBtn addTarget:self action:@selector(complateClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _complateBtn;
 }
 
 - (void)initUI {
@@ -76,12 +85,19 @@
 }
 
 - (void)initWithNav {
-    [self.navigationItem setTitle:@"选择提醒的人"];
+    [self.navigationItem setTitle:@"提醒谁看"];
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(goBack:)];
     [self.navigationItem setLeftBarButtonItem:leftItem];
+    
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:self.complateBtn];
+    [self.navigationItem setRightBarButtonItem:rightItem];
+
 }
 
 - (void)goBack:(id)sender {
+    self.callbackBlock(self.selectUsers);
+    [self.navigationController popViewControllerAnimated:YES];
+    /*
     if (self.presentingViewController) {
         [self dismissViewControllerAnimated:YES completion:^{
             self.callbackBlock(@{});
@@ -90,23 +106,17 @@
         //适配iPad Push进来
         self.callbackBlock(@{});
         [self.navigationController popViewControllerAnimated:YES];
-    }
+    } */
+}
+
+- (void)complateClick:(id)sender {
+    self.callbackBlock(self.selectUsers);
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initUI];
-}
-
-- (void)searchMoreUsers {
-    NSArray *searchUsers = [[QIMKit sharedInstance] searchUserListBySearchStr:self.searchBar.text WithLimit:20 WithOffset:self.dataSource.count];
-    if (searchUsers.count > 0) {
-        [self.dataSource addObject:searchUsers];
-        [self.mainTableView reloadData];
-        [self.mainTableView.mj_footer endRefreshing];
-    } else {
-        [self.mainTableView.mj_footer endRefreshingWithNoMoreData];
-    }
 }
 
 - (void)onQIMWorkFeedSelectUser:(onQIMWorkFeedSelectUserBlock)block {
@@ -120,67 +130,46 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.searchBar.text.length > 0) {
-        return _searchResults.count;
-    }
-    return [self.dataSource count];
+    return _searchResults.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"Cell";
-    QIMAtUserTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    QIMWorkFeedAtUserTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (cell == nil) {
-        cell = [[QIMAtUserTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell = [[QIMWorkFeedAtUserTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
+    NSMutableDictionary * dict  =  [_searchResults objectAtIndex:indexPath.row];
+    NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:[dict objectForKey:@"XmppId"]];
+    NSString *userXmppJid = [dict objectForKey:@"XmppId"];
+    [cell setUserXmppId:userXmppJid];
+    [cell setUserName:remarkName?remarkName:[dict objectForKey:@"Name"]];
+    [cell refreshUI];
+    [cell setUserSelected:[self.selectUsers containsObject:userXmppJid]];
     
-    if (self.searchBar.text.length > 0) {
-        NSMutableDictionary * dict  =  [_searchResults objectAtIndex:indexPath.row];
-        NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:[dict objectForKey:@"XmppId"]];
-        
-        [cell setJid:[dict objectForKey:@"XmppId"]];
-        [cell setName:remarkName?remarkName:[dict objectForKey:@"Name"]];
-        [cell refreshUI];
-    } else {
-        
-        NSMutableDictionary * dict  =  [self.dataSource objectAtIndex:indexPath.row];
-        NSString *jid = [dict objectForKey:@"xmppjid"];
-        if (jid == nil) {
-            jid = [dict objectForKey:@"jid"];
-        }
-        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
-        
-        NSString *realUserName = [userInfo objectForKey:@"Name"];
-        //备注
-        if (!realUserName) {
-            realUserName = [dict objectForKey:@"name"];
-        }
-        NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
-        NSString * name  = remarkName?remarkName:realUserName;
-        [cell setJid:jid];
-        [cell setName:name];
-        [cell refreshUI];
-    }
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [QIMAtUserTableViewCell getCellHeight];
+    return [QIMWorkFeedAtUserTableViewCell getCellHeight];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    QIMAtUserTableViewCell *cell = (QIMAtUserTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    NSMutableDictionary * dict  = [NSMutableDictionary dictionaryWithCapacity:3];
-    NSString * name  = nil;
-    if (self.searchBar.text.length > 0) {
-        dict = [_searchResults objectAtIndex:indexPath.row];
-        name = [dict objectForKey:@"Name"];
-    } else {
-        dict = [self.dataSource objectAtIndex:indexPath.row];
-        name = [dict objectForKey:@"name"];
-    }
-    NSString *jid = cell.jid;
+    QIMWorkFeedAtUserTableViewCell *cell = (QIMWorkFeedAtUserTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    [cell setUserSelected:YES];
+    NSMutableDictionary *dict = [_searchResults objectAtIndex:indexPath.row];
+    NSString *name = [dict objectForKey:@"Name"];
+    NSString *jid = cell.userXmppId;
     NSDictionary *memberInfoDic = @{@"name":name.length?name:@"", @"jid":jid.length?jid:@""};
+    if (jid.length > 0 && ![self.selectUsers containsObject:jid]) {
+        [self.selectUsers addObject:jid];
+        [cell setUserSelected:YES];
+    } else {
+        [self.selectUsers removeObject:jid];
+        [cell setUserSelected:NO];
+    }
+    /*
     if (self.callbackBlock != nil) {
         
         if (self.presentingViewController) {
@@ -192,11 +181,12 @@
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
+    */
 }
 
 @end
 
-@interface QIMWorkFeedAtNotifyViewController (Search)<SearchBarDelgt>
+@interface QIMWorkFeedAtNotifyViewController (Search) <SearchBarDelgt>
 
 @end
 

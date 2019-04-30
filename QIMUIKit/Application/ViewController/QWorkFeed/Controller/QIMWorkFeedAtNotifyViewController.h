@@ -10,9 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void(^onQIMWorkFeedSelectUserBlock)(NSDictionary *userInfo);
+typedef void(^onQIMWorkFeedSelectUserBlock)(NSArray *selectUsers);
 
 @interface QIMWorkFeedAtNotifyViewController : QTalkViewController
+
+@property (nonatomic, strong) NSMutableArray *selectUsers;
 
 - (void)onQIMWorkFeedSelectUser:(onQIMWorkFeedSelectUserBlock)block;
 

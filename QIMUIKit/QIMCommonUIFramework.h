@@ -44,6 +44,7 @@
 //App颜色，字体全局配置
 #import "QIMUIFontConfig.h"
 #import "QIMUIColorConfig.h"
+#import "QIMUISizeConfig.h"
 
 #import "QIMJSONSerializer.h"
 #import "Masonry.h"

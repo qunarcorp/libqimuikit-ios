@@ -10,6 +10,7 @@
 #import "Masonry.h"
 #import "QIMUIFontConfig.h"
 #import "QIMUIColorConfig.h"
+#import "QIMUISizeConfig.h"
 #import "QIMIconInfo.h"
 #import "UIImage+QIMIconFont.h"
 
@@ -45,7 +46,6 @@
         
         UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectZero];
         iconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:28 color:[UIColor qim_colorWithHex:0xBFBFBF]]];
-//        iconView.backgroundColor = [UIColor redColor];
         [self.searchBgView addSubview:iconView];
         [iconView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_offset(15);
@@ -57,7 +57,7 @@
         UILabel *promotLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         promotLabel.text = @"搜索";
         promotLabel.textColor = [UIColor qim_colorWithHex:0xB5B5B5];
-        promotLabel.font = [UIFont systemFontOfSize:16];
+        promotLabel.font = [UIFont systemFontOfSize:qim_listSearchTextSize];
         [self.searchBgView addSubview:promotLabel];
         [promotLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(iconView.mas_right).mas_offset(8);
