@@ -2422,7 +2422,9 @@ static CGPoint tableOffsetPoint;
         [self presentViewController:nav animated:YES completion:nil];
         
     } else {
-        
+        if (![faceStr qim_hasPrefixHttpHeader] && faceStr.length > 0) {
+            faceStr = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], faceStr];
+        }
         QIMMessageModel *msg = nil;
         if (faceStr.length) {
             NSString *msgText = nil;
