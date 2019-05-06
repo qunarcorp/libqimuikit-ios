@@ -143,7 +143,6 @@
                 if (image) {
                     [_imageView removeFromSuperview];
                     _imageView = [[YLImageView alloc] initWithFrame:fitRect];
-                    [_imageView setBackgroundColor:[UIColor redColor]];
                     UIImage *imageTemp = image;
                     CGSize imageTempSize = imageTemp.size;
                     CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;

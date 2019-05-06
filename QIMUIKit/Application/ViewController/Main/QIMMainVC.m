@@ -457,7 +457,7 @@ static dispatch_once_t __onceMainToken;
 #endif
             break;
         case 3:
-            
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
             break;
         default:
             break;
@@ -770,6 +770,7 @@ static dispatch_once_t __onceMainToken;
 #endif
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]]) {
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
         [_contentView addSubview:self.rnSuggestView];
         [self.rnSuggestView setHidden:NO];
 #if __has_include("QIMAutoTracker.h")

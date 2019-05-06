@@ -35,6 +35,7 @@
 #define qim_sessionViewBgColor [UIColor whiteColor] //会话列表页Bg颜色
 #define qim_sessionViewConnectionErrorViewBgColor    [UIColor qim_colorWithHex:0xFAE4E3 alpha:1.0]  //网络连接错误BgColor
 #define qim_sessionViewConnectionErrorTextColor    [UIColor qim_colorWithHex:0x666666 alpha:1.0]  //网络连接错误TextColor
+#define qim_sessionViewNotReadNumButtonColor       [UIColor qim_colorWithHex:0xEA6854 alpha:1.0]  //未读消息提醒气泡Color
 
 
 #define qim_groupchat_rightCard_Color    [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]       //群右上角
@@ -44,6 +45,8 @@
 
 #define qim_messageText_color  [UIColor qim_colorWithHex:0x333333 alpha:1.0]    //文本消息颜色
 #define qim_messageLinkurl_color [UIColor qim_colorWithHex:0x48A3FF alpha:1.0]         //link颜色back
+#define qim_messageUnReadState_color [UIColor qim_colorWithHex:0x00C1BA alpha:1.0]      //消息未读提示Color
+#define qim_messageReadState_color [UIColor qim_colorWithHex:0xBFBFBF alpha:1.0]      //消息未读提示Color
 
 #define qim_backButtonTextBgColor [UIColor qim_colorWithHex:0xF2F2F2 alpha:1.0]     //返回按钮字体bg
 #define qim_backButtonColor [UIColor qim_colorWithHex:0x666666 alpha:1.0]     //返回按钮Color

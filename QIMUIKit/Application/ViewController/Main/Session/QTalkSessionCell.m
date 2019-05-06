@@ -181,6 +181,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         
         _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(12, [self.class getCellHeight] / 2 - 24, 48, 48)];
         _headerView.backgroundColor = [UIColor clearColor];
+        _headerView.layer.cornerRadius = 24.0f;
+        _headerView.layer.masksToBounds = YES;
     }
     return _headerView;
 }
@@ -219,14 +221,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_nameLabel) {
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 12, [[UIScreen mainScreen] qim_leftWidth] - 145, NAME_LABEL_FONT + 2)];
-        _nameLabel.font = [UIFont boldSystemFontOfSize:NAME_LABEL_FONT];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 12, [[UIScreen mainScreen] qim_leftWidth] - 145, qim_sessionViewNameLabelSize)];
+        _nameLabel.font = [UIFont boldSystemFontOfSize:qim_sessionViewNameLabelSize];
         _nameLabel.textColor = [UIColor qim_colorWithHex:0x0 alpha:1];
         _nameLabel.backgroundColor = [UIColor clearColor];
-    }
-    if (NAME_LABEL_FONT + 2 != _nameLabel.height) {
-        _nameLabel.frame = CGRectMake(70, 12, [[UIScreen mainScreen] qim_leftWidth] - 145, NAME_LABEL_FONT + 2);
-        _nameLabel.font = [UIFont boldSystemFontOfSize:NAME_LABEL_FONT];
     }
     return _nameLabel;
 }
@@ -237,14 +235,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         
         CGFloat timeLabelMaxX = CGRectGetMaxX(self.timeLabel.frame);
         CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 25;
-        _contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
-        _contentLabel.font = [UIFont fontWithName:FONT_NAME size:CONTENT_LABEL_FONT];
+        _contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, qim_sessionViewContentLabelSize)];
+        _contentLabel.font = [UIFont systemFontOfSize:qim_sessionViewContentLabelSize];
         _contentLabel.textColor = [UIColor qim_colorWithHex:0x888888 alpha:1];
         _contentLabel.backgroundColor = [UIColor clearColor];
-    }
-    if (CONTENT_LABEL_FONT + 5 != _contentLabel.height) {
-        _contentLabel.frame = CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, CGRectGetMaxX(self.timeLabel.frame) - self.nameLabel.left - 25, CONTENT_LABEL_FONT + 5);
-        _contentLabel.font = [UIFont fontWithName:FONT_NAME size:CONTENT_LABEL_FONT];
     }
     return _contentLabel;
 }
@@ -253,14 +247,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_timeLabel) {
         
-        _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 85, self.nameLabel.bottom - 16, 75, CONTENT_LABEL_FONT)];
-        _timeLabel.font = [UIFont fontWithName:FONT_NAME size:CONTENT_LABEL_FONT-2];
+        _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 85, self.nameLabel.bottom - 16, 75, 12)];
+        _timeLabel.font = [UIFont systemFontOfSize:qim_sessionViewTimeLabelSize];
         _timeLabel.textColor = [UIColor qim_colorWithHex:0xa1a1a1 alpha:1];
         _timeLabel.backgroundColor = [UIColor clearColor];
         _timeLabel.textAlignment = NSTextAlignmentRight;
-    }
-    if (CONTENT_LABEL_FONT + 5 != _timeLabel.height) {
-        _timeLabel.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 70, self.nameLabel.bottom - 16, 60, CONTENT_LABEL_FONT);
     }
     
     return _timeLabel;
@@ -301,11 +292,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         }
     }
     self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
-    if (self.chatType == ChatType_GroupChat) {
-        [self.notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
-    } else {
-        [self.notReadNumButton setBadgeColor:[UIColor qunarRedColor]];
-    }
+    [self.notReadNumButton setBadgeColor:qim_sessionViewNotReadNumButtonColor];
     [self.notReadNumButton setBadgeString:badgeString];
     __weak typeof(self) weakSelf = self;
     [self.notReadNumButton setDidClickBlock:^(QIMBadgeButton * badgeButton) {
@@ -316,7 +303,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     }];
     __block BOOL groupState = NO;
     if (!self.isReminded) {
-        [self.notReadNumButton setBadgeColor:[UIColor spectralColorLightBlueColor]];
+        [self.notReadNumButton setBadgeColor:qim_sessionViewNotReadNumButtonColor];
     } else {
         [self.notReadNumButton hiddenBadgeButton:YES];
         [self.contentView addSubview:self.muteNotReadView];

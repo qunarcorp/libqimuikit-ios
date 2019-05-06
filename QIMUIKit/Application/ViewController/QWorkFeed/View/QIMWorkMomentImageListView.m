@@ -9,6 +9,7 @@
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkMomentPicture.h"
 #import "QIMWorkMomentPictureMetadata.h"
+#import "YLImageView.h"
 
 // 图片间距
 #define kImagePadding       5
@@ -54,7 +55,7 @@
 - (void)setMomentContentModel:(QIMWorkMomentContentModel *)momentContentModel {
     _momentContentModel = momentContentModel;
     for (QIMWorkMomentImageView *imageView in _imageViewsArray) {
-        imageView.hidden = YES;
+//        imageView.hidden = YES;
     }
     // 图片区
     // 添加图片
@@ -63,7 +64,7 @@
         self.size = CGSizeZero;
         return;
     }
-    QIMWorkMomentImageView *imageView = nil;
+    __block QIMWorkMomentImageView *imageView = nil;
     for (NSInteger i = 0; i < count; i++)
     {
         if (i > 8) {
@@ -87,7 +88,7 @@
             frame = CGRectMake(0, 0, singleSize.width, singleSize.height);
         }
         imageView = [self viewWithTag:1000+i];
-        imageView.hidden = NO;
+//        imageView.hidden = NO;
         imageView.frame = frame;
         NSString *imageUrl = picture.imageUrl;
         if (![imageUrl qim_hasPrefixHttpHeader]) {
@@ -95,18 +96,65 @@
         } else {
             
         }
-        if ([imageUrl rangeOfString:@"?"].location != NSNotFound) {
-            
-            imageUrl = [imageUrl stringByAppendingFormat:@"&w=%d&h=%d",
-                      (int)96*2,
-                      (int)96*2];
-        } else {
-            imageUrl = [imageUrl stringByAppendingFormat:@"?w=%d&h=%d",
-                      (int)96*2,
-                      (int)96*2];
-        }
+//        if ([imageUrl rangeOfString:@"?"].location != NSNotFound) {
+//
+//            imageUrl = [imageUrl stringByAppendingFormat:@"&w=%d&h=%d",
+//                      (int)96*2,
+//                      (int)96*2];
+//        } else {
+//            imageUrl = [imageUrl stringByAppendingFormat:@"?w=%d&h=%d",
+//                      (int)96*2,
+//                      (int)96*2];
+//        }
 //        QIMVerboseLog(@"imageUrl : %@", imageUrl);
-        [imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_placeholder"]];
+        [imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_placeholder"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            __block CGRect fitRect = frame;//[self rectFitOriginSize:image.size byRect:rect];
+            //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
+            //            fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (image && count != 1) {
+                    imageView = [[YLImageView alloc] initWithFrame:fitRect];
+                    UIImage *imageTemp = image;
+                    CGSize imageTempSize = imageTemp.size;
+                    CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
+                    CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
+                    if (imageRatio > rectRatio) {
+                        CGFloat scale = fitRect.size.width / fitRect.size.height;
+                        CGFloat imageWidth = imageTempSize.height * scale;
+                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                    } else {
+                        CGFloat scale = fitRect.size.height / fitRect.size.width;
+                        CGFloat imageHeight = scale * imageTemp.size.width;
+                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                    }
+                    imageView.image = imageTemp;
+                } else if (image && count == 1) {
+                    //单张图片处理
+                    CGRect newSingleFrame = [self rectFitOriginSize:image.size byRect:imageView.frame];
+                    fitRect = newSingleFrame;
+                    [UIView animateWithDuration:0.1 animations:^{
+                        
+                    } completion:^(BOOL finished) {
+                        imageView.frame = newSingleFrame;
+                        imageView.hidden = NO;
+                        UIImage *imageTemp = image;
+                        CGSize imageTempSize = imageTemp.size;
+                        CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
+                        CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
+                        if (imageRatio > rectRatio) {
+                            CGFloat scale = fitRect.size.width / fitRect.size.height;
+                            CGFloat imageWidth = imageTempSize.height * scale;
+                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                        } else {
+                            CGFloat scale = fitRect.size.height / fitRect.size.width;
+                            CGFloat imageHeight = scale * imageTemp.size.width;
+                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                        }
+                        imageView.image = imageTemp;
+                    }];
+                }
+            });
+        }];
     }
     self.width = SCREEN_WIDTH - 60 - 20;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
@@ -139,6 +187,27 @@
         }
     }
     return CGSizeMake(result_width, result_height);
+}
+
+- (CGRect)rectFitOriginSize:(CGSize)size byRect:(CGRect)byRect{
+    CGRect scaleRect = byRect;
+    CGFloat originTargetWidth = size.width;
+    CGFloat originTargetHeight = size.height;
+    CGFloat targetWidth = byRect.size.width <= 0 ? size.width : byRect.size.width;
+    CGFloat targetHeight = byRect.size.height <= 0 ? size.height : byRect.size.height;
+    CGFloat widthFactor = targetWidth / size.width;
+    CGFloat heightFactor = targetHeight / size.height;
+    CGFloat scaleFactor = MIN(widthFactor, heightFactor);
+    CGFloat scaledWidth  = size.width * scaleFactor;
+    CGFloat scaledHeight = size.height * scaleFactor;
+    // center the image
+    if (originTargetHeight > SCREEN_HEIGHT * 3 && originTargetHeight / originTargetWidth >= 5) {
+        scaleRect.size = CGSizeMake(100, 180);
+        scaleRect.origin = CGPointMake(0, 0);
+    } else {
+        scaleRect.size = CGSizeMake(180, 180);
+    }
+    return scaleRect;
 }
 
 @end

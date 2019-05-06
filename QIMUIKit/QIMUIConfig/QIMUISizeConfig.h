@@ -16,5 +16,12 @@
 
 #define qim_chatsearchRemindViewTextSize    13  //聊天会话内TextSize
 
+#define qim_sessionViewTimeLabelSize     12  //会话列表页时间TextSize
+
+#define qim_sessionViewNameLabelSize     17  //会话列表页Name TextSize
+#define qim_sessionViewContentLabelSize  14  //会话列表页Content TextSize
+#define qim_sessionViewTimeLabelSize     12  //会话列表页时间TextSize
+
+
 
 #endif /* QIMUISizeConfig_h */

@@ -2504,42 +2504,50 @@
 }
 
 - (void)sendCollectionFaceStr:(NSString *)faceStr {
-    if (![faceStr qim_hasPrefixHttpHeader]) {
-        faceStr = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], faceStr];
-    }
-    if (faceStr.length > 0) {
-        QIMMessageModel *msg = nil;
-        NSString *msgText = nil;
-        BOOL isFileExist = [[QIMKit sharedInstance] isFileExistForUrl:faceStr width:0 height:0 forCacheType:QIMFileCacheTypeColoction];
-        if (isFileExist) {
-            NSData *imgData = [[QIMKit sharedInstance] getFileDataFromUrl:faceStr forCacheType:QIMFileCacheTypeColoction];
-            CGSize size = [[QIMKit sharedInstance] getFitSizeForImgSize:[YLGIFImage imageWithData:imgData].size];
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, size.width, size.height];
-        } else {
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, 0, 0];
-        }
+    if ([faceStr isEqualToString:kImageFacePageViewAddFlagName]) {
+        //添加按钮点击
+        QIMCollectionEmotionEditorVC *emotionEditor = [[QIMCollectionEmotionEditorVC alloc] init];
+        QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:emotionEditor];
+        [self presentViewController:nav animated:YES completion:nil];
         
-        if (self.chatType == ChatType_ConsultServer || self.chatType == ChatType_Consult) {
-            msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:self.chatType msgType:QIMMessageType_Text];
-            [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
+    } else {
+        if (![faceStr qim_hasPrefixHttpHeader]) {
+            faceStr = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], faceStr];
         }
+        if (faceStr.length > 0) {
+            QIMMessageModel *msg = nil;
+            NSString *msgText = nil;
+            BOOL isFileExist = [[QIMKit sharedInstance] isFileExistForUrl:faceStr width:0 height:0 forCacheType:QIMFileCacheTypeColoction];
+            if (isFileExist) {
+                NSData *imgData = [[QIMKit sharedInstance] getFileDataFromUrl:faceStr forCacheType:QIMFileCacheTypeColoction];
+                CGSize size = [[QIMKit sharedInstance] getFitSizeForImgSize:[YLGIFImage imageWithData:imgData].size];
+                msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, size.width, size.height];
+            } else {
+                msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, 0, 0];
+            }
+            
+            if (self.chatType == ChatType_ConsultServer || self.chatType == ChatType_Consult) {
+                msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:self.chatType msgType:QIMMessageType_Text];
+                [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
+            }
 #if __has_include("QIMNoteManager.h")
-        else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
-            NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:msgText WithOriginExtendInfo:nil WithUserId:self.chatId];
-            msg = [[QIMKit sharedInstance] sendMessage:@"[加密收藏表情消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
-        }
+            else if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
+                NSString *content = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:QIMMessageType_Text WithOriginBody:msgText WithOriginExtendInfo:nil WithUserId:self.chatId];
+                msg = [[QIMKit sharedInstance] sendMessage:@"[加密收藏表情消息iOS]" WithInfo:content ToUserId:self.chatId WithMsgType:QIMMessageType_Encrypt];
+            }
 #endif
-        else {
-            msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:self.chatType msgType:QIMMessageType_Text];
-            [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
+            else {
+                msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:self.chatType msgType:QIMMessageType_Text];
+                [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
+            }
+            
+            [self.messageManager.dataSource addObject:msg];
+            [self.tableView beginUpdates];
+            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+            [self.tableView endUpdates];
+            [self scrollToBottomWithCheck:YES];
+            [self addImageToImageList];
         }
-        
-        [self.messageManager.dataSource addObject:msg];
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-        [self.tableView endUpdates];
-        [self scrollToBottomWithCheck:YES];
-        [self addImageToImageList];
     }
 }
 

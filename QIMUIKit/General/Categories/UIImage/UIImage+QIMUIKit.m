@@ -17,7 +17,7 @@
     [imageBundle loadAndReturnError:&error];
     
     name = [name stringByAppendingString:@"@2x"];
-    NSString *imagePath = [imageBundle pathForResource:name ofType:@"png"];
+    NSString *imagePath = [imageBundle pathForResource:name ofType:@"png" inDirectory:@"images"];
     UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
     if (!image) {
         // 兼容业务方自己设置图片的方式
