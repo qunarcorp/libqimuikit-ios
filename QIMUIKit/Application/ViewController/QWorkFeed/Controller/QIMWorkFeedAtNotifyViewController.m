@@ -55,7 +55,7 @@
         [_searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
         [_searchBar setDelegate:self];
         [_searchBar setText:nil];
-        [_searchBar setFrame:CGRectMake(0, 0, self.view.frame.size.width, 52)];
+        [_searchBar setFrame:CGRectMake(0, 0, self.view.frame.size.width, 66)];
     }
     return _searchBar;
 }
@@ -169,19 +169,6 @@
         [self.selectUsers removeObject:jid];
         [cell setUserSelected:NO];
     }
-    /*
-    if (self.callbackBlock != nil) {
-        
-        if (self.presentingViewController) {
-            [self dismissViewControllerAnimated:YES completion:^{
-                self.callbackBlock(memberInfoDic);
-            }];
-        } else {
-            self.callbackBlock(memberInfoDic);
-            [self.navigationController popViewControllerAnimated:YES];
-        }
-    }
-    */
 }
 
 @end

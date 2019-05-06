@@ -36,13 +36,13 @@
 #define kSearchBarDefaultHeight					44
 #define	kSearchBarBackButtonHeight				44
 #define kSearchBarBackButtonWidth				50
-#define	kSearchBarTextFieldHeight				28
+#define	kSearchBarTextFieldHeight				40
 #define	kSearchBarIndicatorViewWidth			10
 #define	kSearchBarIndicatorViewHeight			10
 #define	kSearchBarButtonHeight					28
 
 // 控件间距
-#define kSearchBarSelfHMargin					8
+#define kSearchBarSelfHMargin					15
 #define	kSearchBarButtonHMargin					10
 #define	kSearchBarTextFieldLeftHMargin			14
 #define kSearchBarTextFieldRightHMargin			10
@@ -99,13 +99,12 @@
     
     // 设置背景ImageView
     _imageViewBG = [[UIImageView alloc] initWithFrame:CGRectZero];
-    [_imageViewBG setBackgroundColor:[UIColor spectralColorLightColor]];
-//    [_imageViewBG setBackgroundColor:kSearchBarBackGroundColor];
+    [_imageViewBG setBackgroundColor:[UIColor whiteColor]];
     [self addSubview:_imageViewBG];
     
     // 创建输入背景ImageView
     _searchTextBG = [[UIImageView alloc] initWithFrame:CGRectZero];
-    [_searchTextBG setBackgroundColor:[UIColor whiteColor]];
+    [_searchTextBG setBackgroundColor:qim_listSearchBgViewColor];
     [[_searchTextBG layer] setCornerRadius:4.0f];
     [[_searchTextBG layer] setMasksToBounds:YES];
     [self addSubview:_searchTextBG];
@@ -129,6 +128,8 @@
     _labelHint = [[UILabel alloc] initWithFrame:CGRectZero];
     [_labelHint setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [_labelHint setBackgroundColor:[UIColor clearColor]];
+    [_labelHint setBackgroundColor:[UIColor purpleColor]];
+
     [_labelHint setFont:kSearchBarLabelFont];
     [_labelHint setTextColor:[UIColor lightGrayColor]];
     [self addSubview:_labelHint];
@@ -140,6 +141,7 @@
     // 设置搜索Button
     _buttonBar = [UIButton buttonWithType:UIButtonTypeCustom];
     [_buttonBar setBackgroundColor:[UIColor clearColor]];
+    [_buttonBar setBackgroundColor:[UIColor grayColor]];
     [_buttonBar setTitleColor:kSearchBarButtonTextColor forState:UIControlStateNormal];
     [_buttonBar setTitleColor:kSearchBarButtonTextPressColor forState:UIControlStateHighlighted];
     [_buttonBar addTarget:self action:@selector(searchBarButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -624,7 +626,7 @@
 							options:UIViewAnimationOptionCurveEaseIn
 						 animations:^{
 										[_searchTextBG setFrame:CGRectMake(spaceXStart,
-																		   parentFrame.size.height - (NSInteger)(kSearchBarDefaultHeight - kSearchBarTextFieldHeight) / 2 - kSearchBarTextFieldHeight,
+																		   (parentFrame.size.height - kSearchBarTextFieldHeight) / 2.0,
 																		   spaceXEnd - spaceXStart, kSearchBarTextFieldHeight)];
 						 }
 						 completion:nil];
@@ -719,17 +721,11 @@
 						 animations:^{
 								 if ([_textField textAlignment] == NSTextAlignmentCenter)
 								 {
-									 [_textField setFrame:CGRectMake(spaceXStart + kSearchBarTextFieldLeftHMargin,
-																	 parentFrame.size.height - (NSInteger)(kSearchBarDefaultHeight - kSearchBarTextFieldHeight) / 2 - kSearchBarTextFieldHeight + 1,
-																	 spaceXEnd - spaceXStart - kSearchBarTextFieldLeftHMargin*2,
-																	 kSearchBarTextFieldHeight)];
+                                     [_textField setFrame:CGRectMake(_searchTextBG.left + 10, _searchTextBG.top, _searchTextBG.width - 10, _searchTextBG.height)];
 								 }
 								 else
 								 {
-									 [_textField setFrame:CGRectMake(spaceXStart + kSearchBarTextFieldLeftHMargin,
-																	 parentFrame.size.height - (NSInteger)(kSearchBarDefaultHeight - kSearchBarTextFieldHeight) / 2 - kSearchBarTextFieldHeight + 1,
-																	 spaceXEnd - spaceXStart - kSearchBarTextFieldLeftHMargin,
-																	 kSearchBarTextFieldHeight)];
+                                     [_textField setFrame:CGRectMake(_searchTextBG.left + 10, _searchTextBG.top, _searchTextBG.width - 10, _searchTextBG.height)];
 								 }
 						 }
 						 completion:nil];

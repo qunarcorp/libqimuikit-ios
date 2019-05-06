@@ -19,8 +19,7 @@
 #import <YYModel/YYModel.h>
 #import "QIMEmotionManager.h"
 
-// 最大高度限制
-CGFloat maxLimitHeight = 0;
+#define MaxNumberOfLines 6
 
 @interface QIMWorkMomentCell () <QIMAttributedLabelDelegate> {
     CGFloat _rowHeight;
@@ -239,9 +238,6 @@ CGFloat maxLimitHeight = 0;
     _showMoreLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _showMoreLabel.textColor = [UIColor qim_colorWithHex:0x00CABE];
     _showMoreLabel.font = [UIFont systemFontOfSize:14];
-    
-    // 最大高度限制
-    maxLimitHeight = (_contentLabel.font.lineHeight) * 7.1;
 }
 
 - (void)setMoment:(QIMWorkMomentModel *)moment {
@@ -358,16 +354,16 @@ CGFloat maxLimitHeight = 0;
     
     QIMTextContainer *textContainer = nil;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:6];
+        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:MaxNumberOfLines];
     } else {
-        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:6];
+        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:MaxNumberOfLines];
     }
     
     CGFloat textH = textContainer.textHeight;
     if(self.alwaysFullText) {
         _showAllBtn.hidden = YES;
     } else {
-        if (textContainer.totalNumLine > 6) {
+        if (textContainer.totalNumLine > MaxNumberOfLines) {
             if (!self.isFullText) {
                 [self.showAllBtn setTitle:@"全文" forState:UIControlStateNormal];
             } else {

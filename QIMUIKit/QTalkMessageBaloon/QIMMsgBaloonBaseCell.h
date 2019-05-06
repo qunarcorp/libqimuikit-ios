@@ -55,6 +55,8 @@
 
 @property (nonatomic, strong) UILabel *messgaeStateLabel;   //发消息状态Label
 
+@property (nonatomic, strong) UIImageView *messgaeStateIcon;   //发消息状态Icon
+
 @property (nonatomic, strong) UIButton *statusButton;   //消息发送状态按钮
 
 @property (nonatomic,weak) id <QIMMsgBaloonBaseCellDelegate> delegate;

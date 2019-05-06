@@ -36,6 +36,9 @@
 
 #define qim_chatsearchRemindViewTextFont  @"\U0000e752"  //聊天会话内搜索Font
 
+#define qim_messageUnReadState_font     @"\U0000e796"      //消息未读提示Color
+#define qim_messageReadState_font   @"\U0000e797"     //消息未读提示Color
+
 
 //MainVc导航item
 #define qim_nav_scan_font       @"\U0000f0ca"   //扫码二维码按钮Color
