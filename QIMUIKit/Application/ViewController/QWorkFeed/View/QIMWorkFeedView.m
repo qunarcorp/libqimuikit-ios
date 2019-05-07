@@ -51,7 +51,7 @@
     if (!_addNewMomentBtn) {
         _addNewMomentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _addNewMomentBtn.frame = CGRectMake(SCREEN_WIDTH - 20 - 48, self.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 20 - 48, 48, 48);
-        [_addNewMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addnewmoment_font size:48 color:qim_nav_addnewmoment_btnColor]] forState:UIControlStateNormal];
+        [_addNewMomentBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_push"] forState:UIControlStateNormal];
         [_addNewMomentBtn addTarget:self action:@selector(jumpToAddNewMomentVc) forControlEvents:UIControlEventTouchUpInside];
     }
     return _addNewMomentBtn;
@@ -147,6 +147,20 @@
         [self addSubview:self.addNewMomentBtn];
     }
     return self;
+}
+
+//主动更新驼圈未读数
+- (void)updateMomentView {
+    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
+        [self.mainTableView reloadData];
+    } else {
+        
+    }
+    [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        [self reloadRemoteRecenteMoments];
+    });
 }
 
 /*

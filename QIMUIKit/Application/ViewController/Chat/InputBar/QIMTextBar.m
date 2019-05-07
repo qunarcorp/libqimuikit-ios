@@ -566,6 +566,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             [[NSNotificationCenter defaultCenter] postNotificationName:kQIMTextBarIsFirstResponder object:nil];
         }];
     }
+    /*
     else if (self.chatToolBar.voiceSelected) {
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
             self.voiceView.hidden = NO;
@@ -587,6 +588,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             [[NSNotificationCenter defaultCenter] postNotificationName:kQIMTextBarIsFirstResponder object:nil];
         }];
     }
+    */
     else
     {
         [UIView animateWithDuration:0.25 animations:^{

@@ -26,7 +26,7 @@
 #import "QIMOrganizationalVC.h"
 #import "QIMMenuImageView.h"
 #import "YYModel.h"
-
+#import "QIMChatBgManager.h"
 #import "QIMVoiceRecordingView.h"
 
 #import "QIMVoiceTimeRemindView.h"
@@ -304,6 +304,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         _tableView.allowsMultipleSelectionDuringEditing = YES;
         [_tableView setAccessibilityIdentifier:@"MessageTableView"];
         _tableView.mj_header = [QIMMessageRefreshHeader messsageHeaderWithRefreshingTarget:self refreshingAction:@selector(loadNewGroupMsgList)];
+        [self refreshChatBGImageView];
     }
     return _tableView;
 }
@@ -473,7 +474,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 //    if (self.chatType == ChatType_GroupChat) {
 //        [self.view addSubview:self.textBar];
 //    }
-    [self refreshChatBGImageView];
+//    [self refreshChatBGImageView];
     
 //    添加整个view的点击事件，当点击页面空白地方时，输入框收回
     UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandler:)];
@@ -1209,7 +1210,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     if (!_chatBGImageView) {
         
-        _chatBGImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 40)];
+        _chatBGImageView = [[UIImageView alloc] initWithFrame:_tableView.bounds];
         _chatBGImageView.contentMode = UIViewContentModeScaleAspectFill;
         _chatBGImageView.clipsToBounds = YES;
     }
@@ -1224,16 +1225,19 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:@"chatBGImageFor_Common"]];
         }
         if (image) {
-            
             _chatBGImageView.image = image;
             [self.view insertSubview:_chatBGImageView belowSubview:self.tableView];
         } else {
-            
-            [_chatBGImageView removeFromSuperview];
+            [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+                _chatBGImageView.image = bgImage;
+                _tableView.backgroundView = _chatBGImageView;
+            }];
         }
     } else {
-        
-        [self.tableView setBackgroundColor:qim_chatBgColor];
+        [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+            _chatBGImageView.image = bgImage;
+            _tableView.backgroundView = _chatBGImageView;
+        }];
     }
 }
 

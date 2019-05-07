@@ -27,6 +27,8 @@
 #define qim_otherPlatformViewTextColor [UIColor qim_colorWithHex:0x888888 alpha:1.0]    //其他平台已登录TextColor
 
 
+#define qim_sessionViewMute_font    @"\U0000e755"       //接收不提醒
+
 #define qim_rightMoreBtn_font     @"\U0000f3e1"    //右上角More按钮颜色
 
 #define qim_backButton_font @"\U0000f3cd"
