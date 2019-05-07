@@ -1050,7 +1050,17 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
     //如果是群组情况直接添加
     BOOL isGroup = [[param objectForKey:@"isGroup"] boolValue];
     NSDictionary *selectMembers = [param objectForKey:@"members"];
+    NSString *groupId = [param objectForKey:@"groupId"];
     if (selectMembers.count <= 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[QIMKit sharedInstance] clearNotReadMsgByGroupId:groupId];
+            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+            if (!navVC) {
+                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            }
+            [navVC popToRootViewControllerAnimated:NO];
+            [QIMFastEntrance openGroupChatVCByGroupId:groupId];
+        });
         return;
     }
     NSMutableArray *memberIds = [NSMutableArray arrayWithCapacity:5];
@@ -1067,11 +1077,15 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
     }
     
     if (isGroup) {
-        NSString *groupId = [param objectForKey:@"groupId"];
         [[QIMKit sharedInstance] joinGroupWithBuddies:groupId groupName:@"" WithInviteMember:memberIds withCallback:^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                QIMNavController *navVC = (QIMNavController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-                [navVC popViewControllerAnimated:YES];
+                [[QIMKit sharedInstance] clearNotReadMsgByGroupId:groupId];
+                UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                if (!navVC) {
+                    navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+                }
+                [navVC popToRootViewControllerAnimated:NO];
+                [QIMFastEntrance openGroupChatVCByGroupId:groupId];
             });
         }];
     } else {
@@ -1086,6 +1100,11 @@ RCT_EXPORT_METHOD(addGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock)
                                                if (finish) {
                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                        [[QIMKit sharedInstance] clearNotReadMsgByGroupId:groupId];
+                                                       UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                                                       if (!navVC) {
+                                                           navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+                                                       }
+                                                       [navVC popToRootViewControllerAnimated:NO];
                                                        [QIMFastEntrance openGroupChatVCByGroupId:groupId];
                                                    });
                                                } else {
