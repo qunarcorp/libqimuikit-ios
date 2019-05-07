@@ -197,6 +197,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (UIImageView *)muteNotReadView {
     if (!_muteNotReadView) {
+
         _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake(self.headerView.right - 5, self.headerView.top - 5, 10, 10)];
         _muteNotReadView.backgroundColor = [UIColor redColor];
         _muteNotReadView.layer.cornerRadius  = _muteNotReadView.width / 2.0;
@@ -265,6 +266,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         _muteView.layer.cornerRadius = _muteView.width / 2.0;
         _muteView.clipsToBounds = YES;
         _muteView.backgroundColor = self.backgroundColor;
+        _muteView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_sessionViewMute_font size:20 color:qim_sessionViewMuteColor]];
     }
     return _muteView;
 }
@@ -853,7 +855,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
         }
         if (self.isReminded) {
-            [self.muteView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"state-shield"]];
             self.muteView.hidden = NO;
         } else {
             self.muteView.hidden = YES;

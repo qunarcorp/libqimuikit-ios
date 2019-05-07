@@ -52,7 +52,7 @@
 @property (nonatomic, strong) UIView *travelView;
 @property (nonatomic, strong) UIView *userListView;
 @property (nonatomic, strong) UIView *rnSuggestView;
-@property (nonatomic, strong) UIView *momentView;
+@property (nonatomic, strong) QIMWorkFeedView *momentView;
 @property (nonatomic, strong) UIView *mineView;
 
 @property (nonatomic, strong) UIButton *searchDemissionBtn;
@@ -643,7 +643,7 @@ static dispatch_once_t __onceMainToken;
     return _rnSuggestView;
 }
 
-- (UIView *)momentView {
+- (QIMWorkFeedView *)momentView {
     if (!_momentView) {
         QIMWorkFeedView *workfeedView = [[QIMWorkFeedView alloc] initWithFrame:CGRectMake(0, 0, _contentView.width, _contentView.height)];
         workfeedView.rootVC = self;
@@ -770,7 +770,6 @@ static dispatch_once_t __onceMainToken;
 #endif
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]]) {
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
         [_contentView addSubview:self.rnSuggestView];
         [self.rnSuggestView setHidden:NO];
 #if __has_include("QIMAutoTracker.h")
@@ -782,10 +781,17 @@ static dispatch_once_t __onceMainToken;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"QTalkSuggestRNViewWillAppear" object:nil];
 #endif
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]]) {
+        //驼圈页面
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
         [_contentView addSubview:self.momentView];
         [self.momentView setHidden:NO];
-        
+        long long currentTime = [NSDate timeIntervalSinceReferenceDate];
+        long long lastUpdateMomentTime = [[[QIMKit sharedInstance] userObjectForKey:@"lastUpdateMomentTime"] longLongValue];
+        if (currentTime - lastUpdateMomentTime > 1) {
+            [self.momentView updateMomentView];
+            [[QIMKit sharedInstance] setUserObject:@(currentTime) forKey:@"lastUpdateMomentTime"];
+        }
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
         
         [_contentView addSubview:self.mineView];

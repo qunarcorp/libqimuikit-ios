@@ -36,6 +36,7 @@
 #define qim_sessionViewConnectionErrorViewBgColor    [UIColor qim_colorWithHex:0xFAE4E3 alpha:1.0]  //网络连接错误BgColor
 #define qim_sessionViewConnectionErrorTextColor    [UIColor qim_colorWithHex:0x666666 alpha:1.0]  //网络连接错误TextColor
 #define qim_sessionViewNotReadNumButtonColor       [UIColor qim_colorWithHex:0xEA6854 alpha:1.0]  //未读消息提醒气泡Color
+#define qim_sessionViewMuteColor                   [UIColor qim_colorWithHex:0xDBDBDB alpha:1.0]  //接收不提醒Color
 
 
 #define qim_groupchat_rightCard_Color    [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]       //群右上角
