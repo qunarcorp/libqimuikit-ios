@@ -268,7 +268,7 @@ static UIImage *__rightBallocImage = nil;
     if (self.editing) {
         if (self.message.messageDirection == QIMMessageDirection_Sent) {
             rect.origin.x = rect.origin.x - moveSpace;
-            self.backView.frame = rect;
+            _backView.frame = rect;
         }
     }
     [self.backView setAccessibilityIdentifier:self.message.messageId];
@@ -289,7 +289,12 @@ static UIImage *__rightBallocImage = nil;
             headerRect.origin.x = headerRect.origin.x - moveSpace;
             rect.origin.x = rect.origin.x - moveSpace;
             self.HeadView.frame = headerRect;
-            self.backView.frame = rect;
+            if (self.message.messageType == QIMMessageType_SmallVideo) {
+                [self.backView setFrame:rect withNeedAddBubble:NO];
+            } else {
+                self.backView.frame = rect;
+            }
+            self.messgaeStateIcon.hidden = NO;
         }
     } else {
         self.HeadView.userInteractionEnabled = YES;
@@ -297,7 +302,12 @@ static UIImage *__rightBallocImage = nil;
             headerRect.origin.x = headerRect.origin.x + moveSpace;
             rect.origin.x = rect.origin.x + moveSpace;
             self.HeadView.frame = headerRect;
-            self.backView.frame = rect;
+            if (self.message.messageType == QIMMessageType_SmallVideo) {
+                [self.backView setFrame:rect withNeedAddBubble:NO];
+            } else {
+                self.backView.frame = rect;
+            }
+            self.messgaeStateIcon.hidden = NO;
         }
     }
 }
@@ -324,11 +334,14 @@ static UIImage *__rightBallocImage = nil;
         nickName = [[nickName componentsSeparatedByString:@"@"] firstObject];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.nameLabel.text = nickName;
+            self.nameLabel.textColor = [UIColor qim_colorWithHex:0x888888];
+            /*
             if (self.delegate && [self.delegate respondsToSelector:@selector(getColorHex:)]) {
                 [self.nameLabel setTextColor:[UIColor qim_colorWithHex:[self.delegate getColorHex:nickName] alpha:1.0]];
             } else {
                 self.nameLabel.textColor = [UIColor colorWithRed:140/255.0 green:140/255.0 blue:140/255.0 alpha:1/1.0];
             }
+            */
         });
     }
 }

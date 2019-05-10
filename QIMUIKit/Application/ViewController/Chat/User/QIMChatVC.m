@@ -266,7 +266,7 @@
         [_textBar setAllowFace:YES];
         [_textBar setAllowMore:YES];
         [_textBar setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin];
-        [_textBar setPlaceHolder:@"文本信息"];
+//        [_textBar setPlaceHolder:@"文本信息"];
         if (self.chatType == ChatType_Consult) {
 //            [self.textBar setChatId:self.virtualJid];
             
@@ -622,7 +622,7 @@
                 [encryptBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1af" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
             }
             [encryptBtn addTarget:self action:@selector(encryptChat:) forControlEvents:UIControlEventTouchUpInside];
-            [rightItemView addSubview:encryptBtn];
+//            [rightItemView addSubview:encryptBtn];
             self.encryptBtn = encryptBtn;
         }
         if (self.chatType == ChatType_ConsultServer && [[[QIMKit sharedInstance] getMyhotLinelist] containsObject:self.virtualJid]) {
@@ -1441,15 +1441,19 @@
             _chatBGImageView.image = image;
             [self.view insertSubview:_chatBGImageView belowSubview:self.tableView];
         } else {
-            [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
-                _chatBGImageView.image = bgImage;
-            }];
+            if ([[QIMKit sharedInstance] waterMarkState] == YES) {
+                [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+                    _chatBGImageView.image = bgImage;
+                }];
+            }
         }
     } else {
-        [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
-            _chatBGImageView.image = bgImage;
-            _tableView.backgroundView = _chatBGImageView;
-        }];
+        if ([[QIMKit sharedInstance] waterMarkState] == YES) {
+            [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+                _chatBGImageView.image = bgImage;
+                _tableView.backgroundView = _chatBGImageView;
+            }];
+        }
     }
 }
 

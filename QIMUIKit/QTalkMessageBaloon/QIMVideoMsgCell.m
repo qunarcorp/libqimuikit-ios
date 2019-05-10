@@ -48,9 +48,11 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
+//        [self.backView setMenuViewHidden:YES];
+//        [self.backView setAlpha:0.1];
         _imageView = [[UIImageView alloc] init];
-        [_imageView setBackgroundColor:[UIColor redColor]];
-        [_imageView.layer setCornerRadius:15];
+        [_imageView setBackgroundColor:[UIColor clearColor]];
+        [_imageView.layer setCornerRadius:3];
         [_imageView.layer setMasksToBounds:YES];
         [self.backView addSubview:_imageView];
         
@@ -78,10 +80,11 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         [_infoView addSubview:_durationLabel];
         
         _progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(0, _infoView.height - 2, _infoView.width, 2)];
+        _progressView.backgroundColor = [UIColor yellowColor];
         [_infoView addSubview:_progressView];
         
-        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandle:)];
-        [self.backView addGestureRecognizer:tap];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandle:)];
+        [_imageView addGestureRecognizer:tap];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProgress:) name:kNotifyFileManagerUpdate object:nil];
         
@@ -89,9 +92,10 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     return self;
 }
 
-- (void)updateProgress:(NSNotification *)notify{
+- (void)updateProgress:(NSNotification *)notify {
+    
     NSDictionary *infoDic = [notify object];
-   QIMMessageModel *message = [infoDic objectForKey:@"message"];
+    QIMMessageModel *message = [infoDic objectForKey:@"message"];
     float progress = [[infoDic objectForKey:@"propress"] floatValue];
     NSString * status = [infoDic objectForKey:@"status"];
     if (__uploading_progress_dic == nil) {
@@ -117,8 +121,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
 }
 
 
-- (void)tapHandle:(UITapGestureRecognizer *)tap
-{
+- (void)tapHandle:(UITapGestureRecognizer *)tap {
     if (self.owerViewController) {
         if (self.message.extendInformation.length > 0) {
             self.message.message = self.message.extendInformation;
@@ -139,17 +142,14 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         [videoPlayVC setVideoWidth:videoWidth];
         [videoPlayVC setVideoHeight:videoHeight];
         [self.owerViewController.navigationController pushViewController:videoPlayVC animated:YES];
-        /*
-        QIMMoviePlayerVC *moviePlayerVc = [[QIMMoviePlayerVC alloc] init];
-        moviePlayerVc.videoURL = [NSURL URLWithString:fileUrl];
-        [self.owerViewController presentViewController:moviePlayerVc animated:YES completion:nil];
-        */
     }
 }
 
 #pragma mark - ui
 
-- (void)refreshUI{
+- (void)refreshUI {
+    
+    [super refreshUI];
     self.selectedBackgroundView.frame = self.contentView.frame;
     self.backView.message = self.message;
     NSNumber *progressNum = [__uploading_progress_dic objectForKey:self.message.messageId];
@@ -178,7 +178,11 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     
     [_sizeLabel setText:[infoDic objectForKey:@"FileSize"]];
     [_durationLabel setText:[NSString stringWithFormat:@"%@s",[infoDic objectForKey:@"Duration"]]];
-    [_imageView setFrame:CGRectMake((self.message.messageDirection==QIMMessageDirection_Received?kBackViewCap+10:5) - 1, 5, size.width, size.height)];
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
+        [_imageView setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 5, size.width, size.height)];
+    } else {
+        [_imageView setFrame:CGRectMake(self.HeadView.left - 5 - size.width, self.nameLabel.bottom + 5, size.width, size.height)];
+    }
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *thubmName = [infoDic objectForKey:@"ThumbName"] ? [infoDic objectForKey:@"ThumbName"] : [NSString stringWithFormat:@"%@_thumb.jpg", [[fileName componentsSeparatedByString:@"."] firstObject]];
     NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:thubmName];
@@ -194,17 +198,51 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     }
     [_imageView setImage:image];
     [_infoView setFrame:CGRectMake(0, _imageView.bottom - _infoView.height, _infoView.width, _infoView.height)];
-    
+    [_imageView setFrame:CGRectMake((self.message.messageDirection==QIMMessageDirection_Received?kBackViewCap+10:5) - 1, 5, size.width, size.height)];
     float backWidth = size.width + 6 + kBackViewCap + 8;
-    float backHeight = size.height + 6 + 5;
+    float backHeight = size.height;
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
+    //        [self.backView setHidden:YES];
+
+    [self.backView setBubbleBgColor:[UIColor clearColor]];
+    [self.backView setMenuViewHidden:YES];
     CGPoint center = _imageView.center;
-    if (self.message.messageDirection==QIMMessageDirection_Received) {
-        center.x -= kBackViewCap+2;
-    }
-    [_playIconView setCenter:center];
-    [super refreshUI];
+//    if (self.message.messageDirection==QIMMessageDirection_Received) {
+//        center.x -= kBackViewCap+2;
+//    }
+//    [_playIconView setCenter:center];
+    _playIconView.center = CGPointMake(_imageView.width / 2.0, _imageView.height / 2.0);
 }
+
+/*
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    if (self.editing == editing) {
+        return;
+    }
+    
+    float moveSpace = 38;
+    CGRect rect = self.backView.frame;
+    CGRect headerRect = self.HeadView.frame;
+    if (self.editing) {
+        self.HeadView.userInteractionEnabled = NO;
+        if (self.message.messageDirection == QIMMessageDirection_Sent) {
+            headerRect.origin.x = headerRect.origin.x - moveSpace;
+            rect.origin.x = rect.origin.x - moveSpace;
+            self.HeadView.frame = headerRect;
+            
+            [self.backView setFrame:rect withNeedAddBubble:NO];
+        }
+    } else {
+        self.HeadView.userInteractionEnabled = YES;
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
+            headerRect.origin.x = headerRect.origin.x + moveSpace;
+            rect.origin.x = rect.origin.x + moveSpace;
+            self.HeadView.frame = headerRect;
+            [self.backView setFrame:rect withNeedAddBubble:NO];
+        }
+    }
+}
+*/
 
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];

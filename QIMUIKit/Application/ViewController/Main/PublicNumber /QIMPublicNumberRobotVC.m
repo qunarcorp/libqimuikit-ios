@@ -25,7 +25,7 @@
 #import "QIMMenuImageView.h"
 #import "QIMVoiceRecordingView.h"
 #import "QIMVoiceTimeRemindView.h"
-//#import "TextCellCaChe.h" 
+#import "QIMChatBgManager.h"
 #import <AVFoundation/AVFoundation.h>
 #import "QIMMessageRefreshHeader.h"
 #import "QIMRemoteAudioPlayer.h"
@@ -213,7 +213,7 @@
         [_textBar setAllowFace:YES];
         [_textBar setAllowMore:YES];
         [_textBar setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin];
-        [_textBar setPlaceHolder:@"文本信息"];
+//        [_textBar setPlaceHolder:@"文本信息"];
         __weak QIMTextBar *weakTextBar = _textBar;
         
         [_textBar setSelectedEmotion:^(NSString *faceStr) {
@@ -692,30 +692,42 @@
     _isActionOrTextBar = YES;
 }
 
-- (void)refreshChatBGImageView
-{
+- (void)refreshChatBGImageView {
+    
     if (!_chatBGImageView) {
-        _chatBGImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 40)];
+        
+        _chatBGImageView = [[UIImageView alloc] initWithFrame:_tableView.bounds];
         _chatBGImageView.contentMode = UIViewContentModeScaleAspectFill;
         _chatBGImageView.clipsToBounds = YES;
     }
-    NSMutableDictionary * chatBGImageDic = [[QIMKit sharedInstance] userObjectForKey:@"chatBGImageDic"];
+    
+    NSMutableDictionary *chatBGImageDic = [[QIMKit sharedInstance] userObjectForKey:@"chatBGImageDic"];
     if (chatBGImageDic) {
-        [_tableView setBackgroundColor:[UIColor clearColor]];
-        UIImage * image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:[NSString stringWithFormat:@"chatBGImageFor_%@",self.robotJId]]];
+        
+        [self.tableView setBackgroundColor:[UIColor clearColor]];
+        UIImage *image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:[NSString stringWithFormat:@"chatBGImageFor_%@", self.robotJId]]];
         if (!image) {
+            
             image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:@"chatBGImageFor_Common"]];
         }
         if (image) {
             _chatBGImageView.image = image;
-            [self.view insertSubview:_chatBGImageView belowSubview:_tableView];
-        }else{
-            [_chatBGImageView removeFromSuperview];
+            [self.view insertSubview:_chatBGImageView belowSubview:self.tableView];
+        } else {
+            if ([[QIMKit sharedInstance] waterMarkState] == YES) {
+                [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+                    _chatBGImageView.image = bgImage;
+                }];
+            }
         }
     } else {
-        [_tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
+        if ([[QIMKit sharedInstance] waterMarkState] == YES) {
+            [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+                _chatBGImageView.image = bgImage;
+                _tableView.backgroundView = _chatBGImageView;
+            }];
+        }
     }
-    
 }
 
 - (void)dealloc {

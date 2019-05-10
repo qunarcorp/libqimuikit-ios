@@ -6,6 +6,7 @@
 //
 
 #import "QIMChatBgManager.h"
+#import "UIColor+QIMUtility.h"
 #import <CommonCrypto/CommonDigest.h>
 
 @implementation QIMChatBgManager
@@ -42,9 +43,10 @@
         //初始化信息
         CGFloat rowCap = 20;
         CGFloat textCap = 60;
-        UIFont *font = [UIFont systemFontOfSize:16];
+        UIFont *font = [UIFont systemFontOfSize:24];
         UIColor *bgColor = [UIColor colorWithRed:0xea/255.0 green:0xea/255.0 blue:0xea/255.0 alpha:1];
-        UIColor *textColor = [UIColor colorWithRed:0xbb/255.0 green:0xbb/255.0 blue:0xbb/255.0 alpha:1];
+//        UIColor *textColor = [UIColor colorWithRed:0xbb/255.0 green:0xbb/255.0 blue:0xbb/255.0 alpha:1];
+        UIColor *textColor = [UIColor qim_colorWithHex:0xD4D4D4];
         CGFloat startY = - imageSize.height / 2.0;
         // 填充背景色
         [bgColor setFill];

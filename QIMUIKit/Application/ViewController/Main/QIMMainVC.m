@@ -69,6 +69,8 @@
 
 @property (nonatomic, strong) UIButton *momentBtn;
 
+@property (nonatomic, strong) UIButton *settingBtn;
+
 @property (nonatomic, copy) NSString *navTitle;
 
 @property (nonatomic, copy) NSString *appNetWorkTitle;
@@ -202,6 +204,8 @@ static dispatch_once_t __onceMainToken;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(submitLogSuccessed:) name:kNotifySubmitLogSuccessed object:nil];
     //上传日志失败
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(submitLogFaild:) name:kNotifySubmitLogFaild object:nil];
+    //销毁群通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChatRoomDestroy:) name:kChatRoomDestroy object:nil];
 }
 
 - (NSString *)navTitle {
@@ -437,6 +441,34 @@ static dispatch_once_t __onceMainToken;
             [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"上传日志失败，请稍后重试！"];
         });
     });
+}
+
+- (void)onChatRoomDestroy:(NSNotification *)notify {
+    NSString *groupId = nil;
+    id obj = notify.object;
+    if ([obj isKindOfClass:[NSString class]]) {
+        groupId = obj;
+    }
+    NSString *reason = [notify.userInfo objectForKey:@"Reason"];
+    NSString *groupName = [[notify userInfo] objectForKey:@"GroupName"];
+    NSString *fromNickName = [[notify userInfo] objectForKey:@"FromNickName"];
+    NSString *message = nil;
+    if (fromNickName.length > 0) {
+        if (groupName.length > 0) {
+            message = [NSString stringWithFormat:@"%@销毁了群组:%@。",fromNickName,groupName];
+        } else {
+            message = [NSString stringWithFormat:@"%@销毁了群组:%@。",fromNickName,groupId];
+        }
+    } else {
+        if (groupName.length > 0) {
+            message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupName];
+        } else {
+            message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupId];
+        }
+    }
+    [self.sessionView sessionViewWillAppear];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alertView show];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -962,6 +994,8 @@ static dispatch_once_t __onceMainToken;
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
         
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]];
+        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.settingBtn];
+        [self.navigationItem setRightBarButtonItem:rightBarItem];
     } else {
         
     }
@@ -1002,6 +1036,17 @@ static dispatch_once_t __onceMainToken;
     return _momentBtn;
 }
 
+- (UIButton *)settingBtn {
+    if (!_settingBtn) {
+        _settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _settingBtn.frame = CGRectMake(0, 0, 28, 28);
+        [_settingBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_myself_font size:24 color:qim_nav_myself_color]] forState:UIControlStateNormal];
+        [_settingBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_myself_font size:24 color:qim_nav_myself_color]] forState:UIControlStateSelected];
+        [_settingBtn addTarget:self action:@selector(openMySetting:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _settingBtn;
+}
+
 - (void)scanQrcode:(id)sender {
     [QIMFastEntrance openQRCodeVC];
 #if __has_include("QIMAutoTracker.h")
@@ -1021,6 +1066,23 @@ static dispatch_once_t __onceMainToken;
     [[QIMFastEntrance sharedInstance] openUserWorkWorldWithParam:@{@"UserId":[[QIMKit sharedInstance] getLastJid]}];
 #if __has_include("QIMAutoTracker.h")
     [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"push my moment" withDescription:@"进去我的驼圈"];
+#endif
+}
+
+- (void)openMySetting:(id)sender {
+/*
+    {
+        Bundle = "clock_in.ios";
+        Module = MySetting;
+        Properties =     {
+            Screen = Setting;
+        };
+        Version = "1.0.0";
+    }
+    */
+    [QIMFastEntrance openQIMRNVCWithModuleName:@"MySetting" WithProperties:@{@"Screen":@"Setting"}];
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"Setting" withDescription:@"设置页面"];
 #endif
 }
 

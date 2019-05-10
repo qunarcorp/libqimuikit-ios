@@ -108,8 +108,8 @@
     }
 }
 
-- (void)tapHandle:(UITapGestureRecognizer *)tap
-{
+- (void)tapHandle:(UITapGestureRecognizer *)tap {
+    
     QIMFilePreviewVC *preview = [[QIMFilePreviewVC alloc] init];
     [preview setMessage:self.message];
     [self.owerViewController.navigationController pushViewController:preview animated:YES];

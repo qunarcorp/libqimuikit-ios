@@ -18,7 +18,7 @@
 
 #define qim_arrow_scan_font     @"\U0000e739"     //扫一扫
 #define qim_arrow_notread_font  @"\U0000e73a"     //未读消息
-#define qim_arrow_gototalk_font      @"\U0000e738"     //发起聊天
+#define qim_arrow_gototalk_font      @"\U0000e738"     //@"创建群组"
 #define qim_arrow_clearnotread_font @"\U0000e73b" //一键已读
 
 #define qim_otherPlatformViewIcon_font @"\U0000e751"              //其他平台已登录Icon
@@ -29,7 +29,7 @@
 
 #define qim_sessionViewMute_font    @"\U0000e755"       //接收不提醒
 
-#define qim_rightMoreBtn_font     @"\U0000f3e1"    //右上角More按钮颜色
+#define qim_rightMoreBtn_font     @"\U0000e733"    //右上角More按钮颜色
 
 #define qim_backButton_font @"\U0000f3cd"
 
@@ -46,6 +46,7 @@
 #define qim_nav_scan_font       @"\U0000f0ca"   //扫码二维码按钮Color
 #define qim_nav_addfriend_font  @"\U0000f0f5"   //添加好友按钮Color
 #define qim_nav_mymoment_font   @"\U0000e737"       //我的驼圈
+#define qim_nav_myself_font     @"\U0000e735"       //我的设置
 
 //驼圈
 

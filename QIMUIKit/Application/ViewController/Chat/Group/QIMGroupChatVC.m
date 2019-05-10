@@ -65,6 +65,7 @@
 #import "QIMCollectionEmotionEditorVC.h"
 #import "QIMNewMessageTagCell.h"
 #import "QIMNotReadMsgTipViews.h"
+#import "QIMNotReadATMsgTipView.h"
 #import "QIMPushProductViewController.h"
 #import "QIMRedPackageView.h"
 #import "ShareLocationViewController.h"
@@ -104,7 +105,7 @@
 
 static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
-@interface QIMGroupChatVC () <UIGestureRecognizerDelegate, QIMGroupChatCellDelegate, QIMSingleChatVoiceCellDelegate, QIMMWPhotoBrowserDelegate, QIMRemoteAudioPlayerDelegate, QIMMsgBaloonBaseCellDelegate, QIMChatBGImageSelectControllerDelegate, QIMContactSelectionViewControllerDelegate, QIMPushProductViewControllerDelegate, UIActionSheetDelegate, UserLocationViewControllerDelegate, PNNoticeCellDelegate, QIMPNRichTextCellDelegate, QIMPNActionRichTextCellDelegate, QIMChatNotifyInfoCellDelegate, QIMTextBarDelegate, QIMNotReadMsgTipViewsDelegate, QIMPNRichTextCellDelegate, PlayVoiceManagerDelegate, UIViewControllerPreviewingDelegate, QTalkMessageTableScrollViewDelegate, QIMOrganizationalVCDelegate> {
+@interface QIMGroupChatVC () <UIGestureRecognizerDelegate, QIMGroupChatCellDelegate, QIMSingleChatVoiceCellDelegate, QIMMWPhotoBrowserDelegate, QIMRemoteAudioPlayerDelegate, QIMMsgBaloonBaseCellDelegate, QIMChatBGImageSelectControllerDelegate, QIMContactSelectionViewControllerDelegate, QIMPushProductViewControllerDelegate, UIActionSheetDelegate, UserLocationViewControllerDelegate, PNNoticeCellDelegate, QIMPNRichTextCellDelegate, QIMPNActionRichTextCellDelegate, QIMChatNotifyInfoCellDelegate, QIMTextBarDelegate, QIMNotReadMsgTipViewsDelegate, QIMNotReadAtMsgTipViewsDelegate, QIMPNRichTextCellDelegate, PlayVoiceManagerDelegate, UIViewControllerPreviewingDelegate, QTalkMessageTableScrollViewDelegate, QIMOrganizationalVCDelegate> {
     
     bool _isReloading;
     
@@ -150,6 +151,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     NSString *_shareFromId;
     
     QIMNotReadMsgTipViews *_readMsgTipView;
+    QIMNotReadATMsgTipView *_notReadAtMsgTipView;
     QIMPlayVoiceManager *_playVoiceManager;
     
     dispatch_queue_t _update_members_headimg;
@@ -259,7 +261,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [_textBar setChatId:self.chatId];
 //        [_textBar needFirstResponder:NO];
 //        [_textBar setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin];
-        [_textBar setPlaceHolder:@"文本信息"];
+//        [_textBar setPlaceHolder:@"文本信息"];
         __weak QIMTextBar *weakTextBar = _textBar;
         
         [_textBar setSelectedEmotion:^(NSString *faceStr) {
@@ -508,6 +510,17 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             [_readMsgTipView setFrame:CGRectMake(self.view.width - _readMsgTipView.width, _readMsgTipView.top, _readMsgTipView.width, _readMsgTipView.height)];
         }];
     }
+    
+    //未读消息按钮
+    _notReadAtMsgTipView = [[QIMNotReadATMsgTipView alloc] initWithNotReadAtMsgCount:3];
+    [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width, 60, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
+    [_notReadAtMsgTipView setNotReadAtMsgDelegate:self];
+    [self.view addSubview:_notReadAtMsgTipView];
+    [UIView animateWithDuration:0.3 animations:^{
+        [UIView setAnimationDelay:0.1];
+        [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width - _notReadAtMsgTipView.width, _notReadAtMsgTipView.top, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
+    }];
+    
     [self.textBar performSelector:@selector(keyBoardDown) withObject:nil afterDelay:0.5];
 }
 
@@ -1228,16 +1241,20 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             _chatBGImageView.image = image;
             [self.view insertSubview:_chatBGImageView belowSubview:self.tableView];
         } else {
+            if ([[QIMKit sharedInstance] waterMarkState] == YES) {
+                [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+                    _chatBGImageView.image = bgImage;
+                    _tableView.backgroundView = _chatBGImageView;
+                }];
+            }
+        }
+    } else {
+        if ([[QIMKit sharedInstance] waterMarkState] == YES) {
             [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
                 _chatBGImageView.image = bgImage;
                 _tableView.backgroundView = _chatBGImageView;
             }];
         }
-    } else {
-        [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
-            _chatBGImageView.image = bgImage;
-            _tableView.backgroundView = _chatBGImageView;
-        }];
     }
 }
 

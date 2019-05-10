@@ -46,6 +46,7 @@ static QIMMessageTextAttachment *_attachmentManager = nil;
             NSMutableDictionary *atDic = [NSMutableDictionary dictionary];
             [atDic setQIMSafeObject:[(QIMATGroupMemberTextAttachment *)value groupMemberName] forKey:@"text"];
             [atDic setQIMSafeObject:[(QIMATGroupMemberTextAttachment *)value groupMemberJid] forKey:@"jid"];
+            [plainString replaceCharactersInRange:NSMakeRange(range.location + base, range.length) withString:[(QIMATGroupMemberTextAttachment *)value groupMemberName]];
             [atInfoList addObject:atDic];
         }
     }];

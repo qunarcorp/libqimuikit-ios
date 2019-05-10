@@ -7,7 +7,6 @@
 
 #import "QIMCollectionChatViewController.h"
 #import "QTalkSessionCell.h"
-#import "QTalkSessionView.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMChatVC.h"
 #import "QIMGroupChatVC.h"

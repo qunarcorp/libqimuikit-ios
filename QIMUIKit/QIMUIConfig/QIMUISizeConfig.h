@@ -14,6 +14,8 @@
 #define qim_singlechat_title_size  17    //a单人聊天title Size
 #define qim_groupchat_title_size  17    //群聊天title Size
 
+#define qim_mainViewBadgeNumberLabelTextFont   11  //tab上BadgeNumber TextFont
+
 #define qim_chatsearchRemindViewTextSize    13  //聊天会话内TextSize
 
 #define qim_sessionViewTimeLabelSize     12  //会话列表页时间TextSize
