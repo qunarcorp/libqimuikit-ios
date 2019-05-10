@@ -193,6 +193,9 @@ static dispatch_once_t __onceMainToken;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(submitLogSuccessed:) name:kNotifySubmitLogSuccessed object:nil];
     //上传日志失败
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(submitLogFaild:) name:kNotifySubmitLogFaild object:nil];
+    
+    //销毁群组
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChatRoomDestroy:) name:kChatRoomDestroy object:nil];
 }
 
 - (NSString *)navTitle {
@@ -838,6 +841,34 @@ static dispatch_once_t __onceMainToken;
 }
 
 #pragma mark - NSNotification
+
+- (void)onChatRoomDestroy:(NSNotification *)notify {
+    NSString *groupId = nil;
+    id obj = notify.object;
+    if ([obj isKindOfClass:[NSString class]]) {
+        groupId = obj;
+    }
+    NSString *reason = [notify.userInfo objectForKey:@"Reason"];
+    NSString *groupName = [[notify userInfo] objectForKey:@"GroupName"];
+    NSString *fromNickName = [[notify userInfo] objectForKey:@"FromNickName"];
+    NSString *message = nil;
+    if (fromNickName.length > 0) {
+        if (groupName.length > 0) {
+            message = [NSString stringWithFormat:@"%@销毁了群组:%@。",fromNickName,groupName];
+        } else {
+            message = [NSString stringWithFormat:@"%@销毁了群组:%@。",fromNickName,groupId];
+        }
+    } else {
+        if (groupName.length > 0) {
+            message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupName];
+        } else {
+            message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupId];
+        }
+    }
+    [self.sessionView sessionViewWillAppear];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alertView show];
+}
 
 - (void)loginNotify:(NSNotification *)notify {
     /*

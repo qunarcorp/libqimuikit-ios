@@ -416,7 +416,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noticeRefreshTableView:) name:kNotificationSessionListUpdate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noticeRefreshTableView:) name:kNotificationSessionListRemove object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateListFont:) name:kNotificationCurrentFontUpdate object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChatRoomDestroy:) name:kChatRoomDestroy object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteChatSession:) name:kChatSessionDelete object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stickyChatSession:) name:kChatSessionStick object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeNotifyView:) name:@"kNotifyViewCloseNotification" object:nil];
@@ -473,34 +472,6 @@
 }
 
 #pragma mark - notify
-
-- (void)onChatRoomDestroy:(NSNotification *)notify {
-    NSString *groupId = nil;
-    id obj = notify.object;
-    if ([obj isKindOfClass:[NSString class]]) {
-        groupId = obj;
-    }
-    NSString *reason = [notify.userInfo objectForKey:@"Reason"];
-    NSString *groupName = [[notify userInfo] objectForKey:@"GroupName"];
-    NSString *fromNickName = [[notify userInfo] objectForKey:@"FromNickName"];
-    NSString *message = nil;
-    if (fromNickName.length > 0) {
-        if (groupName.length > 0) {
-            message = [NSString stringWithFormat:@"%@销毁了群组:%@。",fromNickName,groupName];
-        } else {
-            message = [NSString stringWithFormat:@"%@销毁了群组:%@。",fromNickName,groupId];
-        }
-    } else {
-        if (groupName.length > 0) {
-            message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupName];
-        } else {
-            message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupId];
-        }
-    }
-    [self refreshTableView];
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-    [alertView show];
-}
 
 - (void)reloadTableView {
     
