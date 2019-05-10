@@ -101,9 +101,9 @@
             [badgeNumberLabel setHidden:YES];
             [badgeNumberLabel.layer setCornerRadius:7];
             [badgeNumberLabel.layer setMasksToBounds:YES];
-            [badgeNumberLabel setBackgroundColor:[UIColor redColor]];
+            [badgeNumberLabel setBackgroundColor:qim_mainViewBadgeNumberLabelTextColor];
             [badgeNumberLabel setTextColor:[UIColor whiteColor]];
-            [badgeNumberLabel setFont:[UIFont boldSystemFontOfSize:12]];
+            [badgeNumberLabel setFont:[UIFont boldSystemFontOfSize:qim_mainViewBadgeNumberLabelTextFont]];
             [badgeNumberLabel setTextAlignment:NSTextAlignmentCenter];
             [itemButton setBadgeNumberLabel:badgeNumberLabel];
             [itemButton addSubview:badgeNumberLabel];

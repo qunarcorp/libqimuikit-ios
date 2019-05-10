@@ -198,10 +198,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (UIImageView *)muteNotReadView {
     if (!_muteNotReadView) {
 
-        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake(self.headerView.right - 5, self.headerView.top - 5, 10, 10)];
+        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake(self.muteView.right + 5, self.timeLabel.bottom + 15, 8, 8)];
         _muteNotReadView.backgroundColor = [UIColor redColor];
         _muteNotReadView.layer.cornerRadius  = _muteNotReadView.width / 2.0;
         _muteNotReadView.clipsToBounds = YES;
+        _muteNotReadView.centerY = self.contentLabel.centerY;
     }
     return _muteNotReadView;
 }
@@ -210,7 +211,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_prefrenceImageView) {
         
-        _prefrenceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.headerView.right - 15, self.headerView.bottom - 15, 15, 15)];
+        _prefrenceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.headerView.right - 18, self.headerView.bottom - 15, 15, 15)];
         [_prefrenceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"hotline"]];
         [_prefrenceImageView setBackgroundColor:[UIColor whiteColor]];
         _prefrenceImageView.layer.masksToBounds = YES;
@@ -224,7 +225,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         
         _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 12, [[UIScreen mainScreen] qim_leftWidth] - 145, qim_sessionViewNameLabelSize)];
         _nameLabel.font = [UIFont boldSystemFontOfSize:qim_sessionViewNameLabelSize];
-        _nameLabel.textColor = [UIColor qim_colorWithHex:0x0 alpha:1];
+        _nameLabel.textColor = qim_sessionCellNameTextColor;
         _nameLabel.backgroundColor = [UIColor clearColor];
     }
     return _nameLabel;
@@ -238,7 +239,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 25;
         _contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, qim_sessionViewContentLabelSize)];
         _contentLabel.font = [UIFont systemFontOfSize:qim_sessionViewContentLabelSize];
-        _contentLabel.textColor = [UIColor qim_colorWithHex:0x888888 alpha:1];
+        _contentLabel.textColor = qim_sessionCellContentTextColor;
         _contentLabel.backgroundColor = [UIColor clearColor];
     }
     return _contentLabel;
@@ -250,7 +251,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         
         _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 85, self.nameLabel.bottom - 16, 75, 12)];
         _timeLabel.font = [UIFont systemFontOfSize:qim_sessionViewTimeLabelSize];
-        _timeLabel.textColor = [UIColor qim_colorWithHex:0xa1a1a1 alpha:1];
+        _timeLabel.textColor = qim_sessionCellTimeTextColor;
         _timeLabel.backgroundColor = [UIColor clearColor];
         _timeLabel.textAlignment = NSTextAlignmentRight;
     }
@@ -262,11 +263,12 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_muteView) {
         
-        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 35, self.timeLabel.bottom + 15, 20, 20)];
+        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, self.timeLabel.bottom + 15, 13, 13)];
         _muteView.layer.cornerRadius = _muteView.width / 2.0;
         _muteView.clipsToBounds = YES;
         _muteView.backgroundColor = self.backgroundColor;
         _muteView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_sessionViewMute_font size:20 color:qim_sessionViewMuteColor]];
+        _muteView.centerY = self.contentLabel.centerY;
     }
     return _muteView;
 }
@@ -304,7 +306,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         [weakSelf clearNotRead];
     }];
     __block BOOL groupState = NO;
-    if (!self.isReminded) {
+    if (self.isReminded == NO) {
         [self.notReadNumButton setBadgeColor:qim_sessionViewNotReadNumButtonColor];
     } else {
         [self.notReadNumButton hiddenBadgeButton:YES];
@@ -792,6 +794,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         
         content = @"收到了一条消息。";
     }
+    if (self.isReminded == YES && self.notReadCount > 0) {
+        content = [NSString stringWithFormat:@"[%ld条]%@", self.notReadCount, content];
+    }
     return content;
 }
 
@@ -846,6 +851,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             [self.notReadNumButton hiddenBadgeButton:NO];
             CGFloat width = (countStr.length * 7) + 13;
             [self setUpNotReadNumButtonWithFrame:CGRectMake(self.timeLabel.right - width, 11, width, 20) withBadgeString:countStr];
+            if (self.isReminded == YES) {
+                self.muteNotReadView.hidden = NO;
+            } else {
+                self.muteNotReadView.hidden = YES;
+            }
             [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
         } else {
             
@@ -854,8 +864,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             self.contentLabel.width = contentLabelWidth;
             [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
         }
-        if (self.isReminded) {
+        if (self.isReminded == YES) { //接收不提醒
             self.muteView.hidden = NO;
+            [self refeshContent];
         } else {
             self.muteView.hidden = YES;
         }
@@ -1066,10 +1077,27 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (void)refreshUI {
 
     [self refreshTimeLabelWithTime:self.msgDateTime];
+    [self refeshContent];
+    self.notReadCount = [[self.infoDic objectForKey:@"UnreadCount"] integerValue];
+    [self refreshNotReadCount];
+    self.needRefreshNotReadCount = NO;
+    if (self.isStick) {
+        _stickView.hidden = NO;
+        [self addSubview:self.stickView];
+//        [self setBackgroundColor:[UIColor spectralColorLightColor]];
+    } else {
+        _stickView.hidden = YES;
+        [self setBackgroundColor:[UIColor whiteColor]];
+    }
+}
+
+- (void)refeshContent {
     NSString *message = self.content;
     NSMutableAttributedString *str = [[NSMutableAttributedString alloc] init];
     NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
     [ps setAlignment:NSTextAlignmentLeft];
+    NSArray *atMeMessages = [[QIMKit sharedInstance] getAtMeMsgByJid:self.jid];
+    /*
     NSDictionary *atAllDic = [[QIMKit sharedInstance] getAtAllInfoByJid:self.jid];
     if (atAllDic) {
         
@@ -1081,14 +1109,21 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         NSArray *atNickNames = [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
         if (atNickNames.count > 0) {
             
-            NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xff0000 alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
-            NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"你被@了%lu次",(unsigned long)atNickNames.count] attributes:titleDic];
+            NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
+//            NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"你被@了%lu次",(unsigned long)atNickNames.count] attributes:titleDic];
+            NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
             [str appendAttributedString:atStr];
         } else {
             
         }
     }
-
+    */
+    if (atMeMessages.count > 0) {
+        NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
+        NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
+        [str appendAttributedString:atStr];
+    }
+    
     __block NSString *content = @"";
     if (message.length > 0) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -1103,17 +1138,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         });
     } else {
         [self.contentLabel setText:@"收到了一条消息"];
-    }
-    self.notReadCount = [[self.infoDic objectForKey:@"UnreadCount"] integerValue];
-    [self refreshNotReadCount];
-    self.needRefreshNotReadCount = NO;
-    if (self.isStick) {
-        _stickView.hidden = NO;
-        [self addSubview:self.stickView];
-//        [self setBackgroundColor:[UIColor spectralColorLightColor]];
-    } else {
-        _stickView.hidden = YES;
-        [self setBackgroundColor:[UIColor whiteColor]];
     }
 }
 
@@ -1149,7 +1173,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"[表情]"]];
             } else if ([type isEqualToString:@"url"]){
                 
-                NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:value attributes:@{NSForegroundColorAttributeName:[UIColor blueColor]}];
+                NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:value attributes:@{NSForegroundColorAttributeName:qim_sessionCellContentTextColor}];
                 [attStr appendAttributedString:attStr1];
             } else if ([type isEqualToString:@"draft"]) {
                 NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:@"[草稿]" attributes:@{NSForegroundColorAttributeName:[UIColor redColor]}];

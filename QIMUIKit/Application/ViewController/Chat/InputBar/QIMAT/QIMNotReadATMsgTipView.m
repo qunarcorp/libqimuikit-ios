@@ -1,14 +1,15 @@
 //
-//  QIMNotReadMsgTipViews.m
-//  qunarChatIphone
+//  QIMNotReadATMsgTipView.m
+//  QIMUIKit
 //
-//  Created by admin on 16/5/6.
-//
+//  Created by lilu on 2019/5/9.
+//  Copyright © 2019 QIM. All rights reserved.
 //
 
-#import "QIMNotReadMsgTipViews.h"
+#import "QIMNotReadATMsgTipView.h"
 
-@implementation QIMNotReadMsgTipViews{ 
+@implementation QIMNotReadATMsgTipView
+{
     UIView *_backView;
     UIView *_leftView;
     UIImageView *_leftArrowImageView;
@@ -17,19 +18,20 @@
     NSString *_title;
 }
 
-- (CGFloat)getHeight{
+- (CGFloat)getHeight {
     return 40;
 }
 
 - (CGFloat)getWidthForNotReadCount:(int)notReadCount{
-    _title = [NSString stringWithFormat:@"%d条新消息",notReadCount];
-    CGSize titleSize = [_title sizeWithFont:[UIFont systemFontOfSize:13] forWidth:INT8_MAX lineBreakMode:NSLineBreakByCharWrapping];
+    NSString *titleStr = [NSString stringWithFormat:@"我被@%ld次 ",notReadCount];
+    _title = [NSString stringWithFormat:@"我被@%ld次",notReadCount];
+    CGSize titleSize = [titleStr sizeWithFont:[UIFont systemFontOfSize:13] forWidth:INT8_MAX lineBreakMode:NSLineBreakByCharWrapping];
     return titleSize.width + [self getHeight] / 2.0 - 5 + 10 + 17 + 8;
 }
 
-- (instancetype)initWithNotReadCount:(int)notReadCount{
-    _notReadCount = notReadCount;
-    return [self initWithFrame:CGRectMake(0, 0, [self getWidthForNotReadCount:notReadCount], [self getHeight])];
+- (instancetype)initWithNotReadAtMsgCount:(int)notReadAtMsgCount {
+    _notReadCount = notReadAtMsgCount;
+    return [self initWithFrame:CGRectMake(0, 0, [self getWidthForNotReadCount:notReadAtMsgCount], [self getHeight])];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame{
@@ -51,7 +53,7 @@
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(_leftArrowImageView.right + 8, 0, self.width - 10 - (_backView.left - 5), [self getHeight])];
         [_titleLabel setBackgroundColor:[UIColor clearColor]];
-        [_titleLabel setTextColor:qim_newmessageUpArrowTextColor];
+        [_titleLabel setTextColor:qim_notReadAtMessageUpArrowTextColor];
         [_titleLabel setFont:[UIFont systemFontOfSize:13]];
         [_titleLabel setText:_title];
         [self addSubview:_titleLabel];
@@ -64,9 +66,8 @@
 }
 
 - (void)onClick{
-    if (self.notReadMsgDelegate && [self.notReadMsgDelegate respondsToSelector:@selector(moveToFirstNotReadMsg)]) {
-        [self.notReadMsgDelegate moveToFirstNotReadMsg];
+    if (self.notReadAtMsgDelegate && [self.notReadAtMsgDelegate respondsToSelector:@selector(moveToLastNotReadAtMsg)]) {
+        [self.notReadAtMsgDelegate moveToLastNotReadAtMsg];
     }
 }
-
 @end

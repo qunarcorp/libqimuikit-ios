@@ -188,6 +188,14 @@
 		2C53B17120B2A3EA00F1253C /* UIColor+QIMChatBallocColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B16F20B2A3EA00F1253C /* UIColor+QIMChatBallocColor.m */; };
 		2C55CCF9216E23C200DD156A /* QIMRemoteNotificationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C55CCF7216E23C200DD156A /* QIMRemoteNotificationManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2C55CCFA216E23C200DD156A /* QIMRemoteNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C55CCF8216E23C200DD156A /* QIMRemoteNotificationManager.m */; };
+		2C5ED17A2284147500E51B2E /* QIMATGroupMemberTextAttachment.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C5ED1742284147500E51B2E /* QIMATGroupMemberTextAttachment.h */; };
+		2C5ED17B2284147500E51B2E /* QIMAtUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C5ED1752284147500E51B2E /* QIMAtUserTableViewCell.m */; };
+		2C5ED17C2284147500E51B2E /* QIMGroupATNotifyVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C5ED1762284147500E51B2E /* QIMGroupATNotifyVC.m */; };
+		2C5ED17D2284147500E51B2E /* QIMATGroupMemberTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C5ED1772284147500E51B2E /* QIMATGroupMemberTextAttachment.m */; };
+		2C5ED17E2284147500E51B2E /* QIMGroupATNotifyVC.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C5ED1782284147500E51B2E /* QIMGroupATNotifyVC.h */; };
+		2C5ED17F2284147500E51B2E /* QIMAtUserTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C5ED1792284147500E51B2E /* QIMAtUserTableViewCell.h */; };
+		2C5ED182228414BF00E51B2E /* QIMNotReadATMsgTipView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C5ED180228414BF00E51B2E /* QIMNotReadATMsgTipView.h */; };
+		2C5ED183228414BF00E51B2E /* QIMNotReadATMsgTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C5ED181228414BF00E51B2E /* QIMNotReadATMsgTipView.m */; };
 		2C6109BB21490A8D00C30923 /* QIMRobotQuestionCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C6109B921490A8C00C30923 /* QIMRobotQuestionCell.h */; };
 		2C6109BC21490A8D00C30923 /* QIMRobotQuestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6109BA21490A8C00C30923 /* QIMRobotQuestionCell.m */; };
 		2C6109BF2149166700C30923 /* QIMSTAlertView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C6109BD2149166600C30923 /* QIMSTAlertView.h */; };
@@ -456,13 +464,11 @@
 		2C8AFD2920B1D51C00CF98EB /* QIMExportMsgManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA1C20B1D51A00CF98EB /* QIMExportMsgManager.m */; };
 		2C8AFD2A20B1D51C00CF98EB /* QIMTapGestureRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA1E20B1D51A00CF98EB /* QIMTapGestureRecognizer.h */; };
 		2C8AFD2B20B1D51C00CF98EB /* QIMBusinessModleUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA1F20B1D51A00CF98EB /* QIMBusinessModleUpdate.m */; };
-		2C8AFD2C20B1D51C00CF98EB /* QIMTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA2120B1D51A00CF98EB /* QIMTextView.h */; };
 		2C8AFD2D20B1D51C00CF98EB /* QIMTextBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA2220B1D51A00CF98EB /* QIMTextBar.h */; };
 		2C8AFD2E20B1D51C00CF98EB /* QIMChatKeyBoardMacroDefine.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA2320B1D51A00CF98EB /* QIMChatKeyBoardMacroDefine.h */; };
 		2C8AFD2F20B1D51C00CF98EB /* QIMEmojiTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA2420B1D51A00CF98EB /* QIMEmojiTextAttachment.m */; };
 		2C8AFD3020B1D51C00CF98EB /* QIMChatToolBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA2520B1D51A00CF98EB /* QIMChatToolBarItem.m */; };
 		2C8AFD3120B1D51C00CF98EB /* QTalkTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA2620B1D51A00CF98EB /* QTalkTextView.h */; };
-		2C8AFD3220B1D51C00CF98EB /* QIMATGroupMemberTextAttachment.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA2720B1D51A00CF98EB /* QIMATGroupMemberTextAttachment.h */; };
 		2C8AFD3320B1D51C00CF98EB /* QIMOfficialAccountToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA2820B1D51A00CF98EB /* QIMOfficialAccountToolbar.h */; };
 		2C8AFD3420B1D51C00CF98EB /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA2A20B1D51A00CF98EB /* CameraViewController.m */; };
 		2C8AFD3520B1D51C00CF98EB /* CameraViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA2B20B1D51A00CF98EB /* CameraViewController.h */; };
@@ -475,24 +481,16 @@
 		2C8AFD3C20B1D51C00CF98EB /* QIMVoiceGoalBarPercentLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA3420B1D51A00CF98EB /* QIMVoiceGoalBarPercentLayer.h */; };
 		2C8AFD3D20B1D51C00CF98EB /* QIMVoiceChatView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA3520B1D51A00CF98EB /* QIMVoiceChatView.h */; };
 		2C8AFD3E20B1D51C00CF98EB /* QIMVoiceGoalBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA3620B1D51A00CF98EB /* QIMVoiceGoalBar.m */; };
-		2C8AFD3F20B1D51C00CF98EB /* QIMGroupATNotifyVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA3720B1D51A00CF98EB /* QIMGroupATNotifyVC.m */; };
-		2C8AFD4020B1D51C00CF98EB /* QIMHistoryMsgManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA3820B1D51A00CF98EB /* QIMHistoryMsgManager.h */; };
-		2C8AFD4120B1D51C00CF98EB /* QIMHistoryMsgListViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA3920B1D51A00CF98EB /* QIMHistoryMsgListViewController.h */; };
 		2C8AFD4220B1D51C00CF98EB /* QIMTextBarExpandView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA3A20B1D51A00CF98EB /* QIMTextBarExpandView.h */; };
-		2C8AFD4320B1D51C00CF98EB /* QIMTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA3B20B1D51A00CF98EB /* QIMTextView.m */; };
 		2C8AFD4420B1D51C00CF98EB /* QIMEmojiTextAttachment.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA3C20B1D51A00CF98EB /* QIMEmojiTextAttachment.h */; };
 		2C8AFD4520B1D51C00CF98EB /* QIMTextBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA3D20B1D51A00CF98EB /* QIMTextBar.m */; };
 		2C8AFD4620B1D51C00CF98EB /* QIMChatToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA3E20B1D51A00CF98EB /* QIMChatToolBar.m */; };
 		2C8AFD4720B1D51C00CF98EB /* QIMRecordButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA3F20B1D51A00CF98EB /* QIMRecordButton.m */; };
 		2C8AFD4820B1D51C00CF98EB /* QIMUIImagePickerBrowserVC.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA4020B1D51A00CF98EB /* QIMUIImagePickerBrowserVC.h */; };
 		2C8AFD4920B1D51C00CF98EB /* QTalkTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA4120B1D51A00CF98EB /* QTalkTextView.m */; };
-		2C8AFD4A20B1D51C00CF98EB /* QIMATGroupMemberTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA4220B1D51A00CF98EB /* QIMATGroupMemberTextAttachment.m */; };
 		2C8AFD4B20B1D51C00CF98EB /* QIMOfficialAccountToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA4320B1D51A00CF98EB /* QIMOfficialAccountToolbar.m */; };
 		2C8AFD4C20B1D51C00CF98EB /* QIMChatToolBarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA4420B1D51A00CF98EB /* QIMChatToolBarItem.h */; };
 		2C8AFD4D20B1D51C00CF98EB /* QIMTextBarExpandView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA4520B1D51A00CF98EB /* QIMTextBarExpandView.m */; };
-		2C8AFD4E20B1D51C00CF98EB /* QIMHistoryMsgListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA4620B1D51A00CF98EB /* QIMHistoryMsgListViewController.m */; };
-		2C8AFD4F20B1D51C00CF98EB /* QIMHistoryMsgManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA4720B1D51A00CF98EB /* QIMHistoryMsgManager.m */; };
-		2C8AFD5020B1D51C00CF98EB /* QIMGroupATNotifyVC.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA4820B1D51A00CF98EB /* QIMGroupATNotifyVC.h */; };
 		2C8AFD5120B1D51C00CF98EB /* QIMDisplayImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AFA4920B1D51A00CF98EB /* QIMDisplayImage.h */; };
 		2C8AFD5220B1D51C00CF98EB /* QIMImageEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA4B20B1D51A00CF98EB /* QIMImageEditViewController.m */; };
 		2C8AFD5320B1D51C00CF98EB /* QIMImageClipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8AFA4C20B1D51A00CF98EB /* QIMImageClipView.m */; };
@@ -1230,6 +1228,14 @@
 		2C53B16F20B2A3EA00F1253C /* UIColor+QIMChatBallocColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+QIMChatBallocColor.m"; sourceTree = "<group>"; };
 		2C55CCF7216E23C200DD156A /* QIMRemoteNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMRemoteNotificationManager.h; sourceTree = "<group>"; };
 		2C55CCF8216E23C200DD156A /* QIMRemoteNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMRemoteNotificationManager.m; sourceTree = "<group>"; };
+		2C5ED1742284147500E51B2E /* QIMATGroupMemberTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMATGroupMemberTextAttachment.h; sourceTree = "<group>"; };
+		2C5ED1752284147500E51B2E /* QIMAtUserTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMAtUserTableViewCell.m; sourceTree = "<group>"; };
+		2C5ED1762284147500E51B2E /* QIMGroupATNotifyVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMGroupATNotifyVC.m; sourceTree = "<group>"; };
+		2C5ED1772284147500E51B2E /* QIMATGroupMemberTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMATGroupMemberTextAttachment.m; sourceTree = "<group>"; };
+		2C5ED1782284147500E51B2E /* QIMGroupATNotifyVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMGroupATNotifyVC.h; sourceTree = "<group>"; };
+		2C5ED1792284147500E51B2E /* QIMAtUserTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMAtUserTableViewCell.h; sourceTree = "<group>"; };
+		2C5ED180228414BF00E51B2E /* QIMNotReadATMsgTipView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMNotReadATMsgTipView.h; sourceTree = "<group>"; };
+		2C5ED181228414BF00E51B2E /* QIMNotReadATMsgTipView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMNotReadATMsgTipView.m; sourceTree = "<group>"; };
 		2C6109B921490A8C00C30923 /* QIMRobotQuestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMRobotQuestionCell.h; sourceTree = "<group>"; };
 		2C6109BA21490A8C00C30923 /* QIMRobotQuestionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMRobotQuestionCell.m; sourceTree = "<group>"; };
 		2C6109BD2149166600C30923 /* QIMSTAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMSTAlertView.h; sourceTree = "<group>"; };
@@ -1500,13 +1506,11 @@
 		2C8AFA1C20B1D51A00CF98EB /* QIMExportMsgManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMExportMsgManager.m; sourceTree = "<group>"; };
 		2C8AFA1E20B1D51A00CF98EB /* QIMTapGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMTapGestureRecognizer.h; sourceTree = "<group>"; };
 		2C8AFA1F20B1D51A00CF98EB /* QIMBusinessModleUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMBusinessModleUpdate.m; sourceTree = "<group>"; };
-		2C8AFA2120B1D51A00CF98EB /* QIMTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMTextView.h; sourceTree = "<group>"; };
 		2C8AFA2220B1D51A00CF98EB /* QIMTextBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMTextBar.h; sourceTree = "<group>"; };
 		2C8AFA2320B1D51A00CF98EB /* QIMChatKeyBoardMacroDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMChatKeyBoardMacroDefine.h; sourceTree = "<group>"; };
 		2C8AFA2420B1D51A00CF98EB /* QIMEmojiTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMEmojiTextAttachment.m; sourceTree = "<group>"; };
 		2C8AFA2520B1D51A00CF98EB /* QIMChatToolBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMChatToolBarItem.m; sourceTree = "<group>"; };
 		2C8AFA2620B1D51A00CF98EB /* QTalkTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTalkTextView.h; sourceTree = "<group>"; };
-		2C8AFA2720B1D51A00CF98EB /* QIMATGroupMemberTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMATGroupMemberTextAttachment.h; sourceTree = "<group>"; };
 		2C8AFA2820B1D51A00CF98EB /* QIMOfficialAccountToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMOfficialAccountToolbar.h; sourceTree = "<group>"; };
 		2C8AFA2A20B1D51A00CF98EB /* CameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraViewController.m; sourceTree = "<group>"; };
 		2C8AFA2B20B1D51A00CF98EB /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraViewController.h; sourceTree = "<group>"; };
@@ -1519,24 +1523,16 @@
 		2C8AFA3420B1D51A00CF98EB /* QIMVoiceGoalBarPercentLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMVoiceGoalBarPercentLayer.h; sourceTree = "<group>"; };
 		2C8AFA3520B1D51A00CF98EB /* QIMVoiceChatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMVoiceChatView.h; sourceTree = "<group>"; };
 		2C8AFA3620B1D51A00CF98EB /* QIMVoiceGoalBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMVoiceGoalBar.m; sourceTree = "<group>"; };
-		2C8AFA3720B1D51A00CF98EB /* QIMGroupATNotifyVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMGroupATNotifyVC.m; sourceTree = "<group>"; };
-		2C8AFA3820B1D51A00CF98EB /* QIMHistoryMsgManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMHistoryMsgManager.h; sourceTree = "<group>"; };
-		2C8AFA3920B1D51A00CF98EB /* QIMHistoryMsgListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMHistoryMsgListViewController.h; sourceTree = "<group>"; };
 		2C8AFA3A20B1D51A00CF98EB /* QIMTextBarExpandView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMTextBarExpandView.h; sourceTree = "<group>"; };
-		2C8AFA3B20B1D51A00CF98EB /* QIMTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMTextView.m; sourceTree = "<group>"; };
 		2C8AFA3C20B1D51A00CF98EB /* QIMEmojiTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMEmojiTextAttachment.h; sourceTree = "<group>"; };
 		2C8AFA3D20B1D51A00CF98EB /* QIMTextBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMTextBar.m; sourceTree = "<group>"; };
 		2C8AFA3E20B1D51A00CF98EB /* QIMChatToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMChatToolBar.m; sourceTree = "<group>"; };
 		2C8AFA3F20B1D51A00CF98EB /* QIMRecordButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMRecordButton.m; sourceTree = "<group>"; };
 		2C8AFA4020B1D51A00CF98EB /* QIMUIImagePickerBrowserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMUIImagePickerBrowserVC.h; sourceTree = "<group>"; };
 		2C8AFA4120B1D51A00CF98EB /* QTalkTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTalkTextView.m; sourceTree = "<group>"; };
-		2C8AFA4220B1D51A00CF98EB /* QIMATGroupMemberTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMATGroupMemberTextAttachment.m; sourceTree = "<group>"; };
 		2C8AFA4320B1D51A00CF98EB /* QIMOfficialAccountToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMOfficialAccountToolbar.m; sourceTree = "<group>"; };
 		2C8AFA4420B1D51A00CF98EB /* QIMChatToolBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMChatToolBarItem.h; sourceTree = "<group>"; };
 		2C8AFA4520B1D51A00CF98EB /* QIMTextBarExpandView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMTextBarExpandView.m; sourceTree = "<group>"; };
-		2C8AFA4620B1D51A00CF98EB /* QIMHistoryMsgListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMHistoryMsgListViewController.m; sourceTree = "<group>"; };
-		2C8AFA4720B1D51A00CF98EB /* QIMHistoryMsgManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMHistoryMsgManager.m; sourceTree = "<group>"; };
-		2C8AFA4820B1D51A00CF98EB /* QIMGroupATNotifyVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMGroupATNotifyVC.h; sourceTree = "<group>"; };
 		2C8AFA4920B1D51A00CF98EB /* QIMDisplayImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMDisplayImage.h; sourceTree = "<group>"; };
 		2C8AFA4B20B1D51A00CF98EB /* QIMImageEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMImageEditViewController.m; sourceTree = "<group>"; };
 		2C8AFA4C20B1D51A00CF98EB /* QIMImageClipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMImageClipView.m; sourceTree = "<group>"; };
@@ -2442,6 +2438,21 @@
 			path = UIColor;
 			sourceTree = "<group>";
 		};
+		2C5ED1732284147500E51B2E /* QIMAT */ = {
+			isa = PBXGroup;
+			children = (
+				2C5ED1742284147500E51B2E /* QIMATGroupMemberTextAttachment.h */,
+				2C5ED1772284147500E51B2E /* QIMATGroupMemberTextAttachment.m */,
+				2C5ED1792284147500E51B2E /* QIMAtUserTableViewCell.h */,
+				2C5ED1752284147500E51B2E /* QIMAtUserTableViewCell.m */,
+				2C5ED1782284147500E51B2E /* QIMGroupATNotifyVC.h */,
+				2C5ED1762284147500E51B2E /* QIMGroupATNotifyVC.m */,
+				2C5ED180228414BF00E51B2E /* QIMNotReadATMsgTipView.h */,
+				2C5ED181228414BF00E51B2E /* QIMNotReadATMsgTipView.m */,
+			);
+			path = QIMAT;
+			sourceTree = "<group>";
+		};
 		2C7F92ED21C7E42E0087BD04 /* ReMindView */ = {
 			isa = PBXGroup;
 			children = (
@@ -3252,10 +3263,9 @@
 		2C8AFA2020B1D51A00CF98EB /* InputBar */ = {
 			isa = PBXGroup;
 			children = (
+				2C5ED1732284147500E51B2E /* QIMAT */,
 				2CAFA2EC211ABC29001F6D97 /* QIMQuickReply */,
 				2C8AFA2920B1D51A00CF98EB /* Camera */,
-				2C8AFA2720B1D51A00CF98EB /* QIMATGroupMemberTextAttachment.h */,
-				2C8AFA4220B1D51A00CF98EB /* QIMATGroupMemberTextAttachment.m */,
 				2C8AFA2320B1D51A00CF98EB /* QIMChatKeyBoardMacroDefine.h */,
 				2C8AFA2F20B1D51A00CF98EB /* QIMChatToolBar.h */,
 				2C8AFA3E20B1D51A00CF98EB /* QIMChatToolBar.m */,
@@ -3263,12 +3273,6 @@
 				2C8AFA2520B1D51A00CF98EB /* QIMChatToolBarItem.m */,
 				2C8AFA3C20B1D51A00CF98EB /* QIMEmojiTextAttachment.h */,
 				2C8AFA2420B1D51A00CF98EB /* QIMEmojiTextAttachment.m */,
-				2C8AFA4820B1D51A00CF98EB /* QIMGroupATNotifyVC.h */,
-				2C8AFA3720B1D51A00CF98EB /* QIMGroupATNotifyVC.m */,
-				2C8AFA3920B1D51A00CF98EB /* QIMHistoryMsgListViewController.h */,
-				2C8AFA4620B1D51A00CF98EB /* QIMHistoryMsgListViewController.m */,
-				2C8AFA3820B1D51A00CF98EB /* QIMHistoryMsgManager.h */,
-				2C8AFA4720B1D51A00CF98EB /* QIMHistoryMsgManager.m */,
 				2C8AFA2820B1D51A00CF98EB /* QIMOfficialAccountToolbar.h */,
 				2C8AFA4320B1D51A00CF98EB /* QIMOfficialAccountToolbar.m */,
 				2C8AFA2E20B1D51A00CF98EB /* QIMRecordButton.h */,
@@ -3277,8 +3281,6 @@
 				2C8AFA3D20B1D51A00CF98EB /* QIMTextBar.m */,
 				2C8AFA3A20B1D51A00CF98EB /* QIMTextBarExpandView.h */,
 				2C8AFA4520B1D51A00CF98EB /* QIMTextBarExpandView.m */,
-				2C8AFA2120B1D51A00CF98EB /* QIMTextView.h */,
-				2C8AFA3B20B1D51A00CF98EB /* QIMTextView.m */,
 				2C8AFA4020B1D51A00CF98EB /* QIMUIImagePickerBrowserVC.h */,
 				2C8AFA2D20B1D51A00CF98EB /* QIMUIImagePickerBrowserVC.m */,
 				2C8AFA2620B1D51A00CF98EB /* QTalkTextView.h */,
@@ -4390,7 +4392,6 @@
 				2C0F601720E3B6F6007FFD45 /* QIMMWQRCodeActivity.h in Headers */,
 				2C8AFBD720B1D51B00CF98EB /* QIMVideoDownloadManager.h in Headers */,
 				2C8AFF6920B1D8AB00CF98EB /* QIMDefalutMessageCell.h in Headers */,
-				2C8AFD4120B1D51C00CF98EB /* QIMHistoryMsgListViewController.h in Headers */,
 				2C8AADCD2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.h in Headers */,
 				2C8AFCD120B1D51B00CF98EB /* QCDepartmentModel.h in Headers */,
 				2C8AFDA620B1D51C00CF98EB /* QIMQRCodeViewDisplayController.h in Headers */,
@@ -4479,7 +4480,6 @@
 				2C8AFF4A20B1D8AB00CF98EB /* QIMSourceCodeCell.h in Headers */,
 				2C8AFBD920B1D51B00CF98EB /* QIMVideoURLAssetResourceLoader.h in Headers */,
 				2C9A5FD421786BAF007EEC44 /* QIMSystemChatNewVC.h in Headers */,
-				2C8AFD4020B1D51C00CF98EB /* QIMHistoryMsgManager.h in Headers */,
 				2C8AFC0B20B1D51B00CF98EB /* ShareLocationUserImageView.h in Headers */,
 				2C8AFD0620B1D51B00CF98EB /* QIMMyEmotionsManagerCell.h in Headers */,
 				2C8AFC3420B1D51B00CF98EB /* QIMImageCache.h in Headers */,
@@ -4522,6 +4522,7 @@
 				2C8AFF8220B1D8AB00CF98EB /* QIMSingleChatVoiceCell.h in Headers */,
 				2C8AFCAE20B1D51B00CF98EB /* UITextView+AttributedTextWithItems.h in Headers */,
 				2C67A8C4218846ED007C6E4C /* QIMFileTransMiddleVC.h in Headers */,
+				2C5ED182228414BF00E51B2E /* QIMNotReadATMsgTipView.h in Headers */,
 				2C22663E22240F9F00EED2B8 /* QIMWorkMomentParser.h in Headers */,
 				2C8AFE1920B1D51C00CF98EB /* QIMUserListCategoryView.h in Headers */,
 				2C8AFD1F20B1D51C00CF98EB /* QIMCollectionEmotionEditorViewCell.h in Headers */,
@@ -4619,7 +4620,6 @@
 				2C8AFD8E20B1D51C00CF98EB /* QIMSystemVC.h in Headers */,
 				2C8AFF7420B1D8AB00CF98EB /* QIMBurnAfterReadMsgCell.h in Headers */,
 				2C8AFCDF20B1D51B00CF98EB /* QIMFriendTitleListCell.h in Headers */,
-				2C8AFD2C20B1D51C00CF98EB /* QIMTextView.h in Headers */,
 				2CC93B6C21EC33C800EEC47D /* PasswordBoxCell.h in Headers */,
 				2C8AFD3520B1D51C00CF98EB /* CameraViewController.h in Headers */,
 				2C06A05922045DE8000CAF37 /* QIMWorkMomentUserIdentityModel.h in Headers */,
@@ -4638,7 +4638,6 @@
 				2C8AFD0D20B1D51B00CF98EB /* QIMMyEmotionsManagerViewController.h in Headers */,
 				2CC93BAD21EC33C800EEC47D /* KZColorCompareView.h in Headers */,
 				2C8AFD8620B1D51C00CF98EB /* QIMChatBGImagePickerController.h in Headers */,
-				2C8AFD5020B1D51C00CF98EB /* QIMGroupATNotifyVC.h in Headers */,
 				2C8AFE2B20B1D51C00CF98EB /* QIMPushProductViewController.h in Headers */,
 				2C8AFF5620B1D8AB00CF98EB /* QIMMsgBaseVC.h in Headers */,
 				2C8AFF7620B1D8AB00CF98EB /* QIMVideoMsgCell.h in Headers */,
@@ -4647,7 +4646,6 @@
 				2CC93B5621EC33C800EEC47D /* QTNoteCell.h in Headers */,
 				2C8AFD9A20B1D51C00CF98EB /* QIMPreviewMsgVC.h in Headers */,
 				2C8AFE9620B1D51C00CF98EB /* QIMQRCodeLoginManager.h in Headers */,
-				2C8AFD3220B1D51C00CF98EB /* QIMATGroupMemberTextAttachment.h in Headers */,
 				2C8AFF2D20B1D8AA00CF98EB /* QTPHGridViewCell.h in Headers */,
 				2C8AFF5E20B1D8AB00CF98EB /* QIMAACollectionCell.h in Headers */,
 				2CBCE39A2195400E0047D3CD /* QIMCustomPopViewController.h in Headers */,
@@ -4660,6 +4658,7 @@
 				2C8AFBCF20B1D51B00CF98EB /* QIMVideoCachePathTool.h in Headers */,
 				2C8AFDC820B1D51C00CF98EB /* QIMMenuView.h in Headers */,
 				2CC93BAC21EC33C800EEC47D /* KZColorPicker.h in Headers */,
+				2C5ED17E2284147500E51B2E /* QIMGroupATNotifyVC.h in Headers */,
 				2C8AFD1D20B1D51C00CF98EB /* QIMFaceViewCell.h in Headers */,
 				2C8AFBDF20B1D51B00CF98EB /* QIMContactManager.h in Headers */,
 				2CC93B7621EC33C800EEC47D /* TodoListDownArrowHeader.h in Headers */,
@@ -4799,6 +4798,7 @@
 				2C8AFE9420B1D51C00CF98EB /* QIMWebLoginVC.h in Headers */,
 				2C8AFDA420B1D51C00CF98EB /* QIMAdvertisingVC.h in Headers */,
 				2C8AFD5820B1D51C00CF98EB /* QIMImageUtil.h in Headers */,
+				2C5ED17A2284147500E51B2E /* QIMATGroupMemberTextAttachment.h in Headers */,
 				2C8AFDCD20B1D51C00CF98EB /* QIMGroupMemberListVC.h in Headers */,
 				2C8AFCAB20B1D51B00CF98EB /* UILabel+AttributedTextWithItems.h in Headers */,
 				2C06A07022045DE8000CAF37 /* QIMWorkMomentLabel.h in Headers */,
@@ -4825,6 +4825,7 @@
 				2C8AFD7620B1D51C00CF98EB /* QIMFontSettingVC.h in Headers */,
 				2C0F605A20E3C59F007FFD45 /* QIMMWPhoto.h in Headers */,
 				2C06A06E22045DE8000CAF37 /* QIMWorkCommentInputBar.h in Headers */,
+				2C5ED17F2284147500E51B2E /* QIMAtUserTableViewCell.h in Headers */,
 				2C8AFBCD20B1D51B00CF98EB /* QIMNavBackBtn.h in Headers */,
 				2C8AFD3C20B1D51C00CF98EB /* QIMVoiceGoalBarPercentLayer.h in Headers */,
 				2C8AFC9E20B1D51B00CF98EB /* QIMViewHelper.h in Headers */,
@@ -5113,6 +5114,7 @@
 				2C8AFCCC20B1D51B00CF98EB /* QCGroupModel.m in Sources */,
 				2C8AFD1A20B1D51C00CF98EB /* QIMFaceView.m in Sources */,
 				2C2A79A22215A80700AF2153 /* QIMResetPwdVerViewController.m in Sources */,
+				2C5ED17D2284147500E51B2E /* QIMATGroupMemberTextAttachment.m in Sources */,
 				2C8AFD5220B1D51C00CF98EB /* QIMImageEditViewController.m in Sources */,
 				2C06A06C22045DE8000CAF37 /* QIMWorkMomentNotifyView.m in Sources */,
 				2C8AFD5A20B1D51C00CF98EB /* QIMMessageBrowserVC.m in Sources */,
@@ -5220,6 +5222,7 @@
 				2CC93B9C21EC33C800EEC47D /* QIMArrowTableView.m in Sources */,
 				2C8AFCCD20B1D51B00CF98EB /* QCDepartmentModel.m in Sources */,
 				2C8AFBC920B1D51B00CF98EB /* QIMNotificationManager.m in Sources */,
+				2C5ED183228414BF00E51B2E /* QIMNotReadATMsgTipView.m in Sources */,
 				2C8AFDF420B1D51C00CF98EB /* QIMUserListVC.m in Sources */,
 				2C8AFBCE20B1D51B00CF98EB /* QIMVideoPlayerVC.m in Sources */,
 				2C8AFBCA20B1D51B00CF98EB /* SearchBar.m in Sources */,
@@ -5265,7 +5268,6 @@
 				2C8AFDA120B1D51C00CF98EB /* QIMRedPackageView.m in Sources */,
 				2C8AFE9D20B1D51C00CF98EB /* QIMWebLoginVC.m in Sources */,
 				2C8AFC1320B1D51B00CF98EB /* UserLocationViewController.m in Sources */,
-				2C8AFD3F20B1D51C00CF98EB /* QIMGroupATNotifyVC.m in Sources */,
 				2C06A06022045DE8000CAF37 /* QIMWorkCommentModel.m in Sources */,
 				2CBCE39E21955D210047D3CD /* QIMRobotAnswerCell.m in Sources */,
 				2C8AFC9720B1D51B00CF98EB /* QIMDaysmatterModel.m in Sources */,
@@ -5326,6 +5328,7 @@
 				2C0F606320E3C59F007FFD45 /* QIMMWPhotoBrowser.m in Sources */,
 				2C8AFD2220B1D51C00CF98EB /* CamelLoadingView.m in Sources */,
 				2C6109BC21490A8D00C30923 /* QIMRobotQuestionCell.m in Sources */,
+				2C5ED17B2284147500E51B2E /* QIMAtUserTableViewCell.m in Sources */,
 				2C8AFF5120B1D8AB00CF98EB /* QIMCommonTrdInfoCell.m in Sources */,
 				2CC93B9E21EC33C800EEC47D /* QIMGDMarginLabel.m in Sources */,
 				2C8AFD1B20B1D51C00CF98EB /* QIMCollectionEmotionEditorViewFlowLayout.m in Sources */,
@@ -5412,7 +5415,6 @@
 				2C8AFBE220B1D51B00CF98EB /* QIMContactObjectManager.m in Sources */,
 				2C9A5FD521786BAF007EEC44 /* QIMSystemChatNewVC.m in Sources */,
 				2C2A79A72215A89E00AF2153 /* QIMPublicCompanyModel.m in Sources */,
-				2C8AFD4E20B1D51C00CF98EB /* QIMHistoryMsgListViewController.m in Sources */,
 				2C8AFC3020B1D51B00CF98EB /* QIMAttributedLabel.m in Sources */,
 				2CA51434227086880093E9DC /* QIMPhotoPickerController.m in Sources */,
 				2C8AFD6C20B1D51C00CF98EB /* QIMGroupTopicCell.m in Sources */,
@@ -5455,6 +5457,7 @@
 				2C0F606120E3C59F007FFD45 /* QIMMWPhoto.m in Sources */,
 				2C8AFD6820B1D51C00CF98EB /* QIMGroupChatVC.m in Sources */,
 				2C8AFD5420B1D51C00CF98EB /* QIMImageUtil.m in Sources */,
+				2C5ED17C2284147500E51B2E /* QIMGroupATNotifyVC.m in Sources */,
 				2C4AA84C20D0BED90022B023 /* QIMAppWindowManager.m in Sources */,
 				2C8AFE0F20B1D51C00CF98EB /* QIMGroupListVC.m in Sources */,
 				2C8AFD1E20B1D51C00CF98EB /* QIMFaceViewDataSource.m in Sources */,
@@ -5471,7 +5474,6 @@
 				2C8AFE8A20B1D51C00CF98EB /* SessionCell.m in Sources */,
 				2C8AFDDA20B1D51C00CF98EB /* QIMGroupSettingCell.m in Sources */,
 				2C0F605C20E3C59F007FFD45 /* QIMMWGridCell.m in Sources */,
-				2C8AFD4320B1D51C00CF98EB /* QIMTextView.m in Sources */,
 				2CC93BB321EC33C800EEC47D /* KZColorPickerSwatchView.m in Sources */,
 				2C06A07A22045DE8000CAF37 /* QIMWorkCommentTableView.m in Sources */,
 				2C8AFF2C20B1D8AA00CF98EB /* QTPHImagePickerController.m in Sources */,
@@ -5521,7 +5523,6 @@
 				2C8AFE0B20B1D51C00CF98EB /* QIMFeedBackViewController.m in Sources */,
 				2C8AFE8B20B1D51C00CF98EB /* QTalkSessionCell.m in Sources */,
 				2C8AFE0120B1D51C00CF98EB /* QIMNavPushTransition.m in Sources */,
-				2C8AFD4F20B1D51C00CF98EB /* QIMHistoryMsgManager.m in Sources */,
 				2C8AFE2620B1D51C00CF98EB /* HeadView.m in Sources */,
 				2C8AFF1B20B1D8AA00CF98EB /* QTalkTipsView.m in Sources */,
 				2CA51426227086880093E9DC /* QIMPhotoPreviewController.m in Sources */,
@@ -5574,7 +5575,6 @@
 				2C8AFC0720B1D51B00CF98EB /* FindDirectionsView.m in Sources */,
 				2C8AFF5520B1D8AB00CF98EB /* QIMBurnAfterReadMsgCell.m in Sources */,
 				2C8AFE1C20B1D51C00CF98EB /* QIMMessageHelperVC.m in Sources */,
-				2C8AFD4A20B1D51C00CF98EB /* QIMATGroupMemberTextAttachment.m in Sources */,
 				2CC93B5B21EC33C800EEC47D /* PasswordCell.m in Sources */,
 				2C8AFC3920B1D51B00CF98EB /* QIMImageStorage.m in Sources */,
 				2C8AFE6920B1D51C00CF98EB /* QIMCollectionChatViewController.m in Sources */,

@@ -51,6 +51,20 @@
     }
 }
 
+- (void)setFrame:(CGRect)frame withNeedAddBubble:(BOOL)flag {
+//    if (flag) {
+    [self setFrame:frame];
+    if (flag) {
+        
+    } else {
+        [self setBubbleBgColor:[UIColor clearColor]];
+        [self setMenuViewHidden:YES];
+    }
+//    } else {
+//        [_bubbleView setFrame:self.bounds];
+//    }
+}
+
 - (void)setImage:(UIImage *)image{
     [super setImage:image];
     if (self.image) {
@@ -70,6 +84,14 @@
 
 - (void)setBubbleBgColor:(UIColor *)color {
     [_bubbleView setBgColor:color];
+}
+
+- (void)setMenuViewHidden:(BOOL)hidden {
+    if (hidden == YES) {
+        [_bubbleView removeMask];
+    } else {
+        
+    }
 }
 
 - (void)onLongEvent:(UILongPressGestureRecognizer *)tag {

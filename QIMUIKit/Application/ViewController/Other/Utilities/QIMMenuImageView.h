@@ -50,11 +50,15 @@ typedef enum {
 
 @property (nonatomic, retain) NSArray *menuActionTypeList;
 
+- (void)setFrame:(CGRect)frame withNeedAddBubble:(BOOL)flag;
+
 - (void)showCopyMenu;
 + (void)cancelHighlighted;
 - (void)setClipboardWitxthText:(NSString *)text;
 
 - (void)setBubbleBgColor:(UIColor *)color;
+
+- (void)setMenuViewHidden:(BOOL)hidden;
 
 - (void)onLongEvent:(UILongPressGestureRecognizer *)tag;
 

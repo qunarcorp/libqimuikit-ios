@@ -31,7 +31,7 @@
     
     if (!_tableView) {
         
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 10, self.width, self.height - 1) style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 10, self.width, self.height - 15) style:UITableViewStylePlain];
         _tableView.dataSource = self;
         _tableView.backgroundColor = [UIColor whiteColor];
         _tableView.delegate = self;

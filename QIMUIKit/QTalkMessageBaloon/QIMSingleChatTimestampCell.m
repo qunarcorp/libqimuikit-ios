@@ -38,7 +38,8 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self.backView setBubbleBgColor:[UIColor clearColor]];
+        [self.backView setMenuViewHidden:YES];
+        self.backView = nil;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         [self.contentView addSubview:self.timestampButton];

@@ -7,6 +7,12 @@
 
 #import "QIMCommonUIFramework.h"
 
+@interface QIMATGroupMemberTextAttachmentView : UIView
+
+@property (nonatomic, strong) UIImage *contentImage;
+
+@end
+
 @interface QIMATGroupMemberTextAttachment : NSTextAttachment
 
 @property (nonatomic, copy) NSString *groupMemberName;

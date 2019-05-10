@@ -263,32 +263,34 @@
     NSString *wikiHost = [[QIMKit sharedInstance] qimNav_WikiUrl];
     self.moreActionArray = [[NSMutableArray alloc] initWithCapacity:3];
     NSArray *moreActionImages = nil;
-    self.moreActionArray       = @[ @"扫一扫", @"未读消息", @"发起聊天", @"一键已读"];
+    self.moreActionArray       = @[ @"扫一扫", @"未读消息", @"创建群组", @"一键已读"];
     moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_scan_font size:28 color:qim_rightArrowImageColor]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_notread_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_gototalk_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_clearnotread_font size:28 color:qim_rightArrowImageColor]]];
     /*
     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         if (qCloudHost.length > 0 && wikiHost.length > 0) {
-            self.moreActionArray = @[@"扫一扫", @"发起聊天", @"一键已读", @"随记", @"Wiki"];
+            self.moreActionArray = @[@"扫一扫", @"创建群组", @"一键已读", @"随记", @"Wiki"];
             moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e23f" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1b7" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e455" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
         } else {
             if (wikiHost.length > 0) {
-                self.moreActionArray       = @[ @"扫一扫", @"发起聊天", @"一键已读", @"Wiki"];
+                self.moreActionArray       = @[ @"扫一扫", @"创建群组", @"一键已读", @"Wiki"];
                 moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e23f" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e455" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
             } else {
-                self.moreActionArray       = @[ @"扫一扫", @"发起聊天", @"一键已读"];
+                self.moreActionArray       = @[ @"扫一扫", @"创建群组", @"一键已读"];
                 moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e23f" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
             }
         }
     } else {
-        self.moreActionArray       = @[@"扫一扫", @"发起聊天"];
+        self.moreActionArray       = @[@"扫一扫", @"创建群组"];
         moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
     }
     */
     //    e23f
     point = CGPointMake(rect3.origin.x + rect3.size.width / 2 ,rect3.origin.y + rect3.size.height / 2);
-    _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:135 Height:50 * self.moreActionArray.count Type:Type_UpRight Color:[UIColor whiteColor]];
+    _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:135 Height:50 * self.moreActionArray.count + 10 Type:Type_UpRight Color:[UIColor whiteColor]];
     _arrowPopView.dataArray = self.moreActionArray;
     _arrowPopView.backView.layer.cornerRadius = 5.0f;
+//    _arrowPopView.backView.layer.borderColor = [UIColor redColor].CGColor;
+//    _arrowPopView.backView.layer.borderWidth = 3.0f;
     _arrowPopView.images = moreActionImages;
     _arrowPopView.row_height      = 50;
     _arrowPopView.delegate        = self;
@@ -441,7 +443,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noticeRefreshTableView:) name:kNotificationSessionListUpdate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noticeRefreshTableView:) name:kNotificationSessionListRemove object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateListFont:) name:kNotificationCurrentFontUpdate object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChatRoomDestroy:) name:kChatRoomDestroy object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteChatSession:) name:kChatSessionDelete object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stickyChatSession:) name:kChatSessionStick object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeNotifyView:) name:@"kNotifyViewCloseNotification" object:nil];
@@ -498,34 +499,6 @@
 }
 
 #pragma mark - notify
-
-- (void)onChatRoomDestroy:(NSNotification *)notify {
-    NSString *groupId = nil;
-    id obj = notify.object;
-    if ([obj isKindOfClass:[NSString class]]) {
-        groupId = obj;
-    }
-    NSString *reason = [notify.userInfo objectForKey:@"Reason"];
-    NSString *groupName = [[notify userInfo] objectForKey:@"GroupName"];
-    NSString *fromNickName = [[notify userInfo] objectForKey:@"FromNickName"];
-    NSString *message = nil;
-    if (fromNickName.length > 0) {
-        if (groupName.length > 0) {
-            message = [NSString stringWithFormat:@"%@销毁了群组:%@。",fromNickName,groupName];
-        } else {
-            message = [NSString stringWithFormat:@"%@销毁了群组:%@。",fromNickName,groupId];
-        }
-    } else {
-        if (groupName.length > 0) {
-            message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupName];
-        } else {
-            message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupId];
-        }
-    }
-    [self refreshTableView];
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-    [alertView show];
-}
 
 - (void)reloadTableView {
     
@@ -1249,10 +1222,10 @@
 #if __has_include("QIMAutoTracker.h")
         [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"RichScan" withDescription:@"扫一扫"];
 #endif
-    } else if ([moreActionId isEqualToString:@"发起聊天"]) {
+    } else if ([moreActionId isEqualToString:@"创建群组"]) {
         [QIMFastEntrance openQIMGroupListVC];
 #if __has_include("QIMAutoTracker.h")
-        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"StarToTalk" withDescription:@"发起聊天"];
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"StarToTalk" withDescription:@"创建群组"];
 #endif
     } else if ([moreActionId isEqualToString:@"一键已读"]) {
         [self oneKeyRead];

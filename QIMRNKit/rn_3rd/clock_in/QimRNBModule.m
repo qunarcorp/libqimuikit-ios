@@ -370,7 +370,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-//    return [NSURL URLWithString:@"http://100.80.128.154:8081/index.ios.bundle?platform=ios&dev=true"];
+    return [NSURL URLWithString:@"http://100.80.128.29:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -1355,12 +1355,15 @@ RCT_EXPORT_METHOD(getContactsNick:(NSString *)xmppId :(RCTResponseSenderBlock)ca
     NSString *name = remarkName.length ? remarkName : (userNickName.length ? userNickName : [xmppId componentsSeparatedByString:@"@"].firstObject);
     NSString *pinyin = [QIMPinYinForObjc chineseConvertToPinYin:userNickName];
     NSString *headerSrc = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:xmppId];
+    NSString *mood = [userInfo objectForKey:@"Mood"];
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-    [properties setObject:name forKey:@"Name"];
-    [properties setObject:headerSrc ? headerSrc : @"" forKey:@"HeaderUri"];
-    [properties setObject:pinyin forKey:@"SearchIndex"];
-    [properties setObject:xmppId forKey:@"XmppId"];
+    [properties setQIMSafeObject:name forKey:@"Name"];
+    [properties setQIMSafeObject:headerSrc ? headerSrc : @"" forKey:@"HeaderUri"];
+    [properties setQIMSafeObject:pinyin forKey:@"SearchIndex"];
+    [properties setQIMSafeObject:xmppId forKey:@"XmppId"];
+    [properties setQIMSafeObject:mood forKey:@"Mood"];
     callback(@[@{@"nick":properties ? properties : @{}}]);
+//    callback(@[@{@"nick":@{}}]);
 }
 
 RCT_EXPORT_METHOD(selectFriendsForGroupAdd:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
@@ -1399,9 +1402,13 @@ RCT_EXPORT_METHOD(getContacts:(RCTResponseSenderBlock)callback) {
             NSString *name = [dic objectForKey:@"Name"];
             NSString *pinyin = [QIMPinYinForObjc chineseConvertToPinYin:name];
             NSString *uri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:jid];
-            [dic setObject:uri ? uri : @"" forKey:@"HeaderUri"];
-            [dic setObject:@(1) forKey:@"Type"];
-            [dic setObject:pinyin forKey:@"SearchIndex"];
+            NSDictionary *userDic = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
+            NSString *mood = [userDic objectForKey:@"Mood"];
+            
+            [dic setQIMSafeObject:uri ? uri : @"" forKey:@"HeaderUri"];
+            [dic setQIMSafeObject:@(1) forKey:@"Type"];
+            [dic setQIMSafeObject:pinyin forKey:@"SearchIndex"];
+            [dic setQIMSafeObject:mood forKey:@"Mood"];
             [contactList addObject:dic];
         }
         callback(@[@{@"contacts" : contactList ? contactList : @[]}]);
@@ -1571,6 +1578,17 @@ RCT_EXPORT_METHOD(getShowUserModState:(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(updateShowUserModState:(BOOL)state :(RCTResponseSenderBlock)callback) {
     [[QIMKit sharedInstance] setMoodshow:state];
     callback(@[@{@"ok" : @(YES)}]);
+}
+
+//获取水印状态
+RCT_EXPORT_METHOD(getWaterMark:(RCTResponseSenderBlock)callback) {
+    BOOL state = [[QIMKit sharedInstance] waterMarkState];
+    callback(@[@(state)]);
+}
+
+//设置水印状态，仅限本地
+RCT_EXPORT_METHOD(setWaterMark:(BOOL)isOpen) {
+    [[QIMKit sharedInstance] setWaterMarkState:isOpen];
 }
 
 //获取客服服务模式
@@ -2045,7 +2063,25 @@ RCT_EXPORT_METHOD(searchLocalLink:(NSDictionary *)param callback:(RCTResponseSen
 //黑名单&星标联系人
 RCT_EXPORT_METHOD(selectStarOrBlackContacts:(NSString *)pkey :(RCTResponseSenderBlock)callback){
     NSMutableArray *contacts = [[QIMKit sharedInstance] selectStarOrBlackContacts:pkey];
-    callback(@[@{@"data" : contacts ? contacts : @[]}]);
+    NSMutableArray *tempContacts = [NSMutableArray arrayWithCapacity:3];
+    for (NSDictionary *user in contacts) {
+        NSLog(@"user : %@", user);
+
+        NSString *headerUrl = [user objectForKey:@"HeaderUrl"];
+        NSString *name = [user objectForKey:@"Name"];
+        NSString *xmppId = [user objectForKey:@"XmppId"];
+        NSString *userId = [user objectForKey:@"userId"];
+        
+        NSString *userLocalHeaderPath = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:xmppId];
+
+        NSMutableDictionary *tempUserInfo = [NSMutableDictionary dictionaryWithCapacity:3];
+        [tempUserInfo setQIMSafeObject:userLocalHeaderPath forKey:@"HeaderUri"];
+        [tempUserInfo setQIMSafeObject:name forKey:@"Name"];
+        [tempUserInfo setQIMSafeObject:xmppId forKey:@"XmppId"];
+        [tempUserInfo setQIMSafeObject:userId forKey:@"userId"];
+        [tempContacts addObject:tempUserInfo];
+    }
+    callback(@[@{@"data" : tempContacts ? tempContacts : @[]}]);
 }
 RCT_EXPORT_METHOD(selectFriendsNotInStarContacts:(RCTResponseSenderBlock)callback){
     NSMutableArray *contacts = [[QIMKit sharedInstance] selectFriendsNotInStarContacts];

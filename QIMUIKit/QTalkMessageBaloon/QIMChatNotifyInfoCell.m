@@ -49,6 +49,8 @@ static double _global_message_cell_width = 0;
     if (self) {
         // Initialization code
         [self.backView setBubbleBgColor:[UIColor clearColor]];
+        [self.backView setMenuViewHidden:YES];
+        self.backView = nil;
 
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         [self.contentView setBackgroundColor:[UIColor clearColor]];
@@ -198,7 +200,8 @@ static double _global_message_cell_width = 0;
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        [self.backView setBubbleBgColor:[UIColor clearColor]];
+        [self.backView setMenuViewHidden:YES];
+        self.backView = nil;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         
