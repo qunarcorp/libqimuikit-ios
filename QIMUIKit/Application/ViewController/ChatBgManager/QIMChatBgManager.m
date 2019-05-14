@@ -25,7 +25,7 @@
 }
 
 + (void)getChatBgById:(NSString *)userId ByName:(NSString *)name WithReset:(BOOL)reset Complete:(void(^)(UIImage *bgImage)) complete {
-    NSString *fileName =  [self getMD5ByData:[[NSString stringWithFormat:@"%@_%@",userId,name] dataUsingEncoding:NSUTF8StringEncoding]];
+    NSString *fileName =  [self getMD5ByData:[[NSString stringWithFormat:@"%@_%@",userId,name?name:userId] dataUsingEncoding:NSUTF8StringEncoding]];
     NSString *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
     NSString *filePath = [cachePath stringByAppendingPathComponent:fileName];
     if (reset == NO) {
@@ -61,7 +61,7 @@
         while (startY < imageSize.height * 1.5) {
             CGFloat startX = - imageSize.width/2.0;
             while (startX < imageSize.width * 1.5) {
-                NSAttributedString *textAtt = [[NSAttributedString alloc] initWithString:(row%2==0?name:userId) attributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:textColor}];
+                NSAttributedString *textAtt = [[NSAttributedString alloc] initWithString:(row%2==0?(name?name:userId):userId) attributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:textColor}];
                 [textAtt drawAtPoint:CGPointMake(startX, startY)];
                 CGSize textSize = textAtt.size;
                 startX += textSize.width + textCap;
