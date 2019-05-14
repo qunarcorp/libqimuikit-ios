@@ -223,7 +223,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_nameLabel) {
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 12, [[UIScreen mainScreen] qim_leftWidth] - 145, qim_sessionViewNameLabelSize)];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 17, [[UIScreen mainScreen] qim_leftWidth] - 145, qim_sessionViewNameLabelSize)];
         _nameLabel.font = [UIFont boldSystemFontOfSize:qim_sessionViewNameLabelSize];
         _nameLabel.textColor = qim_sessionCellNameTextColor;
         _nameLabel.backgroundColor = [UIColor clearColor];
@@ -237,7 +237,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         
         CGFloat timeLabelMaxX = CGRectGetMaxX(self.timeLabel.frame);
         CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 25;
-        _contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, qim_sessionViewContentLabelSize)];
+        _contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, qim_sessionViewContentLabelSize)];
         _contentLabel.font = [UIFont systemFontOfSize:qim_sessionViewContentLabelSize];
         _contentLabel.textColor = qim_sessionCellContentTextColor;
         _contentLabel.backgroundColor = [UIColor clearColor];
@@ -415,8 +415,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             if (self.chatType == ChatType_GroupChat) {
                 
                 [[QIMKit sharedInstance] clearNotReadMsgByGroupId:self.jid];
-                //去 at all
-                [[QIMKit sharedInstance] removeAtAllByJid:self.jid];
             } else if (self.chatType == ChatType_SingleChat) {
                 
                 [[QIMKit sharedInstance] clearNotReadMsgByJid:self.jid];
@@ -856,13 +854,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             } else {
                 self.muteNotReadView.hidden = YES;
             }
-            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
+            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
         } else {
             
             [self.notReadNumButton hiddenBadgeButton:YES];
             [_muteNotReadView setHidden:YES];
             self.contentLabel.width = contentLabelWidth;
-            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 12, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
+            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
         }
         if (self.isReminded == YES) { //接收不提醒
             self.muteView.hidden = NO;
@@ -1096,7 +1094,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     NSMutableAttributedString *str = [[NSMutableAttributedString alloc] init];
     NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
     [ps setAlignment:NSTextAlignmentLeft];
-    NSArray *atMeMessages = [[QIMKit sharedInstance] getAtMeMsgByJid:self.jid];
+    NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
     /*
     NSDictionary *atAllDic = [[QIMKit sharedInstance] getAtAllInfoByJid:self.jid];
     if (atAllDic) {

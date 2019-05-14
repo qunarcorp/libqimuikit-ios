@@ -102,7 +102,7 @@
     QIMMessageModel *msg = [[QIMMessageModel alloc] init];
     msg.message = [NSString stringWithFormat:@"%@ %@", replayStr, [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:commentModel.content]];
     msg.messageId = commentModel.commentUUID;
-    
+    self.contentLabel.originContent = commentModel.content;
     self.contentLabel.lineBreakMode = kCTLineBreakByTruncatingTail;
     QIMTextContainer *mainTextContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:self.likeBtn.left - 12 withFontSize:14 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:3];
     CGFloat textH = mainTextContainer.textHeight;

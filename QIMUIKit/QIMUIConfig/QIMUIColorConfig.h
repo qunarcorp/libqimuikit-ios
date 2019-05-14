@@ -44,8 +44,8 @@
 #define qim_sessionCellContentTextColor            [UIColor qim_colorWithHex:0x999999 alpha:1.0]  //会话列表页Content TextColor
 
 
-#define qim_groupchat_rightCard_Color    [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]       //群右上角
-#define qim_singlechat_rightCard_Color   [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]       //单人右上角
+#define qim_groupchat_rightCard_Color    [UIColor qim_colorWithHex:0x666666 alpha:1.0]       //群右上角
+#define qim_singlechat_rightCard_Color   [UIColor qim_colorWithHex:0x666666 alpha:1.0]       //单人右上角
 
 #define qim_nav_moment_color   [UIColor qim_colorWithHex:0x666666 alpha:1.0]    //驼圈右上角
 #define qim_nav_myself_color   [UIColor qim_colorWithHex:0x666666 alpha:1.0]    //驼圈右上角
@@ -56,6 +56,9 @@
 
 //会话内
 #define qim_chatBgColor [UIColor qim_colorWithHex:0xF0F3F5 alpha:1.0]   //会话背景色
+
+#define qim_chatWaterMaskBgColor    [UIColor qim_colorWithHex:0xF0F3F5 alpha:1.0]   //会话水印背景色
+#define qim_chatWaterMaskTextColor  [UIColor qim_colorWithHex:0xD4D4D4 alpha:1.0]   //会话水印Text色
 
 #define qim_messageLeftBubbleBorderColor [UIColor qim_colorWithHex:0xE1E1E1 alpha:1.0]    //左侧气泡边框颜色
 #define qim_messageRightBubbleBorderColor [UIColor qim_colorWithHex:0xA9D2DA alpha:1.0]    //右侧气泡边框颜色

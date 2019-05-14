@@ -601,15 +601,16 @@
     UIView *rightItemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
     UIButton *cardButton = [[UIButton alloc] initWithFrame:CGRectMake(rightItemView.right - 30, 9, 30, 30)];
     [cardButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-    [cardButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_singlechat_rightCard_font size:24 color:qim_singlechat_rightCard_Color]] forState:UIControlStateNormal];
+    [cardButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_singlechat_rightCard_font size:qim_singlechat_rightCard_TextSize color:qim_singlechat_rightCard_Color]] forState:UIControlStateNormal];
     [cardButton setAccessibilityIdentifier:@"rightUserCardBtn"];
     [cardButton addTarget:self action:@selector(onCardClick) forControlEvents:UIControlEventTouchUpInside];
     [rightItemView addSubview:cardButton];
+    /* 暂时取消右上角红点
     if (![[[QIMKit sharedInstance] userObjectForKey:kRightCardRemindNotification] boolValue]) {
         QIMRedMindView *redMindView = [[QIMRedMindView alloc] initWithBroView:cardButton withRemindNotificationName:kRightCardRemindNotification];
         [rightItemView addSubview:redMindView];
     }
-    
+    */
     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         UIButton *encryptBtn = nil;

@@ -144,6 +144,7 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
     
      if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aa_collection_icon" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_aa"] ForItemId:QIMTextBarExpandViewItem_AACollection];
+         [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_encryptchat" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_aa"] ForItemId:QIMTextBarExpandViewItem_Encryptchat];
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_share_nameplate" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_share_card"] ForItemId:QIMTextBarExpandViewItem_ShareCard];
      }
     [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_folder" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_file"] ForItemId:QIMTextBarExpandViewItem_MyFiles];

@@ -51,6 +51,7 @@
 #import "NSDate+Extension.h"
 #import "Toast.h"
 #import "QIMPublicRedefineHeader.h"
+#import "QIMAddIndexViewController.h"
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
@@ -318,6 +319,18 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
                 [QIMFastEntrance openWebViewForUrl:searchMsgUrl showNavBar:YES];
             }
         });
+    } else if ([nativeName isEqualToString:@"DomainSearch"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            QIMAddIndexViewController *indexVC = [[QIMAddIndexViewController alloc] init];
+            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+            if (!navVC) {
+                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            }
+            [navVC pushViewController:indexVC animated:YES];
+#if __has_include("QIMAutoTracker.h")
+            [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"add a contact" withDescription:@"添加联系人"];
+#endif
+        });
     }
 }
 
@@ -370,7 +383,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-    return [NSURL URLWithString:@"http://100.80.128.29:8081/index.ios.bundle?platform=ios&dev=true"];
+//    return [NSURL URLWithString:@"http://100.80.128.29:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -1589,6 +1602,18 @@ RCT_EXPORT_METHOD(getWaterMark:(RCTResponseSenderBlock)callback) {
 //设置水印状态，仅限本地
 RCT_EXPORT_METHOD(setWaterMark:(BOOL)isOpen) {
     [[QIMKit sharedInstance] setWaterMarkState:isOpen];
+}
+
+//获取驼圈提醒
+RCT_EXPORT_METHOD(getworkWorldRemind:(RCTResponseSenderBlock)callback) {
+    BOOL state = [[QIMKit sharedInstance] getLocalMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH];
+    callback(@[@{@"state" : @(state)}]);
+}
+
+//设置驼圈提醒
+RCT_EXPORT_METHOD(updateWorkWorldRemind:(BOOL)state :(RCTResponseSenderBlock)callback) {
+    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH WithSwitchOn:state];
+    callback(@[@{@"ok" : @(updateSuccess)}]);
 }
 
 //获取客服服务模式

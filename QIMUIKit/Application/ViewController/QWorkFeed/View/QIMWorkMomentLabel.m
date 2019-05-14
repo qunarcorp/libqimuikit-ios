@@ -58,7 +58,7 @@
 - (void)copyText:(id)sender {
     
     UIPasteboard *board = [UIPasteboard generalPasteboard];
-    [board setString:self.attributedText.string];
+    [board setString:self.originContent];
 //    [self resignFirstResponder];
 }
 

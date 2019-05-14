@@ -24,7 +24,7 @@ static QIMNavBackBtn *__backBtn = nil;
     self = [super initWithFrame:frame];
     if (self) {
         [self setAccessibilityIdentifier:@"QIMNavBackBtn"];
-        [self setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_backButton_font size:18 color:qim_backButtonColor]] forState:UIControlStateNormal];
+        [self setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_backButton_font size:qim_backButton_TextSize color:qim_backButtonColor]] forState:UIControlStateNormal];
         self.titleLabel.backgroundColor = qim_backButtonTextBgColor;
         [self setTitleColor:qim_backButtonTextColor forState:UIControlStateNormal];
         self.titleLabel.layer.cornerRadius = 10.5f;

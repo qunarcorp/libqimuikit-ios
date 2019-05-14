@@ -375,6 +375,7 @@
             
         }
     }
+    self.contentLabel.originContent = moment.content.content;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, [[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20, textContainer.textHeight);
         _contentLabel.textContainer = textContainer;

@@ -136,10 +136,9 @@
         }
         NSString * userName  =  item.nodeName;
         NSString *jid      =   item.jid;
-        NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
         [cell initSubControls];
         [cell setNLevel:[userName componentsSeparatedByString:@"/"].count];
-        [cell setUserName:remarkName?remarkName:userName];
+        [cell setUserName:userName];
         [cell setJid:jid];
         [cell refrash];
         

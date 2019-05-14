@@ -18,6 +18,11 @@
 
 #define qim_chatsearchRemindViewTextSize    13  //聊天会话内TextSize
 
+#define qim_backButton_TextSize 28          //对话内返回按钮
+
+#define qim_groupchat_rightCard_TextSize    28       //群右上角
+#define qim_singlechat_rightCard_TextSize    28       //单人右上角
+
 #define qim_sessionViewTimeLabelSize     12  //会话列表页时间TextSize
 
 #define qim_sessionViewNameLabelSize     17  //会话列表页Name TextSize

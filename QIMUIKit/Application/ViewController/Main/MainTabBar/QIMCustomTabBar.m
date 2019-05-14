@@ -55,8 +55,9 @@
         [self addSubview:toolbar];
         
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 0.5)];
-        [lineView setBackgroundColor:[UIColor spectralColorGrayColor]];
-        [self addSubview:lineView];
+        [lineView setBackgroundColor:[UIColor qim_colorWithHex:0xEAEAEA]];
+        [lineView setBackgroundColor:[UIColor redColor]];
+//        [self addSubview:lineView];
         
         CGFloat buttonWidth = self.width / _itemCount;
         
@@ -91,8 +92,6 @@
             [label setBackgroundColor:[UIColor clearColor]];
             [label setTextAlignment:NSTextAlignmentCenter];
             [label setFont:[UIFont fontWithName:FONT_NAME size:FONT_SIZE - 4-2]];
-//            [label setTextColor:kTabBarNormalColor];
-//            [label setHighlightedTextColor:kTabBarHighlightedColor];
             [itemButton setBarTitleLabel:label];
             [itemButton addSubview:label];
             
@@ -272,9 +271,7 @@
 }
 
 - (void)setSelectedIndex:(NSUInteger)selectedIndex animated:(BOOL)animated{
-//    if (self.selectedIndex == selectedIndex) {
-//        return;
-//    }
+
     UIButton *oldButton = (UIButton *)[self viewWithTag:kItemButtonPirex+_selectedIndex];
     [oldButton setSelected:NO];
     [oldButton setUserInteractionEnabled:YES];

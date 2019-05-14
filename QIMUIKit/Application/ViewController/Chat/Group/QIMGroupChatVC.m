@@ -46,9 +46,6 @@
 #import "QIMPhotoBrowserNavController.h"
 
 #import "QIMMessageBrowserVC.h"
-
-//#import "NSAttributedString+Attributes.h"
-
 #import "QIMChatBGImageSelectController.h"
 
 #import "QIMVideoPlayerVC.h"
@@ -172,11 +169,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 @property(nonatomic, strong) QIMVoiceRecordingView *voiceRecordingView;
 
-@property(nonatomic, strong) UIView *atAllView;
-
 @property(nonatomic, strong) QIMVoiceTimeRemindView *voiceTimeRemindView;
-
-@property(nonatomic, strong) QIMAttributedLabel *atAllLabel;
 
 @property(nonatomic, strong) QIMNavTitleView *titleView;
 
@@ -320,7 +313,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         _titleLabel.textColor = qim_groupchat_title_color;
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.font = [UIFont systemFontOfSize:qim_groupchat_title_size];
+        _titleLabel.font = [UIFont boldSystemFontOfSize:qim_groupchat_title_size];
         _titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     }
     return _titleLabel;
@@ -349,29 +342,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [self.view addSubview:_voiceTimeRemindView];
     }
     return _voiceTimeRemindView;
-}
-
-- (UIView *)atAllView {
-    
-    if (!_atAllView) {
-        
-        _atAllView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 30)];
-        [_atAllView setBackgroundColor:[UIColor qim_colorWithHex:0xc1c1c1 alpha:1]];
-        [_atAllView setHidden:YES];
-    }
-    return _atAllView;
-}
-
-- (QIMAttributedLabel *)atAllLabel {
-    
-    if (!_atAllLabel) {
-        
-        _atAllLabel = [[QIMAttributedLabel alloc] initWithFrame:CGRectMake(10, 5, self.view.width - 10, 20)];
-        [_atAllLabel setBackgroundColor:[UIColor clearColor]];
-        _atAllLabel.numberOfLines = 1;
-        _atAllLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    }
-    return _atAllLabel;
 }
 
 - (UILabel *)descLabel {
@@ -405,7 +375,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     if (!_addGroupMember) {
         
         _addGroupMember = [[UIButton alloc] initWithFrame:CGRectMake(40, 2, 37, 37)];
-        [_addGroupMember setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_groupchat_rightCard_font size:24 color:qim_groupchat_rightCard_Color]] forState:UIControlStateNormal];
+        [_addGroupMember setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_groupchat_rightCard_font size:qim_groupchat_rightCard_TextSize color:qim_groupchat_rightCard_Color]] forState:UIControlStateNormal];
         [_addGroupMember setAccessibilityIdentifier:@"QIMGroupCard"];
         [_addGroupMember addTarget:self action:@selector(addPersonToPgrup:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -484,14 +454,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     gesture.numberOfTapsRequired = 1;
     gesture.numberOfTouchesRequired = 1;
     [self.tableView addGestureRecognizer:gesture];
-    
-    [self.view addSubview:self.atAllView];
-    [self.atAllView addSubview:self.atAllLabel];
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelAtAll)];
-    [self.atAllView addGestureRecognizer:tap];
-    
-    [self updateAtAllView];
+
     _shareLctId = [[QIMKit sharedInstance] getShareLocationIdByJid:self.chatId];
     if (_shareLctId.length > 0 && [[QIMKit sharedInstance] getShareLocationUsersByShareLocationId:_shareLctId].count > 0) {
         
@@ -512,14 +475,17 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     }
     
     //未读消息按钮
-    _notReadAtMsgTipView = [[QIMNotReadATMsgTipView alloc] initWithNotReadAtMsgCount:3];
-    [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width, 60, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
-    [_notReadAtMsgTipView setNotReadAtMsgDelegate:self];
-    [self.view addSubview:_notReadAtMsgTipView];
-    [UIView animateWithDuration:0.3 animations:^{
-        [UIView setAnimationDelay:0.1];
-        [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width - _notReadAtMsgTipView.width, _notReadAtMsgTipView.top, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
-    }];
+    NSArray *atMeMessageArray = [[QIMKit sharedInstance] getHasAtMeByJid:self.chatId];
+    if (atMeMessageArray.count > 0) {
+        _notReadAtMsgTipView = [[QIMNotReadATMsgTipView alloc] initWithNotReadAtMsgCount:atMeMessageArray.count];
+        [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width, 60, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
+        [_notReadAtMsgTipView setNotReadAtMsgDelegate:self];
+        [self.view addSubview:_notReadAtMsgTipView];
+        [UIView animateWithDuration:0.3 animations:^{
+            [UIView setAnimationDelay:0.1];
+            [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width - _notReadAtMsgTipView.width, _notReadAtMsgTipView.top, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
+        }];
+    }
     
     [self.textBar performSelector:@selector(keyBoardDown) withObject:nil afterDelay:0.5];
 }
@@ -984,57 +950,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     }
 }
 
-- (void)cancelAtAll {
-    
-    [[QIMKit sharedInstance] removeAtAllByJid:self.chatId];
-    [_atAllView setHidden:YES];
-}
-
-- (void)updateAtAllView {
-    
-    NSDictionary *atAllMsgDic = [[QIMKit sharedInstance] getAtAllInfoByJid:self.chatId];
-    if (atAllMsgDic) {
-        
-        [_atAllView setHidden:NO];
-        NSString *nickName = [atAllMsgDic objectForKey:@"NickName"];
-        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:nickName];
-        if (userInfo.count) {
-            nickName = [userInfo objectForKey:@"Name"];
-        }
-       QIMMessageModel *msg = [atAllMsgDic objectForKey:@"Msg"];
-        QIMTextContainer *container = [QIMMessageParser textContainerForMessage:msg];
-        
-        [self.atAllLabel removeFromSuperview];
-        self.atAllLabel = nil;
-        [self.atAllView addSubview:self.atAllLabel];
-        
-        NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
-        [ps setAlignment:NSTextAlignmentLeft];
-        NSDictionary *titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xff0000 alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, [UIFont systemFontOfSize:17], NSFontAttributeName, nil];
-        
-        [self.atAllLabel appendTextAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"@全体成员 %@:", nickName] attributes:titleDic]];
-        if (msg.messageType == QIMMessageType_Text || msg.messageType == QIMMessageType_Image) {
-            for (id <QCAppendTextStorageProtocol> storage in container.textStorages) {
-                if ([storage isMemberOfClass:[QIMImageStorage class]]) {
-                    if ([(QIMImageStorage *) storage image]) {
-                        [self.atAllLabel appendImage:[(QIMImageStorage *) storage image] size:CGSizeMake(self.atAllLabel.height, self.atAllLabel.height)];
-                    } else {
-                        [self.atAllLabel appendTextAttributedString:[[NSAttributedString alloc] initWithString:@"【图片】" attributes:titleDic]];
-                    }
-                } else if ([storage isMemberOfClass:[QIMLinkTextStorage class]]) {
-                    [self.atAllLabel appendLinkWithText:[(QIMLinkTextStorage *) storage linkData] linkFont:[UIFont fontWithName:@"FZLTHJW--GB1-0" size:([[QIMCommonFont sharedInstance] currentFontSize] - 2)] linkData:[(QIMLinkTextStorage *) storage linkData]];
-                } else if ([storage isMemberOfClass:[QIMTextStorage class]]) {
-                    [self.atAllLabel appendTextAttributedString:[[NSAttributedString alloc] initWithString:[(QIMTextStorage *) storage text] attributes:titleDic]];
-                } else {
-                    [self.atAllLabel appendText:@""];
-                }
-            }
-        } else {
-            [self.atAllLabel appendText:[[QIMKit sharedInstance] getMsgShowTextForMessageType:msg.messageType]];
-        }
-    }
-}
-
 - (void)updateGroupNickName:(NSNotification *)notify {
     
     NSArray *groupIds = notify.object;
@@ -1091,26 +1006,82 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)moveToFirstNotReadMsg {
     
-    __weak id weakSelf = self;
+    __weak __typeof(self) weakSelf = self;
     [[QIMKit sharedInstance] getMsgListByUserId:self.chatId
                                     WithRealJid:self.chatId
                                         FromTimeStamp:_readedMsgTimeStamp
                                          WithComplete:^(NSArray *list) {
-                                             [self updateGroupUsersHeadImgForMsgs:list];
+                                             [weakSelf updateGroupUsersHeadImgForMsgs:list];
                                              dispatch_async(dispatch_get_main_queue(), ^{
-                                                 self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
+                                                 weakSelf.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
                                                  [weakSelf checkAddNewMsgTag];
-                                                 [self.tableView reloadData];
-                                                 [self hiddenNotReadTipView];
-                                                 [self addImageToImageList];
-                                                 if (self.messageManager.dataSource.count > 0) {
+                                                 [weakSelf.tableView reloadData];
+                                                 [weakSelf hiddenNotReadTipView];
+                                                 [weakSelf hiddenNotReadAtMsgTipView];
+                                                 [weakSelf addImageToImageList];
+                                                 [[QIMKit sharedInstance] clearAtMeMessageWithJid:weakSelf.chatId];
+                                                 if (weakSelf.messageManager.dataSource.count > 0) {
                                                      
-                                                     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:(0) inSection:0]
+                                                     [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:(0) inSection:0]
                                                                            atScrollPosition:UITableViewScrollPositionTop
                                                                                    animated:YES];
                                                  }
                                              });
                                          }];
+}
+
+- (void)updateNotReadAtMsgTipView {
+    NSArray *atMsgArray = [[QIMKit sharedInstance] getHasAtMeByJid:self.chatId];
+    if (atMsgArray.count > 0) {
+        [_notReadAtMsgTipView updateNotReadAtMsgCount:atMsgArray.count];
+    } else {
+        [self hiddenNotReadAtMsgTipView];
+    }
+}
+
+- (void)hiddenNotReadAtMsgTipView {
+    
+    if (_notReadAtMsgTipView) {
+        
+        [UIView animateWithDuration:0.3 animations:^{
+            
+            [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width, _notReadAtMsgTipView.top, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
+        }                completion:^(BOOL finished) {
+            
+            _notReadAtMsgTipView = nil;
+        }];
+    }
+}
+
+- (void)moveToLastNotReadAtMsg {
+    __weak __typeof(self) weakSelf = self;
+    NSArray *atMsgArray = [[QIMKit sharedInstance] getHasAtMeByJid:self.chatId];
+    if (atMsgArray.count > 0) {
+        QIMVerboseLog(@"atMsgArray : %@", atMsgArray);
+        NSDictionary *groupAtMsgDic = [atMsgArray lastObject];
+        long long messageDate = [[groupAtMsgDic objectForKey:@"MsgDate"] longLongValue];
+        NSString *msgId = [groupAtMsgDic objectForKey:@"MsgId"];
+        if (messageDate <= 0) {
+            QIMMessageModel *msgModel = [[QIMKit sharedInstance] getMsgByMsgId:msgId];
+            messageDate = msgModel.messageDate;
+        }
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId FromTimeStamp:messageDate WithComplete:^(NSArray *list) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                weakSelf.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
+                //标记已读
+                [weakSelf markReadedForChatRoom];
+                BOOL editing = weakSelf.tableView.editing;
+                [weakSelf.tableView reloadData];
+                weakSelf.tableView.editing = editing;
+                [weakSelf addImageToImageList];
+                [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
+                [[QIMKit sharedInstance] updateAtMeMessageWithJid:self.chatId withMsgId:msgId withReadState:QIMAtMsgHasReadState];
+                [weakSelf updateNotReadAtMsgTipView];
+            });
+        }];
+    } else {
+        [self hiddenNotReadAtMsgTipView];
+    }
 }
 
 - (void)reloadTableData {
@@ -1138,7 +1109,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                         BOOL editing = self.tableView.editing;
                         [self.tableView reloadData];
                         self.tableView.editing = editing;
-//                        [self scrollBottom];
                         [self addImageToImageList];
                         [[QIMEmotionSpirits sharedInstance] setDataCount:(int) self.messageManager.dataSource.count];
                     });
@@ -1149,7 +1119,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                   WithLimit:kPageCount
                                                  WithOffset:0
                                                WithComplete:^(NSArray *list) {
-                                                   //                                                     [self updateGroupUsersHeadImgForMsgs:list];
                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                        self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
                                                        //标记已读

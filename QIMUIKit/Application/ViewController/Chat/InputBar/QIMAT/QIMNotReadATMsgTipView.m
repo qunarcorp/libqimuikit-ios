@@ -34,6 +34,11 @@
     return [self initWithFrame:CGRectMake(0, 0, [self getWidthForNotReadCount:notReadAtMsgCount], [self getHeight])];
 }
 
+- (void)updateNotReadAtMsgCount:(int)notReadAtMsgCount {
+    _title = [NSString stringWithFormat:@"我被@%ld次",notReadAtMsgCount];
+    [_titleLabel setText:_title];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {

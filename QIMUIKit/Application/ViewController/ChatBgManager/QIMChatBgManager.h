@@ -5,7 +5,7 @@
 //  Created by admin on 2019/4/25.
 //
 
-#import <Foundation/Foundation.h>
+#import "QIMCommonUIFramework.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

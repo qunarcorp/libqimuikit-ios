@@ -31,10 +31,10 @@
 
 #define qim_rightMoreBtn_font     @"\U0000e733"    //右上角More按钮颜色
 
-#define qim_backButton_font @"\U0000f3cd"
+#define qim_backButton_font @"\U0000e7df"          //对话内返回按钮
 
-#define qim_groupchat_rightCard_font    @"\U0000f1cd"       //群右上角
-#define qim_singlechat_rightCard_font    @"\U0000f1cd"       //单人右上角
+#define qim_groupchat_rightCard_font    @"\U0000e7de"       //群右上角
+#define qim_singlechat_rightCard_font    @"\U0000e7de"       //单人右上角
 
 #define qim_chatsearchRemindViewTextFont  @"\U0000e752"  //聊天会话内搜索Font
 
