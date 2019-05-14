@@ -14,6 +14,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTBridge.h>
 #import <React/RCTEventDispatcher.h>
+#import "UIApplication+QIMApplication.h"
 
 
 @implementation QtalkPlugin
@@ -39,6 +40,17 @@ RCT_EXPORT_METHOD(openNativeWebView:(NSDictionary *)param) {
     }
 }
 
+RCT_EXPORT_METHOD(sendEmail:(NSDictionary *)param) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *userId = [param objectForKey:@"UserId"];
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        [[QIMFastEntrance sharedInstance] sendMailWithRootVc:navVC ByUserId:userId];
+    });
+}
+
 RCT_EXPORT_METHOD(getWorkWorldItem:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
     NSDictionary *momentDic = [[QIMKit sharedInstance] getLastWorkMoment];
     NSLog(@"getWorkWorldItem : %@", momentDic);
@@ -56,6 +68,7 @@ RCT_EXPORT_METHOD(getWorkWorldNotRead:(NSDictionary *)param :(RCTResponseSenderB
     callback(@[notReadMsgDic ? notReadMsgDic : @{}]);
 }
 
+//打开驼圈
 RCT_EXPORT_METHOD(openWorkWorld:(NSDictionary *)param) {
     [[QIMFastEntrance sharedInstance] openWorkFeedViewController];
 }
@@ -67,7 +80,8 @@ RCT_EXPORT_METHOD(openNoteBook:(NSDictionary *)param) {
 
 //打开文件助手
 RCT_EXPORT_METHOD(openFileTransfer:(NSDictionary *)param) {
-    [[QIMFastEntrance sharedInstance] openFileTransMiddleVC];
+    NSString *xmppId = [NSString stringWithFormat:@"%@@%@", @"file-transfer", [[QIMKit sharedInstance] getDomain]];
+    [QIMFastEntrance openSingleChatVCByUserId:xmppId];
 }
 
 //打开扫一扫

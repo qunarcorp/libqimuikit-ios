@@ -1606,14 +1606,14 @@ RCT_EXPORT_METHOD(setWaterMark:(BOOL)isOpen) {
 
 //获取驼圈提醒
 RCT_EXPORT_METHOD(getworkWorldRemind:(RCTResponseSenderBlock)callback) {
-    BOOL state = [[QIMKit sharedInstance] getLocalMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH];
-    callback(@[@{@"state" : @(state)}]);
+//    BOOL state = [[QIMKit sharedInstance] getLocalMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH];
+    callback(@[@{@"state" : @(YES)}]);
 }
 
 //设置驼圈提醒
 RCT_EXPORT_METHOD(updateWorkWorldRemind:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+//    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH WithSwitchOn:state];
+    callback(@[@{@"ok" : @(YES)}]);
 }
 
 //获取客服服务模式
