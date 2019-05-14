@@ -205,7 +205,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             {
                 PHFetchOptions *options = [[PHFetchOptions alloc] init];
                 options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
-                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:YES]];
                 
                 PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
                 if(assetsFetchResult.count>0)

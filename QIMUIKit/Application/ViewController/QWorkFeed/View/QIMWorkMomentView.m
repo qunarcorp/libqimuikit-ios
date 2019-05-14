@@ -182,6 +182,8 @@ CGFloat maxFullContentHeight = 0;
         self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, SCREEN_WIDTH - self.nameLab.left - 20, textContainer.textHeight);
         _contentLabel.textContainer = textContainer;
     }
+    self.contentLabel.originContent = self.moment.content.content;
+
     bottom = _contentLabel.bottom + 8;
 
     if (self.moment.content.imgList.count > 0) {

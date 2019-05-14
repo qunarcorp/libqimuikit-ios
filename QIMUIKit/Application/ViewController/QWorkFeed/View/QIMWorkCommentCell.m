@@ -138,7 +138,6 @@
     _commentModel = commentModel;
     // 头像视图
     if (self.isChildComment == YES) {
-        QIMVerboseLog(@"self.leftMagin : %lf", self.leftMagin);
         _headImageView.frame = CGRectMake(61, 10, 23, 23);
         _headImageView.layer.masksToBounds = YES;
         _headImageView.layer.cornerRadius = _headImageView.width / 2.0f;
@@ -244,6 +243,7 @@
     }
     
     CGFloat textH = textContainer.textHeight;
+    self.contentLabel.originContent = commentModel.content;
     self.contentLabel.textContainer = textContainer;
     if (self.isChildComment) {
         [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, self.nameLab.bottom + 5) Width:(self.likeBtn.left - self.nameLab.left)];

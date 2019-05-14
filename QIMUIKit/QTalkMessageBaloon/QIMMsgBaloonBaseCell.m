@@ -201,7 +201,7 @@ static UIImage *__rightBallocImage = nil;
     if (!_messgaeStateIcon) {
         _messgaeStateIcon = [[UIImageView alloc] init];
         _messgaeStateIcon.hidden = YES;
-        _messgaeStateIcon.frame = CGRectMake(self.backView.left - 20, self.backView.bottom - 12, 13, 13);
+        _messgaeStateIcon.frame = CGRectMake(self.backView.left - 22, self.backView.bottom - 22, 20, 20);
     }
     return _messgaeStateIcon;
 }
@@ -363,7 +363,7 @@ static UIImage *__rightBallocImage = nil;
             
             
             self.messgaeStateIcon.hidden = NO;
-            self.messgaeStateIcon.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_messageReadState_font size:13 color:qim_messageReadState_color]];
+            self.messgaeStateIcon.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_messageReadState_font size:20 color:qim_messageReadState_color]];
             
             self.statusButton.hidden = YES;
         } else {
@@ -374,7 +374,7 @@ static UIImage *__rightBallocImage = nil;
                 self.indicatorView.hidden = YES;
 //                self.messgaeStateLabel.hidden = NO;
                 self.messgaeStateIcon.hidden = NO;
-                self.messgaeStateIcon.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_messageUnReadState_font size:13 color:qim_messageUnReadState_color]];
+                self.messgaeStateIcon.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_messageUnReadState_font size:20 color:qim_messageUnReadState_color]];
                 self.statusButton.hidden = YES;
 //                [_sessionButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f3" size:32 color:[UIColor qim_colorWithHex:0x616161 alpha:1.0]]] forState:UIControlStateNormal];
 
@@ -388,7 +388,7 @@ static UIImage *__rightBallocImage = nil;
 //                self.messgaeStateLabel.text = @"未读";
 //                self.messgaeStateLabel.textColor = [UIColor qim_colorWithHex:0x15b0f9 alpha:1.0];
                 self.messgaeStateIcon.hidden = NO;
-                self.messgaeStateIcon.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_messageUnReadState_font size:13 color:qim_messageUnReadState_color]];
+                self.messgaeStateIcon.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_messageUnReadState_font size:20 color:qim_messageUnReadState_color]];
             }
         }
     }

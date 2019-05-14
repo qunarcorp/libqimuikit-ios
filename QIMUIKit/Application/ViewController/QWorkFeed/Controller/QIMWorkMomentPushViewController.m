@@ -130,11 +130,7 @@
 
 - (UITextView *)textView {
     if (!_textView) {
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            _textView = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, [[UIScreen mainScreen] qim_rightWidth] - 30, 150)];
-        } else {
-            _textView = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, SCREEN_WIDTH - 30, 150)];
-        }
+        _textView = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, [[UIScreen mainScreen] qim_rightWidth] - 30, 150)];
         _textView.backgroundColor = [UIColor whiteColor];
         [_textView setFont:[UIFont systemFontOfSize:17]];
         [_textView setTextColor:[UIColor qim_colorWithHex:0x333333]];
@@ -156,12 +152,8 @@
 - (QIMCollectionEmotionPanView *)photoCollectionView {
     if (!_photoCollectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-        CGFloat cellHeight = (SCREEN_WIDTH - 75) / 3;
-        CGFloat cellWidth = (SCREEN_WIDTH - 75) / 3;
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            cellHeight = ([[UIScreen mainScreen] qim_rightWidth] - 75) / 3;
-            cellWidth = ([[UIScreen mainScreen] qim_rightWidth] - 75) / 3;
-        }
+        CGFloat cellHeight = ([[UIScreen mainScreen] qim_rightWidth] - 75) / 3;
+        CGFloat cellWidth = ([[UIScreen mainScreen] qim_rightWidth] - 75) / 3;
         layout.itemSize = CGSizeMake(cellWidth, cellHeight);
         layout.sectionInset = UIEdgeInsetsMake(15, 15, 15, 25);
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -211,13 +203,8 @@
 
 - (UITableView *)panelListView {
     if (!_panelListView) {
-        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 51, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
-        /*
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 500) style:UITableViewStylePlain];
-        } else {
-            _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 500) style:UITableViewStylePlain];
-        } */
+//        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 51, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
+        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
         _panelListView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _panelListView.delegate = self;
         _panelListView.dataSource = self;
@@ -500,16 +487,16 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self showProgressHUDWithMessage:@"动态上传中..."];
             NSMutableDictionary *momentDic = [NSMutableDictionary dictionaryWithCapacity:3];
-            [momentDic setObject:self.momentId forKey:@"uuid"];
-            [momentDic setObject:[QIMKit getLastUserName] forKey:@"owner"];
-            [momentDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"ownerHost"];
-            [momentDic setObject:@([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) forKey:@"isAnonymous"];
+            [momentDic setQIMSafeObject:self.momentId forKey:@"uuid"];
+            [momentDic setQIMSafeObject:[QIMKit getLastUserName] forKey:@"owner"];
+            [momentDic setQIMSafeObject:[[QIMKit sharedInstance] getDomain] forKey:@"ownerHost"];
+            [momentDic setQIMSafeObject:@([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) forKey:@"isAnonymous"];
             if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-                [momentDic setObject:@"" forKey:@"AnonymousName"];
-                [momentDic setObject:@"" forKey:@"AnonymousPhoto"];
+                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousName"];
+                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousPhoto"];
             } else {
-                [momentDic setObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName] forKey:@"AnonymousName"];
-                [momentDic setObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto] forKey:@"AnonymousPhoto"];
+                [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName] forKey:@"AnonymousName"];
+                [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto] forKey:@"AnonymousPhoto"];
             }
             
             NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
@@ -531,16 +518,14 @@
                     }
                 }
             }
-//            NSDictionary *atDic = @{@"type":@(10001), @"data":@[@{@"jid": @"lilulucas.li@ejabhost1", @"text":@"lilulucas.li"}, @{@"jid": @"binz.zhang@ejabhost1", @"text":@"张滨"}]};
-//            NSArray *atArray = @[atDic];
-
+            
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                 
                 [momentContentDic setQIMSafeObject:imageList forKey:@"imgList"];
                 [momentContentDic setQIMSafeObject:@(0) forKey:@"type"];
                 NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
-                [momentDic setObject:momentContent forKey:@"content"];
-                [momentDic setObject:outATInfoArray forKey:@"atList"];
+                [momentDic setQIMSafeObject:momentContent forKey:@"content"];
+                [momentDic setQIMSafeObject:outATInfoArray forKey:@"atList"];
                 QIMVerboseLog(@"outATInfoArray: %@", outATInfoArray);
                 QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
                 QIMVerboseLog(@"momentDic: %@", momentDic);
@@ -595,15 +580,6 @@
     plainString = [NSMutableString stringWithString:[plainString stringByReplacingOccurrencesOfString:@"\U0000fffc" withString:@""]];
     return plainString;
 }
-
-/*
-NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
-NSString *attributedText = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:[self.textBar getTextBarAttributedText] WithOutAtInfo:&outATInfoArray];
-//    NSString *attributedText = [self.textBar getSendAttributedText];
-if (attributedText.length > 0) {
-    text = attributedText;
-}
-*/
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDatasource
 
@@ -682,10 +658,10 @@ if (attributedText.length > 0) {
     } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
         UICollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
         footerView.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 1.0f)];
-        lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
-        [footerView addSubview:lineView];
-        [footerView addSubview:self.atLabel];
+//        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 1.0f)];
+//        lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
+//        [footerView addSubview:lineView];
+//        [footerView addSubview:self.atLabel];
         [footerView addSubview:self.panelListView];
         return footerView;
     } else {

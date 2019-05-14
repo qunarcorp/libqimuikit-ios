@@ -16,23 +16,21 @@
 #import "NSBundle+QIMLibrary.h"
 
 #define kCellWidth      250
-#define kCellHeight     94
+#define kCellHeight     109
 
 @interface QIMFileCell()<QIMMenuImageViewDelegate>
 
+@property (nonatomic, strong) UIView *bgView;
+@property (nonatomic, strong) UIImageView *iconImageView;
+@property (nonatomic, strong) UILabel *fileNameLabel;
+@property (nonatomic, strong) UILabel *fileSizeLabel;
+@property (nonatomic, strong) UIView *lineView;
+@property (nonatomic, strong) UILabel *fileStateLabel;
+@property (nonatomic, strong) UILabel *platFormLabel;
 
 @end
 
-@implementation QIMFileCell{
-    
-    UIView          * _bgView;
-    UIImageView     * _iconImageView;
-    UILabel         * _fileNameLabel;
-    UILabel         * _fileSizeLabel;
-    UILabel         * _fileStateLabel;
-    UILabel         * _platFormLabel;
-}
-
+@implementation QIMFileCell
 
 + (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     return kCellHeight + 20 + (chatType == ChatType_GroupChat ? 20 : 0);
@@ -42,57 +40,62 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        self.selectionStyle = UITableViewCellSelectionStyleDefault;
-        UIView* view = [[UIView alloc]initWithFrame:self.contentView.frame];
-        view.backgroundColor=[UIColor clearColor];
-        self.selectedBackgroundView = view;
+//        self.selectionStyle = UITableViewCellSelectionStyleDefault;
+//        UIView *view = [[UIView alloc]initWithFrame:self.contentView.frame];
+//        view.backgroundColor=[UIColor clearColor];
+//        self.selectedBackgroundView = view;
+        
+        self.backgroundView = nil;
+        self.backgroundColor = [UIColor clearColor];
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.selectedBackgroundView = nil;
         
         _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kCellWidth, kCellHeight)];
+        _bgView.backgroundColor = [UIColor clearColor];
         [self.backView addSubview:_bgView];
         
-        UIView *fileBackView = [[UIView alloc] initWithFrame:CGRectMake(0, 12, kCellWidth, kCellHeight - 30)];
+        UIView *fileBackView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kCellWidth, kCellHeight - 27)];
         [_bgView addSubview:fileBackView];
         fileBackView.backgroundColor = [UIColor clearColor];
-//        fileBackView.centerY = _bgView.centerY;
         
-        _iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 5, AVATAR_WIDTH, AVATAR_WIDTH)];
-        [fileBackView addSubview:_iconImageView];
-
-        _fileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(_iconImageView.right + 10, 0, kCellWidth - (_iconImageView.right + 10) - 20 , 44)];
+        _fileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(18, 12, kCellWidth - 50 - 20 - 20, 42)];
         [_fileNameLabel setBackgroundColor:[UIColor clearColor]];
-        [_fileNameLabel setTextColor:[UIColor qim_colorWithHex:0x212121]];
-        [_fileNameLabel setFont:[UIFont boldSystemFontOfSize:16]];
+        [_fileNameLabel setTextColor:[UIColor qim_colorWithHex:0x333333]];
+        [_fileNameLabel setFont:[UIFont boldSystemFontOfSize:15]];
         [_fileNameLabel setTextAlignment:NSTextAlignmentLeft];
         [_fileNameLabel setNumberOfLines:2];
         [fileBackView addSubview:_fileNameLabel];
         
-        _fileSizeLabel = [[UILabel alloc] initWithFrame:CGRectMake(_fileNameLabel.left, 44, _fileNameLabel.width - 10, 18)];
+        _fileSizeLabel = [[UILabel alloc] initWithFrame:CGRectMake(_fileNameLabel.left, _fileNameLabel.bottom + 3, _fileNameLabel.width - 10, 18)];
         [_fileSizeLabel setBackgroundColor:[UIColor clearColor]];
-        [_fileSizeLabel setTextColor:[UIColor qim_colorWithHex:0x9E9E9E]];
-        [_fileSizeLabel setFont:[UIFont systemFontOfSize:13]];
+        [_fileSizeLabel setTextColor:[UIColor qim_colorWithHex:0x999999]];
+        [_fileSizeLabel setFont:[UIFont systemFontOfSize:12]];
         [_fileSizeLabel setTextAlignment:NSTextAlignmentLeft];
         [fileBackView addSubview:_fileSizeLabel];
         
-        _fileStateLabel = [[UILabel alloc] initWithFrame:CGRectMake(kCellWidth - 100, 44, 90, 18)];
-        [_fileStateLabel setBackgroundColor:[UIColor clearColor]];
-        [_fileStateLabel setTextColor:[UIColor qim_colorWithHex:0x9E9E9E]];
-        [_fileStateLabel setFont:[UIFont systemFontOfSize:13]];
-        [_fileStateLabel setTextAlignment:NSTextAlignmentRight];
-        [fileBackView addSubview:_fileStateLabel];
+        _iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(fileBackView.width - 12 - 50, 12, AVATAR_WIDTH, AVATAR_WIDTH)];
+        [fileBackView addSubview:_iconImageView];
         
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, fileBackView.bottom, kCellWidth, 0.5f)];
-        lineView.backgroundColor = [UIColor qim_colorWithHex:0x9E9E9E];
-        lineView.contentMode   = UIViewContentModeBottom;
-        lineView.clipsToBounds = YES;
-        [_bgView addSubview:lineView];
+        _lineView = [[UIView alloc] initWithFrame:CGRectMake(0, fileBackView.bottom, _bgView.width - 7, 0.5f)];
+        _lineView.backgroundColor = [UIColor qim_colorWithHex:0xEAEAEA];
+        _lineView.contentMode   = UIViewContentModeBottom;
+        _lineView.clipsToBounds = YES;
+        [_bgView addSubview:_lineView];
         
-        _platFormLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, lineView.bottom, 50, 18)];
+        _platFormLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, _lineView.bottom + 8, 60, 12)];
         _platFormLabel.text = ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) ? @"来自QChat" : @"来自QTalk";
-        _platFormLabel.font = [UIFont systemFontOfSize:9];
+        _platFormLabel.font = [UIFont systemFontOfSize:12];
         _platFormLabel.backgroundColor = [UIColor clearColor];
         _platFormLabel.textAlignment = NSTextAlignmentLeft;
-        _platFormLabel.textColor = [UIColor qim_colorWithHex:0x9E9E9E];
+        _platFormLabel.textColor = [UIColor qim_colorWithHex:0x999999];
         [_bgView addSubview:_platFormLabel];
+        
+        _fileStateLabel = [[UILabel alloc] initWithFrame:CGRectMake(_bgView.right - 12 - 150, _lineView.bottom + 8, 150, 12)];
+        [_fileStateLabel setBackgroundColor:[UIColor clearColor]];
+        [_fileStateLabel setTextColor:[UIColor qim_colorWithHex:0x999999]];
+        [_fileStateLabel setFont:[UIFont systemFontOfSize:12]];
+        [_fileStateLabel setTextAlignment:NSTextAlignmentRight];
+        [_bgView addSubview:_fileStateLabel];
         
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandle:)];
         [self.backView addGestureRecognizer:tap];
@@ -102,7 +105,7 @@
     return self;
 }
 
-- (void)downfileNotify:(NSNotification *)nofity{
+- (void)downfileNotify:(NSNotification *)nofity {
     if ([self.message.messageId isEqualToString:nofity.object]) {
         [self refreshUI];
     }
@@ -128,6 +131,19 @@
     
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
+    
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
+        
+    } else {
+        _iconImageView.frame = CGRectMake(12 + 5, 12, AVATAR_WIDTH, AVATAR_WIDTH);
+        _fileNameLabel.frame = CGRectMake(_iconImageView.right + 17, 12, kCellWidth - (_iconImageView.right + 10) - 20 , 42);
+        _fileSizeLabel.frame = CGRectMake(_fileNameLabel.left, _fileNameLabel.bottom + 3, _fileNameLabel.width - 10, 18);
+        _fileStateLabel.frame = CGRectMake(12 + 5, self.lineView.bottom + 8, 150, 12);
+        _lineView.x = 7;
+        _lineView.width = _bgView.width - 11;
+        _platFormLabel.frame = CGRectMake(self.lineView.right - 20 - 60, self.lineView.bottom + 8, 60, 12);
+        _fileStateLabel.textAlignment = NSTextAlignmentLeft;
+    }
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *fileSize = [[infoDic objectForKey:@"FileSize"] description];

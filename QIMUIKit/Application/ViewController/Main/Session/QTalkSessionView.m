@@ -153,10 +153,10 @@
     if (!_otherPlatformView) {
         _otherPlatformView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 49)];
         _otherPlatformView.backgroundColor = qim_otherPlatformViewBgColor;
-        UIImageView *pcIconView = [[UIImageView alloc] initWithFrame:CGRectMake(18, 8, 24, 24)];
+        UIImageView *pcIconView = [[UIImageView alloc] initWithFrame:CGRectMake(18, 12, 24, 24)];
         pcIconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_otherPlatformViewIcon_font size:20 color:qim_otherPlatformViewIconColor]];
         [_otherPlatformView addSubview:pcIconView];
-        UILabel *pcTipLabel = [[UILabel alloc] initWithFrame:CGRectMake(pcIconView.right + 15, 10, 300, 20)];
+        UILabel *pcTipLabel = [[UILabel alloc] initWithFrame:CGRectMake(pcIconView.right + 15, 12, 300, 20)];
         NSString *platTitle = @"QTalk";
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
             platTitle = @"QTalk";
@@ -169,10 +169,12 @@
         pcTipLabel.textColor = qim_otherPlatformViewTextColor;
         pcTipLabel.font = [UIFont systemFontOfSize:14];
         [_otherPlatformView addSubview:pcTipLabel];
+        pcTipLabel.centerY = pcIconView.centerY;
         
         UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(self.right - 5 - 34, 7.5, 34, 34)];
         arrowView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_otherPlatformViewArrow_font size:34 color:qim_otherPlatformViewRightArrowColor]];
         [_otherPlatformView addSubview:arrowView];
+        arrowView.centerY=pcTipLabel.centerY;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFileTrans)];
         [_otherPlatformView addGestureRecognizer:tap];
         
@@ -231,8 +233,9 @@
         _tableView.estimatedRowHeight = 0;
         _tableView.estimatedSectionHeaderHeight = 0;
         _tableView.estimatedSectionFooterHeight = 0;
-        _tableView.separatorInset = UIEdgeInsetsMake(0, 74, 0, 0.5);           //top left bottom right 左右边距相同
+        _tableView.separatorInset = UIEdgeInsetsMake(0, 70, 0, 0.5);           //top left bottom right 左右边距相同
         _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _tableView.separatorColor = [UIColor qim_colorWithHex:0xEAEAEA];
         _tableView.tableFooterView = [UIView new];
         if (@available(iOS 11.0, *)) {
             _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
@@ -312,7 +315,7 @@
 
 - (QIMSearchBar *)searchBar {
     if (!_searchBar) {
-        _searchBar = [[QIMSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.width, 66)];
+        _searchBar = [[QIMSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.width, 56)];
         _searchBar.delegate = self;
     }
     return _searchBar;

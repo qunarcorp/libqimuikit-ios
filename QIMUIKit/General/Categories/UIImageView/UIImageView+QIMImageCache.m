@@ -58,7 +58,7 @@
                     } else if ([jid hasPrefix:@"rbt-zhongbao"]) {
                         placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-qiangdan"];
                     } else {
-                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
+                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-system"];
                     }
                 }
             }

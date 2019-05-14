@@ -274,11 +274,13 @@ static dispatch_once_t __onceMainToken;
             [_tabBar setBadgeNumber:appCount ByItemIndex:0];
             if (appCount <= 0) {
                 weakSelf.navTitle = nil;
+                [weakSelf.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:18],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
                 [[QIMNavBackBtn sharedInstance] updateNotReadCount:0];
             } else {
 //                NSString *appName = [QIMKit getQIMProjectTitleName];
 //                weakSelf.navTitle = [NSString stringWithFormat:@"%@(%ld)", appName, (long)appCount];
                 weakSelf.navTitle = @"消息";
+                [weakSelf.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:18],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
                 [[QIMNavBackBtn sharedInstance] updateNotReadCount:appCount];
             }
             [weakSelf updateNavBarAppCount];
@@ -348,8 +350,10 @@ static dispatch_once_t __onceMainToken;
         if (_tabBar.selectedIndex == 0) {
             if (self.appNetWorkTitle) {
                 [self.navigationItem setTitle:self.appNetWorkTitle];
+                [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:18],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
             } else {
                 [self.navigationItem setTitle:self.navTitle];
+                [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:18],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
             }
         }
     });
@@ -379,17 +383,20 @@ static dispatch_once_t __onceMainToken;
 
 - (void)updateWorkFeedNotReadCount:(NSNotification *)notify {
     QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        __block BOOL count = NO;
-        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-            if (notify) {
-                count = [notify.object boolValue];
+    BOOL workMoment = [[QIMKit sharedInstance] getLocalMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH];
+    if (workMoment == YES) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            __block BOOL count = NO;
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+                if (notify) {
+                    count = [notify.object boolValue];
+                }
             }
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [_tabBar setBadgeNumber:count ByItemIndex:3 showNumber:NO];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_tabBar setBadgeNumber:count ByItemIndex:3 showNumber:NO];
+            });
         });
-    });
+    }
 }
 
 - (void)updateUpdateProgress:(NSNotification *)notify {
@@ -820,7 +827,7 @@ static dispatch_once_t __onceMainToken;
         [self.momentView setHidden:NO];
         long long currentTime = [NSDate timeIntervalSinceReferenceDate];
         long long lastUpdateMomentTime = [[[QIMKit sharedInstance] userObjectForKey:@"lastUpdateMomentTime"] longLongValue];
-        if (currentTime - lastUpdateMomentTime > 1) {
+        if (currentTime - lastUpdateMomentTime > 5 * 60 * 60) {
             [self.momentView updateMomentView];
             [[QIMKit sharedInstance] setUserObject:@(currentTime) forKey:@"lastUpdateMomentTime"];
         }
@@ -970,10 +977,12 @@ static dispatch_once_t __onceMainToken;
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_contact"]]) {
         
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_contact"]];
+        /*
         if ([QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
             UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.addFriendBtn];
             [self.navigationItem setRightBarButtonItem:rightBarItem];
         }
+        */
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]]) {
         
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]];

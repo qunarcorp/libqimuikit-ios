@@ -19,7 +19,7 @@
 @implementation QIMSearchRemindView
 
 - (instancetype)initWithChatId:(NSString *)chatId withRealJid:(NSString *)realjid withChatType:(NSInteger)chatType {
-    if (self = [super initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 120, 100, 120, 36)]) {
+    if (self = [super initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 120, 110, 120, 36)]) {
         self.backgroundColor = [UIColor whiteColor];
         UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:UIRectCornerBottomLeft | UIRectCornerTopLeft cornerRadii:CGSizeMake(18, 18)];
         CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];

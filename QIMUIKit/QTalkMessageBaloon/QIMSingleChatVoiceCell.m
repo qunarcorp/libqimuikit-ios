@@ -121,25 +121,27 @@ static NSArray *_sentImageArray = nil;
     
 }
 
-- (void)updatePlayVoiceTime:(NSNotification *)notify{
+- (void)updatePlayVoiceTime:(NSNotification *)notify {
     NSDictionary *userInfo = notify.userInfo;
     NSString *msgId = [userInfo objectForKey:kNotifyPlayVoiceTimeMsgId];
     long long time = [[userInfo objectForKey:kNotifyPlayVoiceTimeTime] longLongValue];
     if ([msgId isEqualToString:self.message.messageId]) {
-        int sec = time % 60;
-        if (!_minute) {
-            
-            [_timeLabel setText:[NSString stringWithFormat:@"%02d''", (sec + 1) % 60]];
-        } else {
-            
-            if (sec + 1 == 60) {
-                sec = -1;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            int sec = time % 60;
+            if (!_minute) {
+                
+                [_timeLabel setText:[NSString stringWithFormat:@"%02d''", (sec + 1) % 60]];
+            } else {
+                
+                if (sec + 1 == 60) {
+                    sec = -1;
+                }
+                [_timeLabel setText:[NSString stringWithFormat:@"%ld'%02d''", (long)_minute, (sec + 1) % 60]];
             }
-            [_timeLabel setText:[NSString stringWithFormat:@"%ld'%02d''", (long)_minute, (sec + 1) % 60]];
-        }
-        if (sec == 58) {
-            _minute += 1;
-        }
+            if (sec == 58) {
+                _minute += 1;
+            }
+        });
     }
 }
 

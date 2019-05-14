@@ -88,7 +88,6 @@
             frame = CGRectMake(0, 0, singleSize.width, singleSize.height);
         }
         imageView = [self viewWithTag:1000+i];
-//        imageView.hidden = NO;
         imageView.frame = frame;
         NSString *imageUrl = picture.imageUrl;
         if (![imageUrl qim_hasPrefixHttpHeader]) {

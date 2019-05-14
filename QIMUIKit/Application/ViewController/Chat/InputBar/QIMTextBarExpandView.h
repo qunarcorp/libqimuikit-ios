@@ -30,6 +30,7 @@ typedef enum {
 #define QIMTextBarExpandViewItem_ShareCard        @"ShareCard"
 #define QIMTextBarExpandViewItem_RedPack          @"RedPack"
 #define QIMTextBarExpandViewItem_AACollection     @"AACollection"
+#define QIMTextBarExpandViewItem_Encryptchat      @"Encryptchat"
 #define QIMTextBarExpandViewItem_SendProduct      @"SendProduct"
 #define QIMTextBarExpandViewItem_SendActivity     @"SendActivity"
 #define QIMTextBarExpandViewItem_Shock            @"Shock"
