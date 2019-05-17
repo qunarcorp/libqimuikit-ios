@@ -337,6 +337,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
+//    return [NSURL URLWithString:@"http://100.80.128.195:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -1095,7 +1096,7 @@ RCT_EXPORT_METHOD(destructionGroup:(NSString *)groupId :(RCTResponseSenderBlock)
 RCT_EXPORT_METHOD(selectUserListByText:(NSDictionary *)params :(RCTResponseSenderBlock)callback) {
     NSString *groupId = [params objectForKey:@"groupId"];
     NSString *searchText = [params objectForKey:@"searchText"];
-    NSArray *users = [[QIMKit sharedInstance] searchUserBySearchStr:searchText notInGroup:groupId];
+    NSArray *users = [[QIMKit sharedInstance] searchUserBySearchStr:[searchText lowercaseString] notInGroup:groupId];
     NSMutableArray *properties = [NSMutableArray arrayWithCapacity:3];
 
     for (NSDictionary *memberDic in users) {
@@ -1306,7 +1307,8 @@ RCT_EXPORT_METHOD(selectFriendsForGroupAdd:(NSDictionary *)param :(RCTResponseSe
             [dic setObject:@(YES) forKey:@"friend"];
             [contactList addObject:dic];
         }
-        callback(@[@{@"UserList":contactList?contactList:@[], @"ok":@(YES)}]);
+//        callback(@[@{@"UserList":contactList?contactList:@[], @"ok":@(YES)}]);
+        callback(@[@{@"UserList":@[], @"ok":@(YES)}]);
     } else {
         callback(@[@{@"UserList":@[], @"ok":@(YES)}]);
     }
