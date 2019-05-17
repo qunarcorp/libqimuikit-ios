@@ -311,23 +311,23 @@ static NSString *__default_ua = nil;
             
             NSString *qckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
             NSString *quserId = [QIMKit getLastUserName];
-            [qckeyCookieProperties setObject:qckey forKey:NSHTTPCookieValue];
-            [qckeyCookieProperties setObject:@"q_ckey" forKey:NSHTTPCookieName];
-            [qckeyCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [qckeyCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [qckeyCookieProperties setQIMSafeObject:qckey forKey:NSHTTPCookieValue];
+            [qckeyCookieProperties setQIMSafeObject:@"q_ckey" forKey:NSHTTPCookieName];
+            [qckeyCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [qckeyCookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [qckeyCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
-            [quCookieProperties setObject:quserId forKey:NSHTTPCookieValue];
-            [quCookieProperties setObject:@"q_u" forKey:NSHTTPCookieName];
-            [quCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [quCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [quCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [quCookieProperties setQIMSafeObject:quserId forKey:NSHTTPCookieValue];
+            [quCookieProperties setQIMSafeObject:@"q_u" forKey:NSHTTPCookieName];
+            [quCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [quCookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [quCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
-            [qnmCookieProperties setObject:quserId forKey:NSHTTPCookieValue];
-            [qnmCookieProperties setObject:@"q_nm" forKey:NSHTTPCookieName];
-            [qnmCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [qnmCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [qnmCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [qnmCookieProperties setQIMSafeObject:quserId forKey:NSHTTPCookieValue];
+            [qnmCookieProperties setQIMSafeObject:@"q_nm" forKey:NSHTTPCookieName];
+            [qnmCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [qnmCookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [qnmCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
             NSHTTPCookie*qckeyCookie = [NSHTTPCookie cookieWithProperties:qckeyCookieProperties];
             NSHTTPCookie*quCookie = [NSHTTPCookie cookieWithProperties:quCookieProperties];
@@ -342,11 +342,11 @@ static NSString *__default_ua = nil;
             NSMutableDictionary *qckeyCookieProperties = [NSMutableDictionary dictionary];
             
             NSString *qckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
-            [qckeyCookieProperties setObject:qckey forKey:NSHTTPCookieValue];
-            [qckeyCookieProperties setObject:@"q_ckey" forKey:NSHTTPCookieName];
-            [qckeyCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [qckeyCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [qckeyCookieProperties setQIMSafeObject:qckey forKey:NSHTTPCookieValue];
+            [qckeyCookieProperties setQIMSafeObject:@"q_ckey" forKey:NSHTTPCookieName];
+            [qckeyCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [qckeyCookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [qckeyCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             NSHTTPCookie*qckeyCookie = [NSHTTPCookie cookieWithProperties:qckeyCookieProperties];
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
             NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -371,11 +371,11 @@ static NSString *__default_ua = nil;
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qcookie];
                 
                 NSMutableDictionary *vcookieProperties = [NSMutableDictionary dictionary];
-                [vcookieProperties setObject:@"_v" forKey:NSHTTPCookieName];
+                [vcookieProperties setQIMSafeObject:@"_v" forKey:NSHTTPCookieName];
                 [vcookieProperties setQIMSafeObject:vCookie forKey:NSHTTPCookieValue];
-                [vcookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-                [vcookieProperties setObject:@"/" forKey:NSHTTPCookiePath];
-                [vcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [vcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                [vcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+                [vcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
                 NSHTTPCookie*vcookie = [NSHTTPCookie cookieWithProperties:vcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:vcookie];
@@ -396,17 +396,17 @@ static NSString *__default_ua = nil;
             NSString *u = [QIMKit getLastUserName];
             NSString *k = [[QIMKit sharedInstance] remoteKey];
             
-            [ucookieProperties setObject:u forKey:NSHTTPCookieValue];
-            [ucookieProperties setObject:@"_u" forKey:NSHTTPCookieName];
-            [ucookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [ucookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [ucookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [ucookieProperties setQIMSafeObject:u forKey:NSHTTPCookieValue];
+            [ucookieProperties setQIMSafeObject:@"_u" forKey:NSHTTPCookieName];
+            [ucookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [ucookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [ucookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
-            [kcookieProperties setObject:k forKey:NSHTTPCookieValue];
-            [kcookieProperties setObject:@"_k" forKey:NSHTTPCookieName];
+            [kcookieProperties setQIMSafeObject:k forKey:NSHTTPCookieValue];
+            [kcookieProperties setQIMSafeObject:@"_k" forKey:NSHTTPCookieName];
             [kcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [kcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [kcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [kcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
             NSHTTPCookie *uCookie = [NSHTTPCookie cookieWithProperties:ucookieProperties];
             NSHTTPCookie *kCookie = [NSHTTPCookie cookieWithProperties:kcookieProperties];
@@ -417,11 +417,11 @@ static NSString *__default_ua = nil;
             NSMutableDictionary *dcookieProperties = [NSMutableDictionary dictionary];
             NSString *domain = [[QIMKit sharedInstance] getDomain];
             
-            [dcookieProperties setObject:domain forKey:NSHTTPCookieValue];
-            [dcookieProperties setObject:@"q_d" forKey:NSHTTPCookieName];
+            [dcookieProperties setQIMSafeObject:domain forKey:NSHTTPCookieValue];
+            [dcookieProperties setQIMSafeObject:@"q_d" forKey:NSHTTPCookieName];
             [dcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [dcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [dcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [dcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
             NSHTTPCookie *dCookie = [NSHTTPCookie cookieWithProperties:dcookieProperties];
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:dCookie];
@@ -445,11 +445,11 @@ static NSString *__default_ua = nil;
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qcookie];
                 
                 NSMutableDictionary *vcookieProperties = [NSMutableDictionary dictionary];
-                [vcookieProperties setObject:@"_v" forKey:NSHTTPCookieName];
+                [vcookieProperties setQIMSafeObject:@"_v" forKey:NSHTTPCookieName];
                 [vcookieProperties setQIMSafeObject:vCookie forKey:NSHTTPCookieValue];
-                [vcookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-                [vcookieProperties setObject:@"/" forKey:NSHTTPCookiePath];
-                [vcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [vcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                [vcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+                [vcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
                 NSHTTPCookie*vcookie = [NSHTTPCookie cookieWithProperties:vcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:vcookie];
@@ -467,11 +467,11 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *dcookieProperties = [NSMutableDictionary dictionary];
                 NSString *domain = [[QIMKit sharedInstance] getDomain];
                 
-                [dcookieProperties setObject:domain forKey:NSHTTPCookieValue];
-                [dcookieProperties setObject:@"q_d" forKey:NSHTTPCookieName];
+                [dcookieProperties setQIMSafeObject:domain forKey:NSHTTPCookieValue];
+                [dcookieProperties setQIMSafeObject:@"q_d" forKey:NSHTTPCookieName];
                 [dcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [dcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-                [dcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [dcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 NSHTTPCookie *dcookie = [NSHTTPCookie cookieWithProperties:dcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:dcookie];
             } else {
@@ -480,19 +480,19 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *dcookieProperties = [NSMutableDictionary dictionary];
                 NSString *domain = [[QIMKit sharedInstance] getDomain];
                 
-                [dcookieProperties setObject:domain forKey:NSHTTPCookieValue];
-                [dcookieProperties setObject:@"q_d" forKey:NSHTTPCookieName];
+                [dcookieProperties setQIMSafeObject:domain forKey:NSHTTPCookieValue];
+                [dcookieProperties setQIMSafeObject:@"q_d" forKey:NSHTTPCookieName];
                 [dcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [dcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-                [dcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [dcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
                 NSMutableDictionary *qckeyCookieProperties = [NSMutableDictionary dictionary];
                 NSString *qckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
-                [qckeyCookieProperties setObject:qckey forKey:NSHTTPCookieValue];
-                [qckeyCookieProperties setObject:@"q_ckey" forKey:NSHTTPCookieName];
-                [qckeyCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                [qckeyCookieProperties setQIMSafeObject:qckey forKey:NSHTTPCookieValue];
+                [qckeyCookieProperties setQIMSafeObject:@"q_ckey" forKey:NSHTTPCookieName];
+                [qckeyCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-                [qckeyCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [qckeyCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
                 NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:qckeyCookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
@@ -841,7 +841,7 @@ static NSString *__default_ua = nil;
                 NSString *value = [[dicArray objectAtIndex:1] qim_URLDecodedString];
                 NSString *key = [[dicArray objectAtIndex:0] qim_URLDecodedString];
                 if (key && value) {
-                    [tempDic setObject:value forKey:key];
+                    [tempDic setQIMSafeObject:value forKey:key];
                 }
             }
             QIMVerboseLog(@"打印参数列表生成的字典：\n%@", tempDic);
@@ -874,7 +874,7 @@ static NSString *__default_ua = nil;
                 NSString *value = [[dicArray objectAtIndex:1] qim_URLDecodedString];
                 NSString *key = [[dicArray objectAtIndex:0] qim_URLDecodedString];
                 if (key && value) {
-                    [tempDic setObject:value forKey:key];
+                    [tempDic setQIMSafeObject:value forKey:key];
                 }
             }
             NSString *fileName = [tempDic objectForKey:@"fileName"];

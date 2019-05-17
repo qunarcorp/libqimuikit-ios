@@ -256,6 +256,7 @@
     NSInteger startLoc = 0;
     NSArray * subStrs = [tStr componentsSeparatedByString:content];
     NSMutableArray *storages = [NSMutableArray arrayWithCapacity:1];
+    /*
     if (subStrs.count >= 1) {
         NSUInteger tempLen = 0;
         NSInteger i = 0;
@@ -269,6 +270,7 @@
             i ++;
         }
     } else{
+        */
         //文本中解析URL和PhoneNumber
         NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink | NSTextCheckingTypePhoneNumber error:nil];
         NSArray *matches = [linkDetector matchesInString:tStr options:0 range:NSMakeRange(0, [tStr length])];
@@ -286,7 +288,9 @@
                     [storages addObject:[self parseLinkRunFromDictinary:@{@"content":url?url:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":linkTextColor,@"linkUrl":url,@"range":NSStringFromRange(match.range)}]];
                     startLoc = match.range.location + match.range.length;
                 }
-            } else if ([match resultType] == NSTextCheckingTypePhoneNumber) {
+            }
+            /*
+            else if ([match resultType] == NSTextCheckingTypePhoneNumber) {
                 NSString *phoneNumber = [match phoneNumber];
                 NSRange phoneNumberRange = [match range];
                 if (phoneNumberRange.location + phoneNumberRange.length <= tStr.length && phoneNumberRange.length + phoneNumberRange.location > 0) {
@@ -294,6 +298,9 @@
                     [storages addObject:[self parsePhoneNumberRunFromDictionary:@{@"content":phoneNumber?phoneNumber:@"", @"fontSize":@(kWorkMomentTextFontSize), @"phoneNumColor":phoneNumColor}]];
                     startLoc = match.range.location + match.range.length;
                 }
+            } */
+            else {
+                
             }
         }
         if (startLoc < tStr.length) {
@@ -302,7 +309,7 @@
                 [storages addObject:[self parseTextStorageFromDictinary:@{@"content":testStr?testStr:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":textColor}]];
             }
         }
-    }
+//    }
     return storages;
 }
 

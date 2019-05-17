@@ -44,7 +44,7 @@
 //        UIView *view = [[UIView alloc]initWithFrame:self.contentView.frame];
 //        view.backgroundColor=[UIColor clearColor];
 //        self.selectedBackgroundView = view;
-        
+        [self.backView setBubbleBgColor:[UIColor whiteColor]];
         self.backgroundView = nil;
         self.backgroundColor = [UIColor clearColor];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -131,7 +131,7 @@
     
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
-    
+    /*
     if (self.message.messageDirection == QIMMessageDirection_Received) {
         
     } else {
@@ -144,6 +144,7 @@
         _platFormLabel.frame = CGRectMake(self.lineView.right - 20 - 60, self.lineView.bottom + 8, 60, 12);
         _fileStateLabel.textAlignment = NSTextAlignmentLeft;
     }
+    */
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *fileSize = [[infoDic objectForKey:@"FileSize"] description];

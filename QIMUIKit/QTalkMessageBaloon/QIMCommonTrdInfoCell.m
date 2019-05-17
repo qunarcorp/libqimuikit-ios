@@ -10,7 +10,7 @@
 #import "UIImageView+WebCache.h"
 #import "QIMJSONSerializer.h"
 
-#define kCommonTrdInfoCellWidth       IS_Ipad ? ([UIScreen mainScreen].qim_rightWidth  * 3.2 / 5) : ([UIScreen mainScreen].bounds.size.width * 3.4/5)
+#define kCommonTrdInfoCellWidth   [UIScreen mainScreen].qim_rightWidth  * 3.2 / 5
 
 @implementation QIMCommonTrdInfoCell{
     UILabel         * _titleLabel;
@@ -90,17 +90,25 @@
     NSString * imgStr = [infoDic objectForKey:@"img"];
     if ([imgStr isKindOfClass:[NSString class]]) {
         [_imageView qim_setImageWithURL:[NSURL URLWithString:imgStr] placeholderImage:[QIMKit defaultCommonTrdInfoImage]];
-    } else{
+    } else {
         [_imageView setImage:[QIMKit defaultCommonTrdInfoImage]];
     }
-    CGSize titleSize = [_titleLabel.text qim_sizeWithFontCompatible:_titleLabel.font constrainedToSize:CGSizeMake(self.backView.width - titleLeft - 10, 40)];
+    CGSize titleSize = [_titleLabel.text qim_sizeWithFontCompatible:_titleLabel.font constrainedToSize:CGSizeMake(self.backView.width - titleLeft - 20, 40)];
     [_titleLabel setFrame:CGRectMake(titleLeft, 10, titleSize.width, titleSize.height)];
     
     _imageView.frame = CGRectMake(_titleLabel.left, _titleLabel.bottom + 5, imgWidth, imgWidth);
     if (self.message.messageType == QIMMessageType_CommonTrdInfoPer || [[infoDic objectForKey:@"showas667"] boolValue]) {
-        _descLabel.frame = CGRectMake(_imageView.right + 5 , _titleLabel.bottom + 5, self.backView.width - _imageView.right - 15, self.backView.height - (_titleLabel.bottom + 5) - 10);
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
+         _descLabel.frame = CGRectMake(_imageView.right + 5 , _titleLabel.bottom + 5, self.backView.width - _imageView.right - 15, self.backView.height - (_titleLabel.bottom + 5) - 10);
+        } else {
+            _descLabel.frame = CGRectMake(_imageView.right + 5 , _titleLabel.bottom + 5, self.backView.width - _imageView.right - 24, self.backView.height - (_titleLabel.bottom + 5) - 10);
+        }
     }else {
-        _descLabel.frame = CGRectMake(_imageView.right + 5, _titleLabel.bottom + 5, self.backView.width - _imageView.right - 5 - 15, self.backView.height - ( _titleLabel.bottom + 5) - 10);
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
+            _descLabel.frame = CGRectMake(_imageView.right + 5, _titleLabel.bottom + 5, self.backView.width - _imageView.right - 5 - 15, self.backView.height - ( _titleLabel.bottom + 5) - 10);
+        } else {
+            _descLabel.frame = CGRectMake(_imageView.right + 5, _titleLabel.bottom + 5, self.backView.width - _imageView.right - 5 - 24, self.backView.height - ( _titleLabel.bottom + 5) - 10);
+        }
     }
     _imageView.centerY = _descLabel.centerY;
     [self.backView setBubbleBgColor:[UIColor whiteColor]];

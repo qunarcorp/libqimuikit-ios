@@ -184,12 +184,12 @@
             case QIMMessageType_ImageNew:{
                 
                 QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == QIMMessageDirection_Received ? 36 : 25) + 10;
+                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + 50;
             }
                 break;
             case QIMMessageType_NewAt: {
                 QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + (message.messageDirection == QIMMessageDirection_Received ? 36 : 25) + 10;
+                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + 50;
             }
                 break;
             case QIMMessageType_NewMsgTag: {
@@ -234,6 +234,10 @@
             }
                 break;
             case QIMMessageTypeMeetingRemind: {
+                return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 35;
+            }
+                break;
+            case QIMMessageTypeWorkMomentRemind: {
                 return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 35;
             }
                 break;

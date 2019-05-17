@@ -434,7 +434,7 @@
 - (UIView *)getForwardNavView {
     if (_forwardNavTitleView == nil) {
         _forwardNavTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, self.navigationController.navigationBar.bounds.size.height)];
-        _forwardNavTitleView.backgroundColor = [UIColor qtalkTableDefaultColor];
+        _forwardNavTitleView.backgroundColor = [UIColor whiteColor];
         UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
         [cancelBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
@@ -448,7 +448,7 @@
 - (UIView *)getMaskRightTitleView {
     if (_maskRightTitleView == nil) {
         _maskRightTitleView = [[UIView alloc] initWithFrame:CGRectMake(self.navigationController.navigationBar.bounds.size.width - 130, 0, 130, self.navigationController.navigationBar.bounds.size.height)];
-        _maskRightTitleView.backgroundColor = [UIColor qtalkTableDefaultColor];
+        _maskRightTitleView.backgroundColor = [UIColor whiteColor];
     }
     return _maskRightTitleView;
 }

@@ -30,14 +30,65 @@ RCT_EXPORT_METHOD(openDownLoad:(NSDictionary *)param :(RCTResponseSenderBlock)ca
 }
 
 RCT_EXPORT_METHOD(openNativeWebView:(NSDictionary *)param) {
-    if ([QIMFastEntrance handleOpsasppSchema:param] == NO) {
-        NSString *linkUrl = [param objectForKey:@"linkurl"];
-        if (linkUrl.length > 0) {
-            [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
-        }
-    } else {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([QIMFastEntrance handleOpsasppSchema:param] == NO) {
+            NSString *linkUrl = [param objectForKey:@"linkurl"];
+            if (linkUrl.length > 0) {
+                [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
+            }
+        } else {
 
-    }
+        }
+    });
+}
+
+RCT_EXPORT_METHOD(gotoWiki:(NSDictionary *)param) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *wikiUrl = [[QIMKit sharedInstance] qimNav_WikiUrl];
+        if (wikiUrl.length > 0) {
+            [QIMFastEntrance openWebViewForUrl:wikiUrl showNavBar:YES];
+        }
+    });
+}
+
+RCT_EXPORT_METHOD(gotoNote:(NSDictionary *)param) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [QIMFastEntrance openQTalkNotesVC];
+    });
+}
+
+RCT_EXPORT_METHOD(getUserInfo:(RCTResponseSenderBlock)callback) {
+    /*
+    WritableNativeMap map = new WritableNativeMap();
+    map.putString("userId", CurrentPreference.getInstance().getUserid());
+    map.putString("clientIp", "192.168.0.1");
+    map.putString("domain", QtalkNavicationService.getInstance().getXmppdomain());
+    //            map.putString("token", CurrentPreference.getInstance().getToken());
+    //            map.putString("q_auth", CurrentPreference.getInstance().getVerifyKey() == null ? "404" : CurrentPreference.getInstance().getVerifyKey());
+    map.putString("ckey", getCKey());
+    map.putString("httpHost", QtalkNavicationService.getInstance().getJavaUrl());
+    map.putString("fileUrl", QtalkNavicationService.getInstance().getInnerFiltHttpHost());
+    map.putString("qcAdminHost", QtalkNavicationService.getInstance().getQcadminHost());
+    //        if (!("ejabhost1".equals(QtalkNavicationService.getInstance().getXmppdomain()))) {
+    //            map.putInt("showOrganizational", 1);
+    //        } else {
+    //            map.putInt("showOrganizational", 0);
+    //        }
+    map.putBoolean("showServiceState", CurrentPreference.getInstance().isMerchants());
+    map.putBoolean("isQtalk", CommonConfig.isQtalk);
+    
+    //            map.putDouble("timestamp", System.currentTimeMillis());
+    callback.invoke(map);
+    */
+    NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:3];
+    [map setObject:[[QIMKit sharedInstance] getLastJid] forKey:@"userId"];
+    [map setObject:[[QIMKit sharedInstance] getDomain] forKey:@"domain"];
+    [map setObject:@"192.168.0.1" forKey:@"clientIp"];
+    
+    [map setObject:[[QIMKit sharedInstance] thirdpartKeywithValue] forKey:@"ckey"];
+    [map setObject:[[QIMKit sharedInstance] qimNav_HttpHost] forKey:@"httpHost"];
+    [map setObject:[[QIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"fileUrl"];
+    callback(@[map ? map : @{}]);
 }
 
 RCT_EXPORT_METHOD(sendEmail:(NSDictionary *)param) {

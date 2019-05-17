@@ -10,6 +10,8 @@
 #import "QIMImageCache.h"
 #import "YLImageView.h"
 #import "YLGIFImage.h"
+#import "NSData+ImageContentType.h"
+#import "UIImage+GIF.h"
 
 @interface QIMImageStorage () {
     YLImageView * _imageView;
@@ -131,6 +133,21 @@
             height = self.size.height / 2.0f;
         }
         _imageView = [[YLImageView alloc] init];
+        
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:_imageURL options:SDWebImageDownloaderContinueInBackground progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+            
+        } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+            if (error) {
+                //加载失败
+                NSString *imagePath = [[SDImageCache sharedImageCache] defaultCachePathForKey:[_imageURL absoluteString]];
+                NSData *imageData = [NSData dataWithContentsOfFile:imagePath];
+                UIImage *image = [UIImage sd_animatedGIFWithData:imageData];
+                [self renderImageViewWithImageData:data withImage:image withRect:rect];
+            } else {
+                [self renderImageViewWithImageData:data withImage:image withRect:rect];
+            }
+        }];
+        /*
         [_imageView sd_setImageWithURL:_imageURL placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
 //            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
 //            [self.progressLabel setText:progress];
@@ -160,21 +177,48 @@
                     [self.ownerView addSubview:_imageView];
                 }
             });
-            /*
-            CGRect fitRect = [self rectFitOriginSize:image.size byRect:rect];
-            //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
-            fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (image) {
-                    [_imageView removeFromSuperview];
-                    _imageView = [[YLImageView alloc] initWithFrame:fitRect];
-                    _imageView.image = image;
-                    [self.ownerView addSubview:_imageView];
-                }
-            });
-            */
             return;
         }];
+        */
+    }
+}
+
+- (void)renderImageViewWithImageData:(NSData *)imageData withImage:(UIImage *)image withRect:(CGRect)rect {
+    CGRect fitRect = rect;//[self rectFitOriginSize:image.size byRect:rect];
+    //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
+    fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
+    NSString *imageExt = [NSData sd_contentTypeForImageData:imageData];
+    if ([imageExt isEqualToString:@"image/gif"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (image) {
+                [_imageView removeFromSuperview];
+                _imageView = [[YLImageView alloc] initWithFrame:fitRect];
+                _imageView.image = image;
+                [self.ownerView addSubview:_imageView];
+            }
+        });
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (image) {
+                [_imageView removeFromSuperview];
+                _imageView = [[YLImageView alloc] initWithFrame:fitRect];
+                UIImage *imageTemp = image;
+                CGSize imageTempSize = imageTemp.size;
+                CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
+                CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
+                if (imageRatio > rectRatio) {
+                    CGFloat scale = fitRect.size.width / fitRect.size.height;
+                    CGFloat imageWidth = imageTempSize.height * scale;
+                    imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                } else {
+                    CGFloat scale = fitRect.size.height / fitRect.size.width;
+                    CGFloat imageHeight = scale * imageTemp.size.width;
+                    imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                }
+                _imageView.image = imageTemp;
+                [self.ownerView addSubview:_imageView];
+            }
+        });
     }
 }
 

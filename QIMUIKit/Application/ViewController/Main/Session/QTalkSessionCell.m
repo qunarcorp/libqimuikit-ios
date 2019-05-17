@@ -198,11 +198,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (UIImageView *)muteNotReadView {
     if (!_muteNotReadView) {
 
-        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake(self.muteView.right + 5, self.timeLabel.bottom + 15, 8, 8)];
+        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 20, self.timeLabel.bottom + 15, 8, 8)];
         _muteNotReadView.backgroundColor = [UIColor redColor];
         _muteNotReadView.layer.cornerRadius  = _muteNotReadView.width / 2.0;
         _muteNotReadView.clipsToBounds = YES;
-        _muteNotReadView.centerY = self.contentLabel.centerY;
+        _muteNotReadView.centerY = self.muteView.centerY;
     }
     return _muteNotReadView;
 }
@@ -236,7 +236,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (!_contentLabel) {
         
         CGFloat timeLabelMaxX = CGRectGetMaxX(self.timeLabel.frame);
-        CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 25;
+        CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 35;
         _contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, qim_sessionViewContentLabelSize)];
         _contentLabel.font = [UIFont systemFontOfSize:qim_sessionViewContentLabelSize];
         _contentLabel.textColor = qim_sessionCellContentTextColor;
@@ -263,11 +263,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_muteView) {
         
-        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, self.timeLabel.bottom + 15, 13, 13)];
+        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, self.timeLabel.bottom + 15, 15, 15)];
         _muteView.layer.cornerRadius = _muteView.width / 2.0;
         _muteView.clipsToBounds = YES;
         _muteView.backgroundColor = self.backgroundColor;
-        _muteView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_sessionViewMute_font size:20 color:qim_sessionViewMuteColor]];
+        _muteView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_sessionViewMute_font size:15 color:qim_sessionViewMuteColor]];
         _muteView.centerY = self.contentLabel.centerY;
     }
     return _muteView;
@@ -828,7 +828,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (void)refreshNotReadCount {
 
     CGFloat timeLabelMaxX = CGRectGetMaxX(self.timeLabel.frame);
-    CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 25;
+    CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 35;
     if (self.bindId) {
         self.notReadCount = [[QIMKit sharedInstance] getNotReadCollectionMsgCountByBindId:self.bindId WithUserId:self.jid];
     }
@@ -851,6 +851,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             [self setUpNotReadNumButtonWithFrame:CGRectMake(self.timeLabel.right - width, 11, width, 20) withBadgeString:countStr];
             if (self.isReminded == YES) {
                 self.muteNotReadView.hidden = NO;
+                self.muteNotReadView.centerY = self.muteView.centerY;
             } else {
                 self.muteNotReadView.hidden = YES;
             }
@@ -862,11 +863,17 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             self.contentLabel.width = contentLabelWidth;
             [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
         }
-        if (self.isReminded == YES) { //接收不提醒
+        if (self.isReminded == YES && countStr.length > 0) {//接收不提醒
             self.muteView.hidden = NO;
             [self refeshContent];
+            self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, self.timeLabel.bottom + 15, 15, 15);
+        } else if (self.isReminded == YES && countStr.length <= 0) {//接收不提醒
+            self.muteView.hidden = NO;
+            [self refeshContent];
+            self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 25, self.timeLabel.bottom + 15, 15, 15);
         } else {
             self.muteView.hidden = YES;
+
         }
     });
 }

@@ -339,6 +339,7 @@
  
 -(void)setBgColor:(UIColor *)color {
     _borderLayer.fillColor = color.CGColor;
+    _borderLayer.strokeColor = color.CGColor;
 }
 
 - (void)removeMask {

@@ -12,7 +12,7 @@
 #import "QIMJSONSerializer.h"
 //#import "NSAttributedString+Attributes.h"
 #define kTextLabelTop       10
-#define kTextLableLeft      10
+#define kTextLableLeft      12
 #define kTextLableBottom    10
 #define kTextLabelRight     10
 #define kCellHeightCap      10

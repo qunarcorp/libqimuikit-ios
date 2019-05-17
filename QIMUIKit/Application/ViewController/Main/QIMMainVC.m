@@ -104,6 +104,7 @@ static BOOL _mainVCReShow = YES;
 + (void)setMainVCReShow:(BOOL)mainVCReShow {
     _mainVCReShow = mainVCReShow;
     if (mainVCReShow) {
+        [[NSNotificationCenter defaultCenter] removeObserver:__mainVc];
         __mainVc = nil;
         __onceMainToken = 0;
     }
@@ -140,13 +141,14 @@ static dispatch_once_t __onceMainToken;
      } */
     self.reloadCountQueue = dispatch_queue_create("Reload Main Read Count", DISPATCH_QUEUE_SERIAL);
     [self registerNSNotifications];
-    self.view.backgroundColor = [UIColor whiteColor];
+
     self.definesPresentationContext = YES;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.view setAutoresizesSubviews:YES];
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    
+    self.navigationController.navigationBar.barTintColor = [UIColor redColor];
+    self.navigationController.navigationBar.barStyle = UIStatusBarStyleDefault;
     [self initRootView];
     [self initTabbar];
     if (_needLoading) {
@@ -383,19 +385,37 @@ static dispatch_once_t __onceMainToken;
 
 - (void)updateWorkFeedNotReadCount:(NSNotification *)notify {
     QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
-    BOOL workMoment = YES;
-//    [[QIMKit sharedInstance] getLocalMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH];
+    BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
     if (workMoment == YES) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            __block BOOL count = NO;
-            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-                if (notify) {
-                    count = [notify.object boolValue];
+            NSDictionary *newWorkMomentNotify = notify.object;
+            //新帖子通知
+            BOOL newWorkMoment = [[newWorkMomentNotify objectForKey:@"newWorkMoment"] boolValue];
+            NSInteger newWorkNoticeCount = [[newWorkMomentNotify objectForKey:@"newWorkNoticeCount"] integerValue];
+            if (newWorkNoticeCount > 0) {
+                //有未读消息时候展示数字
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [_tabBar setBadgeNumber:newWorkNoticeCount ByItemIndex:3 showNumber:YES];
+                });
+            } else {
+                NSInteger notReadCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+                if (notReadCount > 0) {
+                    //过来的通知不是新评论时，优先展示未读数
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [_tabBar setBadgeNumber:newWorkNoticeCount ByItemIndex:3 showNumber:YES];
+                    });
+                } else {
+                    //过来的通知不是新评论时且本地没有未读消息时，展示新帖子小红点
+                    if (newWorkMoment == YES) {
+                        //没有未读消息时展示新帖子小红点
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [_tabBar setBadgeNumber:1 ByItemIndex:3 showNumber:NO];
+                        });
+                    } else {
+                        
+                    }
                 }
             }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [_tabBar setBadgeNumber:count ByItemIndex:3 showNumber:NO];
-            });
         });
     }
 }
@@ -497,7 +517,7 @@ static dispatch_once_t __onceMainToken;
 #endif
             break;
         case 3:
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkNoticeCount":@(0)}];
             break;
         default:
             break;
@@ -530,9 +550,15 @@ static dispatch_once_t __onceMainToken;
     */
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_contact"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_contact_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_contact_font size:28 color:qim_tabImageSelectedColor]]}];
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_discover"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_discover_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_discover_font size:28 color:qim_tabImageSelectedColor]]}];
-    
-    [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_moment"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageSelectedColor]]}];
-    
+    BOOL oldAuthSign = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
+    BOOL checkAuthSignKey = [[QIMKit sharedInstance] containsObjectForKey:@"kUserWorkFeedEntrance"];
+    if (checkAuthSignKey == NO) {
+        oldAuthSign = YES;
+    }
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString]  isEqualToString:@"appstore"] && oldAuthSign == YES) {
+        
+        [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_moment"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageSelectedColor]]}];
+    }
     [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_myself"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_myself_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_myself_font size:28 color:qim_tabImageSelectedColor]]}];
     _tabBar = [[QIMCustomTabBar alloc] initWithItemCount:self.totalTabBarArray.count WithFrame:CGRectMake(0, _rootView.height - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT] - 3.5, _rootView.width, kTabBarHeight)];
     [_tabBar setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
@@ -748,20 +774,21 @@ static dispatch_once_t __onceMainToken;
 }
 
 - (void)customTabBar:(QIMCustomTabBar *)tabBar doubleClickIndex:(NSUInteger)index {
-    switch (index) {
-        case 0: {
-            if (tabBar.selectedIndex != 0) {
-                [_tabBar setSelectedIndex:0 animated:YES];
-            }
-            if (_sessionView.needUpdateNotReadList) {
-                [_sessionView prepareNotReaderIndexPathList];
-            } else {
-                [_sessionView scrollToNotReadMsg];
-            }
+    NSDictionary *tabBarDict = [self.totalTabBarArray objectAtIndex:index];
+    NSString *tabBarId = [tabBarDict objectForKey:@"title"];
+    if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_chat"]]) {
+        if (tabBar.selectedIndex != 0) {
+            [_tabBar setSelectedIndex:0 animated:YES];
         }
-            break;
-        default:
-            break;
+        if (_sessionView.needUpdateNotReadList) {
+            [_sessionView prepareNotReaderIndexPathList];
+        } else {
+            [_sessionView scrollToNotReadMsg];
+        }
+    } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]]) {
+        [_momentView updateMomentView];
+    } else {
+        
     }
 }
 
@@ -823,7 +850,7 @@ static dispatch_once_t __onceMainToken;
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]]) {
         //驼圈页面
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkNoticeCount":@(0)}];
         [_contentView addSubview:self.momentView];
         [self.momentView setHidden:NO];
         long long currentTime = [NSDate timeIntervalSinceReferenceDate];
@@ -1015,8 +1042,8 @@ static dispatch_once_t __onceMainToken;
     if (!_addFriendBtn) {
         UIButton *addFriendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         addFriendBtn.frame = CGRectMake(0, 0, 28, 28);
-        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:24 color:qim_nav_addfriend_btnColor]] forState:UIControlStateNormal];
-        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:24 color:qim_nav_addfriend_btnColor]] forState:UIControlStateSelected];
+        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:28 color:qim_nav_addfriend_btnColor]] forState:UIControlStateNormal];
+        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:28 color:qim_nav_addfriend_btnColor]] forState:UIControlStateSelected];
         [addFriendBtn addTarget:self action:@selector(addNewFriend:) forControlEvents:UIControlEventTouchUpInside];
         _addFriendBtn = addFriendBtn;
     }
@@ -1027,8 +1054,8 @@ static dispatch_once_t __onceMainToken;
     if (!_scanBtn) {
         UIButton *scanBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         scanBtn.frame = CGRectMake(0, 0, 28, 28);
-        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:24 color:qim_nav_scan_btnColor]] forState:UIControlStateNormal];
-        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:24 color:qim_nav_scan_btnColor]] forState:UIControlStateSelected];
+        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:28 color:qim_nav_scan_btnColor]] forState:UIControlStateNormal];
+        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:28 color:qim_nav_scan_btnColor]] forState:UIControlStateSelected];
         [scanBtn addTarget:self action:@selector(scanQrcode:) forControlEvents:UIControlEventTouchUpInside];
         _scanBtn = scanBtn;
     }
@@ -1039,8 +1066,8 @@ static dispatch_once_t __onceMainToken;
     if (!_momentBtn) {
         _momentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _momentBtn.frame = CGRectMake(0, 0, 28, 28);
-        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_mymoment_font size:24 color:qim_nav_moment_color]] forState:UIControlStateNormal];
-        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_mymoment_font size:24 color:qim_nav_moment_color]] forState:UIControlStateSelected];
+        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_mymoment_font size:28 color:qim_nav_moment_color]] forState:UIControlStateNormal];
+        [_momentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_mymoment_font size:28 color:qim_nav_moment_color]] forState:UIControlStateSelected];
         [_momentBtn addTarget:self action:@selector(myOwnerMoment:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _momentBtn;
@@ -1050,8 +1077,8 @@ static dispatch_once_t __onceMainToken;
     if (!_settingBtn) {
         _settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _settingBtn.frame = CGRectMake(0, 0, 28, 28);
-        [_settingBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_myself_font size:24 color:qim_nav_myself_color]] forState:UIControlStateNormal];
-        [_settingBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_myself_font size:24 color:qim_nav_myself_color]] forState:UIControlStateSelected];
+        [_settingBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_myself_font size:28 color:qim_nav_myself_color]] forState:UIControlStateNormal];
+        [_settingBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_myself_font size:28 color:qim_nav_myself_color]] forState:UIControlStateSelected];
         [_settingBtn addTarget:self action:@selector(openMySetting:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _settingBtn;

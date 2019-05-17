@@ -247,9 +247,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary * info);
             CGSize size = CGSizeEqualToSize(emotionImageSize, CGSizeZero) ? emotionImage.size : emotionImageSize;
             if (hasEmotion && ![pkId isEqualToString:@"EmojiOne"]) {
                 if (emotionImage) {
-                    if (size.width >= ([UIScreen mainScreen].bounds.size.width / 2.0f) || size.height >= ([UIScreen mainScreen].bounds.size.height / 2.0f)) {
-                        [storages addObject:[self parseEmotionFromDictinary:@{@"image":emotionImage,@"infoDic":@{@"signKey":msgId,@"pkId":pkId?pkId:@"noPkId",@"shortCut":value?value:@""},@"width":@(size.width*0.3),@"height":@(size.height*0.3),@"range":NSStringFromRange(match.range)}]];
-                    } else if (size.width >= ([UIScreen mainScreen].bounds.size.width / 3.0f) || size.height >= ([UIScreen mainScreen].bounds.size.height / 3.0f)) {
+                    if (size.width >= ([UIScreen mainScreen].bounds.size.width / 3.0f) || size.height >= ([UIScreen mainScreen].bounds.size.height / 3.0f)) {
                         [storages addObject:[self parseEmotionFromDictinary:@{@"image":emotionImage,@"infoDic":@{@"signKey":msgId,@"pkId":pkId?pkId:@"noPkId",@"shortCut":value?value:@""},@"width":@(size.width*0.2),@"height":@(size.height*0.2),@"range":NSStringFromRange(match.range)}]];
                     } else {
                         [storages addObject:[self parseEmotionFromDictinary:@{@"image":emotionImage,@"infoDic":@{@"signKey":msgId,@"pkId":pkId?pkId:@"noPkId",@"shortCut":value?value:@""},@"width":@(size.width),@"height":@(size.height),@"range":NSStringFromRange(match.range)}]];

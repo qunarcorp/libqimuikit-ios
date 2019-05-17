@@ -161,6 +161,10 @@ static QTalk *__global_qtalk = nil;
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMMeetingRemindCell" ForMessageType:QIMMessageTypeMeetingRemind];
     [[QIMKit sharedInstance] setMsgShowText:@"会议室提醒" ForMessageType:QIMMessageTypeMeetingRemind];
     
+    //驼圈提醒
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMWorkMomentRemindCell" ForMessageType:QIMMessageTypeWorkMomentRemind];
+    [[QIMKit sharedInstance] setMsgShowText:@"驼圈提醒" ForMessageType:QIMMessageTypeWorkMomentRemind];
+    
     [[QIMKit sharedInstance] setMsgShowText:@"收到一条消息" ForMessageType:QIMMessageType_GroupNotify];
 }
 

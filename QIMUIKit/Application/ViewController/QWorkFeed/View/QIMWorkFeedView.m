@@ -78,7 +78,7 @@
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         _mainTableView.separatorColor = [UIColor qim_colorWithHex:0xdddddd];
         
-        _mainTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(reloadRemoteRecenteMoments)];
+        _mainTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(reloadRemoteRecenteMomentsWithNeedScrollTop:)];
         _mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreMoment)];
         _mainTableView.mj_footer.automaticallyHidden = YES;
     }
@@ -139,7 +139,7 @@
         self.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
         [self registerNotifications];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-            [self reloadRemoteRecenteMoments];
+            [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
         });
 #if __has_include("QIMAutoTracker.h")
         [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"tuocircle" withDescription:@"驼圈"];
@@ -159,7 +159,7 @@
     }
     [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        [self reloadRemoteRecenteMoments];
+        [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
     });
 }
 
@@ -228,7 +228,7 @@
 */
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkNoticeCount":@(0)}];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -301,7 +301,7 @@
 }
 
 //加载远程最近的帖子
-- (void)reloadRemoteRecenteMoments {
+- (void)reloadRemoteRecenteMomentsWithNeedScrollTop:(BOOL)flag {
     
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
@@ -316,6 +316,9 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.mainTableView reloadData];
                     [weakSelf.mainTableView.mj_header endRefreshing];
+                    if (flag) {
+                        [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                    }
                 });
             } else {
                 

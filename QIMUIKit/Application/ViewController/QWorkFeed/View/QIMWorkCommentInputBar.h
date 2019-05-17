@@ -14,7 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)didOpenUserIdentifierVC;
 
-- (void)didaddCommentWithStr:(NSString *)str;
+- (void)didiOpenUserSelectVCWithVC:(UIViewController *)qNoticeVC;
+
+- (void)didaddCommentWithStr:(NSString *)str withAtList:(NSArray *)atList;
 
 @end
 

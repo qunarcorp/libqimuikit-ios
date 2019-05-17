@@ -143,4 +143,6 @@
 
 + (void)openTravelCalendarVc;
 
++ (void)openWorkMomentDetailWithPOSTUUId:(NSString *)postUUId;
+
 @end

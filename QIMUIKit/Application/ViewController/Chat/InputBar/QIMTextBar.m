@@ -100,6 +100,7 @@
                           QIMVerboseLog(@"value : %@", value);
                           QIMATGroupMemberTextAttachment *groupAt = (QIMATGroupMemberTextAttachment *)value;
                           [plainString replaceCharactersInRange:NSMakeRange(range.location + base, range.length) withString:groupAt.groupMemberName];
+                          base += [((QIMATGroupMemberTextAttachment *) value) getSendText].length - 1;
                       }
                   }];
     
@@ -521,14 +522,14 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             _quickReplyExpandView.hidden = YES;
             [self.expandPanel sendSubviewToBack:_quickReplyExpandView];
             self.emotionPanel.hidden = NO;
-            self.voiceView.hidden = YES;
+//            self.voiceView.hidden = YES;
             self.maskView.hidden = YES;
             self.robotActionToolBar.hidden = YES;
             self.lastChatKeyboardY = self.frame.origin.y;
             self.frame = CGRectMake(0, [self getSuperViewH]-CGRectGetHeight(self.frame), self.width, CGRectGetHeight(self.frame));
             self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame)-kFacePanelHeight, CGRectGetWidth(self.frame), kFacePanelHeight);
             self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
-            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             self.maskView.frame = CGRectMake(0, self.chatToolBar.bottom, CGRectGetWidth(self.frame), kFacePanelHeight);
             [self updateAssociateTableViewFrame];
             
@@ -544,7 +545,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             self.expandPanel.hidden = NO;
             self.emotionPanel.hidden = YES;
             self.maskView.hidden = YES;
-            self.voiceView.hidden = YES;
+//            self.voiceView.hidden = YES;
             _quickReplyExpandView.hidden = YES;
             [self.expandPanel sendSubviewToBack:_quickReplyExpandView];
             self.robotActionToolBar.hidden = YES;
@@ -552,7 +553,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             self.frame = CGRectMake(0, [self getSuperViewH]-CGRectGetHeight(self.frame), self.width, CGRectGetHeight(self.frame));
             self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame)-kFacePanelHeight, CGRectGetWidth(self.frame), kFacePanelHeight);
             self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
-            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             self.maskView.frame = CGRectMake(0, self.chatToolBar.bottom, CGRectGetWidth(self.frame), kFacePanelHeight);
             [self.expandPanel displayItems];
             
@@ -601,7 +602,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             {
                 // 键盘弹起 (包括，第三方键盘回调三次问题，监听仅执行最后一次)
 //                QIMVerboseLog(@" 键盘弹起 (包括，第三方键盘回调三次问题，监听仅执行最后一次)");
-                self.voiceView.hidden = NO;
+//                self.voiceView.hidden = NO;
                 self.expandPanel.hidden = YES;
                 self.maskView.hidden = NO;
                 self.emotionPanel.hidden = YES;
@@ -610,7 +611,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                 self.robotActionToolBar.hidden = YES;
                 self.lastChatKeyboardY = self.frame.origin.y;
                 self.frame = CGRectMake(0, targetY, CGRectGetWidth(self.frame), self.frame.size.height);
-                self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//                self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
                 self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
                 self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
                 self.robotActionToolBar.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kQIMChatToolBarHeight);
@@ -727,7 +728,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     CGFloat y = self.frame.origin.y;
                     y = [self getSuperViewH] - self.chatToolBar.frame.size.height;
                     self.frame = CGRectMake(0, y, self.frame.size.width, self.frame.size.height);
-                    self.voiceView.hidden = YES;
+//                    self.voiceView.hidden = YES;
                     self.expandPanel.hidden = YES;
                     _quickReplyExpandView.hidden = YES;
                     [self.expandPanel sendSubviewToBack:_quickReplyExpandView];
@@ -799,7 +800,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 {
     if (select && change == NO)
     {
-        self.voiceView.hidden =  YES;
+//        self.voiceView.hidden =  YES;
         self.expandPanel.hidden = YES;
         _quickReplyExpandView.hidden = YES;
         [self.expandPanel sendSubviewToBack:_quickReplyExpandView];
@@ -812,7 +813,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             
             self.lastChatKeyboardY = self.frame.origin.y;
             self.frame = CGRectMake(0, [self getSuperViewH]-CGRectGetHeight(self.frame), self.width, CGRectGetHeight(self.frame));
-            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame)-kFacePanelHeight, CGRectGetWidth(self.frame), kFacePanelHeight);
             self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             
@@ -831,7 +832,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 {
     if (select && change == NO)
     {
-        self.voiceView.hidden = YES;
+//        self.voiceView.hidden = YES;
         self.expandPanel.hidden = NO;
         self.emotionPanel.hidden = YES;
         _quickReplyExpandView.hidden = YES;
@@ -841,7 +842,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             
             self.lastChatKeyboardY = self.frame.origin.y;
             self.frame = CGRectMake(0, [self getSuperViewH]-CGRectGetHeight(self.frame), self.width, CGRectGetHeight(self.frame));
-            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame)-kMorePanelHeight, CGRectGetWidth(self.frame), kMorePanelHeight);
             self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             [self.expandPanel displayItems];
@@ -857,7 +858,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         [UIView animateWithDuration:0.25 animations:^{
             
             self.lastChatKeyboardY = self.frame.origin.y;
-            self.voiceView.hidden = YES;
+//            self.voiceView.hidden = YES;
             self.expandPanel.hidden = NO;
             self.emotionPanel.hidden = YES;
             _quickReplyExpandView.hidden = YES;
@@ -946,20 +947,24 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
 
                     
-                    QIMEmojiTextAttachment *emojiTextAttachment = [QIMEmojiTextAttachment new];
                     QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
                     CGSize size = [memberName qim_sizeWithFontCompatible:self.chatToolBar.textView.font];
                     atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.chatToolBar.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.chatToolBar.textView.font} circular:NO];
                     atTextAttachment.groupMemberName = memberName;
                     atTextAttachment.groupMemberJid = jid;
                     
+                    /*
                     NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] init];
                     NSAttributedString *textAtt2 = [NSAttributedString attributedStringWithAttachment:atTextAttachment];
                     [textAtt appendAttributedString:textAtt2];
-//                    [textAtt appendAttributedString:[[NSAttributedString alloc] initWithString:memberName]];
                     
                     [self.chatToolBar.textView.textStorage insertAttributedString:textAtt atIndex:self.chatToolBar.textView.selectedRange.location];
                     weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(weakSelf.chatToolBar.textView.selectedRange.location + weakSelf.chatToolBar.textView.selectedRange.length + memberName.length + 2, 0);
+                    [weakSelf resetTextStyle];
+                    */
+                    //插入表情
+                    [weakSelf.chatToolBar.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:weakSelf.chatToolBar.textView.selectedRange.location];
+                    weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(MIN(weakSelf.chatToolBar.textView.selectedRange.location + 1, weakSelf.chatToolBar.textView.text.length - weakSelf.chatToolBar.textView.selectedRange.length), weakSelf.chatToolBar.textView.selectedRange.length);
                     [weakSelf resetTextStyle];
                 } else {
                     QIMVerboseLog(@"未选择要艾特的群成员");
@@ -1399,26 +1404,35 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userXmppId];
     NSString *name = [userInfo objectForKey:@"Name"];
     NSString *jid = userXmppId;
-    NSString *memberName = nil;
+    NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+    /*
     NSString *textName = [self.chatToolBar.textView.text substringWithRange:NSMakeRange(self.chatToolBar.textView.selectedRange.location-1, 1)];
     if ([textName isEqualToString:@"@"]) {
         memberName = [NSString stringWithFormat:@"%@ ", name];
     } else {
         memberName = [NSString stringWithFormat:@"@%@ ", name];
     }
+    */
     
     QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
-    atTextAttachment.groupMemberName = name;
+    CGSize size = [memberName qim_sizeWithFontCompatible:self.chatToolBar.textView.font];
+    atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.chatToolBar.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.chatToolBar.textView.font} circular:NO];
+    atTextAttachment.groupMemberName = memberName;
     atTextAttachment.groupMemberJid = jid;
     
+    [self.chatToolBar.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:self.chatToolBar.textView.selectedRange.location];
+    self.chatToolBar.textView.selectedRange = NSMakeRange(MIN(self.chatToolBar.textView.selectedRange.location + 1, self.chatToolBar.textView.text.length - self.chatToolBar.textView.selectedRange.length), self.chatToolBar.textView.selectedRange.length);
+    [self resetTextStyle];
+    
+    /*
     NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] init];
     NSAttributedString *textAtt2 = [NSAttributedString attributedStringWithAttachment:atTextAttachment];
     [textAtt appendAttributedString:textAtt2];
-    [textAtt appendAttributedString:[[NSAttributedString alloc] initWithString:memberName]];
     
     [self.chatToolBar.textView.textStorage insertAttributedString:textAtt atIndex:self.chatToolBar.textView.selectedRange.location];
-    self.chatToolBar.textView.selectedRange = NSMakeRange(self.chatToolBar.textView.selectedRange.location + self.chatToolBar.textView.selectedRange.length + memberName.length + 1, 0);
+    self.chatToolBar.textView.selectedRange = NSMakeRange(self.chatToolBar.textView.selectedRange.location + self.chatToolBar.textView.selectedRange.length + memberName.length + 2, 0);
     [self resetTextStyle];
+    */
 }
 
 #pragma mark - Property

@@ -200,7 +200,7 @@
             headerView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_leftWidth], self.searchBar.height + appendHeight);
         }
         UIView *logoView = [[UIView alloc] initWithFrame:CGRectMake(0, - self.tableView.height, self.tableView.width, self.tableView.height)];
-        [logoView setBackgroundColor:[UIColor qim_colorWithHex:0x787878 alpha:1]];
+        [logoView setBackgroundColor:[UIColor qim_colorWithHex:0xEEEEEE alpha:1]];
         [headerView addSubview:logoView];
         if ([self.rootViewController isKindOfClass:[QIMMainVC class]] && [[QIMKit sharedInstance] getIsIpad] == NO) {
             [headerView addSubview:self.searchBar];
@@ -320,24 +320,6 @@
     }
     return _searchBar;
 }
-
-/*
-- (UISearchBar *)searchBar {
-    if (!_searchBar) {
-        _searchBar = [[UISearchBar alloc] init];
-        _searchBar.delegate = self;
-        [_searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-        [_searchBar sizeToFit];
-        _searchBar.placeholder = [NSBundle qim_localizedStringForKey:@"search_bar_placeholder"];
-        [_searchBar setTintColor:[UIColor spectralColorBlueColor]];
-        if ([_searchBar respondsToSelector:@selector(setBarTintColor:)]) {
-            [_searchBar setBarTintColor:[UIColor qim_colorWithHex:0xEEEEEE alpha:1.0]];
-        }
-        [_searchBar setBackgroundColor:[UIColor qim_colorWithHex:0xEEEEEE]];
-    }
-    return _searchBar;
-}
-*/
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     

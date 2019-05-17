@@ -43,7 +43,7 @@
 
 
 //MainVc导航item
-#define qim_nav_scan_font       @"\U0000f0ca"   //扫码二维码按钮Color
+#define qim_nav_scan_font       @"\U0000e734"   //扫码二维码按钮Color
 #define qim_nav_addfriend_font  @"\U0000f0f5"   //添加好友按钮Color
 #define qim_nav_mymoment_font   @"\U0000e737"       //我的驼圈
 #define qim_nav_myself_font     @"\U0000e735"       //我的设置

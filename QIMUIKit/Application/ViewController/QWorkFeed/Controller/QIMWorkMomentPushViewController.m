@@ -23,6 +23,7 @@
 #import "QIMMWPhotoBrowser.h"
 #import "QIMPhotoBrowserNavController.h"
 #import "QIMWorkMomentUserIdentityModel.h"
+#import "QIMMessageTextAttachment.h"
 #import "QIMWorkMomentModel.h"
 #import "QIMUUIDTools.h"
 #import "YYModel.h"
@@ -133,6 +134,7 @@
         _textView = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, [[UIScreen mainScreen] qim_rightWidth] - 30, 150)];
         _textView.backgroundColor = [UIColor whiteColor];
         [_textView setFont:[UIFont systemFontOfSize:17]];
+        _textView.delegate = self;
         [_textView setTextColor:[UIColor qim_colorWithHex:0x333333]];
         [_textView setTintColor:[UIColor qim_colorWithHex:0x333333]];
         UILabel *placeHolderLabel = [[UILabel alloc] init];
@@ -203,8 +205,8 @@
 
 - (UITableView *)panelListView {
     if (!_panelListView) {
-//        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 51, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
-        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
+        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 51, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
+//        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
         _panelListView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _panelListView.delegate = self;
         _panelListView.dataSource = self;
@@ -358,19 +360,15 @@
                     NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
                     
                     QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
-                    atTextAttachment.groupMemberName = name;
+                    CGSize size = [memberName qim_sizeWithFontCompatible:self.textView.font];
+                    atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.textView.font} circular:NO];
+                    atTextAttachment.groupMemberName = memberName;
                     atTextAttachment.groupMemberJid = jid;
                     
-                    NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] init];
-                    NSAttributedString *textAtt2 = [NSAttributedString attributedStringWithAttachment:atTextAttachment];
-                    [textAtt appendAttributedString:textAtt2];
-                    [textAtt appendAttributedString:[[NSAttributedString alloc] initWithString:memberName]];
-
-                    [textAtt addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17], NSForegroundColorAttributeName : [UIColor qim_colorWithHex:0x333333]} range:[memberName rangeOfString:memberName]];
+                    [self.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:self.textView.selectedRange.location];
+                    self.textView.selectedRange = NSMakeRange(MIN(self.textView.selectedRange.location + 1, self.textView.text.length - self.textView.selectedRange.length), self.textView.selectedRange.length);
+                    [self resetTextStyle];
                     
-                    [self.textView.textStorage insertAttributedString:textAtt atIndex:self.textView.selectedRange.location];
-                    weakSelf.textView.selectedRange = NSMakeRange(weakSelf.textView.selectedRange.location + self.textView.selectedRange.length + memberName.length + 1, 0);
-                    [weakSelf resetTextStyle];
                 } else {
                     QIMVerboseLog(@"未选择要艾特的群成员");
                     weakSelf.textView.selectedRange = NSMakeRange(weakSelf.textView.selectedRange.location + self.textView.selectedRange.length + 1, 0);
@@ -500,7 +498,7 @@
             }
             
             NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
-            NSString *finallyContent = [self getStringFromAttributedString:self.textView.attributedText WithOutAtInfo:&outATInfoArray];
+            NSString *finallyContent = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:self.textView.attributedText WithOutAtInfo:&outATInfoArray];
             
             NSMutableDictionary *momentContentDic = [[NSMutableDictionary alloc] initWithCapacity:3];
             [momentContentDic setQIMSafeObject:finallyContent forKey:@"content"];
@@ -551,40 +549,62 @@
     }
 }
 
-- (NSString *)getStringFromAttributedString:(NSAttributedString *)attributedString WithOutAtInfo:(NSMutableArray **)outAtInfo {
-    //最终纯文本
-    NSMutableString *plainString = [NSMutableString stringWithString:attributedString.string];
-    //替换下标的偏移量
-    __block NSUInteger base = 0;
-    
-    *outAtInfo = [NSMutableArray arrayWithCapacity:3];
-    NSMutableDictionary *atInfoDic = [NSMutableDictionary dictionaryWithCapacity:3];
-    NSMutableArray *atInfoList = [NSMutableArray array];
-    [atInfoDic setQIMSafeObject:atInfoList forKey:@"data"];
-    [atInfoDic setQIMSafeObject:@(10001) forKey:@"type"];
-    [*outAtInfo addObject:atInfoDic];
-    //遍历
-    [attributedString enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, attributedString.length) options:0 usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
-        if (value && [value isKindOfClass:[QIMATGroupMemberTextAttachment class]]) {
-            NSMutableDictionary *atDic = [NSMutableDictionary dictionary];
-            [atDic setQIMSafeObject:[(QIMATGroupMemberTextAttachment *)value groupMemberName] forKey:@"text"];
-            [atDic setQIMSafeObject:[(QIMATGroupMemberTextAttachment *)value groupMemberJid] forKey:@"jid"];
-            [atInfoList addObject:atDic];
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    //输入
+    if ([text isEqualToString:@"@"]) {
+        text = @"";
+        QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
+        __weak __typeof(&*self) weakSelf = self;
+        
+        [qNoticeVC onQIMWorkFeedSelectUser:^(NSArray *selectUsers) {
+            NSLog(@"selectUsers : %@", selectUsers);
+            for (NSString *userXmppJid in selectUsers) {
+                if (userXmppJid.length > 0) {
+                    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userXmppJid];
+                    if (userInfo.count > 0) {
+                        NSString *name = [userInfo objectForKey:@"Name"];
+                        NSString *jid = [userInfo objectForKey:@"XmppId"];
+                        NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+                        
+                        QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
+                        CGSize size = [memberName qim_sizeWithFontCompatible:self.textView.font];
+                        atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.textView.font} circular:NO];
+                        atTextAttachment.groupMemberName = memberName;
+                        atTextAttachment.groupMemberJid = jid;
+                        
+                        [self.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:self.textView.selectedRange.location];
+                        self.textView.selectedRange = NSMakeRange(MIN(self.textView.selectedRange.location + 1, self.textView.text.length - self.textView.selectedRange.length), self.textView.selectedRange.length);
+                        [self resetTextStyle];
+                    } else {
+                        QIMVerboseLog(@"未选择要艾特的群成员");
+                        weakSelf.textView.selectedRange = NSMakeRange(weakSelf.textView.selectedRange.location + self.textView.selectedRange.length + 1, 0);
+                        [weakSelf resetTextStyle];
+                    }
+                }
+            }
+        }];
+        
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+            QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+            qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
+        } else {
+            [weakSelf.navigationController pushViewController:qNoticeVC animated:YES];
         }
-    }];
-    if (atInfoList.count <= 0) {
-        *outAtInfo = nil;
-    } else {
-        [atInfoDic setQIMSafeObject:atInfoList forKey:@"data"];
+        return NO;
     }
-    plainString = [NSMutableString stringWithString:[plainString stringByReplacingOccurrencesOfString:@"\U0000fffc" withString:@""]];
-    return plainString;
+    return YES;
 }
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDatasource
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self.textView resignFirstResponder];
+    if (scrollView != self.textView) {
+        [self.textView resignFirstResponder];
+    }
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -658,10 +678,10 @@
     } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
         UICollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
         footerView.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
-//        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 1.0f)];
-//        lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
-//        [footerView addSubview:lineView];
-//        [footerView addSubview:self.atLabel];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 1.0f)];
+        lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
+        [footerView addSubview:lineView];
+        [footerView addSubview:self.atLabel];
         [footerView addSubview:self.panelListView];
         return footerView;
     } else {
