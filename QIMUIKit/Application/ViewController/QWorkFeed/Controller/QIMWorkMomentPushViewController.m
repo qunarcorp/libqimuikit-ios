@@ -203,8 +203,8 @@
 
 - (UITableView *)panelListView {
     if (!_panelListView) {
-//        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 51, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
-        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
+        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 51, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
+//        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
         _panelListView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _panelListView.delegate = self;
         _panelListView.dataSource = self;
@@ -658,10 +658,10 @@
     } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
         UICollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
         footerView.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
-//        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 1.0f)];
-//        lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
-//        [footerView addSubview:lineView];
-//        [footerView addSubview:self.atLabel];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 1.0f)];
+        lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
+        [footerView addSubview:lineView];
+        [footerView addSubview:self.atLabel];
         [footerView addSubview:self.panelListView];
         return footerView;
     } else {

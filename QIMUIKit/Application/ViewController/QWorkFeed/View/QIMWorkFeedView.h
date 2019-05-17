@@ -16,6 +16,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) UIViewController *rootVC;
 
+-(instancetype)initWithFrame:(CGRect)frame
+                      userId:(NSString *)userId
+            showNewMomentBtn:(BOOL)showBtn
+               showNoticView:(BOOL)showNtc;
+
 - (void)updateMomentView;
 
 @end

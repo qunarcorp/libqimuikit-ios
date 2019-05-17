@@ -383,9 +383,14 @@ static dispatch_once_t __onceMainToken;
 
 - (void)updateWorkFeedNotReadCount:(NSNotification *)notify {
     QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
+
     BOOL workMoment = YES;
 //    [[QIMKit sharedInstance] getLocalMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH];
     if (workMoment == YES) {
+
+//    BOOL workMoment = [[QIMKit sharedInstance] getLocalMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH];
+//    if (workMoment == YES) {
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             __block BOOL count = NO;
             if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
@@ -1072,6 +1077,7 @@ static dispatch_once_t __onceMainToken;
 #endif
 }
 
+//我的驼圈儿navbar入口
 - (void)myOwnerMoment:(id)sender {
     [[QIMFastEntrance sharedInstance] openUserWorkWorldWithParam:@{@"UserId":[[QIMKit sharedInstance] getLastJid]}];
 #if __has_include("QIMAutoTracker.h")
