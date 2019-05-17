@@ -10,6 +10,7 @@
 #import "QIMWorkMomentPicture.h"
 #import "QIMWorkMomentPictureMetadata.h"
 #import "YLImageView.h"
+#import "NSData+ImageContentType.h"
 
 // 图片间距
 #define kImagePadding       5
@@ -70,7 +71,7 @@
         if (i > 8) {
             break;
         }
-        QIMWorkMomentPicture *picture = (QIMWorkMomentPicture *)[momentContentModel.imgList objectAtIndex:i];
+        __block QIMWorkMomentPicture *picture = (QIMWorkMomentPicture *)[momentContentModel.imgList objectAtIndex:i];
         NSInteger rowNum = i/3;
         NSInteger colNum = i%3;
         if(count == 4) {
@@ -90,70 +91,23 @@
         imageView = [self viewWithTag:1000+i];
         imageView.frame = frame;
         NSString *imageUrl = picture.imageUrl;
+        picture.imageIndex = i;
         if (![imageUrl qim_hasPrefixHttpHeader]) {
             imageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrl];
         } else {
             
         }
-//        if ([imageUrl rangeOfString:@"?"].location != NSNotFound) {
-//
-//            imageUrl = [imageUrl stringByAppendingFormat:@"&w=%d&h=%d",
-//                      (int)96*2,
-//                      (int)96*2];
-//        } else {
-//            imageUrl = [imageUrl stringByAppendingFormat:@"?w=%d&h=%d",
-//                      (int)96*2,
-//                      (int)96*2];
-//        }
-//        QIMVerboseLog(@"imageUrl : %@", imageUrl);
-        [imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_placeholder"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            __block CGRect fitRect = frame;//[self rectFitOriginSize:image.size byRect:rect];
-            //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
-            //            fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (image && count != 1) {
-                    imageView = [[YLImageView alloc] initWithFrame:fitRect];
-                    UIImage *imageTemp = image;
-                    CGSize imageTempSize = imageTemp.size;
-                    CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
-                    CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
-                    if (imageRatio > rectRatio) {
-                        CGFloat scale = fitRect.size.width / fitRect.size.height;
-                        CGFloat imageWidth = imageTempSize.height * scale;
-                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
-                    } else {
-                        CGFloat scale = fitRect.size.height / fitRect.size.width;
-                        CGFloat imageHeight = scale * imageTemp.size.width;
-                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
-                    }
-                    imageView.image = imageTemp;
-                } else if (image && count == 1) {
-                    //单张图片处理
-                    CGRect newSingleFrame = [self rectFitOriginSize:image.size byRect:imageView.frame];
-                    fitRect = newSingleFrame;
-                    [UIView animateWithDuration:0.1 animations:^{
-                        
-                    } completion:^(BOOL finished) {
-                        imageView.frame = newSingleFrame;
-                        imageView.hidden = NO;
-                        UIImage *imageTemp = image;
-                        CGSize imageTempSize = imageTemp.size;
-                        CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
-                        CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
-                        if (imageRatio > rectRatio) {
-                            CGFloat scale = fitRect.size.width / fitRect.size.height;
-                            CGFloat imageWidth = imageTempSize.height * scale;
-                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
-                        } else {
-                            CGFloat scale = fitRect.size.height / fitRect.size.width;
-                            CGFloat imageHeight = scale * imageTemp.size.width;
-                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
-                        }
-                        imageView.image = imageTemp;
-                    }];
-                }
-            });
-        }];
+        if ([imageUrl rangeOfString:@"?"].location != NSNotFound) {
+
+            imageUrl = [imageUrl stringByAppendingFormat:@"&w=%d&h=%d",
+                      (int)96*2,
+                      (int)96*2];
+        } else {
+            imageUrl = [imageUrl stringByAppendingFormat:@"?w=%d&h=%d",
+                      (int)96*2,
+                      (int)96*2];
+        }
+        [imageView downLoadImageWithModel:imageUrl withFitRect:frame withTotalCount:count];
     }
     self.width = SCREEN_WIDTH - 60 - 20;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
@@ -162,30 +116,21 @@
     self.height = imageView.bottom;
 }
 
-- (CGSize)getSingleSize:(CGSize)singleSize {
-    CGFloat max_width = SCREEN_WIDTH - 80;
-    CGFloat max_height = SCREEN_WIDTH - 80;
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        max_width = [[UIScreen mainScreen] qim_rightWidth] - 80;
-        max_height = [[UIScreen mainScreen] qim_rightWidth] - 80;
+@end
+
+
+@implementation QIMWorkMomentImageView
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.clipsToBounds = YES;
+        self.contentMode = UIViewContentModeScaleAspectFill;
+        self.contentScaleFactor = [[UIScreen mainScreen] scale];
+        self.userInteractionEnabled = YES;
+        self.backgroundColor = [UIColor whiteColor];
     }
-    CGFloat image_width = singleSize.width;
-    CGFloat image_height = singleSize.height;
-    
-    CGFloat result_width = 0;
-    CGFloat result_height = 0;
-    if (image_height/image_width > 3.0) {
-        result_height = max_height;
-        result_width = result_height/2;
-    }  else  {
-        result_width = max_width;
-        result_height = max_width*image_height/image_width;
-        if (result_height > max_height) {
-            result_height = max_height;
-            result_width = max_height*image_width/image_height;
-        }
-    }
-    return CGSizeMake(result_width, result_height);
+    return self;
 }
 
 - (CGRect)rectFitOriginSize:(CGSize)size byRect:(CGRect)byRect{
@@ -209,21 +154,65 @@
     return scaleRect;
 }
 
-@end
-
-
-@implementation QIMWorkMomentImageView
-
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.clipsToBounds = YES;
-        self.contentMode = UIViewContentModeScaleAspectFill;
-        self.contentScaleFactor = [[UIScreen mainScreen] scale];
-        self.userInteractionEnabled = YES;
-        self.backgroundColor = [UIColor whiteColor];
-    }
-    return self;
+- (void)downLoadImageWithModel:(NSString *)imageUrl withFitRect:(CGRect)frame withTotalCount:(NSInteger)totalCount {
+    [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:imageUrl] options:SDWebImageDownloaderContinueInBackground progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        
+    } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+        __block CGRect fitRect = frame;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (image && totalCount != 1) {
+                self.frame = fitRect;
+                NSString *imageExt = [NSData sd_contentTypeForImageData:data];
+                if ([imageExt isEqualToString:@"image/gif"]) {
+                    self.image = image;
+                } else {
+                    UIImage *imageTemp = image;
+                    CGSize imageTempSize = imageTemp.size;
+                    CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
+                    CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
+                    if (imageRatio > rectRatio) {
+                        CGFloat scale = fitRect.size.width / fitRect.size.height;
+                        CGFloat imageWidth = imageTempSize.height * scale;
+                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                    } else {
+                        CGFloat scale = fitRect.size.height / fitRect.size.width;
+                        CGFloat imageHeight = scale * imageTemp.size.width;
+                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                    }
+                    self.image = imageTemp;
+                }
+            } else if (image && totalCount == 1) {
+                
+                //单张图片处理
+                CGRect newSingleFrame = [self rectFitOriginSize:image.size byRect:self.frame];
+                fitRect = newSingleFrame;
+                [UIView animateWithDuration:0.1 animations:^{
+                    
+                } completion:^(BOOL finished) {
+                    self.frame = newSingleFrame;
+                    NSString *imageExt = [NSData sd_contentTypeForImageData:data];
+                    if ([imageExt isEqualToString:@"image/gif"]) {
+                        self.image = image;
+                    } else {
+                        UIImage *imageTemp = image;
+                        CGSize imageTempSize = imageTemp.size;
+                        CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
+                        CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
+                        if (imageRatio > rectRatio) {
+                            CGFloat scale = fitRect.size.width / fitRect.size.height;
+                            CGFloat imageWidth = imageTempSize.height * scale;
+                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                        } else {
+                            CGFloat scale = fitRect.size.height / fitRect.size.width;
+                            CGFloat imageHeight = scale * imageTemp.size.width;
+                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                        }
+                        self.image = imageTemp;
+                    }
+                }];
+            }
+        });
+    }];
 }
 
 - (void)singleTapGestureCallback:(UIGestureRecognizer *)gesture {

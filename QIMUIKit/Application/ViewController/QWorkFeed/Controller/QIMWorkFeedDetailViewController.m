@@ -24,6 +24,10 @@
 #import <Toast/Toast.h>
 #import "QIMWorkMomentView.h"
 #import "UIApplication+QIMApplication.h"
+#if __has_include("QIMIPadWindowManager.h")
+    #import "QIMIPadWindowManager.h"
+#endif
+
 
 @interface QIMWorkFeedDetailViewController () <UITableViewDelegate, UITableViewDataSource, QIMWorkCommentTableViewDelegate, QIMWorkCommentInputBarDelegate, UIGestureRecognizerDelegate, MomentCellDelegate, YYKeyboardObserver, MomentViewDelegate>
 
@@ -53,13 +57,24 @@
     if (!_momentModel) {
         NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWithMomentId:self.momentId];
         if (!momentDic.count) {
-            [[QIMKit sharedInstance] getRemoteMomentDetailWithMomentUUId:self.momentId withCallback:^(NSDictionary *momentDic) {
-                _momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
-                self.momentView = nil;
-                self.momentView.momentModel = _momentModel;
-                self.commentListView.commentHeaderView = self.momentView;
-                [self.commentListView reloadCommentsData];
-            }];
+            __weak __typeof(self) weakSelf = self;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                __strong __typeof(weakSelf) strongSelf = weakSelf;
+                if (!strongSelf) {
+                    return;
+                }
+                [[QIMKit sharedInstance] getRemoteMomentDetailWithMomentUUId:self.momentId withCallback:^(NSDictionary *momentDic) {
+                    dispatch_async(dispatch_get_main_queue(), ^{                        
+                        _momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
+                        NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
+                        QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
+                        _momentModel.content = conModel;
+                        _momentModel.isFullText = YES;
+                        _momentView.momentModel = _momentModel;
+                        strongSelf.commentListView.commentHeaderView = _momentView;
+                    });
+                }];
+            });
         } else {
             
         }
@@ -479,7 +494,7 @@
 
 #pragma mark - QIMWorkCommentInputBarDelegate
 
-- (void)didaddCommentWithStr:(NSString *)str {
+- (void)didaddCommentWithStr:(NSString *)str withAtList:(NSArray *)atList {
     if (self.staticCommentModel) {
         
         //评论上一条的评论
@@ -510,6 +525,7 @@
         [commentDic setQIMSafeObject:self.momentModel.ownerId forKey:@"postOwner"];
         [commentDic setQIMSafeObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
         [commentDic setQIMSafeObject:[[QIMKit sharedInstance] getHotCommentUUIdsForMomentId:self.momentId] forKey:@"hotCommentUUID"];
+        [commentDic setQIMSafeObject:atList forKey:@"atList"];
 
         [[QIMKit sharedInstance] uploadCommentWithCommentDic:commentDic];
     } else {
@@ -535,6 +551,8 @@
         [commentDic setQIMSafeObject:self.momentModel.ownerId forKey:@"postOwner"];
         [commentDic setQIMSafeObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
         [commentDic setQIMSafeObject:[[QIMKit sharedInstance] getHotCommentUUIdsForMomentId:self.momentId] forKey:@"hotCommentUUID"];
+        [commentDic setQIMSafeObject:atList forKey:@"atList"];
+
         [[QIMKit sharedInstance] uploadCommentWithCommentDic:commentDic];
     }
     //回复完之后清空staticCommentModel
@@ -553,6 +571,19 @@
     QIMWorkMomentUserIdentityVC *identityVc = [[QIMWorkMomentUserIdentityVC alloc] init];
     identityVc.momentId = self.momentId;
     [self.navigationController pushViewController:identityVc animated:YES];
+}
+
+- (void)didiOpenUserSelectVCWithVC:(UIViewController *)qNoticeVC {
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+        QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+        qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+        [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
+    } else {
+        [self.navigationController pushViewController:qNoticeVC animated:YES];
+    }
 }
 
 // 查看全文/收起

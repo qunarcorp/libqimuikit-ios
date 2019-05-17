@@ -97,16 +97,6 @@
 - (void)goBack:(id)sender {
     self.callbackBlock(self.selectUsers);
     [self.navigationController popViewControllerAnimated:YES];
-    /*
-    if (self.presentingViewController) {
-        [self dismissViewControllerAnimated:YES completion:^{
-            self.callbackBlock(@{});
-        }];
-    } else {
-        //适配iPad Push进来
-        self.callbackBlock(@{});
-        [self.navigationController popViewControllerAnimated:YES];
-    } */
 }
 
 - (void)complateClick:(id)sender {
@@ -220,7 +210,7 @@
         _searchResults = [[NSMutableArray alloc]init];
     }
     [_searchResults removeAllObjects];
-    if (searchText.length > 0) {
+    if (searchText.length >= 4) {
         NSArray *searchUsers = [[QIMKit sharedInstance] searchUserListBySearchStr:searchText WithLimit:20 WithOffset:0];
         [_searchResults addObjectsFromArray:searchUsers];
         QIMVerboseLog(@"_searchResults :%d", _searchResults.count);

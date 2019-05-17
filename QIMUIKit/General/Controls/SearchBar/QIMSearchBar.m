@@ -49,9 +49,10 @@
         [self.searchBgView addSubview:iconView];
         [iconView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_offset(15);
-            make.width.mas_equalTo(13);
+            make.width.mas_equalTo(14);
             make.top.mas_offset(12);
-            make.bottom.mas_offset(-12);
+            make.height.mas_equalTo(14);
+//            make.bottom.mas_offset(-12);
         }];
         
         UILabel *promotLabel = [[UILabel alloc] initWithFrame:CGRectZero];

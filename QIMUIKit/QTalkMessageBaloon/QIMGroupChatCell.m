@@ -17,7 +17,7 @@
 #import "YLImageView.h"
 
 #define kTextLabelTop       10
-#define kTextLableLeft      10
+#define kTextLableLeft      12
 #define kTextLableBottom    10
 #define kTextLabelRight     10
 #define kMyCellHeightCap    14
@@ -117,32 +117,33 @@
 }
 
 - (void)applicationFileManagerUpdate:(NSNotification *)notify {
-    NSDictionary * infoDic = notify.object;
-   QIMMessageModel * message = [infoDic objectForKey:@"message"];
-    float propress = [[infoDic objectForKey:@"propress"] floatValue];
-    NSString * status = [infoDic objectForKey:@"status"];
-    if ([message.messageId isEqualToString:self.message.messageId] || [message.messageId isEqualToString:_imageMd5]) {
-//        message.propress = (int)MAX((1-propress) * 100, 0);
-        if (propress <= 1) {
-            //update进度条
-            _propressView.hidden = NO;
-            _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (1 - propress));
-//            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
-        }else{
-            if ([status isEqualToString:@"failed"]) {
-                self.message.messageSendState = QIMMessageSendState_Faild;
-                
-                _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height);
-                _propressView.hidden = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary * infoDic = notify.object;
+        QIMMessageModel * message = [infoDic objectForKey:@"message"];
+        float propress = [[infoDic objectForKey:@"propress"] floatValue];
+        NSString * status = [infoDic objectForKey:@"status"];
+        if ([message.messageId isEqualToString:self.message.messageId] || [message.messageId isEqualToString:_imageMd5]) {
+            //        message.propress = (int)MAX((1-propress) * 100, 0);
+            if (propress <= 1) {
+                //update进度条
+                _propressView.hidden = NO;
+                _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (1 - propress));
+                //            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
             }else{
-                _propressView.hidden = YES;
+                if ([status isEqualToString:@"failed"]) {
+                    self.message.messageSendState = QIMMessageSendState_Faild;
+                    
+                    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height);
+                    _propressView.hidden = YES;
+                }else{
+                    _propressView.hidden = YES;
+                }
             }
         }
-    }
+    });
 }
 
-- (NSInteger)indexForCellImagesAtLocation:(CGPoint)location
-{
+- (NSInteger)indexForCellImagesAtLocation:(CGPoint)location {
     return 0;
 }
 

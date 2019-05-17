@@ -48,6 +48,7 @@ static QIMMessageTextAttachment *_attachmentManager = nil;
             [atDic setQIMSafeObject:[(QIMATGroupMemberTextAttachment *)value groupMemberJid] forKey:@"jid"];
             [plainString replaceCharactersInRange:NSMakeRange(range.location + base, range.length) withString:[(QIMATGroupMemberTextAttachment *)value groupMemberName]];
             [atInfoList addObject:atDic];
+            base += [((QIMATGroupMemberTextAttachment *) value) getSendText].length - 1;
         }
     }];
     if (atInfoList.count <= 0) {

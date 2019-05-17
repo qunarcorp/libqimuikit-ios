@@ -18,4 +18,6 @@
 @property (nonatomic, copy) NSString *groupMemberName;
 @property (nonatomic, copy) NSString *groupMemberJid;
 
+- (NSString *)getSendText;
+
 @end

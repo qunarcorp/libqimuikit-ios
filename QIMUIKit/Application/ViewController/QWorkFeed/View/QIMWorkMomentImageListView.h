@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 //### 单个小图显示视图
 @interface QIMWorkMomentImageView : UIImageView
 
+- (void)downLoadImageWithModel:(NSString *)imageUrl withFitRect:(CGRect)frame withTotalCount:(NSInteger)totalCount;
+
 // 点击小图
 @property (nonatomic, copy) void (^tapSmallView)(QIMWorkMomentImageView *imageView);
 

@@ -187,7 +187,7 @@
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@(0)];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkNoticeCount":@(0)}];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

@@ -139,10 +139,14 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
     NSString *httpHost = [[QIMKit sharedInstance] qimNav_Javaurl];
     BOOL WorkFeedEntrance = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
     BOOL isShowRedPackage = YES;
+    BOOL isEasyTrip = NO;
     if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
         isShowRedPackage = NO;
+        isEasyTrip = YES;
+    } else {
+        isEasyTrip = [[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"] ? NO : YES;
     }
-    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState": @([[QIMKit sharedInstance] isMerchant]), @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(WorkFeedEntrance), @"isShowGroupQRCode":@(YES), @"isShowLocalQuickSearch":@(YES), @"isShowRedPackage":@(isShowRedPackage)}];
+    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState": @([[QIMKit sharedInstance] isMerchant]), @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(WorkFeedEntrance), @"isShowGroupQRCode":@(YES), @"isShowLocalQuickSearch":@(YES), @"isShowRedPackage":@(isShowRedPackage), @"isEasyTrip":@(isEasyTrip)}];
     QIMVerboseLog(@"AppConfig : %@", appConfig);
     success(appConfig);
 }
@@ -383,7 +387,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-//    return [NSURL URLWithString:@"http://100.80.128.29:8081/index.ios.bundle?platform=ios&dev=true"];
+//    return [NSURL URLWithString:@"http://100.80.128.195:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
     NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
     if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
@@ -767,30 +771,6 @@ RCT_EXPORT_METHOD(browseBigHeader:(NSDictionary *)param :(RCTResponseSenderBlock
 RCT_EXPORT_METHOD(openUserChat:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *userId = [param objectForKey:@"UserId"];
-        /*
-        NSString *userId = [param objectForKey:@"UserId"];
-        NSString *name = [param objectForKey:@"Name"];
-        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-        if (!navVC) {
-            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-        }
-        ChatType chatType = [[QIMKit sharedInstance] openChatSessionByUserId:userId];
-        QIMChatVC *chatVC = [[QIMChatVC alloc] init];
-        [chatVC setStype:kSessionType_Chat];
-        [chatVC setChatId:userId];
-        [chatVC setName:name];
-        [chatVC setTitle:name];
-        [chatVC setChatType:chatType];
-        if (chatType == ChatType_Consult) {
-            [chatVC setVirtualJid:userId];
-        }
-        //备注
-        NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
-        [chatVC setTitle:remarkName ? remarkName : name];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-        [navVC popToRootVCThenPush:chatVC animated:YES];
-        */
         [QIMFastEntrance openSingleChatVCByUserId:userId];
     });
 }
@@ -1168,8 +1148,7 @@ RCT_EXPORT_METHOD(destructionGroup:(NSString *)groupId :(RCTResponseSenderBlock)
 RCT_EXPORT_METHOD(selectUserListByText:(NSDictionary *)params :(RCTResponseSenderBlock)callback) {
     NSString *groupId = [params objectForKey:@"groupId"];
     NSString *searchText = [params objectForKey:@"searchText"];
-//    NSArray *users = [[QIMKit sharedInstance] searchUserBySearchStr:searchText notInGroup:groupId];
-    NSArray *users = [[QIMKit sharedInstance] searchUserListBySearchStr:searchText];
+    NSArray *users = [[QIMKit sharedInstance] searchUserListBySearchStr:[searchText lowercaseString]];
     NSMutableArray *properties = [NSMutableArray arrayWithCapacity:3];
 
     for (NSDictionary *memberDic in users) {
@@ -1376,7 +1355,6 @@ RCT_EXPORT_METHOD(getContactsNick:(NSString *)xmppId :(RCTResponseSenderBlock)ca
     [properties setQIMSafeObject:xmppId forKey:@"XmppId"];
     [properties setQIMSafeObject:mood forKey:@"Mood"];
     callback(@[@{@"nick":properties ? properties : @{}}]);
-//    callback(@[@{@"nick":@{}}]);
 }
 
 RCT_EXPORT_METHOD(selectFriendsForGroupAdd:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
@@ -1606,14 +1584,15 @@ RCT_EXPORT_METHOD(setWaterMark:(BOOL)isOpen) {
 
 //获取驼圈提醒
 RCT_EXPORT_METHOD(getworkWorldRemind:(RCTResponseSenderBlock)callback) {
-//    BOOL state = [[QIMKit sharedInstance] getLocalMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH];
-    callback(@[@{@"state" : @(YES)}]);
+    BOOL state = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
+    callback(@[@{@"state" : @(state)}]);
 }
 
 //设置驼圈提醒
 RCT_EXPORT_METHOD(updateWorkWorldRemind:(BOOL)state :(RCTResponseSenderBlock)callback) {
-//    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGMOMENT_SWITCH WithSwitchOn:state];
-    callback(@[@{@"ok" : @(YES)}]);
+    [[QIMKit sharedInstance] updateRemoteWorkMomentNotifyConfig:state withCallBack:^(BOOL successed) {
+       callback(@[@{@"ok" : @(successed)}]);
+    }];
 }
 
 //获取客服服务模式
@@ -2135,6 +2114,31 @@ RCT_EXPORT_METHOD(selectUserNotInStartContacts:(NSString *)key :(RCTResponseSend
 
 RCT_EXPORT_METHOD(openUserWorkWorld:(NSDictionary *)param) {
     [[QIMFastEntrance sharedInstance] openUserWorkWorldWithParam:param];
+}
+
+@end
+
+
+@implementation QimRNBModule (Log)
+
+//RN点击事件
+RCT_EXPORT_METHOD(saveRNActLog:(NSString *)desc) {
+
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:desc withDescription:desc];
+#endif
+}
+
+/**
+ * RN点击埋点统计
+ *
+ * @param desc
+ */
+RCT_EXPORT_METHOD(saveRNActLog:(NSString *)eventId :(NSString *)desc :(NSString *)currentPage) {
+    
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:eventId withDescription:desc];
+#endif
 }
 
 @end

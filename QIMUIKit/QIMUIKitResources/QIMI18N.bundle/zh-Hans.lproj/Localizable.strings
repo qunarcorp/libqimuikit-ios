@@ -18,7 +18,7 @@
 
 "login_userNameInputView_placeholder" = "例: san.zhang";
 // Tab bar Title
-"tab_title_chat" = "会话";
+"tab_title_chat" = "消息";
 "tab_title_travel" = "行程";
 "tab_title_contact" = "通讯录";
 "tab_title_discover" = "发现";

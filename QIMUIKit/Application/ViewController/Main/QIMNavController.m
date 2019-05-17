@@ -70,8 +70,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.navigationBar setTintColor: [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]];
-    [self.navigationBar setBackgroundImage:[UIImage qim_imageFromColor:[UIColor qim_colorWithHex:0xf7f7f7 alpha:1.0]] forBarMetrics:UIBarMetricsDefault];
-
+    [self.navigationBar setBackgroundImage:[UIImage qim_imageWithColor:[UIColor whiteColor]] forBarMetrics:UIBarMetricsDefault];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self becomeFirstResponder];
 }

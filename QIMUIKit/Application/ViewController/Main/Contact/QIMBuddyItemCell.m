@@ -62,9 +62,9 @@
     
     [_headerView setFrame:CGRectMake(addtionWidth + 10, 10, 40, 40)];
     [_nameLabel setFrame:CGRectMake(addtionWidth + 60, 10, 200, 20)];
-    
-    NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:_jid];
-    [_nameLabel setText:remarkName?remarkName:self.userName];
+    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:_jid];
+    NSString *userName = [userInfo objectForKey:@"Name"];
+    [_nameLabel setText:userName];
     
     [_headerView qim_setImageWithJid:_jid];
 }

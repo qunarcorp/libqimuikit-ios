@@ -9,6 +9,8 @@
 #import "QIMWorkCommentInputBar.h"
 #import "QIMWorkCommentTextView.h"
 #import "QIMWorkMomentUserIdentityModel.h"
+#import "QIMWorkFeedAtNotifyViewController.h"
+#import "QIMATGroupMemberTextAttachment.h"
 
 @interface QIMWorkCommentInputBar () <UITextViewDelegate>
 
@@ -108,7 +110,8 @@
         _commentTextView.textAlignment = NSTextAlignmentLeft;
         _commentTextView.delegate = self;
         _commentTextView.backgroundColor = [UIColor qim_colorWithHex:0xF0F0F0];
-        _commentTextView.font = [UIFont systemFontOfSize:16];
+        _commentTextView.font = [UIFont systemFontOfSize:15];
+        _commentTextView.textColor = [UIColor qim_colorWithHex:0x333333];
         _commentTextView.contentInset = UIEdgeInsetsMake(0, 10.0f, 0, 10.0f);
         [_commentTextView addSubview:self.placeholderLabel];
         
@@ -257,20 +260,115 @@
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     if (textView == self.commentTextView && [text isEqualToString:@"\n"]){ //判断输入的字是否是回车，即按下return
         NSLog(@"text : %@", text);
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didaddCommentWithStr:)]) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didaddCommentWithStr:withAtList:)]) {
             [self sendComment];
         }
         return NO; //这里返回NO，就代表return键值失效，即页面上按下return，不会出现换行，如果为yes，则输入页面会换行
+    } else if (textView == self.commentTextView && [text isEqualToString:@"@"]) {
+        QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
+        __weak __typeof(&*self) weakSelf = self;
+        
+        [qNoticeVC onQIMWorkFeedSelectUser:^(NSArray *selectUsers) {
+            NSLog(@"selectUsers : %@", selectUsers);
+            for (NSString *userXmppJid in selectUsers) {
+                if (userXmppJid.length > 0) {
+                    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userXmppJid];
+                    if (userInfo.count > 0) {
+                        NSString *name = [userInfo objectForKey:@"Name"];
+                        NSString *jid = [userInfo objectForKey:@"XmppId"];
+                        NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+                        
+                        QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
+                        CGSize size = [memberName qim_sizeWithFontCompatible:self.commentTextView.font];
+                        atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0xF0F0F0] size:CGSizeMake(size.width, self.commentTextView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.commentTextView.font} circular:NO];
+                        atTextAttachment.groupMemberName = memberName;
+                        atTextAttachment.groupMemberJid = jid;
+                        
+                        NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] init];
+                        NSAttributedString *textAtt2 = [NSAttributedString attributedStringWithAttachment:atTextAttachment];
+                        [textAtt appendAttributedString:textAtt2];
+                        
+                        [weakSelf.commentTextView.textStorage insertAttributedString:textAtt atIndex:self.commentTextView.selectedRange.location];
+                        weakSelf.commentTextView.selectedRange = NSMakeRange(weakSelf.commentTextView.selectedRange.location + weakSelf.commentTextView.selectedRange.length + memberName.length + 2, 0);
+                        [weakSelf resetTextStyle];
+                    } else {
+                        QIMVerboseLog(@"未选择要艾特的群成员");
+                        weakSelf.commentTextView.selectedRange = NSMakeRange(weakSelf.commentTextView.selectedRange.location + self.commentTextView.selectedRange.length + 1, 0);
+                        [weakSelf resetTextStyle];
+                    }
+                }
+            }
+        }];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didiOpenUserSelectVCWithVC:)]) {
+            [self.delegate didiOpenUserSelectVCWithVC:qNoticeVC];
+        }
+        
     }
     return YES;
 }
 
+- (void)resetTextStyle {
+    //After changing text selection, should reset style.
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.firstLineHeadIndent = 0;    /**首行缩进宽度*/
+    if (self.commentTextView.textStorage.length <= 0) {
+
+        NSDictionary *attributes = @{
+                                     NSFontAttributeName:[UIFont systemFontOfSize:15],
+                                     NSParagraphStyleAttributeName:paragraphStyle
+                                     };
+        self.commentTextView.attributedText = [[NSAttributedString alloc] initWithString:@" " attributes:attributes];
+        self.commentTextView.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:attributes];
+    }else{
+        NSRange wholeRange = NSMakeRange(0, self.commentTextView.textStorage.length);
+        [self.commentTextView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
+        [self.commentTextView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:15] range:wholeRange];
+        [self.commentTextView.textStorage removeAttribute:NSParagraphStyleAttributeName range:wholeRange];
+    }
+    [self.commentTextView setFont:[UIFont systemFontOfSize:15]];
+}
+
 - (void)sendComment {
-    if (self.commentTextView.text.length > 0 && ![self isEmpty:self.commentTextView.text]) {
-        [self.delegate didaddCommentWithStr:self.commentTextView.text];
+    if (self.commentTextView.text.length > 0 && ![self isEmpty:self.commentTextView.attributedText.string]) {
+        NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
+        NSString *finallyContent = [self getStringFromAttributedString:self.commentTextView.attributedText WithOutAtInfo:&outATInfoArray];
+
+        [self.delegate didaddCommentWithStr:finallyContent withAtList:outATInfoArray];
         self.commentTextView.text = nil;
         [self.commentTextView resignFirstResponder];
     }
+}
+
+- (NSString *)getStringFromAttributedString:(NSAttributedString *)attributedString WithOutAtInfo:(NSMutableArray **)outAtInfo {
+    //最终纯文本
+    NSMutableString *plainString = [NSMutableString stringWithString:attributedString.string];
+    //替换下标的偏移量
+    __block NSUInteger base = 0;
+    
+    *outAtInfo = [NSMutableArray arrayWithCapacity:3];
+    NSMutableDictionary *atInfoDic = [NSMutableDictionary dictionaryWithCapacity:3];
+    NSMutableArray *atInfoList = [NSMutableArray array];
+    [atInfoDic setQIMSafeObject:atInfoList forKey:@"data"];
+    [atInfoDic setQIMSafeObject:@(10001) forKey:@"type"];
+    [*outAtInfo addObject:atInfoDic];
+    //遍历
+    [attributedString enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, attributedString.length) options:0 usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
+        if (value && [value isKindOfClass:[QIMATGroupMemberTextAttachment class]]) {
+            NSMutableDictionary *atDic = [NSMutableDictionary dictionary];
+            [atDic setQIMSafeObject:[(QIMATGroupMemberTextAttachment *)value groupMemberName] forKey:@"text"];
+            [atDic setQIMSafeObject:[(QIMATGroupMemberTextAttachment *)value groupMemberJid] forKey:@"jid"];
+            [atInfoList addObject:atDic];
+            [plainString replaceCharactersInRange:NSMakeRange(range.location + base, range.length) withString:[(QIMATGroupMemberTextAttachment *)value groupMemberName]];
+        }
+    }];
+    if (atInfoList.count <= 0) {
+        *outAtInfo = nil;
+    } else {
+        [atInfoDic setQIMSafeObject:atInfoList forKey:@"data"];
+    }
+    plainString = [NSMutableString stringWithString:[plainString stringByReplacingOccurrencesOfString:@"\U0000fffc" withString:@""]];
+    return plainString;
 }
 
 @end

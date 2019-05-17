@@ -88,6 +88,9 @@
 - (void)refreshUI {
     [self.headerView qim_setImageWithJid:self.userXmppId];
     [self.nameLabel setText:self.userName];
+    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.userXmppId];
+    NSString *userDep = [userInfo objectForKey:@""];
+    [self.departmentLabel setText:userDep];
 }
 
 @end

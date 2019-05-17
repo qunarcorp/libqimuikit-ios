@@ -27,12 +27,6 @@
         maskLayer.path = maskPath.CGPath;
         self.layer.mask = maskLayer;
         
-//        UIView *searchIconBackView = [[UIView alloc] initWithFrame:CGRectMake(5, 5, 26, 26)];
-//        searchIconBackView.backgroundColor = [UIColor qim_colorWithHex:0x5CC57F];
-//        searchIconBackView.layer.cornerRadius = 13;
-//        searchIconBackView.layer.masksToBounds = YES;
-//        [self addSubview:searchIconBackView];
-//
         UIImageView *searchIconView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 12, 12, 12)];
         searchIconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_chatsearchRemindViewTextFont size:21 color:qim_chatsearchRemindViewIconColor]];
         [self addSubview:searchIconView];

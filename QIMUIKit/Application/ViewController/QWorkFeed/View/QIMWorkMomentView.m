@@ -50,7 +50,7 @@ CGFloat maxFullContentHeight = 0;
 }
 
 - (void)setMomentModel:(QIMWorkMomentModel *)momentModel {
-    _momentModel = momentModel;
+    _moment = momentModel;
     [self removeAllSubviews];
     [self setupUI];
 }

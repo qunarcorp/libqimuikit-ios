@@ -42,7 +42,7 @@
 #import "QIMQRCodeViewDisplayController.h"
 #import "QIMContactSelectionViewController.h"
 #import "QIMFileTransMiddleVC.h"
-
+#import "QIMWorkFeedDetailViewController.h"
 #if __has_include("QIMIPadWindowManager.h")
 
     #import "IPAD_RemoteLoginVC.h"
@@ -1488,6 +1488,16 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
     });
 #endif
+}
+
++ (void)openWorkMomentDetailWithPOSTUUId:(NSString *)postUUId {
+    QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
+    detailVc.momentId = postUUId;
+    UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+    if (!navVC) {
+        navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+    }
+    [navVC pushViewController:detailVc animated:YES];
 }
 
 @end

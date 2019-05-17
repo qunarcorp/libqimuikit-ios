@@ -474,19 +474,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         }];
     }
     
-    //未读消息按钮
-    NSArray *atMeMessageArray = [[QIMKit sharedInstance] getHasAtMeByJid:self.chatId];
-    if (atMeMessageArray.count > 0) {
-        _notReadAtMsgTipView = [[QIMNotReadATMsgTipView alloc] initWithNotReadAtMsgCount:atMeMessageArray.count];
-        [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width, 60, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
-        [_notReadAtMsgTipView setNotReadAtMsgDelegate:self];
-        [self.view addSubview:_notReadAtMsgTipView];
-        [UIView animateWithDuration:0.3 animations:^{
-            [UIView setAnimationDelay:0.1];
-            [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width - _notReadAtMsgTipView.width, _notReadAtMsgTipView.top, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
-        }];
-    }
-    
     [self.textBar performSelector:@selector(keyBoardDown) withObject:nil afterDelay:0.5];
 }
 
@@ -501,7 +488,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 - (UIView *)getForwardNavView {
     if (_forwardNavTitleView == nil) {
         _forwardNavTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, self.navigationController.navigationBar.bounds.size.height)];
-        _forwardNavTitleView.backgroundColor = [UIColor qtalkTableDefaultColor];
+        _forwardNavTitleView.backgroundColor = [UIColor whiteColor];
         UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
         [cancelBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
@@ -515,7 +502,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 - (UIView *)getMaskRightTitleView {
     if (_maskRightTitleView == nil) {
         _maskRightTitleView = [[UIView alloc] initWithFrame:CGRectMake(self.navigationController.navigationBar.bounds.size.width - 100, 0, 100, self.navigationController.navigationBar.bounds.size.height)];
-        _maskRightTitleView.backgroundColor = [UIColor qtalkTableDefaultColor];
+        _maskRightTitleView.backgroundColor = [UIColor whiteColor];
     }
     return _maskRightTitleView;
 }
@@ -1030,6 +1017,29 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                          }];
 }
 
+- (void)showNotReadAtMsgView {
+    //未读消息按钮
+    NSArray *atMeMessageArray = [[QIMKit sharedInstance] getHasAtMeByJid:self.chatId];
+    if (atMeMessageArray.count > 0) {
+        _notReadAtMsgTipView = [[QIMNotReadATMsgTipView alloc] initWithNotReadAtMsgCount:atMeMessageArray.count];
+        [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width, 60, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
+        [_notReadAtMsgTipView setNotReadAtMsgDelegate:self];
+        [self.view addSubview:_notReadAtMsgTipView];
+        [UIView animateWithDuration:0.3 animations:^{
+            [UIView setAnimationDelay:0.1];
+            [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width - _notReadAtMsgTipView.width, _notReadAtMsgTipView.top, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
+        }];
+    }
+}
+
+- (void)updateNotAtReadAtMsgWithMsgArray:(NSArray *)array {
+    NSMutableArray *msgIds = [NSMutableArray arrayWithCapacity:3];
+    for (QIMMessageModel *msg in array) {
+        [msgIds addObject:msg.messageId];
+    }
+    [[QIMKit sharedInstance] updateAtMeMessageWithJid:self.chatId withMsgIds:msgIds withReadState:QIMAtMsgHasReadState];
+}
+
 - (void)updateNotReadAtMsgTipView {
     NSArray *atMsgArray = [[QIMKit sharedInstance] getHasAtMeByJid:self.chatId];
     if (atMsgArray.count > 0) {
@@ -1074,8 +1084,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                 [weakSelf.tableView reloadData];
                 weakSelf.tableView.editing = editing;
                 [weakSelf addImageToImageList];
+                [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                 [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
-                [[QIMKit sharedInstance] updateAtMeMessageWithJid:self.chatId withMsgId:msgId withReadState:QIMAtMsgHasReadState];
+                [[QIMKit sharedInstance] updateAtMeMessageWithJid:self.chatId withMsgIds:@[msgId] withReadState:QIMAtMsgHasReadState];
                 [weakSelf updateNotReadAtMsgTipView];
             });
         }];
@@ -1129,6 +1140,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                        [self scrollBottom];
                                                        [self addImageToImageList];
                                                        [[QIMEmotionSpirits sharedInstance] setDataCount:(int) self.messageManager.dataSource.count];
+                                                       //标记艾特消息已读
+                                                       [self updateNotAtReadAtMsgWithMsgArray:list];
+                                                       [self showNotReadAtMsgView];
                                                    });
                                                }];
             }
