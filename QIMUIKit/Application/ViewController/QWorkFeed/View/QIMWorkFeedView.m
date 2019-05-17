@@ -23,6 +23,7 @@
 #import <MJRefresh/MJRefresh.h>
 #if __has_include("QIMAutoTracker.h")
 #import "QIMAutoTracker.h"
+#import "QIMWorkOwnerCamalNoDataView.h"
 #endif
 
 @interface QIMWorkFeedView () <UITableViewDelegate, UITableViewDataSource, QIMWorkMomentNotifyViewDelegtae>
@@ -43,9 +44,21 @@
 
 @property (nonatomic, assign) BOOL notNeedReloadMomentView;
 
+@property (nonatomic, assign) BOOL showNoticView;
+
+@property (nonatomic, strong) QIMWorkOwnerCamalNoDataView * noDataView;
+
 @end
 
 @implementation QIMWorkFeedView
+
+-(QIMWorkOwnerCamalNoDataView *)noDataView{
+    if (!_noDataView) {
+        _noDataView = [[QIMWorkOwnerCamalNoDataView alloc]initWithFrame:self.frame];
+    }
+    return _noDataView;
+}
+
 
 - (UIButton *)addNewMomentBtn {
     if (!_addNewMomentBtn) {
@@ -124,9 +137,12 @@
 
 #pragma mark - life ctyle
 
-- (instancetype)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame userId:(NSString *)userId showNewMomentBtn:(BOOL)showBtn showNoticView:(BOOL)showNtc{
     self = [super initWithFrame:frame];
     if (self) {
+        if (userId) {
+            self.userId = userId;
+        }
         [self addSubview:self.mainTableView];
         self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
         if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
@@ -137,16 +153,25 @@
         [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
         
         self.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
-        [self registerNotifications];
+        self.showNoticView = showNtc;
+        if (showNtc) {
+            [self registerNotifications];
+        }
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             [self reloadRemoteRecenteMoments];
         });
 #if __has_include("QIMAutoTracker.h")
         [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"tuocircle" withDescription:@"驼圈"];
 #endif
-        [self addSubview:self.addNewMomentBtn];
+        if (showBtn) {
+            [self addSubview:self.addNewMomentBtn];
+        }
     }
     return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    return [self initWithFrame:frame userId:@"" showNewMomentBtn:YES showNoticView:YES];
 }
 
 //主动更新驼圈未读数
@@ -345,6 +370,9 @@
                 [weakSelf.mainTableView.mj_footer endRefreshing];
                 weakSelf.mainTableView.mj_footer = nil;
                 weakSelf.mainTableView.tableFooterView = [self loadFaildView];
+                if (weakSelf.workMomentList.count == 0) {
+                    [weakSelf addSubview:self.noDataView];
+                }
             });
         }
     }];
@@ -399,6 +427,9 @@
 }
 */
 
+/**
+ 添加新驼圈儿入口
+ */
 - (void)jumpToAddNewMomentVc {
     
     QIMWorkMomentPushViewController *newMomentVc = [[QIMWorkMomentPushViewController alloc] init];
@@ -462,15 +493,20 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
-        return self.notifyView;
+    if (_showNoticView) {
+        if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
+            return self.notifyView;
+        }
+        else{
+            return nil;
+        }
     }
     return nil;
 }
 
 #pragma mark - xxx
 
-//操作这条Moment
+//操作自己发的这天这条Moment
 - (void)didControlPanelMoment:(QIMWorkMomentCell *)cell {
     NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
     [indexSet addIndex:1];

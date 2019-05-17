@@ -56,6 +56,7 @@
 #import "QIMFilePreviewVC.h"
 #import "QIMMWPhotoSectionBrowserVC.h"
 #import "QIMWorkFeedViewController.h"
+#import "QIMWorkFeedMYCirrleViewController.h"
 
 @interface QIMFastEntrance () <MFMailComposeViewControllerDelegate>
 
@@ -1461,7 +1462,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         return;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        QIMWorkFeedViewController *userWorkFeedVc = [[QIMWorkFeedViewController alloc] init];
+        QIMWorkFeedMYCirrleViewController * userWorkFeedVc = [[QIMWorkFeedMYCirrleViewController alloc]init];
+        
         userWorkFeedVc.userId = [param objectForKey:@"UserId"];
         
         //        userWorkFeedVc.title = [NSString stringWithFormat:@"%@的动态", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:[param objectForKey:@"UserId"]]];

@@ -79,6 +79,8 @@ typedef enum {
 
 + (void)clearALLTextBar;
 
+
+
 @property (nonatomic, weak) id <QIMTextBarDelegate> delegate;
 
 /**
