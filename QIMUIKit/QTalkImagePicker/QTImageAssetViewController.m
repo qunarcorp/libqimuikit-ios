@@ -155,7 +155,7 @@ CGFloat imageItemWidth;
 }
 
 - (void)initBottomView{
-    _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT], self.view.width, 49)];
+    _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], self.view.width, 49)];
     [_bottomView setBackgroundColor:[UIColor qim_colorWithHex:0xf1f1f1 alpha:1]];
     [self.view addSubview:_bottomView];
     

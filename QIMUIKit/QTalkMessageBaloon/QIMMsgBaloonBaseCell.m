@@ -11,6 +11,7 @@
 #import "QIMImageStorage.h"
 #import "QIMTextContainer.h"
 #import "QIMCollectionFaceManager.h"
+#import "QIMMessageParser.h"
 
 static UIImage *__leftBallocImage = nil;
 static UIImage *__rightBallocImage = nil;
@@ -503,6 +504,7 @@ static UIImage *__rightBallocImage = nil;
         }
             break;
         case MA_Collection: {
+            self.textContainer = [QIMMessageParser textContainerForMessage:self.message fromCache:NO];
             for (QIMImageStorage * imageStorage in self.textContainer.textStorages) {
                 
                 
