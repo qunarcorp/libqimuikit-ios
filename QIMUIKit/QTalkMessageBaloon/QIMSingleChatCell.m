@@ -207,7 +207,7 @@ static double _global_message_cell_width = 0;
             break;
             //添加为表情
         case MA_Collection: {
-            
+            self.textContainer = [QIMMessageParser textContainerForMessage:self.message fromCache:NO];
             for (QIMImageStorage * imageStorage in self.textContainer.textStorages) {
                 
                 if (![imageStorage isKindOfClass:[QIMImageStorage class]]) {
