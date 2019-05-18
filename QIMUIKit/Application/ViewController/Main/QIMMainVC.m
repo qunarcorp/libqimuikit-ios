@@ -387,6 +387,7 @@ static dispatch_once_t __onceMainToken;
     QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
     BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
     if (workMoment == YES) {
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSDictionary *newWorkMomentNotify = notify.object;
             //新帖子通知
@@ -1099,6 +1100,7 @@ static dispatch_once_t __onceMainToken;
 #endif
 }
 
+//我的驼圈儿navbar入口
 - (void)myOwnerMoment:(id)sender {
     [[QIMFastEntrance sharedInstance] openUserWorkWorldWithParam:@{@"UserId":[[QIMKit sharedInstance] getLastJid]}];
 #if __has_include("QIMAutoTracker.h")
