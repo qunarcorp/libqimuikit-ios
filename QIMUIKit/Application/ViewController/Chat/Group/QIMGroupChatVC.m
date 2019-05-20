@@ -1279,7 +1279,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 - (void)collectionEmotionNotificationHandle:(NSNotification *)notify {
     
     NSString *httpUrl = notify.object;
-    httpUrl = [httpUrl stringByReplacingOccurrencesOfString:@"http://" withString:@"https://"];
     __block CGFloat width = 0;
     __block CGFloat height = 0;
     if ([httpUrl isEqualToString:kImageFacePageViewAddFlagName]) {
