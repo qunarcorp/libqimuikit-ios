@@ -80,7 +80,6 @@
 }
 
 - (void)loadMoreNoticeMessages {
-//    NSArray *moreNoticeMsgs = [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:10 WithOffset:self.noticeMsgs.count];
     
 }
 

@@ -128,7 +128,7 @@
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor whiteColor];
-        self.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownload"];
+        self.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"];
     }
     return self;
 }

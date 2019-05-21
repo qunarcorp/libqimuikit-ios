@@ -26,7 +26,7 @@
 - (UIImageView *)imgView {
     if (!_imgView) {
         _imgView = [[UIImageView alloc] initWithFrame:CGRectMake(11, 11, 44, 44)];
-        _imgView.backgroundColor = [UIColor redColor];
+        _imgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"workmoment_link_icon"];
     }
     return _imgView;
 }
@@ -35,16 +35,16 @@
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.imgView.right + 9, 14, self.width - 66, 40)];
         _titleLabel.font = [UIFont systemFontOfSize:14];
+        _titleLabel.numberOfLines = 2;
         _titleLabel.textColor = [UIColor qim_colorWithHex:0x333333];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
-        _titleLabel.text = @"全新驼圈上线快更新你的驼友圈驼友圈驼全 新驼圈上线快";
     }
     return _titleLabel;
 }
 
 - (void)setLinkModel:(QIMWorkMomentContentLinkModel *)linkModel {
     _linkModel = linkModel;
-    [self.imgView qim_setImageWithURL:[NSURL URLWithString:linkModel.img] placeholderImage:nil];
+    [self.imgView qim_setImageWithURL:[NSURL URLWithString:linkModel.img] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"workmoment_link_icon"]];
     self.titleLabel.frame = CGRectMake(self.imgView.right + 9, 14, self.width - 66, 40);
     self.titleLabel.text = linkModel.title;
 }

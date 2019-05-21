@@ -144,7 +144,7 @@
             self.userId = userId;
         }
         [self addSubview:self.mainTableView];
-        self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+        self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
         if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
             [self.mainTableView reloadData];
         } else {
@@ -176,7 +176,7 @@
 
 //主动更新驼圈未读数
 - (void)updateMomentView {
-    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
     if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
         [self.mainTableView reloadData];
     } else {
@@ -393,7 +393,7 @@
 #pragma mark - NSNotifications
 
 - (void)reloadNoticeMsg:(NSNotification *)notify {
-    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.mainTableView reloadData];
     });

@@ -78,6 +78,7 @@
     __block YLGIFImage *image = nil;
     NSData *placeHoldImageData = [NSData dataWithContentsOfFile:_placeholdImageName];
     image = placeHoldImageData.length ? [YLGIFImage imageWithData:placeHoldImageData scale:1.0] : nil;
+    [_imageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
     _isNeedUpdateFrame = YES;
     if (_image) {
         // 本地图片名

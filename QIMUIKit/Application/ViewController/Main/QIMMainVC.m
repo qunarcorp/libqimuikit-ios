@@ -399,11 +399,11 @@ static dispatch_once_t __onceMainToken;
                     [_tabBar setBadgeNumber:newWorkNoticeCount ByItemIndex:3 showNumber:YES];
                 });
             } else {
-                NSInteger notReadCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+                NSInteger notReadCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
                 if (notReadCount > 0) {
                     //过来的通知不是新评论时，优先展示未读数
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [_tabBar setBadgeNumber:newWorkNoticeCount ByItemIndex:3 showNumber:YES];
+                        [_tabBar setBadgeNumber:notReadCount ByItemIndex:3 showNumber:YES];
                     });
                 } else {
                     //过来的通知不是新评论时且本地没有未读消息时，展示新帖子小红点
@@ -413,7 +413,9 @@ static dispatch_once_t __onceMainToken;
                             [_tabBar setBadgeNumber:1 ByItemIndex:3 showNumber:NO];
                         });
                     } else {
-                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [_tabBar setBadgeNumber:0 ByItemIndex:3 showNumber:NO];
+                        });
                     }
                 }
             }
@@ -518,7 +520,7 @@ static dispatch_once_t __onceMainToken;
 #endif
             break;
         case 3:
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkNoticeCount":@(0)}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkMoment":@(0)}];
             break;
         default:
             break;
@@ -851,7 +853,7 @@ static dispatch_once_t __onceMainToken;
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]]) {
         //驼圈页面
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkNoticeCount":@(0)}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkMoment":@(0)}];
         [_contentView addSubview:self.momentView];
         [self.momentView setHidden:NO];
         long long currentTime = [NSDate timeIntervalSinceReferenceDate];
