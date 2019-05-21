@@ -207,7 +207,7 @@
 "webview_open_safari" = "在Safari中打开";
 
 // Common
-"common_share_workmoment" = "分享到驼圈"
+"common_share_workmoment" = "分享到驼圈";
 "common_send_friend" = "发送给朋友";
 "common_back" = "返回";
 "common_close" = "关闭";

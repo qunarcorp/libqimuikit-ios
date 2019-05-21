@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkNoticeMessageModel : NSObject
-
+@property (nonatomic, copy) NSString *fromUser;
 @property (nonatomic, copy) NSString *userFrom;
 @property (nonatomic, copy) NSString *userFromHost;
 

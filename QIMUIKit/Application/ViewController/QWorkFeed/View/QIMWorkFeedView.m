@@ -166,6 +166,8 @@
         if (showBtn) {
             [self addSubview:self.addNewMomentBtn];
         }
+        self.noDataView.hidden = YES;
+        [self.mainTableView addSubview:self.noDataView];
     }
     return self;
 }
@@ -346,7 +348,10 @@
                     }
                 });
             } else {
-                
+                [weakSelf.mainTableView.mj_header endRefreshing];
+                if (self.noDataView.hidden == YES) {
+                    self.noDataView.hidden = NO;
+                }
             }
         }];
     });
@@ -373,7 +378,7 @@
                 [weakSelf.mainTableView.mj_footer endRefreshing];
                 weakSelf.mainTableView.mj_footer = nil;
                 weakSelf.mainTableView.tableFooterView = [self loadFaildView];
-                if (weakSelf.workMomentList.count == 0) {
+                if (weakSelf.workMomentList.count == 0 && self.noDataView.hidden == YES) {
                     [weakSelf addSubview:self.noDataView];
                 }
             });
