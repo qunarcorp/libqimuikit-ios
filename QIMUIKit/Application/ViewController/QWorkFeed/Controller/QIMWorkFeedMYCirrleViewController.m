@@ -113,9 +113,7 @@
     self.atMeView.delegate = self;
 
     [self.scrollview addSubview:self.atMeView];
-    
-    [self loadViewData];
-//R
+    //R
 //    [self.view addSubview:self.myMomentView];
     
 #if __has_include("QIMAutoTracker.h")
@@ -225,19 +223,14 @@
     }
 }
 
-- (void)loadViewData{
-    [[QIMKit sharedInstance] getRemoteOwnerCamelGetMyReplyWithCreateTime:0 pageSize:20 complete:^(NSArray * _Nonnull arr) {
-        [self.myReplyView updateDataWith:arr];
-    }];
-    
-    [[QIMKit sharedInstance] getRemoteOwnerCamelGetAtListWithCreateTime:0 pageSize:20  complete:^(NSArray * _Nonnull arr) {
-        [self.atMeView updateDataWith:arr];
-    }];
+-(void)qImWorkFeedMessageViewLoadNewDataWithNewTag:(NSInteger)viewTag finishBlock:(void(^)(NSArray * arr))block{
+    if (viewTag == 0) {
+        [[QIMKit sharedInstance] getRemoteOwnerCamelGetMyReplyWithCreateTime:0 pageSize:20 complete:block];
+    }
+    else{
+        [[QIMKit sharedInstance] getRemoteOwnerCamelGetAtListWithCreateTime:0 pageSize:20  complete:block];
+    }
 }
 
-- (QIMWorkNoticeMessageModel *)getNoticeMessageModelWithDict:(NSDictionary *)modelDict {
-    QIMWorkNoticeMessageModel *model = [QIMWorkNoticeMessageModel yy_modelWithDictionary:modelDict];
-    NSLog(@"QIMWorkNoticeMessageModel *model : %@", model);
-    return model;
-}
+
 @end
