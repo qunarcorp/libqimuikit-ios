@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSMutableArray *selectPhoto;   //本地分享图片
 
+@property (nonatomic, strong) NSDictionary *shareLinkUrlDic;
+
 @end
 
 NS_ASSUME_NONNULL_END

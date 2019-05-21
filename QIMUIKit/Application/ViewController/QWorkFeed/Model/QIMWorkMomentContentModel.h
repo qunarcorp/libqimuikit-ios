@@ -8,12 +8,7 @@
 
 #import "QIMCommonUIFramework.h"
 #import "QIMWorkMomentPicture.h"
-
-typedef enum : NSUInteger {
-    QIMWorkMomentContentTypeText = 1,   //文本
-    QIMWorkMomentContentTypeVideo,  //视频
-    QIMWorkMomentContentTypeCommonTrdInfo, //666
-} QIMWorkMomentContentType;
+#import "QIMWorkMomentContentLinkModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -23,9 +18,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *exContent;  //NewContent
 
-@property (nonatomic, assign) QIMWorkMomentContentType type;   //Type
+@property (nonatomic, assign) QIMWorkFeedContentType type;   //Type
 
 @property (nonatomic, strong) NSArray <QIMWorkMomentPicture *> *imgList;
+
+@property (nonatomic, strong) QIMWorkMomentContentLinkModel *linkContent;
 
 @end
 

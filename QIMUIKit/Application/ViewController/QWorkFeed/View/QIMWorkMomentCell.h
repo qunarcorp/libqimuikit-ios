@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class QIMWorkMomentModel;
 @class QIMWorkMomentLabel;
 @class QIMWorkMomentImageListView;
+@class QIMWorkMomentLinkView;
 @class QIMWorkAttachCommentListView;
 @class QIMWorkMomentTagCollectionView;
 
@@ -58,6 +59,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 图片
 @property (nonatomic, strong) QIMWorkMomentImageListView *imageListView;
+
+//Link
+@property (nonatomic, strong) QIMWorkMomentLinkView *linkView;
 
 //标签collectionView
 @property (nonatomic, strong) QIMWorkMomentTagCollectionView *tagCollectionView;

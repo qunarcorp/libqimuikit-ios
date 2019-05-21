@@ -14,6 +14,8 @@
 #import "QIMWorkMomentUserIdentityVC.h"
 #import "UIApplication+QIMApplication.h"
 #import "QTalkTextView.h"
+#import "QIMWorkMomentLinkView.h"
+#import "QIMWorkMomentContentLinkModel.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "QIMCollectionEmotionPanView.h"
 #import "QIMWorkMomentPanelModel.h"
@@ -84,6 +86,8 @@
 
 @property (nonatomic, strong) UITextView *textView;
 
+@property (nonatomic, strong) QIMWorkMomentLinkView *linkView;
+
 @property (nonatomic, strong) QIMCollectionEmotionPanView *photoCollectionView;
 
 @property (nonatomic, strong) UILabel    *atLabel;
@@ -151,6 +155,18 @@
     return _textView;
 }
 
+- (QIMWorkMomentLinkView *)linkView {
+    if (!_linkView) {
+        _linkView = [[QIMWorkMomentLinkView alloc] initWithFrame:CGRectMake(14, self.textView.bottom + 10, [[UIScreen mainScreen] qim_rightWidth] - 28, 66)];
+        _linkView.linkModel = [self getLinkModelWithLinkDic:self.shareLinkUrlDic];
+    }
+    return _linkView;
+}
+
+- (QIMWorkMomentContentLinkModel *)getLinkModelWithLinkDic:(NSDictionary *)linkDic {
+    return [QIMWorkMomentContentLinkModel yy_modelWithDictionary:linkDic];
+}
+
 - (QIMCollectionEmotionPanView *)photoCollectionView {
     if (!_photoCollectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -159,7 +175,11 @@
         layout.itemSize = CGSizeMake(cellWidth, cellHeight);
         layout.sectionInset = UIEdgeInsetsMake(15, 15, 15, 25);
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
-        layout.headerReferenceSize = CGSizeMake(0, 180);
+        if (self.shareLinkUrlDic.count > 0) {
+            layout.headerReferenceSize = CGSizeMake(0, 180 + self.linkView.height + 10);
+        } else {
+            layout.headerReferenceSize = CGSizeMake(0, 180);
+        }
         layout.footerReferenceSize = CGSizeMake(0, 300);
         // 水平间隔
         layout.minimumInteritemSpacing = 15.0f;
@@ -250,7 +270,7 @@
 - (NSMutableArray *)selectPhotos {
     if (!_selectPhotos) {
         _selectPhotos = [NSMutableArray arrayWithCapacity:1];
-        if (self.shareWorkMoment == NO) {
+        if (self.shareWorkMoment == NO && self.shareLinkUrlDic.count <= 0) {
             [_selectPhotos addObject:@"Q_Work_Add"];
         }
     }
@@ -501,7 +521,11 @@
             NSString *finallyContent = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:self.textView.attributedText WithOutAtInfo:&outATInfoArray];
             
             NSMutableDictionary *momentContentDic = [[NSMutableDictionary alloc] initWithCapacity:3];
-            [momentContentDic setQIMSafeObject:finallyContent forKey:@"content"];
+            if (self.shareLinkUrlDic.count > 0) {
+                [momentContentDic setQIMSafeObject:@"分享了一条链接!" forKey:@"content"];
+            } else {
+                [momentContentDic setQIMSafeObject:finallyContent forKey:@"content"];
+            }
             [momentContentDic setQIMSafeObject:[[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:finallyContent] forKey:@"exContent"];
             NSMutableArray *imageList = [[NSMutableArray alloc] init];
             dispatch_group_t group = dispatch_group_create();
@@ -520,7 +544,15 @@
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                 
                 [momentContentDic setQIMSafeObject:imageList forKey:@"imgList"];
-                [momentContentDic setQIMSafeObject:@(0) forKey:@"type"];
+                if (imageList.count > 0) {
+                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeImage) forKey:@"type"];
+                } else if (self.shareLinkUrlDic.count > 0) {
+                    [momentContentDic setQIMSafeObject:self.shareLinkUrlDic forKey:@"linkContent"];
+                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeLink) forKey:@"type"];
+                } else {
+                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeText) forKey:@"type"];
+                }
+//                [momentContentDic setQIMSafeObject:@(0) forKey:@"type"];
                 NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
                 [momentDic setQIMSafeObject:momentContent forKey:@"content"];
                 [momentDic setQIMSafeObject:outATInfoArray forKey:@"atList"];
@@ -674,6 +706,9 @@
         UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
         headerView.backgroundColor = [UIColor whiteColor];
         [headerView addSubview:self.textView];
+        if (self.shareLinkUrlDic.count > 0) {
+            [headerView addSubview:self.linkView];
+        }
         return headerView;
     } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
         UICollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];

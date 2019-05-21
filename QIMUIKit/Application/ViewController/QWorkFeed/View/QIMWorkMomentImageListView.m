@@ -8,7 +8,6 @@
 
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkMomentPicture.h"
-#import "QIMWorkMomentPictureMetadata.h"
 #import "YLImageView.h"
 #import "NSData+ImageContentType.h"
 
@@ -129,6 +128,7 @@
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor whiteColor];
+        self.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownload"];
     }
     return self;
 }

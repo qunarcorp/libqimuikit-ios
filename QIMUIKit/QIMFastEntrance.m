@@ -56,6 +56,7 @@
 #import "QIMFilePreviewVC.h"
 #import "QIMMWPhotoSectionBrowserVC.h"
 #import "QIMWorkFeedViewController.h"
+#import "QIMWorkMomentPushViewController.h"
 #import "QIMWorkFeedMYCirrleViewController.h"
 
 @interface QIMFastEntrance () <MFMailComposeViewControllerDelegate>
@@ -1490,6 +1491,15 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
     });
 #endif
+}
+
++ (void)presentWorkMomentPushVCWithLinkDic:(NSDictionary *)linkDic withNavVc:(UINavigationController *)nav {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMWorkMomentPushViewController *pushVc = [[QIMWorkMomentPushViewController alloc] init];
+        pushVc.shareLinkUrlDic = linkDic;
+        QIMNavController *pushNav = [[QIMNavController alloc] initWithRootViewController:pushVc];
+        [nav presentViewController:pushNav animated:YES completion:nil];
+    });
 }
 
 + (void)openWorkMomentDetailWithPOSTUUId:(NSString *)postUUId {

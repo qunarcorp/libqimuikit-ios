@@ -14,6 +14,7 @@
 #import "QIMWorkMomentContentModel.h"
 #import "QIMWorkMomentPicture.h"
 #import "QIMWorkMomentImageListView.h"
+#import "QIMWorkMomentLinkView.h"
 #import "QIMWorkAttachCommentListView.h"
 #import "QIMWorkMomentTagCollectionView.h"
 #import <YYModel/YYModel.h>
@@ -21,7 +22,7 @@
 
 #define MaxNumberOfLines 6
 
-@interface QIMWorkMomentCell () <QIMAttributedLabelDelegate> {
+@interface QIMWorkMomentCell () <QIMAttributedLabelDelegate, QIMWorkMomentLinkViewTapDelegate> {
     CGFloat _rowHeight;
     UILabel *_showMoreLabel;
 }
@@ -159,11 +160,7 @@
 //    [self.contentView addSubview:_tagCollectionView];
     
     _controlBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        _controlBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 15 - 25, _nameLab.top, 28, 30);
-    } else {
-        _controlBtn.frame = CGRectMake(SCREEN_WIDTH - 15 - 25, _nameLab.top, 28, 30);
-    }
+    _controlBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 15 - 25, _nameLab.top, 28, 30);
     [_controlBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1cd" size:28 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
     _controlBtn.centerY = _nameLab.centerY;
     [_controlBtn addTarget:self action:@selector(controlPanelClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -192,6 +189,11 @@
     // 图片区
     _imageListView = [[QIMWorkMomentImageListView alloc] initWithFrame:CGRectZero];
     [self.contentView addSubview:_imageListView];
+    
+    //Link区
+    _linkView = [[QIMWorkMomentLinkView alloc] initWithFrame:CGRectZero];
+    _linkView.hidden = YES;
+    [self.contentView addSubview:_linkView];
 
     _attachCommentListView = [[QIMWorkAttachCommentListView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     [self.contentView addSubview:_attachCommentListView];
@@ -324,10 +326,10 @@
         }
     }
     
-    QIMWorkMomentContentType contentType = moment.content.type;
+    QIMWorkFeedContentType contentType = moment.content.type;
     NSString *content = moment.content.content;
     switch (contentType) {
-        case QIMWorkMomentContentTypeText: {
+        case QIMWorkFeedContentTypeText: {
             NSString *exContent = moment.content.exContent;
             if (exContent.length > 0) {
                 content = exContent;
@@ -336,8 +338,22 @@
             }
         }
             break;
-        case QIMWorkMomentContentTypeVideo: {
-            
+        case QIMWorkFeedContentTypeImage: {
+            NSString *exContent = moment.content.exContent;
+            if (exContent.length > 0) {
+                content = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:moment.content.exContent];
+            } else {
+                
+            }
+        }
+            break;
+        case QIMWorkFeedContentTypeLink: {
+            NSString *exContent = moment.content.exContent;
+            if (exContent.length > 0) {
+                content = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:moment.content.exContent];
+            } else {
+                
+            }
         }
             break;
         default: {
@@ -352,12 +368,7 @@
     }
     msg.messageId = moment.momentId;
     
-    QIMTextContainer *textContainer = nil;
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:MaxNumberOfLines];
-    } else {
-        textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:MaxNumberOfLines];
-    }
+    QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:SCREEN_WIDTH - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:MaxNumberOfLines];
     
     CGFloat textH = textContainer.textHeight;
     if(self.alwaysFullText) {
@@ -405,9 +416,9 @@
     [self updateAttachCommentList];
 }
 
-- (void)refreshContentUIWithType:(QIMWorkMomentContentType)type withBottom:(CGFloat)bottom {
+- (void)refreshContentUIWithType:(QIMWorkFeedContentType)type withBottom:(CGFloat)bottom {
     switch (type) {
-        case QIMWorkMomentContentTypeText: {
+        case QIMWorkFeedContentTypeText: {
             if (self.moment.content.imgList.count > 0) {
                 _imageListView.momentContentModel = self.moment.content;
                 _imageListView.origin = CGPointMake(self.nameLab.left, bottom + 5);
@@ -419,6 +430,31 @@
                 _rowHeight = _imageListView.bottom;
             } else {
                 
+            }
+        }
+            break;
+        case QIMWorkFeedContentTypeImage: {
+            if (self.moment.content.imgList.count > 0) {
+                _imageListView.momentContentModel = self.moment.content;
+                _imageListView.origin = CGPointMake(self.nameLab.left, bottom + 5);
+                [_imageListView setTapSmallImageView:^(QIMWorkMomentContentModel * _Nonnull momentContentModel, NSInteger currentTag) {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(didClickSmallImage:WithCurrentTag:)]) {
+                        [self.delegate didClickSmallImage:self.moment WithCurrentTag:currentTag];
+                    }
+                }];
+                _rowHeight = _imageListView.bottom;
+            } else {
+                
+            }
+        }
+            break;
+        case QIMWorkFeedContentTypeLink: {
+            if (self.moment.content.linkContent) {
+                _linkView.hidden = NO;
+                _linkView.frame = CGRectMake(self.nameLab.left, bottom + 15, [[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 15, 66);
+                _linkView.delegate = self;
+                _linkView.linkModel = self.moment.content.linkContent;
+                _rowHeight = _linkView.bottom;
             }
         }
             break;
@@ -633,6 +669,14 @@
 // 长按代理 有多个状态 begin, changes, end 都会调用,所以需要判断状态
 - (void)attributedLabel:(QIMAttributedLabel *)attributedLabel textStorageLongPressed:(id<QIMTextStorageProtocol>)textStorage onState:(UIGestureRecognizerState)state atPoint:(CGPoint)point {
     
+}
+
+#pragma mark - QIMWorkMomentLinkViewTapDelegate
+
+- (void)didTapWorkMomentShareLinkUrl:(QIMWorkMomentContentLinkModel *)linkModel {
+    if (linkModel.linkurl.length > 0) {
+        [QIMFastEntrance openWebViewForUrl:linkModel.linkurl showNavBar:linkModel.showbar];
+    }
 }
 
 @end

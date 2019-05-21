@@ -143,6 +143,8 @@
 
 + (void)openTravelCalendarVc;
 
++ (void)presentWorkMomentPushVCWithLinkDic:(NSDictionary *)linkDic withNavVc:(UINavigationController *)nav;
+
 + (void)openWorkMomentDetailWithPOSTUUId:(NSString *)postUUId;
 
 @end

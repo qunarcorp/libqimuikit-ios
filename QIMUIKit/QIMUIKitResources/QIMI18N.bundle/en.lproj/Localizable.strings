@@ -201,6 +201,13 @@
 "qrcode_tips_client_nav" = "Sweep, quickly add the client nav";
 "qrcode_@_qrcode" = "%@ QRCode";
 
+//WebView Panel
+"webview_share_conversion" = "Share To Friend";
+"webview_share_workmoment" = "Share To Moment";
+"webview_copy_link" = "Copy Link";
+"webview_refresh" = "Refresh";
+"webview_open_safari" = "Open In Safar";
+
 // Common
 "common_send_friend" = "Send To Friend";
 "common_back" = "Back";
