@@ -218,7 +218,7 @@ CGFloat maxFullContentHeight = 0;
     
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:([self.moment.createTime longLongValue]/1000)];
     _timeLab.text = [timeDate qim_timeIntervalDescription];
-    _timeLab.frame = CGRectMake(self.contentLabel.left, _rowHeight + 15, 60, 12);
+    _timeLab.frame = CGRectMake(self.contentLabel.left, (_rowHeight > 0) ? _rowHeight + 15 : bottom + 15, 60, 12);
     
     self.height = _timeLab.bottom + 15;
 }

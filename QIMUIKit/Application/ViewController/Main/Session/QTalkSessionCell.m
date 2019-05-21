@@ -457,17 +457,21 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 #pragma mark - kMsgNotReadCountChange 更新Cell未读数
 - (void)updateCellNotReadCount:(NSNotification *)notify {
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         NSDictionary *notifyDic = notify.object;
         BOOL ForceRefresh = [[notifyDic objectForKey:@"ForceRefresh"] boolValue];
         if (ForceRefresh == YES) {
             NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
             NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
-            self.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:self.chatType];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self refreshNotReadCount];
+            __weak __typeof(self) weakSelf = self;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                weakSelf.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:weakSelf.chatType];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self refreshNotReadCount];
+                });
+                return;
             });
-            return;
         }
         if (!self.bindId) {
             NSString *notifyJid = [notifyDic objectForKey:@"XmppId"];
@@ -475,9 +479,12 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
             NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
             if ([notifyJid isEqualToString:xmppId] && [notifyRealJid isEqualToString:realJid]) {
-                self.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:self.chatType];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self refreshNotReadCount];
+                __weak __typeof(self) weakSelf = self;
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                    weakSelf.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:weakSelf.chatType];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self refreshNotReadCount];
+                    });
                 });
             }
         } else {

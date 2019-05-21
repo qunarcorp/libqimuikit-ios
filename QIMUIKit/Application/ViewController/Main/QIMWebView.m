@@ -78,7 +78,8 @@ static NSString *__default_ua = nil;
 }
 
 - (UIImage *)activityImage {
-    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareConversion"];
+//    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareConversion"];
+    return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareConversion"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -109,7 +110,7 @@ static NSString *__default_ua = nil;
     return [NSBundle qim_localizedStringForKey:@"webview_open_safari"];
 }
 - (UIImage *)activityImage {
-    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"safari_button"];
+    return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"safari_button"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -140,7 +141,7 @@ static NSString *__default_ua = nil;
     return [NSBundle qim_localizedStringForKey:@"webview_refresh"];
 }
 - (UIImage *)activityImage {
-    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_refresh"];
+    return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_refresh"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -255,7 +256,11 @@ static NSString *__default_ua = nil;
     QActivitySafari *safari = [[QActivitySafari alloc] init];
     [safari setUrl:tempUrl];
     
-    self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, shareWorkMoment, refresh,safari]];
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, shareWorkMoment, refresh,safari]];
+    } else {
+        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, refresh,safari]];
+    }
     [self.activityViewController setExcludedActivityTypes:@[UIActivityTypeMail]];
     typeof(self) __weak weakSelf = self;
     [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {

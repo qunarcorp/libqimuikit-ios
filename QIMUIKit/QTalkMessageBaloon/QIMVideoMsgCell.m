@@ -54,6 +54,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         [_imageView setBackgroundColor:[UIColor clearColor]];
         [_imageView.layer setCornerRadius:3];
         [_imageView.layer setMasksToBounds:YES];
+        _imageView.userInteractionEnabled = YES;
         [self.backView addSubview:_imageView];
         
         _playIconView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_short_video_icon_playable"]];
@@ -163,16 +164,6 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         self.message.message = self.message.extendInformation;
     }
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
-/*    CGSize size;
-    size.width = [[infoDic objectForKey:@"Width"] floatValue];
-    size.height = [[infoDic objectForKey:@"Height"] floatValue];
-    if (size.width > 0) {
-        size.height =  180 * size.height / size.width;
-        size.width = 150;
-    } else {
-        size.height = 180;
-        size.width = 150;
-    }*/
     
     CGSize size = CGSizeMake(150, [QIMVideoMsgCell getCellHeightWithMessage:self.message chatType:1] - 40);
     
@@ -202,47 +193,11 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     float backWidth = size.width + 6 + kBackViewCap + 8;
     float backHeight = size.height;
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
-    //        [self.backView setHidden:YES];
 
     [self.backView setBubbleBgColor:[UIColor clearColor]];
     [self.backView setMenuViewHidden:YES];
-    CGPoint center = _imageView.center;
-//    if (self.message.messageDirection==QIMMessageDirection_Received) {
-//        center.x -= kBackViewCap+2;
-//    }
-//    [_playIconView setCenter:center];
     _playIconView.center = CGPointMake(_imageView.width / 2.0, _imageView.height / 2.0);
 }
-
-/*
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
-    if (self.editing == editing) {
-        return;
-    }
-    
-    float moveSpace = 38;
-    CGRect rect = self.backView.frame;
-    CGRect headerRect = self.HeadView.frame;
-    if (self.editing) {
-        self.HeadView.userInteractionEnabled = NO;
-        if (self.message.messageDirection == QIMMessageDirection_Sent) {
-            headerRect.origin.x = headerRect.origin.x - moveSpace;
-            rect.origin.x = rect.origin.x - moveSpace;
-            self.HeadView.frame = headerRect;
-            
-            [self.backView setFrame:rect withNeedAddBubble:NO];
-        }
-    } else {
-        self.HeadView.userInteractionEnabled = YES;
-        if (self.message.messageDirection == QIMMessageDirection_Received) {
-            headerRect.origin.x = headerRect.origin.x + moveSpace;
-            rect.origin.x = rect.origin.x + moveSpace;
-            self.HeadView.frame = headerRect;
-            [self.backView setFrame:rect withNeedAddBubble:NO];
-        }
-    }
-}
-*/
 
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];

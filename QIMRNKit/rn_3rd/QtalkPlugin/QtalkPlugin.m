@@ -112,7 +112,7 @@ RCT_EXPORT_METHOD(getWorkWorldItem:(NSDictionary *)param :(RCTResponseSenderBloc
 }
 
 RCT_EXPORT_METHOD(getWorkWorldNotRead:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
-    NSInteger notReadMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    NSInteger notReadMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
     BOOL showNewPOST = NO;
     NSLog(@"getWorkWorldNotRead : %d", notReadMsgCount);
     NSDictionary *notReadMsgDic = @{@"notReadMsgCount":@(notReadMsgCount), @"showNewPost":@(showNewPOST)};

@@ -135,7 +135,7 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3cd" size:20 color:[UIColor qim_colorWithHex:0x333333]]] style:UIBarButtonItemStylePlain target:self action:@selector(backBtnClick:)];
     
     [self.view addSubview:self.mainTableView];
-    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
     if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
         [self.mainTableView reloadData];
     } else {
@@ -321,7 +321,7 @@
 #pragma mark - NSNotifications
 
 - (void)reloadNoticeMsg:(NSNotification *)notify {
-    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
     dispatch_async(dispatch_get_main_queue(), ^{
        [self.mainTableView reloadData];
     });

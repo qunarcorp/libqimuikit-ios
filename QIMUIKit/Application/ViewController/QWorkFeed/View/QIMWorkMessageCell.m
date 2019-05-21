@@ -194,10 +194,9 @@
             self.contentLabel.text = noticeMsgModel.content;
         }
     }
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, [[UIScreen mainScreen] qim_rightWidth] - 56 - 6 - self.headerImageView.right - 6, 30);
-    } else {
-        self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, SCREEN_WIDTH - 56 - 6 - self.headerImageView.right - 6, 30);
+    self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, SCREEN_WIDTH - 56 - 6 - self.headerImageView.right - 6, 30);
+    if (noticeMsgModel.eventType == QIMWorkFeedNotifyTypePOSTAt) {
+        self.contentLabel.text = @"Hi~你被Cue到啦，快来看一下吧～";
     }
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:(noticeMsgModel.createTime/1000)];
     self.timeLabel.text = [timeDate qim_timeIntervalDescription];

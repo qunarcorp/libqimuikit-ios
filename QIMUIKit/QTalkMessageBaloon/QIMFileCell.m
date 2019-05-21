@@ -40,10 +40,6 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-//        self.selectionStyle = UITableViewCellSelectionStyleDefault;
-//        UIView *view = [[UIView alloc]initWithFrame:self.contentView.frame];
-//        view.backgroundColor=[UIColor clearColor];
-//        self.selectedBackgroundView = view;
         [self.backView setBubbleBgColor:[UIColor whiteColor]];
         self.backgroundView = nil;
         self.backgroundColor = [UIColor clearColor];
@@ -131,20 +127,6 @@
     
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
-    /*
-    if (self.message.messageDirection == QIMMessageDirection_Received) {
-        
-    } else {
-        _iconImageView.frame = CGRectMake(12 + 5, 12, AVATAR_WIDTH, AVATAR_WIDTH);
-        _fileNameLabel.frame = CGRectMake(_iconImageView.right + 17, 12, kCellWidth - (_iconImageView.right + 10) - 20 , 42);
-        _fileSizeLabel.frame = CGRectMake(_fileNameLabel.left, _fileNameLabel.bottom + 3, _fileNameLabel.width - 10, 18);
-        _fileStateLabel.frame = CGRectMake(12 + 5, self.lineView.bottom + 8, 150, 12);
-        _lineView.x = 7;
-        _lineView.width = _bgView.width - 11;
-        _platFormLabel.frame = CGRectMake(self.lineView.right - 20 - 60, self.lineView.bottom + 8, 60, 12);
-        _fileStateLabel.textAlignment = NSTextAlignmentLeft;
-    }
-    */
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *fileSize = [[infoDic objectForKey:@"FileSize"] description];
