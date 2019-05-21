@@ -34,7 +34,8 @@
         self.dataSource = dataSource;
         self.viewTag = viewTag;
         [self addSubview:self.messageTableView];
-        QIMWorkNoticeMessageModel *noticeMsgModel = [self.noticeMsgs firstObject];
+        [self.messageTableView addSubview:self.noDataView];
+        [self dragToUpdata];
     }
     return self;
 }
@@ -58,6 +59,7 @@
         _messageTableView.tableFooterView = [UIView new];
         _messageTableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);           //top left bottom right 左右边距相同
         _messageTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _messageTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(dragToUpdata)];
         _messageTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
         [_messageTableView.mj_footer setAutomaticallyHidden:YES];
     }
@@ -139,6 +141,28 @@
     return 115;
 }
 
+- (void)dragToUpdata{
+    __weak typeof(self) weakSelf = self;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(qImWorkFeedMessageViewLoadNewDataWithNewTag:finishBlock:)]) {
+        [self.delegate qImWorkFeedMessageViewLoadNewDataWithNewTag:self.viewTag finishBlock:^(NSArray * _Nonnull arr) {
+            if (arr && arr.count > 0) {
+                [weakSelf.noticeMsgs removeAllObjects];
+                for (NSDictionary *noticeMsgDict in arr) {
+                    QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
+                    if (model.fromUser) {
+                        model.userFrom = model.fromUser;
+                    }
+                    [weakSelf.noticeMsgs addObject:model];
+                }
+                [weakSelf.messageTableView reloadData];
+            }
+            [weakSelf.messageTableView.mj_header endRefreshing];
+        }];
+    }
+    
+
+}
+
 -(void)loadMoreData{
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(qImWorkFeedMessageViewMoreDataSourceWithviewTag:finishBlock:)]) {
@@ -146,6 +170,9 @@
             if (arr.count>0) {
                 for (NSDictionary *noticeMsgDict in arr) {
                     QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
+                    if (model.fromUser) {
+                        model.userFrom = model.fromUser;
+                    }
                     [self.noticeMsgs addObject:model];
                 }
                 [self.messageTableView reloadData];
@@ -153,26 +180,14 @@
             }
             else {
                 [self.messageTableView.mj_footer endRefreshingWithNoMoreData];
-                if (self.noticeMsgs.count == 0) {
-                    [self addSubview:self.noDataView];
+                if (self.noDataView.hidden == YES && self.noticeMsgs.count == 0) {
+                    self.noDataView.hidden = NO;
                 }
             }
             [self.messageTableView reloadData];
         }];
     }
 
-}
-
--(void)updateDataWith:(NSArray *)dataArr{
-    if (dataArr && dataArr.count > 0) {
-        [self.noticeMsgs removeAllObjects];
-        for (NSDictionary *noticeMsgDict in dataArr) {
-            QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
-            [self.noticeMsgs addObject:model];
-        }
-        [self.messageTableView reloadData];
-        [self.messageTableView.mj_footer endRefreshing];
-    }
 }
 /*
 // Only override drawRect: if you perform custom drawing.
