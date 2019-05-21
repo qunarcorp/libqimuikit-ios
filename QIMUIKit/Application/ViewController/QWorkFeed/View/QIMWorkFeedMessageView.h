@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol QIMWorkFeedMessageViewDelegate <NSObject>
 -(void)qImWorkFeedMessageViewMoreDataSourceWithviewTag:(NSInteger)viewTag finishBlock:(void(^)(NSArray * arr))block;
 
+-(void)qImWorkFeedMessageViewLoadNewDataWithNewTag:(NSInteger)viewTag finishBlock:(void(^)(NSArray * arr))block;
 @end
 
 
@@ -29,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id<QIMWorkFeedMessageViewDelegate>delegate;
 -(instancetype)initWithFrame:(CGRect)frame dataSource:(id<QIMWorkFeedMessageViewDataSource>)dataSource AndViewTag:(NSInteger) viewTag;
 
--(void)updateDataWith:(NSArray *)dataArr;
+//-(void)updateDataWith:(NSArray *)dataArr;
 @end
 
 NS_ASSUME_NONNULL_END
