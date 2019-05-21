@@ -16,10 +16,46 @@
 #import "UIImage+QIMButtonIcon.h"
 #import "NSBundle+QIMLibrary.h"
 #import "QIMJSONSerializer.h"
-//#import "QIMHttpApi.h"
-//#import "QIMUUIDTools.h"
 
 static NSString *__default_ua = nil;
+
+@protocol QActivityToWorkFeedDelegate <NSObject>
+@optional
+- (void)performShareWorkMomentActivity;
+@end
+@interface QActivityToWorkFeed : UIActivity
+@property (nonatomic, weak) id<QActivityToWorkFeedDelegate> delegate;
+@end
+@implementation QActivityToWorkFeed
++ (UIActivityCategory)activityCategory {
+    return UIActivityCategoryShare;
+}
+
+- (NSString *)activityType {
+    return @"QTalk.WebView.ToWorkFeed";
+}
+
+- (NSString *)activityTitle {
+    return [NSBundle qim_localizedStringForKey:@"webview_share_workmoment"];
+}
+
+- (UIImage *)activityImage {
+    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareworkmoment"];
+}
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
+    return YES;
+}
+- (void) performActivity {
+    if ([self.delegate respondsToSelector:@selector(performShareWorkMomentActivity)]) {
+        [self.delegate performShareWorkMomentActivity];
+    }
+}
+- (void)prepareWithActivityItems:(NSArray *)activityItems {
+}
+- (UIViewController *)activityViewController{
+    return nil;
+}
+@end
 
 @protocol QActivityToFriendDelegate <NSObject>
 @optional
@@ -38,11 +74,11 @@ static NSString *__default_ua = nil;
 }
 
 - (NSString *)activityTitle {
-    return [NSBundle qim_localizedStringForKey:@"common_send_friend"];
+    return [NSBundle qim_localizedStringForKey:@"webview_share_conversion"];
 }
 
 - (UIImage *)activityImage {
-    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"Action_Share"];
+    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareConversion"];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -70,7 +106,7 @@ static NSString *__default_ua = nil;
     return @"QTalk.WebView.OpenSafari";
 }
 - (NSString *)activityTitle {
-    return [NSBundle qim_localizedStringForKey:@"common_open_in_safari"];
+    return [NSBundle qim_localizedStringForKey:@"webview_open_safari"];
 }
 - (UIImage *)activityImage {
     return [UIImage qim_imageNamedFromQIMUIKitBundle:@"safari_button"];
@@ -101,10 +137,10 @@ static NSString *__default_ua = nil;
 }
 
 - (NSString *)activityTitle {
-    return [NSBundle qim_localizedStringForKey:@"common_refresh"];
+    return [NSBundle qim_localizedStringForKey:@"webview_refresh"];
 }
 - (UIImage *)activityImage {
-    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"Action_Refresh"];
+    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_refresh"];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -165,6 +201,7 @@ static NSString *__default_ua = nil;
     [vc sendText:self.url];
 }
 
+//分享到会话delegate
 - (void)performActivity{
     NSURL *url = _webView.request.URL;
     QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
@@ -176,6 +213,19 @@ static NSString *__default_ua = nil;
     [controller setDelegate:self];
     [[self navigationController] presentViewController:nav animated:YES completion:^{
     }];
+}
+
+//分享到驼圈delegate
+- (void)performShareWorkMomentActivity {
+    NSString *title = self.title;
+    NSURL *linkurl = _webView.request.URL;
+    NSString *img = [NSString stringWithFormat:@"%@://%@/favicon.ico", [linkurl scheme], [linkurl host]];
+    NSString *desc = @"点击查看全文";
+    BOOL auth = NO;
+    BOOL showas667 = NO;
+    BOOL showbar = YES;
+    NSDictionary *linkDic = @{@"title":title, @"img":img, @"desc":desc, @"linkurl":linkurl.absoluteString, @"showas667":@(showas667), @"showbar":@(showbar), @"auth":@(auth)};
+    [QIMFastEntrance presentWorkMomentPushVCWithLinkDic:linkDic withNavVc:self.navigationController];
 }
 
 - (void)onMoreClick{
@@ -196,20 +246,22 @@ static NSString *__default_ua = nil;
     QActivityToFriend *toFriend = [[QActivityToFriend alloc] init];
     [toFriend setDelegate:self];
     
-    QActivityRefresh *fefresh = [[QActivityRefresh alloc] init];
-    [fefresh setWebView:_webView];
+    QActivityToWorkFeed *shareWorkMoment = [[QActivityToWorkFeed alloc] init];
+    [shareWorkMoment setDelegate:self];
+    
+    QActivityRefresh *refresh = [[QActivityRefresh alloc] init];
+    [refresh setWebView:_webView];
     
     QActivitySafari *safari = [[QActivitySafari alloc] init];
     [safari setUrl:tempUrl];
     
-    self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend,fefresh,safari]];
+    self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, shareWorkMoment, refresh,safari]];
     [self.activityViewController setExcludedActivityTypes:@[UIActivityTypeMail]];
     typeof(self) __weak weakSelf = self;
     [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
         weakSelf.activityViewController = nil;
     }];
     [self presentViewController:self.activityViewController animated:YES completion:nil];
-    
 }
 
 - (instancetype)init{
@@ -706,15 +758,6 @@ static NSString *__default_ua = nil;
         NSString *name = [userInfoDic objectForKey:@"Name"];
         [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId];
         [QIMFastEntrance openSingleChatVCByUserId:xmppId];
-        /*
-        QIMChatVC * chatVC  = [[QIMChatVC alloc] init];
-        [chatVC setStype:kSessionType_Chat];
-        [chatVC setChatId:xmppId];
-        [chatVC setName:name];
-        [chatVC setChatType:ChatType_SingleChat];
-        [chatVC setTitle:name];
-        [self.navigationController popToRootVCThenPush:chatVC animated:YES];
-         */
     }
 }
 
@@ -722,15 +765,8 @@ static NSString *__default_ua = nil;
     NSDictionary *groupDic = [[QIMKit sharedInstance] getGroupCardByGroupId:jid];
     if (groupDic) {
         NSString *jid = [groupDic objectForKey:@"GroupId"];
-//        NSString *name = [groupDic objectForKey:@"Name"];
         [[QIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
         [QIMFastEntrance openGroupChatVCByGroupId:jid];
-        /*
-        QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
-        [chatGroupVC setTitle:name];
-        [chatGroupVC setChatId:jid];
-        [self.navigationController popToRootVCThenPush:chatGroupVC animated:YES];
-         */
     }
 }
 

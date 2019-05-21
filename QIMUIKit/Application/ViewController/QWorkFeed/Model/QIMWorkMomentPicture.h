@@ -7,7 +7,6 @@
 //
 
 #import "QIMCommonUIFramework.h"
-#import "QIMWorkMomentPictureMetadata.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
