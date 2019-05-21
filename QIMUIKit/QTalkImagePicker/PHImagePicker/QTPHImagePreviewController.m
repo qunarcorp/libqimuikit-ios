@@ -103,7 +103,7 @@
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.contentSize = CGSizeMake(_scrollView.width * self.photoArray.count, _scrollView.height);
     _scrollView.bounces = NO;
-    _scrollView.backgroundColor = [UIColor redColor];
+    _scrollView.backgroundColor = [UIColor spectralColorBlueColor];
     [self.view addSubview:_scrollView];
     [self setUpPhotos];
     _lastPageNum = -1;
