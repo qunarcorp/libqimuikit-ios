@@ -1177,7 +1177,7 @@ RCT_EXPORT_METHOD(getMyInfo:(RCTResponseSenderBlock)callback) {
     NSString *userId = [[QIMKit sharedInstance] getLastJid];
     NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
     NSString *name = [userInfo objectForKey:@"Name"];
-    NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
+    NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
     NSString *mood = [QimRNBModule qimrn_getUserMoodByUserId:userId];
     NSMutableDictionary *info = [NSMutableDictionary dictionary];
     [info setObject:name ? name : [userId componentsSeparatedByString:@"@"].firstObject forKey:@"Name"];

@@ -342,6 +342,10 @@
     _borderLayer.strokeColor = color.CGColor;
 }
 
+- (void)setStrokeColor:(UIColor *)color {
+    _borderLayer.strokeColor = color.CGColor;
+}
+
 - (void)removeMask {
     self.layer.mask = nil;
     [_borderLayer removeFromSuperlayer];

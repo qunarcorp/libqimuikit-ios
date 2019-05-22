@@ -179,6 +179,7 @@
         [_fileStateLabel setTextColor:[UIColor qim_colorWithHex:0x9E9E9E]];
     }
     [self.backView setBubbleBgColor:[UIColor whiteColor]];
+    [self.backView setStrokeColor:qim_messageLeftBubbleBorderColor];
 }
 
 

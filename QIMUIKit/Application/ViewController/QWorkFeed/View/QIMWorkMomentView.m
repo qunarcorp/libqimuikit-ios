@@ -141,7 +141,7 @@ CGFloat maxFullContentHeight = 0;
         
         _organLab.frame = CGRectMake(self.nameLab.right + 5, self.nameLab.top, 66, 20);
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
+        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
         NSString *showDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
         if (showDp.length > 0) {
             _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @"";

@@ -347,6 +347,7 @@
     if (self.message.extendInformation.length <= 0) {
         self.message.extendInformation = self.message.message;
     }
+    self.message.messageType = QIMMessageType_File;
     [controller setMessage:self.message];
     if ([[QIMKit sharedInstance] getIsIpad]){
         [[[[UIApplication sharedApplication].delegate window] rootViewController] presentViewController:nav animated:YES completion:nil];

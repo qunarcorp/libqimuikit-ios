@@ -58,6 +58,8 @@ typedef enum {
 
 - (void)setBubbleBgColor:(UIColor *)color;
 
+- (void)setStrokeColor:(UIColor *)color;
+
 - (void)setMenuViewHidden:(BOOL)hidden;
 
 - (void)onLongEvent:(UILongPressGestureRecognizer *)tag;

@@ -123,20 +123,33 @@
 }
 
 - (void)setBadgeNumber:(NSUInteger)bagdeNumber ByItemIndex:(NSUInteger)index showNumber:(BOOL)showNum{
-    if (showNum) {
-        [self setBadgeNumber:bagdeNumber ByItemIndex:index];
-    }else{
-        CustomTabBarButton *itemButton = (CustomTabBarButton *)[self viewWithTag:kItemButtonPirex+index];
-        if (bagdeNumber > 0) {
-            CGSize size = CGSizeMake(10, 10);
-            [itemButton.badgeNumberLabel setWidth:size.width];
-            [itemButton.badgeNumberLabel setHeight:size.height];
-            [itemButton.badgeNumberLabel.layer setCornerRadius:size.width / 2];
-            [itemButton.badgeNumberLabel setHidden:NO];
-            [itemButton.badgeNumberLabel setText:@""];
+    
+    CustomTabBarButton *itemButton = (CustomTabBarButton *)[self viewWithTag:kItemButtonPirex+index];
+    if (bagdeNumber > 0 && showNum) {
+        
+        NSString *countStr;
+        
+        if (bagdeNumber > 99) {
+            
+            countStr = [NSString stringWithFormat:@"99+"];
         } else {
-            [itemButton.badgeNumberLabel setHidden:YES];
+            
+            countStr = [NSString stringWithFormat:@"%lu",(unsigned long)bagdeNumber];
         }
+        CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
+        CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
+        [itemButton.badgeNumberLabel setWidth:width];
+        [itemButton.badgeNumberLabel setHidden:NO];
+        [itemButton.badgeNumberLabel setText:countStr];
+    } else if (bagdeNumber > 0 && showNum == NO) {
+        CGSize size = CGSizeMake(10, 10);
+        [itemButton.badgeNumberLabel setWidth:size.width];
+        [itemButton.badgeNumberLabel setHeight:size.height];
+        [itemButton.badgeNumberLabel.layer setCornerRadius:size.width / 2];
+        [itemButton.badgeNumberLabel setHidden:NO];
+        [itemButton.badgeNumberLabel setText:@""];
+    } else {
+        [itemButton.badgeNumberLabel setHidden:YES];
     }
 }
 
