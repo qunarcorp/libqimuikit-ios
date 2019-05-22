@@ -34,6 +34,7 @@
         UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake([UIScreen mainScreen].qim_rightWidth/3 * i, 0, [UIScreen mainScreen].qim_rightWidth/3, self.height)];
         label.userInteractionEnabled = YES;
         label.text = array[i];
+        label.font = [UIFont systemFontOfSize:15];
         label.textColor = [UIColor qim_colorWithHex:0x999999];
         label.numberOfLines = 0;
         label.textAlignment = NSTextAlignmentCenter;
@@ -61,7 +62,7 @@
     [self addSubview:self.lineView];
     
     
-    UIView * grayLineView = [[UIView alloc]initWithFrame:CGRectMake(0, 50, [UIScreen mainScreen].qim_rightWidth, 1)];
+    UIView * grayLineView = [[UIView alloc]initWithFrame:CGRectMake(0, self.height - 0.5, [UIScreen mainScreen].qim_rightWidth, 0.5)];
     grayLineView.backgroundColor = [UIColor colorWithRGBHex:0xDDDDDD];
     [self addSubview:grayLineView];
 }

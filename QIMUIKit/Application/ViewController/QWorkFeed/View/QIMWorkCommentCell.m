@@ -156,7 +156,7 @@
         
         _organLab.frame = CGRectMake(self.nameLab.right + 5, self.nameLab.top, 66, 20);
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:commentFromUserId];
-        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
+        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
         NSString *lastDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
         if(lastDp.length > 0) {
             _organLab.text = [NSString stringWithFormat:@"%@", lastDp];

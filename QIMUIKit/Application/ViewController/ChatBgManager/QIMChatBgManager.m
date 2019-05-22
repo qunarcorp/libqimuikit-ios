@@ -25,7 +25,7 @@
 }
 
 + (void)getChatBgById:(NSString *)userId ByName:(NSString *)name WithReset:(BOOL)reset Complete:(void(^)(UIImage *bgImage)) complete {
-    NSString *fileName = [self getMD5ByData:[[NSString stringWithFormat:@"%@_%@",userId,name?name:userId] dataUsingEncoding:NSUTF8StringEncoding]];
+    NSString *fileName = [self getMD5ByData:[[NSString stringWithFormat:@"%@_%@_%@",userId,name?name:userId, [[QIMKit sharedInstance] AppBuildVersion]] dataUsingEncoding:NSUTF8StringEncoding]];
     NSString *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
     NSString *filePath = [cachePath stringByAppendingPathComponent:fileName];
     if (reset == NO) {

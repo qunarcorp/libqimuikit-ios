@@ -779,6 +779,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     */
     if (select && change == NO) {
         
+//        self.voiceView.hidden = NO;
         _quickReplyExpandView.hidden = YES;
         self.emotionPanel.hidden = YES;
         self.expandPanel.hidden = YES;

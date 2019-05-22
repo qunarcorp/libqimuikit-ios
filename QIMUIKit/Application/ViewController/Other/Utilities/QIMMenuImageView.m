@@ -86,6 +86,10 @@
     [_bubbleView setBgColor:color];
 }
 
+- (void)setStrokeColor:(UIColor *)color {
+    [_bubbleView setStrokeColor:color];
+}
+
 - (void)setMenuViewHidden:(BOOL)hidden {
     if (hidden == YES) {
         [_bubbleView removeMask];

@@ -159,7 +159,7 @@
             [self.nameLabel sizeToFit];
 
             NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-            NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
+            NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
             NSString *lastDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
             if(lastDp.length > 0) {
                 self.organLabel.text = [NSString stringWithFormat:@"%@", lastDp];
