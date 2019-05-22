@@ -1209,13 +1209,6 @@
 }
 
 - (void)selectIndexPathRow:(NSInteger )index {
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"qunariphone://"]]) {
-        NSString *urlString = [NSString stringWithFormat:@"qunariphone://react/open?hybridId=c_car_fusion_rn&initProps=%7B%22param%22%3A%7B%22stntype%22%3A3%2C%22channelid%22%3A1060%2C%22pttype%22%3A28%7D%7D"];
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:^(BOOL success) {
-            QIMVerboseLog(@"scheme调用结束");
-        }];
-    }
-    return;
     QIMVerboseLog(@"右上角快捷入口%s , %ld", __func__, index);
     NSString *moreActionId = [self.moreActionArray objectAtIndex:index];
     if ([moreActionId isEqualToString:@"扫一扫"]) {

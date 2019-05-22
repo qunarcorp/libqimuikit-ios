@@ -151,7 +151,7 @@
             self.contentLabel.text = noticeMsgModel.content;
         }
     } else {
-        NSString *userId = [NSString stringWithFormat:@"%@@%@", userFrom, userFromHost];
+        NSString *userId = [NSString stringWithFormat:@"%@@%@", userFrom, userFromHost ? userFromHost : [[QIMKit sharedInstance] getDomain]];
         if (userId.length > 0) {
             [self.headerImageView qim_setImageWithJid:userId];
             self.nameLabel.text = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];

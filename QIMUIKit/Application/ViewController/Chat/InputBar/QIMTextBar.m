@@ -397,7 +397,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor qtalkChatBgColor];
+        self.backgroundColor = [UIColor whiteColor];
         [self resgisterNSNotifications];
         
         self.hasAtFun = FALSE;
@@ -779,6 +779,10 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     */
     if (select && change == NO) {
         
+        _quickReplyExpandView.hidden = YES;
+        self.emotionPanel.hidden = YES;
+        self.expandPanel.hidden = YES;
+        self.robotActionToolBar.hidden = YES;
         [UIView animateWithDuration:0.25 animations:^{
             
             self.lastChatKeyboardY = self.frame.origin.y;
@@ -1160,7 +1164,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 - (UIView *)maskView {
     if (!_maskView) {
         _maskView = [[UIView alloc] initWithFrame:CGRectMake(0, self.chatToolBar.bottom, self.width, kFacePanelHeight)];
-        _maskView.backgroundColor = [UIColor qtalkChatBgColor];
+        _maskView.backgroundColor = [UIColor whiteColor];
         [self addSubview:_maskView];
     }
     return _maskView;
@@ -1169,7 +1173,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 - (UIView *)emotionPanel {
     if (!_emotionPanel) {
         _emotionPanel = [[UIView alloc] initWithFrame:CGRectMake(0, kChatKeyBoardHeight - kFacePanelHeight, self.width, kFacePanelHeight)];
-        _emotionPanel.backgroundColor = [UIColor qtalkChatBgColor];
+        _emotionPanel.backgroundColor = [UIColor whiteColor];
         [self addSubview:_emotionPanel];
     }
     return _emotionPanel;
@@ -1178,7 +1182,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 - (QIMTextBarExpandView *)expandPanel {
     if (!_expandPanel) {
         _expandPanel = [[QIMTextBarExpandView alloc] initWithFrame:CGRectMake(0, kChatKeyBoardHeight - kFacePanelHeight, self.width, kFacePanelHeight)];
-        _expandPanel.backgroundColor = [UIColor qtalkChatBgColor];
+        _expandPanel.backgroundColor = [UIColor whiteColor];
         _expandPanel.delegate = self;
         _expandPanel.type = self.expandViewType;
         _expandPanel.parentVC = (UIViewController *)self.delegate;
@@ -1205,7 +1209,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         _voiceView = [[QIMVoiceChatView alloc] initWithFrame:CGRectMake(0, kChatKeyBoardHeight - kFacePanelHeight, self.width, kFacePanelHeight)];
         _voiceView.hidden = YES;
         _voiceView.delegate = self;
-        _voiceView.backgroundColor = [UIColor qtalkChatBgColor];
+        _voiceView.backgroundColor = [UIColor whiteColor];
         [self addSubview:_voiceView];
     }
     return _voiceView;
@@ -1350,8 +1354,8 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         _expandPageControl.size = pagesize;
         _expandPageControl.y = 185;
         _expandPageControl.centerX = self.centerX;
-        _expandPageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-        _expandPageControl.currentPageIndicatorTintColor = [UIColor redColor];
+        _expandPageControl.pageIndicatorTintColor = [UIColor qim_colorWithHex:0xD8D8D8];
+        _expandPageControl.currentPageIndicatorTintColor = [UIColor qim_colorWithHex:0x84AEBF];
         
         _expandPageControl.numberOfPages = pages;
     }

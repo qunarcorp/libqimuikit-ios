@@ -191,7 +191,6 @@
 - (void)qImWorkFeedMessageViewMoreDataSourceWithviewTag:(NSInteger)viewTag finishBlock:(void(^)(NSArray * arr))block{
     if (viewTag == 0) {
         if (self.myReplyView.noticeMsgs.count > 0) {
-//           NSArray * tempArr = [[IMDataManager qimDB_SharedInstance] qimDB_getWorkNoticeMessagesWithLimit:20 WithOffset:self.myReplyView.noticeMsgs.count eventType:5 readState:3];
             NSArray *tempArr = [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:20 WithOffset:self.myReplyView.noticeMsgs.count eventTypes:@[@(QIMWorkFeedNotifyTypeMyComment)]];
             if (tempArr.count > 0) {
                 block(tempArr);
@@ -207,7 +206,6 @@
     }
     else{
         if (self.atMeView.noticeMsgs.count > 0) {
-//            NSArray * tempArr = [[IMDataManager qimDB_SharedInstance] qimDB_getWorkNoticeMessagesWithLimit:20 WithOffset:self.atMeView.noticeMsgs.count eventType1:3 eventType2:4 readState:3];
             NSArray *tempArr = [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:20 WithOffset:self.atMeView.noticeMsgs.count eventTypes:@[@(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
             if (tempArr.count > 0) {
                 block(tempArr);

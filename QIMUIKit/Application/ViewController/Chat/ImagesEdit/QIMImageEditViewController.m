@@ -260,7 +260,7 @@ const float colormatrix_yese[] = {
 //加特效 Duang
 - (void)addDuangView
 {
-    _dataSource = [[NSArray alloc] initWithObjects:@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png",@"imageEdit.png", nil];
+    _dataSource = [[NSArray alloc] initWithObjects:@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit", nil];
     _titles = [[NSArray alloc] initWithObjects:@"原图",@"LOMO",@"黑白",@"怀旧",@"哥特",@"锐化",@"淡雅",@"酒红",@"清宁",@"浪漫",@"光晕",@"蓝调",@"梦幻",@"夜色", nil];
     _duangView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_toolBar.bounds), CGRectGetHeight(_toolBar.bounds))];
     _duangView.showsVerticalScrollIndicator = NO;
@@ -270,8 +270,7 @@ const float colormatrix_yese[] = {
     NSInteger i = 0;
     for (NSString * imageStr in _dataSource) {
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(80 * i, 0, 80, 80)];
-        imageView.image =nil;
-//        [self getDuangImageWithIndexTag:i originalImage:[UIImage qim_imageNamedFromQIMUIKitBundle:imageStr]];
+        imageView.image = [self getDuangImageWithIndexTag:i originalImage:[UIImage qim_imageNamedFromQIMUIKitBundle:imageStr]];
         imageView.tag = kImageTagFrom + i;
         imageView.userInteractionEnabled = YES;
         [_duangView addSubview:imageView];

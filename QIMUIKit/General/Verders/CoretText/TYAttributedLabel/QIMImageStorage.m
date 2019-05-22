@@ -25,8 +25,8 @@
 
 @implementation QIMImageStorage
 
-- (instancetype)init
-{
+- (instancetype)init {
+    
     if (self = [super init]) {
         _cacheImageOnMemory = NO;
         NSString *placeholdImagePath = [[NSBundle mainBundle] pathForResource:@"PhotoDownload@2x" ofType:@"png"];
@@ -100,7 +100,7 @@
                 }
             });
         }
-    }else if (_imageName){
+    } else if (_imageName){
         // 图片网址
         image = (YLGIFImage *)[UIImage qim_imageNamedFromQIMUIKitBundle:_imageName];
         if (_cacheImageOnMemory) {
@@ -134,7 +134,7 @@
             height = self.size.height / 2.0f;
         }
         _imageView = [[YLImageView alloc] init];
-        
+        /*
         [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:_imageURL options:SDWebImageDownloaderContinueInBackground progress:^(NSInteger receivedSize, NSInteger expectedSize) {
             
         } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
@@ -148,7 +148,7 @@
                 [self renderImageViewWithImageData:data withImage:image withRect:rect];
             }
         }];
-        /*
+        */
         [_imageView sd_setImageWithURL:_imageURL placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
 //            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
 //            [self.progressLabel setText:progress];
@@ -161,26 +161,30 @@
                 if (image) {
                     [_imageView removeFromSuperview];
                     _imageView = [[YLImageView alloc] initWithFrame:fitRect];
-                    UIImage *imageTemp = image;
-                    CGSize imageTempSize = imageTemp.size;
-                    CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
-                    CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
-                    if (imageRatio > rectRatio) {
-                        CGFloat scale = fitRect.size.width / fitRect.size.height;
-                        CGFloat imageWidth = imageTempSize.height * scale;
-                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                    if ([_imageURL.absoluteString containsString:@".gif"]) {
+                        _imageView.image = image;
+                        [self.ownerView addSubview:_imageView];
                     } else {
-                        CGFloat scale = fitRect.size.height / fitRect.size.width;
-                        CGFloat imageHeight = scale * imageTemp.size.width;
-                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                        UIImage *imageTemp = image;
+                        CGSize imageTempSize = imageTemp.size;
+                        CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
+                        CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
+                        if (imageRatio > rectRatio) {
+                            CGFloat scale = fitRect.size.width / fitRect.size.height;
+                            CGFloat imageWidth = imageTempSize.height * scale;
+                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                        } else {
+                            CGFloat scale = fitRect.size.height / fitRect.size.width;
+                            CGFloat imageHeight = scale * imageTemp.size.width;
+                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                        }
+                        _imageView.image = imageTemp;
+                        [self.ownerView addSubview:_imageView];
                     }
-                    _imageView.image = imageTemp;
-                    [self.ownerView addSubview:_imageView];
                 }
             });
             return;
         }];
-        */
     }
 }
 
