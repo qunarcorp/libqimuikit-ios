@@ -344,6 +344,9 @@
 - (void)onRepeatButton:(UIButton *)sender{
     QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
     QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
+    if (self.message.extendInformation.length <= 0) {
+        self.message.extendInformation = self.message.message;
+    }
     [controller setMessage:self.message];
     if ([[QIMKit sharedInstance] getIsIpad]){
         [[[[UIApplication sharedApplication].delegate window] rootViewController] presentViewController:nav animated:YES completion:nil];

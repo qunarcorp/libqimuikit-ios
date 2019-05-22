@@ -905,7 +905,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(beginShareLocationMsg:) name:kBeginShareLocation object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endShareLocationMsg:) name:kEndShareLocation object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emotionImageDidLoad:) name:kNotificationEmotionImageDidLoad object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transToUser:) name:kTransToUser object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFileDidUpload:) name:kNotificationFileDidUpload object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectEmojiFaceSuccess:) name:kCollectionEmotionUpdateHandleSuccessNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectEmojiFaceFailed:) name:kCollectionEmotionUpdateHandleFailedNotification object:nil];
@@ -1114,35 +1113,6 @@
     
     [self setProgressHUDDetailsLabelText:@"添加成功"];
     [self closeHUD];
-}
-
-- (void)transToUser:(NSNotification *)notify {
-    NSString *from = notify.object;
-    if ([from isEqualToString:self.chatId]) {
-        NSDictionary *transInfo = notify.userInfo;
-        //        _transToUserInfo = transInfo;
-        NSString *transToJid = [transInfo objectForKey:@"TransJid"];
-        NSString *transToName = [transInfo objectForKey:@"TransName"];
-        QIMMessageModel *msg = [QIMMessageModel new];
-        [msg setMessageType:QIMMessageType_TransToUser];
-        [msg setMessage:(id) transInfo];
-        [self.messageManager.dataSource addObject:msg];
-        [_tableView reloadData];
-        
-        [[QIMKit sharedInstance] setNotSendText:[self.textBar getSendAttributedText] inputItems:[self.textBar getAttributedTextItems] ForJid:transToJid];
-        [[QIMKit sharedInstance] openChatSessionByUserId:transToJid];
-        
-        QIMChatVC *chatVC = [[QIMChatVC alloc] init];
-        [chatVC setStype:kSessionType_Chat];
-        [chatVC setChatId:transToJid];
-        [chatVC setTitle:transToName];
-        [chatVC setChatType:ChatType_SingleChat];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-        [self.navigationController popToRootVCThenPush:chatVC animated:YES];
-        //        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"客服[%@]已将您的咨询转移给客服[%@]处理，是否要切换到该客户继续进行咨询？",self.name,transToName?transToName:transToJid] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-        //        [alertView setTag:kTransToUserAlertViewTag];
-        //        [alertView show];
-    }
 }
 
 - (void)cancelTyping {
@@ -1855,6 +1825,10 @@
 #if __has_include("QIMWebRTCClient.h")
         [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
         [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:YES isCaller:YES];
+#endif
+    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_Encryptchat]) {
+#if __has_include("QIMNoteManager.h")
+        [[QIMEncryptChat sharedInstance] doSomeEncryptChatWithUserId:self.chatId];
 #endif
     } else {
         NSDictionary *trdExtendDic = [[QIMKit sharedInstance] getExpandItemsForTrdextendId:trId];

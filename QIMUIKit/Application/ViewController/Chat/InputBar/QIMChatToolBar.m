@@ -63,6 +63,7 @@
 {
     // barView
     self.image = [[UIImage qim_imageNamedFromQIMUIKitBundle:@"input-bar-flat"] resizableImageWithCapInsets:UIEdgeInsetsMake(2.0f, 0.0f, 0.0f, 0.0f) resizingMode:UIImageResizingModeStretch];
+    self.image = [UIImage qim_imageWithColor:[UIColor whiteColor]];
     self.userInteractionEnabled = YES;
     self.previousTextViewHeight = TextViewH;
     

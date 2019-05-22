@@ -61,7 +61,7 @@
     [self addSubview:self.lineView];
     
     
-    UIView * grayLineView = [[UIView alloc]initWithFrame:CGRectMake(14, 50, [UIScreen mainScreen].qim_rightWidth - 28, 1)];
+    UIView * grayLineView = [[UIView alloc]initWithFrame:CGRectMake(0, 50, [UIScreen mainScreen].qim_rightWidth, 1)];
     grayLineView.backgroundColor = [UIColor colorWithRGBHex:0xDDDDDD];
     [self addSubview:grayLineView];
 }

@@ -122,6 +122,7 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
 
          if (self.type & QIMTextBarExpandViewTypeSingle) {
              [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_videoCall" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_videoCall"] ForItemId:QIMTextBarExpandViewItem_VideoCall];
+             [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_encryptchat" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_encryptchat"] ForItemId:QIMTextBarExpandViewItem_Encryptchat];
          }
          if (self.type & QIMTextBarExpandViewTypeGroup) {
              [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_videoCall" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_videoCall"] ForItemId:QIMTextBarExpandViewItem_VideoCall];
@@ -144,7 +145,6 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
     
      if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aa_collection_icon" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_aa"] ForItemId:QIMTextBarExpandViewItem_AACollection];
-         [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_encryptchat" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_aa"] ForItemId:QIMTextBarExpandViewItem_Encryptchat];
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_share_nameplate" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_share_card"] ForItemId:QIMTextBarExpandViewItem_ShareCard];
      }
     [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_folder" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_file"] ForItemId:QIMTextBarExpandViewItem_MyFiles];
@@ -193,8 +193,8 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
         UILabel * titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(page * _mainScrollView.width + (space + kItemWidth) * (i % 4) + space - 10, locationButton.bottom + 5, kItemWidth + 20, 20)];
         titleLabel.text = [itemDic objectForKey:@"title"];
         titleLabel.textAlignment = NSTextAlignmentCenter;
-        titleLabel.font = [UIFont systemFontOfSize:14];
-        titleLabel.textColor = [UIColor blackColor];
+        titleLabel.font = [UIFont systemFontOfSize:12];
+        titleLabel.textColor = [UIColor qim_colorWithHex:0x666666];
         [titleLabel setUserInteractionEnabled:YES];
         [titleLabel setAccessibilityIdentifier:trId];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(itemBtnHandle:)];

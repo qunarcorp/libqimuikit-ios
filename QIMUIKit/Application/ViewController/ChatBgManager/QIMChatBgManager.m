@@ -28,7 +28,6 @@
     NSString *fileName = [self getMD5ByData:[[NSString stringWithFormat:@"%@_%@",userId,name?name:userId] dataUsingEncoding:NSUTF8StringEncoding]];
     NSString *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
     NSString *filePath = [cachePath stringByAppendingPathComponent:fileName];
-    /*
     if (reset == NO) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
             UIImage *rstImage = [UIImage imageWithContentsOfFile:filePath];
@@ -38,13 +37,12 @@
             }
         }
     }
-    */
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         CGSize imageSize = CGSizeMake(500, 1000);
         UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
         //初始化信息
         CGFloat textCap = 155;
-        UIFont *font = [UIFont systemFontOfSize:13];
+        UIFont *font = [UIFont systemFontOfSize:14];
         UIColor *bgColor = qim_chatWaterMaskBgColor;
         UIColor *textColor = qim_chatWaterMaskTextColor;
         CGFloat startY = - imageSize.height / 2.0;

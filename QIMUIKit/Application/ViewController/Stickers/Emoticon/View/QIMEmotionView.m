@@ -172,7 +172,7 @@ static NSString *collectionCellId = @"CollectionCellId";
     QIMVerboseLog(@"QTalkEmotionType : %ld, PKID : %@", type, Pkid);
     self = [super initWithFrame:frame collectionViewLayout:layout];
     if (self) {
-        self.backgroundColor = [UIColor qtalkChatBgColor];
+        self.backgroundColor = [UIColor whiteColor];
         self.delegate = self;
         self.dataSource = self;
         self.Pkid = Pkid;
