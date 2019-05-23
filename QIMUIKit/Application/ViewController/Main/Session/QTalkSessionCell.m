@@ -449,8 +449,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     NSString *groupJid = notify.object;
     if ([groupJid isEqualToString:self.jid]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshNotReadCount) object:nil];
-            [self performSelector:@selector(refreshNotReadCount) withObject:nil afterDelay:DEFAULT_DELAY_TIMES];
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadNotReadCount) object:nil];
+            [self performSelector:@selector(reloadNotReadCount) withObject:nil afterDelay:DEFAULT_DELAY_TIMES];
         });
     }
 }
@@ -468,7 +468,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 weakSelf.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:weakSelf.chatType];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self refreshNotReadCount];
+                    [self reloadNotReadCount];
                 });
                 return;
             });
@@ -483,13 +483,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                     weakSelf.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:weakSelf.chatType];
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self refreshNotReadCount];
+                        [self reloadNotReadCount];
                     });
                 });
             }
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self refreshNotReadCount];
+                [self reloadNotReadCount];
             });
         }
     });
@@ -502,7 +502,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         self.isReminded = ![[QIMKit sharedInstance] groupPushState:self.jid];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self refreshNotReadCount];
+            [self reloadNotReadCount];
         });
         return;
     }
@@ -514,7 +514,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 self.isReminded = ![[QIMKit sharedInstance] groupPushState:[NSString stringWithFormat:@"%@-%@", xmppId, realJid]];
                 self.needRefreshNotReadCount = YES;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self refreshNotReadCount];
+                    [self reloadNotReadCount];
                 });
             }
         } else {
@@ -522,13 +522,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 self.needRefreshNotReadCount = YES;
                 self.isReminded = ![[QIMKit sharedInstance] groupPushState:self.jid];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self refreshNotReadCount];
+                    [self reloadNotReadCount];
                 });
             } else if ([jid isEqualToString:@"ForceRefresh"]) {
                 self.needRefreshNotReadCount = YES;
                 self.isReminded = ![[QIMKit sharedInstance] groupPushState:self.jid];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self refreshNotReadCount];
+                    [self reloadNotReadCount];
                 });
             } else {
                 
@@ -537,7 +537,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     } else {
         self.needRefreshNotReadCount = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self refreshNotReadCount];
+            [self reloadNotReadCount];
         });
     }
 }
@@ -829,6 +829,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         }
     }
     self.needRefreshHeader = NO;
+}
+
+- (void)reloadNotReadCount {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshNotReadCount) object:nil];
+    [self performSelector:@selector(refreshNotReadCount) withObject:nil afterDelay:DEFAULT_DELAY_TIMES];
 }
 
 //刷新消息未读数
