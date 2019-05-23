@@ -197,7 +197,7 @@
 {
     for (QIMChatToolBarItem* barItem in barItems)
     {
-        [self setBtn:(NSInteger)barItem.itemKind normalStateImageStr:barItem.normalStr selectStateImageStr:barItem.selectStr highLightStateImageStr:barItem.highLStr];
+        [self setBtn:(NSInteger)barItem.itemKind normalStateImageImage:barItem.normal selectStateImage:barItem.selectImage highLightStateImage:barItem.highImage];
     }
 }
 
@@ -251,8 +251,8 @@
 }
 
 #pragma mark -- 关于按钮
-- (void)setBtn:(ButKind)btnKind normalStateImageStr:(NSString *)normalStr
-selectStateImageStr:(NSString *)selectStr highLightStateImageStr:(NSString *)highLightStr
+- (void)setBtn:(ButKind)btnKind normalStateImageImage:(NSString *)normalImage
+selectStateImage:(NSString *)selectImage highLightStateImage:(UIImage *)highLightImage
 {
     UIButton *btn;
     
@@ -272,9 +272,12 @@ selectStateImageStr:(NSString *)selectStr highLightStateImageStr:(NSString *)hig
         default:
             break;
     }
-    [btn setImage:Image(normalStr) forState:UIControlStateNormal];
-    [btn setImage:Image(selectStr) forState:UIControlStateSelected];
-    [btn setImage:Image(highLightStr) forState:UIControlStateHighlighted];
+    [btn setImage:normalImage forState:UIControlStateNormal];
+    [btn setImage:selectImage forState:UIControlStateSelected];
+    [btn setImage:highLightImage forState:UIControlStateHighlighted];
+//    [btn setImage:Image(normalStr) forState:UIControlStateNormal];
+//    [btn setImage:Image(selectStr) forState:UIControlStateSelected];
+//    [btn setImage:Image(highLightStr) forState:UIControlStateHighlighted];
 }
 
 
