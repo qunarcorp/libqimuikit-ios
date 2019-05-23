@@ -16,6 +16,13 @@
 #define qim_tab_title_camel_font  @"\U0000e73e"        //驼圈tab
 #define qim_tab_title_myself_font    @"\U0000e73f"        //我的tab
 
+
+#define qim_textbar_face_font  @"\U0000e756"      //表情按钮
+#define qim_textbar_expand_font @"\U0000e757"     //扩展按钮
+#define qim_textbar_keyboard_font  @"\U0000e758"    //切换键盘
+#define qim_textbar_voice_font @"\U0000e759"      //语音按钮
+#define qim_textbar_switch_font @"\U0000e806"     //切换按钮
+
 #define qim_arrow_scan_font     @"\U0000e739"     //扫一扫
 #define qim_arrow_notread_font  @"\U0000e73a"     //未读消息
 #define qim_arrow_gototalk_font      @"\U0000e738"     //@"创建群组"

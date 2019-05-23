@@ -26,6 +26,7 @@
 #import "QRCodeGenerator.h"
 #import "QIMWebView.h"
 #import "QIMChatVC.h"
+#import "QIMMainVC.h"
 #import "QIMPinYinForObjc.h"
 #import "QIMMessageHelperVC.h"
 #import "QIMGroupListVC.h"

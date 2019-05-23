@@ -165,8 +165,6 @@ typedef void(^SelectedEmotion)(NSString *);
 //表情发送
 @property (nonatomic, strong) UIButton *sendButton;
 
-@property (nonatomic, strong) UIButton *emotionButton;
-
 @property (nonatomic, strong) QIMVoiceChatView *voiceView;
 
 @property (nonatomic, strong) UIButton *voiceButton;
@@ -413,14 +411,14 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         [self addSubview:self.chatToolBar];
         _isScrollToBottom = YES;
         NSMutableArray *items = [NSMutableArray arrayWithCapacity:5];
-        QIMChatToolBarItem *item1 = [QIMChatToolBarItem barItemWithKind:kBarItemFace normal:@"face" high:@"face_HL" select:@"keyboard"];
+        QIMChatToolBarItem *item1 = [QIMChatToolBarItem barItemWithKind:kBarItemFace normal:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_face_font size:28 color:qim_texbar_button_normalColor]] high:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_face_font size:28 color:qim_texbar_button_highColor]] select:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_keyboard_font size:28 color:qim_texbar_button_normalColor]]];
         [items addObject:item1];
-        QIMChatToolBarItem *item2 = [QIMChatToolBarItem barItemWithKind:kBarItemVoice normal:@"voice" high:@"voice_HL" select:@"keyboard"];
+        QIMChatToolBarItem *item2 = [QIMChatToolBarItem barItemWithKind:kBarItemVoice normal:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_voice_font size:28 color:qim_texbar_button_normalColor]] high:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_voice_font size:28 color:qim_texbar_button_highColor]] select:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_keyboard_font size:28 color:qim_texbar_button_normalColor]]];
         [items addObject:item2];
-        QIMChatToolBarItem *item3 = [QIMChatToolBarItem barItemWithKind:kBarItemMore normal:@"more_ios" high:@"more_ios_HL" select:nil];
+        QIMChatToolBarItem *item3 = [QIMChatToolBarItem barItemWithKind:kBarItemMore normal:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_expand_font size:28 color:qim_texbar_button_normalColor]] high:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_expand_font size:28 color:qim_texbar_button_highColor]] select:nil];
         [items addObject:item3];
         
-        QIMChatToolBarItem *item4 = [QIMChatToolBarItem barItemWithKind:kBarItemSwitchBar normal:@"Mode_texttolist" high:@"Mode_texttolistHL" select:nil];
+        QIMChatToolBarItem *item4 = [QIMChatToolBarItem barItemWithKind:kBarItemSwitchBar normal:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_switch_font size:28 color:qim_texbar_button_normalColor]] high:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_switch_font size:28 color:qim_texbar_button_highColor]] select:nil];
         [items addObject:item4];
         [self.chatToolBar loadBarItems:items];
         

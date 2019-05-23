@@ -1207,6 +1207,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"退出登录中..."];
         BOOL result = [[QIMKit sharedInstance] sendPushTokenWithMyToken:nil WithDeleteFlag:YES];
+        result = NO;
         [[QIMProgressHUD sharedInstance] closeHUD];
         if (result) {
             [[QIMKit sharedInstance] sendNoPush];
@@ -1255,8 +1256,17 @@ static QIMFastEntrance *_sharedInstance = nil;
             });
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"退出登录失败，请重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                [alert show];
+                UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"退出登录失败，请重试" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                    
+                }];
+                UIAlertAction *quitAction = [UIAlertAction actionWithTitle:@"强制退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [QIMFastEntrance signOutWithNoPush];
+                }];
+                [alertVc addAction:okAction];
+                [alertVc addAction:quitAction];
+                UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                [navVC presentViewController:alertVc animated:YES completion:nil];
             });
         }
     });
