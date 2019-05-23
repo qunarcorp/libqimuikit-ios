@@ -8,6 +8,7 @@
 
 
 #import "QimRNBModule.h"
+#import "QIMMainVC.h"
 #import "UIApplication+QIMApplication.h"
 #import "QimRNBModule+TravelCalendar.h"
 #import "QimRNBModule+QIMLocalSearch.h"
@@ -1706,6 +1707,7 @@ RCT_EXPORT_METHOD(openSwitchAccount) {
 - (void)swicthAccountWithAccount:(NSDictionary *)accountDict {
     
     QIMVerboseLog(@"将要切换账号 ： %@", accountDict);
+    [QIMMainVC setMainVCReShow:YES];
     if (accountDict) {
         NSString *userId = [accountDict objectForKey:@"userId"];
         [[QIMKit sharedInstance] setUserObject:userId forKey:@"currentLoginName"];
