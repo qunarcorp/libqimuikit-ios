@@ -349,7 +349,8 @@
                 });
             } else {
                 [weakSelf.mainTableView.mj_header endRefreshing];
-                if (self.noDataView.hidden == YES) {
+                if (self.noDataView.hidden == YES && self.userId.length > 0) {
+                    //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
                     self.noDataView.hidden = NO;
                 }
             }

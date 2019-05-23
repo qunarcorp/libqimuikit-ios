@@ -11,14 +11,21 @@
 @implementation UIColor (QIMChatBallocColor)
 
 + (UIColor *)qim_leftBallocColor{
+    return qim_messageLeftBubbleBgColor;
+    /*
+    //老版本个性装扮后的左侧气泡颜色
     NSDictionary * infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
         return qim_messageLeftBubbleBgColor;
     }
     return [UIColor qim_colorWithHex:[infoDic[kOtherBubbleColor][@"colorHex"] integerValue] alpha:[infoDic[kOtherBubbleColor][@"alpha"] floatValue]];
+    */
 }
 
-+ (UIColor *)qim_leftBallocFontColor{
++ (UIColor *)qim_leftBallocFontColor {
+    return qim_messageLeftBubbleTextColor;
+    /*
+     //老版本个性装扮后的左侧字体颜色
     NSDictionary *infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
         return qim_messageLeftBubbleTextColor;
@@ -32,17 +39,25 @@
         colorHex = 0;
     }
     return [UIColor qim_colorWithHex:colorHex alpha:alpha];
+     */
 }
 
-+ (UIColor *)qim_rightBallocColor{
++ (UIColor *)qim_rightBallocColor {
+    return qim_messageRightBubbleBgColor;
+    /*
+    //老版本个性装扮后的右侧气泡颜色
     NSDictionary * infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
         return qim_messageRightBubbleBgColor;
     }
     return [UIColor qim_colorWithHex:[infoDic[kMyBubbleColor][@"colorHex"] integerValue] alpha:[infoDic[kMyBubbleColor][@"alpha"] floatValue]];
+    */
 }
 
-+ (UIColor *)qim_rightBallocFontColor{
++ (UIColor *)qim_rightBallocFontColor {
+    return qim_messageRightBubbleTextColor;
+    /*
+     //老版本个性装扮后的右侧字体颜色
     NSDictionary * infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
         return qim_messageRightBubbleTextColor;
@@ -56,6 +71,7 @@
         colorHex = 0;
     }
     return [UIColor qim_colorWithHex:colorHex alpha:alpha];
+     */
 }
 
 @end

@@ -6,7 +6,6 @@
 //
 
 #import "QIMWorkFeedMessageView.h"
-#import "QIMWorkMessageCell.h"
 #import "QIMWorkNoticeMessageModel.h"
 #import "QIMWorkMomentContentModel.h"
 #import "QIMWorkFeedDetailViewController.h"
@@ -104,6 +103,7 @@
     QIMWorkMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:model.uuid];
     if (!cell) {
         cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:model.uuid];
+        cell.cellType = self.messageCellType;
         [cell setNoticeMsgModel:model];
         [cell setContentModel:[self getContentModelWithMomentUUId:model.postUUID]];
     }
@@ -174,19 +174,24 @@
                     }
                     [self.noticeMsgs addObject:model];
                 }
-                [self.messageTableView reloadData];
-                [self.messageTableView.mj_footer endRefreshing];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.messageTableView reloadData];
+                    [self.messageTableView.mj_footer endRefreshing];
+                });
             }
             else {
-                [self.messageTableView.mj_footer endRefreshingWithNoMoreData];
-                if (self.noDataView.hidden == YES && self.noticeMsgs.count == 0) {
-                    self.noDataView.hidden = NO;
-                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.messageTableView.mj_footer endRefreshingWithNoMoreData];
+                    if (self.noDataView.hidden == YES && self.noticeMsgs.count == 0) {
+                        self.noDataView.hidden = NO;
+                    }
+                });
             }
-            [self.messageTableView reloadData];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.messageTableView reloadData];
+            });
         }];
     }
-
 }
 /*
 // Only override drawRect: if you perform custom drawing.

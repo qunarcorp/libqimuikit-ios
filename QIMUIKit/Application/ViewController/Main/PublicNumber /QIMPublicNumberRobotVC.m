@@ -701,6 +701,14 @@
         _chatBGImageView.clipsToBounds = YES;
     }
     
+    if ([[QIMKit sharedInstance] waterMarkState] == YES) {
+        [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+            _chatBGImageView.image = bgImage;
+            _tableView.backgroundView = _chatBGImageView;
+        }];
+    }
+    //老版本带个性装扮时候的会话背景
+    /*
     NSMutableDictionary *chatBGImageDic = [[QIMKit sharedInstance] userObjectForKey:@"chatBGImageDic"];
     if (chatBGImageDic) {
         
@@ -717,6 +725,7 @@
             if ([[QIMKit sharedInstance] waterMarkState] == YES) {
                 [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
                     _chatBGImageView.image = bgImage;
+                    _tableView.backgroundView = _chatBGImageView;
                 }];
             }
         }
@@ -727,7 +736,7 @@
                 _tableView.backgroundView = _chatBGImageView;
             }];
         }
-    }
+    } */
 }
 
 - (void)dealloc {

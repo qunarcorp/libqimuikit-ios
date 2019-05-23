@@ -208,6 +208,7 @@ static dispatch_once_t __onceMainToken;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(submitLogFaild:) name:kNotifySubmitLogFaild object:nil];
     //销毁群通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChatRoomDestroy:) name:kChatRoomDestroy object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateWorkFeedNotifyConfig:) name:kNotifyUpdateNotifyConfig object:nil];
 }
 
 - (NSString *)navTitle {
@@ -500,6 +501,15 @@ static dispatch_once_t __onceMainToken;
     [self.sessionView sessionViewWillAppear];
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
     [alertView show];
+}
+
+- (void)updateWorkFeedNotifyConfig:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        BOOL flag = [notify.object boolValue];
+        if (flag == NO) {
+            [_tabBar setBadgeNumber:0 ByItemIndex:3 showNumber:NO];
+        }
+    });
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -1045,8 +1055,8 @@ static dispatch_once_t __onceMainToken;
     if (!_addFriendBtn) {
         UIButton *addFriendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         addFriendBtn.frame = CGRectMake(0, 0, 28, 28);
-        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:28 color:qim_nav_addfriend_btnColor]] forState:UIControlStateNormal];
-        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:28 color:qim_nav_addfriend_btnColor]] forState:UIControlStateSelected];
+        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:28 color:qim_nav_addfriend_btnColor]] forState:UIControlStateNormal];
+        [addFriendBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:28 color:qim_nav_addfriend_btnColor]] forState:UIControlStateSelected];
         [addFriendBtn addTarget:self action:@selector(addNewFriend:) forControlEvents:UIControlEventTouchUpInside];
         _addFriendBtn = addFriendBtn;
     }
@@ -1057,8 +1067,8 @@ static dispatch_once_t __onceMainToken;
     if (!_scanBtn) {
         UIButton *scanBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         scanBtn.frame = CGRectMake(0, 0, 28, 28);
-        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:28 color:qim_nav_scan_btnColor]] forState:UIControlStateNormal];
-        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addfriend_font size:28 color:qim_nav_scan_btnColor]] forState:UIControlStateSelected];
+        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:28 color:qim_nav_scan_btnColor]] forState:UIControlStateNormal];
+        [scanBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_scan_font size:28 color:qim_nav_scan_btnColor]] forState:UIControlStateSelected];
         [scanBtn addTarget:self action:@selector(scanQrcode:) forControlEvents:UIControlEventTouchUpInside];
         _scanBtn = scanBtn;
     }

@@ -107,9 +107,11 @@
     
     self.myReplyView = [[QIMWorkFeedMessageView alloc]initWithFrame:CGRectMake([[UIScreen mainScreen]qim_rightWidth], 0, [[UIScreen mainScreen]qim_rightWidth], self.scrollview.height) dataSource:self AndViewTag:0];
     self.myReplyView.delegate = self;
+    self.myReplyView.messageCellType = QIMWorkMomentCellTypeMyREPLY;
     [self.scrollview addSubview:self.myReplyView];
     
     self.atMeView = [[QIMWorkFeedMessageView alloc]initWithFrame:CGRectMake([[UIScreen mainScreen]qim_rightWidth]*2, 0, [[UIScreen mainScreen]qim_rightWidth], self.scrollview.height) dataSource:self AndViewTag:1];
+    self.atMeView.messageCellType = QIMWorkMomentCellTypeMyAT;
     self.atMeView.delegate = self;
 
     [self.scrollview addSubview:self.atMeView];

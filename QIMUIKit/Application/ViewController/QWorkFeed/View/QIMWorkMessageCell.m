@@ -195,7 +195,7 @@
         }
     }
     self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, SCREEN_WIDTH - 56 - 6 - self.headerImageView.right - 6, 30);
-    if (noticeMsgModel.eventType == QIMWorkFeedNotifyTypePOSTAt) {
+    if (noticeMsgModel.eventType == QIMWorkFeedNotifyTypePOSTAt && self.cellType == QIMWorkMomentCellTypeMyMessage) {
         self.contentLabel.text = @"Hi~你被Cue到啦，快来看一下吧～";
     }
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:(noticeMsgModel.createTime/1000)];
