@@ -1207,7 +1207,6 @@ static QIMFastEntrance *_sharedInstance = nil;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"退出登录中..."];
         BOOL result = [[QIMKit sharedInstance] sendPushTokenWithMyToken:nil WithDeleteFlag:YES];
-        result = NO;
         [[QIMProgressHUD sharedInstance] closeHUD];
         if (result) {
             [[QIMKit sharedInstance] sendNoPush];
