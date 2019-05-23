@@ -51,18 +51,18 @@
         // Initialization code
         self.backgroundColor = [UIColor whiteColor];
         
-        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.width, self.height)];
+        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0.5, self.width, self.height)];
         [self addSubview:toolbar];
         
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 0.5)];
         [lineView setBackgroundColor:[UIColor qim_colorWithHex:0xEAEAEA]];
-//        [self addSubview:lineView];
+        [self addSubview:lineView];
         
         CGFloat buttonWidth = self.width / _itemCount;
         
         for (int i = 0 ; i < _itemCount ; i++ ) {
             
-            UIView *tapView = [[UIView alloc] initWithFrame:CGRectMake(buttonWidth*i, 0, buttonWidth, self.height)];
+            UIView *tapView = [[UIView alloc] initWithFrame:CGRectMake(buttonWidth*i, 0.5, buttonWidth, self.height)];
             [tapView setBackgroundColor:[UIColor whiteColor]];
 
             [tapView setTag:kItemViewPirex+i];

@@ -457,8 +457,10 @@ static UIImage *__rightBallocImage = nil;
     switch (self.message.messageDirection) {
         case QIMMessageDirection_Received: {
             CGRect frame = {{kBackViewCap + AVATAR_WIDTH,kCellHeightCap / 2.0 + _nameLabel.bottom},{backWidth,backHeight}};
-            if (self.chatType != ChatType_PublicNumber && self.chatType != ChatType_System) {
+            if (self.chatType != ChatType_PublicNumber && self.chatType != ChatType_System && self.chatType != ChatType_SingleChat) {
                 frame = CGRectMake(kBackViewCap + AVATAR_WIDTH, kCellHeightCap / 2.0 + _nameLabel.bottom, backWidth, backHeight);
+            } else if (self.chatType == ChatType_SingleChat) {
+                frame = CGRectMake(kBackViewCap + AVATAR_WIDTH, kCellHeightCap / 2.0, backWidth, backHeight);
             } else {
                 frame = CGRectMake(kBackViewCap, kCellHeightCap / 2.0, backWidth, backHeight);
             }

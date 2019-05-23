@@ -114,6 +114,7 @@
     if (!cell) {
         cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:model.uuid];
         [cell setNoticeMsgModel:model];
+        cell.cellType = QIMWorkMomentCellTypeMyMessage;
         [cell setContentModel:[self getContentModelWithMomentUUId:model.postUUID]];
     }
     return cell;

@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QIMWorkMessageCell.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @class QIMWorkMomentContentModel;
@@ -26,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface QIMWorkFeedMessageView : UIView
+@property (nonatomic, assign) QIMWorkMomentCellType messageCellType;
 @property (nonatomic, strong) NSMutableArray *noticeMsgs;
 @property (nonatomic, weak) id<QIMWorkFeedMessageViewDelegate>delegate;
 -(instancetype)initWithFrame:(CGRect)frame dataSource:(id<QIMWorkFeedMessageViewDataSource>)dataSource AndViewTag:(NSInteger) viewTag;

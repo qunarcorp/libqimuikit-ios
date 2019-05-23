@@ -305,8 +305,8 @@
     if (!_moreBtn) {
         UIButton *moreActionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         moreActionBtn.frame = CGRectMake(0, 0, 28, 28);
-        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_rightMoreBtn_font size:24 color:qim_rightMoreBtnColor]] forState:UIControlStateNormal];
-        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_rightMoreBtn_font size:24 color:qim_rightMoreBtnColor]] forState:UIControlStateSelected];
+        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_rightMoreBtn_font size:28 color:qim_rightMoreBtnColor]] forState:UIControlStateNormal];
+        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_rightMoreBtn_font size:28 color:qim_rightMoreBtnColor]] forState:UIControlStateSelected];
         [moreActionBtn addTarget:self action:@selector(doMoreAction:) forControlEvents:UIControlEventTouchUpInside];
         _moreBtn = moreActionBtn;
     }
