@@ -25,6 +25,7 @@
 #import "QRCodeGenerator.h"
 #import "QIMWebView.h"
 #import "QIMChatVC.h"
+#import "QIMMainVC.h"
 #import "QIMPinYinForObjc.h"
 #import "QIMMessageHelperVC.h"
 #import "QIMGroupListVC.h"
@@ -1706,6 +1707,7 @@ RCT_EXPORT_METHOD(openSwitchAccount) {
 - (void)swicthAccountWithAccount:(NSDictionary *)accountDict {
     
     QIMVerboseLog(@"将要切换账号 ： %@", accountDict);
+    [QIMMainVC setMainVCReShow:YES];
     if (accountDict) {
         NSString *userId = [accountDict objectForKey:@"userId"];
         [[QIMKit sharedInstance] setUserObject:userId forKey:@"currentLoginName"];

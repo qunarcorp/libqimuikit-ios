@@ -18,6 +18,10 @@
 #define qim_tabTitleSelectedColor [UIColor qim_colorWithHex:0x00CABE alpha:1.0]      //tab选中图标按钮颜色
 #define qim_mainViewBadgeNumberLabelTextColor      [UIColor qim_colorWithHex:0xEA6854 alpha:1.0]  //tab上BadgeNumber TextColor
 
+#define qim_texbar_button_normalColor [UIColor qim_colorWithHex:0xA5A5A5 alpha:1.0] //输入框按钮normal颜色
+#define qim_texbar_button_highColor [UIColor qim_colorWithHex:0xA5A5A5 alpha:0.7] //输入框按钮high颜色
+#define qim_texbar_button_selectedColor [UIColor qim_colorWithHex:0xA5A5A5 alpha:0.5] //输入框按钮selected颜色
+
 #define qim_rightMoreBtnColor     [UIColor qim_colorWithHex:0x666666 alpha:1.0]     //右上角More按钮颜色
 #define qim_rightArrowImageColor  [UIColor qim_colorWithHex:0x00CABE alpha:1.0]      //右上角arrow按钮颜色
 #define qim_rightArrowTitleColor  [UIColor qim_colorWithHex:0x333333 alpha:1.0]      //右上角arrow按钮颜色

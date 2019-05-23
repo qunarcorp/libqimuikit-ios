@@ -325,13 +325,6 @@
             [[QIMKit sharedInstance] openGroupSessionByGroupId:groupViewCell.groupID ByName:groupViewCell.userName];
         }
         [QIMFastEntrance openGroupChatVCByGroupId:groupViewCell.groupID];
-        /*
-        QIMGroupChatVC * chatGroupVC = [[QIMGroupChatVC alloc] init];
-        [chatGroupVC setTitle:groupViewCell.userName];
-        [chatGroupVC setChatId:groupViewCell.groupID];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-        [self.navigationController popToRootVCThenPush:chatGroupVC animated:YES];
-        */
     }
 }
 
