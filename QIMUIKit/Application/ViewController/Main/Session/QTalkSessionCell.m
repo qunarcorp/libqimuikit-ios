@@ -199,7 +199,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (!_muteNotReadView) {
 
         _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 20, self.timeLabel.bottom + 15, 8, 8)];
-        _muteNotReadView.backgroundColor = [UIColor redColor];
+        _muteNotReadView.backgroundColor = [UIColor qim_colorWithHex:0xEB524A];
         _muteNotReadView.layer.cornerRadius  = _muteNotReadView.width / 2.0;
         _muteNotReadView.clipsToBounds = YES;
         _muteNotReadView.centerY = self.muteView.centerY;
@@ -860,20 +860,20 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             
             [self.notReadNumButton hiddenBadgeButton:NO];
             CGFloat width = (countStr.length * 7) + 13;
-            [self setUpNotReadNumButtonWithFrame:CGRectMake(self.timeLabel.right - width, 11, width, 20) withBadgeString:countStr];
+            [self setUpNotReadNumButtonWithFrame:CGRectMake(self.timeLabel.right - width, 11, width, 16) withBadgeString:countStr];
             if (self.isReminded == YES) {
                 self.muteNotReadView.hidden = NO;
                 self.muteNotReadView.centerY = self.muteView.centerY;
             } else {
                 self.muteNotReadView.hidden = YES;
             }
-            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
+            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, 15)];
         } else {
             
             [self.notReadNumButton hiddenBadgeButton:YES];
             [_muteNotReadView setHidden:YES];
             self.contentLabel.width = contentLabelWidth;
-            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
+            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, 15)];
         }
         if (self.isReminded == YES && countStr.length > 0) {//接收不提醒
             self.muteView.hidden = NO;

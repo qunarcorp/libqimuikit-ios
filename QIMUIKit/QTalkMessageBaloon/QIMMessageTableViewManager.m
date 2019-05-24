@@ -131,13 +131,13 @@
                         message.message = [NSString stringWithFormat:@"[obj type=\"url\" value=\"%@\"]", url];
                         message.messageType = QIMMessageType_Text;
                         QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                        return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + 45;
+                        return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + 65;
                     }
                 } else {
                     message.message = [NSString stringWithFormat:@"[obj type=\"url\" value=\"%@\"]", url];
                     message.messageType = QIMMessageType_Text;
                     QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + 45;
+                    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + 65;
                 }
             }
                 break;
@@ -157,7 +157,7 @@
                 if (infoDic == nil) {
                     message.messageType = QIMMessageType_Text;
                     QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + 45;
+                    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + 65;
                 }
                 if (infoDic.count > 0) {
                     return [QIMProductInfoCell getCellHeight];
@@ -168,15 +168,15 @@
             case QIMMessageType_CommonTrdInfoPer:
             case QIMMessageType_CommonTrdInfo: {
                 
-                CGFloat height = [QIMCommonTrdInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
+                CGFloat height = [QIMCommonTrdInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 40;
                 return height;
             }
                 break;
             case QIMMessageType_Forecast: {
-                return [QIMForecastCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
+                return [QIMForecastCell getCellHeightWithMessage:message chatType:self.chatType] + 40;
             }
             case QIMMessageType_GroupNotify: {
-                return [QIMChatNotifyInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
+                return [QIMChatNotifyInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 40;
             }
                 break;
             case QIMMessageType_Text:
@@ -184,12 +184,12 @@
             case QIMMessageType_ImageNew:{
                 
                 QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + 50;
+                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + 70;
             }
                 break;
             case QIMMessageType_NewAt: {
                 QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + 50;
+                return MAX([textContaner getHeightWithFramesetter:nil width:textContaner.textWidth], 20) + 70;
             }
                 break;
             case QIMMessageType_NewMsgTag: {
@@ -234,11 +234,11 @@
             }
                 break;
             case QIMMessageTypeMeetingRemind: {
-                return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 35;
+                return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 55;
             }
                 break;
             case QIMMessageTypeWorkMomentRemind: {
-                return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 35;
+                return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 55;
             }
                 break;
             default: {
@@ -249,7 +249,7 @@
                     return height;
                 } else {
                     QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
-                    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + 50;
+                    return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + 70;
                 }
             }
                 break;

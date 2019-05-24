@@ -91,16 +91,16 @@
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, itemButton.height - 16, itemButton.width, 12)];
             [label setBackgroundColor:[UIColor clearColor]];
             [label setTextAlignment:NSTextAlignmentCenter];
-            [label setFont:[UIFont fontWithName:FONT_NAME size:FONT_SIZE - 4-2]];
+            [label setFont:[UIFont systemFontOfSize:12]];
             [itemButton setBarTitleLabel:label];
             [itemButton addSubview:label];
             
             
-            UILabel *badgeNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake((buttonWidth / 2.0 + 5), 2, 22, 15)];
+            UILabel *badgeNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake((buttonWidth / 2.0 + 5), 2, 25, 16)];
             [badgeNumberLabel setHidden:YES];
             [badgeNumberLabel.layer setCornerRadius:7];
             [badgeNumberLabel.layer setMasksToBounds:YES];
-            [badgeNumberLabel setBackgroundColor:qim_mainViewBadgeNumberLabelTextColor];
+            [badgeNumberLabel setBackgroundColor:qim_mainViewBadgeNumberLabelBgColor];
             [badgeNumberLabel setTextColor:[UIColor whiteColor]];
             [badgeNumberLabel setFont:[UIFont boldSystemFontOfSize:qim_mainViewBadgeNumberLabelTextFont]];
             [badgeNumberLabel setTextAlignment:NSTextAlignmentCenter];

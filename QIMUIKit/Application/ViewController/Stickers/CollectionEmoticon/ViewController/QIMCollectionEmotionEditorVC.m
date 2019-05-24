@@ -73,6 +73,8 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         [_mainCollectionView registerClass:[QIMCollectionEmotionEditorViewCell class] forCellWithReuseIdentifier:collectEmojiCellID];
         _mainCollectionView.delegate = self;
         _mainCollectionView.dataSource = self;
+        _mainCollectionView.qimDragDelegate = self;
+        _mainCollectionView.qimDragDataSource = self;
         _mainCollectionView.shakeLevel = 3.0f;
         _mainCollectionView.showsVerticalScrollIndicator = NO;
         _mainCollectionView.backgroundColor = [UIColor whiteColor];

@@ -539,7 +539,6 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     } else {
         cell.selected = NO;
     }
-    QIMVerboseLog(@"获取加载相册耗时 : %llf", [[QIMWatchDog sharedInstance] escapedTimewithStartTime:startTime1]);
     return cell;
 }
 
