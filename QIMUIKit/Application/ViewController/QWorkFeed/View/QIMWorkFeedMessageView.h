@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id<QIMWorkFeedMessageViewDelegate>delegate;
 -(instancetype)initWithFrame:(CGRect)frame dataSource:(id<QIMWorkFeedMessageViewDataSource>)dataSource AndViewTag:(NSInteger) viewTag;
 
+- (void)updateNewData;
 //-(void)updateDataWith:(NSArray *)dataArr;
 @end
 

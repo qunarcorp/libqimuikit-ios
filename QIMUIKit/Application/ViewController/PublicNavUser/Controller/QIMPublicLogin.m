@@ -520,7 +520,8 @@ static const int companyTag = 10001;
 }
 
 - (void)forgotPWD:(id)sender {
-    [QIMFastEntrance openWebViewForUrl:@"http://im.qunar.com/clientweb/reterievePassword#/" showNavBar:NO];
+
+    [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_resetPwdUrl] showNavBar:NO];
 }
 
 - (void)agreementBtnHandle:(UIButton *)sender {

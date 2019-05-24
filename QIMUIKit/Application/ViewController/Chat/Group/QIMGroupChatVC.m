@@ -1199,7 +1199,8 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[QIMKit sharedInstance] setCurrentSessionUserId:nil];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    [self.navigationController popViewControllerAnimated:YES];
+//    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popToRootViewControllerAnimated:NO];
 }
 
 - (void)refreshChatBGImageView {

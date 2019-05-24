@@ -34,14 +34,14 @@
         self.viewTag = viewTag;
         [self addSubview:self.messageTableView];
         [self.messageTableView addSubview:self.noDataView];
-        [self dragToUpdata];
     }
     return self;
 }
 
 -(QIMWorkOwnerCamalNoDataView *)noDataView{
     if (!_noDataView) {
-        _noDataView = [[QIMWorkOwnerCamalNoDataView alloc]initWithFrame:self.frame];
+        _noDataView = [[QIMWorkOwnerCamalNoDataView alloc]initWithFrame:CGRectMake(0, 0, self.iFrame.size.width, self.iFrame.size.height)];
+        _noDataView.hidden = YES;
     }
     return _noDataView;
 }
@@ -58,7 +58,7 @@
         _messageTableView.tableFooterView = [UIView new];
         _messageTableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);           //top left bottom right 左右边距相同
         _messageTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        _messageTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(dragToUpdata)];
+        _messageTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(updateNewData)];
         _messageTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
         [_messageTableView.mj_footer setAutomaticallyHidden:YES];
     }
@@ -140,7 +140,7 @@
     return 115;
 }
 
-- (void)dragToUpdata{
+- (void)updateNewData{
     __weak typeof(self) weakSelf = self;
     if (self.delegate && [self.delegate respondsToSelector:@selector(qImWorkFeedMessageViewLoadNewDataWithNewTag:finishBlock:)]) {
         [self.delegate qImWorkFeedMessageViewLoadNewDataWithNewTag:self.viewTag finishBlock:^(NSArray * _Nonnull arr) {
@@ -154,7 +154,15 @@
                         }
                         [weakSelf.noticeMsgs addObject:model];
                     }
+                    if (weakSelf.noDataView.hidden = NO) {
+                        weakSelf.noDataView.hidden = YES;
+                    }
                     [weakSelf.messageTableView reloadData];
+                }
+                else{
+                    if (weakSelf.noDataView.hidden == YES && weakSelf.noticeMsgs.count == 0) {
+                        weakSelf.noDataView.hidden = NO;
+                    }
                 }
                 [weakSelf.messageTableView.mj_header endRefreshing];
             });
@@ -191,6 +199,9 @@
                     });
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    if (self.noDataView.hidden == NO) {
+                        self.noDataView.hidden = YES;
+                    }
                     [self.messageTableView reloadData];
                 });
             });

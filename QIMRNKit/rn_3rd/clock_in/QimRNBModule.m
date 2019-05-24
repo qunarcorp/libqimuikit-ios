@@ -8,6 +8,7 @@
 
 
 #import "QimRNBModule.h"
+#import "QIMMainVC.h"
 #import "UIApplication+QIMApplication.h"
 #import "QimRNBModule+TravelCalendar.h"
 #import "QimRNBModule+QIMLocalSearch.h"
