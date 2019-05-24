@@ -551,10 +551,23 @@ static NSString *__default_ua = nil;
                 [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
                 [qckeyCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
+            
+                NSDictionary*properties = [[NSMutableDictionary alloc] init];
+                [properties setValue:[QIMKit getLastUserName] forKey:NSHTTPCookieValue];//value值
+                [properties setValue:@"q_u" forKey:NSHTTPCookieName];//kay
+                [properties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                
+                [properties setValue:[[NSURL URLWithString:@"/"] path] forKey:NSHTTPCookiePath];
+                NSHTTPCookie*cookie = [[NSHTTPCookie alloc] initWithProperties:properties];
+                [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+
+                
                 NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:qckeyCookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
                 NSHTTPCookie *dCookie = [NSHTTPCookie cookieWithProperties:dcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:dCookie];
+
+               
             }
         }
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];

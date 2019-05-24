@@ -166,8 +166,8 @@
         if (showBtn) {
             [self addSubview:self.addNewMomentBtn];
         }
-        self.noDataView.hidden = YES;
         [self.mainTableView addSubview:self.noDataView];
+        self.noDataView.hidden = YES;
     }
     return self;
 }
@@ -346,10 +346,14 @@
                     if (flag) {
                         [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                     }
+                    if (weakSelf.noDataView.hidden == NO && self.userId.length > 0) {
+                        //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
+                        self.noDataView.hidden = YES;
+                    }
                 });
             } else {
                 [weakSelf.mainTableView.mj_header endRefreshing];
-                if (self.noDataView.hidden == YES && self.userId.length > 0) {
+                if (self.noDataView.hidden == YES && self.userId.length > 0 && self.workMomentList.count == 0) {
                     //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
                     self.noDataView.hidden = NO;
                 }
@@ -380,7 +384,7 @@
                 weakSelf.mainTableView.mj_footer = nil;
                 weakSelf.mainTableView.tableFooterView = [self loadFaildView];
                 if (weakSelf.workMomentList.count == 0 && self.noDataView.hidden == YES) {
-                    [weakSelf addSubview:self.noDataView];
+                    self.noDataView.hidden = NO;
                 }
             });
         }

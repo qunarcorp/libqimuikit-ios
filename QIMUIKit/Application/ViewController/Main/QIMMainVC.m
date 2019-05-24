@@ -498,9 +498,12 @@ static dispatch_once_t __onceMainToken;
             message = [NSString stringWithFormat:@"[%@]群组被销毁。",groupId];
         }
     }
-    [self.sessionView sessionViewWillAppear];
+    
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
     [alertView show];
+    
+    [self.sessionView sessionViewWillAppear];
+    
 }
 
 - (void)updateWorkFeedNotifyConfig:(NSNotification *)notify {

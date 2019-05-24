@@ -33,10 +33,11 @@
     [self addSubview:imageView];
     
     UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(0, imageView.height + imageView.y + 20, self.width, 15)];
-    label.text = @"暂时没有动态";
-    label.textAlignment = NSTextAlignmentCenter;
     label.textColor = [UIColor colorWithRGBHex:0x888888];
-    
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"暂时没有动态"attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFang-SC-Regular" size: 13],NSForegroundColorAttributeName: [UIColor colorWithRed:136/255.0 green:136/255.0 blue:136/255.0 alpha:1.0]}];
+    label.attributedText = string;
+    label.alpha = 1.0;
+    label.textAlignment = NSTextAlignmentCenter;
     [self addSubview:label];
     
 }
