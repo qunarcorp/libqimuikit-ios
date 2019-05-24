@@ -153,7 +153,7 @@
     } else {
         NSString *userId = [NSString stringWithFormat:@"%@@%@", userFrom, userFromHost ? userFromHost : [[QIMKit sharedInstance] getDomain]];
         if (userId.length > 0) {
-            [self.headerImageView qim_setImageWithJid:userId];
+            [self.headerImageView qim_setImageWithJid:userId placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
             self.nameLabel.text = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
             self.nameLabel.centerY = self.headerImageView.centerY;
             [self.nameLabel sizeToFit];

@@ -17,7 +17,7 @@ static QTalk *__global_qtalk = nil;
 @implementation QTalk
 
 + (void)load {
-    [[QTalk sharedInstance] initConfiguration];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didfinishNSNotification:) name:UIApplicationDidFinishLaunchingNotification object:nil];
 }
 
 + (instancetype)sharedInstance {
@@ -28,7 +28,11 @@ static QTalk *__global_qtalk = nil;
     return __global_qtalk;
 }
 
-- (void)initConfiguration{
++ (void)didfinishNSNotification:(NSNotification *)notify {
+    [[QTalk sharedInstance] initConfiguration];
+}
+
+- (void)initConfiguration {
     //初始化字体集
     [QIMIconFont setFontName:@"QTalk-QChat"];
     

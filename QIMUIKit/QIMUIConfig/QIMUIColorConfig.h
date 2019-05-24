@@ -16,7 +16,8 @@
 
 #define qim_tabTitleNormalColor [UIColor qim_colorWithHex:0x333333 alpha:1.0]        //tab正常图标按钮颜色
 #define qim_tabTitleSelectedColor [UIColor qim_colorWithHex:0x00CABE alpha:1.0]      //tab选中图标按钮颜色
-#define qim_mainViewBadgeNumberLabelTextColor      [UIColor qim_colorWithHex:0xEA6854 alpha:1.0]  //tab上BadgeNumber TextColor
+
+#define qim_mainViewBadgeNumberLabelBgColor      [UIColor qim_colorWithHex:0xEB524A alpha:1.0]  //tab上BadgeNumber TextColor
 
 #define qim_texbar_button_normalColor [UIColor qim_colorWithHex:0xA5A5A5 alpha:1.0] //输入框按钮normal颜色
 #define qim_texbar_button_highColor [UIColor qim_colorWithHex:0xA5A5A5 alpha:0.7] //输入框按钮high颜色
@@ -40,7 +41,7 @@
 #define qim_sessionViewBgColor [UIColor whiteColor] //会话列表页Bg颜色
 #define qim_sessionViewConnectionErrorViewBgColor    [UIColor qim_colorWithHex:0xFAE4E3 alpha:1.0]  //网络连接错误BgColor
 #define qim_sessionViewConnectionErrorTextColor    [UIColor qim_colorWithHex:0x666666 alpha:1.0]  //网络连接错误TextColor
-#define qim_sessionViewNotReadNumButtonColor       [UIColor qim_colorWithHex:0xEA6854 alpha:1.0]  //未读消息提醒气泡Color
+#define qim_sessionViewNotReadNumButtonColor       [UIColor qim_colorWithHex:0xEB524A alpha:1.0]  //未读消息提醒气泡Color
 #define qim_sessionViewMuteColor                   [UIColor qim_colorWithHex:0xDBDBDB alpha:1.0]  //接收不提醒Color
 
 #define qim_sessionCellNameTextColor               [UIColor qim_colorWithHex:0x333333 alpha:1.0]  //会话列表页Name TextColor

@@ -212,11 +212,11 @@
     [_searchResults removeAllObjects];
     BOOL hasChinese = [searchText qim_checkIsChinese];
     if (hasChinese && searchText.length >= 2) {
-        NSArray *searchUsers = [[QIMKit sharedInstance] searchUserListBySearchStr:searchText WithLimit:20 WithOffset:0];
+        NSArray *searchUsers = [[QIMKit sharedInstance] selectUserListExMySelfBySearchStr:searchText WithLimit:20 WithOffset:0];
         [_searchResults addObjectsFromArray:searchUsers];
         QIMVerboseLog(@"_searchResults :%d", _searchResults.count);
     } else if (searchText.length >= 4){
-        NSArray *searchUsers = [[QIMKit sharedInstance] searchUserListBySearchStr:searchText WithLimit:20 WithOffset:0];
+        NSArray *searchUsers = [[QIMKit sharedInstance] selectUserListExMySelfBySearchStr:searchText WithLimit:20 WithOffset:0];
         [_searchResults addObjectsFromArray:searchUsers];
         QIMVerboseLog(@"_searchResults :%d", _searchResults.count);
     } else {

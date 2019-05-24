@@ -1207,7 +1207,6 @@ static QIMFastEntrance *_sharedInstance = nil;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"退出登录中..."];
         BOOL result = [[QIMKit sharedInstance] sendPushTokenWithMyToken:nil WithDeleteFlag:YES];
-        result = NO;
         [[QIMProgressHUD sharedInstance] closeHUD];
         if (result) {
             [[QIMKit sharedInstance] sendNoPush];
@@ -1472,18 +1471,28 @@ static QIMFastEntrance *_sharedInstance = nil;
     if (![param objectForKey:@"UserId"]) {
         return;
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        QIMWorkFeedMYCirrleViewController * userWorkFeedVc = [[QIMWorkFeedMYCirrleViewController alloc]init];
-        
-        userWorkFeedVc.userId = [param objectForKey:@"UserId"];
-        
-        //        userWorkFeedVc.title = [NSString stringWithFormat:@"%@的动态", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:[param objectForKey:@"UserId"]]];
-        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-        if (!navVC) {
-            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-        }
-        [navVC pushViewController:userWorkFeedVc animated:YES];
-    });
+    NSString *userId = [param objectForKey:@"UserId"];
+    if (![userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            QIMWorkFeedViewController * userWorkFeedVc = [[QIMWorkFeedViewController alloc]init];
+            userWorkFeedVc.userId = [param objectForKey:@"UserId"];
+            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+            if (!navVC) {
+                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            }
+            [navVC pushViewController:userWorkFeedVc animated:YES];
+        });
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            QIMWorkFeedMYCirrleViewController * userWorkFeedVc = [[QIMWorkFeedMYCirrleViewController alloc]init];
+            userWorkFeedVc.userId = [param objectForKey:@"UserId"];
+            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+            if (!navVC) {
+                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            }
+            [navVC pushViewController:userWorkFeedVc animated:YES];
+        });
+    }
 }
 
 + (void)openTravelCalendarVc {

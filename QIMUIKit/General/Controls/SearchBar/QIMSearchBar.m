@@ -45,13 +45,13 @@
         }];
         
         UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        iconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:28 color:[UIColor qim_colorWithHex:0xBFBFBF]]];
+        iconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:30 color:[UIColor qim_colorWithHex:0xBFBFBF]]];
         [self.searchBgView addSubview:iconView];
         [iconView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_offset(13);
-            make.width.mas_equalTo(14);
+            make.left.mas_offset(15);
+            make.width.mas_equalTo(15);
             make.top.mas_offset(13);
-            make.height.mas_equalTo(14);
+            make.height.mas_equalTo(15);
         }];
         
         UILabel *promotLabel = [[UILabel alloc] initWithFrame:CGRectZero];
