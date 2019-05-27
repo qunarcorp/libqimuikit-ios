@@ -570,7 +570,7 @@ static NSString *__default_ua = nil;
                
             }
         }
-//        url -s http://150.242.184.16:5680/token_image --cookie "q_u=test"
+        
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
         [cook setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
         request = [[NSMutableURLRequest alloc] initWithURL:_requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];

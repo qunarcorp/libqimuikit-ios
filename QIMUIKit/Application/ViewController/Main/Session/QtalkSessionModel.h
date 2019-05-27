@@ -1,0 +1,31 @@
+//
+//  QtalkSessionModel.h
+//  ASIHTTPRequest
+//
+//  Created by qitmac000645 on 2019/5/27.
+//
+
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface QtalkSessionModel : NSObject
+@property (nonatomic, copy) NSNumber * MsgDirection;
+@property (nonatomic, copy) NSString * Content;
+@property (nonatomic, copy) NSString * Name;
+@property (nonatomic, copy) NSString * LastMsgId;
+@property (nonatomic, copy) NSString * HeaderSrc;
+@property (nonatomic, copy) NSString * UserId;
+@property (nonatomic, copy) NSString * XmppId;
+@property (nonatomic, copy) NSNumber * Reminded;
+@property (nonatomic, copy) NSNumber * MsgDateTime;
+@property (nonatomic, copy) NSString * MsgFrom;
+@property (nonatomic, copy) NSNumber * MsgType;
+@property (nonatomic, copy) NSNumber * MsgState;
+@property (nonatomic, copy) NSNumber * ChatType;
+@property (nonatomic, copy) NSNumber * UnreadCount;
+@property (nonatomic, copy) NSNumber * StickState;
+@property (nonatomic, copy) NSString * RealJid;
+@end
+
+NS_ASSUME_NONNULL_END

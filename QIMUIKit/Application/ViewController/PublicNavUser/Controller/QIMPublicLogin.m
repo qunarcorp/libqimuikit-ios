@@ -521,7 +521,7 @@ static const int companyTag = 10001;
 
 - (void)forgotPWD:(id)sender {
 
-    [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_resetPwdUrl] showNavBar:NO];
+    [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_resetPwdUrl] showNavBar:YES];
 }
 
 - (void)agreementBtnHandle:(UIButton *)sender {
