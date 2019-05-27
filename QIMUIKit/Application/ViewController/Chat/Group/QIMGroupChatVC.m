@@ -392,47 +392,52 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)setupNav {
     [self setBackBtn];
-    NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
-    NSString *titleName = [groupCardDic objectForKey:@"Name"];
-    NSString *topic = [groupCardDic objectForKey:@"Topic"];
-    if (self.chatType == ChatType_CollectionChat) {
-        NSDictionary *groupCardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:self.chatId];
-        if (groupCardDic) {
-            NSString *groupName = [groupCardDic objectForKey:@"Name"];
-            if (groupName) {
-                titleName = groupName;
-            } else {
-                titleName = self.chatId;
+    self.title = [[self.chatId componentsSeparatedByString:@"@"] firstObject];
+    dispatch_async([[QIMKit sharedInstance] getLoadGroupCardFromDBQueue], ^{
+        NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
+        NSString *titleName = [groupCardDic objectForKey:@"Name"];
+        NSString *topic = [groupCardDic objectForKey:@"Topic"];
+        if (self.chatType == ChatType_CollectionChat) {
+            NSDictionary *groupCardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:self.chatId];
+            if (groupCardDic) {
+                NSString *groupName = [groupCardDic objectForKey:@"Name"];
+                if (groupName) {
+                    titleName = groupName;
+                } else {
+                    titleName = self.chatId;
+                }
             }
         }
-    }
-    if (titleName.length > 0) {
-        self.title = titleName;
-        self.titleLabel.text = titleName;
-        [self.titleView addSubview:self.titleLabel];
-    }
-    if (topic.length > 0) {
-        self.descLabel.text = topic;
-//        [self.titleView addSubview:self.descLabel];
-        self.navigationItem.titleView = self.titleView;
-    } else {
-        
-        [self.titleView addSubview:self.titleLabel];
-        self.navigationItem.titleView = self.titleView;
-    }
-    if (self.chatType == ChatType_GroupChat) {
-        UIView *rightBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
-        [rightBarView addSubview:self.addGroupMember];
-        /* 暂时取消右上角红点
-        if (![[[QIMKit sharedInstance] userObjectForKey:kRightCardRemindNotification] boolValue]) {
-            QIMRedMindView *redMindView = [[QIMRedMindView alloc] initWithBroView:self.addGroupMember withRemindNotificationName:kRightCardRemindNotification];
-            [rightBarView addSubview:redMindView];
-        }
-        */
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarView];
-    } else {
-        
-    }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (titleName.length > 0) {
+                self.title = titleName;
+                self.titleLabel.text = titleName;
+                [self.titleView addSubview:self.titleLabel];
+            }
+            if (topic.length > 0) {
+                self.descLabel.text = topic;
+                //        [self.titleView addSubview:self.descLabel];
+                self.navigationItem.titleView = self.titleView;
+            } else {
+                
+                [self.titleView addSubview:self.titleLabel];
+                self.navigationItem.titleView = self.titleView;
+            }
+            if (self.chatType == ChatType_GroupChat) {
+                UIView *rightBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
+                [rightBarView addSubview:self.addGroupMember];
+                /* 暂时取消右上角红点
+                 if (![[[QIMKit sharedInstance] userObjectForKey:kRightCardRemindNotification] boolValue]) {
+                 QIMRedMindView *redMindView = [[QIMRedMindView alloc] initWithBroView:self.addGroupMember withRemindNotificationName:kRightCardRemindNotification];
+                 [rightBarView addSubview:redMindView];
+                 }
+                 */
+                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarView];
+            } else {
+                
+            }
+        });
+    });
 }
 
 - (void)initUI {
@@ -630,13 +635,15 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [self synchronizeChatSession];
     });
     if (!self.bindId) {
-        NSDictionary *groupVcardInfo = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
-        NSInteger groupCardVersion = [[groupVcardInfo objectForKey:@"LastUpdateTime"] integerValue];
-        if (groupCardVersion <= 0) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-               [[QIMKit sharedInstance] updateGroupCardByGroupId:self.chatId];
-            });
-        }
+        dispatch_async([[QIMKit sharedInstance] getLoadGroupCardFromDBQueue], ^{
+            NSDictionary *groupVcardInfo = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
+            NSInteger groupCardVersion = [[groupVcardInfo objectForKey:@"LastUpdateTime"] integerValue];
+            if (groupCardVersion <= 0) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                    [[QIMKit sharedInstance] updateGroupCardByGroupId:self.chatId];
+                });
+            }
+        });
     }
 }
 
@@ -1096,57 +1103,57 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)reloadTableData {
-    
+    __weak __typeof(self) weakSelf = self;
     if (self.chatType == ChatType_CollectionChat) {
         NSArray *list = [[QIMKit sharedInstance] getCollectionMsgListForUserId:self.bindId originUserId:self.chatId];
-        dispatch_async(dispatch_get_main_queue(), ^{
             self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
+        dispatch_async(dispatch_get_main_queue(), ^{
             BOOL editing = self.tableView.editing;
-            [self.tableView reloadData];
-            self.tableView.editing = editing;
-            [self scrollToBottom_tableView];
-            [self addImageToImageList];
-            [[QIMEmotionSpirits sharedInstance] setDataCount:(int) self.messageManager.dataSource.count];
+            [weakSelf.tableView reloadData];
+            weakSelf.tableView.editing = editing;
+            [weakSelf scrollToBottom_tableView];
+            [weakSelf addImageToImageList];
+            [[QIMEmotionSpirits sharedInstance] setDataCount:(int)weakSelf.messageManager.dataSource.count];
         });
     } else {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            if (self.fastMsgTimeStamp > 0) {
-                [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId FromTimeStamp:self.fastMsgTimeStamp WithComplete:^(NSArray *list) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+            if (weakSelf.fastMsgTimeStamp > 0) {
+                [[QIMKit sharedInstance] getMsgListByUserId:weakSelf.chatId WithRealJid:weakSelf.chatId FromTimeStamp:weakSelf.fastMsgTimeStamp WithComplete:^(NSArray *list) {
+                        weakSelf.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
                         //标记已读
-                        [self markReadedForChatRoom];
-                        BOOL editing = self.tableView.editing;
-                        [self.tableView reloadData];
-                        self.tableView.editing = editing;
-                        [self addImageToImageList];
-                        [[QIMEmotionSpirits sharedInstance] setDataCount:(int) self.messageManager.dataSource.count];
+                        [weakSelf markReadedForChatRoom];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        BOOL editing = weakSelf.tableView.editing;
+                        [weakSelf.tableView reloadData];
+                        weakSelf.tableView.editing = editing;
+                        [weakSelf addImageToImageList];
+                        [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
                     });
                 }];
             } else {
-                [[QIMKit sharedInstance] getMsgListByUserId:self.chatId
-                                                WithRealJid:self.chatId
+                [[QIMKit sharedInstance] getMsgListByUserId:weakSelf.chatId
+                                                WithRealJid:weakSelf.chatId
                                                   WithLimit:kPageCount
                                                  WithOffset:0
                                                WithComplete:^(NSArray *list) {
-                                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                                       self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
+                                                       weakSelf.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
                                                        //标记已读
-                                                       [self markReadedForChatRoom];
-                                                       BOOL editing = self.tableView.editing;
-                                                       [self.tableView reloadData];
-                                                       self.tableView.editing = editing;
-                                                       [self scrollBottom];
-                                                       [self addImageToImageList];
-                                                       [[QIMEmotionSpirits sharedInstance] setDataCount:(int) self.messageManager.dataSource.count];
+                                                       [weakSelf markReadedForChatRoom];
+                                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                                       BOOL editing = weakSelf.tableView.editing;
+                                                       [weakSelf.tableView reloadData];
+                                                       weakSelf.tableView.editing = editing;
+                                                       [weakSelf scrollBottom];
+                                                       [weakSelf addImageToImageList];
+                                                       [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
                                                        //标记艾特消息已读
-                                                       [self updateNotAtReadAtMsgWithMsgArray:list];
-                                                       [self showNotReadAtMsgView];
+                                                       [weakSelf updateNotAtReadAtMsgWithMsgArray:list];
+                                                       [weakSelf showNotReadAtMsgView];
                                                    });
                                                }];
             }
-        });
+//        });
     }
 }
 
@@ -2808,7 +2815,7 @@ static CGPoint tableOffsetPoint;
 - (void)loadNewGroupMsgList {
     __weak typeof(self) weakSelf = self;
     self.loadCount += 1;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[QIMKit sharedInstance] getMsgListByUserId:weakSelf.chatId
                                         WithRealJid:weakSelf.chatId
                                           WithLimit:kPageCount
@@ -2831,7 +2838,7 @@ static CGPoint tableOffsetPoint;
                                                [weakSelf.tableView.mj_header endRefreshing];
                                            });
                                        }];
-    });
+//    });
 #if __has_include("QimRNBModule.h")
     if (self.loadCount >= 3 && !self.reloadSearchRemindView && !self.bindId) {
         self.searchRemindView = [[QIMSearchRemindView alloc] initWithChatId:self.chatId withRealJid:nil withChatType:self.chatType];
