@@ -549,12 +549,12 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 - (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId {
-    NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
-    NSString *groupName = [groupCard objectForKey:@"Name"];
+//    NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
+//    NSString *groupName = [groupCard objectForKey:@"Name"];
     QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
     [chatGroupVC setChatType:ChatType_GroupChat];
     [chatGroupVC setChatId:groupId];
-    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
+//    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
     return chatGroupVC;
 }
 

@@ -898,8 +898,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 //    if (!self.needRefreshName) {
 //        return;
 //    }
-    self.needRefreshName = YES;
-    if (self.needRefreshName) {
+//    self.needRefreshName = YES;
+//    if (self.needRefreshName) {
         if (self.showName) {
             if (self.markUpName.length > 0) {
                 self.showName = self.markUpName;
@@ -1032,7 +1032,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 });
              });
         }
-    }
+//    }
 }
 
 - (void)refreshTimeLabelWithTime:(long long)time {
@@ -1116,42 +1116,20 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 }
 
 - (void)refeshContent {
-    NSString *message = self.content;
-    NSMutableAttributedString *str = [[NSMutableAttributedString alloc] init];
+    __block NSString *message = self.content;
+    __block NSMutableAttributedString *str = [[NSMutableAttributedString alloc] init];
     NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
     [ps setAlignment:NSTextAlignmentLeft];
-    NSArray *atMeMessages = @[];
-//    [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
-    /*
-    NSDictionary *atAllDic = [[QIMKit sharedInstance] getAtAllInfoByJid:self.jid];
-    if (atAllDic) {
-        
-        NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xff0000 alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
-        NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:@"@全体成员:" attributes:titleDic];
-        [str appendAttributedString:atStr];
-    } else {
-        
-        NSArray *atNickNames = [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
-        if (atNickNames.count > 0) {
-            
-            NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
-//            NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"你被@了%lu次",(unsigned long)atNickNames.count] attributes:titleDic];
-            NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
-            [str appendAttributedString:atStr];
-        } else {
-            
-        }
-    }
-    */
-    if (atMeMessages.count > 0) {
-        NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
-        NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
-        [str appendAttributedString:atStr];
-    }
     
     __block NSString *content = @"";
     if (message.length > 0) {
         dispatch_async([[QIMKit sharedInstance] getLoadSessionContentQueue], ^{
+            NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
+            if (atMeMessages.count > 0) {
+                NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
+                NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
+                [str appendAttributedString:atStr];
+            }
             content = [self refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (content.length > 0) {
