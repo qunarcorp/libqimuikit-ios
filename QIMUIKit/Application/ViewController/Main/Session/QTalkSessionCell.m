@@ -482,7 +482,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
             if ([notifyJid isEqualToString:xmppId] && [notifyRealJid isEqualToString:realJid]) {
                 __weak __typeof(self) weakSelf = self;
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                dispatch_async([[QIMKit sharedInstance] getLoadSessionUnReadCountQueue], ^{
                     weakSelf.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:weakSelf.chatType];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self reloadNotReadCount];
@@ -908,7 +908,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             });
         } else {
             self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
-            dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
+            dispatch_async([[QIMKit sharedInstance] getLoadSessionNameQueue], ^{
 
                 switch (self.chatType) {
                     case ChatType_GroupChat: {
@@ -1117,7 +1117,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     NSMutableAttributedString *str = [[NSMutableAttributedString alloc] init];
     NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
     [ps setAlignment:NSTextAlignmentLeft];
-    NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
+    NSArray *atMeMessages = @[];
+//    [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
     /*
     NSDictionary *atAllDic = [[QIMKit sharedInstance] getAtAllInfoByJid:self.jid];
     if (atAllDic) {
@@ -1147,7 +1148,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     __block NSString *content = @"";
     if (message.length > 0) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async([[QIMKit sharedInstance] getLoadSessionContentQueue], ^{
             content = [self refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (content.length > 0) {
