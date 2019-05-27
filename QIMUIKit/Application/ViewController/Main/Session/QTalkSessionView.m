@@ -30,6 +30,7 @@
 #import "QIMCustomPresentationController.h"
 #import "QIMCustomPopManager.h"
 #import "QIMSearchBar.h"
+#import "YYModel.h"
 
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
@@ -52,7 +53,7 @@
 @end
 #endif
 
-@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate, UISearchBarDelegate, QIMSearchBarDelegate> {
+@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate, QIMSearchBarDelegate> {
     MBProgressHUD *_tipHUD;
     BOOL _canWrite;
     CABasicAnimation *_writingAnimation;
@@ -107,8 +108,6 @@
 @property (nonatomic, strong) UIViewController *tempRootVc;
 
 @property (nonatomic, strong) NSArray *moreActionArray;
-
-//@property (nonatomic, strong) UISearchBar *searchBar;
 
 @property (nonatomic, strong) QIMSearchBar *searchBar;
 
@@ -319,16 +318,6 @@
         _searchBar.delegate = self;
     }
     return _searchBar;
-}
-
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
-    
-#if __has_include("RNSchemaParse.h")
-    
-    [QIMFastEntrance openRNSearchVC];
-    return NO;
-#endif
-    return YES;
 }
 
 - (void)doMoreAction:(id)sender {
@@ -554,12 +543,18 @@
                 }
                 __weak typeof(self) weakSelf = self;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    weakSelf.recentContactArray = [NSMutableArray array];
-                    [weakSelf.recentContactArray addObjectsFromArray:normalList];
+                    [weakSelf.recentContactArray removeAllObjects];
+                    [normalList enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if ((NSDictionary *)obj) {
+                            [weakSelf.recentContactArray addObject:obj];
+                        }
+                        else{
+                            QIMVerboseLog(@"列表空数据了！");
+                        }
+                    }];
                     if (_willForceTableView) {
                         QIMVerboseLog(@"列表页强制刷新了!!!");
-                        [self.tableView reloadData];
+                        [weakSelf.tableView reloadData];
                         _willForceTableView = NO;
                     } else {
                         [weakSelf lazyReloadTableview];
@@ -635,11 +630,11 @@
 #pragma mark - Notification Method
 
 - (void)lazyReloadTableview {
-    
+
     [NSObject cancelPreviousPerformRequestsWithTarget:self.tableView
                                              selector:@selector(reloadData)
                                                object:nil];
-    
+
     [self.tableView performSelector:@selector(reloadData)
                      withObject:nil
                      afterDelay:0.1];
@@ -1001,23 +996,21 @@
     if (self.recentContactArray.count >= indexPath.row && self.recentContactArray.count >= 1) {
         dict = [self.recentContactArray objectAtIndex:indexPath.row];
     }
-    if (!dict) {
-        return [QTalkSessionCell new];
-    }
     NSString *chatId = [dict objectForKey:@"XmppId"];
     NSString *realJid = [dict objectForKey:@"RealJid"];
-    NSString *cellIdentifier = [NSString stringWithFormat:@"Cell ChatId(%@) RealJid(%@) %d", chatId, realJid, indexPath.row];
+    NSString *cellIdentifier = @"12223141";//[NSString stringWithFormat:@"Cell ChatId(%@) RealJid(%@) %d", chatId, realJid, indexPath.row];
     QTalkSessionCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
         cell = [[QTalkSessionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-        cell.firstRefresh = YES;
+//        cell.firstRefresh = YES;
     } else {
-        cell.firstRefresh = NO;
+//        cell.firstRefresh = NO;
     }
     [cell setIndexPath:indexPath];
     [cell setAccessibilityIdentifier:chatId];
     cell.infoDic = dict;
     cell.sessionScrollDelegate = self;
+    [cell refreshUI];
     return cell;
 }
 

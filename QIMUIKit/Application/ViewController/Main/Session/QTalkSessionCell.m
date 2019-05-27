@@ -103,8 +103,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             self.markUpName = [infoDic objectForKey:@"MarkUpName"];
             if (![self.jid isEqualToString:xmppId]) {
                 self.jid = xmppId;
-                [self refreshName];
-                [self refreshHeaderImage];
+//                [self refreshName];
+//                [self refreshHeaderImage];
             }
             self.msgType = [[infoDic objectForKey:@"MsgType"] integerValue];
             self.msgState = [[infoDic objectForKey:@"MsgState"] integerValue];
@@ -127,7 +127,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             */
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.jid = xmppId;
-                [self refreshUI];
+//                [self refreshUI];
                 [self generateCombineJidWithChatType:self.chatType];
             });
         } else {
@@ -138,11 +138,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             self.msgState = [[infoDic objectForKey:@"MsgState"] intValue];
             self.content = [infoDic objectForKey:@"Content"];
             [self generateCombineJidWithChatType:chatType];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self refreshName];
-                [self refreshHeaderImage];
-                [self refreshUI];
-            });
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self refreshName];
+//                [self refreshHeaderImage];
+//                [self refreshUI];
+//            });
         }
     }
 }
@@ -395,7 +395,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         [self initUI];
         self.bindId = nil;
         self.needRefreshName = YES;
-        self.needRefreshHeader = YES;
+//        self.needRefreshHeader = YES;
     }
     return self;
 }
@@ -498,7 +498,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (void)updateRemindState:(NSNotification *)notify {
     NSString *jid = [notify object];
     if ([jid isEqualToString:@"ForceRefresh"]) {
-        self.needRefreshNotReadCount = YES;
+//        self.needRefreshNotReadCount = YES;
         self.isReminded = ![[QIMKit sharedInstance] groupPushState:self.jid];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -512,20 +512,20 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
             if ([jid isEqualToString:[NSString stringWithFormat:@"%@-%@",xmppId,realJid]]) {
                 self.isReminded = ![[QIMKit sharedInstance] groupPushState:[NSString stringWithFormat:@"%@-%@", xmppId, realJid]];
-                self.needRefreshNotReadCount = YES;
+//                self.needRefreshNotReadCount = YES;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self reloadNotReadCount];
                 });
             }
         } else {
             if ([jid isEqualToString:self.jid]) {
-                self.needRefreshNotReadCount = YES;
+//                self.needRefreshNotReadCount = YES;
                 self.isReminded = ![[QIMKit sharedInstance] groupPushState:self.jid];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self reloadNotReadCount];
                 });
             } else if ([jid isEqualToString:@"ForceRefresh"]) {
-                self.needRefreshNotReadCount = YES;
+//                self.needRefreshNotReadCount = YES;
                 self.isReminded = ![[QIMKit sharedInstance] groupPushState:self.jid];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self reloadNotReadCount];
@@ -535,7 +535,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             }
         }
     } else {
-        self.needRefreshNotReadCount = YES;
+//        self.needRefreshNotReadCount = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self reloadNotReadCount];
         });
@@ -549,7 +549,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if ([jid isEqualToString:self.jid]) {
 //        QIMVerboseLog(@"收到通知中心updateCellHeaderImage通知 : %@", notify);
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.needRefreshHeader = YES;
+//            self.needRefreshHeader = YES;
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshHeaderImage) object:nil];
             [self performSelector:@selector(refreshHeaderImage) withObject:nil afterDelay:DEFAULT_DELAY_TIMES];
         });
@@ -563,7 +563,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if ([jid isEqualToString:self.jid]) {
 //        QIMVerboseLog(@"收到通知中心updateCellUserStatusChange通知 : %@", notify);
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.needRefreshHeader = YES;
+//            self.needRefreshHeader = YES;
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshHeaderImage) object:nil];
             [self performSelector:@selector(refreshHeaderImage) withObject:nil afterDelay:DEFAULT_DELAY_TIMES];
         });
@@ -608,7 +608,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 //    QIMVerboseLog(@"收到通知中心updateOnlineState通知 : %@", notify);
     NSArray *userIds = notify.object;
     if (userIds.count > 0 && [userIds containsObject:self.jid]) {
-        self.needRefreshHeader = YES;
+//        self.needRefreshHeader = YES;
         self.firstRefresh = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshHeaderImage) object:nil];
@@ -807,9 +807,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (void)refreshHeaderImage {
     
-    if (self.needRefreshHeader == NO) {
-        return;
-    }
+//    if (self.needRefreshHeader == NO) {
+//        return;
+//    }
     if (self.bindId) {
         
         self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
@@ -828,7 +828,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             [self.headerView qim_setImageWithJid:self.jid WithRealJid:realJid WithChatType:self.chatType];
         }
     }
-    self.needRefreshHeader = NO;
+//    self.needRefreshHeader = NO;
 }
 
 - (void)reloadNotReadCount {
@@ -891,9 +891,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 }
 
 - (void)refreshName {
-    if (!self.needRefreshName) {
-        return;
-    }
+//    if (!self.needRefreshName) {
+//        return;
+//    }
+    self.needRefreshName = YES;
     if (self.needRefreshName) {
         if (self.showName) {
             if (self.markUpName.length > 0) {
@@ -1082,10 +1083,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (void)updateUI:(NSNotification *)notify {
     NSArray *array = notify.object;
     if ([array containsObject:self.jid]) {
-        self.needRefreshNotReadCount = NO;
-        self.needRefreshName = YES;
-        self.needRefreshHeader = YES;
-        self.showName = nil;
+//        self.needRefreshNotReadCount = NO;
+//        self.needRefreshName = YES;
+////        self.needRefreshHeader = YES;
+//        self.showName = nil;
         [self refreshName];
         [self refreshHeaderImage];
     }
@@ -1093,11 +1094,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (void)refreshUI {
 
+    [self refreshName];
+    [self refreshHeaderImage];
     [self refreshTimeLabelWithTime:self.msgDateTime];
     [self refeshContent];
     self.notReadCount = [[self.infoDic objectForKey:@"UnreadCount"] integerValue];
     [self refreshNotReadCount];
-    self.needRefreshNotReadCount = NO;
+//    self.needRefreshNotReadCount = NO;
     if (self.isStick) {
         _stickView.hidden = NO;
         [self addSubview:self.stickView];
