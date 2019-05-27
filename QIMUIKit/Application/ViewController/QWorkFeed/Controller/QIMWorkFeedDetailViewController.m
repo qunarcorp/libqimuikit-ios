@@ -97,7 +97,11 @@
 
 - (QIMWorkCommentTableView *)commentListView {
     if (!_commentListView) {
-        _commentListView = [[QIMWorkCommentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 55 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+//        if ([[QIMKit sharedInstance] getIsIpad]) {
+//            _commentListView = [[QIMWorkCommentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 55 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - [[QIMDeviceManager sharedInstance] getNAVIGATION_BAR_HEIGHT])];
+//        } else {
+            _commentListView = [[QIMWorkCommentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 55 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+//        }
         _commentListView.backgroundColor = [UIColor whiteColor];
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 300)];
         view.backgroundColor = [UIColor whiteColor];
@@ -111,6 +115,13 @@
 - (QIMWorkCommentInputBar *)commentInputBar {
     if (!_commentInputBar) {
         _commentInputBar = [[QIMWorkCommentInputBar alloc] initWithFrame:CGRectMake(0, self.commentListView.bottom, self.view.width, 55 + [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+        /*
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            _commentInputBar = [[QIMWorkCommentInputBar alloc] initWithFrame:CGRectMake(0, self.commentListView.bottom, self.view.width, 55 + [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+        } else {
+            _commentInputBar = [[QIMWorkCommentInputBar alloc] initWithFrame:CGRectMake(0, self.commentListView.bottom, self.view.width, 55 + [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+        }
+         */
         _commentInputBar.delegate = self;
     }
     [_commentInputBar setLikeNum:self.momentModel.likeNum withISLike:self.momentModel.isLike];

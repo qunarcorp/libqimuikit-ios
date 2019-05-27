@@ -184,7 +184,7 @@
     _nameLab.centerY = self.headImageView.centerY;
     _organLab.centerY = self.headImageView.centerY;
     
-    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70, 5, 60, 27);
+    _likeBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 70, 5, 60, 27);
     NSInteger likeNum = commentModel.likeNum;
     BOOL isLike = commentModel.isLike;
     if (isLike) {
@@ -260,7 +260,7 @@
         _childCommentListView.childCommentList = self.commentModel.childComments;
         _childCommentListView.leftMargin = self.nameLab.left;
         _childCommentListView.origin = CGPointMake(0, self.contentLabel.bottom + 5);
-        _childCommentListView.width = SCREEN_WIDTH;
+        _childCommentListView.width = [[UIScreen mainScreen] qim_rightWidth];
         _childCommentListView.height = 500;
         _childCommentListView.height = [_childCommentListView getWorkChildCommentListViewHeight];
         _commentModel.rowHeight = _childCommentListView.bottom;

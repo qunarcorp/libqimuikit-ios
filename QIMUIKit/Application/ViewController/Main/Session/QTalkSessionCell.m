@@ -356,6 +356,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (void)initUI {
     
+    self.selectedBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
+    self.selectedBackgroundView.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
     [self.contentView addSubview:self.headerView];
     [self.contentView addSubview:self.nameLabel];
     [self.contentView addSubview:self.contentLabel];
@@ -879,10 +881,12 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             self.muteView.hidden = NO;
             [self refeshContent];
             self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, self.timeLabel.bottom + 15, 15, 15);
+            self.muteView.centerY = self.contentLabel.centerY;
         } else if (self.isReminded == YES && countStr.length <= 0) {//接收不提醒
             self.muteView.hidden = NO;
             [self refeshContent];
             self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 25, self.timeLabel.bottom + 15, 15, 15);
+            self.muteView.centerY = self.contentLabel.centerY;
         } else {
             self.muteView.hidden = YES;
 
