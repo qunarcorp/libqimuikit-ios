@@ -163,7 +163,7 @@
         } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
             platTitle = @"QChat";
         } else {
-            platTitle = @"Startalk";
+            platTitle = [QIMKit getQIMProjectTitleName];
         }
         pcTipLabel.text = [NSString stringWithFormat:@"桌面%@已登录", platTitle];
         pcTipLabel.textColor = qim_otherPlatformViewTextColor;

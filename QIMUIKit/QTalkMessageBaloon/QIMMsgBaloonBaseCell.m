@@ -470,6 +470,10 @@ static UIImage *__rightBallocImage = nil;
             break;
         case QIMMessageDirection_Sent: {
             CGRect frame = {{self.frameWidth - kBackViewCap - backWidth - AVATAR_WIDTH, kCellHeightCap / 2.0 + kBackViewCap},{backWidth,backHeight}};
+           if (self.chatType == ChatType_SingleChat) {
+               frame = CGRectMake(self.frameWidth - kBackViewCap - backWidth - AVATAR_WIDTH, kCellHeightCap / 2.0, backWidth, backHeight);
+            } else {
+            }
             [self.backView setFrame:frame];
             [self.backView setImage:[QIMMsgBaloonBaseCell rightBallcoImage]];
             _messgaeStateLabel.frame = CGRectMake(self.backView.left - 40, self.backView.bottom - 12, 35, 12);

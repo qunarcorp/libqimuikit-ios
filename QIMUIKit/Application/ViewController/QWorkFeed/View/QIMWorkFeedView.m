@@ -63,7 +63,11 @@
 - (UIButton *)addNewMomentBtn {
     if (!_addNewMomentBtn) {
         _addNewMomentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _addNewMomentBtn.frame = CGRectMake(SCREEN_WIDTH - 20 - 48, self.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 20 - 48, 48, 48);
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            _addNewMomentBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 20 - 48, self.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 50 - 48, 48, 48);
+        } else {
+            _addNewMomentBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 20 - 48, self.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 20 - 48, 48, 48);
+        }
         [_addNewMomentBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_push"] forState:UIControlStateNormal];
         [_addNewMomentBtn addTarget:self action:@selector(jumpToAddNewMomentVc) forControlEvents:UIControlEventTouchUpInside];
     }

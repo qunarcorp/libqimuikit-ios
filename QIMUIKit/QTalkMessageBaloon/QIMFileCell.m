@@ -78,7 +78,7 @@
         _lineView.clipsToBounds = YES;
         [_bgView addSubview:_lineView];
         
-        _platFormLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, _lineView.bottom + 8, 60, 12)];
+        _platFormLabel = [[UILabel alloc] initWithFrame:CGRectMake(18, _lineView.bottom + 8, 60, 12)];
         _platFormLabel.text = ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) ? @"来自QChat" : @"来自QTalk";
         _platFormLabel.font = [UIFont systemFontOfSize:12];
         _platFormLabel.backgroundColor = [UIColor clearColor];

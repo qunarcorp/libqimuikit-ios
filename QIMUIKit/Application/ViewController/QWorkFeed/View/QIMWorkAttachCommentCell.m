@@ -96,7 +96,7 @@
         replayStr = [NSString stringWithFormat:@"[obj type=\"reply\" value=\"%@\"]",replayNameStr];
     }
     
-    _likeBtn.frame = CGRectMake(SCREEN_WIDTH - 70 - self.leftMargin, 8, 60, 15);
+    _likeBtn.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 70 - self.leftMargin, 8, 60, 15);
     NSInteger likeNum = commentModel.likeNum;
     [_likeBtn setTitle:[NSString stringWithFormat:@"%ld 赞", likeNum] forState:UIControlStateNormal];
     QIMMessageModel *msg = [[QIMMessageModel alloc] init];

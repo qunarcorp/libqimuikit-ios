@@ -35,6 +35,11 @@ RCT_EXPORT_METHOD(openNativeWebView:(NSDictionary *)param) {
             NSString *linkUrl = [param objectForKey:@"linkurl"];
             if (linkUrl.length > 0) {
                 [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
+            } else {
+                NSString *linkUrl = [param objectForKey:@"url"];
+                if (linkUrl.length > 0) {
+                    [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
+                }
             }
         } else {
 

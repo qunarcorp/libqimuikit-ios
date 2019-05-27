@@ -571,7 +571,7 @@ static dispatch_once_t __onceMainToken;
     if (checkAuthSignKey == NO) {
         oldAuthSign = YES;
     }
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString]  isEqualToString:@"appstore"] && oldAuthSign == YES) {
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"appstore"] && oldAuthSign == YES) {
         
         [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_moment"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageSelectedColor]]}];
     }
