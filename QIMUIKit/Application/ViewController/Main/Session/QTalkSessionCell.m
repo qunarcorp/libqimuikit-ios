@@ -199,7 +199,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (!_muteNotReadView) {
 
         _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 20, self.timeLabel.bottom + 15, 8, 8)];
-        _muteNotReadView.backgroundColor = [UIColor redColor];
+        _muteNotReadView.backgroundColor = [UIColor qim_colorWithHex:0xEB524A];
         _muteNotReadView.layer.cornerRadius  = _muteNotReadView.width / 2.0;
         _muteNotReadView.clipsToBounds = YES;
         _muteNotReadView.centerY = self.muteView.centerY;
@@ -356,6 +356,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (void)initUI {
     
+    self.selectedBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
+    self.selectedBackgroundView.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
     [self.contentView addSubview:self.headerView];
     [self.contentView addSubview:self.nameLabel];
     [self.contentView addSubview:self.contentLabel];
@@ -480,7 +482,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
             if ([notifyJid isEqualToString:xmppId] && [notifyRealJid isEqualToString:realJid]) {
                 __weak __typeof(self) weakSelf = self;
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                dispatch_async([[QIMKit sharedInstance] getLoadSessionUnReadCountQueue], ^{
                     weakSelf.notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:xmppId WithRealJid:realJid withChatType:weakSelf.chatType];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self reloadNotReadCount];
@@ -860,29 +862,31 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             
             [self.notReadNumButton hiddenBadgeButton:NO];
             CGFloat width = (countStr.length * 7) + 13;
-            [self setUpNotReadNumButtonWithFrame:CGRectMake(self.timeLabel.right - width, 11, width, 20) withBadgeString:countStr];
+            [self setUpNotReadNumButtonWithFrame:CGRectMake(self.timeLabel.right - width, 11, width, 16) withBadgeString:countStr];
             if (self.isReminded == YES) {
                 self.muteNotReadView.hidden = NO;
                 self.muteNotReadView.centerY = self.muteView.centerY;
             } else {
                 self.muteNotReadView.hidden = YES;
             }
-            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
+            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, 15)];
         } else {
             
             [self.notReadNumButton hiddenBadgeButton:YES];
             [_muteNotReadView setHidden:YES];
             self.contentLabel.width = contentLabelWidth;
-            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, CONTENT_LABEL_FONT + 5)];
+            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, 15)];
         }
         if (self.isReminded == YES && countStr.length > 0) {//接收不提醒
             self.muteView.hidden = NO;
             [self refeshContent];
             self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, self.timeLabel.bottom + 15, 15, 15);
+            self.muteView.centerY = self.contentLabel.centerY;
         } else if (self.isReminded == YES && countStr.length <= 0) {//接收不提醒
             self.muteView.hidden = NO;
             [self refeshContent];
             self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 25, self.timeLabel.bottom + 15, 15, 15);
+            self.muteView.centerY = self.contentLabel.centerY;
         } else {
             self.muteView.hidden = YES;
 
@@ -905,7 +909,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             });
         } else {
             self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
-            dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
+            dispatch_async([[QIMKit sharedInstance] getLoadSessionNameQueue], ^{
 
                 switch (self.chatType) {
                     case ChatType_GroupChat: {
@@ -1116,7 +1120,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     NSMutableAttributedString *str = [[NSMutableAttributedString alloc] init];
     NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
     [ps setAlignment:NSTextAlignmentLeft];
-    NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
+    NSArray *atMeMessages = @[];
+//    [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
     /*
     NSDictionary *atAllDic = [[QIMKit sharedInstance] getAtAllInfoByJid:self.jid];
     if (atAllDic) {
@@ -1146,7 +1151,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     __block NSString *content = @"";
     if (message.length > 0) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async([[QIMKit sharedInstance] getLoadSessionContentQueue], ^{
             content = [self refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (content.length > 0) {

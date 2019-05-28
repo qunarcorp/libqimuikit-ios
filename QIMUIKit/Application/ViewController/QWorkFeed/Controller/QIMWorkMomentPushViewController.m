@@ -303,6 +303,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     QIMVerboseLog(@"即将进入发帖页面匿名名称 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName]);
     QIMVerboseLog(@"即将进入发帖页面匿名状态 : %d", [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]);
     QIMVerboseLog(@"即将进入发帖页面匿名头像地址 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto]);
@@ -804,6 +807,10 @@
 }
 
 #pragma mark - QTPHImagePickerControllerDelegate
+
+- (void)assetsPickerControllerDidCancel:(QTPHImagePickerController *)picker {
+    
+}
 
 - (void)assetsPickerController:(QTPHImagePickerController *)picker didFinishPickingAssets:(NSArray *)assets {
     [self sendAssetList:[NSMutableArray arrayWithArray:assets] ForPickerController:picker];

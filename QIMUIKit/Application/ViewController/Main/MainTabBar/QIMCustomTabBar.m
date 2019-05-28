@@ -91,18 +91,18 @@
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, itemButton.height - 16, itemButton.width, 12)];
             [label setBackgroundColor:[UIColor clearColor]];
             [label setTextAlignment:NSTextAlignmentCenter];
-            [label setFont:[UIFont fontWithName:FONT_NAME size:FONT_SIZE - 4-2]];
+            [label setFont:[UIFont systemFontOfSize:12]];
             [itemButton setBarTitleLabel:label];
             [itemButton addSubview:label];
             
             
-            UILabel *badgeNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake((buttonWidth / 2.0 + 5), 2, 22, 15)];
+            UILabel *badgeNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake((buttonWidth / 2.0 + 5), 2, 25, 16)];
             [badgeNumberLabel setHidden:YES];
-            [badgeNumberLabel.layer setCornerRadius:7];
+            [badgeNumberLabel.layer setCornerRadius:8];
             [badgeNumberLabel.layer setMasksToBounds:YES];
-            [badgeNumberLabel setBackgroundColor:qim_mainViewBadgeNumberLabelTextColor];
+            [badgeNumberLabel setBackgroundColor:qim_mainViewBadgeNumberLabelBgColor];
             [badgeNumberLabel setTextColor:[UIColor whiteColor]];
-            [badgeNumberLabel setFont:[UIFont boldSystemFontOfSize:qim_mainViewBadgeNumberLabelTextFont]];
+            [badgeNumberLabel setFont:[UIFont systemFontOfSize:qim_mainViewBadgeNumberLabelTextFont]];
             [badgeNumberLabel setTextAlignment:NSTextAlignmentCenter];
             [itemButton setBadgeNumberLabel:badgeNumberLabel];
             [itemButton addSubview:badgeNumberLabel];
@@ -139,13 +139,13 @@
         CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
         CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
         [itemButton.badgeNumberLabel setWidth:width];
+        [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];
         [itemButton.badgeNumberLabel setHidden:NO];
         [itemButton.badgeNumberLabel setText:countStr];
     } else if (bagdeNumber > 0 && showNum == NO) {
         CGSize size = CGSizeMake(10, 10);
         [itemButton.badgeNumberLabel setWidth:size.width];
         [itemButton.badgeNumberLabel setHeight:size.height];
-        [itemButton.badgeNumberLabel.layer setCornerRadius:size.width / 2];
         [itemButton.badgeNumberLabel setHidden:NO];
         [itemButton.badgeNumberLabel setText:@""];
     } else {
@@ -169,6 +169,7 @@
         CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
         CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
         [itemButton.badgeNumberLabel setWidth:width];
+        [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];
         [itemButton.badgeNumberLabel setHidden:NO];
         [itemButton.badgeNumberLabel setText:countStr];
     } else {

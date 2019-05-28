@@ -550,15 +550,12 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 - (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId {
     NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
-    if (groupCard) {
-        NSString *groupName = [groupCard objectForKey:@"Name"];
-        QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
-        [chatGroupVC setChatType:ChatType_GroupChat];
-        [chatGroupVC setChatId:groupId];
-        [chatGroupVC setTitle:groupName];
-        return chatGroupVC;
-    }
-    return nil;
+    NSString *groupName = [groupCard objectForKey:@"Name"];
+    QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
+    [chatGroupVC setChatType:ChatType_GroupChat];
+    [chatGroupVC setChatId:groupId];
+    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
+    return chatGroupVC;
 }
 
 + (void)openGroupChatVCByGroupId:(NSString *)groupId {
@@ -1471,18 +1468,28 @@ static QIMFastEntrance *_sharedInstance = nil;
     if (![param objectForKey:@"UserId"]) {
         return;
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        QIMWorkFeedMYCirrleViewController * userWorkFeedVc = [[QIMWorkFeedMYCirrleViewController alloc]init];
-        
-        userWorkFeedVc.userId = [param objectForKey:@"UserId"];
-        
-        //        userWorkFeedVc.title = [NSString stringWithFormat:@"%@的动态", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:[param objectForKey:@"UserId"]]];
-        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-        if (!navVC) {
-            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-        }
-        [navVC pushViewController:userWorkFeedVc animated:YES];
-    });
+    NSString *userId = [param objectForKey:@"UserId"];
+    if (![userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            QIMWorkFeedViewController * userWorkFeedVc = [[QIMWorkFeedViewController alloc]init];
+            userWorkFeedVc.userId = [param objectForKey:@"UserId"];
+            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+            if (!navVC) {
+                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            }
+            [navVC pushViewController:userWorkFeedVc animated:YES];
+        });
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            QIMWorkFeedMYCirrleViewController * userWorkFeedVc = [[QIMWorkFeedMYCirrleViewController alloc]init];
+            userWorkFeedVc.userId = [param objectForKey:@"UserId"];
+            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+            if (!navVC) {
+                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            }
+            [navVC pushViewController:userWorkFeedVc animated:YES];
+        });
+    }
 }
 
 + (void)openTravelCalendarVc {
