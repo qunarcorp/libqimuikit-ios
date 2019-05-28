@@ -386,10 +386,10 @@ static dispatch_once_t __onceMainToken;
 
 - (void)updateWorkFeedNotReadCount:(NSNotification *)notify {
     QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
-    BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
-    if (workMoment == YES) {
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
+        if (workMoment == YES) {
             NSDictionary *newWorkMomentNotify = notify.object;
             //新帖子通知
             BOOL newWorkMoment = [[newWorkMomentNotify objectForKey:@"newWorkMoment"] boolValue];
@@ -420,8 +420,8 @@ static dispatch_once_t __onceMainToken;
                     }
                 }
             }
-        });
-    }
+        }
+    });
 }
 
 - (void)updateUpdateProgress:(NSNotification *)notify {
