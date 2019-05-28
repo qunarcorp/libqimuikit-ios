@@ -81,7 +81,6 @@
 
 - (void)loadMoreNoticeMessages {
     NSArray *moreNoticeMsgs = [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:20 WithOffset:0 eventTypes:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)] readState:0];
-//    NSArray *moreNoticeMsgs = [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:10 WithOffset:self.noticeMsgs.count];
     if (moreNoticeMsgs.count > 0) {
         for (NSDictionary *noticeMsgDict in moreNoticeMsgs) {
             QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
