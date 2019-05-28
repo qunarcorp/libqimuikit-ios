@@ -14,7 +14,7 @@
 #import "UIScreen+QIMIpad.h"
 #endif
 
-#import "QIMManager+WorkFeed.h"
+#import "QIMKit+QIMWorkFeed.h"
 #import "QIMWorkOwnerCamelTabBar.h"
 #import "QIMWorkNoticeMessageModel.h"
 
