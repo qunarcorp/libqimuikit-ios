@@ -393,16 +393,22 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  */
 + (NSURL *)getJsCodeLocation {
 //    return [NSURL URLWithString:@"http://100.80.128.246:8081/index.ios.bundle?platform=ios&dev=true"];
-    NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
-    NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
-    if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
-        QIMVerboseLog(@"本地缓存的更新包地址 : %@", localJSCodeFileStr);
-        innerJsCodeLocation = localJSCodeFileStr;
+    NSString *qtalkFoundRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkFoundRNDebugUrl"];
+    if (qtalkFoundRNDebugUrlStr.length > 0) {
+        NSURL *qtalkFoundRNDebugUrlStrUrl = [NSURL URLWithString:qtalkFoundRNDebugUrlStr];
+        return qtalkFoundRNDebugUrlStrUrl;
     } else {
-        
+        NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
+        NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
+        if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
+            QIMVerboseLog(@"本地缓存的更新包地址 : %@", localJSCodeFileStr);
+            innerJsCodeLocation = localJSCodeFileStr;
+        } else {
+            
+        }
+        NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
+        return jsCodeLocation;
     }
-    NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
-    return jsCodeLocation;
 }
 
 + (UIViewController *)clockOnVC {

@@ -25,6 +25,7 @@
 #import "QIMMineTableView.h"
 #import "QIMWorkFeedView.h"
 #import "QIMNavBackBtn.h"
+#import "QIMRNDebugConfigVc.h"
 #import "NSBundle+QIMLibrary.h"
 #if __has_include("RNSchemaParse.h")
 #import "QTalkSuggestRNJumpManager.h"
@@ -62,6 +63,8 @@
 @property (nonatomic, strong) QTalkViewController *currentPreViewVc;
 
 #pragma mark - Navigation
+
+@property (nonatomic, strong) UIButton *rnDebugConfigBtn;
 
 @property (nonatomic, strong) UIButton *addFriendBtn;
 
@@ -1052,6 +1055,21 @@ static dispatch_once_t __onceMainToken;
     } else {
         
     }
+    if ([[[QIMKit sharedInstance] qimNav_getDebugers] containsObject:[QIMKit getLastUserName]]) {
+        UIBarButtonItem *rndebugBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.rnDebugConfigBtn];
+        [self.navigationItem setLeftBarButtonItem:rndebugBarItem];
+    }
+}
+
+- (UIButton *)rnDebugConfigBtn {
+    if (!_rnDebugConfigBtn) {
+        _rnDebugConfigBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _rnDebugConfigBtn.frame = CGRectMake(0, 0, 28, 28);
+        [_rnDebugConfigBtn setTitle:@"RD" forState:UIControlStateNormal];
+        [_rnDebugConfigBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_rnDebugConfigBtn addTarget:self action:@selector(openRNDebugConfigVC:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _rnDebugConfigBtn;
 }
 
 - (UIButton *)addFriendBtn {
@@ -1098,6 +1116,11 @@ static dispatch_once_t __onceMainToken;
         [_settingBtn addTarget:self action:@selector(openMySetting:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _settingBtn;
+}
+
+- (void)openRNDebugConfigVC:(id)sender {
+    QIMRNDebugConfigVc *rndebugVC = [[QIMRNDebugConfigVc alloc] init];
+    [self.navigationController pushViewController:rndebugVC animated:YES];
 }
 
 - (void)scanQrcode:(id)sender {
