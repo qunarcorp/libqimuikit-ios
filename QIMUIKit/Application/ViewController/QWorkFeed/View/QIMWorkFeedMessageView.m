@@ -100,13 +100,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     QIMWorkNoticeMessageModel *model = [self.noticeMsgs objectAtIndex:indexPath.row];
-    QIMWorkMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:model.uuid];
+    QIMWorkMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:[NSString stringWithFormat:@"%@-%ld", model.uuid, model.eventType]];
     if (!cell) {
-        cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:model.uuid];
-        cell.cellType = self.messageCellType;
-        [cell setNoticeMsgModel:model];
-        [cell setContentModel:[self getContentModelWithMomentUUId:model.postUUID]];
+        cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:[NSString stringWithFormat:@"%@-%ld", model.uuid, model.eventType]];
     }
+    cell.cellType = self.messageCellType;
+    [cell setNoticeMsgModel:model];
+    [cell setContentModel:[self getContentModelWithMomentUUId:model.postUUID]];
     return cell;
 }
 
@@ -154,7 +154,7 @@
                         }
                         [weakSelf.noticeMsgs addObject:model];
                     }
-                    if (weakSelf.noDataView.hidden = NO) {
+                    if (weakSelf.noDataView.hidden == NO) {
                         weakSelf.noDataView.hidden = YES;
                     }
                     [weakSelf.messageTableView reloadData];
