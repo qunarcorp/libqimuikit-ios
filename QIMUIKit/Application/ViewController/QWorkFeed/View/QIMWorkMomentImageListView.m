@@ -98,20 +98,16 @@
         }
         if ([imageUrl rangeOfString:@"?"].location != NSNotFound) {
 
-            imageUrl = [imageUrl stringByAppendingFormat:@"&w=%d&h=%d",
-                      (int)96*2,
-                      (int)96*2];
+            imageUrl = [imageUrl stringByAppendingFormat:@"&w=%d&h=%d", (int)[[UIScreen mainScreen] qim_rightWidth], (int)[[UIScreen mainScreen] height]/2];
         } else {
-            imageUrl = [imageUrl stringByAppendingFormat:@"?w=%d&h=%d",
-                      (int)96*2,
-                      (int)96*2];
+            imageUrl = [imageUrl stringByAppendingFormat:@"?w=%d&h=%d", (int)[[UIScreen mainScreen] qim_rightWidth], (int)[[UIScreen mainScreen] height]/2];
+//            [imageUrl stringByAppendingFormat:@"?w=%d&h=%d",
+//                      (int)96*2,
+//                      (int)96*2];
         }
         [imageView downLoadImageWithModel:imageUrl withFitRect:frame withTotalCount:count];
     }
-    self.width = SCREEN_WIDTH - 60 - 20;
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        self.width = [[UIScreen mainScreen] qim_rightWidth] - 60 - 20;
-    }
+    self.width = [[UIScreen mainScreen] qim_rightWidth] - 60 - 20;
     self.height = imageView.bottom;
 }
 
@@ -155,6 +151,61 @@
 }
 
 - (void)downLoadImageWithModel:(NSString *)imageUrl withFitRect:(CGRect)frame withTotalCount:(NSInteger)totalCount {
+    [self sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        __block CGRect fitRect = frame;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (image && totalCount != 1) {
+                self.frame = fitRect;
+                if ([imageUrl containsString:@".gif"]) {
+                    self.image = image;
+                } else {
+                    UIImage *imageTemp = image;
+                    CGSize imageTempSize = imageTemp.size;
+                    CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
+                    CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
+                    if (imageRatio > rectRatio) {
+                        CGFloat scale = fitRect.size.width / fitRect.size.height;
+                        CGFloat imageWidth = imageTempSize.height * scale;
+                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                    } else {
+                        CGFloat scale = fitRect.size.height / fitRect.size.width;
+                        CGFloat imageHeight = scale * imageTemp.size.width;
+                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                    }
+                    self.image = imageTemp;
+                }
+            } else if (image && totalCount == 1) {
+                
+                //单张图片处理
+                CGRect newSingleFrame = [self rectFitOriginSize:image.size byRect:self.frame];
+                fitRect = newSingleFrame;
+                [UIView animateWithDuration:0.1 animations:^{
+                    
+                } completion:^(BOOL finished) {
+                    self.frame = newSingleFrame;
+                    if ([imageUrl containsString:@".gif"]) {
+                        self.image = image;
+                    } else {
+                        UIImage *imageTemp = image;
+                        CGSize imageTempSize = imageTemp.size;
+                        CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
+                        CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
+                        if (imageRatio > rectRatio) {
+                            CGFloat scale = fitRect.size.width / fitRect.size.height;
+                            CGFloat imageWidth = imageTempSize.height * scale;
+                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
+                        } else {
+                            CGFloat scale = fitRect.size.height / fitRect.size.width;
+                            CGFloat imageHeight = scale * imageTemp.size.width;
+                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
+                        }
+                        self.image = imageTemp;
+                    }
+                }];
+            }
+        });
+    }];
+    /*
     [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:imageUrl] options:SDWebImageDownloaderContinueInBackground progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         
     } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
@@ -213,6 +264,7 @@
             }
         });
     }];
+     */
 }
 
 - (void)singleTapGestureCallback:(UIGestureRecognizer *)gesture {

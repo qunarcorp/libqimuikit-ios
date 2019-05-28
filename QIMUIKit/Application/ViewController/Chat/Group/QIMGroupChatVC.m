@@ -1254,150 +1254,151 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)expandViewItemHandleNotificationHandle:(NSNotification *)notify {
-    
-    NSString *trId = notify.object;
-    if ([trId isEqualToString:QIMTextBarExpandViewItem_BurnAfterReading]) {
-        NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
-        BOOL isOn = NO;
-        if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
-            
-            [[QIMKit sharedInstance] setUserObject:@"OFF" forKey:@"burnAfterReadingStatus"];
-        } else {
-            
-            [[QIMKit sharedInstance] setUserObject:@"ON" forKey:@"burnAfterReadingStatus"];
-            isOn = YES;
-        }
-        [self.textBar updateFilrStatus:isOn];
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_VideoCall]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *trId = notify.object;
+        if ([trId isEqualToString:QIMTextBarExpandViewItem_BurnAfterReading]) {
+            NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
+            BOOL isOn = NO;
+            if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
+                
+                [[QIMKit sharedInstance] setUserObject:@"OFF" forKey:@"burnAfterReadingStatus"];
+            } else {
+                
+                [[QIMKit sharedInstance] setUserObject:@"ON" forKey:@"burnAfterReadingStatus"];
+                isOn = YES;
+            }
+            [self.textBar updateFilrStatus:isOn];
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_VideoCall]) {
 #if __has_include("QIMWebRTCMeetingClient.h")
-        [[QIMWebRTCMeetingClient sharedInstance] setGroupId:self.chatId];
-        NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
-        NSString *groupName = [groupCardDic objectForKey:@"Name"];
-        [[QIMWebRTCMeetingClient sharedInstance] createRoomById:self.chatId WithRoomName:groupName];
+            [[QIMWebRTCMeetingClient sharedInstance] setGroupId:self.chatId];
+            NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
+            NSString *groupName = [groupCardDic objectForKey:@"Name"];
+            [[QIMWebRTCMeetingClient sharedInstance] createRoomById:self.chatId WithRoomName:groupName];
 #endif
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_MyFiles]) {
-        
-        QIMFileManagerViewController *fileManagerVC = [[QIMFileManagerViewController alloc] init];
-        fileManagerVC.isSelect = YES;
-        fileManagerVC.userId = self.chatId;
-        fileManagerVC.messageSaveType = ChatType_GroupChat;
-        
-        QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            nav.modalPresentationStyle = UIModalPresentationCurrentContext;
-#if __has_include("QIMIPadWindowManager.h")
-            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
-#endif
-        } else {
-            [self presentViewController:nav animated:YES completion:nil];
-        }
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
-        
-        QIMOrganizationalVC *listVc = [[QIMOrganizationalVC alloc] init];
-        [listVc setShareCard:YES];
-        [listVc setShareCardDelegate:self];
-        //        listVC.isTransfer = YES;
-        _expandViewItemType = QIMTextBarExpandViewItemType_ShareCard;
-        QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:listVc];
-        [[self navigationController] presentViewController:nav animated:YES completion:^{
-        }];
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_RedPack]) {
-        
-        QIMVerboseLog(@"我是 群红包，点我 干哈？");
-        if ([[QIMKit sharedInstance] redPackageUrlHost]) {
-            QIMWebView *webView = [[QIMWebView alloc] init];
-            webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
-            //        webView.navBarHidden = YES;
-            [webView setFromRegPackage:YES];
-            [self.navigationController pushViewController:webView animated:YES];
-        } else {
-            QIMVerboseLog(@"当前红包URLHost为空，不支持该功能");
-        }
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_AACollection]) {
-        
-        if ([[QIMKit sharedInstance] aaCollectionUrlHost]) {
-            QIMWebView *webView = [[QIMWebView alloc] init];
-            webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] aaCollectionUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
-            webView.navBarHidden = YES;
-            [webView setFromRegPackage:YES];
-            [self.navigationController pushViewController:webView animated:YES];
-        } else {
-            QIMVerboseLog(@"当前AA收款URLHost为空，不支持该功能");
-        }
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_SendActivity]) {
-        if ([[QIMKit sharedInstance] redPackageUrlHost]) {
-            //发活动
-            QIMWebView *webView = [[QIMWebView alloc] init];
-            webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@&action="@"event", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey]];
-            [webView setFromRegPackage:YES];
-            webView.navBarHidden = YES;
-            [self.navigationController pushViewController:webView animated:YES];
-        } else {
-            QIMVerboseLog(@"当前发活动URLHost为空，不支持该功能");
-        }
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_SendProduct]) {
-        
-        QIMPushProductViewController *pushProVC = [[QIMPushProductViewController alloc] init];
-        pushProVC.delegate = self;
-        [self.navigationController pushViewController:pushProVC animated:YES];
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_Location]) {
-        [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
-            UserLocationViewController *userLct = [[UserLocationViewController alloc] init];
-            userLct.delegate = self;
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_MyFiles]) {
+            
+            QIMFileManagerViewController *fileManagerVC = [[QIMFileManagerViewController alloc] init];
+            fileManagerVC.isSelect = YES;
+            fileManagerVC.userId = self.chatId;
+            fileManagerVC.messageSaveType = ChatType_GroupChat;
+            
+            QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-                userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
+                nav.modalPresentationStyle = UIModalPresentationCurrentContext;
 #if __has_include("QIMIPadWindowManager.h")
-                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
 #endif
             } else {
-                [self.navigationController presentViewController:userLct animated:YES completion:nil];
+                [self presentViewController:nav animated:YES completion:nil];
             }
-        };
-        [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_TouPiao]) {
-        NSDictionary *trdExtendDic = [[QIMKit sharedInstance] getExpandItemsForTrdextendId:trId];
-        NSString *linkUrl = [trdExtendDic objectForKey:@"linkurl"];
-        if (linkUrl.length > 0) {
-            if ([linkUrl rangeOfString:@"qunar.com"].location != NSNotFound) {
-                linkUrl = [linkUrl stringByAppendingFormat:@"%@username=%@&company=qunar&group_id=%@&rk=%@", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [QIMKit getLastUserName], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] remoteKey]];
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
+            
+            QIMOrganizationalVC *listVc = [[QIMOrganizationalVC alloc] init];
+            [listVc setShareCard:YES];
+            [listVc setShareCardDelegate:self];
+            //        listVC.isTransfer = YES;
+            _expandViewItemType = QIMTextBarExpandViewItemType_ShareCard;
+            QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:listVc];
+            [[self navigationController] presentViewController:nav animated:YES completion:^{
+            }];
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_RedPack]) {
+            
+            QIMVerboseLog(@"我是 群红包，点我 干哈？");
+            if ([[QIMKit sharedInstance] redPackageUrlHost]) {
+                QIMWebView *webView = [[QIMWebView alloc] init];
+                webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
+                //        webView.navBarHidden = YES;
+                [webView setFromRegPackage:YES];
+                [self.navigationController pushViewController:webView animated:YES];
             } else {
-                linkUrl = [linkUrl stringByAppendingFormat:@"%@from=%@&to=%@&chatType=%lld", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [[QIMKit sharedInstance] getLastJid],  [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], self.chatType];
+                QIMVerboseLog(@"当前红包URLHost为空，不支持该功能");
             }
-            [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
-        }
-    } else if ([trId isEqualToString:QIMTextBarExpandViewItem_Task_list]) {
-        NSDictionary *trdExtendDic = [[QIMKit sharedInstance] getExpandItemsForTrdextendId:trId];
-        NSString *linkUrl = [trdExtendDic objectForKey:@"linkurl"];
-        if (linkUrl.length > 0) {
-            if ([linkUrl rangeOfString:@"qunar.com"].location != NSNotFound) {
-                linkUrl = [linkUrl stringByAppendingFormat:@"%@username=%@&company=qunar&group_id=%@&rk=%@", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [QIMKit getLastUserName], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] remoteKey]];
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_AACollection]) {
+            
+            if ([[QIMKit sharedInstance] aaCollectionUrlHost]) {
+                QIMWebView *webView = [[QIMWebView alloc] init];
+                webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] aaCollectionUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
+                webView.navBarHidden = YES;
+                [webView setFromRegPackage:YES];
+                [self.navigationController pushViewController:webView animated:YES];
             } else {
-                linkUrl = [linkUrl stringByAppendingFormat:@"%@from=%@&to=%@&chatType=%lld", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [[QIMKit sharedInstance] getLastJid], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], self.chatType];
+                QIMVerboseLog(@"当前AA收款URLHost为空，不支持该功能");
             }
-            [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
-        }
-    } else {
-        NSDictionary *trdExtendDic = [[QIMKit sharedInstance] getExpandItemsForTrdextendId:trId];
-        int linkType = [[trdExtendDic objectForKey:@"linkType"] intValue];
-        BOOL openQIMRN = linkType & 4;
-        BOOL openRequeset = linkType & 2;
-        BOOL openWebView = linkType & 1;
-        NSString *linkUrl = [trdExtendDic objectForKey:@"linkurl"];
-        if (openQIMRN) {
-            [QIMFastEntrance openQIMRNWithScheme:linkUrl withChatId:self.chatId withRealJid:nil withChatType:self.chatType];
-        } else if (openRequeset) {
-            [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:linkUrl withChatId:self.chatId withRealJid:nil withChatType:self.chatType];
-        } else {
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_SendActivity]) {
+            if ([[QIMKit sharedInstance] redPackageUrlHost]) {
+                //发活动
+                QIMWebView *webView = [[QIMWebView alloc] init];
+                webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@&action="@"event", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey]];
+                [webView setFromRegPackage:YES];
+                webView.navBarHidden = YES;
+                [self.navigationController pushViewController:webView animated:YES];
+            } else {
+                QIMVerboseLog(@"当前发活动URLHost为空，不支持该功能");
+            }
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_SendProduct]) {
+            
+            QIMPushProductViewController *pushProVC = [[QIMPushProductViewController alloc] init];
+            pushProVC.delegate = self;
+            [self.navigationController pushViewController:pushProVC animated:YES];
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_Location]) {
+            [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
+                UserLocationViewController *userLct = [[UserLocationViewController alloc] init];
+                userLct.delegate = self;
+                if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                    userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+                    [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+#endif
+                } else {
+                    [self.navigationController presentViewController:userLct animated:YES completion:nil];
+                }
+            };
+            [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_TouPiao]) {
+            NSDictionary *trdExtendDic = [[QIMKit sharedInstance] getExpandItemsForTrdextendId:trId];
+            NSString *linkUrl = [trdExtendDic objectForKey:@"linkurl"];
             if (linkUrl.length > 0) {
                 if ([linkUrl rangeOfString:@"qunar.com"].location != NSNotFound) {
-                    linkUrl = [linkUrl stringByAppendingFormat:@"%@from=%@&to=%@&chatType=%lld", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [[QIMKit sharedInstance] getLastJid], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], self.chatType];
+                    linkUrl = [linkUrl stringByAppendingFormat:@"%@username=%@&company=qunar&group_id=%@&rk=%@", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [QIMKit getLastUserName], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] remoteKey]];
                 } else {
-                    linkUrl = [linkUrl stringByAppendingFormat:@"%@from=%@&to=%@&chatType=%lld", ([linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?"), [[QIMKit sharedInstance] getLastJid], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], self.chatType];
+                    linkUrl = [linkUrl stringByAppendingFormat:@"%@from=%@&to=%@&chatType=%lld", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [[QIMKit sharedInstance] getLastJid],  [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], self.chatType];
                 }
                 [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
             }
+        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_Task_list]) {
+            NSDictionary *trdExtendDic = [[QIMKit sharedInstance] getExpandItemsForTrdextendId:trId];
+            NSString *linkUrl = [trdExtendDic objectForKey:@"linkurl"];
+            if (linkUrl.length > 0) {
+                if ([linkUrl rangeOfString:@"qunar.com"].location != NSNotFound) {
+                    linkUrl = [linkUrl stringByAppendingFormat:@"%@username=%@&company=qunar&group_id=%@&rk=%@", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [QIMKit getLastUserName], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] remoteKey]];
+                } else {
+                    linkUrl = [linkUrl stringByAppendingFormat:@"%@from=%@&to=%@&chatType=%lld", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [[QIMKit sharedInstance] getLastJid], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], self.chatType];
+                }
+                [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
+            }
+        } else {
+            NSDictionary *trdExtendDic = [[QIMKit sharedInstance] getExpandItemsForTrdextendId:trId];
+            int linkType = [[trdExtendDic objectForKey:@"linkType"] intValue];
+            BOOL openQIMRN = linkType & 4;
+            BOOL openRequeset = linkType & 2;
+            BOOL openWebView = linkType & 1;
+            NSString *linkUrl = [trdExtendDic objectForKey:@"linkurl"];
+            if (openQIMRN) {
+                [QIMFastEntrance openQIMRNWithScheme:linkUrl withChatId:self.chatId withRealJid:nil withChatType:self.chatType];
+            } else if (openRequeset) {
+                [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:linkUrl withChatId:self.chatId withRealJid:nil withChatType:self.chatType];
+            } else {
+                if (linkUrl.length > 0) {
+                    if ([linkUrl rangeOfString:@"qunar.com"].location != NSNotFound) {
+                        linkUrl = [linkUrl stringByAppendingFormat:@"%@from=%@&to=%@&chatType=%lld", [linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?", [[QIMKit sharedInstance] getLastJid], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], self.chatType];
+                    } else {
+                        linkUrl = [linkUrl stringByAppendingFormat:@"%@from=%@&to=%@&chatType=%lld", ([linkUrl rangeOfString:@"?"].location != NSNotFound ? @"&" : @"?"), [[QIMKit sharedInstance] getLastJid], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], self.chatType];
+                    }
+                    [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
+                }
+            }
         }
-    }
+    });
 }
 
 - (void)msgDidSendNotificationHandle:(NSNotification *)notify {

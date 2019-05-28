@@ -144,26 +144,28 @@
     __weak typeof(self) weakSelf = self;
     if (self.delegate && [self.delegate respondsToSelector:@selector(qImWorkFeedMessageViewLoadNewDataWithNewTag:finishBlock:)]) {
         [self.delegate qImWorkFeedMessageViewLoadNewDataWithNewTag:self.viewTag finishBlock:^(NSArray * _Nonnull arr) {
-            if (arr && arr.count > 0) {
-                [weakSelf.noticeMsgs removeAllObjects];
-                for (NSDictionary *noticeMsgDict in arr) {
-                    QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
-                    if (model.fromUser) {
-                        model.userFrom = model.fromUser;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (arr && arr.count > 0) {
+                    [weakSelf.noticeMsgs removeAllObjects];
+                    for (NSDictionary *noticeMsgDict in arr) {
+                        QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
+                        if (model.fromUser) {
+                            model.userFrom = model.fromUser;
+                        }
+                        [weakSelf.noticeMsgs addObject:model];
                     }
-                    [weakSelf.noticeMsgs addObject:model];
+                    if (weakSelf.noDataView.hidden = NO) {
+                        weakSelf.noDataView.hidden = YES;
+                    }
+                    [weakSelf.messageTableView reloadData];
                 }
-                if (weakSelf.noDataView.hidden = NO) {
-                    weakSelf.noDataView.hidden = YES;
+                else{
+                    if (weakSelf.noDataView.hidden == YES && weakSelf.noticeMsgs.count == 0) {
+                        weakSelf.noDataView.hidden = NO;
+                    }
                 }
-                [weakSelf.messageTableView reloadData];
-            }
-            else{
-                if (weakSelf.noDataView.hidden == YES && weakSelf.noticeMsgs.count == 0) {
-                    weakSelf.noDataView.hidden = NO;
-                }
-            }
-            [weakSelf.messageTableView.mj_header endRefreshing];
+                [weakSelf.messageTableView.mj_header endRefreshing];
+            });
         }];
     }
     
@@ -174,32 +176,34 @@
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(qImWorkFeedMessageViewMoreDataSourceWithviewTag:finishBlock:)]) {
         [self.delegate qImWorkFeedMessageViewMoreDataSourceWithviewTag:self.viewTag finishBlock:^(NSArray * _Nonnull arr) {
-            if (arr.count>0) {
-                for (NSDictionary *noticeMsgDict in arr) {
-                    QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
-                    if (model.fromUser) {
-                        model.userFrom = model.fromUser;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (arr.count>0) {
+                    for (NSDictionary *noticeMsgDict in arr) {
+                        QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
+                        if (model.fromUser) {
+                            model.userFrom = model.fromUser;
+                        }
+                        [self.noticeMsgs addObject:model];
                     }
-                    [self.noticeMsgs addObject:model];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.messageTableView reloadData];
+                        [self.messageTableView.mj_footer endRefreshing];
+                    });
+                }
+                else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.messageTableView.mj_footer endRefreshingWithNoMoreData];
+                        if (self.noDataView.hidden == YES && self.noticeMsgs.count == 0) {
+                            self.noDataView.hidden = NO;
+                        }
+                    });
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (self.noDataView.hidden == NO) {
                         self.noDataView.hidden = YES;
                     }
                     [self.messageTableView reloadData];
-                    [self.messageTableView.mj_footer endRefreshing];
                 });
-            }
-            else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.messageTableView.mj_footer endRefreshingWithNoMoreData];
-                    if (self.noDataView.hidden == YES && self.noticeMsgs.count == 0) {
-                        self.noDataView.hidden = NO;
-                    }
-                });
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.messageTableView reloadData];
             });
         }];
     }

@@ -13,6 +13,8 @@
 
 - (void)qim_setImageWithJid:(NSString *)jid;
 
+- (void)qim_setImageWithJid:(NSString *)jid placeholderImage:(UIImage *)placeholder;
+
 - (void)qim_setImageWithJid:(NSString *)jid WithChatType:(NSInteger)chatType;
 
 - (void)qim_setImageWithJid:(NSString *)jid WithRealJid:(NSString *)realJid WithChatType:(NSInteger)chatType;
@@ -24,6 +26,8 @@
 - (void)qim_setCollectionImageWithJid:(NSString *)jid WithChatType:(NSInteger)chatType;
 
 - (void)qim_setImageWithURL:(NSURL *)url;
+
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage;
 
 - (void)qim_setImageWithURL:(NSURL *)url WithChatType:(ChatType)chatType;
 

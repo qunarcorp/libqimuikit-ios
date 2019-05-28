@@ -8,11 +8,16 @@
 
 #import "UIImageView+QIMImageCache.h"
 #import "UIImage+QIMUIKit.h"
+#import <YYDispatchQueuePool/YYDispatchQueuePool.h>
 
 @implementation UIImageView (QIMImageCache)
 
 - (void)qim_setImageWithJid:(NSString *)jid {
     [self qim_setImageWithJid:jid WithChatType:ChatType_SingleChat];
+}
+
+- (void)qim_setImageWithJid:(NSString *)jid placeholderImage:(UIImage *)placeholder{
+    [self qim_setImageWithJid:jid WithChatType:ChatType_SingleChat placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
 }
 
 - (void)qim_setImageWithJid:(NSString *)jid WithChatType:(ChatType)chatType {
@@ -30,7 +35,7 @@
 - (void)qim_setImageWithJid:(NSString *)jid WithRealJid:(NSString *)realJid WithChatType:(ChatType)chatType placeholderImage:(UIImage *)placeholder {
     __block NSString *headerUrl = nil;
     __block UIImage *placeholderImage = placeholder;
-//    dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
+    dispatch_async([[QIMKit sharedInstance] getLoadHeaderImageQueue], ^{
 
         switch (chatType) {
             case ChatType_SingleChat: {
@@ -109,13 +114,13 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sd_setImageWithURL:headerUrl placeholderImage:placeholderImage];
         });
-//    });
+    });
 }
 
 - (void)qim_setCollectionImageWithJid:(NSString *)jid WithChatType:(ChatType)chatType {
     __block NSString *headerUrl = nil;
     __block UIImage *placeholderImage = nil;
-    dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
+    dispatch_async([[QIMKit sharedInstance] getLoadHeaderImageQueue], ^{
         switch (chatType) {
             case ChatType_SingleChat: {
                 headerUrl = [[QIMKit sharedInstance] getCollectionUserHeaderUrlWithXmppId:jid];
@@ -133,17 +138,15 @@
         if (![headerUrl qim_hasPrefixHttpHeader] && headerUrl.length > 0) {
             headerUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], headerUrl];
         } else {
-            dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
-                if (!headerUrl && jid) {
-                    if (chatType == ChatType_GroupChat) {
-                        [[QIMKit sharedInstance] updateCollectionGroupCardByGroupId:jid];
-                    } else {
-                        [[QIMKit sharedInstance] updateCollectionUserCardByUserIds:@[jid]];
-                    }
+            if (!headerUrl && jid) {
+                if (chatType == ChatType_GroupChat) {
+                    [[QIMKit sharedInstance] updateCollectionGroupCardByGroupId:jid];
                 } else {
-                    
+                    [[QIMKit sharedInstance] updateCollectionUserCardByUserIds:@[jid]];
                 }
-            });
+            } else {
+                
+            }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sd_setImageWithURL:headerUrl placeholderImage:placeholderImage];
@@ -152,8 +155,16 @@
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url {
-    [self sd_setImageWithURL:url];
+    [self sd_setImageWithURL:url placeholderImage:nil];
 }
+
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage {
+    if (placeholderImage == nil) {
+        placeholderImage = [UIImage imageWithData:[QIMKit defaultUserHeaderImage]];
+    }
+    [self sd_setImageWithURL:url placeholderImage:placeholderImage];
+}
+
 
 - (void)qim_setImageWithURL:(NSURL *)url WithChatType:(ChatType)chatType {
     
@@ -171,11 +182,6 @@
             break;
     }
     [self sd_setImageWithURL:url placeholderImage:placeholderImage];
-}
-
-
-- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder {
-    [self sd_setImageWithURL:url placeholderImage:placeholder];
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletionBlock)completedBlock {
