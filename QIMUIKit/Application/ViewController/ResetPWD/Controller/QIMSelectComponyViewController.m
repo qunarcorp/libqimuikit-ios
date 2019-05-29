@@ -157,16 +157,18 @@
     }
     if (textField.text.length > 0) {
         [[QIMKit sharedInstance] getPublicNavCompanyWithKeyword:textField.text withCallBack:^(NSArray *companies) {
-            QIMVerboseLog(@"companies : %@", companies);
-            [self.companies removeAllObjects];
-            for (NSDictionary *companyDic in companies) {
-                if ([companyDic isKindOfClass:[NSDictionary class]]) {
-                    QIMPublicCompanyModel *model = [self getCompanyModelWithDic:companyDic];
-                    [self.companies addObject:model];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                QIMVerboseLog(@"companies : %@", companies);
+                [self.companies removeAllObjects];
+                for (NSDictionary *companyDic in companies) {
+                    if ([companyDic isKindOfClass:[NSDictionary class]]) {
+                        QIMPublicCompanyModel *model = [self getCompanyModelWithDic:companyDic];
+                        [self.companies addObject:model];
+                    }
                 }
-            }
-            [self.companyListView setHidden:NO];
-            [self.companyListView reloadData];
+                [self.companyListView setHidden:NO];
+                [self.companyListView reloadData];
+            });
         }];
     }
 }
@@ -174,16 +176,18 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField.text.length > 0) {
         [[QIMKit sharedInstance] getPublicNavCompanyWithKeyword:textField.text withCallBack:^(NSArray *companies) {
-            QIMVerboseLog(@"companies : %@", companies);
-            [self.companies removeAllObjects];
-            for (NSDictionary *companyDic in companies) {
-                if ([companyDic isKindOfClass:[NSDictionary class]]) {
-                    QIMPublicCompanyModel *model = [self getCompanyModelWithDic:companyDic];
-                    [self.companies addObject:model];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                QIMVerboseLog(@"companies : %@", companies);
+                [self.companies removeAllObjects];
+                for (NSDictionary *companyDic in companies) {
+                    if ([companyDic isKindOfClass:[NSDictionary class]]) {
+                        QIMPublicCompanyModel *model = [self getCompanyModelWithDic:companyDic];
+                        [self.companies addObject:model];
+                    }
                 }
-            }
-            [self.companyListView setHidden:NO];
-            [self.companyListView reloadData];
+                [self.companyListView setHidden:NO];
+                [self.companyListView reloadData];
+            });
         }];
     }
     return YES;
