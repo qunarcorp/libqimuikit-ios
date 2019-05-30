@@ -593,27 +593,35 @@
         
         [qNoticeVC onQIMWorkFeedSelectUser:^(NSArray *selectUsers) {
             NSLog(@"selectUsers : %@", selectUsers);
-            for (NSString *userXmppJid in selectUsers) {
-                if (userXmppJid.length > 0) {
-                    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userXmppJid];
-                    if (userInfo.count > 0) {
-                        NSString *name = [userInfo objectForKey:@"Name"];
-                        NSString *jid = [userInfo objectForKey:@"XmppId"];
-                        NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
-                        
-                        QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
-                        CGSize size = [memberName qim_sizeWithFontCompatible:self.textView.font];
-                        atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.textView.font} circular:NO];
-                        atTextAttachment.groupMemberName = memberName;
-                        atTextAttachment.groupMemberJid = jid;
-                        
-                        [self.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:self.textView.selectedRange.location];
-                        self.textView.selectedRange = NSMakeRange(MIN(self.textView.selectedRange.location + 1, self.textView.text.length - self.textView.selectedRange.length), self.textView.selectedRange.length);
-                        [self resetTextStyle];
-                    } else {
-                        QIMVerboseLog(@"未选择要艾特的群成员");
-                        weakSelf.textView.selectedRange = NSMakeRange(weakSelf.textView.selectedRange.location + self.textView.selectedRange.length + 1, 0);
-                        [weakSelf resetTextStyle];
+            if (selectUsers.count <= 0) {
+                
+                NSAttributedString *attStr = [[NSAttributedString alloc] initWithString:@"@"];
+                [self.textView.textStorage insertAttributedString:attStr atIndex:self.textView.selectedRange.location];
+                self.textView.selectedRange = NSMakeRange(MIN(self.textView.selectedRange.location + 1, self.textView.text.length - self.textView.selectedRange.length), self.textView.selectedRange.length);
+                [self resetTextStyle];
+            } else {
+                for (NSString *userXmppJid in selectUsers) {
+                    if (userXmppJid.length > 0) {
+                        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userXmppJid];
+                        if (userInfo.count > 0) {
+                            NSString *name = [userInfo objectForKey:@"Name"];
+                            NSString *jid = [userInfo objectForKey:@"XmppId"];
+                            NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+                            
+                            QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
+                            CGSize size = [memberName qim_sizeWithFontCompatible:self.textView.font];
+                            atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.textView.font} circular:NO];
+                            atTextAttachment.groupMemberName = memberName;
+                            atTextAttachment.groupMemberJid = jid;
+                            
+                            [self.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:self.textView.selectedRange.location];
+                            self.textView.selectedRange = NSMakeRange(MIN(self.textView.selectedRange.location + 1, self.textView.text.length - self.textView.selectedRange.length), self.textView.selectedRange.length);
+                            [self resetTextStyle];
+                        } else {
+                            QIMVerboseLog(@"未选择要艾特的群成员");
+                            weakSelf.textView.selectedRange = NSMakeRange(weakSelf.textView.selectedRange.location + self.textView.selectedRange.length + 1, 0);
+                            [weakSelf resetTextStyle];
+                        }
                     }
                 }
             }
