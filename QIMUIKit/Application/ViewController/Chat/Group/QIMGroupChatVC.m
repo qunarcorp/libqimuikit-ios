@@ -395,10 +395,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     self.title = [[self.chatId componentsSeparatedByString:@"@"] firstObject];
     dispatch_async([[QIMKit sharedInstance] getLoadGroupCardFromDBQueue], ^{
         NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
+        self.groupCardDic = groupCardDic;
         NSString *titleName = [groupCardDic objectForKey:@"Name"];
         NSString *topic = [groupCardDic objectForKey:@"Topic"];
         if (self.chatType == ChatType_CollectionChat) {
             NSDictionary *groupCardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:self.chatId];
+            self.groupCardDic = groupCardDic;
             if (groupCardDic) {
                 NSString *groupName = [groupCardDic objectForKey:@"Name"];
                 if (groupName) {
@@ -437,6 +439,14 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                 
             }
         });
+        if (!self.bindId) {
+            NSInteger groupCardVersion = [[self.groupCardDic objectForKey:@"LastUpdateTime"] integerValue];
+            if (groupCardVersion <= 0) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                    [[QIMKit sharedInstance] updateGroupCardByGroupId:self.chatId];
+                });
+            }
+        }
     });
 }
 
@@ -448,11 +458,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
   
     [[QIMEmotionSpirits sharedInstance] setTableView:_tableView];
     [self loadData];
-//    if (self.chatType == ChatType_GroupChat) {
-//        [self.view addSubview:self.textBar];
-//    }
-//    [self refreshChatBGImageView];
-    
 //    添加整个view的点击事件，当点击页面空白地方时，输入框收回
     UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandler:)];
     gesture.delegate = self;
@@ -634,17 +639,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         [self synchronizeChatSession];
     });
-    if (!self.bindId) {
-        dispatch_async([[QIMKit sharedInstance] getLoadGroupCardFromDBQueue], ^{
-            NSDictionary *groupVcardInfo = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
-            NSInteger groupCardVersion = [[groupVcardInfo objectForKey:@"LastUpdateTime"] integerValue];
-            if (groupCardVersion <= 0) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                    [[QIMKit sharedInstance] updateGroupCardByGroupId:self.chatId];
-                });
-            }
-        });
-    }
 }
 
 - (void)synchronizeChatSession {
@@ -663,20 +657,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     if (self.chatType == ChatType_GroupChat) {
         [self.view addSubview:self.textBar];
     }
-//    [self initUI];
-    /*
-    if (self.chatType == ChatType_GroupChat) {
-        BOOL containTextBar = NO;
-        for (UIView *view in self.view.subviews) {
-            if ([view isKindOfClass:[QIMTextBar class]]) {
-                containTextBar = YES;
-            }
-        }
-        if (containTextBar == NO) {
-            [self.view addSubview:self.textBar];
-        }
-    }
-    */
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -1026,17 +1006,21 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)showNotReadAtMsgView {
     //未读消息按钮
-    NSArray *atMeMessageArray = [[QIMKit sharedInstance] getHasAtMeByJid:self.chatId];
-    if (atMeMessageArray.count > 0) {
-        _notReadAtMsgTipView = [[QIMNotReadATMsgTipView alloc] initWithNotReadAtMsgCount:atMeMessageArray.count];
-        [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width, 60, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
-        [_notReadAtMsgTipView setNotReadAtMsgDelegate:self];
-        [self.view addSubview:_notReadAtMsgTipView];
-        [UIView animateWithDuration:0.3 animations:^{
-            [UIView setAnimationDelay:0.1];
-            [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width - _notReadAtMsgTipView.width, _notReadAtMsgTipView.top, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
-        }];
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSArray *atMeMessageArray = [[QIMKit sharedInstance] getHasAtMeByJid:self.chatId];
+        if (atMeMessageArray.count > 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                _notReadAtMsgTipView = [[QIMNotReadATMsgTipView alloc] initWithNotReadAtMsgCount:atMeMessageArray.count];
+                [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width, 60, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
+                [_notReadAtMsgTipView setNotReadAtMsgDelegate:self];
+                [self.view addSubview:_notReadAtMsgTipView];
+                [UIView animateWithDuration:0.3 animations:^{
+                    [UIView setAnimationDelay:0.1];
+                    [_notReadAtMsgTipView setFrame:CGRectMake(self.view.width - _notReadAtMsgTipView.width, _notReadAtMsgTipView.top, _notReadAtMsgTipView.width, _notReadAtMsgTipView.height)];
+                }];
+            });
+        }
+    });
 }
 
 - (void)updateNotAtReadAtMsgWithMsgArray:(NSArray *)array {
@@ -1044,7 +1028,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     for (QIMMessageModel *msg in array) {
         [msgIds addObject:msg.messageId];
     }
-    [[QIMKit sharedInstance] updateAtMeMessageWithJid:self.chatId withMsgIds:msgIds withReadState:QIMAtMsgHasReadState];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+       [[QIMKit sharedInstance] updateAtMeMessageWithJid:self.chatId withMsgIds:msgIds withReadState:QIMAtMsgHasReadState];
+    });
 }
 
 - (void)updateNotReadAtMsgTipView {
@@ -1085,8 +1071,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId FromTimeStamp:messageDate WithComplete:^(NSArray *list) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 weakSelf.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
-                //标记已读
-                [weakSelf markReadedForChatRoom];
                 BOOL editing = weakSelf.tableView.editing;
                 [weakSelf.tableView reloadData];
                 weakSelf.tableView.editing = editing;
@@ -1095,6 +1079,8 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                 [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
                 [[QIMKit sharedInstance] updateAtMeMessageWithJid:self.chatId withMsgIds:@[msgId] withReadState:QIMAtMsgHasReadState];
                 [weakSelf updateNotReadAtMsgTipView];
+                //标记已读
+                [weakSelf markReadedForChatRoom];
             });
         }];
     } else {
@@ -1116,19 +1102,20 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             [[QIMEmotionSpirits sharedInstance] setDataCount:(int)weakSelf.messageManager.dataSource.count];
         });
     } else {
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
             if (weakSelf.fastMsgTimeStamp > 0) {
                 [[QIMKit sharedInstance] getMsgListByUserId:weakSelf.chatId WithRealJid:weakSelf.chatId FromTimeStamp:weakSelf.fastMsgTimeStamp WithComplete:^(NSArray *list) {
                         weakSelf.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
-                        //标记已读
-                        [weakSelf markReadedForChatRoom];
+
                     dispatch_async(dispatch_get_main_queue(), ^{
                         BOOL editing = weakSelf.tableView.editing;
                         [weakSelf.tableView reloadData];
                         weakSelf.tableView.editing = editing;
                         [weakSelf addImageToImageList];
                         [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
+                        //标记已读
+                        [weakSelf markReadedForChatRoom];
                     });
                 }];
             } else {
@@ -1138,8 +1125,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                  WithOffset:0
                                                WithComplete:^(NSArray *list) {
                                                        weakSelf.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
-                                                       //标记已读
-                                                       [weakSelf markReadedForChatRoom];
                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                        BOOL editing = weakSelf.tableView.editing;
                                                        [weakSelf.tableView reloadData];
@@ -1150,10 +1135,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                        //标记艾特消息已读
                                                        [weakSelf updateNotAtReadAtMsgWithMsgArray:list];
                                                        [weakSelf showNotReadAtMsgView];
+                                                       //标记已读
+                                                       [weakSelf markReadedForChatRoom];
                                                    });
                                                }];
             }
-//        });
+        });
     }
 }
 
@@ -2826,9 +2813,6 @@ static CGPoint tableOffsetPoint;
                                                NSRange range = NSMakeRange(0, [list count]);
                                                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
                                                
-                                               //标记已读
-                                               [weakSelf markReadedForChatRoom];
-                                               
                                                [weakSelf.messageManager.dataSource insertObjects:list atIndexes:indexSet];
                                                [weakSelf updateGroupUsersHeadImgForMsgs:list];
                                                [weakSelf.tableView reloadData];
@@ -2836,6 +2820,8 @@ static CGPoint tableOffsetPoint;
                                                //重新获取一次大图展示的数组
                                                [weakSelf addImageToImageList];
                                                [weakSelf.tableView.mj_header endRefreshing];
+                                               //标记已读
+                                               [weakSelf markReadedForChatRoom];
                                            });
                                        }];
 //    });

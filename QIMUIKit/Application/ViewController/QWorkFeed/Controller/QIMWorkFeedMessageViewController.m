@@ -62,13 +62,13 @@
     [self.view addSubview:self.messageTableView];
     QIMWorkNoticeMessageModel *noticeMsgModel = [self.noticeMsgs firstObject];
     if (noticeMsgModel) {
-        //设置驼圈消息已读
-        [[QIMKit sharedInstance] updateLocalWorkNoticeMsgReadStateWithTime:noticeMsgModel.createTime];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPBPresenceCategoryNotifyWorkNoticeMessage object:nil];
-        });
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-           [[QIMKit sharedInstance] updateRemoteWorkNoticeMsgReadStateWithTime:noticeMsgModel.createTime];
+            [[QIMKit sharedInstance] updateLocalWorkNoticeMsgReadStateWithTime:noticeMsgModel.createTime];
+            [[QIMKit sharedInstance] updateRemoteWorkNoticeMsgReadStateWithTime:noticeMsgModel.createTime];
+            //设置驼圈消息已读
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPBPresenceCategoryNotifyWorkNoticeMessage object:nil];
+            });
         });
     } else {
         
