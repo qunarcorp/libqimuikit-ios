@@ -8,7 +8,7 @@
 
 #import "UIImageView+QIMImageCache.h"
 #import "UIImage+QIMUIKit.h"
-#import <YYDispatchQueuePool/YYDispatchQueuePool.h>
+#import "YYDispatchQueuePool.h"
 
 @implementation UIImageView (QIMImageCache)
 

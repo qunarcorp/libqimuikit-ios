@@ -82,6 +82,8 @@
 
 @property (nonatomic, strong) dispatch_queue_t reloadCountQueue;
 
+@property (nonatomic, assign) BOOL notVisibleReload;
+
 @end
 
 static BOOL _mainVCReShow = YES;
@@ -270,7 +272,12 @@ static dispatch_once_t __onceMainToken;
 }
 
 - (void)updateNotReadCount {
-
+    UIViewController *vc = [UIApplication sharedApplication].visibleViewController;
+    if (![vc isKindOfClass:[self class]]) {
+     //不展示在当前屏幕时不刷新View
+        self.notVisibleReload = YES;
+        return;
+    }
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.reloadCountQueue, ^{
         NSUInteger appNotReaderCount = [[QIMKit sharedInstance] getAppNotReaderCount];
@@ -293,6 +300,7 @@ static dispatch_once_t __onceMainToken;
             [weakSelf.sessionView setNeedUpdateNotReadList:YES];
         });
     });
+    self.notVisibleReload = NO;
 }
 
 - (void)otherPlatformLogin:(NSNotification *)notify {
@@ -389,10 +397,10 @@ static dispatch_once_t __onceMainToken;
 
 - (void)updateWorkFeedNotReadCount:(NSNotification *)notify {
     QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
-    BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
-    if (workMoment == YES) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
+        if (workMoment == YES) {
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSDictionary *newWorkMomentNotify = notify.object;
             //新帖子通知
             BOOL newWorkMoment = [[newWorkMomentNotify objectForKey:@"newWorkMoment"] boolValue];
@@ -423,8 +431,8 @@ static dispatch_once_t __onceMainToken;
                     }
                 }
             }
-        });
-    }
+        }
+    });
 }
 
 - (void)updateUpdateProgress:(NSNotification *)notify {
@@ -543,6 +551,10 @@ static dispatch_once_t __onceMainToken;
     }
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk || [QIMKit getQIMProjectType] == QIMProjectTypeStartalk || ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant)) {
         [self updateExploreNotReadCount:nil];
+    }
+    if (YES == self.notVisibleReload) {
+        [self updateNotReadCount];
+        [self.sessionView sessionViewWillAppear];
     }
 }
 

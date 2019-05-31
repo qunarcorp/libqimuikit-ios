@@ -67,6 +67,8 @@
 
 @property(nonatomic, assign) BOOL willForceTableView;
 
+@property(nonatomic, assign) BOOL notVisibleReload;
+
 @property(nonatomic, strong) NSMutableArray *recentContactArray;
 
 @property(nonatomic, strong) QTalkSessionCell *currentCell;
@@ -458,11 +460,19 @@
 }
 
 - (void)noticeRefreshTableView:(NSNotification *)notify {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *notifyStr = notify.object;
-        QIMVerboseLog(@"收到刷新列表页的通知 : %@", notify);
-        [self refreshTableView];
-    });
+    UIViewController *currentVc = [UIApplication sharedApplication].visibleViewController;
+    Class mainVC = NSClassFromString(@"QIMMainVC");
+    Class helperVC = NSClassFromString(@"QIMMessageHelperVC");
+    if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *notifyStr = notify.object;
+            QIMVerboseLog(@"收到刷新列表页的通知 : %@", notify);
+            [self refreshTableView];
+        });
+        self.notVisibleReload = NO;
+    } else {
+        self.notVisibleReload = YES;
+    }
 }
 
 - (void)refreshTableView {
@@ -821,9 +831,9 @@
         switch (chatType) {
                 
             case ChatType_GroupChat: {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                    [[QIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
-                });
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//                    [[QIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
+//                });
                 QIMGroupChatVC *chatGroupVC = (QIMGroupChatVC *)[[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:jid];
                 [chatGroupVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatGroupVC setNotReadCount:notReadCount];
@@ -838,9 +848,9 @@
             }
                 break;
             case ChatType_System: {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                    [[QIMKit sharedInstance] clearNotReadMsgByJid:jid];
-                });
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//                    [[QIMKit sharedInstance] clearNotReadMsgByJid:jid];
+//                });
                 if ([jid hasPrefix:@"FriendNotify"]) {
                     
                     QIMFriendNotifyViewController *friendVC = [[QIMFriendNotifyViewController alloc] init];
@@ -890,12 +900,12 @@
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatSingleVC setReadedMsgTimeStamp:-1];
                 [chatSingleVC setNotReadCount:notReadCount];
-                if (chatSingleVC.needShowNewMsgTagCell) {
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-
-                        chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
-                    });
-                }
+//                if (chatSingleVC.needShowNewMsgTagCell) {
+//                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//
+//                        chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
+//                    });
+//                }
                 return chatSingleVC;
             }
                 break;
@@ -909,16 +919,16 @@
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatSingleVC setReadedMsgTimeStamp:-1];
                 [chatSingleVC setNotReadCount:notReadCount];
-                if (chatSingleVC.needShowNewMsgTagCell) {
-                    
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-
-                        chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
-                    });
-                }
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                    [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:xmppId];
-                });
+//                if (chatSingleVC.needShowNewMsgTagCell) {
+//
+//                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//
+//                        chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
+//                    });
+//                }
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//                    [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:xmppId];
+//                });
                 return chatSingleVC;
             }
                 break;
@@ -937,15 +947,15 @@
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatSingleVC setReadedMsgTimeStamp:-1];
                 [chatSingleVC setNotReadCount:notReadCount];
-                if (chatSingleVC.needShowNewMsgTagCell) {
-                    
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                        chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:realJid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
-                    });
-                }
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                    [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:realJid];
-                });
+//                if (chatSingleVC.needShowNewMsgTagCell) {
+//                    
+//                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//                        chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:realJid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
+//                    });
+//                }
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//                    [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:realJid];
+//                });
                 return chatSingleVC;
             }
                 break;

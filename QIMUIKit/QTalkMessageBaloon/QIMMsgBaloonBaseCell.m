@@ -314,35 +314,29 @@ static UIImage *__rightBallocImage = nil;
 }
 
 - (void)updateNameLabel {
-
     if (self.message.messageDirection == QIMMessageDirection_Received) {
         __block NSString *nickName = self.message.from;
-        if (self.chatType != ChatType_CollectionChat) {
-            //备注
-            NSString * remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.message.from];
-            if (remarkName.length > 0) {
-                nickName = remarkName;
-            }
-        } else {
-            NSDictionary *userInfo = [[QIMKit sharedInstance] getCollectionUserInfoByUserId:nickName];
-            NSString *userName = [[[userInfo objectForKey:@"Name"] componentsSeparatedByString:@"@"] firstObject];
-            if (userName.length > 0) {
-                nickName = userName;
+        dispatch_async([[QIMKit sharedInstance] getLoadMsgNickNameQueue], ^{
+            if (self.chatType != ChatType_CollectionChat) {
+                //备注
+                NSString * remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.message.from];
+                if (remarkName.length > 0) {
+                    nickName = remarkName;
+                }
             } else {
-                
+                NSDictionary *userInfo = [[QIMKit sharedInstance] getCollectionUserInfoByUserId:nickName];
+                NSString *userName = [[[userInfo objectForKey:@"Name"] componentsSeparatedByString:@"@"] firstObject];
+                if (userName.length > 0) {
+                    nickName = userName;
+                } else {
+                    
+                }
             }
-        }
-        nickName = [[nickName componentsSeparatedByString:@"@"] firstObject];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.nameLabel.text = nickName;
-            self.nameLabel.textColor = [UIColor qim_colorWithHex:0x888888];
-            /*
-            if (self.delegate && [self.delegate respondsToSelector:@selector(getColorHex:)]) {
-                [self.nameLabel setTextColor:[UIColor qim_colorWithHex:[self.delegate getColorHex:nickName] alpha:1.0]];
-            } else {
-                self.nameLabel.textColor = [UIColor colorWithRed:140/255.0 green:140/255.0 blue:140/255.0 alpha:1/1.0];
-            }
-            */
+            nickName = [[nickName componentsSeparatedByString:@"@"] firstObject];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.nameLabel.text = nickName;
+                self.nameLabel.textColor = [UIColor qim_colorWithHex:0x888888];
+            });
         });
     }
 }
@@ -600,32 +594,34 @@ static UIImage *__rightBallocImage = nil;
         self.nameLabel.hidden = YES;
         return;
     }
-    if (self.chatType != ChatType_GroupChat) {
-        switch (self.message.messageDirection) {
-            case QIMMessageDirection_Sent: {
-                self.message.from = [[QIMKit sharedInstance] getLastJid];
+    dispatch_async([[QIMKit sharedInstance] getLoad_msgHeaderImageQueue], ^{
+        if (self.chatType != ChatType_GroupChat) {
+            switch (self.message.messageDirection) {
+                    case QIMMessageDirection_Sent: {
+                        self.message.from = [[QIMKit sharedInstance] getLastJid];
+                    }
+                    break;
+                    case QIMMessageDirection_Received: {
+                        self.message.from = self.message.from;
+                    }
+                default:
+                    break;
             }
-                break;
-            case QIMMessageDirection_Received: {
-                self.message.from = self.message.from;
+        }
+        if (self.chatType == ChatType_CollectionChat) {
+            NSString *collectionUserUrl = [[QIMKit sharedInstance] getCollectionUserHeaderUrlWithXmppId:self.message.from];
+            if (![collectionUserUrl qim_hasPrefixHttpHeader]) {
+                collectionUserUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], collectionUserUrl];
             }
-            default:
-                break;
-        }
-    }
-    if (self.chatType == ChatType_CollectionChat) {
-        NSString *collectionUserUrl = [[QIMKit sharedInstance] getCollectionUserHeaderUrlWithXmppId:self.message.from];
-        if (![collectionUserUrl qim_hasPrefixHttpHeader]) {
-            collectionUserUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], collectionUserUrl];
-        }
-        [self.HeadView qim_setImageWithURL:collectionUserUrl placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
-    } else {
-        if (self.message.messageDirection == QIMMessageDirection_Sent) {
-            [self.HeadView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid] WithChatType:ChatType_SingleChat];
+            [self.HeadView qim_setImageWithURL:collectionUserUrl placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
         } else {
-            [self.HeadView qim_setImageWithJid:self.message.from];
+            if (self.message.messageDirection == QIMMessageDirection_Sent) {
+                [self.HeadView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid] WithChatType:ChatType_SingleChat];
+            } else {
+                [self.HeadView qim_setImageWithJid:self.message.from];
+            }
         }
-    }
+    });
 }
 
 - (void)dealloc {
