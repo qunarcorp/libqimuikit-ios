@@ -834,8 +834,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 }
 
 - (void)reloadNotReadCount {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshNotReadCount) object:nil];
-    [self performSelector:@selector(refreshNotReadCount) withObject:nil afterDelay:DEFAULT_DELAY_TIMES];
+    [self refreshNotReadCount];
+//    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshNotReadCount) object:nil];
+//    [self performSelector:@selector(refreshNotReadCount) withObject:nil afterDelay:DEFAULT_DELAY_TIMES];
 }
 
 //刷新消息未读数
@@ -889,7 +890,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             self.muteView.centerY = self.contentLabel.centerY;
         } else {
             self.muteView.hidden = YES;
-
         }
     });
 }

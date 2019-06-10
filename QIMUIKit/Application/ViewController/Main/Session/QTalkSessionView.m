@@ -605,9 +605,9 @@
         
         UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.moreBtn];
         [self.rootViewController.navigationItem setRightBarButtonItem:rightBarItem];
-        if (_recentContactArray.count > 0) {
-            [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-        }
+//        if (_recentContactArray.count > 0) {
+//            [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+//        }
     } else {
         [self.rootViewController.navigationItem setRightBarButtonItem:nil];
     }

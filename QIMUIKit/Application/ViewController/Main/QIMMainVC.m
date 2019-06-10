@@ -825,8 +825,9 @@ static dispatch_once_t __onceMainToken;
     NSString *tabBarId = [tabBarDict objectForKey:@"title"];
     
     if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_chat"]]) {
-        
-        [_contentView addSubview:self.sessionView];
+        if (nil == _sessionView) {
+            [_contentView addSubview:self.sessionView];
+        }
         [_sessionView setHidden:NO];
 #if __has_include("QIMAutoTracker.h")
         [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"conversation" withDescription:@"会话"];

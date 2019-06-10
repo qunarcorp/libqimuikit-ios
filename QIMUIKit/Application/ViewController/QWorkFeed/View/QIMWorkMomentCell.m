@@ -331,7 +331,7 @@
     switch (contentType) {
         case QIMWorkFeedContentTypeText: {
             NSString *exContent = moment.content.exContent;
-            if (exContent.length > 0) {
+            if (exContent) {
                 content = exContent;
             } else {
                 
@@ -340,8 +340,9 @@
             break;
         case QIMWorkFeedContentTypeImage: {
             NSString *exContent = moment.content.exContent;
-            if (exContent.length > 0) {
-                content = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:moment.content.exContent];
+            if (exContent) {
+                content = exContent;
+//                [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:moment.content.exContent];
             } else {
                 
             }
@@ -349,8 +350,9 @@
             break;
         case QIMWorkFeedContentTypeLink: {
             NSString *exContent = moment.content.exContent;
-            if (exContent.length > 0) {
-                content = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:moment.content.exContent];
+            if (exContent) {
+                content = exContent;
+//                [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:moment.content.exContent];
             } else {
                 
             }

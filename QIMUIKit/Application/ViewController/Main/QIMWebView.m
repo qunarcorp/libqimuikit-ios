@@ -57,6 +57,44 @@ static NSString *__default_ua = nil;
 }
 @end
 
+@protocol QActivityCopyLinkDelegate <NSObject>
+@optional
+- (void)performCopyLinkActivity;
+@end
+@interface QActivityCopyLink : UIActivity
+@property (nonatomic, weak) id<QActivityCopyLinkDelegate> delegate;
+@end
+@implementation QActivityCopyLink
++ (UIActivityCategory)activityCategory {
+    return UIActivityCategoryShare;
+}
+
+- (NSString *)activityType {
+    return @"QTalk.WebView.CopyLink";
+}
+
+- (NSString *)activityTitle {
+    return [NSBundle qim_localizedStringForKey:@"webview_copy_link"];
+}
+
+- (UIImage *)activityImage {
+    return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_copylink"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+}
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
+    return YES;
+}
+- (void) performActivity {
+    if ([self.delegate respondsToSelector:@selector(performCopyLinkActivity)]) {
+        [self.delegate performCopyLinkActivity];
+    }
+}
+- (void)prepareWithActivityItems:(NSArray *)activityItems {
+}
+- (UIViewController *)activityViewController{
+    return nil;
+}
+@end
+
 @protocol QActivityToFriendDelegate <NSObject>
 @optional
 - (void)performActivity;
@@ -78,7 +116,6 @@ static NSString *__default_ua = nil;
 }
 
 - (UIImage *)activityImage {
-//    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareConversion"];
     return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareConversion"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
@@ -229,6 +266,12 @@ static NSString *__default_ua = nil;
     [QIMFastEntrance presentWorkMomentPushVCWithLinkDic:linkDic withNavVc:self.navigationController];
 }
 
+//拷贝Url
+- (void)performCopyLinkActivity {
+    NSURL *linkurl = _webView.request.URL;
+    [[UIPasteboard generalPasteboard] setString:linkurl.absoluteString];
+}
+
 - (void)onMoreClick{
     
     NSURL * tempUrl = _webView.request.URL;
@@ -253,13 +296,16 @@ static NSString *__default_ua = nil;
     QActivityRefresh *refresh = [[QActivityRefresh alloc] init];
     [refresh setWebView:_webView];
     
+    QActivityCopyLink *copyLink = [[QActivityCopyLink alloc] init];
+    [copyLink setDelegate:self];
+    
     QActivitySafari *safari = [[QActivitySafari alloc] init];
     [safari setUrl:tempUrl];
     
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, shareWorkMoment, refresh,safari]];
+        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, shareWorkMoment, refresh, copyLink, safari]];
     } else {
-        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, refresh,safari]];
+        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, refresh, copyLink, safari]];
     }
     [self.activityViewController setExcludedActivityTypes:@[UIActivityTypeMail]];
     typeof(self) __weak weakSelf = self;
