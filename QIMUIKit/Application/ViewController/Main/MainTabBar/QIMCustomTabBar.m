@@ -122,8 +122,7 @@
     return self;
 }
 
-- (void)setBadgeNumber:(NSUInteger)bagdeNumber ByItemIndex:(NSUInteger)index showNumber:(BOOL)showNum{
-    
+- (void)setBadgeNumber:(NSUInteger)bagdeNumber ByItemIndex:(NSUInteger)index showNumber:(BOOL)showNum {
     CustomTabBarButton *itemButton = (CustomTabBarButton *)[self viewWithTag:kItemButtonPirex+index];
     if (bagdeNumber > 0 && showNum) {
         
@@ -139,6 +138,7 @@
         CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
         CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
         [itemButton.badgeNumberLabel setWidth:width];
+        [itemButton.badgeNumberLabel setHeight:width];
         [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];
         [itemButton.badgeNumberLabel setHidden:NO];
         [itemButton.badgeNumberLabel setText:countStr];
@@ -146,6 +146,7 @@
         CGSize size = CGSizeMake(10, 10);
         [itemButton.badgeNumberLabel setWidth:size.width];
         [itemButton.badgeNumberLabel setHeight:size.height];
+        [itemButton.badgeNumberLabel.layer setCornerRadius:size.height*0.5];
         [itemButton.badgeNumberLabel setHidden:NO];
         [itemButton.badgeNumberLabel setText:@""];
     } else {
@@ -153,7 +154,7 @@
     }
 }
 
-- (void)setBadgeNumber:(NSUInteger)bagdeNumber ByItemIndex:(NSUInteger)index{
+- (void)setBadgeNumber:(NSUInteger)bagdeNumber ByItemIndex:(NSUInteger)index {
     CustomTabBarButton *itemButton = (CustomTabBarButton *)[self viewWithTag:kItemButtonPirex+index];
     if (bagdeNumber > 0) {
         
@@ -169,6 +170,7 @@
         CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
         CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
         [itemButton.badgeNumberLabel setWidth:width];
+        [itemButton.badgeNumberLabel setHeight:width];
         [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];
         [itemButton.badgeNumberLabel setHidden:NO];
         [itemButton.badgeNumberLabel setText:countStr];

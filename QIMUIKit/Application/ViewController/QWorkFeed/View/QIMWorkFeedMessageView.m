@@ -158,8 +158,7 @@
                         weakSelf.noDataView.hidden = YES;
                     }
                     [weakSelf.messageTableView reloadData];
-                }
-                else{
+                } else {
                     if (weakSelf.noDataView.hidden == YES && weakSelf.noticeMsgs.count == 0) {
                         weakSelf.noDataView.hidden = NO;
                     }
