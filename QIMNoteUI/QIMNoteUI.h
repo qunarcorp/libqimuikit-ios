@@ -6,7 +6,7 @@
 //  Copyright © 2018年 QIM. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <UIKit/UIKit.h> 
 
 //! Project version number for QIMNoteUI.
 FOUNDATION_EXPORT double QIMNoteUIVersionNumber;
