@@ -190,6 +190,7 @@ static dispatch_once_t __onceMainToken;
 - (void)registerNSNotifications {
     //更新App未读数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNotReadCount) name:kMsgNotReadCountChange object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNotReadCount) name:kNotificationSessionListUpdate object:nil];
     //更新骆驼帮未读数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateExploreNotReadCount:) name:kExploreNotReadCountChange object:nil];
     //更新驼圈未读数
