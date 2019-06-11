@@ -737,7 +737,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 - (UIViewController *)getRNSearchVC {
     
-#if __has_include("RNSchemaParse.h")
+#if __has_include("QTalkSearchViewManager.h")
     UIViewController *reactVC = [[NSClassFromString(@"QTalkSearchViewManager") alloc] init];
     return reactVC;
 #endif
@@ -745,7 +745,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)openRNSearchVC {
-#if __has_include("RNSchemaParse.h")
+#if __has_include("QTalkSearchViewManager.h")
     dispatch_async(dispatch_get_main_queue(), ^{
         CATransition *animation = [CATransition animation];
         animation.duration = 0.4f;   //时间间隔

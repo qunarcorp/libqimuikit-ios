@@ -903,7 +903,7 @@ static dispatch_once_t __onceMainToken;
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
-#if __has_include("RNSchemaParse.h")
+#if __has_include("QTalkSearchViewManager.h")
 #if __has_include("QIMAutoTracker.h")
 
     [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"search" withDescription:@"搜索"];
