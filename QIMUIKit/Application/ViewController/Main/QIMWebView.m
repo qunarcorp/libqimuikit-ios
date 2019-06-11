@@ -244,10 +244,25 @@ static NSString *__default_ua = nil;
     NSURL *url = _webView.request.URL;
     QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
     QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
+    
+    NSString *title = self.title;
+    NSURL *linkurl = _webView.request.URL;
+    NSString *img = [NSString stringWithFormat:@"%@://%@/favicon.ico", [linkurl scheme], [linkurl host]];
+    NSString *desc = @"点击查看全文";
+    
+    NSMutableDictionary *infoDic = [NSMutableDictionary dictionaryWithCapacity:1];
+    [infoDic setQIMSafeObject:(title.length > 0) ? title : linkurl.absoluteString forKey:@"title"];
+    [infoDic setQIMSafeObject:desc forKey:@"desc"];
+    [infoDic setQIMSafeObject:linkurl.absoluteString forKey:@"linkurl"];
+    [infoDic setQIMSafeObject:img forKey:@"img"];
+    NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
+
     QIMMessageModel *message = [QIMMessageModel new];
-    [message setMessageType:QIMMessageType_Text];
-    [message setMessage:[NSString stringWithFormat:@"[obj type=\"url\" value=\"%@\"]", [url absoluteString]]];
+    [message setMessageType:QIMMessageType_CommonTrdInfo];
+    [message setMessage:@"系统分享消息，请升级客户端版本进行查看"];
+    message.extendInformation = msgContent;
     [controller setMessage:message];
+    
     [controller setDelegate:self];
     [[self navigationController] presentViewController:nav animated:YES completion:^{
     }];
