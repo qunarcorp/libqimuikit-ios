@@ -8,14 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-extern NSString * const MMbackgroundColor;
-extern NSString * const MMtextColor;
-extern NSString * const MMtoolbarColor;
-extern NSString * const MMbuttonColor;
-extern NSString * const MMfont;
-extern NSString * const MMvalueY;
-extern NSString * const MMselectedObject;
-extern NSString * const MMtoolbarBackgroundImage;
+extern NSString * const QIMMMbackgroundColor;
+extern NSString * const QIMMMtextColor;
+extern NSString * const QIMMMtoolbarColor;
+extern NSString * const QIMMMbuttonColor;
+extern NSString * const QIMMMfont;
+extern NSString * const QIMMMvalueY;
+extern NSString * const QIMMMselectedObject;
+extern NSString * const QIMMMtoolbarBackgroundImage;
 
 @interface QIMPickerView: UIView 
 

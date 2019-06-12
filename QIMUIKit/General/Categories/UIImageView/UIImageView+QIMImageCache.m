@@ -185,7 +185,6 @@
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(QIMSDWebImageCompletionBlock)completedBlock {
-//    [self qimsd_setImageWithURL:url placeholderImage:placeholder completed:completedBlock];
     [self qimsd_setImageWithURL:url placeholderImage:placeholder options:0 gifFlag:NO progress:nil completed:nil];
 }
 
