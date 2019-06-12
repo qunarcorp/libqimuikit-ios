@@ -16,7 +16,7 @@
 #define kMinTextHeight      30
 
 #import "QIMMsgBaloonBaseCell.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "QIMRTCChatCell.h"
 
 @interface QIMRTCChatCell () <QIMMenuImageViewDelegate>

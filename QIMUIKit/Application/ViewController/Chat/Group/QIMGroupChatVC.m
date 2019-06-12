@@ -2897,7 +2897,7 @@ static CGPoint tableOffsetPoint;
         } else {
             fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
         }
-        NSString *sdimageFileKey = [[SDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
+        NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
         [imageData writeToFile:sdimageFileKey atomically:YES];
         NSString *msgText = nil;
         if ([fileName qim_hasPrefixHttpHeader]) {
@@ -2921,7 +2921,7 @@ static CGPoint tableOffsetPoint;
         } else {
             fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
         }
-        NSString *sdimageFileKey = [[SDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
+        NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
         [imageData writeToFile:sdimageFileKey atomically:YES];
         NSString *msgText = nil;
         if ([fileName qim_hasPrefixHttpHeader]) {

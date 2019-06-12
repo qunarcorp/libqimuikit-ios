@@ -151,7 +151,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    [[SDImageCache sharedImageCache] clearMemory];
+    [[QIMSDImageCache sharedImageCache] clearMemory];
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];

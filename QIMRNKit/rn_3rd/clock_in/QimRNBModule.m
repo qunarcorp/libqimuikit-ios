@@ -190,7 +190,7 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
             NSString *bundleUrl = [params objectForKey:@"BundleUrls"];
             if (bundleUrl.length > 0) {
                 NSString *bundleMd5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrl] stringByAppendingFormat:@".jsbundle"];
-//                [[SDImageCache sharedImageCache] defaultCachePathForKey:bundleUrl];
+//                [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:bundleUrl];
                 BOOL check = [[QIMRNExternalAppManager sharedInstance] checkQIMRNExternalAppWithBundleUrl:bundleUrl];
                 if (check) {
                     dispatch_async(dispatch_get_main_queue(), ^{

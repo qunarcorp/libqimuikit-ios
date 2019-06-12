@@ -32,7 +32,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "NSBundle+QIMLibrary.h"
 #import "QIMRemoteAudioPlayer.h"
-#import "SDImageCache.h"
+#import "QIMSDImageCache.h"
 #import "QIMMWPhotoBrowser.h"
 #import "QIMRedPackageView.h"
 #if __has_include("QIMIPadWindowManager.h")
@@ -3310,7 +3310,7 @@ static CGPoint tableOffsetPoint;
         } else {
             fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
         }
-        NSString *sdimageFileKey = [[SDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
+        NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
         [imageData writeToFile:sdimageFileKey atomically:YES];
         NSString *msgText = nil;
         if ([fileName qim_hasPrefixHttpHeader]) {
@@ -3340,7 +3340,7 @@ static CGPoint tableOffsetPoint;
         } else {
             fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
         }
-        NSString *sdimageFileKey = [[SDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
+        NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
         [imageData writeToFile:sdimageFileKey atomically:YES];
         NSString *msgText = nil;
         if ([fileName qim_hasPrefixHttpHeader]) {
