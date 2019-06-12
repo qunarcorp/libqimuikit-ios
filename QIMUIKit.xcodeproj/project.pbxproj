@@ -867,6 +867,8 @@
 		2C8AFF8820B1DC0700CF98EB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8AFF8720B1DC0700CF98EB /* UIKit.framework */; };
 		2C8AFF8A20B1DC1300CF98EB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8AFF8920B1DC1300CF98EB /* Foundation.framework */; };
 		2C8AFF8C20B1DC1700CF98EB /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8AFF8B20B1DC1700CF98EB /* AVFoundation.framework */; };
+		2C8BBCE7229C1E1500294988 /* QIMRNDebugConfigVc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8BBCE5229C1E1500294988 /* QIMRNDebugConfigVc.h */; };
+		2C8BBCE8229C1E1500294988 /* QIMRNDebugConfigVc.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8BBCE6229C1E1500294988 /* QIMRNDebugConfigVc.m */; };
 		2C95C45D2275A7DD00FDBB8D /* UIImage+QIMUIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C95C45B2275A7DD00FDBB8D /* UIImage+QIMUIKit.h */; };
 		2C95C45E2275A7DD00FDBB8D /* UIImage+QIMUIKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C95C45C2275A7DD00FDBB8D /* UIImage+QIMUIKit.m */; };
 		2C95C4602276A05300FDBB8D /* QIMUISizeConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C95C45F2276A05300FDBB8D /* QIMUISizeConfig.h */; };
@@ -1907,6 +1909,8 @@
 		2C8AFF8720B1DC0700CF98EB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2C8AFF8920B1DC1300CF98EB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8AFF8B20B1DC1700CF98EB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		2C8BBCE5229C1E1500294988 /* QIMRNDebugConfigVc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMRNDebugConfigVc.h; sourceTree = "<group>"; };
+		2C8BBCE6229C1E1500294988 /* QIMRNDebugConfigVc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QIMRNDebugConfigVc.m; sourceTree = "<group>"; };
 		2C95C45B2275A7DD00FDBB8D /* UIImage+QIMUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+QIMUIKit.h"; sourceTree = "<group>"; };
 		2C95C45C2275A7DD00FDBB8D /* UIImage+QIMUIKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+QIMUIKit.m"; sourceTree = "<group>"; };
 		2C95C45F2276A05300FDBB8D /* QIMUISizeConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QIMUISizeConfig.h; sourceTree = "<group>"; };
@@ -3589,12 +3593,14 @@
 		2C8AFB0420B1D51A00CF98EB /* Nav */ = {
 			isa = PBXGroup;
 			children = (
-				2C8AFB0720B1D51A00CF98EB /* QIMNavConfigManagerVC.h */,
-				2C8AFB0520B1D51A00CF98EB /* QIMNavConfigManagerVC.m */,
 				2CCD79B9224A22E6006D5207 /* QIMNacConfigTableViewCell.h */,
 				2CCD79BA224A22E6006D5207 /* QIMNacConfigTableViewCell.m */,
+				2C8AFB0720B1D51A00CF98EB /* QIMNavConfigManagerVC.h */,
+				2C8AFB0520B1D51A00CF98EB /* QIMNavConfigManagerVC.m */,
 				2C8AFB0820B1D51A00CF98EB /* QIMNavConfigSettingVC.h */,
 				2C8AFB0620B1D51A00CF98EB /* QIMNavConfigSettingVC.m */,
+				2C8BBCE5229C1E1500294988 /* QIMRNDebugConfigVc.h */,
+				2C8BBCE6229C1E1500294988 /* QIMRNDebugConfigVc.m */,
 			);
 			path = Nav;
 			sourceTree = "<group>";
@@ -4769,6 +4775,7 @@
 				2C06A07922045DE8000CAF37 /* QIMWorkMomentNotifyView.h in Headers */,
 				2C21D5F420C671F900DEC74C /* QIMMWCodeActivity.h in Headers */,
 				2CC93BA321EC33C800EEC47D /* QIMGDMarginLabel.h in Headers */,
+				2C8BBCE7229C1E1500294988 /* QIMRNDebugConfigVc.h in Headers */,
 				2C2A797A221275A000AF2153 /* QIMMarginLabel.h in Headers */,
 				2C8AFC1720B1D51B00CF98EB /* PlaceAnnotation.h in Headers */,
 				2CC93BA121EC33C800EEC47D /* QIMGDPerformanceView.h in Headers */,
@@ -5396,6 +5403,7 @@
 				2C8AFF5820B1D8AB00CF98EB /* QIMShareLocationChatCell.m in Sources */,
 				2C8AFC2620B1D51B00CF98EB /* QIMSourceCodeVC.m in Sources */,
 				2C06A04A22045DE8000CAF37 /* QIMWorkMomentUserIdentityVC.m in Sources */,
+				2C8BBCE8229C1E1500294988 /* QIMRNDebugConfigVc.m in Sources */,
 				2CE738D621343855007D164D /* UIImageView+QIMImageCache.m in Sources */,
 				2C8AFDDD20B1D51C00CF98EB /* QIMGroupPushSettingCell.m in Sources */,
 				2C8AFD5B20B1D51C00CF98EB /* QIMUserInfoUtil.m in Sources */,

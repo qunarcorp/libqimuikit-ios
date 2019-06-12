@@ -1124,12 +1124,14 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     __block NSString *content = @"";
     if (message.length > 0) {
         dispatch_async([[QIMKit sharedInstance] getLoadSessionContentQueue], ^{
+            /*
             NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
             if (atMeMessages.count > 0) {
                 NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
                 NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
                 [str appendAttributedString:atStr];
             }
+            */
             content = [self refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (content.length > 0) {
