@@ -9,7 +9,7 @@
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkMomentPicture.h"
 #import "YLImageView.h"
-#import "NSData+ImageContentType.h"
+#import "NSData+QIMImageContentType.h"
 
 // 图片间距
 #define kImagePadding       5
@@ -151,7 +151,7 @@
 }
 
 - (void)downLoadImageWithModel:(NSString *)imageUrl withFitRect:(CGRect)frame withTotalCount:(NSInteger)totalCount {
-    [self sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    [self qimsd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, NSURL *imageURL) {
         __block CGRect fitRect = frame;
         dispatch_async(dispatch_get_main_queue(), ^{
             if (image && totalCount != 1) {
@@ -205,66 +205,6 @@
             }
         });
     }];
-    /*
-    [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:imageUrl] options:SDWebImageDownloaderContinueInBackground progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-        
-    } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-        __block CGRect fitRect = frame;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (image && totalCount != 1) {
-                self.frame = fitRect;
-                NSString *imageExt = [NSData sd_contentTypeForImageData:data];
-                if ([imageExt isEqualToString:@"image/gif"]) {
-                    self.image = image;
-                } else {
-                    UIImage *imageTemp = image;
-                    CGSize imageTempSize = imageTemp.size;
-                    CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
-                    CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
-                    if (imageRatio > rectRatio) {
-                        CGFloat scale = fitRect.size.width / fitRect.size.height;
-                        CGFloat imageWidth = imageTempSize.height * scale;
-                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
-                    } else {
-                        CGFloat scale = fitRect.size.height / fitRect.size.width;
-                        CGFloat imageHeight = scale * imageTemp.size.width;
-                        imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
-                    }
-                    self.image = imageTemp;
-                }
-            } else if (image && totalCount == 1) {
-                
-                //单张图片处理
-                CGRect newSingleFrame = [self rectFitOriginSize:image.size byRect:self.frame];
-                fitRect = newSingleFrame;
-                [UIView animateWithDuration:0.1 animations:^{
-                    
-                } completion:^(BOOL finished) {
-                    self.frame = newSingleFrame;
-                    NSString *imageExt = [NSData sd_contentTypeForImageData:data];
-                    if ([imageExt isEqualToString:@"image/gif"]) {
-                        self.image = image;
-                    } else {
-                        UIImage *imageTemp = image;
-                        CGSize imageTempSize = imageTemp.size;
-                        CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
-                        CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
-                        if (imageRatio > rectRatio) {
-                            CGFloat scale = fitRect.size.width / fitRect.size.height;
-                            CGFloat imageWidth = imageTempSize.height * scale;
-                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
-                        } else {
-                            CGFloat scale = fitRect.size.height / fitRect.size.width;
-                            CGFloat imageHeight = scale * imageTemp.size.width;
-                            imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
-                        }
-                        self.image = imageTemp;
-                    }
-                }];
-            }
-        });
-    }];
-     */
 }
 
 - (void)singleTapGestureCallback:(UIGestureRecognizer *)gesture {

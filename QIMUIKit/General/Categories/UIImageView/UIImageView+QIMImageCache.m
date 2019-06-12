@@ -112,7 +112,7 @@
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sd_setImageWithURL:headerUrl placeholderImage:placeholderImage];
+            [self qimsd_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
         });
     });
 }
@@ -149,20 +149,20 @@
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sd_setImageWithURL:headerUrl placeholderImage:placeholderImage];
+            [self qimsd_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
         });
     });
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url {
-    [self sd_setImageWithURL:url placeholderImage:nil];
+    [self qimsd_setImageWithURL:url placeholderImage:nil options:0 gifFlag:NO progress:nil completed:nil];
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage {
     if (placeholderImage == nil) {
         placeholderImage = [UIImage imageWithData:[QIMKit defaultUserHeaderImage]];
     }
-    [self sd_setImageWithURL:url placeholderImage:placeholderImage];
+    [self qimsd_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
 }
 
 
@@ -181,11 +181,12 @@
         default:
             break;
     }
-    [self sd_setImageWithURL:url placeholderImage:placeholderImage];
+    [self qimsd_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
 }
 
-- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletionBlock)completedBlock {
-    [self sd_setImageWithURL:url placeholderImage:placeholder completed:completedBlock];
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(QIMSDWebImageCompletionBlock)completedBlock {
+//    [self qimsd_setImageWithURL:url placeholderImage:placeholder completed:completedBlock];
+    [self qimsd_setImageWithURL:url placeholderImage:placeholder options:0 gifFlag:NO progress:nil completed:nil];
 }
 
 @end

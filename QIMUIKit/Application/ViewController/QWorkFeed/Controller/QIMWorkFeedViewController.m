@@ -584,7 +584,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    [[SDImageCache sharedImageCache] clearMemory];
+    [[QIMSDImageCache sharedImageCache] clearMemory];
 }
 
 @end

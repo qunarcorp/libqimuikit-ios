@@ -7,7 +7,7 @@
 //
 
 #import "QIMPushProductCell.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 
 @interface QIMPushProductCell ()
 {

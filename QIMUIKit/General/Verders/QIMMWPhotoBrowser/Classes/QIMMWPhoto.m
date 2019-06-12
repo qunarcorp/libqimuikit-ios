@@ -6,8 +6,8 @@
 //  Copyright 2010 d3i. All rights reserved.
 //
 
-#import "SDWebImageManager.h"
-#import "SDWebImageOperation.h"
+#import "QIMSDWebImageManager.h"
+#import "QIMSDWebImageOperation.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "QIMMWPhoto.h"
 #import "QIMMWPhotoBrowser.h"
@@ -15,7 +15,7 @@
 @interface QIMMWPhoto () {
 
     BOOL _loadingInProgress;
-    id <SDWebImageOperation> _webImageOperation;
+    id <QIMSDWebImageOperation> _webImageOperation;
     PHImageRequestID _assetRequestID;
     PHImageRequestID _assetVideoRequestID;
         
@@ -208,9 +208,10 @@
 // Load from local file
 - (void)_performLoadUnderlyingImageAndNotifyWithWebURL:(NSURL *)url {
     @try {
-        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        QIMSDWebImageManager *manager = [QIMSDWebImageManager sharedManager];
         _webImageOperation = [manager downloadImageWithURL:url
                                                    options:0
+                                                   gifFlag:YES
                                                   progress:^(NSInteger receivedSize, NSInteger expectedSize) {
                                                       if (expectedSize > 0) {
                                                           float progress = receivedSize / (float)expectedSize;
@@ -220,7 +221,7 @@
                                                           [[NSNotificationCenter defaultCenter] postNotificationName:QIMMWPHOTO_PROGRESS_NOTIFICATION object:dict];
                                                       }
                                                   }
-                                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                 completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                                      if (error) {
                                                          QIMMWLog(@"SDWebImage failed to download image: %@", error);
                                                      }

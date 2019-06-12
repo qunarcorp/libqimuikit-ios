@@ -17,7 +17,7 @@
 #import "QIMJSONSerializer.h"
 #import "QIMShareLocationChatCell.h"
 #import "UserLocationViewController.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "UIApplication+QIMApplication.h"
 
 @interface QIMShareLocationChatCell()<QIMMenuImageViewDelegate>
@@ -108,7 +108,6 @@
         userLocationVC.dispalyName = infoDic[@"name"];
         if ([[QIMKit sharedInstance] getIsIpad]){
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:userLocationVC animated:YES completion:nil];
-//            [[[[UIApplication sharedApplication].delegate window] rootViewController] presentViewController:userLocationVC animated:YES completion:nil];
         }else{
             [self.owerViewController presentViewController:userLocationVC animated:YES completion:nil];
         }
