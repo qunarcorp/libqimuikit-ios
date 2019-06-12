@@ -10,6 +10,7 @@
 
 @interface QIMGroupChatVC : QTalkViewController
 
+@property (nonatomic, strong) NSDictionary *groupCardDic;
 @property (nonatomic, strong) NSString *chatId;
 @property (nonatomic, strong) NSString *bindId;
 @property (nonatomic, assign) ChatType chatType;

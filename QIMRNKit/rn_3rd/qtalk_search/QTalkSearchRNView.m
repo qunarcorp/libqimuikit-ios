@@ -120,28 +120,33 @@ static RCTBridge * bridge = nil;
 - (NSURL*)getJSCodeLocation{
     // For production use, this `NSURL` could instead point to a pre-bundled file on disk:
     //
-    
-    NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QTalkSearchRNView getInnerBundleName] ofType:@"jsbundle"];
-    NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
-    // load jsbundle from cacheqtalk_temp_features
-    NSString *path = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
-    
-    NSString* latestJSCodeURLString = [[path stringByAppendingPathComponent: [QTalkSearchRNView getCachePath]] stringByAppendingPathComponent: [QTalkSearchRNView getAssetBundleName]];
-    
-    NSURL* _latestJSCodeLocation;
-    if (latestJSCodeURLString && [[NSFileManager defaultManager] fileExistsAtPath:latestJSCodeURLString]) {
-        QIMVerboseLog(@"Search JsBundle本地缓存文件存在%@", latestJSCodeURLString);
-        _latestJSCodeLocation = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@", latestJSCodeURLString]];
-        jsCodeLocation = _latestJSCodeLocation;
+    NSString *appDebugOpsSearchRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkSearchRNDebugUrl"];
+    if (appDebugOpsSearchRNDebugUrlStr.length > 0) {
+        NSURL *appDebugOpsSearchRNDebugUrl = [NSURL URLWithString:appDebugOpsSearchRNDebugUrlStr];
+        return appDebugOpsSearchRNDebugUrl;
     } else {
-        //内置包
+        NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QTalkSearchRNView getInnerBundleName] ofType:@"jsbundle"];
+        NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
+        // load jsbundle from cacheqtalk_temp_features
+        NSString *path = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+        
+        NSString* latestJSCodeURLString = [[path stringByAppendingPathComponent: [QTalkSearchRNView getCachePath]] stringByAppendingPathComponent: [QTalkSearchRNView getAssetBundleName]];
+        
+        NSURL* _latestJSCodeLocation;
+        if (latestJSCodeURLString && [[NSFileManager defaultManager] fileExistsAtPath:latestJSCodeURLString]) {
+            QIMVerboseLog(@"Search JsBundle本地缓存文件存在%@", latestJSCodeURLString);
+            _latestJSCodeLocation = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@", latestJSCodeURLString]];
+            jsCodeLocation = _latestJSCodeLocation;
+        } else {
+            //内置包
+        }
+        QIMVerboseLog(@"jsCodeLocation : %@", jsCodeLocation);
+        
+        // debug
+        _jsCodeLocation = jsCodeLocation;
+        
+        return jsCodeLocation;
     }
-    QIMVerboseLog(@"jsCodeLocation : %@", jsCodeLocation);
-    
-    // debug    
-    _jsCodeLocation = jsCodeLocation;
-    
-    return jsCodeLocation;
 }
 
 /*
