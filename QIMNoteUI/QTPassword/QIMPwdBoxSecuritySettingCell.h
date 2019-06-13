@@ -6,7 +6,7 @@
 //  Copyright © 2018 QIM. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "QIMCommonUIFramework.h"
 #if __has_include("QIMNoteManager.h")
 NS_ASSUME_NONNULL_BEGIN
 
