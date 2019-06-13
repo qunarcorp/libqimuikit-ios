@@ -6,7 +6,7 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+#import "QIMCommonUIFramework.h"
 #if __has_include("QIMNoteManager.h")
 #import "QIMNoteModel.h"
 
