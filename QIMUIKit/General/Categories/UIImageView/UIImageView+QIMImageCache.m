@@ -103,9 +103,9 @@
                 if (chatType == ChatType_GroupChat) {
                     [[QIMKit sharedInstance] updateGroupCard:@[jid]];
                 } else if (chatType == ChatType_ConsultServer) {
-                    [[QIMKit sharedInstance] updateUserCard:@[realJid]];
+                    [[QIMKit sharedInstance] updateUserCard:realJid withCache:YES];
                 } else {
-                    [[QIMKit sharedInstance] updateUserCard:@[jid]];
+                    [[QIMKit sharedInstance] updateUserCard:jid withCache:YES];
                 }
             } else {
                 

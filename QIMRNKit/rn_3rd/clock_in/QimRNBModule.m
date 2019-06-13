@@ -603,7 +603,7 @@ RCT_EXPORT_METHOD(getUserInfoByUserCard:(NSString *)userId :(RCTResponseSenderBl
     }
     NSDictionary *properties = [QimRNBModule qimrn_getUserInfoByUserId:userId];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[QIMKit sharedInstance] updateUserCard:@[userId]];
+        [[QIMKit sharedInstance] updateUserCard:userId withCache:YES];
     });
     callback(@[@{@"UserInfo" : properties ? properties : @{}}]);
 }

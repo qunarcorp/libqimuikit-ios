@@ -630,10 +630,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     _photos = [[NSMutableDictionary alloc] init];
     _rootViewFrame = self.view.frame;
     _cellSizeDic = [NSMutableDictionary dictionary];
+    /* Mark DBUpdate
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) { // 检查群成员名片变更
         
         [self updateGroupMemberCards];
     }
+    */
     [self initUI];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -1089,6 +1091,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)reloadTableData {
+    [self setProgressHUDDetailsLabelText:@"正在加载消息..."];
     __weak __typeof(self) weakSelf = self;
     if (self.chatType == ChatType_CollectionChat) {
         NSArray *list = [[QIMKit sharedInstance] getCollectionMsgListForUserId:self.bindId originUserId:self.chatId];
@@ -1097,6 +1100,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             BOOL editing = self.tableView.editing;
             [weakSelf.tableView reloadData];
             weakSelf.tableView.editing = editing;
+            [weakSelf closeHUD];
             [weakSelf scrollToBottom_tableView];
             [weakSelf addImageToImageList];
             [[QIMEmotionSpirits sharedInstance] setDataCount:(int)weakSelf.messageManager.dataSource.count];
@@ -1112,6 +1116,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                         BOOL editing = weakSelf.tableView.editing;
                         [weakSelf.tableView reloadData];
                         weakSelf.tableView.editing = editing;
+                        [weakSelf closeHUD];
                         [weakSelf addImageToImageList];
                         [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
                         //标记已读
@@ -1129,6 +1134,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                        BOOL editing = weakSelf.tableView.editing;
                                                        [weakSelf.tableView reloadData];
                                                        weakSelf.tableView.editing = editing;
+                                                       [weakSelf closeHUD];
                                                        [weakSelf scrollBottom];
                                                        [weakSelf addImageToImageList];
                                                        [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
@@ -1145,7 +1151,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)loadData {
-    
+
     [NSObject cancelPreviousPerformRequestsWithTarget:self
                                              selector:@selector(reloadTableData)
                                                object:nil];

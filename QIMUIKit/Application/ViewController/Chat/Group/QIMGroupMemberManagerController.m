@@ -131,12 +131,14 @@ typedef enum {
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary * member = [_members objectAtIndex:indexPath.row];
+    /* Mark DBUpdate
     NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByName:member[@"name"]];
     if (userInfo) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [QIMFastEntrance openUserCardVCByUserId:[userInfo objectForKey:@"XmppId"]];
         });
     }
+    */
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

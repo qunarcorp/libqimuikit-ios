@@ -9,7 +9,6 @@
 #import "QIMGroupMemberListVC.h"
 #import "QIMGroupMemberCell.h"
 #import "QIMPGroupSelectionView.h"
-#import "QIMGroupNickNameHelper.h"
 #import "QIMFastEntrance.h"
 
 @interface QIMGroupMemberListVC ()<UITableViewDataSource,UITableViewDelegate,SelectionResultDelegate>
@@ -198,12 +197,6 @@
     if (!userId) {
         userId = [self.items objectAtIndex:indexPath.row][@"jid"];
     }
-    /*
-    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByName:[self.items objectAtIndex:indexPath.row][@"name"]];
-    NSString *userId = [userInfo objectForKey:@"XmppId"];
-    if (!userId) {
-        userId = [self.items objectAtIndex:indexPath.row][@"xmppjid"];
-    } */
     dispatch_async(dispatch_get_main_queue(), ^{
         [QIMFastEntrance openUserCardVCByUserId:userId];
     });

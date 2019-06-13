@@ -192,7 +192,6 @@
 }
 
 -(void)singlePeople:(GroupMemberButton *)sender {
-//    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByName:sender.memberDic[@"name"]];
     NSString *userId = [sender.memberDic objectForKey:@"UserId"];
     if (userId.length > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{

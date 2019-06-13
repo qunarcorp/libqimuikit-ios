@@ -237,7 +237,7 @@
 - (void)selfPopedViewController{
     [super selfPopedViewController];
     [[QIMKit sharedInstance] setCurrentSessionUserId:nil];
-    [[QIMKit sharedInstance] clearNotReadMsgByJid:self.chatId];
+//    [[QIMKit sharedInstance] clearNotReadMsgByJid:self.chatId];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
