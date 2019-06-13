@@ -1146,7 +1146,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (content.length > 0) {
                     
-                    [str appendAttributedString:[self decodeMsg:content]];
+                    [str appendAttributedString:[weakSelf decodeMsg:content]];
                 }
                 [weakSelf.contentLabel setAttributedText:str];
             });

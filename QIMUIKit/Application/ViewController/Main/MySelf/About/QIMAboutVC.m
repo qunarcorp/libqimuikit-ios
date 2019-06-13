@@ -15,7 +15,7 @@
 #import <CoreText/CoreText.h>
 #import "QIMContactManager.h"
 #import "NSBundle+QIMLibrary.h"
-
+#import "QIMUtility.h"
 #if __has_include("QIMLocalLog.h")
 
 #import "QIMLocalLogViewController.h"
@@ -102,7 +102,7 @@
         [_dataSource addObject:@"Instruments"];
       }
 #endif
-
+    [_dataSource addObject:@"DataFile"];
     return _dataSource;
 }
 
@@ -378,12 +378,16 @@
         [cell setAccessoryView:switchButton];
     } else if ([value isEqualToString:@"Instruments"]) {
         cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"About_tab_instruments"];
-        cell.textLabel.text = @"监测";
         UISwitch *switchButton = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 60, 25)];
         BOOL isInstrument = [[[QIMKit sharedInstance] userObjectForKey:@"isInstruments"] boolValue];
         [switchButton setOn:isInstrument];
         [switchButton addTarget:self action:@selector(recordInstruments:) forControlEvents:UIControlEventValueChanged];
         [cell setAccessoryView:switchButton];
+    } else if ([value isEqualToString:@"DataFile"]) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier];
+        cell.textLabel.text = @"聊天记录存储空间";
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.detailTextLabel.text = [self dataFileSize];
     }
     return cell;
 }
@@ -396,6 +400,29 @@
     } else {
         [[QIMGDPerformanceMonitor sharedInstance] stopMonitoring];
     }
+}
+
+- (NSString *)dataFileSize {
+    NSString *dbPath = [UserCachesPath stringByAppendingPathComponent:[NSString stringWithFormat:@"/QIMNewDataBase/%@%@/", [[[QIMKit sharedInstance] getLastJid] lowercaseString], UserPath]];
+    long long totalSize = [QIMUtility sizeofPath:dbPath];
+    NSString *str = nil;
+    if (totalSize < 1048576) {
+        // 1024 * 1024
+        double total = (double)totalSize;
+        float result = total / 1024.0;
+        str = [NSString stringWithFormat:@"%.2fKB", result];
+    } else if (totalSize < 1073741824) {
+        // 1024 * 1024 * 1024
+        double total = (double)totalSize;
+        float result = total / 1048576.0;
+        str = [NSString stringWithFormat:@"%.2fMB", result];
+    } else if (totalSize < 1099511627776) {
+        // 1024 * 1024 * 1024
+        double total = (double)totalSize;
+        float result = total / 1073741824.0;
+        str = [NSString stringWithFormat:@"%.2fGB", result];
+    }
+    return str;
 }
 
 @end
