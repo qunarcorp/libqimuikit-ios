@@ -830,7 +830,8 @@ static NSString *__default_ua = nil;
     
     NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
     if (userInfoDic == nil) {
-        [[QIMKit sharedInstance] updateUserCard:@[jid]];
+//        [[QIMKit sharedInstance] updateUserCard:@[jid]];
+        [[QIMKit sharedInstance] updateUserCard:jid withCache:YES];
         userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
     }
     if (userInfoDic) {
