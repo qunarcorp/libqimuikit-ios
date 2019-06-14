@@ -74,15 +74,7 @@
 
 @property(nonatomic, assign) BOOL willForceTableView;
 
-<<<<<<< HEAD
 @property(nonatomic, assign) BOOL notVisibleReload;
-
-@property(nonatomic, strong) NSMutableArray *recentContactArray;
-
-@property(nonatomic, strong) QTalkSessionCell *currentCell;
-=======
-//@property(nonatomic, strong) NSMutableArray *recentContactArray;
->>>>>>> QIMUIKit3.0-Monitor_circle_dev
 
 @property(atomic, strong) NSMutableArray *notReaderIndexPathList;
 
@@ -462,30 +454,21 @@
 #endif
 }
 
-<<<<<<< HEAD
-- (void)noticeRefreshTableView:(NSNotification *)notify {
+- (void)refreshTableView {
+    
     UIViewController *currentVc = [UIApplication sharedApplication].visibleViewController;
     Class mainVC = NSClassFromString(@"QIMMainVC");
     Class helperVC = NSClassFromString(@"QIMMessageHelperVC");
     if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSString *notifyStr = notify.object;
-            QIMVerboseLog(@"收到刷新列表页的通知 : %@", notify);
-            [self refreshTableView];
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadTableView) object:nil];
+            _willRefreshTableView = YES;
+            [self performSelector:@selector(reloadTableView) withObject:nil afterDelay:0.1];
         });
         self.notVisibleReload = NO;
     } else {
         self.notVisibleReload = YES;
     }
-}
-=======
->>>>>>> QIMUIKit3.0-Monitor_circle_dev
-
-- (void)refreshTableView {
-    
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadTableView) object:nil];
-    _willRefreshTableView = YES;
-    [self performSelector:@selector(reloadTableView) withObject:nil afterDelay:0.1];
 }
 
 #pragma mark - notify
