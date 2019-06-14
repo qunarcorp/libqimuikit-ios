@@ -138,11 +138,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             self.msgState = [[infoDic objectForKey:@"MsgState"] intValue];
             self.content = [infoDic objectForKey:@"Content"];
             [self generateCombineJidWithChatType:chatType];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self refreshName];
-//                [self refreshHeaderImage];
-//                [self refreshUI];
-//            });
         }
     }
 }
@@ -533,7 +528,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                     [self reloadNotReadCount];
                 });
             } else {
-                
             }
         }
     } else {
