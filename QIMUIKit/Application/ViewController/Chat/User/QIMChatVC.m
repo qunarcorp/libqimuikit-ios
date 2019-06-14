@@ -1210,10 +1210,6 @@
             [_tableView reloadData];
             [weakSelf scrollBottom];
             [weakSelf addImageToImageList];
-            if (_willSendImageData) {
-                [weakSelf sendImageData:_willSendImageData];
-                _willSendImageData = nil;
-            }
             //标记已读
             [weakSelf markReadFlag];
         });
@@ -1241,8 +1237,11 @@
                     //重新获取一次大图展示的数组
                     [weakSelf addImageToImageList];
                     [weakSelf.tableView.mj_header endRefreshing];
-                    //标记已读
-                    [weakSelf markReadFlag];
+                    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                    dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                        //标记已读
+                        [weakSelf markReadFlag];
+                    });
                 });
             }];
         } else {
@@ -1259,8 +1258,11 @@
                             [weakSelf sendImageData:_willSendImageData];
                             _willSendImageData = nil;
                         }
-                        //标记已读
-                        [weakSelf markReadFlag];
+                        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                        dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                            //标记已读
+                            [weakSelf markReadFlag];
+                        });
                     });
                 }];
             } else {
@@ -1275,8 +1277,11 @@
                             [weakSelf sendImageData:_willSendImageData];
                             _willSendImageData = nil;
                         }
-                        //标记已读
-                        [weakSelf markReadFlag];
+                        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                        dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                            //标记已读
+                            [weakSelf markReadFlag];
+                        });
                     });
                 }];
             }

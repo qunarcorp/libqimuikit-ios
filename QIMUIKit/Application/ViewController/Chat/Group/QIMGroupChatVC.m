@@ -982,6 +982,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)moveToFirstNotReadMsg {
     
+   self.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:self.chatId WithRealJid:self.chatId WithMsgDirection:QIMMessageDirection_Received withUnReadCount:self.notReadCount];
     __weak __typeof(self) weakSelf = self;
     [[QIMKit sharedInstance] getMsgListByUserId:self.chatId
                                     WithRealJid:self.chatId
@@ -1091,7 +1092,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)reloadTableData {
-    [self setProgressHUDDetailsLabelText:@"正在加载消息..."];
     __weak __typeof(self) weakSelf = self;
     if (self.chatType == ChatType_CollectionChat) {
         NSArray *list = [[QIMKit sharedInstance] getCollectionMsgListForUserId:self.bindId originUserId:self.chatId];
@@ -1100,7 +1100,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             BOOL editing = self.tableView.editing;
             [weakSelf.tableView reloadData];
             weakSelf.tableView.editing = editing;
-            [weakSelf closeHUD];
             [weakSelf scrollToBottom_tableView];
             [weakSelf addImageToImageList];
             [[QIMEmotionSpirits sharedInstance] setDataCount:(int)weakSelf.messageManager.dataSource.count];
@@ -1116,7 +1115,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                         BOOL editing = weakSelf.tableView.editing;
                         [weakSelf.tableView reloadData];
                         weakSelf.tableView.editing = editing;
-                        [weakSelf closeHUD];
                         [weakSelf addImageToImageList];
                         [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
                         //标记已读
@@ -1134,15 +1132,17 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                        BOOL editing = weakSelf.tableView.editing;
                                                        [weakSelf.tableView reloadData];
                                                        weakSelf.tableView.editing = editing;
-                                                       [weakSelf closeHUD];
                                                        [weakSelf scrollBottom];
                                                        [weakSelf addImageToImageList];
-                                                       [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
-                                                       //标记艾特消息已读
-                                                       [weakSelf updateNotAtReadAtMsgWithMsgArray:list];
-                                                       [weakSelf showNotReadAtMsgView];
-                                                       //标记已读
-                                                       [weakSelf markReadedForChatRoom];
+                                                       dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                                                       dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                                                         [[QIMEmotionSpirits sharedInstance] setDataCount:(int) weakSelf.messageManager.dataSource.count];
+                                                         //标记艾特消息已读
+                                                         [weakSelf updateNotAtReadAtMsgWithMsgArray:list];
+                                                         [weakSelf showNotReadAtMsgView];
+                                                         //标记已读
+                                                         [weakSelf markReadedForChatRoom];
+                                                       });
                                                    });
                                                }];
             }
