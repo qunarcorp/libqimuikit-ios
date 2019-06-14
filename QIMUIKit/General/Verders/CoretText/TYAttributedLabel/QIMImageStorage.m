@@ -10,8 +10,8 @@
 #import "QIMImageCache.h"
 #import "YLImageView.h"
 #import "YLGIFImage.h"
-#import "NSData+ImageContentType.h"
-#import "UIImage+GIF.h"
+#import "NSData+QIMImageContentType.h"
+#import "UIImage+QIMGIF.h"
 
 @interface QIMImageStorage () {
     YLImageView * _imageView;
@@ -134,26 +134,11 @@
             height = self.size.height / 2.0f;
         }
         _imageView = [[YLImageView alloc] init];
-        /*
-        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:_imageURL options:SDWebImageDownloaderContinueInBackground progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-            
-        } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-            if (error) {
-                //加载失败
-                NSString *imagePath = [[SDImageCache sharedImageCache] defaultCachePathForKey:[_imageURL absoluteString]];
-                NSData *imageData = [NSData dataWithContentsOfFile:imagePath];
-                UIImage *image = [UIImage sd_animatedGIFWithData:imageData];
-                [self renderImageViewWithImageData:data withImage:image withRect:rect];
-            } else {
-                [self renderImageViewWithImageData:data withImage:image withRect:rect];
-            }
-        }];
-        */
-        [_imageView sd_setImageWithURL:_imageURL placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        [_imageView qimsd_setImageWithURL:_imageURL placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:QIMSDWebImageLowPriority gifFlag:YES progress:^(NSInteger receivedSize, NSInteger expectedSize) {
 //            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
 //            [self.progressLabel setText:progress];
 //            NSLog(@"下载图片进度 : %ld", progress);
-        } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        } completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, NSURL *imageURL) {
             CGRect fitRect = rect;//[self rectFitOriginSize:image.size byRect:rect];
             //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
             fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
@@ -192,7 +177,7 @@
     CGRect fitRect = rect;//[self rectFitOriginSize:image.size byRect:rect];
     //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
     fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
-    NSString *imageExt = [NSData sd_contentTypeForImageData:imageData];
+    NSString *imageExt = [NSData qimsd_contentTypeForImageData:imageData];
     if ([imageExt isEqualToString:@"image/gif"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (image) {

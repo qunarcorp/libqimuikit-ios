@@ -190,6 +190,7 @@ static dispatch_once_t __onceMainToken;
 - (void)registerNSNotifications {
     //更新App未读数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNotReadCount) name:kMsgNotReadCountChange object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNotReadCount) name:kNotificationSessionListUpdate object:nil];
     //更新骆驼帮未读数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateExploreNotReadCount:) name:kExploreNotReadCountChange object:nil];
     //更新驼圈未读数
@@ -386,10 +387,10 @@ static dispatch_once_t __onceMainToken;
 
 - (void)updateWorkFeedNotReadCount:(NSNotification *)notify {
     QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
-    BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
-    if (workMoment == YES) {
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
+        if (workMoment == YES) {
             NSDictionary *newWorkMomentNotify = notify.object;
             //新帖子通知
             BOOL newWorkMoment = [[newWorkMomentNotify objectForKey:@"newWorkMoment"] boolValue];
@@ -420,8 +421,8 @@ static dispatch_once_t __onceMainToken;
                     }
                 }
             }
-        });
-    }
+        }
+    });
 }
 
 - (void)updateUpdateProgress:(NSNotification *)notify {
@@ -825,8 +826,9 @@ static dispatch_once_t __onceMainToken;
     NSString *tabBarId = [tabBarDict objectForKey:@"title"];
     
     if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_chat"]]) {
-        
-        [_contentView addSubview:self.sessionView];
+        if (nil == _sessionView) {
+            [_contentView addSubview:self.sessionView];
+        }
         [_sessionView setHidden:NO];
 #if __has_include("QIMAutoTracker.h")
         [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"conversation" withDescription:@"会话"];
@@ -901,7 +903,7 @@ static dispatch_once_t __onceMainToken;
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
-#if __has_include("RNSchemaParse.h")
+#if __has_include("QTalkSearchViewManager.h")
 #if __has_include("QIMAutoTracker.h")
 
     [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"search" withDescription:@"搜索"];

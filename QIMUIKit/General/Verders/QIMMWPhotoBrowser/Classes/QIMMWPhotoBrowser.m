@@ -11,7 +11,7 @@
 #import "QIMMWCommon.h"
 #import "QIMMWPhotoBrowser.h"
 #import "QIMMWPhotoBrowserPrivate.h"
-#import "SDImageCache.h"
+#import "QIMSDImageCache.h"
 #import "LCActionSheet.h"
 #import "UIImage+QIMMWPhotoBrowser.h"
 #import "QIMMWQRCodeActivity.h"
@@ -106,7 +106,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
     _pagingScrollView.delegate = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self releaseAllUnderlyingPhotos:NO];
-    [[SDImageCache sharedImageCache] clearMemory]; // clear memory
+    [[QIMSDImageCache sharedImageCache] clearMemory]; // clear memory
 }
 
 - (void)releaseAllUnderlyingPhotos:(BOOL)preserveCurrent {
@@ -1731,7 +1731,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 } else {
                     fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
                 }
-                NSString *sdimageFileKey = [[SDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
+                NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
                 [photo.photoData writeToFile:sdimageFileKey atomically:YES];
                 UIImage *image = [YLGIFImage imageWithData:photo.photoData];
                 CGFloat width = CGImageGetWidth(image.CGImage);
@@ -1779,7 +1779,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 if (photoData.length > 0) {
                     [self saveImageWithPhotoData:photoData];
                 } else if (photo.photoURL.absoluteString.length > 0) {
-                    NSString *localPhotoPath = [[SDImageCache sharedImageCache] defaultCachePathForKey:photo.photoURL.absoluteString];
+                    NSString *localPhotoPath = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:photo.photoURL.absoluteString];
                     NSData *imageData = [NSData dataWithContentsOfFile:localPhotoPath];
                     if (imageData.length > 0) {
                         [self saveImageWithPhotoData:imageData];

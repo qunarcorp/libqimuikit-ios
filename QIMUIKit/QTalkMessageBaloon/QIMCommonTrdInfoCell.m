@@ -7,7 +7,7 @@
 //
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMCommonTrdInfoCell.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "QIMJSONSerializer.h"
 
 #define kCommonTrdInfoCellWidth   [UIScreen mainScreen].qim_rightWidth  * 3.2 / 5

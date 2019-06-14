@@ -14,7 +14,7 @@
 #import "UIScreen+QIMIpad.h"
 #endif
 
-#import "QIMManager+WorkFeed.h"
+#import "QIMKit+QIMWorkFeed.h"
 #import "QIMWorkOwnerCamelTabBar.h"
 #import "QIMWorkNoticeMessageModel.h"
 
@@ -151,7 +151,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    [[SDImageCache sharedImageCache] clearMemory];
+    [[QIMSDImageCache sharedImageCache] clearMemory];
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];

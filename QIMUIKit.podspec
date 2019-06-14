@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "3.0.9"
+  s.version      = "3.0.10211595"
   s.summary      = "QIM App UI 9.0+ version"
   s.description  = <<-DESC
                    QIM UI
@@ -88,7 +88,7 @@ Pod::Spec.new do |s|
       # SDWebImage
       # 3.7.2 contains bugs downloading local files
       # https://github.com/rs/SDWebImage/issues/1109
-      photoBrowser.dependency 'SDWebImage', '~> 3.7', '!= 3.7.2'
+#      photoBrowser.dependency 'SDWebImage', '~> 3.7', '!= 3.7.2'
       photoBrowser.dependency 'QIMUIKit/PublicUIHeader'
       photoBrowser.resource = ['QIMUIKit/General/Verders/QIMMWPhotoBrowser/Assets']
   end

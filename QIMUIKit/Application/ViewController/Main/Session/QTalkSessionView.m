@@ -1111,7 +1111,7 @@
 
 - (void)qim_searchBarBecomeFirstResponder {
     
-#if __has_include("RNSchemaParse.h")
+#if __has_include("QTalkSearchViewManager.h")
 #if __has_include("QIMAutoTracker.h")
     
     [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"search" withDescription:@"搜索"];

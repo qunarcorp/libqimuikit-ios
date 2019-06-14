@@ -549,12 +549,12 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 - (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId {
-    NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
-    NSString *groupName = [groupCard objectForKey:@"Name"];
+//    NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
+//    NSString *groupName = [groupCard objectForKey:@"Name"];
     QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
     [chatGroupVC setChatType:ChatType_GroupChat];
     [chatGroupVC setChatId:groupId];
-    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
+//    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
     return chatGroupVC;
 }
 
@@ -737,7 +737,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 - (UIViewController *)getRNSearchVC {
     
-#if __has_include("RNSchemaParse.h")
+#if __has_include("QTalkSearchViewManager.h")
     UIViewController *reactVC = [[NSClassFromString(@"QTalkSearchViewManager") alloc] init];
     return reactVC;
 #endif
@@ -745,7 +745,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)openRNSearchVC {
-#if __has_include("RNSchemaParse.h")
+#if __has_include("QTalkSearchViewManager.h")
     dispatch_async(dispatch_get_main_queue(), ^{
         CATransition *animation = [CATransition animation];
         animation.duration = 0.4f;   //时间间隔

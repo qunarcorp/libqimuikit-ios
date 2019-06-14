@@ -7,7 +7,7 @@
 //
 
 #import "QIMMyEmotionsManagerCell.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "QIMProgressHUD.h"
 #import "QIMEmotionManager.h"
 

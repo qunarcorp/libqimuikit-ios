@@ -57,6 +57,44 @@ static NSString *__default_ua = nil;
 }
 @end
 
+@protocol QActivityCopyLinkDelegate <NSObject>
+@optional
+- (void)performCopyLinkActivity;
+@end
+@interface QActivityCopyLink : UIActivity
+@property (nonatomic, weak) id<QActivityCopyLinkDelegate> delegate;
+@end
+@implementation QActivityCopyLink
++ (UIActivityCategory)activityCategory {
+    return UIActivityCategoryShare;
+}
+
+- (NSString *)activityType {
+    return @"QTalk.WebView.CopyLink";
+}
+
+- (NSString *)activityTitle {
+    return [NSBundle qim_localizedStringForKey:@"webview_copy_link"];
+}
+
+- (UIImage *)activityImage {
+    return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_copylink"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+}
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
+    return YES;
+}
+- (void) performActivity {
+    if ([self.delegate respondsToSelector:@selector(performCopyLinkActivity)]) {
+        [self.delegate performCopyLinkActivity];
+    }
+}
+- (void)prepareWithActivityItems:(NSArray *)activityItems {
+}
+- (UIViewController *)activityViewController{
+    return nil;
+}
+@end
+
 @protocol QActivityToFriendDelegate <NSObject>
 @optional
 - (void)performActivity;
@@ -78,7 +116,6 @@ static NSString *__default_ua = nil;
 }
 
 - (UIImage *)activityImage {
-//    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareConversion"];
     return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareConversion"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
@@ -207,10 +244,25 @@ static NSString *__default_ua = nil;
     NSURL *url = _webView.request.URL;
     QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
     QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
+    
+    NSString *title = self.title;
+    NSURL *linkurl = _webView.request.URL;
+    NSString *img = [NSString stringWithFormat:@"%@://%@/favicon.ico", [linkurl scheme], [linkurl host]];
+    NSString *desc = @"点击查看全文";
+    
+    NSMutableDictionary *infoDic = [NSMutableDictionary dictionaryWithCapacity:1];
+    [infoDic setQIMSafeObject:(title.length > 0) ? title : linkurl.absoluteString forKey:@"title"];
+    [infoDic setQIMSafeObject:desc forKey:@"desc"];
+    [infoDic setQIMSafeObject:linkurl.absoluteString forKey:@"linkurl"];
+    [infoDic setQIMSafeObject:img forKey:@"img"];
+    NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
+
     QIMMessageModel *message = [QIMMessageModel new];
-    [message setMessageType:QIMMessageType_Text];
-    [message setMessage:[NSString stringWithFormat:@"[obj type=\"url\" value=\"%@\"]", [url absoluteString]]];
+    [message setMessageType:QIMMessageType_CommonTrdInfo];
+    [message setMessage:@"系统分享消息，请升级客户端版本进行查看"];
+    message.extendInformation = msgContent;
     [controller setMessage:message];
+    
     [controller setDelegate:self];
     [[self navigationController] presentViewController:nav animated:YES completion:^{
     }];
@@ -227,6 +279,12 @@ static NSString *__default_ua = nil;
     BOOL showbar = YES;
     NSDictionary *linkDic = @{@"title":title, @"img":img, @"desc":desc, @"linkurl":linkurl.absoluteString, @"showas667":@(showas667), @"showbar":@(showbar), @"auth":@(auth)};
     [QIMFastEntrance presentWorkMomentPushVCWithLinkDic:linkDic withNavVc:self.navigationController];
+}
+
+//拷贝Url
+- (void)performCopyLinkActivity {
+    NSURL *linkurl = _webView.request.URL;
+    [[UIPasteboard generalPasteboard] setString:linkurl.absoluteString];
 }
 
 - (void)onMoreClick{
@@ -253,13 +311,16 @@ static NSString *__default_ua = nil;
     QActivityRefresh *refresh = [[QActivityRefresh alloc] init];
     [refresh setWebView:_webView];
     
+    QActivityCopyLink *copyLink = [[QActivityCopyLink alloc] init];
+    [copyLink setDelegate:self];
+    
     QActivitySafari *safari = [[QActivitySafari alloc] init];
     [safari setUrl:tempUrl];
     
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, shareWorkMoment, refresh,safari]];
+        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, shareWorkMoment, refresh, copyLink, safari]];
     } else {
-        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, refresh,safari]];
+        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, refresh, copyLink, safari]];
     }
     [self.activityViewController setExcludedActivityTypes:@[UIActivityTypeMail]];
     typeof(self) __weak weakSelf = self;
@@ -570,7 +631,6 @@ static NSString *__default_ua = nil;
                
             }
         }
-
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
         [cook setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
         request = [[NSMutableURLRequest alloc] initWithURL:_requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];

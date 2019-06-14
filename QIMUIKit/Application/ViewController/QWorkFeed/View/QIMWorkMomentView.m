@@ -201,10 +201,11 @@ CGFloat maxFullContentHeight = 0;
             break;
     }
     
-    NSString *texg = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:content];
+    NSString *texg = content;
+//    [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:content];
     QIMMessageModel *msg = [[QIMMessageModel alloc] init];
     msg.message = texg;
-    msg.messageId = self.moment.momentId;
+    msg.messageId = [NSString stringWithFormat:@"Full-%@", self.moment.momentId];
     
     QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
     CGFloat textH = textContainer.textHeight;
