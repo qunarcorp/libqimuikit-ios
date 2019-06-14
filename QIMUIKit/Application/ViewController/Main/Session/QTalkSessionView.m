@@ -16,7 +16,7 @@
 #import "QIMSystemVC.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMFriendNotifyViewController.h"
-#import "QTalkSessionCell.h"
+//#import "QTalkSessionCell.h"
 #import "QIMWebView.h"
 #import <CoreText/CoreText.h>
 #import "QIMCollectionChatViewController.h"
@@ -31,6 +31,12 @@
 #import "QIMCustomPopManager.h"
 #import "QIMSearchBar.h"
 #import "YYModel.h"
+#import "QTalkNewSessionTableViewCell.h"
+#import "QTalkSessionDataManager.h"
+#import "QtalkSessionModel.h"
+
+
+#define cellReuseID @"QtalkSessionCellIdentifier"
 
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
@@ -53,13 +59,14 @@
 @end
 #endif
 
-@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate, QIMSearchBarDelegate> {
+@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMNewSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate, QIMSearchBarDelegate,QTalkSessionViewDataManager> {
     MBProgressHUD *_tipHUD;
     BOOL _canWrite;
     CABasicAnimation *_writingAnimation;
     CAShapeLayer *_writingLayer;
     CAGradientLayer *_gradLayer;
 }
+@property (nonatomic , strong) QTalkSessionDataManager * dataManager;
 
 @property(nonatomic, strong) UITableView *tableView;
 
@@ -67,11 +74,15 @@
 
 @property(nonatomic, assign) BOOL willForceTableView;
 
+<<<<<<< HEAD
 @property(nonatomic, assign) BOOL notVisibleReload;
 
 @property(nonatomic, strong) NSMutableArray *recentContactArray;
 
 @property(nonatomic, strong) QTalkSessionCell *currentCell;
+=======
+//@property(nonatomic, strong) NSMutableArray *recentContactArray;
+>>>>>>> QIMUIKit3.0-Monitor_circle_dev
 
 @property(atomic, strong) NSMutableArray *notReaderIndexPathList;
 
@@ -99,10 +110,6 @@
 
 @property(nonatomic, strong) QIMArrowTableView *arrowPopView;
 
-//@property (nonatomic, strong) SCLAlertView *swicthAccountAlert;
-//@property (nonatomic, strong) SCLAlertView *waitingAlert;
-//@property (nonatomic, strong) QIMSwitchAccountView *accountCollectionView;
-
 @property (nonatomic, strong) NSMutableArray *appendHeaderViews;
 
 @property (nonatomic, strong) QIMMainVC *rootViewController;
@@ -112,6 +119,8 @@
 @property (nonatomic, strong) NSArray *moreActionArray;
 
 @property (nonatomic, strong) QIMSearchBar *searchBar;
+
+@property (nonatomic, strong) NSTimer * refreshTimer;
 
 @end
 
@@ -380,7 +389,12 @@
         _willRefreshTableView = YES;
         [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
         _netWorkConnection = YES;
-        _recentContactArray = [NSMutableArray arrayWithCapacity:20];
+        _dataManager = [QTalkSessionDataManager manager];
+        _dataManager.delegate = self;
+        __weak typeof(self) weakSelf = self;
+        [_dataManager setQtBlock:^{
+            [weakSelf refreshTableView];
+        }];
         _update_reader_list_queue = dispatch_queue_create("update reader list queue", 0);
         _reloadListViewQueue = dispatch_queue_create("reloadListViewQueue", 0);
         [self resigisterNSNotifications];
@@ -391,13 +405,8 @@
 
 - (instancetype)initWithFrame:(CGRect)frame withRootViewController:(id)rootVc {
     
-    self = [super initWithFrame:frame];
+    self = [self initWithFrame:frame];
     if (self) {
-        _canWrite = YES;
-        _willForceTableView = YES;
-        _willRefreshTableView = YES;
-        [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
-        _netWorkConnection = YES;
         if ([rootVc isKindOfClass:[QIMMainVC class]]) {
             QIMMainVC *mainVc = (QIMMainVC *)rootVc;
             _rootViewController = mainVc;
@@ -406,21 +415,14 @@
         } else {
             
         }
-        _recentContactArray = [NSMutableArray arrayWithCapacity:20];
-        _update_reader_list_queue = dispatch_queue_create("update reader list queue", 0);
-        _reloadListViewQueue = dispatch_queue_create("reloadListViewQueue", 0);
-        [self resigisterNSNotifications];
-        [self initUI];
     }
     return self;
 }
 
 - (void)resigisterNSNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noticeRefreshTableView:) name:kNotificationSessionListUpdate object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noticeRefreshTableView:) name:kNotificationSessionListRemove object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateListFont:) name:kNotificationCurrentFontUpdate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteChatSession:) name:kChatSessionDelete object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stickyChatSession:) name:kChatSessionStick object:nil];
+    
+    //置顶一个数据
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeNotifyView:) name:@"kNotifyViewCloseNotification" object:nil];
 }
 
@@ -453,12 +455,14 @@
 
 - (void)sessionViewWillAppear {
     [self refreshTableView];
+    [self.dataManager registCellNotification];
 #if __has_include("QIMNotifyManager.h")
 
     [[QIMNotifyManager shareNotifyManager] setNotifyManagerGlobalDelegate:self];
 #endif
 }
 
+<<<<<<< HEAD
 - (void)noticeRefreshTableView:(NSNotification *)notify {
     UIViewController *currentVc = [UIApplication sharedApplication].visibleViewController;
     Class mainVC = NSClassFromString(@"QIMMainVC");
@@ -474,12 +478,14 @@
         self.notVisibleReload = YES;
     }
 }
+=======
+>>>>>>> QIMUIKit3.0-Monitor_circle_dev
 
 - (void)refreshTableView {
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadTableView) object:nil];
     _willRefreshTableView = YES;
-    [self performSelector:@selector(reloadTableView) withObject:nil afterDelay:DEFAULT_DELAY_TIMES];
+    [self performSelector:@selector(reloadTableView) withObject:nil afterDelay:0.1];
 }
 
 #pragma mark - notify
@@ -539,24 +545,29 @@
                     long long msgState = [[infoDic objectForKey:@"MsgState"] longLongValue];
                     
                     if (friendDic && isAddFN == NO && fnTime > sTime) {
-                        [normalList addObject:@{@"XmppId": @"FriendNotify", @"ChatType": @(ChatType_System), @"MsgType": @(1), @"MsgState": @(msgState), @"Content": fnDescInfo, @"MsgDateTime": @(fnTime)}];
+                        NSDictionary * dic =@{@"XmppId": @"FriendNotify", @"ChatType": @(ChatType_System), @"MsgType": @(1), @"MsgState": @(msgState), @"Content": fnDescInfo, @"MsgDateTime": @(fnTime)};
+                        
+                        QtalkSessionModel * model = [QtalkSessionModel yy_modelWithDictionary:dic];
+                        [normalList addObject:model];
                         isAddFN = YES;
                     } else {
-                        [normalList addObject:infoDic];
+                        QtalkSessionModel * model = [QtalkSessionModel yy_modelWithDictionary:infoDic];
+                        [normalList addObject:model];
                     }
                 }
                 if (friendDic && friendNotifyCount && isAddFN == NO) {
                     
                     NSDictionary *dict = @{@"XmppId": @"FriendNotify", @"ChatType": @(ChatType_System), @"MsgType": @(1), @"Content": fnDescInfo, @"MsgDateTime": @(fnTime)};
-                    NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dict];
-                    [normalList addObject:mutableDict];
+                    
+                    QtalkSessionModel * model = [QtalkSessionModel yy_modelWithDictionary:dict];
+                    [normalList addObject:model];
                 }
                 __weak typeof(self) weakSelf = self;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [weakSelf.recentContactArray removeAllObjects];
+                    [weakSelf.dataManager removeAllData];
                     [normalList enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                         if ((NSDictionary *)obj) {
-                            [weakSelf.recentContactArray addObject:obj];
+                            [weakSelf.dataManager addDataModel:obj];
                         }
                         else{
                             QIMVerboseLog(@"列表空数据了！");
@@ -615,9 +626,9 @@
         
         UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.moreBtn];
         [self.rootViewController.navigationItem setRightBarButtonItem:rightBarItem];
-//        if (_recentContactArray.count > 0) {
-//            [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-//        }
+        if (self.dataManager.dataSource.count> 0) {
+            [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+        }
     } else {
         [self.rootViewController.navigationItem setRightBarButtonItem:nil];
     }
@@ -640,11 +651,11 @@
 #pragma mark - Notification Method
 
 - (void)lazyReloadTableview {
-
+    
     [NSObject cancelPreviousPerformRequestsWithTarget:self.tableView
                                              selector:@selector(reloadData)
                                                object:nil];
-
+    
     [self.tableView performSelector:@selector(reloadData)
                      withObject:nil
                      afterDelay:0.1];
@@ -669,11 +680,6 @@
     }
 }
 
-- (void)updateListFont:(NSNotification *)notify {
-    
-    [self lazyReloadTableview];
-}
-
 #pragma mark - UITableViewDelegate Method
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {//设置是否显示一个可编辑视图的视图控制器。
@@ -683,7 +689,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return [QTalkSessionCell getCellHeight];
+    return [QTalkNewSessionTableViewCell getCellHeight];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -695,8 +701,7 @@
         [self performSelector:@selector(repeatDelay) withObject:nil afterDelay:0.5];
         _willRefreshTableView = NO;
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        _currentCell = nil;
-        QTalkSessionCell *cell = (QTalkSessionCell *) [_tableView cellForRowAtIndexPath:indexPath];
+        QTalkNewSessionTableViewCell *cell = (QTalkNewSessionTableViewCell *) [_tableView cellForRowAtIndexPath:indexPath];
         QTalkViewController *pushVc = [self sessionViewDidSelectRowAtIndexPath:indexPath infoDic:cell.infoDic];
         if ([self.rootViewController isKindOfClass:[QIMMainVC class]]) {
             [self.rootViewController.navigationController pushViewController:pushVc animated:YES];
@@ -734,89 +739,29 @@
 
 - (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_recentContactArray];
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.dataManager.dataSource];
     if (indexPath.row < tempArray.count && indexPath.row >= 0) {
-        QTalkSessionCell *cell = (QTalkSessionCell *) [tableView cellForRowAtIndexPath:indexPath];
+        QTalkNewSessionTableViewCell *cell = (QTalkNewSessionTableViewCell *) [tableView cellForRowAtIndexPath:indexPath];
         [cell refreshUI];
-        NSDictionary *infoDic = [tempArray objectAtIndex:indexPath.row];
+//        NSDictionary *infoDic = [tempArray objectAtIndex:indexPath.row];
+        QtalkSessionModel * model = [tempArray objectAtIndex:indexPath.row];
+        NSDictionary * infoDic = [model yy_modelToJSONObject];
         ChatType chatType = [[infoDic objectForKey:@"ChatType"] intValue];
         NSString *jid = [infoDic objectForKey:@"XmppId"];
         if (chatType != ChatType_PublicNumber) {
-            
+
             return @[cell.deleteBtn, cell.stickyBtn];
         }
         if ([jid hasPrefix:@"FriendNotify"]) {
-            
+
             return @[cell.deleteBtn];
         }
     }
     return nil;
 }
 
-- (UIBezierPath *)transformToBezierPath:(NSString *)string {
-    CGMutablePathRef paths = CGPathCreateMutable();
-    CFStringRef fontNameRef = CFSTR("Zapfino");
-    CTFontRef fontRef = CTFontCreateWithName(fontNameRef, 35, nil);
-    
-    NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:string attributes:@{(__bridge NSString *) kCTFontAttributeName: (__bridge UIFont *) fontRef}];
-    CTLineRef lineRef = CTLineCreateWithAttributedString((CFAttributedStringRef) attrString);
-    CFArrayRef runArrRef = CTLineGetGlyphRuns(lineRef);
-    
-    for (int runIndex = 0; runIndex < CFArrayGetCount(runArrRef); runIndex++) {
-        const void *run = CFArrayGetValueAtIndex(runArrRef, runIndex);
-        CTRunRef runb = (CTRunRef) run;
-        
-        const void *CTFontName = kCTFontAttributeName;
-        
-        const void *runFontC = CFDictionaryGetValue(CTRunGetAttributes(runb), CTFontName);
-        CTFontRef runFontS = (CTFontRef) runFontC;
-        
-        CGFloat width = [UIScreen mainScreen].bounds.size.width;
-        
-        int temp = 0;
-        CGFloat offset = .0;
-        
-        for (int i = 0; i < CTRunGetGlyphCount(runb); i++) {
-            CFRange range = CFRangeMake(i, 1);
-            CGGlyph glyph = 0;
-            CTRunGetGlyphs(runb, range, &glyph);
-            CGPoint position = CGPointZero;
-            CTRunGetPositions(runb, range, &position);
-            
-            CGFloat temp3 = position.x;
-            int temp2 = (int) temp3 / width;
-            CGFloat temp1 = 0;
-            
-            if (temp2 > temp1) {
-                temp = temp2;
-                offset = position.x - (CGFloat) temp;
-            }
-            
-            CGPathRef path = CTFontCreatePathForGlyph(runFontS, glyph, nil);
-            CGFloat x = position.x - (CGFloat) temp * width - offset;
-            CGFloat y = position.y - (CGFloat) temp * 80;
-            CGAffineTransform transform = CGAffineTransformMakeTranslation(x, y);
-            CGPathAddPath(paths, &transform, path);
-            
-            CGPathRelease(path);
-        }
-        CFRelease(runb);
-        CFRelease(runFontS);
-    }
-    
-    UIBezierPath *bezierPath = [UIBezierPath bezierPath];
-    [bezierPath moveToPoint:CGPointZero];
-    [bezierPath appendPath:[UIBezierPath bezierPathWithCGPath:paths]];
-    
-    CGPathRelease(paths);
-    CFRelease(fontNameRef);
-    CFRelease(fontRef);
-    
-    return bezierPath;
-}
-
 - (QTalkViewController *)sessionViewDidSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *infoDic = [self.recentContactArray objectAtIndex:indexPath.row];
+    NSDictionary *infoDic = [self.dataManager.dataSource objectAtIndex:indexPath.row];
     return [self sessionViewDidSelectRowAtIndexPath:indexPath infoDic:infoDic];
 }
 
@@ -979,13 +924,17 @@
 
 - (NSString *)sessionViewTitleDidSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSDictionary *infoDic = [_recentContactArray objectAtIndex:indexPath.row];
+    NSDictionary *infoDic = [self.dataManager.dataSource objectAtIndex:indexPath.row];
     NSString *name = [infoDic objectForKey:@"Name"];
     if (name) {
         return name;
     } else {
         return @"系统消息";
     }
+}
+
+-(void)refreshCell{
+    [self refreshTableView];
 }
 
 #pragma mark - UITableViewDataSource Method
@@ -997,24 +946,18 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return [_recentContactArray count];
+    return [self.dataManager.dataSource count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSDictionary *dict = nil;
-    if (self.recentContactArray.count >= indexPath.row && self.recentContactArray.count >= 1) {
-        dict = [self.recentContactArray objectAtIndex:indexPath.row];
-    }
+    NSDictionary * dict = [[self.dataManager.dataSource objectAtIndex:indexPath.row] yy_modelToJSONObject];
     NSString *chatId = [dict objectForKey:@"XmppId"];
     NSString *realJid = [dict objectForKey:@"RealJid"];
-    NSString *cellIdentifier = @"12223141";//[NSString stringWithFormat:@"Cell ChatId(%@) RealJid(%@) %d", chatId, realJid, indexPath.row];
-    QTalkSessionCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    NSString *cellIdentifier = cellReuseID;//@"12223141";//[NSString stringWithFormat:@"Cell ChatId(%@) RealJid(%@) %d", chatId, realJid, indexPath.row];
+    QTalkNewSessionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
-        cell = [[QTalkSessionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-//        cell.firstRefresh = YES;
-    } else {
-//        cell.firstRefresh = NO;
+        cell = [[QTalkNewSessionTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     [cell setIndexPath:indexPath];
     [cell setAccessibilityIdentifier:chatId];
@@ -1029,9 +972,9 @@
     //请求数据源提交的插入或删除指定行接收者。
     if (editingStyle == UITableViewCellEditingStyleDelete) {//如果编辑样式为删除样式
         
-        if (indexPath.row < [_recentContactArray count]) {
+        if (indexPath.row < [self.dataManager.dataSource count]) {
             
-            NSDictionary *infoDic = [_recentContactArray objectAtIndex:indexPath.row];
+            NSDictionary *infoDic = [self.dataManager.dataSource objectAtIndex:indexPath.row];
             NSString *jid = [infoDic objectForKey:@"XmppId"];
             ChatType chatType = [[infoDic objectForKey:@"ChatType"] longValue];
             if (jid && (chatType != ChatType_Consult || chatType != ChatType_ConsultServer)) {
@@ -1039,100 +982,18 @@
                 _willRefreshTableView = NO;
                 [[QIMKit sharedInstance] removeSessionById:jid];
                 _willRefreshTableView = YES;
-                [_recentContactArray removeObjectAtIndex:indexPath.row];
+                [self.dataManager deleteModelFromSessionListWithIndex:index];
+                
                 [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];//移除tableView中的数据
             } else {
                 NSString *realJid = [infoDic objectForKey:@"RealJid"];
                 _willRefreshTableView = NO;
                 [[QIMKit sharedInstance] removeConsultSessionById:jid RealId:realJid];
                 _willRefreshTableView = YES;
-                [_recentContactArray removeObjectAtIndex:indexPath.row];
+//                [_recentContactArray removeObjectAtIndex:indexPath.row];
+                [self.dataManager deleteModelFromSessionListWithIndex:indexPath.row];
                 [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];//移除tableView中的数据
             }
-        }
-    }
-}
-
-#pragma mark - QIMSessionScrollDelegate
-
-- (void)stickyChatSession:(NSNotification *)notify {
-    
-    QIMVerboseLog(@"QTalkSessionView：%@", notify.name);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSInteger row = [_recentContactArray indexOfObject:notify.object];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-        _willRefreshTableView = NO;
-        [self stickySession:indexPath];
-        _willRefreshTableView = YES;
-    });
-}
-
-- (void)deleteChatSession:(NSNotification *)notify {
-    
-    QIMVerboseLog(@"QTalkSessionView：%@", notify.name);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSInteger row = [_recentContactArray indexOfObject:notify.object];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-        _willRefreshTableView = NO;
-        [self deleteSession:indexPath];
-        _willRefreshTableView = YES;
-    });
-}
-
-//置顶会话
-
-- (void)stickySession:(NSIndexPath *)indexPath {
-    
-    QTalkSessionCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    ChatType chatType = cell.chatType;
-    NSString *combineJid = cell.combineJid;
-    NSDictionary *dict = @{@"topType":@(![[QIMKit sharedInstance] isStickWithCombineJid:combineJid]), @"chatType":@(cell.chatType)};
-    NSString *value = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
-    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:[[QIMKit sharedInstance] isStickWithCombineJid:combineJid]];
-}
-
-- (void)deleteStick:(NSIndexPath *)indexPath {
-    QTalkSessionCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    ChatType chatType = cell.chatType;
-    NSString *combineJid = cell.combineJid;
-    NSDictionary *dict = @{@"topType":@(NO), @"chatType":@(cell.chatType)};
-    NSString *value = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
-    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:YES];
-}
-
-//删除会话
-- (void)deleteSession:(NSIndexPath *)indexPath {
-    
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_recentContactArray];
-    if (indexPath.row < [tempArray count]) {
-        NSDictionary *infoDic = [tempArray objectAtIndex:indexPath.row];
-        NSString *sid = [infoDic objectForKey:@"XmppId"];
-        ChatType chatType = [[infoDic objectForKey:@"ChatType"] longValue];
-        if (sid && (chatType != ChatType_Consult && chatType != ChatType_ConsultServer)) {
-            _willRefreshTableView = NO;
-            [self deleteStick:indexPath];
-            [[QIMKit sharedInstance] removeSessionById:sid];
-            if (![sid isEqualToString:@"FriendNotify"]) {
-                _willRefreshTableView = YES;
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [_tableView beginUpdates];
-                [tempArray removeObjectAtIndex:indexPath.row];
-                _recentContactArray = tempArray;
-                [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];//移除tableView中的数据
-                [_tableView endUpdates];
-            });
-        } else {
-            NSString *realJid = [infoDic objectForKey:@"RealJid"];
-            _willRefreshTableView = NO;
-            [[QIMKit sharedInstance] removeConsultSessionById:sid RealId:realJid];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [_tableView beginUpdates];
-                [tempArray removeObjectAtIndex:indexPath.row];
-                _recentContactArray = tempArray;
-                [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];//移除tableView中的数据
-                [_tableView endUpdates];
-            });
         }
     }
 }
@@ -1144,16 +1005,16 @@
         }
         [self.notReaderIndexPathList removeAllObjects];
         int i = 0;
-        NSArray *arr = [NSArray arrayWithArray:_recentContactArray];
-        NSMutableArray *temoNotReadList = [[NSMutableArray alloc] initWithCapacity:3];
-        for (NSDictionary *infoDic in arr) {
-            NSInteger unreadCount = [[infoDic objectForKey:@"UnreadCount"] integerValue];
+        NSArray *arr = [NSArray arrayWithArray:self.dataManager.dataSource];
+        NSMutableArray *tempNotReadList = [[NSMutableArray alloc] initWithCapacity:3];
+        for (QtalkSessionModel *infoModel in arr) {
+            NSInteger unreadCount = infoModel.UnreadCount.integerValue;
             if (unreadCount > 0) {
-                [temoNotReadList addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                [tempNotReadList addObject:[NSIndexPath indexPathForRow:i inSection:0]];
             }
             i++;
         }
-        self.notReaderIndexPathList = [NSMutableArray arrayWithArray:temoNotReadList];
+        self.notReaderIndexPathList = [NSMutableArray arrayWithArray:tempNotReadList];
         self.needUpdateNotReadList = NO;
         [self scrollToNotReadMsg];
     });
@@ -1167,24 +1028,24 @@
             //
             // 如果就木有，那么随便了，你可以在这里增加各种逻辑
         } else {
-            
+
             NSIndexPath *totalBeginPath = nil;
             NSIndexPath *totalEndPath = nil;
-            
+
             NSInteger nSections = [_tableView numberOfSections];
             if (nSections > 0) {
-                
+
                 totalBeginPath = [NSIndexPath indexPathForRow:0 inSection:0];
-                
+
                 for (int section = 0; section < nSections; section++) {
                     NSInteger rows = [_tableView numberOfRowsInSection:section];
                     totalEndPath = [NSIndexPath indexPathForRow:rows - 1 inSection:section];
                 }
             }
-            
+
             NSIndexPath *firstPath = [[_tableView indexPathsForVisibleRows] firstObject];
             NSIndexPath *lastPath = [[_tableView indexPathsForVisibleRows] lastObject];
-            
+
             NSIndexPath *firstUnreadPath = [tempNotReaderIndexPathList firstObject];
             NSIndexPath *lastUnreadPath = [tempNotReaderIndexPathList lastObject];
             if (lastPath == totalEndPath) {
@@ -1195,9 +1056,9 @@
                     // 如果最后一条未读 在当前可视的上面，那么就轮到最前面一条
                     [_tableView scrollToRowAtIndexPath:firstUnreadPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
                 } else {
-                    
+
                     NSIndexPath *currentPath = [NSIndexPath indexPathForRow:firstPath.row + 1 inSection:0];
-                    
+
                     while (YES) {
                         if ([tempNotReaderIndexPathList containsObject:currentPath]) {
                             [_tableView scrollToRowAtIndexPath:currentPath atScrollPosition:UITableViewScrollPositionTop animated:YES];

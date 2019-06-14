@@ -6,7 +6,7 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+#import "QIMCommonUIFramework.h"
 
 @interface QTNoteTrashViewController : UIViewController
 
