@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "3.0.10211595"
+  s.version      = "3.0.10211613"
   s.summary      = "QIM App UI 9.0+ version"
   s.description  = <<-DESC
                    QIM UI

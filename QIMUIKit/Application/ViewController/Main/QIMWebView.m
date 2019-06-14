@@ -631,7 +631,6 @@ static NSString *__default_ua = nil;
                
             }
         }
-        
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
         [cook setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
         request = [[NSMutableURLRequest alloc] initWithURL:_requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
