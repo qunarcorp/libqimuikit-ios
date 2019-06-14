@@ -15,7 +15,7 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMAACollectionCell.h"
 #import "QIMJSONSerializer.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 
 @interface QIMAACollectionCell (){
     UILabel         * _titleLabel;          //活动标题

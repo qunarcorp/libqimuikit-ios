@@ -18,7 +18,7 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMJSONSerializer.h"
 #import "QIMExtensibleProductCell.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "QIMWebView.h"
 
 @interface QCKeyValueView : UIView {

@@ -175,12 +175,12 @@
     QTalkSessionCell *cell = [tableView dequeueReusableCellWithIdentifier:name];
     if (!cell) {
         cell = [[QTalkSessionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:name];
-        cell.firstRefresh = YES;
     } else {
-        cell.firstRefresh = NO;
+
     }
     cell.bindId = bindId;
     cell.infoDic = infoDic;
+    [cell refreshUI];
     return cell;
 }
 

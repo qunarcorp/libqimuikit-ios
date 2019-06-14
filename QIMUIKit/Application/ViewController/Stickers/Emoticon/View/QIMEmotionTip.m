@@ -6,7 +6,7 @@
 //
 
 #import "QIMEmotionTip.h"
-#import "UIImage+GIF.h"
+#import "UIImage+QIMGIF.h"
 #import "QIMCollectionFaceManager.h"
 #import "QIMEmotionManager.h"
 
@@ -185,14 +185,14 @@ typedef NS_ENUM(NSInteger, QTalkTipPositionType) {
         if ([cell isKindOfClass:[QIMFaceViewCell class]]) {
             QIMFaceViewCell *normalEmotionCell = (QIMFaceViewCell *)cell;
             NSData *gifData = [[QIMEmotionManager sharedInstance] getEmotionThumbIconDataWithImageStr:normalEmotionCell.emojiPath];
-            self.gifImageView.image = [UIImage sd_animatedGIFWithData:gifData];
+            self.gifImageView.image = [UIImage qimsd_animatedGIFWithData:gifData];
         } else if ([cell isKindOfClass:[QIMCollectionViewCell class]]) {
             QIMCollectionViewCell *collectionCell = (QIMCollectionViewCell *)cell;
             NSData *imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getCollectionFaceEmojiLocalPathWithIndex:collectionCell.tag - 1]];
             if (!imageData.length) {
                 imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getSmallEmojiLocalPathWithIndex:collectionCell.tag - 1]];
             }
-            self.gifImageView.image = [UIImage sd_animatedGIFWithData:imageData];
+            self.gifImageView.image = [UIImage qimsd_animatedGIFWithData:imageData];
         }
     }
 }

@@ -265,7 +265,7 @@
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WithLimit:20 WithOffset:0 withFirstLocalMoment:NO WithComplete:^(NSArray * _Nonnull moments) {
-            if (moments.count > 0) {
+            if (moments) {
                 [weakSelf.workMomentList removeAllObjects];
                 for (NSDictionary *momentDic in moments) {
                     QIMWorkMomentModel *model = [weakSelf getMomentModelWithDic:momentDic];
@@ -584,7 +584,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    [[SDImageCache sharedImageCache] clearMemory];
+    [[QIMSDImageCache sharedImageCache] clearMemory];
 }
 
 @end

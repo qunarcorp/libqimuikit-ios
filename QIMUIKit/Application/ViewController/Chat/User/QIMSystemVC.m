@@ -566,7 +566,7 @@ static CGPoint tableOffsetPoint;
 #pragma mark -  MJRefresh的代理函数
 
 - (void)loadNewSystemMsgList {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
                 CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
@@ -596,7 +596,7 @@ static CGPoint tableOffsetPoint;
                 });
             }];
         }
-    });
+//    });
 }
 
 - (void)scrollToBottom_tableView {

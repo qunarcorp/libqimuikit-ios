@@ -177,7 +177,7 @@
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
-    return [self initWithFrame:frame userId:@"" showNewMomentBtn:YES showNoticView:YES];
+    return [self initWithFrame:frame userId:nil showNewMomentBtn:YES showNoticView:YES];
 }
 
 //主动更新驼圈未读数
@@ -681,7 +681,7 @@
 /*
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    [[SDImageCache sharedImageCache] clearMemory];
+    [[QIMSDImageCache sharedImageCache] clearMemory];
 }
 */
 

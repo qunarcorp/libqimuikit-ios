@@ -8,10 +8,10 @@
 
 #import "QTalkSearchRNView.h"
 #import "QTalkSearchCheckUpdate.h"
-//#import "BSDiff.h"
+#import "BSDiff.h"
 // zipHelper
 #import "ZipArchive.h"
-//#import "QTalkPatchDownloadHelper.h"
+#import "QTalkPatchDownloadHelper.h"
 
 @implementation QTalkSearchCheckUpdate
 
@@ -19,7 +19,6 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback) {
-    /*
     BOOL updateResult = NO;
     
     // update param
@@ -72,7 +71,6 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
         NSDictionary *resp2 = @{@"is_ok": @NO, @"errorMsg": @""};
         callback(@[resp2]);
     }
-    */
     NSDictionary *resp2 = @{@"is_ok": @NO, @"errorMsg": @""};
     callback(@[resp2]);
 }
