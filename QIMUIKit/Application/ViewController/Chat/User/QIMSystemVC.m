@@ -192,21 +192,34 @@
 -(void)loadData
 {
     [self.messageManager.dataSource removeAllObjects];
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof(self) weakSelf = self;
     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         NSString *domain = [[QIMKit sharedInstance] getDomain];
         [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
-            [self.messageManager.dataSource addObjectsFromArray:list];
-            [weakSelf.tableView reloadData];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.messageManager.dataSource addObjectsFromArray:list];
+                [weakSelf.tableView reloadData];
+                dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                    //标记已读
+                    [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:weakSelf.chatId];
+                });
+            });
         }];
     } else {
         [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
-            [self.messageManager.dataSource addObjectsFromArray:list];
-            [weakSelf.tableView reloadData];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.messageManager.dataSource addObjectsFromArray:list];
+                [weakSelf.tableView reloadData];
+            });
+            dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+            dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                //标记已读
+                [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:weakSelf.chatId];
+            });
         }];
     }
-    [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:self.chatId];
 }
 
 
