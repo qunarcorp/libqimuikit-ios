@@ -180,7 +180,7 @@ CGFloat maxFullContentHeight = 0;
     switch (contentType) {
         case QIMWorkFeedContentTypeText: {
             NSString *exContent = self.moment.content.exContent;
-            if (exContent.length > 0) {
+            if (exContent) {
                 content = exContent;
             } else {
                 
@@ -192,7 +192,12 @@ CGFloat maxFullContentHeight = 0;
         }
             break;
         case QIMWorkFeedContentTypeLink: {
-            content = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.moment.content.content];
+            NSString *exContent = self.moment.content.exContent;
+            if (exContent) {
+                content = exContent;
+            } else {
+                
+            }
         }
             break;
         default: {
