@@ -456,19 +456,21 @@
 
 - (void)refreshTableView {
     
-    UIViewController *currentVc = [UIApplication sharedApplication].visibleViewController;
-    Class mainVC = NSClassFromString(@"QIMMainVC");
-    Class helperVC = NSClassFromString(@"QIMMessageHelperVC");
-    if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadTableView) object:nil];
-            _willRefreshTableView = YES;
-            [self performSelector:@selector(reloadTableView) withObject:nil afterDelay:0.1];
-        });
-        self.notVisibleReload = NO;
-    } else {
-        self.notVisibleReload = YES;
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIViewController *currentVc = [UIApplication sharedApplication].visibleViewController;
+        Class mainVC = NSClassFromString(@"QIMMainVC");
+        Class helperVC = NSClassFromString(@"QIMMessageHelperVC");
+        if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadTableView) object:nil];
+                _willRefreshTableView = YES;
+                [self performSelector:@selector(reloadTableView) withObject:nil afterDelay:0.1];
+            });
+            self.notVisibleReload = NO;
+        } else {
+            self.notVisibleReload = YES;
+        }
+    });
 }
 
 #pragma mark - notify
@@ -609,9 +611,11 @@
         
         UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.moreBtn];
         [self.rootViewController.navigationItem setRightBarButtonItem:rightBarItem];
+        /* 修复每次展示SessionView时候，tableview自动滚动置顶
         if (self.dataManager.dataSource.count> 0) {
             [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
         }
+        */
     } else {
         [self.rootViewController.navigationItem setRightBarButtonItem:nil];
     }
