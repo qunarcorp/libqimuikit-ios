@@ -1126,6 +1126,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                 WithRealJid:weakSelf.chatId
                                                   WithLimit:kPageCount
                                                  WithOffset:0
+                                               withLoadMore:NO
                                                WithComplete:^(NSArray *list) {
                                                        weakSelf.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
                                                    dispatch_async(dispatch_get_main_queue(), ^{
@@ -2198,7 +2199,7 @@ static CGPoint tableOffsetPoint;
 - (void)updateHistoryMessageList:(NSNotification *)notify {
     
     if ([self.chatId isEqualToString:notify.object]) {
-        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
             [self updateGroupUsersHeadImgForMsgs:list];
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.messageManager.dataSource = [NSMutableArray arrayWithArray:list];
@@ -2812,6 +2813,7 @@ static CGPoint tableOffsetPoint;
                                         WithRealJid:weakSelf.chatId
                                           WithLimit:kPageCount
                                          WithOffset:(int) weakSelf.messageManager.dataSource.count
+                                       withLoadMore:YES 
                                        WithComplete:^(NSArray *list) {
                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                CGFloat offsetY = weakSelf.tableView.contentSize.height - weakSelf.tableView.contentOffset.y;
