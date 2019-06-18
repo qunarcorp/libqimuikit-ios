@@ -11,21 +11,51 @@
 #import "QIMDatasourceItem.h"
 #import "QIMDatasourceItemManager.h"
 #import "NSBundle+QIMLibrary.h"
+#import "MBProgressHUD.h"
 
 @interface QIMOrganizationalVC () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) MBProgressHUD *progressHUD;
 
 @end
 
 @implementation QIMOrganizationalVC
 
+- (MBProgressHUD *)progressHUD {
+    if (!_progressHUD) {
+        _progressHUD = [[MBProgressHUD alloc] initWithView:self.tableView];
+        _progressHUD.minSize = CGSizeMake(120, 120);
+        _progressHUD.minShowTime = 1;
+        [self.tableView addSubview:_progressHUD];
+    }
+    return _progressHUD;
+}
+
+- (void)showProgressHUDWithMessage:(NSString *)message {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressHUD.hidden = NO;
+        self.progressHUD.labelText = message;
+        self.progressHUD.mode = MBProgressHUDModeIndeterminate;
+        [self.progressHUD show:YES];
+        self.navigationController.navigationBar.userInteractionEnabled = NO;
+    });
+}
+
+- (void)hideProgressHUD:(BOOL)animated {
+    [self.progressHUD hide:animated];
+    self.navigationController.navigationBar.userInteractionEnabled = YES;
+}
+
 - (void)loadRosterList {
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_TARGET_QUEUE_DEFAULT, 0), ^{
         if ([[[[QIMDatasourceItemManager sharedInstance] getTotalItems] allKeys] count] <= 0) {
+            [weakSelf showProgressHUDWithMessage:@"正在加载中..."];
             [[QIMDatasourceItemManager sharedInstance] createDataSource];
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
+                [weakSelf.tableView reloadData];
+                [weakSelf hideProgressHUD:YES];
             });
         }
     });
@@ -85,15 +115,19 @@
 }
 
 #pragma mark - table delegate
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
+    QIMVerboseLog(@"numberOfSectionsInTableView getQIMMergedRootBranch");
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    
-    NSInteger count = [[[QIMDatasourceItemManager sharedInstance] getQIMMergedRootBranch] count];
-    return count;
+    if ([[[[QIMDatasourceItemManager sharedInstance] getTotalItems] allKeys] count] <= 0) {
+        return 0;
+    } else {
+        NSInteger count = [[[QIMDatasourceItemManager sharedInstance] getQIMMergedRootBranch] count];
+        return count;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{

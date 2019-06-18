@@ -768,8 +768,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     __weak __typeof(self) weakSelf = self;
     if (message.length > 0) {
         dispatch_async([[QIMKit sharedInstance] getLoadSessionContentQueue], ^{
-            /* Mark DBUpdate
-             */
             NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:weakSelf.jid];
             if (atMeMessages.count > 0) {
                 NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
