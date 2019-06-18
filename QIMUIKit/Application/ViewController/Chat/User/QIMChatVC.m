@@ -266,16 +266,7 @@
         [_textBar setAllowFace:YES];
         [_textBar setAllowMore:YES];
         [_textBar setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin];
-//        [_textBar setPlaceHolder:@"文本信息"];
-        if (self.chatType == ChatType_Consult) {
-//            [self.textBar setChatId:self.virtualJid];
-            
-        } else if (self.chatType == ChatType_ConsultServer) {
-            [self.textBar setChatId:self.chatId];
-            
-        } else {
-            [self.textBar setChatId:self.chatId];
-        }
+        [_textBar setChatId:self.chatId];
         __weak QIMTextBar *weakTextBar = _textBar;
         
         [_textBar setSelectedEmotion:^(NSString *faceStr) {
@@ -1246,7 +1237,7 @@
             }];
         } else {
             if (self.chatType == ChatType_ConsultServer) {
-                [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.messageManager.dataSource removeAllObjects];
                         [self.messageManager.dataSource addObjectsFromArray:list];
@@ -1266,7 +1257,7 @@
                     });
                 }];
             } else {
-                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.messageManager.dataSource removeAllObjects];
                         [self.messageManager.dataSource addObjectsFromArray:list];
@@ -2101,7 +2092,7 @@
         __weak typeof(self) weakSelf = self;
         if (self.chatType == ChatType_ConsultServer) {
             
-            [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.messageManager.dataSource removeAllObjects];
                     [self.messageManager.dataSource addObjectsFromArray:list];
@@ -2111,7 +2102,7 @@
                 });
             }];
         } else {
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.messageManager.dataSource removeAllObjects];
                     [self.messageManager.dataSource addObjectsFromArray:list];
@@ -3190,7 +3181,7 @@ static CGPoint tableOffsetPoint;
             realJid = self.chatId;
         }
         if (self.chatType == ChatType_ConsultServer) {
-            [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
                 if (list.count) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
@@ -3213,7 +3204,7 @@ static CGPoint tableOffsetPoint;
             }];
         } else {
 
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
                 if (list.count > 0) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         

@@ -196,7 +196,7 @@
     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         NSString *domain = [[QIMKit sharedInstance] getDomain];
-        [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+        [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:NO WithComplete:^(NSArray *list) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf.messageManager.dataSource addObjectsFromArray:list];
                 [weakSelf.tableView reloadData];
@@ -208,7 +208,7 @@
             });
         }];
     } else {
-        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf.messageManager.dataSource addObjectsFromArray:list];
                 [weakSelf.tableView reloadData];
@@ -581,7 +581,7 @@ static CGPoint tableOffsetPoint;
 - (void)loadNewSystemMsgList {
 //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-            [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
                 CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
                 NSRange range = NSMakeRange(0, [list count]);
                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
@@ -594,7 +594,7 @@ static CGPoint tableOffsetPoint;
                 [_tableView.mj_header endRefreshing];
             }];
         } else {
-            [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
                     NSRange range = NSMakeRange(0, [list count]);

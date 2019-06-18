@@ -490,7 +490,6 @@
                 } else {
                     temp = [[QIMKit sharedInstance] getSessionList];
                 }
-                NSMutableArray *tempStickList = [NSMutableArray array];
                 NSMutableArray *normalList = [NSMutableArray array];
                 BOOL isAddFN = NO;
                 long long fnTime = 0;
@@ -949,7 +948,7 @@
     [cell setIndexPath:indexPath];
     [cell setAccessibilityIdentifier:chatId];
     cell.infoDic = dict;
-    cell.sessionScrollDelegate = self;
+    cell.sessionScrollDelegate = self.dataManager;
     [cell refreshUI];
     return cell;
 }
