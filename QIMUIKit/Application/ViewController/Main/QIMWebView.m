@@ -225,6 +225,9 @@ static NSString *__default_ua = nil;
     [self setToolbarItems:nil animated:YES];
     [self.navigationController setToolbarHidden:YES animated:NO];
     [self setUrl:nil];
+    UIImage *image = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0xDDDDDD] size:CGSizeMake([[UIScreen mainScreen] qim_rightWidth], 0.5)];
+    [[UINavigationBar appearance] setBackgroundImage:image forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setShadowImage:image];
 }
 
 - (BOOL)shouldAutorotate {
@@ -347,6 +350,8 @@ static NSString *__default_ua = nil;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.translucent = NO;
+    [[UINavigationBar appearance] setBackgroundImage:nil forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setShadowImage:nil];
     if (![[QIMKit sharedInstance] getIsIpad] && self.fromRegPackage == NO) {
         UIView *leftItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
         UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];

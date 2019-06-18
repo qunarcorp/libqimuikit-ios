@@ -6,15 +6,10 @@
 //
 
 #import "QTalkSessionDataManager.h"
-#import "QIMNotificationKeys.h"
-#import "YYModel.h"
 #import "QtalkSessionModel.h"
-#import "QIMCommonEnum.h"
-#import "QIMJSONSerializer.h"
-#import "QIMKit+QIMClientConfig.h"
-#import "QIMKit.h"
-#import "QIMKit+QIMMessage.h"
-@interface QTalkSessionDataManager()
+#import "QIMNewSessionScrollDelegate.h"
+
+@interface QTalkSessionDataManager() <QIMNewSessionScrollDelegate>
 
 @property (nonatomic , strong) NSMutableArray * dataSource;
 
@@ -367,6 +362,76 @@ static QTalkSessionDataManager * manager = nil;
 //                }
 //            }
 //        }];
+    }
+}
+
+- (NSString *)gsswithCHatType:(ChatType)chatType WithXmppId:(NSString *)xmppJid withRealJid:(NSString *)realJid {
+    NSString *combineJid = nil;
+    switch (chatType) {
+        case ChatType_ConsultServer: {
+            combineJid = [NSString stringWithFormat:@"%@<>%@", xmppJid, realJid];
+        }
+            break;
+        default: {
+            combineJid = [NSString stringWithFormat:@"%@<>%@", xmppJid, xmppJid];
+        }
+            break;
+    }
+    return combineJid;
+}
+
+#pragma mark - QIMSessionScrollDelegate
+
+//置顶会话
+- (void)qimStickySession:(NSIndexPath *)indexPath {
+    
+    QtalkSessionModel *sessionModel = [self.dataSource objectAtIndex:indexPath.row];
+    ChatType chatType = [sessionModel.ChatType integerValue];
+    NSString *xmppJid =  sessionModel.XmppId;
+    NSString *realJid = sessionModel.RealJid;
+    NSString *combineJid = [self gsswithCHatType:chatType WithXmppId:xmppJid withRealJid:realJid];
+    NSDictionary *dict = @{@"topType":@(![[QIMKit sharedInstance] isStickWithCombineJid:combineJid]), @"chatType":@(chatType)};
+    NSString *value = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
+    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:[[QIMKit sharedInstance] isStickWithCombineJid:combineJid]];
+}
+
+- (void)deleteStick:(NSIndexPath *)indexPath {
+    QtalkSessionModel *sessionModel = [self.dataSource objectAtIndex:indexPath.row];
+    ChatType chatType = [sessionModel.ChatType integerValue];
+    NSString *xmppJid =  sessionModel.XmppId;
+    NSString *realJid = sessionModel.RealJid;
+    NSString *combineJid = [self gsswithCHatType:chatType WithXmppId:xmppJid withRealJid:realJid];
+    
+    NSDictionary *dict = @{@"topType":@(NO), @"chatType":@(chatType)};
+    NSString *value = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
+    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:YES];
+}
+
+//删除会话
+- (void)qimDeleteSession:(NSIndexPath *)indexPath {
+    
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.dataSource];
+    if (indexPath.row < [tempArray count]) {
+        QtalkSessionModel *sessionModel = [self.dataSource objectAtIndex:indexPath.row];
+        ChatType chatType = [sessionModel.ChatType integerValue];
+        NSString *sid =  sessionModel.XmppId;
+        NSString *realJid = sessionModel.RealJid;
+        if (sid && (chatType != ChatType_Consult && chatType != ChatType_ConsultServer)) {
+            [self deleteStick:indexPath];
+            [[QIMKit sharedInstance] removeSessionById:sid];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.qtBlock) {
+                    self.qtBlock();
+                }
+            });
+        } else {
+            [[QIMKit sharedInstance] removeConsultSessionById:sid RealId:realJid];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.qtBlock) {
+                    self.qtBlock();
+                }
+            });
+        }
     }
 }
 

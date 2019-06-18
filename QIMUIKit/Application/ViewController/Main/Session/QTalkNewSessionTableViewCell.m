@@ -293,7 +293,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         
         _deleteBtn = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"移除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
             
-            if (self.sessionScrollDelegate && [self.sessionScrollDelegate respondsToSelector:@selector(deleteSession:)]) {
+            if (self.sessionScrollDelegate && [self.sessionScrollDelegate respondsToSelector:@selector(qimDeleteSession:)]) {
                 
                 [self.sessionScrollDelegate qimDeleteSession:indexPath];
             }

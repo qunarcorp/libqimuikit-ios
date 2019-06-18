@@ -6,15 +6,9 @@
 //
 
 #import "QIMCommonUIFramework.h"
+#import "QIMNewSessionScrollDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@protocol QIMNewSessionScrollDelegate <NSObject>
-
-- (void)qimDeleteSession:(NSIndexPath *)indexPath;
-- (void)qimStickySession:(NSIndexPath *)indexPath;
-
-@end
-
 
 @interface QTalkNewSessionTableViewCell : UITableViewCell
 

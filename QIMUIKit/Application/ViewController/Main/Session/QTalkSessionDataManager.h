@@ -5,7 +5,7 @@
 //  Created by qitmac000645 on 2019/5/27.
 //
 
-#import <Foundation/Foundation.h>
+#import "QIMCommonUIFramework.h"
 @class QtalkSessionModel;
 NS_ASSUME_NONNULL_BEGIN
 

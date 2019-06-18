@@ -16,7 +16,6 @@
 #import "QIMSystemVC.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMFriendNotifyViewController.h"
-//#import "QTalkSessionCell.h"
 #import "QIMWebView.h"
 #import <CoreText/CoreText.h>
 #import "QIMCollectionChatViewController.h"
@@ -572,11 +571,9 @@
 
 - (void)showNotConnectWebView:(UITapGestureRecognizer *)tapgesture {
     
-    QIMWebView *webView = [[QIMWebView alloc] init];
     NSString *htmlPath = [[NSBundle mainBundle] pathForResource:@"NetWorkSetting" ofType:@"html"];
     NSString *htmlString = [NSString stringWithContentsOfFile:htmlPath encoding:NSUTF8StringEncoding error:nil];
-    [webView setHtmlString:htmlString];
-    [self.rootViewController.navigationController pushViewController:webView animated:YES];
+    [QIMFastEntrance openWebViewWithHtmlStr:htmlString showNavBar:YES];
 }
 
 - (void)oneKeyRead {
