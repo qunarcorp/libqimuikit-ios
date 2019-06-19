@@ -214,4 +214,19 @@ RCT_EXPORT_METHOD(getFoundInfo:(RCTResponseSenderBlock)callback) {
     NSLog(@"foundList : %@", foundListStr);
 }
 
+RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(NSDictionary *)cookie :(RCTResponseSenderBlock)callback1 :(RCTResponseSenderBlock)callback2) {
+    NSLog(@"searchUrl : %@", searchUrl);
+    NSLog(@"params : %@", params);
+    NSLog(@"Cookie : %@", cookie);
+    [[QIMKit sharedInstance] searchWithUrl:searchUrl withParams:params withSuccessCallBack:^(BOOL successed, NSString *responseJson) {
+        
+        NSMutableDictionary *resultMap = [NSMutableDictionary dictionaryWithCapacity:3];
+        [resultMap setObject:@(YES) forKey:@"isOk"];
+        [resultMap setObject:responseJson forKey:@"responseJson"];
+        callback2(@[resultMap ? resultMap : @{}]);
+    } withFaildCallBack:^(BOOL successed, NSString *errmsg) {
+        
+    }];
+}
+
 @end
