@@ -48,11 +48,7 @@ static RCTBridge * bridge = nil;
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        // NSDictionary *initialProps = [NSDictionary dictionaryWithObject: @"https://qt.qunar.com" forKey: @"server"];
-        
-        NSDictionary *initialProps = [NSDictionary dictionaryWithObject: [[QIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey: @"server"];
-        
-        RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[self getRCTbridge] moduleName:@"qtalkSearch" initialProperties:initialProps];
+        RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[self getRCTbridge] moduleName:@"new_search" initialProperties:[self getNewSearchInitialProps]];
         
         [rootView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin];
         [self addSubview:rootView];
@@ -68,6 +64,17 @@ static RCTBridge * bridge = nil;
     return self;
 }
 
+- (NSDictionary *)getNewSearchInitialProps {
+    NSMutableDictionary *initialProps = [NSMutableDictionary dictionaryWithCapacity:4];
+    [initialProps setQIMSafeObject:@"" forKey:@"server"];
+    [initialProps setQIMSafeObject:@"http://qim.qunar.com/py/search" forKey:@"searchUrl"];
+    [initialProps setQIMSafeObject:@"" forKey:@"singleDefaultPic"];
+    [initialProps setQIMSafeObject:@"" forKey:@"mucDefaultDic"];
+    [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/" forKey:@"imageHost"];
+    [initialProps setQIMSafeObject:[QIMKit getLastUserName] forKey:@"MyUserId"];
+    return initialProps;
+}
+
 - (void)viewWillAppear:(BOOL)animated{
     if([self getRCTbridge] == nil){
         [self setProgressHUDDetailsLabelText:@"正在载入"];
@@ -81,11 +88,7 @@ static RCTBridge * bridge = nil;
     [self removeAllSubviews];
     // clear bridge cache
     [self clearBridge];
-    
-    NSDictionary *initialProps = [NSDictionary dictionaryWithObject: [[QIMKit sharedInstance] qimNav_InnerFileHttpHost]   //  @"https://qt.qunar.com"
-                                                             forKey: @"server"];
-    
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[self getRCTbridge] moduleName: [QTalkSearchRNView getRegisterBundleName] initialProperties:initialProps];
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[self getRCTbridge] moduleName: [QTalkSearchRNView getRegisterBundleName] initialProperties:[self getNewSearchInitialProps]];
     
     [rootView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin];
     
@@ -141,6 +144,7 @@ static RCTBridge * bridge = nil;
     // debug    
     _jsCodeLocation = jsCodeLocation;
     
+    jsCodeLocation = [NSURL URLWithString:@"http://100.80.128.178:8081/index.bundle?platform=ios&dev=true"];
     return jsCodeLocation;
 }
 
