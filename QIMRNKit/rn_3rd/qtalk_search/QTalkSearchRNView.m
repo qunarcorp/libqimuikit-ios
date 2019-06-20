@@ -67,7 +67,7 @@ static RCTBridge * bridge = nil;
 - (NSDictionary *)getNewSearchInitialProps {
     NSMutableDictionary *initialProps = [NSMutableDictionary dictionaryWithCapacity:4];
     [initialProps setQIMSafeObject:@"" forKey:@"server"];
-    [initialProps setQIMSafeObject:@"http://qim.qunar.com/py/search" forKey:@"searchUrl"];
+    [initialProps setQIMSafeObject:@"http://10.88.112.79:8884/search" forKey:@"searchUrl"];
     [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/avatar/new/e059510ea07afacc424640b2e71af997.jpg?" forKey:@"singleDefaultPic"];
     [initialProps setQIMSafeObject:@"" forKey:@"mucDefaultDic"];
     [initialProps setQIMSafeObject:@"https://qim.qunar.com" forKey:@"imageHost"];
