@@ -9,6 +9,7 @@
 
 #import "QtalkPlugin.h"
 #import "QIMFastEntrance.h"
+#import "QIMNotificationKeys.h"
 #import "QIMJSONSerializer.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -236,9 +237,9 @@ RCT_EXPORT_METHOD(openGroupChat:(NSDictionary *)params) {
     }
 }
 
-RCT_EXPORT_METHOD(exitApp) {
+RCT_EXPORT_METHOD(exitSearchApp) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotify_RN_QTALK_SEARCH_GO_BACK" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotify_RN_QTALK_SEARCH_GO_BACK object:nil];
     });
 }
 
