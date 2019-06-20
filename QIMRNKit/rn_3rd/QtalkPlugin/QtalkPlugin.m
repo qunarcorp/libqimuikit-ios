@@ -229,4 +229,17 @@ RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(
     }];
 }
 
+RCT_EXPORT_METHOD(openGroupChat:(NSDictionary *)params) {
+    NSString *groupId = [params objectForKey:@"GroupId"];
+    if (groupId.length > 0) {
+        [QIMFastEntrance openGroupChatVCByGroupId:groupId];
+    }
+}
+
+RCT_EXPORT_METHOD(exitApp) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotify_RN_QTALK_SEARCH_GO_BACK" object:nil];
+    });
+}
+
 @end
