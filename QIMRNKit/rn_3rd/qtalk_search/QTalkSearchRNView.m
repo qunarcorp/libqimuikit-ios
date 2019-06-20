@@ -68,9 +68,9 @@ static RCTBridge * bridge = nil;
     NSMutableDictionary *initialProps = [NSMutableDictionary dictionaryWithCapacity:4];
     [initialProps setQIMSafeObject:@"" forKey:@"server"];
     [initialProps setQIMSafeObject:@"http://qim.qunar.com/py/search" forKey:@"searchUrl"];
-    [initialProps setQIMSafeObject:@"" forKey:@"singleDefaultPic"];
+    [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/avatar/new/e059510ea07afacc424640b2e71af997.jpg?" forKey:@"singleDefaultPic"];
     [initialProps setQIMSafeObject:@"" forKey:@"mucDefaultDic"];
-    [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/" forKey:@"imageHost"];
+    [initialProps setQIMSafeObject:@"https://qim.qunar.com" forKey:@"imageHost"];
     [initialProps setQIMSafeObject:[QIMKit getLastUserName] forKey:@"MyUserId"];
     return initialProps;
 }
