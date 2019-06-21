@@ -1797,23 +1797,7 @@ RCT_EXPORT_METHOD(updateCheckConfig) {
 
 RCT_EXPORT_METHOD(getAppCache:(RCTResponseSenderBlock)callback) {
     long long totalSize = [[QIMDataController getInstance] sizeofImagePath];
-    NSString *str = nil;
-    if (totalSize < 1048576) {
-        // 1024 * 1024
-        double total = (double)totalSize;
-        float result = total / 1024.0;
-        str = [NSString stringWithFormat:@"%.2fKB", result];
-    } else if (totalSize < 1073741824) {
-        // 1024 * 1024 * 1024
-        double total = (double)totalSize;
-        float result = total / 1048576.0;
-        str = [NSString stringWithFormat:@"%.2fMB", result];
-    } else if (totalSize < 1099511627776) {
-        // 1024 * 1024 * 1024
-        double total = (double)totalSize;
-        float result = total / 1073741824.0;
-        str = [NSString stringWithFormat:@"%.2fGB", result];
-    }
+    NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
     callback(@[@{@"AppCache" : str ? str : @""}]);
 }
 
