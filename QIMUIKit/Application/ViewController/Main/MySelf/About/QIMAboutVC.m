@@ -16,6 +16,7 @@
 #import "QIMContactManager.h"
 #import "NSBundle+QIMLibrary.h"
 #import "QIMUtility.h"
+#import "QIMDataController.h"
 #if __has_include("QIMLocalLog.h")
 
 #import "QIMLocalLogViewController.h"
@@ -403,25 +404,8 @@
 }
 
 - (NSString *)dataFileSize {
-    NSString *dbPath = [UserCachesPath stringByAppendingPathComponent:[NSString stringWithFormat:@"/QIMNewDataBase/%@%@/", [[[QIMKit sharedInstance] getLastJid] lowercaseString], UserPath]];
-    long long totalSize = [QIMUtility sizeofPath:dbPath];
-    NSString *str = nil;
-    if (totalSize < 1048576) {
-        // 1024 * 1024
-        double total = (double)totalSize;
-        float result = total / 1024.0;
-        str = [NSString stringWithFormat:@"%.2fKB", result];
-    } else if (totalSize < 1073741824) {
-        // 1024 * 1024 * 1024
-        double total = (double)totalSize;
-        float result = total / 1048576.0;
-        str = [NSString stringWithFormat:@"%.2fMB", result];
-    } else if (totalSize < 1099511627776) {
-        // 1024 * 1024 * 1024
-        double total = (double)totalSize;
-        float result = total / 1073741824.0;
-        str = [NSString stringWithFormat:@"%.2fGB", result];
-    }
+    long long totalSize = [[QIMDataController getInstance] sizeOfDBPath];
+    NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
     return str;
 }
 
