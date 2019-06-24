@@ -144,7 +144,7 @@ static RCTBridge * bridge = nil;
     // debug    
     _jsCodeLocation = jsCodeLocation;
     
-    jsCodeLocation = [NSURL URLWithString:@"http://100.80.128.178:8081/index.bundle?platform=ios&dev=true"];
+    jsCodeLocation = [NSURL URLWithString:@"http://100.80.128.161:8081/index.bundle?platform=ios&dev=true"];
     return jsCodeLocation;
 }
 
