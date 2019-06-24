@@ -642,8 +642,9 @@ static NSString *__default_ua = nil;
         [_webView loadRequest:request];
     }
     QIMVerboseLog(@"WebView LoadRequest : %@ \n Cookie : %@", _requestUrl, [NSHTTPCookieStorage sharedHTTPCookieStorage].cookies);
-//    self.view.backgroundColor = [UIColor yellowColor];
-    _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    if ([[QIMDeviceManager sharedInstance] isIphoneXSeries] == YES && @available(iOS 11.0, *)) {
+        _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
 }
     
 - (void)clearLoginCookie{
