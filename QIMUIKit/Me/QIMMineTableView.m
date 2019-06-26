@@ -153,7 +153,7 @@
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (weakSelf.userId) {
-            NSDictionary * usersInfo = [[QIMKit sharedInstance] getUserInfoByUserId:@[weakSelf.userId]];
+            NSDictionary * usersInfo = [[QIMKit sharedInstance] getUserInfoByUserId:weakSelf.userId];
             if (usersInfo.count > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     weakSelf.model.personalSignature = [usersInfo objectForKey:@"Mood"];
