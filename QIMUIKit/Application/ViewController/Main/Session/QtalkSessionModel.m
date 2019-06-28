@@ -9,4 +9,9 @@
 
 @implementation QtalkSessionModel
 
+- (NSString *)description{
+    NSMutableString *str = [NSMutableString stringWithString:[self qim_properties_aps]];
+    return str;
+}
+
 @end

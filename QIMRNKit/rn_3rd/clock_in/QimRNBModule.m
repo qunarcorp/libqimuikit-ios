@@ -396,16 +396,22 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  */
 + (NSURL *)getJsCodeLocation {
 //    return [NSURL URLWithString:@"http://100.80.128.246:8081/index.ios.bundle?platform=ios&dev=true"];
-    NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
-    NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
-    if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
-        QIMVerboseLog(@"本地缓存的更新包地址 : %@", localJSCodeFileStr);
-        innerJsCodeLocation = localJSCodeFileStr;
+    NSString *qtalkFoundRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkFoundRNDebugUrl"];
+    if (qtalkFoundRNDebugUrlStr.length > 0) {
+        NSURL *qtalkFoundRNDebugUrlStrUrl = [NSURL URLWithString:qtalkFoundRNDebugUrlStr];
+        return qtalkFoundRNDebugUrlStrUrl;
     } else {
-        
+        NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
+        NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
+        if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
+            QIMVerboseLog(@"本地缓存的更新包地址 : %@", localJSCodeFileStr);
+            innerJsCodeLocation = localJSCodeFileStr;
+        } else {
+            
+        }
+        NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
+        return jsCodeLocation;
     }
-    NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
-    return jsCodeLocation;
 }
 
 + (UIViewController *)clockOnVC {
@@ -597,7 +603,7 @@ RCT_EXPORT_METHOD(getUserInfoByUserCard:(NSString *)userId :(RCTResponseSenderBl
     }
     NSDictionary *properties = [QimRNBModule qimrn_getUserInfoByUserId:userId];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[QIMKit sharedInstance] updateUserCard:@[userId]];
+        [[QIMKit sharedInstance] updateUserCard:userId withCache:YES];
     });
     callback(@[@{@"UserInfo" : properties ? properties : @{}}]);
 }
@@ -1791,23 +1797,7 @@ RCT_EXPORT_METHOD(updateCheckConfig) {
 
 RCT_EXPORT_METHOD(getAppCache:(RCTResponseSenderBlock)callback) {
     long long totalSize = [[QIMDataController getInstance] sizeofImagePath];
-    NSString *str = nil;
-    if (totalSize < 1048576) {
-        // 1024 * 1024
-        double total = (double)totalSize;
-        float result = total / 1024.0;
-        str = [NSString stringWithFormat:@"%.2fKB", result];
-    } else if (totalSize < 1073741824) {
-        // 1024 * 1024 * 1024
-        double total = (double)totalSize;
-        float result = total / 1048576.0;
-        str = [NSString stringWithFormat:@"%.2fMB", result];
-    } else if (totalSize < 1099511627776) {
-        // 1024 * 1024 * 1024
-        double total = (double)totalSize;
-        float result = total / 1073741824.0;
-        str = [NSString stringWithFormat:@"%.2fGB", result];
-    }
+    NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
     callback(@[@{@"AppCache" : str ? str : @""}]);
 }
 

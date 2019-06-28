@@ -95,25 +95,6 @@
     
     for (NSDictionary * itemDic in _items) {
         NSString *xmppId = [itemDic objectForKey:@"xmppjid"];
-//        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
-        /*
-        NSString *name = [itemDic objectForKey:@"name"];
-        UIImage *headerImage = [[QIMKit sharedInstance] getUserHeaderImageByName:name];
-        if (headerImage.images.count) {
-            if (headerImage.images[0] && ![headerImage.images[0] isKindOfClass:[NSNull class]]) {
-                headerImage = headerImage.images[0];
-            }
-        }
-        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByName:name];
-        */
-        /*
-        UIImage *headerImage = [[QIMKit sharedInstance] getUserHeaderImageByUserId:xmppId];
-        if (headerImage.images.count) {
-            if (headerImage.images[0] && ![headerImage.images[0] isKindOfClass:[NSNull class]]) {
-                headerImage = headerImage.images[0];
-            }
-        }
-        */
         UIImageView *imageView = [[UIImageView alloc] init];
         imageView.frame = CGRectMake(startX, _titleLabel.bottom + 10, kImageWidth, kImageWidth);
         imageView.layer.cornerRadius = kImageWidth / 2.0;

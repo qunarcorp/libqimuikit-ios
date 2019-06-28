@@ -25,6 +25,7 @@
 #import "QIMMineTableView.h"
 #import "QIMWorkFeedView.h"
 #import "QIMNavBackBtn.h"
+#import "QIMRNDebugConfigVc.h"
 #import "NSBundle+QIMLibrary.h"
 
 #if __has_include("RNSchemaParse.h")
@@ -70,6 +71,9 @@
 #pragma mark - Navigation
 
 @property(nonatomic, strong) UIButton *addFriendBtn;
+@property (nonatomic, strong) UIButton *rnDebugConfigBtn;
+
+@property (nonatomic, strong) UIButton *addFriendBtn;
 
 @property(nonatomic, strong) UIButton *scanBtn;
 
@@ -84,6 +88,8 @@
 @property(nonatomic, assign) BOOL showNetWorkBar;
 
 @property(nonatomic, strong) dispatch_queue_t reloadCountQueue;
+
+@property (nonatomic, assign) BOOL notVisibleReload;
 
 @end
 
@@ -126,7 +132,6 @@ static BOOL _mainVCReShow = YES;
 
 static QIMMainVC *__mainVc = nil;
 static dispatch_once_t __onceMainToken;
-
 + (instancetype)sharedInstanceWithSkipLogin:(BOOL)skipLogin {
     dispatch_once(&__onceMainToken, ^{
         __mainVc = [[QIMMainVC alloc] init];
@@ -261,7 +266,12 @@ static dispatch_once_t __onceMainToken;
 }
 
 - (void)updateNotReadCount {
-
+    UIViewController *vc = [UIApplication sharedApplication].visibleViewController;
+    if (![vc isKindOfClass:[self class]]) {
+     //不展示在当前屏幕时不刷新View
+        self.notVisibleReload = YES;
+        return;
+    }
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.reloadCountQueue, ^{
         NSUInteger appNotReaderCount = [[QIMKit sharedInstance] getAppNotReaderCount];
@@ -284,6 +294,7 @@ static dispatch_once_t __onceMainToken;
             [weakSelf.sessionView setNeedUpdateNotReadList:YES];
         });
     });
+    self.notVisibleReload = NO;
 }
 
 - (void)otherPlatformLogin:(NSNotification *)notify {
@@ -380,7 +391,6 @@ static dispatch_once_t __onceMainToken;
 
 - (void)updateWorkFeedNotReadCount:(NSNotification *)notify {
     QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
-
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
         if (workMoment == YES) {
@@ -534,6 +544,10 @@ static dispatch_once_t __onceMainToken;
     }
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk || [QIMKit getQIMProjectType] == QIMProjectTypeStartalk || ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant)) {
         [self updateExploreNotReadCount:nil];
+    }
+    if (YES == self.notVisibleReload) {
+        [self updateNotReadCount];
+        [self.sessionView sessionViewWillAppear];
     }
 }
 
@@ -1047,6 +1061,21 @@ static dispatch_once_t __onceMainToken;
     } else {
 
     }
+    if ([[[QIMKit sharedInstance] qimNav_getDebugers] containsObject:[QIMKit getLastUserName]]) {
+        UIBarButtonItem *rndebugBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.rnDebugConfigBtn];
+        [self.navigationItem setLeftBarButtonItem:rndebugBarItem];
+    }
+}
+
+- (UIButton *)rnDebugConfigBtn {
+    if (!_rnDebugConfigBtn) {
+        _rnDebugConfigBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _rnDebugConfigBtn.frame = CGRectMake(0, 0, 28, 28);
+        [_rnDebugConfigBtn setTitle:@"RD" forState:UIControlStateNormal];
+        [_rnDebugConfigBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_rnDebugConfigBtn addTarget:self action:@selector(openRNDebugConfigVC:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _rnDebugConfigBtn;
 }
 
 - (UIButton *)addFriendBtn {
@@ -1093,6 +1122,11 @@ static dispatch_once_t __onceMainToken;
         [_settingBtn addTarget:self action:@selector(openMySetting:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _settingBtn;
+}
+
+- (void)openRNDebugConfigVC:(id)sender {
+    QIMRNDebugConfigVc *rndebugVC = [[QIMRNDebugConfigVc alloc] init];
+    [self.navigationController pushViewController:rndebugVC animated:YES];
 }
 
 - (void)scanQrcode:(id)sender {
