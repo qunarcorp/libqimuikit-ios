@@ -72,6 +72,8 @@ static RCTBridge * bridge = nil;
     [initialProps setQIMSafeObject:@"" forKey:@"mucDefaultDic"];
     [initialProps setQIMSafeObject:@"https://qim.qunar.com" forKey:@"imageHost"];
     [initialProps setQIMSafeObject:[QIMKit getLastUserName] forKey:@"MyUserId"];
+    NSArray *searchKeyHistory = [[QIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:QIMSearchTypeAll withLimit:5];
+    [initialProps setQIMSafeObject:searchKeyHistory ? searchKeyHistory : @[] forKey:@"searchKeyHistory"];
     return initialProps;
 }
 
@@ -153,7 +155,7 @@ static RCTBridge * bridge = nil;
  *
  */
 +(NSString *)getAssetBundleName{
-    return @"rn-qtalk-search.ios.jsbundle_v3";
+    return @"rn-new-search.ios.jsbundle_v3";
 }
 
 /*
@@ -161,7 +163,7 @@ static RCTBridge * bridge = nil;
  *
  */
 +(NSString *)getAssetZipBundleName{
-    return @"rn-qtalk-search.ios.jsbundle.tar.gz";
+    return @"rn-new-search.ios.jsbundle.tar.gz";
 }
 
 /*
@@ -169,7 +171,7 @@ static RCTBridge * bridge = nil;
  *
  */
 +(NSString *)getInnerBundleName{
-    return @"rn-qtalk-search.ios";
+    return @"rn-new-search.ios";
 }
 
 /*
@@ -177,7 +179,7 @@ static RCTBridge * bridge = nil;
  *
  */
 +(NSString *)getCachePath{
-    return @"rnRes/qtalk_search/";
+    return @"rnRes/new_search/";
 }
 
 /*
@@ -185,7 +187,7 @@ static RCTBridge * bridge = nil;
  *
  */
 +(NSString *)getRegisterBundleName{
-    return @"qtalkSearch";
+    return @"new_search";
 }
 
 - (void)dealloc {

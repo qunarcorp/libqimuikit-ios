@@ -31,6 +31,7 @@
 #import "QIMCustomPopManager.h"
 #import "QIMSearchBar.h"
 #import "YYModel.h"
+#import "QIMUpdateAlertView.h"
 
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
