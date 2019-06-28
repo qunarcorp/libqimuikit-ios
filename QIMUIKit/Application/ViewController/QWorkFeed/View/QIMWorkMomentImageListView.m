@@ -105,6 +105,12 @@
 //                      (int)96*2,
 //                      (int)96*2];
         }
+        if (![imageUrl containsString:@"platform"]) {
+            imageUrl = [imageUrl stringByAppendingString:@"&platform=touch"];
+        }
+        if (![imageUrl containsString:@"imgtype"]) {
+            imageUrl = [imageUrl stringByAppendingString:@"&imgtype=thumb"];
+        }
         [imageView downLoadImageWithModel:imageUrl withFitRect:frame withTotalCount:count];
     }
     self.width = [[UIScreen mainScreen] qim_rightWidth] - 60 - 20;

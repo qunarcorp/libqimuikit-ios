@@ -125,8 +125,28 @@
         }
     } else if (_imageURL){
         // 图片数据
+        NSString * urlStr = _imageURL.absoluteString;
+        if (![urlStr containsString:@"?"]) {
+            urlStr = [urlStr stringByAppendingString:@"?"];
+            if (![urlStr containsString:@"platform"]) {
+                urlStr = [urlStr stringByAppendingString:@"platform=touch"];
+            }
+            if (![urlStr containsString:@"imgtype"]) {
+                urlStr = [urlStr stringByAppendingString:@"&imgtype=thumb"];
+            }
+        }
+        else
+        {
+            if (![urlStr containsString:@"platform"]) {
+                urlStr = [urlStr stringByAppendingString:@"&platform=touch"];
+            }
+            if (![urlStr containsString:@"imgtype"]) {
+                urlStr = [urlStr stringByAppendingString:@"&imgtype=thumb"];
+            }
+        }
+        NSURL * smallPicUrl = [NSURL URLWithString:urlStr];
         
-        BOOL isGif = [[[_imageURL pathExtension] lowercaseString] isEqualToString:@"gif"];
+        BOOL isGif = [[[smallPicUrl pathExtension] lowercaseString] isEqualToString:@"gif"];
         CGFloat width = self.size.width;
         CGFloat height = self.size.height;
         if (self.size.width >= ([UIScreen mainScreen].bounds.size.width / 2.0f) || self.size.height >= ([UIScreen mainScreen].bounds.size.height / 2.0f)) {
@@ -134,7 +154,7 @@
             height = self.size.height / 2.0f;
         }
         _imageView = [[YLImageView alloc] init];
-        [_imageView qimsd_setImageWithURL:_imageURL placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:QIMSDWebImageLowPriority gifFlag:YES progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        [_imageView qimsd_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:QIMSDWebImageLowPriority gifFlag:YES progress:^(NSInteger receivedSize, NSInteger expectedSize) {
 //            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
 //            [self.progressLabel setText:progress];
 //            NSLog(@"下载图片进度 : %ld", progress);
@@ -146,7 +166,7 @@
                 if (image) {
                     [_imageView removeFromSuperview];
                     _imageView = [[YLImageView alloc] initWithFrame:fitRect];
-                    if ([_imageURL.absoluteString containsString:@".gif"]) {
+                    if ([smallPicUrl.absoluteString containsString:@".gif"]) {
                         _imageView.image = image;
                         [self.ownerView addSubview:_imageView];
                     } else {
