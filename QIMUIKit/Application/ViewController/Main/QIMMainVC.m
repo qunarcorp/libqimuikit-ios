@@ -73,8 +73,6 @@
 @property(nonatomic, strong) UIButton *addFriendBtn;
 @property (nonatomic, strong) UIButton *rnDebugConfigBtn;
 
-@property (nonatomic, strong) UIButton *addFriendBtn;
-
 @property(nonatomic, strong) UIButton *scanBtn;
 
 @property(nonatomic, strong) UIButton *momentBtn;

@@ -7,17 +7,18 @@
 //
 
 #import "QIMCommonUIFramework.h"
+
 @class QIMMainVC;
 
 @interface QTalkSessionView : UIView
 
-@property (nonatomic, strong, readonly) UITableView *tableView;
+@property(nonatomic, strong, readonly) UITableView *tableView;
 
-@property (nonatomic, assign) BOOL needUpdateNotReadList;
+@property(nonatomic, assign) BOOL needUpdateNotReadList;
 
-@property (nonatomic, assign) BOOL notShowHeader;
+@property(nonatomic, assign) BOOL notShowHeader;
 
-@property (nonatomic, assign) BOOL showNotReadList;
+@property(nonatomic, assign) BOOL showNotReadList;
 
 - (instancetype)initWithFrame:(CGRect)frame withRootViewController:(QIMMainVC *)rootVc;
 
