@@ -380,7 +380,7 @@
         _willRefreshTableView = YES;
         [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
         _netWorkConnection = YES;
-        _dataManager = [QTalkSessionDataManager manager];
+        _dataManager = [[QTalkSessionDataManager alloc] init];
         _dataManager.delegate = self;
         __weak typeof(self) weakSelf = self;
         [_dataManager setQtBlock:^{
@@ -402,7 +402,7 @@
             QIMMainVC *mainVc = (QIMMainVC *)rootVc;
             _rootViewController = mainVc;
         } else if ([rootVc isKindOfClass:[UIViewController class]]) {
-            _tempRootVc = rootVc;
+//            _tempRootVc = rootVc;
         } else {
             
         }
