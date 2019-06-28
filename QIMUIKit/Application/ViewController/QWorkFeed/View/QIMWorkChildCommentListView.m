@@ -49,9 +49,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     QIMWorkCommentModel *commentModel = [self.childCommentList objectAtIndex:indexPath.row];
-    QIMWorkCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"childCommentListCell"];
+    QIMWorkCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:commentModel.commentUUID];
     if (!cell) {
-        cell = [[QIMWorkCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"childCommentListCell"];
+        cell = [[QIMWorkCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:commentModel.commentUUID];
         [cell setLeftMagin:self.leftMargin];
         cell.isChildComment = YES;
     }

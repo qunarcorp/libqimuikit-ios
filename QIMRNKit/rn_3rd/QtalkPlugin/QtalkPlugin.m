@@ -237,10 +237,38 @@ RCT_EXPORT_METHOD(openGroupChat:(NSDictionary *)params) {
     }
 }
 
+RCT_EXPORT_METHOD(openSignleChat:(NSDictionary *)params) {
+    NSString *userId = [params objectForKey:@"UserId"];
+    if (userId.length > 0) {
+        [QIMFastEntrance openUserCardVCByUserId:userId];
+    }
+}
+
 RCT_EXPORT_METHOD(exitSearchApp) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotify_RN_QTALK_SEARCH_GO_BACK object:nil];
     });
+}
+
+#pragma mark - SearchKey History
+
+//获取本地搜索Key历史
+RCT_EXPORT_METHOD(getLocalSearchKeyHistory:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
+    
+    NSInteger limit = [[param objectForKey:@"limit"] integerValue];
+    NSInteger searchType = [[param objectForKey:@"searchType"] integerValue];
+    NSArray *searchKeys = [[QIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:searchType withLimit:limit];
+    callback(@[@{@"ok" : @(YES), @"searchKeys" : searchKeys ? searchKeys : @[]}]);
+}
+
+//更新本地搜索Key历史
+RCT_EXPORT_METHOD(updateLocalSearchKeyHistory:(NSDictionary *)param) {
+    [[QIMKit sharedInstance] updateLocalSearchKeyHistory:param];
+}
+
+//清空本地搜索历史Key
+RCT_EXPORT_METHOD(clearLocalSearchKeyHistory:(NSInteger)searchType) {
+    [[QIMKit sharedInstance] deleteSearchKeyHistory];
 }
 
 @end
