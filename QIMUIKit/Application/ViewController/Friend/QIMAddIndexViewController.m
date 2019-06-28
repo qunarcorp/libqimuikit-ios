@@ -220,13 +220,13 @@ static NSInteger limitCount = 15;
         
     } completion:^(BOOL finished) {
         __weak typeof(self) weakSelf = self;
-        NSDictionary *dict = @{MMbackgroundColor: [UIColor whiteColor],
-                               MMtextColor: [UIColor blackColor],
-                               MMtoolbarColor: [UIColor whiteColor],
-                               MMbuttonColor: [UIColor blueColor],
-                               MMfont: [UIFont systemFontOfSize:18],
-                               MMvalueY: @3,
-                               MMselectedObject:_selectedString};
+        NSDictionary *dict = @{QIMMMbackgroundColor: [UIColor whiteColor],
+                               QIMMMtextColor: [UIColor blackColor],
+                               QIMMMtoolbarColor: [UIColor whiteColor],
+                               QIMMMbuttonColor: [UIColor blueColor],
+                               QIMMMfont: [UIFont systemFontOfSize:18],
+                               QIMMMvalueY: @3,
+                               QIMMMselectedObject:_selectedString};
         
         [QIMPickerView showPickerViewInView:self.view withStrings:_stringsArray withOptions:dict completion:^(NSString *selectedString) {
             weakSelf.selectedString = selectedString;

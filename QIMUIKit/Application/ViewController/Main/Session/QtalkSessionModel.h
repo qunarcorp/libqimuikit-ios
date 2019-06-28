@@ -5,7 +5,7 @@
 //  Created by qitmac000645 on 2019/5/27.
 //
 
-#import <Foundation/Foundation.h>
+#import "QIMCommonUIFramework.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -26,6 +26,19 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSNumber * UnreadCount;
 @property (nonatomic, copy) NSNumber * StickState;
 @property (nonatomic, copy) NSString * RealJid;
+
+
+//UI property
+@property (nonatomic, copy) NSString * combineJid;
+@property (nonatomic, copy) NSString * headerImgUrl;
+@property (nonatomic, copy) NSString * chatTitle;
+@property (nonatomic, copy) NSString * contentMsg;
+@property (nonatomic, copy) NSString * redDoteCount;
+@property (nonatomic, copy) NSString * time;
+@property (nonatomic, assign) BOOL topPut;
+@property (nonatomic, assign) NSInteger notReadCount;
+
+- (void)generateCombineJidWithChatType:(ChatType)chatType;
 @end
 
 NS_ASSUME_NONNULL_END

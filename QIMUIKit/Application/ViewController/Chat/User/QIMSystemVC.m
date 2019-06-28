@@ -192,21 +192,34 @@
 -(void)loadData
 {
     [self.messageManager.dataSource removeAllObjects];
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof(self) weakSelf = self;
     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         
         NSString *domain = [[QIMKit sharedInstance] getDomain];
-        [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
-            [self.messageManager.dataSource addObjectsFromArray:list];
-            [weakSelf.tableView reloadData];
+        [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:NO WithComplete:^(NSArray *list) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.messageManager.dataSource addObjectsFromArray:list];
+                [weakSelf.tableView reloadData];
+                dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                    //标记已读
+                    [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:weakSelf.chatId];
+                });
+            });
         }];
     } else {
-        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
-            [self.messageManager.dataSource addObjectsFromArray:list];
-            [weakSelf.tableView reloadData];
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.messageManager.dataSource addObjectsFromArray:list];
+                [weakSelf.tableView reloadData];
+            });
+            dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+            dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                //标记已读
+                [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:weakSelf.chatId];
+            });
         }];
     }
-    [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:self.chatId];
 }
 
 
@@ -237,7 +250,7 @@
 - (void)selfPopedViewController{
     [super selfPopedViewController];
     [[QIMKit sharedInstance] setCurrentSessionUserId:nil];
-    [[QIMKit sharedInstance] clearNotReadMsgByJid:self.chatId];
+//    [[QIMKit sharedInstance] clearNotReadMsgByJid:self.chatId];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -568,7 +581,7 @@ static CGPoint tableOffsetPoint;
 - (void)loadNewSystemMsgList {
 //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-            [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
                 CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
                 NSRange range = NSMakeRange(0, [list count]);
                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
@@ -581,7 +594,7 @@ static CGPoint tableOffsetPoint;
                 [_tableView.mj_header endRefreshing];
             }];
         } else {
-            [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
                     NSRange range = NSMakeRange(0, [list count]);

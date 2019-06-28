@@ -138,11 +138,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             self.msgState = [[infoDic objectForKey:@"MsgState"] intValue];
             self.content = [infoDic objectForKey:@"Content"];
             [self generateCombineJidWithChatType:chatType];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self refreshName];
-//                [self refreshHeaderImage];
-//                [self refreshUI];
-//            });
         }
     }
 }
@@ -533,7 +528,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                     [self reloadNotReadCount];
                 });
             } else {
-                
             }
         }
     } else {
@@ -858,38 +852,39 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     } else {
         countStr = @"";
     }
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (countStr.length > 0) {
             
-            [self.notReadNumButton hiddenBadgeButton:NO];
+            [weakSelf.notReadNumButton hiddenBadgeButton:NO];
             CGFloat width = (countStr.length * 7) + 13;
-            [self setUpNotReadNumButtonWithFrame:CGRectMake(self.timeLabel.right - width, 11, width, 16) withBadgeString:countStr];
-            if (self.isReminded == YES) {
-                self.muteNotReadView.hidden = NO;
-                self.muteNotReadView.centerY = self.muteView.centerY;
+            [weakSelf setUpNotReadNumButtonWithFrame:CGRectMake(weakSelf.timeLabel.right - width, 11, width, 16) withBadgeString:countStr];
+            if (weakSelf.isReminded == YES) {
+                weakSelf.muteNotReadView.hidden = NO;
+                weakSelf.muteNotReadView.centerY = weakSelf.muteView.centerY;
             } else {
-                self.muteNotReadView.hidden = YES;
+                weakSelf.muteNotReadView.hidden = YES;
             }
-            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, 15)];
+            [weakSelf.contentLabel setFrame:CGRectMake(weakSelf.nameLabel.left, weakSelf.nameLabel.bottom + 7, contentLabelWidth, 15)];
         } else {
             
-            [self.notReadNumButton hiddenBadgeButton:YES];
+            [weakSelf.notReadNumButton hiddenBadgeButton:YES];
             [_muteNotReadView setHidden:YES];
-            self.contentLabel.width = contentLabelWidth;
-            [self.contentLabel setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, 15)];
+            weakSelf.contentLabel.width = contentLabelWidth;
+            [weakSelf.contentLabel setFrame:CGRectMake(weakSelf.nameLabel.left, weakSelf.nameLabel.bottom + 7, contentLabelWidth, 15)];
         }
-        if (self.isReminded == YES && countStr.length > 0) {//接收不提醒
-            self.muteView.hidden = NO;
-            [self refeshContent];
-            self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, self.timeLabel.bottom + 15, 15, 15);
-            self.muteView.centerY = self.contentLabel.centerY;
-        } else if (self.isReminded == YES && countStr.length <= 0) {//接收不提醒
-            self.muteView.hidden = NO;
-            [self refeshContent];
-            self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 25, self.timeLabel.bottom + 15, 15, 15);
-            self.muteView.centerY = self.contentLabel.centerY;
+        if (weakSelf.isReminded == YES && countStr.length > 0) {//接收不提醒
+            weakSelf.muteView.hidden = NO;
+            [weakSelf refeshContent];
+            weakSelf.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, weakSelf.timeLabel.bottom + 15, 15, 15);
+            weakSelf.muteView.centerY = weakSelf.contentLabel.centerY;
+        } else if (weakSelf.isReminded == YES && countStr.length <= 0) {//接收不提醒
+            weakSelf.muteView.hidden = NO;
+            [weakSelf refeshContent];
+            weakSelf.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 25, weakSelf.timeLabel.bottom + 15, 15, 15);
+            weakSelf.muteView.centerY = weakSelf.contentLabel.centerY;
         } else {
-            self.muteView.hidden = YES;
+            weakSelf.muteView.hidden = YES;
         }
     });
 }
@@ -908,90 +903,88 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 [self.nameLabel setText:self.showName];
             });
         } else {
+            __weak __typeof(self) weakSelf = self;
             self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
             dispatch_async([[QIMKit sharedInstance] getLoadSessionNameQueue], ^{
 
-                switch (self.chatType) {
+                switch (weakSelf.chatType) {
                     case ChatType_GroupChat: {
-                        if (!self.bindId) {
-                            NSDictionary *groupVcard = [[QIMKit sharedInstance] getGroupCardByGroupId:self.jid];
+                        if (!weakSelf.bindId) {
+                            NSDictionary *groupVcard = [[QIMKit sharedInstance] getGroupCardByGroupId:weakSelf.jid];
                             if (groupVcard.count > 0) {
                                 NSString *groupName = [groupVcard objectForKey:@"Name"];
                                 NSInteger groupUpdateTime = [[groupVcard objectForKey:@"LastUpdateTime"] integerValue];
                                 if (groupName.length > 0 && groupUpdateTime > 0) {
-                                    self.showName = groupName;
+                                    weakSelf.showName = groupName;
                                 } else {
-                                    [self reloadPlaceHolderName];
-                                    [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid];
+                                    [weakSelf reloadPlaceHolderName];
+                                    [[QIMKit sharedInstance] updateGroupCardByGroupId:weakSelf.jid];
                                 }
                             } else {
-                                [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid];
+                                [[QIMKit sharedInstance] updateGroupCardByGroupId:weakSelf.jid];
                             }
                         } else {
-                            NSDictionary *cardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:self.jid];
+                            NSDictionary *cardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:weakSelf.jid];
                             NSString *collectionGroupName = [cardDic objectForKey:@"Name"];
                             if (collectionGroupName.length > 0) {
-                                self.showName = collectionGroupName;
+                                weakSelf.showName = collectionGroupName;
                             } else {
-                                [self reloadPlaceHolderName];
+                                [weakSelf reloadPlaceHolderName];
                             }
                         }
                     }
                         break;
                     case ChatType_System: {
-                        if ([self.jid hasPrefix:@"FriendNotify"]) {
-                            self.showName = @"新朋友";
+                        if ([weakSelf.jid hasPrefix:@"FriendNotify"]) {
+                            weakSelf.showName = @"新朋友";
                         } else {
                             
-                            if ([self.jid hasPrefix:@"rbt-notice"]) {
+                            if ([weakSelf.jid hasPrefix:@"rbt-notice"]) {
                                 
-                                self.showName = @"公告通知";
-                            } else if ([self.jid hasPrefix:@"rbt-qiangdan"]) {
-                                self.showName = @"抢单通知";
-                            } else if ([self.jid hasPrefix:@"rbt-zhongbao"]) {
-                                self.showName = @"抢单";
+                                weakSelf.showName = @"公告通知";
+                            } else if ([weakSelf.jid hasPrefix:@"rbt-qiangdan"]) {
+                                weakSelf.showName = @"抢单通知";
+                            } else if ([weakSelf.jid hasPrefix:@"rbt-zhongbao"]) {
+                                weakSelf.showName = @"抢单";
                             } else {
                                 
-                                self.showName = @"系统消息";
+                                weakSelf.showName = @"系统消息";
                             }
                         }
                     }
                         break;
                     case ChatType_CollectionChat: {
-                        self.showName = @"我的其他绑定账号";
+                        weakSelf.showName = @"我的其他绑定账号";
                     }
                         break;
                     case ChatType_SingleChat: {
-                        if (!self.bindId) {
+                        if (!weakSelf.bindId) {
                             //备注
-                            NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.jid];
+                            NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:weakSelf.jid];
                             if (remarkName.length > 0) {
                                 
-                                self.showName = remarkName;
+                                weakSelf.showName = remarkName;
                             } else {
                                 
                             }
                         } else {
-                            NSDictionary *userInfo = [[QIMKit sharedInstance] getCollectionUserInfoByUserId:self.jid];
+                            NSDictionary *userInfo = [[QIMKit sharedInstance] getCollectionUserInfoByUserId:weakSelf.jid];
                             NSString *userName = [userInfo objectForKey:@"Name"];
                             if (userName.length > 0) {
-                                self.showName = userName;
+                                weakSelf.showName = userName;
                             } else {
-                                [self reloadPlaceHolderName];
+                                [weakSelf reloadPlaceHolderName];
                             }
                         }
                     }
                         break;
                     case ChatType_PublicNumber: {
-                        self.showName = [NSBundle qim_localizedStringForKey:@"contact_tab_public_number"];
+                        weakSelf.showName = [NSBundle qim_localizedStringForKey:@"contact_tab_public_number"];
                     }
                         break;
                     case ChatType_ConsultServer: {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.contentView addSubview:self.prefrenceImageView];
-                        });
-                        NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
-                        NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
+                        NSString *xmppId = [weakSelf.infoDic objectForKey:@"XmppId"];
+                        NSString *realJid = [weakSelf.infoDic objectForKey:@"RealJid"];
                         
                         NSDictionary *virtualInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
                         NSString *virtualName = [virtualInfo objectForKey:@"Name"];
@@ -1004,31 +997,31 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                         if (realName.length <= 0) {
                             realName = [realJid componentsSeparatedByString:@"@"].firstObject;
                         }
-                        self.showName = [NSString stringWithFormat:@"%@-%@",virtualName,realName];
+                        weakSelf.showName = [NSString stringWithFormat:@"%@-%@",virtualName,realName];
                     }
                         break;
                     case ChatType_Consult: {
-                        NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
+                        NSString *xmppId = [weakSelf.infoDic objectForKey:@"XmppId"];
                         NSDictionary * virtualInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
                         NSString *virtualName = [virtualInfo objectForKey:@"Name"];
                         if (virtualName.length <= 0) {
                             virtualName = [xmppId componentsSeparatedByString:@"@"].firstObject;
                         }
-                        self.showName = virtualName;
+                        weakSelf.showName = virtualName;
                     }
                         break;
                     default:
                         break;
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    if (self.showName.length) {
+                    if (weakSelf.showName.length) {
                         
-                        [self.nameLabel setText:self.showName];
+                        [weakSelf.nameLabel setText:weakSelf.showName];
                     } else {
-                        [self reloadPlaceHolderName];
-                        [self.nameLabel setText:self.showName];
+                        [weakSelf reloadPlaceHolderName];
+                        [weakSelf.nameLabel setText:weakSelf.showName];
                     }
-                    self.needRefreshName = NO;
+                    weakSelf.needRefreshName = NO;
                 });
              });
         }
@@ -1043,6 +1036,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         msgDate = time;
     }
     __block NSString *timeStr = nil;
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (msgDate > 0) {
             
@@ -1079,7 +1073,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             timeStr = @"";
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.timeLabel setText:timeStr];
+            [weakSelf.timeLabel setText:timeStr];
         });
     });
 }
@@ -1097,6 +1091,15 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 }
 
 - (void)refreshUI {
+    
+    self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
+    if (self.chatType == ChatType_ConsultServer) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.contentView addSubview:self.prefrenceImageView];
+        });
+    } else {
+        _prefrenceImageView.hidden = YES;
+    }
 
     [self refreshName];
     [self refreshHeaderImage];
@@ -1122,21 +1125,22 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     [ps setAlignment:NSTextAlignmentLeft];
     
     __block NSString *content = @"";
+    __weak __typeof(self) weakSelf = self;
     if (message.length > 0) {
         dispatch_async([[QIMKit sharedInstance] getLoadSessionContentQueue], ^{
-            NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:self.jid];
+            NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:weakSelf.jid];
             if (atMeMessages.count > 0) {
                 NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
                 NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
                 [str appendAttributedString:atStr];
             }
-            content = [self refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+            content = [weakSelf refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (content.length > 0) {
                     
-                    [str appendAttributedString:[self decodeMsg:content]];
+                    [str appendAttributedString:[weakSelf decodeMsg:content]];
                 }
-                [self.contentLabel setAttributedText:str];
+                [weakSelf.contentLabel setAttributedText:str];
             });
         });
     } else {

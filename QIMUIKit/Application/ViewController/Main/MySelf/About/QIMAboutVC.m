@@ -15,7 +15,8 @@
 #import <CoreText/CoreText.h>
 #import "QIMContactManager.h"
 #import "NSBundle+QIMLibrary.h"
-
+#import "QIMUtility.h"
+#import "QIMDataController.h"
 #if __has_include("QIMLocalLog.h")
 
 #import "QIMLocalLogViewController.h"
@@ -102,7 +103,7 @@
         [_dataSource addObject:@"Instruments"];
       }
 #endif
-
+    [_dataSource addObject:@"DataFile"];
     return _dataSource;
 }
 
@@ -378,12 +379,16 @@
         [cell setAccessoryView:switchButton];
     } else if ([value isEqualToString:@"Instruments"]) {
         cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"About_tab_instruments"];
-        cell.textLabel.text = @"监测";
         UISwitch *switchButton = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 60, 25)];
         BOOL isInstrument = [[[QIMKit sharedInstance] userObjectForKey:@"isInstruments"] boolValue];
         [switchButton setOn:isInstrument];
         [switchButton addTarget:self action:@selector(recordInstruments:) forControlEvents:UIControlEventValueChanged];
         [cell setAccessoryView:switchButton];
+    } else if ([value isEqualToString:@"DataFile"]) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier];
+        cell.textLabel.text = @"聊天记录存储空间";
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.detailTextLabel.text = [self dataFileSize];
     }
     return cell;
 }
@@ -396,6 +401,12 @@
     } else {
         [[QIMGDPerformanceMonitor sharedInstance] stopMonitoring];
     }
+}
+
+- (NSString *)dataFileSize {
+    long long totalSize = [[QIMDataController getInstance] sizeOfDBPath];
+    NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
+    return str;
 }
 
 @end

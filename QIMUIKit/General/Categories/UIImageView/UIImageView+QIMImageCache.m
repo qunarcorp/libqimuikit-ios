@@ -95,6 +95,7 @@
             default:
                 break;
         }
+
         if (![headerUrl qim_hasPrefixHttpHeader] && headerUrl.length > 0) {
             headerUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], headerUrl];
         } else {
@@ -103,12 +104,29 @@
                 if (chatType == ChatType_GroupChat) {
                     [[QIMKit sharedInstance] updateGroupCard:@[jid]];
                 } else if (chatType == ChatType_ConsultServer) {
-                    [[QIMKit sharedInstance] updateUserCard:@[realJid]];
+                    [[QIMKit sharedInstance] updateUserCard:realJid withCache:YES];
                 } else {
-                    [[QIMKit sharedInstance] updateUserCard:@[jid]];
+                    [[QIMKit sharedInstance] updateUserCard:jid withCache:YES];
                 }
             } else {
                 
+            }
+        }
+        if (headerUrl.length > 0 && ![headerUrl containsString:@"?"]) {
+            headerUrl = [headerUrl stringByAppendingString:@"?"];
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"platform"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"platform=touch"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
+            }
+        }
+        else{
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"platform"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -185,7 +203,6 @@
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(QIMSDWebImageCompletionBlock)completedBlock {
-//    [self qimsd_setImageWithURL:url placeholderImage:placeholder completed:completedBlock];
     [self qimsd_setImageWithURL:url placeholderImage:placeholder options:0 gifFlag:NO progress:nil completed:nil];
 }
 

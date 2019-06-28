@@ -266,16 +266,7 @@
         [_textBar setAllowFace:YES];
         [_textBar setAllowMore:YES];
         [_textBar setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin];
-//        [_textBar setPlaceHolder:@"文本信息"];
-        if (self.chatType == ChatType_Consult) {
-//            [self.textBar setChatId:self.virtualJid];
-            
-        } else if (self.chatType == ChatType_ConsultServer) {
-            [self.textBar setChatId:self.chatId];
-            
-        } else {
-            [self.textBar setChatId:self.chatId];
-        }
+        [_textBar setChatId:self.chatId];
         __weak QIMTextBar *weakTextBar = _textBar;
         
         [_textBar setSelectedEmotion:^(NSString *faceStr) {
@@ -1210,10 +1201,6 @@
             [_tableView reloadData];
             [weakSelf scrollBottom];
             [weakSelf addImageToImageList];
-            if (_willSendImageData) {
-                [weakSelf sendImageData:_willSendImageData];
-                _willSendImageData = nil;
-            }
             //标记已读
             [weakSelf markReadFlag];
         });
@@ -1241,13 +1228,16 @@
                     //重新获取一次大图展示的数组
                     [weakSelf addImageToImageList];
                     [weakSelf.tableView.mj_header endRefreshing];
-                    //标记已读
-                    [weakSelf markReadFlag];
+                    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                    dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                        //标记已读
+                        [weakSelf markReadFlag];
+                    });
                 });
             }];
         } else {
             if (self.chatType == ChatType_ConsultServer) {
-                [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.messageManager.dataSource removeAllObjects];
                         [self.messageManager.dataSource addObjectsFromArray:list];
@@ -1259,12 +1249,15 @@
                             [weakSelf sendImageData:_willSendImageData];
                             _willSendImageData = nil;
                         }
-                        //标记已读
-                        [weakSelf markReadFlag];
+                        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                        dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                            //标记已读
+                            [weakSelf markReadFlag];
+                        });
                     });
                 }];
             } else {
-                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+                [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.messageManager.dataSource removeAllObjects];
                         [self.messageManager.dataSource addObjectsFromArray:list];
@@ -1275,8 +1268,11 @@
                             [weakSelf sendImageData:_willSendImageData];
                             _willSendImageData = nil;
                         }
-                        //标记已读
-                        [weakSelf markReadFlag];
+                        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                        dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                            //标记已读
+                            [weakSelf markReadFlag];
+                        });
                     });
                 }];
             }
@@ -2096,7 +2092,7 @@
         __weak typeof(self) weakSelf = self;
         if (self.chatType == ChatType_ConsultServer) {
             
-            [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.messageManager.dataSource removeAllObjects];
                     [self.messageManager.dataSource addObjectsFromArray:list];
@@ -2106,7 +2102,7 @@
                 });
             }];
         } else {
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.messageManager.dataSource removeAllObjects];
                     [self.messageManager.dataSource addObjectsFromArray:list];
@@ -2565,7 +2561,10 @@
                 text = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:text];
             }
             if (self.textBar.isRefer) {
-                text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n",self.title,self.textBar.referMsg.message] stringByAppendingString:text];
+//                text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n",self.title,self.textBar.referMsg.message] stringByAppendingString:text];
+                NSDictionary *referMsgUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.textBar.referMsg.from];
+                NSString *referMsgNickName = [referMsgUserInfo objectForKey:@"Name"];
+                text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n", (referMsgNickName.length > 0) ? referMsgNickName : self.textBar.referMsg.from,self.textBar.referMsg.message] stringByAppendingString:text];
                 self.textBar.isRefer = NO;
                 self.textBar.referMsg = nil;
             }
@@ -2678,7 +2677,10 @@
             text = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:text];
         }
         if (self.textBar.isRefer) {
-            text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n",self.title,self.textBar.referMsg.message] stringByAppendingString:text];
+//            text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n",self.title,self.textBar.referMsg.message] stringByAppendingString:text];
+            NSDictionary *referMsgUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.textBar.referMsg.from];
+            NSString *referMsgNickName = [referMsgUserInfo objectForKey:@"Name"];
+            text = [[NSString stringWithFormat:@"「 %@:%@ 」\n- - - - - - - - - - - - - - -\n", (referMsgNickName.length > 0) ? referMsgNickName : self.textBar.referMsg.from,self.textBar.referMsg.message] stringByAppendingString:text];
             self.textBar.isRefer = NO;
             self.textBar.referMsg = nil;
         }
@@ -3179,7 +3181,7 @@ static CGPoint tableOffsetPoint;
             realJid = self.chatId;
         }
         if (self.chatType == ChatType_ConsultServer) {
-            [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getConsultServerMsgLisByUserId:realJid WithVirtualId:userId WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
                 if (list.count) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
@@ -3202,7 +3204,7 @@ static CGPoint tableOffsetPoint;
             }];
         } else {
 
-            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+            [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
                 if (list.count > 0) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         

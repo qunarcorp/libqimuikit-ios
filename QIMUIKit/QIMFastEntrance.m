@@ -512,7 +512,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (UIViewController *)getSingleChatVCByUserId:(NSString *)userId {
     NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
     if (userInfo == nil) {
-        [[QIMKit sharedInstance] updateUserCard:@[userId]];
+        [[QIMKit sharedInstance] updateUserCard:userId withCache:YES];
         userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
     }
     NSString *name = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
