@@ -611,6 +611,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     [_forwardBtn removeFromSuperview];
     [_textBar setUserInteractionEnabled:YES];
     [self.messageManager.forwardSelectedMsgs removeAllObjects];
+    self.fd_interactivePopDisabled = NO;
 }
 
 - (void)viewDidLoad {
@@ -1949,6 +1950,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [self.navigationController.navigationBar addSubview:[self getForwardNavView]];
         [self.navigationController.navigationBar addSubview:[self getMaskRightTitleView]];
         [self.view addSubview:self.forwardBtn];
+        self.fd_interactivePopDisabled = YES;
     }else if (event == MA_Refer) {
         //引用消息
         self.textBar.isRefer = YES;
