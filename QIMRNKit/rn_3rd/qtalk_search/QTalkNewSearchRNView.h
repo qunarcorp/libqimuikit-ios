@@ -1,22 +1,20 @@
 //
-//  QTalkSearch.h
-//  qunarChatIphone
+//  QTalkNewSearchRNView.h
+//  QIMUIKit
 //
-//  Created by wangyu.wang on 2016/11/28.
-//
+//  Created by lilu on 2019/7/1.
+//  Copyright © 2019 QIM. All rights reserved.
 //
 
-#ifndef QTalkSearch_h
-#define QTalkSearch_h
-
+#import <UIKit/UIKit.h>
 #import "QIMCommonUIFramework.h"
 #import <React/RCTBridge.h>
 
 #define kNotify_RN_QTALK_SEARCH_BUNDLE_UPDATE @"kNotify_RN_QTALK_SEARCH_BUNDLE_UPDATE"
 
-@class MBProgressHUD;
+NS_ASSUME_NONNULL_BEGIN
 
-@interface QTalkSearchRNView : UIView {
+@interface QTalkNewSearchRNView : UIView {
     NSURL *_jsCodeLocation;
 }
 @property(nonatomic, weak) UIViewController *ownerVC;
@@ -32,4 +30,4 @@
 
 @end
 
-#endif /* QTalkSearch_h */
+NS_ASSUME_NONNULL_END
