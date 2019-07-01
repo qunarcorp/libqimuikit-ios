@@ -18,7 +18,7 @@
 
 @implementation QIMJumpURLHandle
 
-+ (BOOL)parseURL:(NSURL *)url{
++ (BOOL)parseURL:(NSURL *)url {
     if ([url.scheme.lowercaseString isEqualToString:@"qtalk"]) {
         NSString *host = [url host];
         NSDictionary *dictionaryQuery = [[url query] qim_dictionaryFromQueryComponents];
@@ -35,7 +35,7 @@
                     [alertView show];
                 }
             }
-        } else if ([host.lowercaseString isEqualToString:@"user"]){
+        } else if ([host.lowercaseString isEqualToString:@"user"]) {
             id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
             if ([nav isKindOfClass:[QIMNavController class]]) {
                 NSString *userId = [dictionaryQuery objectForKey:@"id"];
@@ -43,16 +43,16 @@
                     [QIMFastEntrance openUserCardVCByUserId:userId];
                 });
             }
-        } else if ([host.lowercaseString isEqualToString:@"robot"]){
+        } else if ([host.lowercaseString isEqualToString:@"robot"]) {
             id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
             if ([nav isKindOfClass:[QIMNavController class]]) {
                 NSString *publicNumberId = [dictionaryQuery objectForKey:@"id"];
                 NSString *publicNumberType = [dictionaryQuery objectForKey:@"type"];
                 NSString *content = [dictionaryQuery objectForKey:@"content"];
                 NSString *msgType = [dictionaryQuery objectForKey:@"msgType"];
-                if([publicNumberType.lowercaseString isEqualToString:@"robot"]){
+                if ([publicNumberType.lowercaseString isEqualToString:@"robot"]) {
                     NSDictionary *cardDic =
-                    [[QIMKit sharedInstance] getPublicNumberCardByJId:[NSString stringWithFormat:@"%@@%@",publicNumberId,[[QIMKit sharedInstance] getDomain]]];
+                            [[QIMKit sharedInstance] getPublicNumberCardByJId:[NSString stringWithFormat:@"%@@%@", publicNumberId, [[QIMKit sharedInstance] getDomain]]];
                     if (cardDic.count > 0) {
                         QIMPublicNumberRobotVC *robotVC = [[QIMPublicNumberRobotVC alloc] init];
                         [robotVC setRobotJId:[cardDic objectForKey:@"XmppId"]];
@@ -69,12 +69,12 @@
                         }
                     } else {
                         QIMPublicNumberCardVC *cardVC = [[QIMPublicNumberCardVC alloc] init];
-                        [cardVC setJid:[NSString stringWithFormat:@"%@@%@",publicNumberId,[[QIMKit sharedInstance] getDomain]]];
+                        [cardVC setJid:[NSString stringWithFormat:@"%@@%@", publicNumberId, [[QIMKit sharedInstance] getDomain]]];
                         [cardVC setPublicNumberId:publicNumberId];
                         [cardVC setNotConcern:YES];
                         [nav popToRootVCThenPush:cardVC animated:YES];
                     }
-                } 
+                }
             }
         }
     } else if ([url.scheme.lowercaseString isEqualToString:@"qimlogin"]) {
@@ -154,12 +154,12 @@
                     [QIMFastEntrance openUserCardVCByUserId:sub];
                 });
             } else {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"结果：%@",str]delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"结果：%@", str] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
                 [alertView show];
             }
         }
     }
-    QIMVerboseLog(@"扫描后的结果~%@",str);
+    QIMVerboseLog(@"扫描后的结果~%@", str);
 }
 
 @end

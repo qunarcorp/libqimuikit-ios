@@ -11,12 +11,17 @@
 @class QIMMessageModel;
 @class QIMAttributedLabel;
 @class QIMTextContainer;
+
 @interface QIMMessageParser : NSObject
 
-+ (instancetype) sharedInstance;
++ (instancetype)sharedInstance;
+
 + (QIMAttributedLabel *)attributedLabelForMessage:(QIMMessageModel *)message;
+
 + (QIMTextContainer *)textContainerForMessage:(QIMMessageModel *)message;
+
 + (QIMTextContainer *)textContainerForMessage:(QIMMessageModel *)message fromCache:(BOOL)fromCache;
+
 + (QIMTextContainer *)textContainerForMessageCtnt:(NSString *)ctnt withId:(NSString *)signId direction:(QIMMessageDirection)direction;
 
 + (NSArray *)storagesFromMessage:(QIMMessageModel *)message;
@@ -24,7 +29,9 @@
 + (float)getCellWidth;
 
 + (QIMMessageModel *)reductionMessageForMessage:(QIMMessageModel *)message;
-             
-- (void)parseForXMLString:(NSString *)xmlStr complete:(void (^)(NSDictionary * info))complete;
+
+            
+
+- (void)parseForXMLString:(NSString *)xmlStr complete:(void (^)(NSDictionary *info))complete;
 
 @end
