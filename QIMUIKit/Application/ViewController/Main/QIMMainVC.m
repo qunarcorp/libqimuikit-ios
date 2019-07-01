@@ -40,10 +40,11 @@
 #endif
 
 #import "Toast.h"
+#import "QIMUpdateAlertView.h"
 
 #define kTabBarHeight   49
 
-@interface QIMMainVC () <QIMCustomTabBarDelegate, UISearchControllerDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIViewControllerPreviewingDelegate, UINavigationControllerDelegate, UISearchResultsUpdating> {
+@interface QIMMainVC () <QIMCustomTabBarDelegate, UISearchControllerDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIViewControllerPreviewingDelegate, UINavigationControllerDelegate, UISearchResultsUpdating, QIMUpdateAlertViewDelegate> {
 
     QIMCustomTabBar *_tabBar;
     UIView *_contentView;
@@ -206,6 +207,9 @@ static dispatch_once_t __onceMainToken;
     //销毁群通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChatRoomDestroy:) name:kChatRoomDestroy object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateWorkFeedNotifyConfig:) name:kNotifyUpdateNotifyConfig object:nil];
+    
+    //更新提醒
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAppVersion:) name:kNotifyUpdateAppVersion object:nil];
 }
 
 - (NSString *)navTitle {
@@ -475,6 +479,11 @@ static dispatch_once_t __onceMainToken;
             [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"上传日志失败，请稍后重试！"];
         });
     });
+}
+
+- (void)updateAppVersion:(NSNotification *)notify {
+    QIMUpdateAlertView *updateAlertView = [QIMUpdateAlertView qim_showUpdateAlertViewWithUpdateDic:notify.object];
+    updateAlertView.upgradeDelegate = self;
 }
 
 - (void)onChatRoomDestroy:(NSNotification *)notify {
@@ -1192,6 +1201,20 @@ static dispatch_once_t __onceMainToken;
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
 
     return UIInterfaceOrientationPortrait;
+}
+
+#pragma mark - QIMUpdateAlertViewDelegate
+
+- (void)qim_UpdateAlertViewDidClickWithType:(QIMUpgradeType)type withUpdateDic:(NSDictionary *)updateDic {
+    if (QIMUpgradeNow == type) {
+        //
+        NSString *updateUrl = [updateDic objectForKey:@"upgradeUrl"];
+        [QIMFastEntrance openWebViewForUrl:updateUrl showNavBar:YES];
+    } else {
+        //下次再说
+        NSInteger version = [[updateDic objectForKey:@"version"] integerValue];
+        [[QIMKit sharedInstance] setUserObject:@(version) forKey:@"updateAppVersion"];
+    }
 }
 
 @end
