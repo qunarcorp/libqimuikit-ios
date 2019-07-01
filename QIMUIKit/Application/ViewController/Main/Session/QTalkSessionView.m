@@ -13,7 +13,6 @@
 #import "QIMJSONSerializer.h"
 #import "QIMGroupChatVC.h"
 #import "QIMIconInfo.h"
-#import "QIMSystemVC.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMFriendNotifyViewController.h"
 #import "QTalkSessionCell.h"
@@ -749,7 +748,7 @@
                     return webView;
                 } else {
 
-                    QIMSystemVC *chatSystemVC = [[QIMSystemVC alloc] init];
+                    QIMChatVC *chatSystemVC = [[QIMChatVC alloc] init];
                     [chatSystemVC setChatType:ChatType_System];
                     [chatSystemVC setChatId:jid];
                     if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
@@ -813,7 +812,6 @@
                 NSString *realJid = [infoDic objectForKey:@"RealJid"];
                 NSString *xmppId = [infoDic objectForKey:@"XmppId"];
                 QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
-                [chatSingleVC setStype:kSessionType_Chat];
                 [chatSingleVC setChatId:realJid];
                 [chatSingleVC setVirtualJid:xmppId];
                 [chatSingleVC setChatInfoDict:infoDic];

@@ -284,6 +284,9 @@
         NSDictionary *notSendDic = [[QIMKit sharedInstance] getNotSendTextByJid:self.chatId];
         [_textBar setQIMAttributedTextWithItems:notSendDic[@"inputItems"]];
     }
+    if (self.chatType == ChatType_System) {
+        return nil;
+    }
     return _textBar;
 }
 
@@ -466,7 +469,7 @@
     
     if (!_tableView) {
         
-        if (self.chatType == ChatType_CollectionChat) {
+        if (self.chatType == ChatType_CollectionChat || self.chatType == ChatType_System) {
             _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]) style:UITableViewStylePlain];
         } else {
             _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 49 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]) style:UITableViewStylePlain];
@@ -589,57 +592,87 @@
 
 - (void)setupNavBar {
     [self setBackBtn];
-    UIView *rightItemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
-    UIButton *cardButton = [[UIButton alloc] initWithFrame:CGRectMake(rightItemView.right - 30, 9, 30, 30)];
-    [cardButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-    [cardButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_singlechat_rightCard_font size:qim_singlechat_rightCard_TextSize color:qim_singlechat_rightCard_Color]] forState:UIControlStateNormal];
-    [cardButton setAccessibilityIdentifier:@"rightUserCardBtn"];
-    [cardButton addTarget:self action:@selector(onCardClick) forControlEvents:UIControlEventTouchUpInside];
-    [rightItemView addSubview:cardButton];
-    /* 暂时取消右上角红点
-    if (![[[QIMKit sharedInstance] userObjectForKey:kRightCardRemindNotification] boolValue]) {
-        QIMRedMindView *redMindView = [[QIMRedMindView alloc] initWithBroView:cardButton withRemindNotificationName:kRightCardRemindNotification];
-        [rightItemView addSubview:redMindView];
-    }
-    */
-    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+    if (self.chatType != ChatType_System) {
+        UIView *rightItemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
+        UIButton *cardButton = [[UIButton alloc] initWithFrame:CGRectMake(rightItemView.right - 30, 9, 30, 30)];
+        [cardButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+        [cardButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_singlechat_rightCard_font size:qim_singlechat_rightCard_TextSize color:qim_singlechat_rightCard_Color]] forState:UIControlStateNormal];
+        [cardButton setAccessibilityIdentifier:@"rightUserCardBtn"];
+        [cardButton addTarget:self action:@selector(onCardClick) forControlEvents:UIControlEventTouchUpInside];
+        [rightItemView addSubview:cardButton];
+        /* 暂时取消右上角红点
+         if (![[[QIMKit sharedInstance] userObjectForKey:kRightCardRemindNotification] boolValue]) {
+         QIMRedMindView *redMindView = [[QIMRedMindView alloc] initWithBroView:cardButton withRemindNotificationName:kRightCardRemindNotification];
+         [rightItemView addSubview:redMindView];
+         }
+         */
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+            
+            UIButton *encryptBtn = nil;
+            NSString *qCloudHost = [[QIMKit sharedInstance] qimNav_QCloudHost];
+            if (qCloudHost.length > 0 && ![[QIMKit sharedInstance] isMiddleVirtualAccountWithJid:self.chatId] && self.chatType == ChatType_SingleChat) {
+                encryptBtn = [[UIButton alloc] initWithFrame:CGRectMake(rightItemView.left, 9, 30, 30)];
+                if (self.isEncryptChat) {
+                    [encryptBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1ad" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
+                } else {
+                    [encryptBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1af" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
+                }
+                [encryptBtn addTarget:self action:@selector(encryptChat:) forControlEvents:UIControlEventTouchUpInside];
+                //            [rightItemView addSubview:encryptBtn];
+                self.encryptBtn = encryptBtn;
+            }
+            if (self.chatType == ChatType_ConsultServer && [[[QIMKit sharedInstance] getMyhotLinelist] containsObject:self.virtualJid]) {
+                UIButton *endChatBtn = [[UIButton alloc] initWithFrame:CGRectMake(cardButton.left - 30 - 5, 9, 30, 30)];
+                [endChatBtn setAccessibilityIdentifier:@"endChatBtn"];
+                [endChatBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0b5" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
+                [endChatBtn addTarget:self action:@selector(endChatSession) forControlEvents:UIControlEventTouchUpInside];
+                if (self.chatType == ChatType_ConsultServer) {
+                    [rightItemView addSubview:endChatBtn];
+                }
+            }
+            UIButton *createGrouButton = [[UIButton alloc] initWithFrame:CGRectMake(cardButton.left - 30 - 5, 9, 30, 30)];
+            [createGrouButton setAccessibilityIdentifier:@"rightCreateGroupBtn"];
+            [createGrouButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0ca" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
+            [createGrouButton addTarget:self action:@selector(onCreateGroupClcik) forControlEvents:UIControlEventTouchUpInside];
+            //        [rightItemView addSubview:createGrouButton];
+        } else {
+            
+        }
+        if (self.chatType != ChatType_CollectionChat) {
+            UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:rightItemView];
+            [self.navigationItem setRightBarButtonItem:rightItem];
+        }
         
-        UIButton *encryptBtn = nil;
-        NSString *qCloudHost = [[QIMKit sharedInstance] qimNav_QCloudHost];
-        if (qCloudHost.length > 0 && ![[QIMKit sharedInstance] isMiddleVirtualAccountWithJid:self.chatId] && self.chatType == ChatType_SingleChat) {
-            encryptBtn = [[UIButton alloc] initWithFrame:CGRectMake(rightItemView.left, 9, 30, 30)];
-            if (self.isEncryptChat) {
-                [encryptBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1ad" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
-            } else {
-                [encryptBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1af" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
-            }
-            [encryptBtn addTarget:self action:@selector(encryptChat:) forControlEvents:UIControlEventTouchUpInside];
-//            [rightItemView addSubview:encryptBtn];
-            self.encryptBtn = encryptBtn;
-        }
-        if (self.chatType == ChatType_ConsultServer && [[[QIMKit sharedInstance] getMyhotLinelist] containsObject:self.virtualJid]) {
-            UIButton *endChatBtn = [[UIButton alloc] initWithFrame:CGRectMake(cardButton.left - 30 - 5, 9, 30, 30)];
-            [endChatBtn setAccessibilityIdentifier:@"endChatBtn"];
-            [endChatBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0b5" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
-            [endChatBtn addTarget:self action:@selector(endChatSession) forControlEvents:UIControlEventTouchUpInside];
-            if (self.chatType == ChatType_ConsultServer) {
-                [rightItemView addSubview:endChatBtn];
-            }
-        }
-        UIButton *createGrouButton = [[UIButton alloc] initWithFrame:CGRectMake(cardButton.left - 30 - 5, 9, 30, 30)];
-        [createGrouButton setAccessibilityIdentifier:@"rightCreateGroupBtn"];
-        [createGrouButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0ca" size:24 color:[UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
-        [createGrouButton addTarget:self action:@selector(onCreateGroupClcik) forControlEvents:UIControlEventTouchUpInside];
-        //        [rightItemView addSubview:createGrouButton];
+        [self initTitleView];
     } else {
- 
+        [self setupSystemChatNav];
     }
-    if (self.chatType != ChatType_CollectionChat) {
-        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:rightItemView];
-        [self.navigationItem setRightBarButtonItem:rightItem];
+}
+
+- (void)setupSystemChatNav {
+    [self.navigationItem setTitle:self.title];
+    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    headerView.layer.cornerRadius  = 2.0;
+    headerView.layer.masksToBounds = YES;
+    headerView.clipsToBounds       = YES;
+    headerView.backgroundColor     = [UIColor clearColor];
+    UIImage *headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+        if ([self.chatId hasPrefix:@"rbt-notice"]) {
+            headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt_notice"];
+        } else if ([self.chatId hasPrefix:@"rbt-qiangdan"] || [self.chatId hasPrefix:@"rbt-zhongbao"]) {
+            headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-qiangdan"];
+        } else {
+            headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
+        }
+    } else {
+        headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
     }
+    [headerView setImage:headImage];
     
-    [self initTitleView];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:headerView];
+    
+    [self.navigationItem setRightBarButtonItem:rightItem];
 }
 
 - (void)initUI {
@@ -1189,6 +1222,41 @@
     }];
 }
 
+-(void)loadSystemData
+{
+    [self.messageManager.dataSource removeAllObjects];
+    __weak __typeof(self) weakSelf = self;
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+        
+        NSString *domain = [[QIMKit sharedInstance] getDomain];
+        [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:domain WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:NO WithComplete:^(NSArray *list) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.messageManager.dataSource addObjectsFromArray:list];
+                [weakSelf.tableView reloadData];
+                [weakSelf scrollBottom];
+                dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+                dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                    //标记已读
+                    [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:weakSelf.chatId];
+                });
+            });
+        }];
+    } else {
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:self.chatId WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.messageManager.dataSource addObjectsFromArray:list];
+                [weakSelf.tableView reloadData];
+                [weakSelf scrollBottom];
+            });
+            dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (ino64_t)(0.5 * NSEC_PER_SEC));
+            dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                //标记已读
+                [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:weakSelf.chatId];
+            });
+        }];
+    }
+}
+
 - (void)loadData {
     __weak QIMChatVC *weakSelf = self;
     NSString *userId = nil;
@@ -1256,6 +1324,9 @@
                         });
                     });
                 }];
+            } else if (self.chatType == ChatType_System) {
+                
+                [self loadSystemData];
             } else {
                 [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:0 withLoadMore:NO WithComplete:^(NSArray *list) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1444,7 +1515,6 @@
 #endif
     _tableView.mj_header = nil;
     _chatId = nil;
-    _stype = nil;
     _chatInfoDict = nil;
     _notificationView = nil;
 //    _textBar = nil;
@@ -2807,29 +2877,23 @@
     
     if ([text length] > 0) {
        QIMMessageModel *msg = nil;
-        if ([self.stype isEqualToString:kSessionType_Group]) {
-            msg = [[QIMKit sharedInstance] sendMessage:text ToGroupId:self.chatId];
-            [self addImageToImageList];
+        if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
+            msg = [[QIMKit sharedInstance] createMessageWithMsg:text extenddInfo:nil userId:self.virtualJid realJid:self.chatId userType:self.chatId msgType:QIMMessageType_Text forMsgId:[QIMUUIDTools UUID] willSave:YES];
         } else {
-            if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
-                msg = [[QIMKit sharedInstance] createMessageWithMsg:text extenddInfo:nil userId:self.virtualJid realJid:self.chatId userType:self.chatId msgType:QIMMessageType_Text forMsgId:[QIMUUIDTools UUID] willSave:YES];
-            } else {
-                msg = [[QIMKit sharedInstance] createMessageWithMsg:text extenddInfo:nil userId:self.chatId userType:self.chatType msgType:QIMMessageType_Text];
-            }
-            [self.messageManager.dataSource addObject:msg];
-            [_tableView beginUpdates];
-            [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-            [_tableView endUpdates];
-            [self scrollToBottomWithCheck:YES];
-            [self addImageToImageList];
-            if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
-                msg = [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
-            } else {
-                msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
-            }
+            msg = [[QIMKit sharedInstance] createMessageWithMsg:text extenddInfo:nil userId:self.chatId userType:self.chatType msgType:QIMMessageType_Text];
+        }
+        [self.messageManager.dataSource addObject:msg];
+        [_tableView beginUpdates];
+        [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+        [_tableView endUpdates];
+        [self scrollToBottomWithCheck:YES];
+        [self addImageToImageList];
+        if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
+            msg = [[QIMKit sharedInstance] sendConsultMessageId:msg.messageId WithMessage:msg.message WithInfo:msg.extendInformation toJid:self.virtualJid realToJid:self.chatId WithChatType:self.chatType WithMsgType:msg.messageType];
+        } else {
+            msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
         }
     }
-    
 }
 
 - (void)setKeyBoardHeight:(CGFloat)height WithScrollToBottom:(BOOL)flag {
@@ -3202,6 +3266,9 @@ static CGPoint tableOffsetPoint;
                     [weakSelf.tableView.mj_header endRefreshing];
                 }
             }];
+        } else if (self.chatType == ChatType_System) {
+            
+            [self loadNewSystemMsgList];
         } else {
 
             [[QIMKit sharedInstance] getMsgListByUserId:userId WithRealJid:realJid WithLimit:kPageCount WithOffset:(int) self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
@@ -3246,6 +3313,40 @@ static CGPoint tableOffsetPoint;
         [self.view addSubview:self.searchRemindView];
     }
 #endif
+}
+
+- (void)loadNewSystemMsgList {
+    //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+        [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
+            CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
+            NSRange range = NSMakeRange(0, [list count]);
+            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+            [self.messageManager.dataSource insertObjects:list atIndexes:indexSet];
+            [self.tableView reloadData];
+            
+            self.tableView.contentOffset = CGPointMake(0, self.tableView.contentSize.height - offsetY - 30);
+            //重新获取一次大图展示的数组
+            [self addImageToImageList];
+            [_tableView.mj_header endRefreshing];
+        }];
+    } else {
+        [[QIMKit sharedInstance] getMsgListByUserId:self.chatId WithRealJid:nil WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
+                NSRange range = NSMakeRange(0, [list count]);
+                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+                [self.messageManager.dataSource insertObjects:list atIndexes:indexSet];
+                [self.tableView reloadData];
+                
+                self.tableView.contentOffset = CGPointMake(0, self.tableView.contentSize.height - offsetY - 30);
+                //重新获取一次大图展示的数组
+                [self addImageToImageList];
+                [_tableView.mj_header endRefreshing];
+            });
+        }];
+    }
+    //    });
 }
 
 - (void)jumpToConverstaionSearch {

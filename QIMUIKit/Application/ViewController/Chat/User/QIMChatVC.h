@@ -5,7 +5,6 @@
 
 @property (nonatomic, strong) NSString *chatId;
 @property (nonatomic, strong) NSString *bindId; //代收绑定的账号，默认为nil
-@property (nonatomic, strong) NSString *stype;
 @property (nonatomic, strong) NSDictionary *chatInfoDict;
 @property (nonatomic, assign) BOOL needShowNewMsgTagCell;
 @property (nonatomic, assign) long long readedMsgTimeStamp;
