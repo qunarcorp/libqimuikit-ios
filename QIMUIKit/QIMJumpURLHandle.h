@@ -11,6 +11,7 @@
 @interface QIMJumpURLHandle : NSObject
 
 + (BOOL)parseURL:(NSURL *)url;
+
 + (void)decodeQCodeStr:(NSString *)qCodeStr;
 
 @end

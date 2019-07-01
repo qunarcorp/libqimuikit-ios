@@ -24,9 +24,13 @@
 #import "QIMWebView.h"
 #import "QIMPublicNumberCardVC.h"
 #import "QIMUserProfileViewController.h"
+
 #if __has_include("QIMNoteManager.h")
+
 #import "QTalkNotesCategoriesVc.h"
+
 #endif
+
 #import <MessageUI/MFMailComposeViewController.h>
 #import "QIMPublicNumberRobotVC.h"
 #import "QIMFileManagerViewController.h"
@@ -42,12 +46,15 @@
 #import "QIMContactSelectionViewController.h"
 #import "QIMFileTransMiddleVC.h"
 #import "QIMWorkFeedDetailViewController.h"
+
 #if __has_include("QIMIPadWindowManager.h")
 
-    #import "IPAD_RemoteLoginVC.h"
-    #import "IPAD_NAVViewController.h"
-    #import "QIMIPadWindowManager.h"
+#import "IPAD_RemoteLoginVC.h"
+#import "IPAD_NAVViewController.h"
+#import "QIMIPadWindowManager.h"
+
 #endif
+
 #import "QIMWatchDog.h"
 #import "QIMUUIDTools.h"
 #import "QIMPublicRedefineHeader.h"
@@ -64,21 +71,21 @@
 
 @interface QIMFastEntrance () <QIMMWPhotoBrowserDelegate>
 
-@property (nonatomic, strong) UINavigationController *rootNav;
+@property(nonatomic, strong) UINavigationController *rootNav;
 
-@property (nonatomic, strong) UIViewController *rootVc;
+@property(nonatomic, strong) UIViewController *rootVc;
 
-@property (nonatomic, copy) NSString *browerImageUserId;
+@property(nonatomic, copy) NSString *browerImageUserId;
 
-@property (nonatomic, copy) NSString *browerImageUrl;
+@property(nonatomic, copy) NSString *browerImageUrl;
 
 @end
 
 @implementation QIMFastEntrance
 
 static QIMFastEntrance *_sharedInstance = nil;
-+ (instancetype)sharedInstance
-{
+
++ (instancetype)sharedInstance {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedInstance = [[QIMFastEntrance alloc] init];
@@ -121,7 +128,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (void)launchMainControllerWithWindow:(UIWindow *)window {
     QIMVerboseLog(@"开始加载主界面");
     CFAbsoluteTime startTime = [[QIMWatchDog sharedInstance] startTime];
-    if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
+    if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
 #if __has_include("QIMIPadWindowManager.h")
         IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
         [window setRootViewController:ipadVc];
@@ -137,12 +144,12 @@ static QIMFastEntrance *_sharedInstance = nil;
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVc];
                 [window setRootViewController:nav];
             }
-            return ;
+            return;
         } else {
             NSString *userFullJid = [[QIMKit sharedInstance] getLastJid];
-            NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+            NSString *userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
             if (userFullJid && userToken && ![[QIMKit sharedInstance] getIsIpad]) {
-                
+
                 QIMMainVC *mainVc = [QIMMainVC sharedInstanceWithSkipLogin:YES];
                 QIMNavController *navController = [[QIMNavController alloc] initWithRootViewController:mainVc];
                 [window setRootViewController:navController];
@@ -204,8 +211,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         if ([MFMailComposeViewController canSendMail]) {
             MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
             controller.mailComposeDelegate = self;
-            [controller setToRecipients:@[[NSString stringWithFormat:@"%@@%@",[[userId componentsSeparatedByString:@"@"] firstObject], [[QIMKit sharedInstance] qimNav_Email]]]];
-            [controller setSubject:[NSString stringWithFormat:@"From %@",[[QIMKit sharedInstance] getMyNickName]]];
+            [controller setToRecipients:@[[NSString stringWithFormat:@"%@@%@", [[userId componentsSeparatedByString:@"@"] firstObject], [[QIMKit sharedInstance] qimNav_Email]]]];
+            [controller setSubject:[NSString stringWithFormat:@"From %@", [[QIMKit sharedInstance] getMyNickName]]];
             [controller setMessageBody:[NSString stringWithFormat:@"\r\r\r\r\r\r\r\r\r\r\r From Iphone %@.", [QIMKit getQIMProjectTitleName]] isHTML:NO];
             if (rootVc) {
                 [rootVc presentViewController:controller animated:YES completion:nil];
@@ -227,7 +234,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     //打开用户名片页
     //导航返回的RNUserCardView 为YES时，默认打开RN 名片页
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        
+
     } else {
 #if __has_include("QimRNBModule.h")
 
@@ -236,7 +243,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             SEL sel = NSSelectorFromString(@"getVCWithParam:");
             UIViewController *vc = nil;
             if ([RunC respondsToSelector:sel]) {
-                NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"UserCard", @"properties":@{@"UserId":userId, @"Screen":@"ChatInfo", @"RealJid":userId, @"HeaderUri":@"33"}};
+                NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"UserCard", @"properties": @{@"UserId": userId, @"Screen": @"ChatInfo", @"RealJid": userId, @"HeaderUri": @"33"}};
                 vc = [RunC performSelector:sel withObject:param];
             }
             return vc;
@@ -253,7 +260,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)openUserChatInfoByUserId:(NSString *)userId {
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
@@ -266,20 +273,20 @@ static QIMFastEntrance *_sharedInstance = nil;
 //        } else {
 #if __has_include("QimRNBModule.h")
 
-            if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
-                Class RunC = NSClassFromString(@"QimRNBModule");
-                SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
-                if ([RunC respondsToSelector:sel]) {
-                    NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"UserCard", @"properties":@{@"UserId":userId, @"Screen":@"ChatInfo", @"RealJid":userId, @"HeaderUri":@"33"}};
-                    [RunC performSelector:sel withObject:param];
-                }
-            } else {
-#endif
-                QIMUserProfileViewController *userProfileVc = [[QIMUserProfileViewController alloc] init];
-                userProfileVc.userId = userId;
-                [navVC pushViewController:userProfileVc animated:YES];
-#if __has_include("QimRNBModule.h")
+        if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
+            Class RunC = NSClassFromString(@"QimRNBModule");
+            SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
+            if ([RunC respondsToSelector:sel]) {
+                NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"UserCard", @"properties": @{@"UserId": userId, @"Screen": @"ChatInfo", @"RealJid": userId, @"HeaderUri": @"33"}};
+                [RunC performSelector:sel withObject:param];
             }
+        } else {
+#endif
+            QIMUserProfileViewController *userProfileVc = [[QIMUserProfileViewController alloc] init];
+            userProfileVc.userId = userId;
+            [navVC pushViewController:userProfileVc animated:YES];
+#if __has_include("QimRNBModule.h")
+        }
 #endif
 //        }
     });
@@ -293,17 +300,17 @@ static QIMFastEntrance *_sharedInstance = nil;
     //打开用户名片页
     //导航返回的RNUserCardView 为YES时，默认打开RN 名片页
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        
+
     } else {
 #if __has_include("QimRNBModule.h")
 
         if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
-            
+
             Class RunC = NSClassFromString(@"QimRNBModule");
             SEL sel = NSSelectorFromString(@"getVCWithParam:");
             UIViewController *vc = nil;
             if ([RunC respondsToSelector:sel]) {
-                NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"UserCard", @"properties":@{@"UserId":userId}};
+                NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"UserCard", @"properties": @{@"UserId": userId}};
                 vc = [RunC performSelector:sel withObject:param];
             }
             return vc;
@@ -336,20 +343,20 @@ static QIMFastEntrance *_sharedInstance = nil;
 //        } else {
 #if __has_include("QimRNBModule.h")
 
-            if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
-                Class RunC = NSClassFromString(@"QimRNBModule");
-                SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
-                if ([RunC respondsToSelector:sel]) {
-                    NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"UserCard", @"properties":@{@"UserId":userId}};
-                    [RunC performSelector:sel withObject:param];
-                }
-            } else {
-#endif
-                QIMUserProfileViewController *userProfileVc = [[QIMUserProfileViewController alloc] init];
-                userProfileVc.userId = userId;
-                [navVC pushViewController:userProfileVc animated:YES];
-#if __has_include("QimRNBModule.h")
+        if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
+            Class RunC = NSClassFromString(@"QimRNBModule");
+            SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
+            if ([RunC respondsToSelector:sel]) {
+                NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"UserCard", @"properties": @{@"UserId": userId}};
+                [RunC performSelector:sel withObject:param];
             }
+        } else {
+#endif
+            QIMUserProfileViewController *userProfileVc = [[QIMUserProfileViewController alloc] init];
+            userProfileVc.userId = userId;
+            [navVC pushViewController:userProfileVc animated:YES];
+#if __has_include("QimRNBModule.h")
+        }
 #endif
 //        }
     });
@@ -368,7 +375,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         UIViewController *vc = nil;
         if ([RunC respondsToSelector:sel]) {
             QIMGroupIdentity groupIdentity = [[QIMKit sharedInstance] GroupIdentityForUser:[[QIMKit sharedInstance] getLastJid] byGroup:groupId];
-            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"GroupCard", @"properties":@{@"groupId":groupId}, @"permissions":@(groupIdentity)};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"GroupCard", @"properties": @{@"groupId": groupId}, @"permissions": @(groupIdentity)};
             vc = [RunC performSelector:sel withObject:param];
         }
         return vc;
@@ -384,7 +391,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)openQIMGroupCardVCByGroupId:(NSString *)groupId {
-    
+
 #if __has_include("QimRNBModule.h")
 
     if ([[QIMKit sharedInstance] qimNav_RNGroupCardView]) {
@@ -397,7 +404,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
             QIMGroupIdentity groupIdentity = [[QIMKit sharedInstance] GroupIdentityForUser:[[QIMKit sharedInstance] getLastJid] byGroup:groupId];
-            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"GroupCard", @"properties":@{@"groupId":groupId, @"permissions":@(groupIdentity)}};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"GroupCard", @"properties": @{@"groupId": groupId, @"permissions": @(groupIdentity)}};
             [RunC performSelector:sel withObject:param];
         }
     } else {
@@ -414,11 +421,11 @@ static QIMFastEntrance *_sharedInstance = nil;
 #endif
 }
 
-- (UIViewController *)getFastChatVCByXmppId:(NSString *)userId WithRealJid:(NSString *)realJid WithChatType:(NSInteger)chatType WithFastMsgTimeStamp:(long long)fastMsgTime{
+- (UIViewController *)getFastChatVCByXmppId:(NSString *)userId WithRealJid:(NSString *)realJid WithChatType:(NSInteger)chatType WithFastMsgTimeStamp:(long long)fastMsgTime {
     UIViewController *fastChatVc = nil;
     switch (chatType) {
         case ChatType_SingleChat: {
-            
+
             QIMChatVC *chatVc = [self getSingleChatVCByUserId:userId];
             [chatVc setFastMsgTimeStamp:fastMsgTime];
             return chatVc;
@@ -437,7 +444,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
             break;
         case ChatType_PublicNumber: {
-            
+
         }
             break;
         case ChatType_Consult: {
@@ -519,8 +526,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         name = [userId componentsSeparatedByString:@"@"].firstObject;
     }
     ChatType chatType = [[QIMKit sharedInstance] openChatSessionByUserId:userId];
-    
-    QIMChatVC * chatVC  = [[QIMChatVC alloc] init];
+
+    QIMChatVC *chatVC = [[QIMChatVC alloc] init];
     [chatVC setChatId:userId];
     [chatVC setTitle:name];
     [chatVC setChatType:chatType];
@@ -550,7 +557,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId {
 //    NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
 //    NSString *groupName = [groupCard objectForKey:@"Name"];
-    QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
+    QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
     [chatGroupVC setChatType:ChatType_GroupChat];
     [chatGroupVC setChatId:groupId];
 //    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
@@ -566,22 +573,22 @@ static QIMFastEntrance *_sharedInstance = nil;
 //                [RunC performSelector:sel withObject:groupId];
 //            }
 //        } else {
-            UIViewController *chatGroupVC = [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:groupId];
-            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-            if (!navVC) {
-                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-            }
-            [navVC pushViewController:chatGroupVC animated:YES];
+        UIViewController *chatGroupVC = [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:groupId];
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        [navVC pushViewController:chatGroupVC animated:YES];
 //        }
     });
 }
 
 - (UIViewController *)getHeaderLineVCByJid:(NSString *)jid {
     if ([jid hasPrefix:@"FriendNotify"]) {
-        
+
         QIMFriendNotifyViewController *friendVC = [[QIMFriendNotifyViewController alloc] init];
         return friendVC;
-    }  else if ([jid hasPrefix:@"rbt-qiangdan"]) {
+    } else if ([jid hasPrefix:@"rbt-qiangdan"]) {
         QIMWebView *webView = [[QIMWebView alloc] init];
         webView.needAuth = YES;
         webView.fromOrderManager = YES;
@@ -596,12 +603,12 @@ static QIMFastEntrance *_sharedInstance = nil;
         webView.url = [[QIMKit sharedInstance] qimNav_QcOrderManager];
         return webView;
     } else {
-        
+
         QIMChatVC *chatSystemVC = [[QIMChatVC alloc] init];
         [chatSystemVC setChatId:jid];
         [chatSystemVC setChatType:ChatType_System];
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-            
+
             if ([jid hasPrefix:@"rbt-notice"]) {
                 [chatSystemVC setTitle:@"公告通知"];
             } else if ([jid hasPrefix:@"rbt-qiangdan"]) {
@@ -612,7 +619,7 @@ static QIMFastEntrance *_sharedInstance = nil;
                 [chatSystemVC setTitle:@"系统消息"];
             }
         } else {
-            
+
             [chatSystemVC setTitle:@"系统消息"];
         }
         return chatSystemVC;
@@ -637,7 +644,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (UIViewController *)getWebViewWithHtmlStr:(NSString *)htmlStr showNavBar:(BOOL)showNavBar {
     QIMWebView *webView = [[QIMWebView alloc] init];
     [webView setHtmlString:htmlStr];
-    if(!showNavBar){
+    if (!showNavBar) {
         webView.navBarHidden = !showNavBar;
     }
     return webView;
@@ -647,7 +654,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
         QIMWebView *webView = [[QIMWebView alloc] init];
         [webView setHtmlString:htmlStr];
-        if(!showNavBar){
+        if (!showNavBar) {
             webView.navBarHidden = !showNavBar;
         }
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
@@ -658,20 +665,20 @@ static QIMFastEntrance *_sharedInstance = nil;
     });
 }
 
-- (UIViewController *)getWebViewForUrl:(NSString *)url showNavBar:(BOOL)showNavBar{
+- (UIViewController *)getWebViewForUrl:(NSString *)url showNavBar:(BOOL)showNavBar {
     QIMWebView *webView = [[QIMWebView alloc] init];
     [webView setUrl:url];
-    if(!showNavBar){
+    if (!showNavBar) {
         webView.navBarHidden = !showNavBar;
     }
     return webView;
 }
 
-+ (void)openWebViewForUrl:(NSString *)url showNavBar:(BOOL)showNavBar{
++ (void)openWebViewForUrl:(NSString *)url showNavBar:(BOOL)showNavBar {
     dispatch_async(dispatch_get_main_queue(), ^{
         QIMWebView *webView = [[QIMWebView alloc] init];
         [webView setUrl:url];
-        if(!showNavBar){
+        if (!showNavBar) {
             webView.navBarHidden = !showNavBar;
         }
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
@@ -691,7 +698,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         canParse = [[RunC performSelector:sel withObject:reactInfoDic] boolValue];
     }
     if (canParse && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-        
+
         NSString *reacturl = reactInfoDic[@"reacturl"];
         NSURL *url = [NSURL URLWithString:[reacturl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         UIViewController *reactVC = nil;
@@ -702,7 +709,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         if ([RunC respondsToSelector:sel]) {
             reactVC = [RunC performSelector:sel withObject:url];
         }
-        
+
         if (reactVC != nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
@@ -724,7 +731,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         QIMWebView *webView = [[QIMWebView alloc] init];
         [webView setUrl:url];
         [webView setFromRegPackage:YES];
-        if(!showNavBar){
+        if (!showNavBar) {
             webView.navBarHidden = !showNavBar;
         }
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
@@ -736,7 +743,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 - (UIViewController *)getRNSearchVC {
-    
+
 #if __has_include("QTalkSearchViewManager.h")
     UIViewController *reactVC = [[NSClassFromString(@"QTalkSearchViewManager") alloc] init];
     return reactVC;
@@ -803,13 +810,13 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 - (UIViewController *)getQIMGroupListVC {
-    QIMGroupListVC * groupListVC = [[QIMGroupListVC alloc] init];
+    QIMGroupListVC *groupListVC = [[QIMGroupListVC alloc] init];
     return groupListVC;
 }
 
 + (void)openQIMGroupListVC {
     dispatch_async(dispatch_get_main_queue(), ^{
-        QIMGroupListVC * groupListVC = [[QIMGroupListVC alloc] init];
+        QIMGroupListVC *groupListVC = [[QIMGroupListVC alloc] init];
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
@@ -884,7 +891,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)openQRCodeVC {
     dispatch_async(dispatch_get_main_queue(), ^{
-        QIMZBarViewController*vc = [[QIMZBarViewController alloc] initWithBlock:^(NSString *str, BOOL isScceed) {
+        QIMZBarViewController *vc = [[QIMZBarViewController alloc] initWithBlock:^(NSString *str, BOOL isScceed) {
             if (isScceed) {
                 [QIMJumpURLHandle decodeQCodeStr:str];
             }
@@ -938,7 +945,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     SEL sel = NSSelectorFromString(@"getVCWithParam:");
     UIViewController *vc = nil;
     if ([RunC respondsToSelector:sel]) {
-        NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(hiddenNav), @"module":module, @"properties":properties};
+        NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(hiddenNav), @"module": module, @"properties": properties};
         vc = [RunC performSelector:sel withObject:param];
     }
     return vc;
@@ -956,7 +963,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":moduleName, @"properties":properties};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": moduleName, @"properties": properties};
             [RunC performSelector:sel withObject:param];
         }
 #endif
@@ -1069,11 +1076,11 @@ static QIMFastEntrance *_sharedInstance = nil;
         [properties setQIMSafeObject:chatId forKey:@"to"];
         [properties setQIMSafeObject:realJid forKey:@"realjid"];
         [properties setQIMSafeObject:@(chatType) forKey:@"chatType"];
-        
+
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"Merchant", @"properties":@{@"Screen":@"Seats", @"from":[[QIMKit sharedInstance] getLastJid], @"to":chatId, @"customerName":realJid}};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"Merchant", @"properties": @{@"Screen": @"Seats", @"from": [[QIMKit sharedInstance] getLastJid], @"to": chatId, @"customerName": realJid}};
             [RunC performSelector:sel withObject:param];
         }
 #endif
@@ -1090,7 +1097,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"Merchant", @"properties":@{@"Screen":@"Seats", @"shopJid":shopId, @"customerName":realJid}};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"Merchant", @"properties": @{@"Screen": @"Seats", @"shopJid": shopId, @"customerName": realJid}};
             [RunC performSelector:sel withObject:param];
         }
 #endif
@@ -1100,13 +1107,13 @@ static QIMFastEntrance *_sharedInstance = nil;
 + (void)openMyAccountInfo {
     dispatch_async(dispatch_get_main_queue(), ^{
 #if __has_include("RNSchemaParse.h")
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotify_QtalkSuggest_handle_opsapp_event object:nil userInfo:@{@"module":@"user-info", @"initParam":@[]}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotify_QtalkSuggest_handle_opsapp_event object:nil userInfo:@{@"module": @"user-info", @"initParam": @[]}];
 #endif
     });
 }
 
 - (UIViewController *)getQRCodeWithQRId:(NSString *)qrId withType:(QRCodeType)qrcodeType {
-    QIMQRCodeViewDisplayController *QRVC = [[QIMQRCodeViewDisplayController alloc]init];
+    QIMQRCodeViewDisplayController *QRVC = [[QIMQRCodeViewDisplayController alloc] init];
     QRVC.QRtype = qrcodeType;
     QRVC.jid = qrId;
     NSString *qrName = @"";
@@ -1162,7 +1169,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
         [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+            if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 #if __has_include("QIMIPadWindowManager.h")
                 IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
                 [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
@@ -1215,7 +1222,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
             dispatch_async(dispatch_get_main_queue(), ^{
-                if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+                if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 #if __has_include("QIMIPadWindowManager.h")
                     IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
                     [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
@@ -1253,10 +1260,10 @@ static QIMFastEntrance *_sharedInstance = nil;
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"退出登录失败，请重试" preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-                    
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_Nonnull action) {
+
                 }];
-                UIAlertAction *quitAction = [UIAlertAction actionWithTitle:@"强制退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                UIAlertAction *quitAction = [UIAlertAction actionWithTitle:@"强制退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
                     [QIMFastEntrance signOutWithNoPush];
                 }];
                 [alertVc addAction:okAction];
@@ -1271,7 +1278,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 + (void)reloginAccount {
     dispatch_async(dispatch_get_main_queue(), ^{
         [[QIMKit sharedInstance] setNeedTryRelogin:NO];
-        if([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+        if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 #if __has_include("QIMIPadWindowManager.h")
             [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
@@ -1311,10 +1318,10 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 #pragma mark - MFMailComposeViewControllerDelegate
 
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     [controller dismissViewControllerAnimated:YES completion:^{
         if (result == MFMailComposeResultSent) {
-            
+
         } else {
             if (error) {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[error description] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
@@ -1367,11 +1374,11 @@ static QIMFastEntrance *_sharedInstance = nil;
     browser.zoomPhotosToFill = YES;
     browser.enableSwipeToDismiss = NO;
     [browser setCurrentPhotoIndex:0];
-    
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
     browser.wantsFullScreenLayout = YES;
 #endif
-    
+
     //初始化navigation
     QIMNavController *nc = [[QIMNavController alloc] initWithRootViewController:browser];
     nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
@@ -1380,7 +1387,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-       [navVC presentViewController:nc animated:YES completion:nil];
+        [navVC presentViewController:nc animated:YES completion:nil];
     });
 }
 
@@ -1391,7 +1398,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 - (id <QIMMWPhoto>)photoBrowser:(QIMMWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
-    
+
 #pragma mark - 查看大图
     if (![self.browerImageUrl qim_hasPrefixHttpHeader]) {
         self.browerImageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], self.browerImageUrl];
@@ -1415,7 +1422,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     if (fileUrl.length <= 0 || fileName.length <= 0 || fileSize.length <= 0) {
         return;
     }
-   QIMMessageModel *fileMsg = [[QIMMessageModel alloc] init];
+    QIMMessageModel *fileMsg = [[QIMMessageModel alloc] init];
     fileMsg.messageId = [QIMUUIDTools UUID];
     NSMutableDictionary *fileInfoDic = [[NSMutableDictionary alloc] init];
     [fileInfoDic setQIMSafeObject:fileUrl forKey:@"HttpUrl"];
@@ -1430,7 +1437,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-       [navVC pushViewController:filePreviewVc animated:YES];
+        [navVC pushViewController:filePreviewVc animated:YES];
     });
 }
 
@@ -1445,7 +1452,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(YES), @"module":@"Search", @"properties":@{@"Screen":@"LocalSearch", @"xmppid":xmppId, @"realjid":realJid, @"chatType":@(chatType)}};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"Search", @"properties": @{@"Screen": @"LocalSearch", @"xmppid": xmppId, @"realjid": realJid, @"chatType": @(chatType)}};
             [RunC performSelector:sel withObject:param];
         }
 #endif
@@ -1471,7 +1478,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     NSString *userId = [param objectForKey:@"UserId"];
     if (![userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            QIMWorkFeedViewController * userWorkFeedVc = [[QIMWorkFeedViewController alloc]init];
+            QIMWorkFeedViewController *userWorkFeedVc = [[QIMWorkFeedViewController alloc] init];
             userWorkFeedVc.userId = [param objectForKey:@"UserId"];
             UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
             if (!navVC) {
@@ -1481,7 +1488,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         });
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
-            QIMWorkFeedMYCirrleViewController * userWorkFeedVc = [[QIMWorkFeedMYCirrleViewController alloc]init];
+            QIMWorkFeedMYCirrleViewController *userWorkFeedVc = [[QIMWorkFeedMYCirrleViewController alloc] init];
             userWorkFeedVc.userId = [param objectForKey:@"UserId"];
             UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
             if (!navVC) {
@@ -1502,7 +1509,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC":navVC, @"hiddenNav":@(NO), @"module":@"TravelCalendar"};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(NO), @"module": @"TravelCalendar"};
             [RunC performSelector:sel withObject:param];
         }
     });
