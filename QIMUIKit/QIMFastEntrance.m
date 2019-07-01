@@ -16,7 +16,6 @@
 #import "QIMAdvertisingVC.h"
 #import "QIMProgressHUD.h"
 #import "QIMFriendNotifyViewController.h"
-#import "QIMSystemVC.h"
 #import "QIMGroupChatVC.h"
 #import "QIMFriendListViewController.h"
 #import "QIMGroupListVC.h"
@@ -432,7 +431,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
             break;
         case ChatType_System: {
-            QIMSystemVC *systemVc = [self getHeaderLineVCByJid:userId];
+            QIMChatVC *systemVc = [self getHeaderLineVCByJid:userId];
             [systemVc setFastMsgTimeStamp:fastMsgTime];
             return systemVc;
         }
@@ -598,8 +597,9 @@ static QIMFastEntrance *_sharedInstance = nil;
         return webView;
     } else {
         
-        QIMSystemVC *chatSystemVC = [[QIMSystemVC alloc] init];
+        QIMChatVC *chatSystemVC = [[QIMChatVC alloc] init];
         [chatSystemVC setChatId:jid];
+        [chatSystemVC setChatType:ChatType_System];
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
             
             if ([jid hasPrefix:@"rbt-notice"]) {
