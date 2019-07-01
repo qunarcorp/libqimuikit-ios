@@ -1,9 +1,9 @@
 //
-//  QTalkSearch.m
-//  qunarChatIphone
+//  QTalkNewSearchRNView.m
+//  QIMUIKit
 //
-//  Created by wangyu.wang on 2016/11/28.
-//
+//  Created by lilu on 2019/7/1.
+//  Copyright © 2019 QIM. All rights reserved.
 //
 
 #import <React/RCTRootView.h>
@@ -15,12 +15,13 @@
 #import "QIMLocalLog.h"
 #endif
 
-#import "QTalkSearchRNView.h"
 #import "MBProgressHUD.h"
 
 static RCTBridge *bridge = nil;
 
-@implementation QTalkSearchRNView
+#import "QTalkNewSearchRNView.h"
+
+@implementation QTalkNewSearchRNView
 
 - (MBProgressHUD *)progressHUD {
 
@@ -50,7 +51,7 @@ static RCTBridge *bridge = nil;
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[self getRCTbridge] moduleName:@"qtalkSearch" initialProperties:[self getNewSearchInitialProps]];
+        RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[self getRCTbridge] moduleName:@"new_search" initialProperties:[self getNewSearchInitialProps]];
 
         [rootView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
         [self addSubview:rootView];
@@ -67,8 +68,15 @@ static RCTBridge *bridge = nil;
 }
 
 - (NSDictionary *)getNewSearchInitialProps {
-    NSMutableDictionary *initialProps = [NSMutableDictionary dictionaryWithCapacity:1];
-    [initialProps setQIMSafeObject:[[QIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"server"];
+    NSMutableDictionary *initialProps = [NSMutableDictionary dictionaryWithCapacity:4];
+    [initialProps setQIMSafeObject:@"" forKey:@"server"];
+    [initialProps setQIMSafeObject:@"http://10.88.112.79:8884/search" forKey:@"searchUrl"];
+    [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/avatar/new/e059510ea07afacc424640b2e71af997.jpg?" forKey:@"singleDefaultPic"];
+    [initialProps setQIMSafeObject:@"" forKey:@"mucDefaultDic"];
+    [initialProps setQIMSafeObject:@"https://qim.qunar.com" forKey:@"imageHost"];
+    [initialProps setQIMSafeObject:[QIMKit getLastUserName] forKey:@"MyUserId"];
+    NSArray *searchKeyHistory = [[QIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:QIMSearchTypeAll withLimit:5];
+    [initialProps setQIMSafeObject:searchKeyHistory ? searchKeyHistory : @[] forKey:@"searchKeyHistory"];
     return initialProps;
 }
 
@@ -85,7 +93,7 @@ static RCTBridge *bridge = nil;
     [self removeAllSubviews];
     // clear bridge cache
     [self clearBridge];
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[self getRCTbridge] moduleName:[QTalkSearchRNView getRegisterBundleName] initialProperties:[self getNewSearchInitialProps]];
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[self getRCTbridge] moduleName:[QTalkNewSearchRNView getRegisterBundleName] initialProperties:[self getNewSearchInitialProps]];
 
     [rootView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
 
@@ -125,12 +133,12 @@ static RCTBridge *bridge = nil;
         NSURL *appDebugOpsSearchRNDebugUrl = [NSURL URLWithString:appDebugOpsSearchRNDebugUrlStr];
         return appDebugOpsSearchRNDebugUrl;
     } else {
-        NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QTalkSearchRNView getInnerBundleName] ofType:@"jsbundle"];
+        NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QTalkNewSearchRNView getInnerBundleName] ofType:@"jsbundle"];
         NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
         // load jsbundle from cacheqtalk_temp_features
         NSString *path = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
 
-        NSString *latestJSCodeURLString = [[path stringByAppendingPathComponent:[QTalkSearchRNView getCachePath]] stringByAppendingPathComponent:[QTalkSearchRNView getAssetBundleName]];
+        NSString *latestJSCodeURLString = [[path stringByAppendingPathComponent:[QTalkNewSearchRNView getCachePath]] stringByAppendingPathComponent:[QTalkNewSearchRNView getAssetBundleName]];
 
         NSURL *_latestJSCodeLocation;
         if (latestJSCodeURLString && [[NSFileManager defaultManager] fileExistsAtPath:latestJSCodeURLString]) {
@@ -144,6 +152,7 @@ static RCTBridge *bridge = nil;
 
         // debug
         _jsCodeLocation = jsCodeLocation;
+        jsCodeLocation = [NSURL URLWithString:@"http://100.80.128.179:8081/index.bundle?platform=ios&dev=true"];
 
         return jsCodeLocation;
     }
@@ -154,7 +163,7 @@ static RCTBridge *bridge = nil;
  *
  */
 + (NSString *)getAssetBundleName {
-    return @"rn-qtalk-search.ios.jsbundle_v3";
+    return @"rn-new-search.ios.jsbundle_v1";
 }
 
 /*
@@ -162,7 +171,7 @@ static RCTBridge *bridge = nil;
  *
  */
 + (NSString *)getAssetZipBundleName {
-    return @"rn-qtalk-search.ios.jsbundle.tar.gz";
+    return @"rn-new-search.ios.jsbundle.tar.gz";
 }
 
 /*
@@ -170,7 +179,7 @@ static RCTBridge *bridge = nil;
  *
  */
 + (NSString *)getInnerBundleName {
-    return @"rn-qtalk-search.ios";
+    return @"rn-new-search.ios";
 }
 
 /*
@@ -178,7 +187,7 @@ static RCTBridge *bridge = nil;
  *
  */
 + (NSString *)getCachePath {
-    return @"rnRes/qtalk_search/";
+    return @"rnRes/new_search/";
 }
 
 /*
@@ -186,7 +195,7 @@ static RCTBridge *bridge = nil;
  *
  */
 + (NSString *)getRegisterBundleName {
-    return @"qtalkSearch";
+    return @"new_search";
 }
 
 - (void)dealloc {
