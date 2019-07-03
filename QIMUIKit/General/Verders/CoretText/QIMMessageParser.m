@@ -20,7 +20,7 @@
 #import "QIMEmotionManager.h"
 #import "QIMCommonFont.h"
 
-#define kMessageTextFontSize        ([[QIMCommonFont sharedInstance] currentFontSize] - 4)
+#define kMessageTextFontSize        ([[QIMCommonFont sharedInstance] currentFontSize] - 3)
 #define kThumbMaxWidth              [UIScreen mainScreen].bounds.size.width / 3
 #define kThumbMaxHeight             [UIScreen mainScreen].bounds.size.width / 3
 

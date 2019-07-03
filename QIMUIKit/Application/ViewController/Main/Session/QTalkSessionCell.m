@@ -737,7 +737,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             break;
             case QIMMessageType_Revoke: {
                 content = [[QIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
-                if (self.msgDirection == MessageDirection_Received && self.nickName.length > 0) {
+                if (self.msgDirection == MessageDirection_Received && self.nickName.length > 0 && ![self.msgFrom isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
                     content = [NSString stringWithFormat:@"\"%@\"%@", self.nickName, content];
                 } else {
                     content = [NSString stringWithFormat:@"你%@", content];
@@ -780,6 +780,16 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                     }
                 }
             }
+            break;
+        case QIMMessageType_GroupNotify: {
+            content = [[QIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
+            NSString *notifyFrom = [[self.msgFrom componentsSeparatedByString:@"/"] lastObject];
+            if (content.length > 0 && notifyFrom.length > 0) {
+                content = [NSString stringWithFormat:@"%@: %@", notifyFrom, content];
+            } else {
+                
+            }
+        }
             break;
         default: {
             if (message.length > 0) {

@@ -24,6 +24,8 @@
 #import "UIColor+QIMChatBallocColor.h"
 #import "UIImage+QIMIconFont.h"
 #import "UIImage+QIMButtonIcon.h"
+#import "UINavigationController+FDFullscreenPopGesture.h"
+
 #import "QIMIconFont.h"
 #import "QIMIconInfo.h"
 #import "QIMDeviceManager.h"

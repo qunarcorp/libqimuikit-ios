@@ -63,10 +63,15 @@
     if (self.message.messageType == QIMMessageType_Revoke) {
         
         NSString *user = self.message.nickName;
-        //备注
-        NSString * remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.message.nickName];
-        user = (remarkName.length > 0) ? remarkName : user;
-        timeStr = [NSString stringWithFormat:@" \"%@\"撤回了一条消息",user];
+        if ([user isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
+            user = @"你";
+            timeStr = [NSString stringWithFormat:@"%@撤回了一条消息",user];
+        } else {
+            //备注
+            NSString * remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.message.nickName];
+            user = (remarkName.length > 0) ? remarkName : user;
+            timeStr = [NSString stringWithFormat:@" \"%@\"撤回了一条消息",user];
+        }
     }
     if (timeStr) {
         CGSize size = [timeStr sizeWithFont:_timestampButton.titleLabel.font constrainedToSize:CGSizeMake(INT64_MAX, 15) lineBreakMode:NSLineBreakByCharWrapping];
