@@ -56,9 +56,13 @@
 
 - (UIViewController *)getSingleChatVCByUserId:(NSString *)userId;
 
++ (void)openSingleChatVCByUserId:(NSString *)userId withFastTime:(long long)fastTime withRemoteSearch:(BOOL)flag;
+
 + (void)openSingleChatVCByUserId:(NSString *)userId;
 
 - (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId;
+
++ (void)openGroupChatVCByGroupId:(NSString *)groupId withFastTime:(long long)fastTime withRemoteSearch:(BOOL)flag;
 
 + (void)openGroupChatVCByGroupId:(NSString *)groupId;
 

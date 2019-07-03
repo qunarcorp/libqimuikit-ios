@@ -69,12 +69,12 @@ static RCTBridge *bridge = nil;
 
 - (NSDictionary *)getNewSearchInitialProps {
     NSMutableDictionary *initialProps = [NSMutableDictionary dictionaryWithCapacity:4];
-    [initialProps setQIMSafeObject:@"" forKey:@"server"];
+    [initialProps setQIMSafeObject:[[QIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"server"];
     [initialProps setQIMSafeObject:@"http://10.88.112.79:8884/search" forKey:@"searchUrl"];
-    [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/avatar/new/e059510ea07afacc424640b2e71af997.jpg?" forKey:@"singleDefaultPic"];
-    [initialProps setQIMSafeObject:@"" forKey:@"mucDefaultDic"];
+    [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/avatar/new/e059510ea07afacc424640b2e71af997.jpg" forKey:@"singleDefaultPic"];
+    [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/temp/new/9c74475153c716728fc486255f9546f1.png" forKey:@"mucDefaultDic"];
     [initialProps setQIMSafeObject:@"https://qim.qunar.com" forKey:@"imageHost"];
-    [initialProps setQIMSafeObject:[QIMKit getLastUserName] forKey:@"MyUserId"];
+    [initialProps setQIMSafeObject:[[QIMKit sharedInstance] getLastJid] forKey:@"MyUserId"];
     NSArray *searchKeyHistory = [[QIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:QIMSearchTypeAll withLimit:5];
     [initialProps setQIMSafeObject:searchKeyHistory ? searchKeyHistory : @[] forKey:@"searchKeyHistory"];
     return initialProps;
@@ -163,7 +163,7 @@ static RCTBridge *bridge = nil;
  *
  */
 + (NSString *)getAssetBundleName {
-    return @"rn-new-search.ios.jsbundle_v1";
+    return @"new_search.ios.jsbundle_v1";
 }
 
 /*
@@ -171,7 +171,7 @@ static RCTBridge *bridge = nil;
  *
  */
 + (NSString *)getAssetZipBundleName {
-    return @"rn-new-search.ios.jsbundle.tar.gz";
+    return @"new_search.ios.jsbundle.tar.gz";
 }
 
 /*
@@ -179,7 +179,7 @@ static RCTBridge *bridge = nil;
  *
  */
 + (NSString *)getInnerBundleName {
-    return @"rn-new-search.ios";
+    return @"new_search.ios";
 }
 
 /*

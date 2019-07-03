@@ -21,10 +21,11 @@
         NSString *userJid = [member objectForKey:@"jid"];
         NSString *affiliation = [member objectForKey:@"affiliation"];
         NSString *name = [member objectForKey:@"name"];
+        QIMGroupIdentity groupIdentity = [[QIMKit sharedInstance] GroupIdentityForUser:userJid byGroup:groupId];
         NSString *userName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userJid];
         NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:member];
         NSString *uri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:jid];
-        [dic setQIMSafeObject:affiliation forKey:@"affiliation"];
+        [dic setQIMSafeObject:@(groupIdentity) forKey:@"affiliation"];
         [dic setQIMSafeObject:uri forKey:@"headerUri"];
         [dic setQIMSafeObject:groupId forKey:@"jid"];
         [dic setQIMSafeObject:(userName.length > 0) ? userName : name forKey:@"name"];
