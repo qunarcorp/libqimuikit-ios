@@ -87,6 +87,8 @@
 		2C05032522C9E69E002919B0 /* QIMSDKUIHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0502E522C9E69E002919B0 /* QIMSDKUIHelper.h */; };
 		2C05032C22C9E7F2002919B0 /* QTalkNewSearchRNView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C05032A22C9E7F2002919B0 /* QTalkNewSearchRNView.h */; };
 		2C05032D22C9E7F2002919B0 /* QTalkNewSearchRNView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C05032B22C9E7F2002919B0 /* QTalkNewSearchRNView.m */; };
+		2C05033422CCCD4B002919B0 /* QIMWorkFeedMYCirrleViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C05033222CCCD49002919B0 /* QIMWorkFeedMYCirrleViewController.h */; };
+		2C05033522CCCD4C002919B0 /* QIMWorkFeedMYCirrleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C05033322CCCD4B002919B0 /* QIMWorkFeedMYCirrleViewController.m */; };
 		2C06A04822045DE8000CAF37 /* QIMWorkFeedViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C06A00E22045DE8000CAF37 /* QIMWorkFeedViewController.h */; };
 		2C06A04922045DE8000CAF37 /* QIMWorkFeedMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C06A00F22045DE8000CAF37 /* QIMWorkFeedMessageViewController.m */; };
 		2C06A04A22045DE8000CAF37 /* QIMWorkMomentUserIdentityVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C06A01022045DE8000CAF37 /* QIMWorkMomentUserIdentityVC.m */; };
@@ -1179,6 +1181,8 @@
 		2C0502E522C9E69E002919B0 /* QIMSDKUIHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMSDKUIHelper.h; sourceTree = "<group>"; };
 		2C05032A22C9E7F2002919B0 /* QTalkNewSearchRNView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QTalkNewSearchRNView.h; sourceTree = "<group>"; };
 		2C05032B22C9E7F2002919B0 /* QTalkNewSearchRNView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QTalkNewSearchRNView.m; sourceTree = "<group>"; };
+		2C05033222CCCD49002919B0 /* QIMWorkFeedMYCirrleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMWorkFeedMYCirrleViewController.h; sourceTree = "<group>"; };
+		2C05033322CCCD4B002919B0 /* QIMWorkFeedMYCirrleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMWorkFeedMYCirrleViewController.m; sourceTree = "<group>"; };
 		2C06A00E22045DE8000CAF37 /* QIMWorkFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QIMWorkFeedViewController.h; sourceTree = "<group>"; };
 		2C06A00F22045DE8000CAF37 /* QIMWorkFeedMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMWorkFeedMessageViewController.m; sourceTree = "<group>"; };
 		2C06A01022045DE8000CAF37 /* QIMWorkMomentUserIdentityVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QIMWorkMomentUserIdentityVC.m; sourceTree = "<group>"; };
@@ -2453,6 +2457,8 @@
 			isa = PBXGroup;
 			children = (
 				2C06A01722045DE8000CAF37 /* QIMWorkFeedDetailViewController.h */,
+				2C05033222CCCD49002919B0 /* QIMWorkFeedMYCirrleViewController.h */,
+				2C05033322CCCD4B002919B0 /* QIMWorkFeedMYCirrleViewController.m */,
 				2C06A01122045DE8000CAF37 /* QIMWorkFeedDetailViewController.m */,
 				2C8AADCB2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.h */,
 				2C8AADCC2226BE5B002B8633 /* QIMWorkFeedAtNotifyViewController.m */,
@@ -4713,6 +4719,7 @@
 				2C8AFC1120B1D51B00CF98EB /* ShapedImageView.h in Headers */,
 				2CA51420227086880093E9DC /* QIMImageRequestOperation.h in Headers */,
 				2C8AFDE820B1D51C00CF98EB /* QIMGroupChangeNameVC.h in Headers */,
+				2C05033422CCCD4B002919B0 /* QIMWorkFeedMYCirrleViewController.h in Headers */,
 				2CC93B7E21EC33C800EEC47D /* TodoListInfoView.h in Headers */,
 				2C8AFD8720B1D51C00CF98EB /* QIMChatBGImageSelectController.h in Headers */,
 				2C8AFD4220B1D51C00CF98EB /* QIMTextBarExpandView.h in Headers */,
@@ -5884,6 +5891,7 @@
 				2C8AFBFA20B1D51B00CF98EB /* QIMChatRecorderView.m in Sources */,
 				2C8AFE1420B1D51C00CF98EB /* QIMBuddyItemCell.m in Sources */,
 				2C8AFDED20B1D51C00CF98EB /* QIMFileManagerCell.m in Sources */,
+				2C05033522CCCD4C002919B0 /* QIMWorkFeedMYCirrleViewController.m in Sources */,
 				2C8AFEA320B1D51C00CF98EB /* QIMActivityIndicatorView.m in Sources */,
 				2CC93BA921EC33C800EEC47D /* QIMXMenuItem.m in Sources */,
 				2CC93B8621EC33C800EEC47D /* TodoListDoneVC.m in Sources */,

@@ -113,6 +113,7 @@
 #import "QIMAuthorizationManager.h"
 #import "QIMMessageTableViewManager.h"
 #import "QIMMessageRefreshHeader.h"
+#import "QIMMessageRefreshFooter.h"
 #import "MJRefreshNormalHeader.h"
 #import "QIMRobotAnswerCell.h"
 #import "QIMSearchRemindView.h"
@@ -178,6 +179,8 @@
 @property(nonatomic, strong) QIMVoiceTimeRemindView *voiceTimeRemindView;
 
 @property(nonatomic, strong) UITableView *tableView;
+
+@property(nonatomic, strong) UIView *loadAllMsgView;
 
 @property(nonatomic, strong) NSDate *dataNow;
 
@@ -489,6 +492,9 @@
         _tableView.allowsMultipleSelectionDuringEditing = YES;
         [_tableView setAccessibilityIdentifier:@"MessageTableView"];
         _tableView.mj_header = [QIMMessageRefreshHeader messsageHeaderWithRefreshingTarget:self refreshingAction:@selector(loadMoreMessageData)];
+        if (self.netWorkSearch == YES) {
+            _tableView.mj_footer = [QIMMessageRefreshFooter messsageFooterWithRefreshingTarget:self refreshingAction:@selector(loadFooterRemoteSearchMsgList)];
+        }
         [self refreshChatBGImageView];
     }
     return _tableView;
@@ -903,51 +909,56 @@
 }
 
 - (void)initNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(expandViewItemHandleNotificationHandle:) name:kExpandViewItemHandleNotification object:nil];
-    //消息发送成功
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msgDidSendNotificationHandle:) name:kXmppStreamDidSendMessage object:nil];
-    //消息发送失败
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msgSendFailedNotificationHandle:) name:kXmppStreamSendMessageFailed object:nil];
-    //重发消息
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msgReSendNotificationHandle:) name:kXmppStreamReSendMessage object:nil];
-    //阅后即焚消息销毁
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(BurnAfterReadMsgDestructionNotificationHandle:) name:kBurnAfterReadMsgDestruction object:nil];
-    //消息被撤回
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(revokeMsgNotificationHandle:) name:kRevokeMsg object:nil];
+    
     //键盘弹出，消息自动滑动最底
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardWillShow:) name:kQIMTextBarIsFirstResponder object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WillSendRedPackNotificationHandle:) name:WillSendRedPackNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageList:) name:kNotificationMessageUpdate object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCollectionMessageList:) name:kNotificationCollectionMessageUpdate object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHistoryMessageList:) name:kNotificationOfflineMessageUpdate object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadFileFinished:) name:KDownloadFileFinishedNotificationName object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onTyping:) name:kTyping object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:@"refreshTableView" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(beginShareLocationMsg:) name:kBeginShareLocation object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endShareLocationMsg:) name:kEndShareLocation object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emotionImageDidLoad:) name:kNotificationEmotionImageDidLoad object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFileDidUpload:) name:kNotificationFileDidUpload object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectEmojiFaceSuccess:) name:kCollectionEmotionUpdateHandleSuccessNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectEmojiFaceFailed:) name:kCollectionEmotionUpdateHandleFailedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeNotifyView:) name:kNotifyViewCloseNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(forceReloadSingleMessages:) name:kSingleChatMsgReloadNotification object:nil];
-    //刷新个人备注
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTitleView:) name:kMarkNameUpdate object:nil];
-    //发送快捷回复
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendQuickReplyContent:) name:kNotificationSendQuickReplyContent object:nil];
-    
-    //点击机器人问题列表
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendRobotQuestionText:) name:kNotificationSendRobotQuestion object:nil];
-    
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadIPadViewFrame:) name:@"reloadIPadViewFrame" object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarOrientationChange:)name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    if (self.netWorkSearch == NO) {
+        //发送快捷回复
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendQuickReplyContent:) name:kNotificationSendQuickReplyContent object:nil];
+        
+        //点击机器人问题列表
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendRobotQuestionText:) name:kNotificationSendRobotQuestion object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageList:) name:kNotificationMessageUpdate object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCollectionMessageList:) name:kNotificationCollectionMessageUpdate object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHistoryMessageList:) name:kNotificationOfflineMessageUpdate object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(expandViewItemHandleNotificationHandle:) name:kExpandViewItemHandleNotification object:nil];
+        //消息发送成功
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msgDidSendNotificationHandle:) name:kXmppStreamDidSendMessage object:nil];
+        //消息发送失败
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msgSendFailedNotificationHandle:) name:kXmppStreamSendMessageFailed object:nil];
+        //重发消息
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(msgReSendNotificationHandle:) name:kXmppStreamReSendMessage object:nil];
+        //阅后即焚消息销毁
+        //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(BurnAfterReadMsgDestructionNotificationHandle:) name:kBurnAfterReadMsgDestruction object:nil];
+        //消息被撤回
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(revokeMsgNotificationHandle:) name:kRevokeMsg object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WillSendRedPackNotificationHandle:) name:WillSendRedPackNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadFileFinished:) name:KDownloadFileFinishedNotificationName object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:@"refreshTableView" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(beginShareLocationMsg:) name:kBeginShareLocation object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endShareLocationMsg:) name:kEndShareLocation object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emotionImageDidLoad:) name:kNotificationEmotionImageDidLoad object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFileDidUpload:) name:kNotificationFileDidUpload object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectEmojiFaceSuccess:) name:kCollectionEmotionUpdateHandleSuccessNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectEmojiFaceFailed:) name:kCollectionEmotionUpdateHandleFailedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeNotifyView:) name:kNotifyViewCloseNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(forceReloadSingleMessages:) name:kSingleChatMsgReloadNotification object:nil];
+        
+        //刷新个人备注
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTitleView:) name:kMarkNameUpdate object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadIPadViewFrame:) name:@"reloadIPadViewFrame" object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarOrientationChange:)name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    }
 }
 
 #pragma mark - 重新修改frame
@@ -1084,7 +1095,13 @@
 #endif
 
 - (void)keyBoardWillShow:(NSNotification *)notify {
-    
+    if (self.netWorkSearch == YES) {
+        self.netWorkSearch = NO;
+        self.fastMsgTimeStamp = 0;
+        [self initNotifications];
+        self.tableView.mj_footer = nil;
+        [self loadData];
+    }
     [self scrollToBottom_tableView];
 }
 
@@ -1259,7 +1276,12 @@
 }
 
 - (void)loadData {
-    __weak QIMChatVC *weakSelf = self;
+    if (self.netWorkSearch) {
+        [self loadNetWorkData];
+        return;
+    }
+    
+    __weak __typeof(self) weakSelf = self;
     NSString *userId = nil;
     NSString *realJid = nil;
     if (self.chatType == ChatType_CollectionChat) {
@@ -1352,6 +1374,19 @@
     }
 }
 
+- (void)loadNetWorkData {
+    //搜索服务器消息
+    __weak __typeof(self) weakSelf = self;
+    [[QIMKit sharedInstance] getRemoteSearchMsgListByUserId:self.chatId WithRealJid:self.chatId withVersion:self.fastMsgTimeStamp withDirection:QIMGetMsgDirectionUp WithLimit:20 WithOffset:0 WithComplete:^(NSArray *list) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.messageManager.dataSource removeAllObjects];
+            [self.messageManager.dataSource addObjectsFromArray:list];
+            [weakSelf.tableView reloadData];
+            [weakSelf.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+            [weakSelf addImageToImageList];
+        });
+    }];
+}
 
 - (void)markReadFlag {
     
@@ -3230,7 +3265,37 @@ static CGPoint tableOffsetPoint;
     }
 }
 
+- (void)loadRemoteSearchMoreMessageData {
+    __weak typeof(self) weakSelf = self;
+
+    QIMMessageModel *msgModel = [self.messageManager.dataSource firstObject];
+    [[QIMKit sharedInstance] getRemoteSearchMsgListByUserId:self.chatId WithRealJid:self.chatId withVersion:msgModel.messageDate withDirection:QIMGetMsgDirectionDown WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+        if (list.count) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                CGFloat offsetY = _tableView.contentSize.height - _tableView.contentOffset.y;
+                NSRange range = NSMakeRange(0, [list count]);
+                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+                
+                [weakSelf.messageManager.dataSource insertObjects:list atIndexes:indexSet];
+                [_tableView reloadData];
+                _tableView.contentOffset = CGPointMake(0, _tableView.contentSize.height - offsetY);
+                //重新获取一次大图展示的数组
+                [weakSelf addImageToImageList];
+                [weakSelf.tableView.mj_header endRefreshing];
+            });
+        } else {
+            [weakSelf.tableView.mj_header endRefreshing];
+        }
+    }];
+}
+
 - (void)loadMoreMessageData {
+    if (self.netWorkSearch == YES) {
+        [self loadRemoteSearchMoreMessageData];
+        return;
+    }
+    
     self.loadCount += 1;
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -3318,7 +3383,6 @@ static CGPoint tableOffsetPoint;
 }
 
 - (void)loadNewSystemMsgList {
-    //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
         [[QIMKit sharedInstance] getSystemMsgLisByUserId:self.chatId WithFromHost:[[QIMKit sharedInstance] getDomain] WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count withLoadMore:YES WithComplete:^(NSArray *list) {
             CGFloat offsetY = self.tableView.contentSize.height -  self.tableView.contentOffset.y;
@@ -3348,7 +3412,56 @@ static CGPoint tableOffsetPoint;
             });
         }];
     }
-    //    });
+}
+
+- (UIView *)loadAllMsgView {
+    if (!_loadAllMsgView) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 54)];
+        view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F9];
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 90, 21)];
+        label.text = @"以上为所有消息";
+        label.textAlignment = NSTextAlignmentCenter;
+        [label setTextColor:[UIColor redColor]];
+        label.font = [UIFont systemFontOfSize:15];
+        [view addSubview:label];
+        label.center = view.center;
+        
+        UIView *leftLineView = [[UIView alloc] initWithFrame:CGRectMake(label.left - 50, 1, 40, 0.5f)];
+        leftLineView.backgroundColor = [UIColor qim_colorWithHex:0xBFBFBF];
+        [view addSubview:leftLineView];
+        leftLineView.centerY = label.centerY;
+        
+        UIView *rightLineView = [[UIView alloc] initWithFrame:CGRectMake(label.right + 10, 1, 40, 0.5f)];
+        rightLineView.backgroundColor = [UIColor qim_colorWithHex:0xBFBFBF];
+        [view addSubview:rightLineView];
+        rightLineView.centerY = label.centerY;
+        
+        _loadAllMsgView = view;
+    }
+    return _loadAllMsgView;
+}
+
+- (void)loadFooterRemoteSearchMsgList {
+    __weak typeof(self) weakSelf = self;
+    
+    QIMMessageModel *msgModel = [self.messageManager.dataSource lastObject];
+    [[QIMKit sharedInstance] getRemoteSearchMsgListByUserId:self.chatId WithRealJid:self.chatId withVersion:msgModel.messageDate+1 withDirection:QIMGetMsgDirectionUp WithLimit:kPageCount WithOffset:(int)self.messageManager.dataSource.count WithComplete:^(NSArray *list) {
+        if (list.count) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [weakSelf.messageManager.dataSource addObjectsFromArray:list];
+                [_tableView reloadData];
+                //重新获取一次大图展示的数组
+                [weakSelf addImageToImageList];
+                [weakSelf.tableView.mj_footer endRefreshing];
+            });
+        } else {
+            [weakSelf.tableView.mj_footer endRefreshing];
+            weakSelf.tableView.mj_footer = nil;
+            weakSelf.tableView.tableFooterView = [weakSelf loadAllMsgView];
+        }
+    }];
 }
 
 - (void)jumpToConverstaionSearch {

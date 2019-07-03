@@ -436,7 +436,7 @@
         UIViewController *currentVc = [UIApplication sharedApplication].visibleViewController;
         Class mainVC = NSClassFromString(@"QIMMainVC");
         Class helperVC = NSClassFromString(@"QIMMessageHelperVC");
-        if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]]) {
+        if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]] || [[QIMKit sharedInstance] getIsIpad] == YES) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadTableView) object:nil];
                 [self performSelector:@selector(reloadTableView) withObject:nil afterDelay:0.1];

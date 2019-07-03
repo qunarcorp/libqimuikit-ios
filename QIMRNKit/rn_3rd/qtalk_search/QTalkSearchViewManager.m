@@ -65,7 +65,8 @@
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     //[self dismissViewControllerAnimated:YES completion:nil];
     self.navigationController.delegate = self;
-    [self.navigationController popViewControllerAnimated:YES];
+//    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {

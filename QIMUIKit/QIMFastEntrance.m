@@ -515,6 +515,28 @@ static QIMFastEntrance *_sharedInstance = nil;
     });
 }
 
+- (UIViewController *)getSingleChatVCByUserId:(NSString *)userId withFastTime:(long long)fastTime withRemoteSearch:(BOOL)flag {
+    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
+    if (userInfo == nil) {
+        [[QIMKit sharedInstance] updateUserCard:userId withCache:YES];
+        userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
+    }
+    NSString *name = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
+    if (name.length <= 0) {
+        name = [userId componentsSeparatedByString:@"@"].firstObject;
+    }
+    ChatType chatType = [[QIMKit sharedInstance] openChatSessionByUserId:userId];
+    
+    QIMChatVC *chatVC = [[QIMChatVC alloc] init];
+    [chatVC setFastMsgTimeStamp:fastTime];
+    [chatVC setChatId:userId];
+    [chatVC setTitle:name];
+    [chatVC setChatType:chatType];
+    [chatVC setVirtualJid:userId];
+    [chatVC setNetWorkSearch:flag];
+    return chatVC;
+}
+
 - (UIViewController *)getSingleChatVCByUserId:(NSString *)userId {
     NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
     if (userInfo == nil) {
@@ -533,6 +555,25 @@ static QIMFastEntrance *_sharedInstance = nil;
     [chatVC setChatType:chatType];
     [chatVC setVirtualJid:userId];
     return chatVC;
+}
+
++ (void)openSingleChatVCByUserId:(NSString *)userId withFastTime:(long long)fastTime withRemoteSearch:(BOOL)flag {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIViewController *chatVC = [[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:userId withFastTime:fastTime withRemoteSearch:flag];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        chatVC.hidesBottomBarWhenPushed = YES;
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+#if __has_include("QIMIPadWindowManager.h")
+            [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatVC];
+#endif
+        } else {
+            [navVC pushViewController:chatVC animated:YES];
+        }
+    });
 }
 
 + (void)openSingleChatVCByUserId:(NSString *)userId {
@@ -554,32 +595,47 @@ static QIMFastEntrance *_sharedInstance = nil;
     });
 }
 
-- (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId {
+- (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId withFastTime:(long long)fastTime withRemoteSearch:(BOOL)flag {
 //    NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
 //    NSString *groupName = [groupCard objectForKey:@"Name"];
     QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
     [chatGroupVC setChatType:ChatType_GroupChat];
     [chatGroupVC setChatId:groupId];
+    [chatGroupVC setFastMsgTimeStamp:fastTime];
+    [chatGroupVC setNetWorkSearch:flag];
 //    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
     return chatGroupVC;
 }
 
+- (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId {
+    //    NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
+    //    NSString *groupName = [groupCard objectForKey:@"Name"];
+    QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
+    [chatGroupVC setChatType:ChatType_GroupChat];
+    [chatGroupVC setChatId:groupId];
+    //    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
+    return chatGroupVC;
+}
+
++ (void)openGroupChatVCByGroupId:(NSString *)groupId withFastTime:(long long)fastTime withRemoteSearch:(BOOL)flag {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIViewController *chatGroupVC = [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:groupId withFastTime:fastTime withRemoteSearch:flag];
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        [navVC pushViewController:chatGroupVC animated:YES];
+    });
+}
+
 + (void)openGroupChatVCByGroupId:(NSString *)groupId {
     dispatch_async(dispatch_get_main_queue(), ^{
-//        if ([[QIMKit sharedInstance] getIsIpad]) {
-//            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
-//            SEL sel = NSSelectorFromString(@"openGrouChatByGroupId:");
-//            if ([RunC respondsToSelector:sel]) {
-//                [RunC performSelector:sel withObject:groupId];
-//            }
-//        } else {
         UIViewController *chatGroupVC = [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:groupId];
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         [navVC pushViewController:chatGroupVC animated:YES];
-//        }
     });
 }
 
@@ -755,7 +811,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 #if __has_include("QTalkSearchViewManager.h")
     dispatch_async(dispatch_get_main_queue(), ^{
         CATransition *animation = [CATransition animation];
-        animation.duration = 0.4f;   //时间间隔
+        animation.duration = 0.1f;   //时间间隔
         animation.fillMode = kCAFillModeForwards;
         animation.type = @"rippleEffect";
         //动画效果
@@ -769,23 +825,28 @@ static QIMFastEntrance *_sharedInstance = nil;
             UINavigationController *rootNav = [[QIMIPadWindowManager sharedInstance] getLeftMainVcNav];
             [rootNav.view.layer addAnimation:animation forKey:@"animation"];
             UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
+            UINavigationController *reactNav = [[UINavigationController alloc] initWithRootViewController:reactVC];
             [rootNav.view.layer addAnimation:animation forKey:nil];
-            [rootNav pushViewController:reactVC animated:YES];
+//            [rootNav pushViewController:reactVC animated:YES];
+            [rootNav presentViewController:reactNav animated:YES completion:nil];
         } else {
-            [navVC.view.layer addAnimation:animation forKey:@"animation"];
+//            [navVC.view.layer addAnimation:animation forKey:@"animation"];
             UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
-            [navVC.view.layer addAnimation:animation forKey:nil];
-            navVC.delegate = self;
-            [navVC pushViewController:reactVC animated:YES];
-            [navVC setNavigationBarHidden:YES animated:YES];
-            navVC.delegate = nil;
+            UINavigationController *reactNav = [[UINavigationController alloc] initWithRootViewController:reactVC];
+//            [navVC.view.layer addAnimation:animation forKey:nil];
+//            navVC.delegate = self;
+//            [navVC pushViewController:reactVC animated:YES];
+            [navVC presentViewController:reactNav animated:NO completion:nil];
+//            [navVC setNavigationBarHidden:YES animated:YES];
+//            navVC.delegate = nil;
         }
 #else
         [navVC.view.layer addAnimation:animation forKey:@"animation"];
         UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
         [navVC.view.layer addAnimation:animation forKey:nil];
         navVC.delegate = self;
-        [navVC pushViewController:reactVC animated:YES];
+//        [navVC pushViewController:reactVC animated:YES];
+        [navVC presentViewController:reactVC animated:YES completion:nil];
         [navVC setNavigationBarHidden:YES animated:YES];
         navVC.delegate = nil;
 #endif

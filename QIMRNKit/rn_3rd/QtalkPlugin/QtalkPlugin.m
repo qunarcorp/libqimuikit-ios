@@ -222,11 +222,14 @@ RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(
     [[QIMKit sharedInstance] searchWithUrl:searchUrl withParams:params withSuccessCallBack:^(BOOL successed, NSString *responseJson) {
         
         NSMutableDictionary *resultMap = [NSMutableDictionary dictionaryWithCapacity:3];
-        [resultMap setObject:@(YES) forKey:@"isOk"];
-        [resultMap setObject:responseJson forKey:@"responseJson"];
+        [resultMap setObject:@(successed) forKey:@"isOk"];
+        [resultMap setObject:responseJson?responseJson:@"" forKey:@"responseJson"];
         callback2(@[resultMap ? resultMap : @{}]);
     } withFaildCallBack:^(BOOL successed, NSString *errmsg) {
-        
+        NSMutableDictionary *resultMap = [NSMutableDictionary dictionaryWithCapacity:3];
+        [resultMap setObject:@(NO) forKey:@"isOk"];
+        [resultMap setObject:@"" forKey:@"responseJson"];
+        callback2(@[resultMap ? resultMap : @{}]);
     }];
 }
 
@@ -241,6 +244,23 @@ RCT_EXPORT_METHOD(openSignleChat:(NSDictionary *)params) {
     NSString *userId = [params objectForKey:@"UserId"];
     if (userId.length > 0) {
         [QIMFastEntrance openUserCardVCByUserId:userId];
+    }
+}
+
+RCT_EXPORT_METHOD(showSearchHistoryResult:(NSDictionary *)params) {
+    NSString *userJid = [params objectForKey:@"to"];
+    NSString *realJid = [params objectForKey:@"realto"];
+    long long time = [[params objectForKey:@"time"] longLongValue];
+    NSInteger todoType = [[params objectForKey:@"todoType"] integerValue];
+    ChatType chatType = ChatType_SingleChat;
+    if (todoType == 16) {
+        //群聊
+        chatType = ChatType_GroupChat;
+        [QIMFastEntrance openGroupChatVCByGroupId:userJid withFastTime:time withRemoteSearch:YES];
+    } else {
+        //单聊
+        chatType = ChatType_SingleChat;
+        [QIMFastEntrance openSingleChatVCByUserId:userJid withFastTime:time withRemoteSearch:YES];
     }
 }
 
