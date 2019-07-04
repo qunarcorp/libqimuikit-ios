@@ -135,8 +135,10 @@
     NSString * localPath = [infoDic objectForKey:@"IPLocalPath"];
     
     if (localPath && localPath.length> 0) {
-        if([[NSFileManager defaultManager] fileExistsAtPath:_filePath isDirectory:nil]){
+        if([[NSFileManager defaultManager] fileExistsAtPath:localPath isDirectory:nil]){
            _filePath = localPath;
+        } else {
+
         }
     }
     
