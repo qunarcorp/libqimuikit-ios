@@ -73,7 +73,10 @@
     }
     return NO;
 }
-
+-(void)viewWillAppear:(BOOL)animated{
+    self.navigationController.navigationBar.translucent = NO;
+}
+    
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -125,6 +128,9 @@
     if ([[QIMKit sharedInstance] getIsIpad]) {
         _tableView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] width], [[UIScreen mainScreen] height]);
     }
+    else{
+        _tableView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] width], [UIScreen mainScreen].height - NAVIGATION_BAR_HEIGHT);
+    }
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
     _tableView.estimatedRowHeight = 0;
@@ -148,11 +154,12 @@
     [_searchBarKeyTmp setAutocorrectionType:UITextAutocorrectionTypeNo];
     [_searchBarKeyTmp setDelegate:self];
     [_searchBarKeyTmp setText:nil];
-    [_searchBarKeyTmp setFrame:CGRectMake(0, 0, self.view.width, kKeywordSearchBarHeight)];
+    [_searchBarKeyTmp setFrame:CGRectMake(0, 15, self.view.width, kKeywordSearchBarHeight)];
 }
 
 - (void)initTableViewHeader {
-    UIView * headerBG = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, kKeywordSearchBarHeight + 54 + 21)];
+    UIView * headerBG = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, kKeywordSearchBarHeight + 54 + 21 + 15)];
+    headerBG.backgroundColor = [UIColor whiteColor];
     //搜索框
     [self setupSearchBar];
     [headerBG addSubview:_searchBarKeyTmp];
@@ -169,6 +176,8 @@
     
     UIView *groupView = [[UIView alloc] initWithFrame:CGRectMake(0, _searchBarKeyTmp.bottom + 0.5f, self.view.width, 54)];
     groupView.backgroundColor = [UIColor whiteColor];
+    
+    
     UILabel *groupTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.width - 60, 54)];
     groupTitleLabel.text = @"选择一个群聊";
     groupTitleLabel.textColor = [UIColor qtalkTextBlackColor];
@@ -443,8 +452,15 @@
     */
     _selectInfoDic = @{@"userId":jid,@"isGroup":@(NO)};
     if (self.ExternalForward) {
-       QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
-        [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
+       
+        NSDictionary * msgExtendInfo =[[QIMJSONSerializer sharedInstance]deserializeObject:self.message.extendInformation error:nil];
+        if ([msgExtendInfo objectForKey:@"HttpUrl"] && [[msgExtendInfo objectForKey:@"HttpUrl"] hasPrefix:@"file"]) {
+                QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
+        }
+        else{
+            QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
+            [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
+        }
     } else {
         if (self.message) {
             NSString *msgContent = self.message.message;
@@ -514,9 +530,16 @@
      */
     _selectInfoDic = @{@"userId":jid,@"isGroup":@(YES)};
     if (self.ExternalForward) {
-       QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
-       QIMMessageModel *tempMsg = [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
+        NSDictionary * msgExtendInfo =[[QIMJSONSerializer sharedInstance]deserializeObject:self.message.extendInformation error:nil];
+        if ([msgExtendInfo objectForKey:@"HttpUrl"] && [[msgExtendInfo objectForKey:@"HttpUrl"] hasPrefix:@"file"]) {
+            QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
+        }
+        else{
+            QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
+            QIMMessageModel *tempMsg = [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:jid userInfo:@{@"message":tempMsg}];
+        }
+       
     } else {
         if (self.message) {
             NSString *msgContent = self.message.message;
