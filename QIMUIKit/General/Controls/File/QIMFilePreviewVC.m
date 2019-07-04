@@ -133,8 +133,11 @@
     _filePath = [downLoad stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileMd5 ? fileMd5 : @""]];
     
     NSString * localPath = [infoDic objectForKey:@"IPLocalPath"];
-    if (localPath.length> 0) {
-        _filePath = localPath;
+    
+    if (localPath && localPath.length> 0) {
+        if([[NSFileManager defaultManager] fileExistsAtPath:_filePath isDirectory:nil]){
+           _filePath = localPath;
+        }
     }
     
     {
