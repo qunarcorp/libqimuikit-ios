@@ -14,7 +14,6 @@
 #import "QIMVideoPlayerVC.h"
 #import "UILabel+VerticalAlign.h"
 #import "NSBundle+QIMLibrary.h"
-#import "QIMFileManager.h"
 #import "ASIProgressDelegate.h"
 
 #define kCellWidth      250
@@ -137,7 +136,7 @@
     NSData * data = [[QIMKit sharedInstance] getFileDataFromUrl:url forCacheType:QIMFileCacheTypeDefault];
     
     if ([url hasPrefix:@"file"]) {
-        [[QIMFileManager sharedInstance] uploadFileForData:data forCacheType:QIMFileCacheTypeDefault fileExt:[NSURL URLWithString:url].pathExtension isFile:YES uploadProgressDelegate:self.progressView completionBlock:^(UIImage *image, NSError *error, QIMFileCacheType cacheType, NSString *imageURL) {
+        [[QIMKit sharedInstance] uploadFileForData:data forCacheType:QIMFileCacheTypeDefault fileExt:[NSURL URLWithString:url].pathExtension isFile:YES uploadProgressDelegate:self.progressView completionBlock:^(UIImage *image, NSError *error, QIMFileCacheType cacheType, NSString *imageURL) {
             [self uploadFileFinished];
             if (imageURL.length > 0) {
                 if (self.message.extendInformation.length > 0) {
