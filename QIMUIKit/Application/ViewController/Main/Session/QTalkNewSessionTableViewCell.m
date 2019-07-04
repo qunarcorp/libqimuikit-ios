@@ -768,19 +768,23 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     __weak __typeof(self) weakSelf = self;
     if (message.length > 0) {
         dispatch_async([[QIMKit sharedInstance] getLoadSessionContentQueue], ^{
-            NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:weakSelf.jid];
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (!strongSelf) {
+                return;
+            }
+            NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:strongSelf.jid];
             if (atMeMessages.count > 0) {
                 NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
                 NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
                 [str appendAttributedString:atStr];
             }
-            content = [weakSelf refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+            content = [strongSelf refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (content.length > 0) {
                     
-                    [str appendAttributedString:[weakSelf decodeMsg:content]];
+                    [str appendAttributedString:[strongSelf decodeMsg:content]];
                 }
-                [weakSelf.contentLabel setAttributedText:str];
+                [strongSelf.contentLabel setAttributedText:str];
             });
         });
     } else {

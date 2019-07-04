@@ -978,6 +978,21 @@ RCT_EXPORT_METHOD(kickGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock
     }
 }
 
+RCT_EXPORT_METHOD(setGroupAdmin:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
+    NSString *groupId = [param objectForKey:@"groupId"];
+    NSString *xmppId = [param objectForKey:@"xmppid"];
+    NSString *name = [param objectForKey:@"name"];
+    BOOL isAdmin = [param objectForKey:@"isAdmin"];
+    BOOL setSuccess = [[QIMKit sharedInstance] setGroupAdminWithGroupId:groupId withIsAdmin:isAdmin WithAdminNickName:name ForJid:xmppId];
+    if (YES == setSuccess) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"QIMGroupMemberWillUpdate" object:groupId];
+        });
+    } else {
+        
+    }
+}
+
 RCT_EXPORT_METHOD(showRedView:(RCTResponseSenderBlock)callback) {
     BOOL show = [[[QIMKit sharedInstance] userObjectForKey:@"qimrn_searchlocal"] boolValue];
     callback(@[@{@"show" : @(!show)}]);

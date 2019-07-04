@@ -220,7 +220,7 @@ RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(
     NSLog(@"params : %@", params);
     NSLog(@"Cookie : %@", cookie);
     [[QIMKit sharedInstance] searchWithUrl:searchUrl withParams:params withSuccessCallBack:^(BOOL successed, NSString *responseJson) {
-        
+        NSLog(@"请求搜索结果 : %@", responseJson);
         NSMutableDictionary *resultMap = [NSMutableDictionary dictionaryWithCapacity:3];
         [resultMap setObject:@(successed) forKey:@"isOk"];
         [resultMap setObject:responseJson?responseJson:@"" forKey:@"responseJson"];
@@ -229,6 +229,7 @@ RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(
         NSMutableDictionary *resultMap = [NSMutableDictionary dictionaryWithCapacity:3];
         [resultMap setObject:@(NO) forKey:@"isOk"];
         [resultMap setObject:@"" forKey:@"responseJson"];
+        NSLog(@"请求搜索失败");
         callback2(@[resultMap ? resultMap : @{}]);
     }];
 }

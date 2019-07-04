@@ -138,6 +138,7 @@
         CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
         CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
         [itemButton.badgeNumberLabel setWidth:width];
+        [itemButton.badgeNumberLabel setHeight:16];
         [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];
         [itemButton.badgeNumberLabel setHidden:NO];
         [itemButton.badgeNumberLabel setText:countStr];
@@ -169,6 +170,7 @@
         CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
         CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
         [itemButton.badgeNumberLabel setWidth:width];
+        [itemButton.badgeNumberLabel setHeight:16];
         [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];
         [itemButton.badgeNumberLabel setHidden:NO];
         [itemButton.badgeNumberLabel setText:countStr];
