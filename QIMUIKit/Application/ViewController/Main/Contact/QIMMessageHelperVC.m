@@ -59,6 +59,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.sessionView sessionViewWillAppear];
 }
 
 #pragma mark - init ui
