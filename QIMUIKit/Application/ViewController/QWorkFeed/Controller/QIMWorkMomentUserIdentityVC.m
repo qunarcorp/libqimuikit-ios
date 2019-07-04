@@ -125,6 +125,7 @@
             }
         }];
     }
+    /*
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [[QIMKit sharedInstance] getAnonyMouseDicWithMomentId:self.momentId WithCallBack:^(NSDictionary *anonymousDic) {
             if (anonymousDic.count > 0) {
@@ -145,6 +146,7 @@
             }
         }];
     });
+    */
 }
 
 - (void)backBtnClick:(id)sender {
