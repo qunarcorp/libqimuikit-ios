@@ -216,7 +216,7 @@
             }
             else{
                 QIMWorkNoticeMessageModel * model = self.atMeView.noticeMsgs.lastObject;
-                [[QIMKit sharedInstance] getRemoteOwnerCamelGetAtListWithCreateTime:model.createTime pageSize:20  complete:block];
+                [[QIMKit sharedInstance] getRemoteOwnerCamelGetAtListWithCreateTime:model.createTime pageSize:20 complete:block];
             }
         }
         else{

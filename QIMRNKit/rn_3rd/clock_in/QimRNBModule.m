@@ -134,7 +134,7 @@ RCT_EXPORT_METHOD(getTOTP:(RCTResponseSenderBlock)success) {
 
 RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
 
-    QIMProjectType projectType = ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) ? QIMProjectTypeQTalk : QIMProjectTypeQChat; 
+    NSInteger projectType = ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) ? 0 : 1;
     NSString *ckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
     NSString *ip = [[QIMKit sharedInstance] getClientIp];
     NSString *userId = [QIMKit getLastUserName];
@@ -395,7 +395,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-//    return [NSURL URLWithString:@"http://100.80.128.246:8081/index.ios.bundle?platform=ios&dev=true"];
+//    return [NSURL URLWithString:@"http://ip:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *qtalkFoundRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkFoundRNDebugUrl"];
     if (qtalkFoundRNDebugUrlStr.length > 0) {
         NSURL *qtalkFoundRNDebugUrlStrUrl = [NSURL URLWithString:qtalkFoundRNDebugUrlStr];
@@ -982,7 +982,7 @@ RCT_EXPORT_METHOD(setGroupAdmin:(NSDictionary *)param :(RCTResponseSenderBlock)c
     NSString *groupId = [param objectForKey:@"groupId"];
     NSString *xmppId = [param objectForKey:@"xmppid"];
     NSString *name = [param objectForKey:@"name"];
-    BOOL isAdmin = [param objectForKey:@"isAdmin"];
+    BOOL isAdmin = [[param objectForKey:@"isAdmin"] boolValue];
     BOOL setSuccess = [[QIMKit sharedInstance] setGroupAdminWithGroupId:groupId withIsAdmin:isAdmin WithAdminNickName:name ForJid:xmppId];
     if (YES == setSuccess) {
         dispatch_async(dispatch_get_main_queue(), ^{
