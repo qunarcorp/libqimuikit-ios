@@ -20,10 +20,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.edgesForExtendedLayout = UIRectEdgeNone;
+//    self.edgesForExtendedLayout = UIRectEdgeNone;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goBack) name:kNotify_RN_QTALK_SEARCH_GO_BACK object:nil];
     NSNumber *forceOldSearch = [[QIMKit sharedInstance] userObjectForKey:@"forceOldSearch"];
-    if ([forceOldSearch boolValue] == YES) {
+    if ([forceOldSearch boolValue] == YES || ![[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"]) {
         QTalkSearchRNView *reactView = [[QTalkSearchRNView alloc] initWithFrame:self.view.bounds];
         [reactView setOwnerVC:self];
         
