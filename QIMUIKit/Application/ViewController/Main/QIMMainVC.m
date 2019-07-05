@@ -200,10 +200,9 @@ static dispatch_once_t __onceMainToken;
 
     //上传日志进度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUpdateProgress:) name:KNotifyUploadProgress object:nil];
-    //上传日志成功
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(submitLogSuccessed:) name:kNotifySubmitLogSuccessed object:nil];
-    //上传日志失败
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(submitLogFaild:) name:kNotifySubmitLogFaild object:nil];
+ 
+    //上传日志
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(submitLog:) name:kNotifySubmitLog object:nil];
     //销毁群通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChatRoomDestroy:) name:kChatRoomDestroy object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateWorkFeedNotifyConfig:) name:kNotifyUpdateNotifyConfig object:nil];
@@ -453,6 +452,21 @@ static dispatch_once_t __onceMainToken;
             });
         });
     }
+}
+
+- (void)submitLog:(NSNotification *)notify {
+    NSDictionary *dic = notify.object;
+    NSString *promotMessage = [dic objectForKey:@"promotMessage"];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+        });
+    });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:promotMessage];
+        });
+    });
 }
 
 - (void)submitLogSuccessed:(NSNotification *)notify {

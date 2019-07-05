@@ -1320,21 +1320,6 @@ RCT_EXPORT_METHOD(takePhoto) {
 RCT_EXPORT_METHOD(openDeveloperChat) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [QIMFastEntrance openSingleChatVCByUserId:@"lilulucas.li@ejabhost1"];
-        /*
-//        UINavigationController *navVC = (UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-        if (!navVC) {
-            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-        }
-        QIMChatVC *chatVC = [[QIMChatVC alloc] init];
-        [chatVC setStype:kSessionType_Chat];
-        [chatVC setChatId:@"lilulucas.li@ejabhost1"];
-        [chatVC setName:@"李露lucas"];
-        [chatVC setTitle:@"李露lucas"];
-        [chatVC setChatType:ChatType_SingleChat];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-        [navVC popToRootVCThenPush:chatVC animated:YES];
-        */
     });
 }
 
@@ -1345,13 +1330,6 @@ RCT_EXPORT_METHOD(sendAdviceMessage:(NSDictionary *)adviceParam :(RCTResponseSen
     BOOL logSelected = [[adviceParam objectForKey:@"logSelected"] boolValue];
 #if __has_include("QIMLocalLog.h")
     callback(@[@{@"ok":@(YES)}]);
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
-        [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"感谢您的反馈"];
-    });//这句话的意思是1.5秒后，把label移出视图
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
-        [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
-    });//这句话的意思是1.5秒后，把label移出视图
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
        [[QIMLocalLog sharedInstance] submitFeedBackWithContent:adviceMsg WithLogSelected:logSelected];
     });
