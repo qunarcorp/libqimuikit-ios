@@ -244,6 +244,13 @@ RCT_EXPORT_METHOD(openGroupChat:(NSDictionary *)params) {
 RCT_EXPORT_METHOD(openSignleChat:(NSDictionary *)params) {
     NSString *userId = [params objectForKey:@"UserId"];
     if (userId.length > 0) {
+        [QIMFastEntrance openSingleChatVCByUserId:userId];
+    }
+}
+
+RCT_EXPORT_METHOD(openUserCard:(NSDictionary *)params) {
+    NSString *userId = [params objectForKey:@"UserId"];
+    if (userId.length > 0) {
         [QIMFastEntrance openUserCardVCByUserId:userId];
     }
 }

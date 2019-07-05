@@ -486,7 +486,7 @@
         if (_emotionDispPkIdList.count == 0) {
             //传入需要内置的表情包PKID（需要将ZIP包倒入工程中）
             NSArray *initializePkIdList = @[@"qunar_camel", @"EmojiOne"];
-            if ([QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
+            if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
                 initializePkIdList = @[@"EmojiOne"];
             } else {
                 initializePkIdList = @[@"qunar_camel", @"EmojiOne"];

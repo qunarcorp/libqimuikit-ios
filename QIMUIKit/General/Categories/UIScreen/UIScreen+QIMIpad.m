@@ -21,7 +21,6 @@
 
 - (CGFloat)qim_leftWidth {
 #if __has_include("QIMIPadWindowManager.h")
-    NSString *deviceType = [UIDevice currentDevice].model;
     
     if ([[QIMKit sharedInstance] getIsIpad]) {
         //iPad

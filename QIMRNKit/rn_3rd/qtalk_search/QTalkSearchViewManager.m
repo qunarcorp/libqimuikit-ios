@@ -63,9 +63,7 @@
 - (void)goBack {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    //[self dismissViewControllerAnimated:YES completion:nil];
     self.navigationController.delegate = self;
-//    [self.navigationController popViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

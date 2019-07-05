@@ -3364,7 +3364,7 @@ static CGPoint tableOffsetPoint;
         }
     });
 #if __has_include("QimRNBModule.h")
-    if (self.loadCount >= 3 && !self.reloadSearchRemindView && !self.bindId) {
+    if (self.loadCount >= 3 && !self.reloadSearchRemindView && !self.bindId && self.chatType != ChatType_System && self.netWorkSearch == NO) {
         NSString *userId = nil;
         NSString *realJid = nil;
         if (self.chatType == ChatType_Consult) {
