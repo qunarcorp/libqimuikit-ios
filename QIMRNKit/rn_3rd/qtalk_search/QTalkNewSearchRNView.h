@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "QIMCommonUIFramework.h"
 #import <React/RCTBridge.h>
+#import "MBProgressHUD.h"
 
 #define kNotify_RN_QTALK_SEARCH_BUNDLE_UPDATE @"kNotify_RN_QTALK_SEARCH_BUNDLE_UPDATE"
 
