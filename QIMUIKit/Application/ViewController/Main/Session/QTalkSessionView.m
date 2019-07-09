@@ -638,11 +638,14 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (self.isSelected == NO) {
         self.isSelected = YES;
-
+        
         [self performSelector:@selector(repeatDelay) withObject:nil afterDelay:0.5];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        QtalkSessionModel *model = [self.dataManager.dataSource objectAtIndex:indexPath.row];
+        NSDictionary *infoDic = [model yy_modelToJSONObject];
         QTalkNewSessionTableViewCell *cell = (QTalkNewSessionTableViewCell *) [_tableView cellForRowAtIndexPath:indexPath];
-        QTalkViewController *pushVc = [self sessionViewDidSelectRowAtIndexPath:indexPath infoDic:cell.infoDic];
+        QTalkViewController *pushVc = [self sessionViewDidSelectRowAtIndexPath:indexPath infoDic:infoDic];
         if ([self.rootViewController isKindOfClass:[QIMMainVC class]]) {
             [self.rootViewController.navigationController pushViewController:pushVc animated:YES];
         } else {
@@ -891,7 +894,8 @@
     NSDictionary *dict = [[self.dataManager.dataSource objectAtIndex:indexPath.row] yy_modelToJSONObject];
     NSString *chatId = [dict objectForKey:@"XmppId"];
     NSString *realJid = [dict objectForKey:@"RealJid"];
-    NSString *cellIdentifier = cellReuseID;//@"12223141";//[NSString stringWithFormat:@"Cell ChatId(%@) RealJid(%@) %d", chatId, realJid, indexPath.row];
+//    NSString *cellIdentifier = cellReuseID;
+    NSString *cellIdentifier = [NSString stringWithFormat:@"Cell ChatId(%@) RealJid(%@) %d", chatId, realJid, indexPath.row];
     QTalkNewSessionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
         cell = [[QTalkNewSessionTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];

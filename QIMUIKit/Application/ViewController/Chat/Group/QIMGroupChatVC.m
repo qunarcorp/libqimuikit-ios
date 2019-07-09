@@ -841,6 +841,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     [QIMTextBar clearALLTextBar];
     [self.view addSubview:self.textBar];
     [self refreshTableView];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadIPadLeftView" object:nil];
+    });
 }
 
 #pragma mark - 监听屏幕旋转
