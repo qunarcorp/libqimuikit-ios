@@ -102,7 +102,7 @@
 
             if (!headerUrl.length && (jid || realJid)) {
                 if (chatType == ChatType_GroupChat) {
-                    [[QIMKit sharedInstance] updateGroupCard:@[jid]];
+                    [[QIMKit sharedInstance] updateGroupCardByGroupId:jid withCache:YES];
                 } else if (chatType == ChatType_ConsultServer) {
                     [[QIMKit sharedInstance] updateUserCard:realJid withCache:YES];
                 } else {

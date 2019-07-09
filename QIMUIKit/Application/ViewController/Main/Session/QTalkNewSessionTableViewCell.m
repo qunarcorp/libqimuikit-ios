@@ -382,6 +382,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (NSString *)refreshContentWithMessage:(NSString *)message {
     NSString *content = nil;
+    if (!self) {
+        QIMVerboseLog(@"sessionCell为nil了");
+        return nil;
+    }
     self.nickName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.msgFrom];
     switch (self.msgType) {
         case QIMMessageType_Text:
@@ -846,8 +850,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 
                 lastStr = [[msg substringFromIndex:(match.range.location + match.range.length)] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
                 if ([lastStr length] > 0) {
-                    
-                    [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:lastStr]];
+                    UIFont *font = [UIFont fontWithName:@"QTalk-QChat" size:15];
+                    NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999]}];
+                    [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:lastStr attributes:attributed]];
                 }
             }
             index++;
