@@ -823,13 +823,10 @@ static QIMFastEntrance *_sharedInstance = nil;
 #if __has_include("QIMIPadWindowManager.h")
         if ([[QIMKit sharedInstance] getIsIpad]) {
             UINavigationController *rootNav = [[QIMIPadWindowManager sharedInstance] getLeftMainVcNav];
-//            [rootNav.view.layer addAnimation:animation forKey:@"animation"];
+            [rootNav.view.layer addAnimation:animation forKey:@"animation"];
             UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
-            UINavigationController *reactNav = [[UINavigationController alloc] initWithRootViewController:reactVC];
-            reactNav.modalPresentationStyle = UIModalPresentationCurrentContext;
-//            [rootNav.view.layer addAnimation:animation forKey:nil];
-//            [rootNav pushViewController:reactVC animated:YES];
-            [rootNav presentViewController:reactNav animated:YES completion:nil];
+            [rootNav.view.layer addAnimation:animation forKey:nil];
+            [rootNav pushViewController:reactVC animated:YES];
         } else {
 //            [navVC.view.layer addAnimation:animation forKey:@"animation"];
             UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];

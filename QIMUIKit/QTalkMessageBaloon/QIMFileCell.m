@@ -135,7 +135,7 @@
     
     NSData * data = [[QIMKit sharedInstance] getFileDataFromUrl:url forCacheType:QIMFileCacheTypeDefault];
     
-    if ([url hasPrefix:@"file"]) {
+    if ([url hasPrefix:@"file://"]) {
         [[QIMKit sharedInstance] uploadFileForData:data forCacheType:QIMFileCacheTypeDefault fileExt:[NSURL URLWithString:url].pathExtension isFile:YES uploadProgressDelegate:self.progressView completionBlock:^(UIImage *image, NSError *error, QIMFileCacheType cacheType, NSString *imageURL) {
             [self uploadFileFinished];
             if (imageURL.length > 0) {
@@ -175,7 +175,7 @@
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *fileSize = [[infoDic objectForKey:@"FileSize"] description];
     NSString *fileUrl = [infoDic objectForKey:@"HttpUrl"];
-    if ([fileUrl hasPrefix:@"file"]) {
+    if ([fileUrl hasPrefix:@"file://"]) {
         self.progressView.hidden = NO;
     }
     
