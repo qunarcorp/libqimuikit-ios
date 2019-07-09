@@ -27,7 +27,7 @@
     
     if (!_sessionView) {
         
-        _sessionView = [[QTalkSessionView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 5) withRootViewController:self];
+        _sessionView = [[QTalkSessionView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 5)];
         _sessionView.backgroundColor = [UIColor spectralColorWhiteColor];
         [_sessionView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
         _sessionView.notShowHeader = YES;
