@@ -26,7 +26,7 @@
         //iPad
         if ([UIScreen mainScreen].width * 0.21 < 295) {
             return 295;
-        }
+        } 
         return [UIScreen mainScreen].width * 0.21;
     } else {
         return [UIScreen mainScreen].bounds.size.width;
