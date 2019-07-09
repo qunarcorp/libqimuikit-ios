@@ -24,6 +24,8 @@
 
 - (void)prepareNotReaderIndexPathList;
 
+- (void)reloadSessionViewFrame;
+
 - (void)scrollToNotReadMsg;
 
 - (void)sessionViewWillAppear;

@@ -398,60 +398,71 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)setupNav {
     [self setBackBtn];
-    self.title = [[self.chatId componentsSeparatedByString:@"@"] firstObject];
-    dispatch_async([[QIMKit sharedInstance] getLoadGroupCardFromDBQueue], ^{
-        NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
-        self.groupCardDic = groupCardDic;
-        NSString *titleName = [groupCardDic objectForKey:@"Name"];
-        NSString *topic = [groupCardDic objectForKey:@"Topic"];
-        if (self.chatType == ChatType_CollectionChat) {
-            NSDictionary *groupCardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:self.chatId];
+    NSDictionary *memoryGroupCardDic = [[QIMKit sharedInstance] getMemoryGroupCardByGroupId:self.chatId];
+    if (memoryGroupCardDic.count > 0) {
+        [self updateGroupChatTitleWithCardDic:memoryGroupCardDic];
+    } else {
+        dispatch_async([[QIMKit sharedInstance] getLoadGroupCardFromDBQueue], ^{
+            NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
             self.groupCardDic = groupCardDic;
-            if (groupCardDic) {
-                NSString *groupName = [groupCardDic objectForKey:@"Name"];
-                if (groupName) {
-                    titleName = groupName;
-                } else {
-                    titleName = self.chatId;
+            [self updateGroupChatTitleWithCardDic:groupCardDic];
+            if (!self.bindId) {
+                NSInteger groupCardVersion = [[self.groupCardDic objectForKey:@"LastUpdateTime"] integerValue];
+                if (groupCardVersion <= 0) {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                        [[QIMKit sharedInstance] updateGroupCardByGroupId:self.chatId];
+                    });
                 }
             }
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (titleName.length > 0) {
-                self.title = titleName;
-                self.titleLabel.text = titleName;
-                [self.titleView addSubview:self.titleLabel];
-            }
-            if (topic.length > 0) {
-                self.descLabel.text = topic;
-                //        [self.titleView addSubview:self.descLabel];
-                self.navigationItem.titleView = self.titleView;
-            } else {
-                
-                [self.titleView addSubview:self.titleLabel];
-                self.navigationItem.titleView = self.titleView;
-            }
-            if (self.chatType == ChatType_GroupChat) {
-                UIView *rightBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
-                [rightBarView addSubview:self.addGroupMember];
-                /* 暂时取消右上角红点
-                 if (![[[QIMKit sharedInstance] userObjectForKey:kRightCardRemindNotification] boolValue]) {
-                 QIMRedMindView *redMindView = [[QIMRedMindView alloc] initWithBroView:self.addGroupMember withRemindNotificationName:kRightCardRemindNotification];
-                 [rightBarView addSubview:redMindView];
-                 }
-                 */
-                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarView];
-            } else {
-                
-            }
         });
-        if (!self.bindId) {
-            NSInteger groupCardVersion = [[self.groupCardDic objectForKey:@"LastUpdateTime"] integerValue];
-            if (groupCardVersion <= 0) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                    [[QIMKit sharedInstance] updateGroupCardByGroupId:self.chatId];
-                });
+    }
+}
+
+- (void)updateGroupChatTitleWithCardDic:(NSDictionary *)groupCardDic {
+    NSString *titleName = [groupCardDic objectForKey:@"Name"];
+    NSString *topic = [groupCardDic objectForKey:@"Topic"];
+    if (self.chatType == ChatType_CollectionChat) {
+        NSDictionary *groupCardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:self.chatId];
+        self.groupCardDic = groupCardDic;
+        if (groupCardDic) {
+            NSString *groupName = [groupCardDic objectForKey:@"Name"];
+            if (groupName) {
+                titleName = groupName;
+            } else {
+                titleName = self.chatId;
             }
+        }
+    }
+    if (!titleName) {
+        titleName = [[self.chatId componentsSeparatedByString:@"@"] firstObject];
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (titleName.length > 0) {
+            self.title = titleName;
+            self.titleLabel.text = titleName;
+            [self.titleView addSubview:self.titleLabel];
+        }
+        if (topic.length > 0) {
+            self.descLabel.text = topic;
+//            [self.titleView addSubview:self.descLabel];
+            self.navigationItem.titleView = self.titleView;
+        } else {
+            
+            [self.titleView addSubview:self.titleLabel];
+            self.navigationItem.titleView = self.titleView;
+        }
+        if (self.chatType == ChatType_GroupChat) {
+            UIView *rightBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
+            [rightBarView addSubview:self.addGroupMember];
+            /* 暂时取消右上角红点
+             if (![[[QIMKit sharedInstance] userObjectForKey:kRightCardRemindNotification] boolValue]) {
+             QIMRedMindView *redMindView = [[QIMRedMindView alloc] initWithBroView:self.addGroupMember withRemindNotificationName:kRightCardRemindNotification];
+             [rightBarView addSubview:redMindView];
+             }
+             */
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarView];
+        } else {
+            
         }
     });
 }
@@ -658,8 +669,10 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.navigationController.navigationBar.translucent = NO;
+    if (![[QIMKit sharedInstance] getIsIpad]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.navigationController.navigationBar.translucent = NO;
+    }
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
     }
@@ -3004,7 +3017,7 @@ static CGPoint tableOffsetPoint;
         if ([fileName qim_hasPrefixHttpHeader]) {
             fileUrl = fileName;
         } else {
-            fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
+            fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
         }
         NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
         [imageData writeToFile:sdimageFileKey atomically:YES];
@@ -3012,7 +3025,7 @@ static CGPoint tableOffsetPoint;
         if ([fileName qim_hasPrefixHttpHeader]) {
             msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
         } else {
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"?FileName=%@\" width=%f height=%f]", fileName, width, height];
+            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"?LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
         }
         NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
         [dicInfo setObject:@(QIMMessageType_Text) forKey:@"msgType"];
@@ -3028,7 +3041,7 @@ static CGPoint tableOffsetPoint;
         if ([fileName qim_hasPrefixHttpHeader]) {
             fileUrl = fileName;
         } else {
-            fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
+            fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
         }
         NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
         [imageData writeToFile:sdimageFileKey atomically:YES];
@@ -3036,7 +3049,7 @@ static CGPoint tableOffsetPoint;
         if ([fileName qim_hasPrefixHttpHeader]) {
             msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
         } else {
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"FileName=%@\" width=%f height=%f]", fileName, width, height];
+            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
         }
         msg.message = msgText;
     }

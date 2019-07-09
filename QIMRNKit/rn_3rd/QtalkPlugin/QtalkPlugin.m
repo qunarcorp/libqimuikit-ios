@@ -257,6 +257,9 @@ RCT_EXPORT_METHOD(openUserCard:(NSDictionary *)params) {
 
 RCT_EXPORT_METHOD(showSearchHistoryResult:(NSDictionary *)params) {
     NSString *userJid = [params objectForKey:@"to"];
+    NSString *from = [params objectForKey:@"from"];
+    NSString *realfrom = [params objectForKey:@"realfrom"];
+
     NSString *realJid = [params objectForKey:@"realto"];
     long long time = [[params objectForKey:@"time"] longLongValue];
     NSInteger todoType = [[params objectForKey:@"todoType"] integerValue];
@@ -267,6 +270,14 @@ RCT_EXPORT_METHOD(showSearchHistoryResult:(NSDictionary *)params) {
         [QIMFastEntrance openGroupChatVCByGroupId:userJid withFastTime:time withRemoteSearch:YES];
     } else {
         //单聊
+        if([[[QIMKit sharedInstance] getLastJid] isEqualToString:from]){
+//            userJid = userJid;
+//            realJid = realto;
+        }else{
+            userJid = from;
+            realJid = realfrom;
+        }
+        chatType="0";
         chatType = ChatType_SingleChat;
         [QIMFastEntrance openSingleChatVCByUserId:userJid withFastTime:time withRemoteSearch:YES];
     }

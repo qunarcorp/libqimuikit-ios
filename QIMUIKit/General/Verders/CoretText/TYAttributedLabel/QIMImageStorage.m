@@ -126,22 +126,26 @@
     } else if (_imageURL){
         // 图片数据
         NSString * urlStr = _imageURL.absoluteString;
-        if (![urlStr containsString:@"?"]) {
-            urlStr = [urlStr stringByAppendingString:@"?"];
-            if (![urlStr containsString:@"platform"]) {
-                urlStr = [urlStr stringByAppendingString:@"platform=touch"];
+        if ([urlStr containsString:@"LocalFileName"]) {
+            
+        } else {
+            if (![urlStr containsString:@"?"]) {
+                urlStr = [urlStr stringByAppendingString:@"?"];
+                if (![urlStr containsString:@"platform"]) {
+                    urlStr = [urlStr stringByAppendingString:@"platform=touch"];
+                }
+                if (![urlStr containsString:@"imgtype"]) {
+                    urlStr = [urlStr stringByAppendingString:@"&imgtype=thumb"];
+                }
             }
-            if (![urlStr containsString:@"imgtype"]) {
-                urlStr = [urlStr stringByAppendingString:@"&imgtype=thumb"];
-            }
-        }
-        else
-        {
-            if (![urlStr containsString:@"platform"]) {
-                urlStr = [urlStr stringByAppendingString:@"&platform=touch"];
-            }
-            if (![urlStr containsString:@"imgtype"]) {
-                urlStr = [urlStr stringByAppendingString:@"&imgtype=thumb"];
+            else
+            {
+                if (![urlStr containsString:@"platform"]) {
+                    urlStr = [urlStr stringByAppendingString:@"&platform=touch"];
+                }
+                if (![urlStr containsString:@"imgtype"]) {
+                    urlStr = [urlStr stringByAppendingString:@"&imgtype=thumb"];
+                }
             }
         }
         NSURL * smallPicUrl = [NSURL URLWithString:urlStr];
@@ -156,13 +160,13 @@
         _imageView = [[YLImageView alloc] init];
         [_imageView qimsd_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:QIMSDWebImageLowPriority gifFlag:YES progress:^(NSInteger receivedSize, NSInteger expectedSize) {
 //            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
-//            [self.progressLabel setText:progress];
 //            NSLog(@"下载图片进度 : %ld", progress);
         } completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, NSURL *imageURL) {
             CGRect fitRect = rect;//[self rectFitOriginSize:image.size byRect:rect];
             //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
             fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
-            dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{//            [self.progressLabel setText:progress];
+
                 if (image) {
                     [_imageView removeFromSuperview];
                     _imageView = [[YLImageView alloc] initWithFrame:fitRect];

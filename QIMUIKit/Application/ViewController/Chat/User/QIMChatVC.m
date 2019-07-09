@@ -820,8 +820,10 @@
     
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.navigationController.navigationBar.translucent = NO;
+    if (![[QIMKit sharedInstance] getIsIpad]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.navigationController.navigationBar.translucent = NO;
+    }
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     if (self.chatType != ChatType_CollectionChat) {
         [self.view addSubview:self.textBar];
@@ -3528,7 +3530,7 @@ static CGPoint tableOffsetPoint;
         if ([fileName qim_hasPrefixHttpHeader]) {
             fileUrl = fileName;
         } else {
-            fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
+            fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
         }
         NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
         [imageData writeToFile:sdimageFileKey atomically:YES];
@@ -3536,7 +3538,7 @@ static CGPoint tableOffsetPoint;
         if ([fileName qim_hasPrefixHttpHeader]) {
             msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
         } else {
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"FileName=%@\" width=%f height=%f]", fileName, width, height];
+            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
         }
         NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
         [dicInfo setObject:@(QIMMessageType_Text) forKey:@"msgType"];
@@ -3558,7 +3560,7 @@ static CGPoint tableOffsetPoint;
         if ([fileName qim_hasPrefixHttpHeader]) {
             fileUrl = fileName;
         } else {
-            fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
+            fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
         }
         NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
         [imageData writeToFile:sdimageFileKey atomically:YES];
@@ -3566,7 +3568,7 @@ static CGPoint tableOffsetPoint;
         if ([fileName qim_hasPrefixHttpHeader]) {
             msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
         } else {
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"FileName=%@\" width=%f height=%f]", fileName, width, height];
+            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
         }
         
         msg.message = msgText;

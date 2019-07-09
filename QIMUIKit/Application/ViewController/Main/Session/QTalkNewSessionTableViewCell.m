@@ -578,10 +578,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                             self.showName = groupName;
                         } else {
                             [self reloadPlaceHolderName];
-                            [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid];
+                            [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid withCache:YES];
                         }
                     } else {
-                        [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid];
+                        [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid withCache:YES];
                     }
                 } else {
                     NSDictionary *cardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:self.jid];
