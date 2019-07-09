@@ -63,6 +63,7 @@ typedef enum {
 
 @property (nonatomic, assign) BOOL isScanning;
 
+@property (nonatomic, assign) BOOL isSettingNav;
 @property (nonatomic, assign) CodeType codeType;
 
 @property (nonatomic,copy)void(^ScanResult)(NSString*result,BOOL isSucceed);
