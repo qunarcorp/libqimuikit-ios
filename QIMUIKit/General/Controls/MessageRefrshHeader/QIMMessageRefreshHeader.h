@@ -6,7 +6,7 @@
 //
 
 #import "QIMCommonUIFramework.h"
-#import "MJRefreshNormalHeader.h"
+#import "MJRefresh.h"
 
 @interface QIMMessageRefreshHeader : NSObject
 

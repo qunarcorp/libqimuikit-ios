@@ -105,6 +105,12 @@
 //                      (int)96*2,
 //                      (int)96*2];
         }
+        if (![imageUrl containsString:@"platform"]) {
+            imageUrl = [imageUrl stringByAppendingString:@"&platform=touch"];
+        }
+        if (![imageUrl containsString:@"imgtype"]) {
+            imageUrl = [imageUrl stringByAppendingString:@"&imgtype=thumb"];
+        }
         [imageView downLoadImageWithModel:imageUrl withFitRect:frame withTotalCount:count];
     }
     self.width = [[UIScreen mainScreen] qim_rightWidth] - 60 - 20;
@@ -151,7 +157,7 @@
 }
 
 - (void)downLoadImageWithModel:(NSString *)imageUrl withFitRect:(CGRect)frame withTotalCount:(NSInteger)totalCount {
-    [self qimsd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, NSURL *imageURL) {
+    [self qimsd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] options:0 gifFlag:NO progress:nil completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, NSURL *imageURL) {
         __block CGRect fitRect = frame;
         dispatch_async(dispatch_get_main_queue(), ^{
             if (image && totalCount != 1) {

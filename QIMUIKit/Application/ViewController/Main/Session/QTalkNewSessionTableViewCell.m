@@ -382,6 +382,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (NSString *)refreshContentWithMessage:(NSString *)message {
     NSString *content = nil;
+    if (!self) {
+        QIMVerboseLog(@"sessionCell为nil了");
+        return nil;
+    }
     self.nickName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.msgFrom];
     switch (self.msgType) {
         case QIMMessageType_Text:
@@ -578,10 +582,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                             self.showName = groupName;
                         } else {
                             [self reloadPlaceHolderName];
-                            [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid];
+                            [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid withCache:YES];
                         }
                     } else {
-                        [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid];
+                        [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid withCache:YES];
                     }
                 } else {
                     NSDictionary *cardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:self.jid];
@@ -768,19 +772,23 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     __weak __typeof(self) weakSelf = self;
     if (message.length > 0) {
         dispatch_async([[QIMKit sharedInstance] getLoadSessionContentQueue], ^{
-            NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:weakSelf.jid];
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (!strongSelf) {
+                return;
+            }
+            NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:strongSelf.jid];
             if (atMeMessages.count > 0) {
                 NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
                 NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
                 [str appendAttributedString:atStr];
             }
-            content = [weakSelf refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+            content = [strongSelf refreshContentWithMessage:[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (content.length > 0) {
                     
-                    [str appendAttributedString:[weakSelf decodeMsg:content]];
+                    [str appendAttributedString:[strongSelf decodeMsg:content]];
                 }
-                [weakSelf.contentLabel setAttributedText:str];
+                [strongSelf.contentLabel setAttributedText:str];
             });
         });
     } else {
@@ -842,8 +850,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 
                 lastStr = [[msg substringFromIndex:(match.range.location + match.range.length)] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
                 if ([lastStr length] > 0) {
-                    
-                    [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:lastStr]];
+                    UIFont *font = [UIFont fontWithName:@"QTalk-QChat" size:15];
+                    NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999]}];
+                    [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:lastStr attributes:attributed]];
                 }
             }
             index++;
