@@ -13,21 +13,21 @@
 
 @interface QIMMessageHelperVC ()
 
-@property (nonatomic, strong) UIView *emptyView;
+@property(nonatomic, strong) UIView *emptyView;
 
-@property (nonatomic, strong) QTalkSessionView *sessionView;
+@property(nonatomic, strong) QTalkSessionView *sessionView;
 
-@property (nonatomic, strong) NSMutableArray *recentContactArray;
+@property(nonatomic, strong) NSMutableArray *recentContactArray;
 
 @end
 
 @implementation QIMMessageHelperVC
 
 - (QTalkSessionView *)sessionView {
-    
+
     if (!_sessionView) {
         
-        _sessionView = [[QTalkSessionView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 5) withRootViewController:self];
+        _sessionView = [[QTalkSessionView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 5)];
         _sessionView.backgroundColor = [UIColor spectralColorWhiteColor];
         [_sessionView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
         _sessionView.notShowHeader = YES;
@@ -59,15 +59,16 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.sessionView sessionViewWillAppear];
 }
 
 #pragma mark - init ui
 
-- (void)initWithNav{
+- (void)initWithNav {
     [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"contact_tab_not_read"]];
 }
 
-- (void)initWithTableView{
+- (void)initWithTableView {
     [self.view addSubview:self.sessionView];
 }
 
@@ -94,7 +95,7 @@
     [self.view bringSubviewToFront:self.emptyView];
 }
 
--(void)dealloc {
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

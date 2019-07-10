@@ -1729,7 +1729,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 if ([fileName qim_hasPrefixHttpHeader]) {
                     fileUrl = fileName;
                 } else {
-                    fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
+                    fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
                 }
                 NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
                 [photo.photoData writeToFile:sdimageFileKey atomically:YES];
@@ -1740,7 +1740,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 if ([fileName qim_hasPrefixHttpHeader]) {
                     msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
                 } else {
-                    msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"FileName=%@\" width=%f height=%f]", fileName, width, height];
+                    msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
                 }
                 QIMMessageModel *msg = [QIMMessageModel new];
                 [msg setMessageType:QIMMessageType_Text];

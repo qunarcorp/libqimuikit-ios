@@ -125,6 +125,28 @@
             }
         }];
     }
+    /*
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        [[QIMKit sharedInstance] getAnonyMouseDicWithMomentId:self.momentId WithCallBack:^(NSDictionary *anonymousDic) {
+            if (anonymousDic.count > 0) {
+                NSString *anonymousName = [anonymousDic objectForKey:@"anonymous"];
+                NSString *anonymousPhoto = [anonymousDic objectForKey:@"anonymousPhoto"];
+                NSInteger anonymousId = [[anonymousDic objectForKey:@"id"] integerValue];
+                BOOL replaceable = [[anonymousDic objectForKey:@"replaceable"] boolValue];
+                QIMWorkMomentUserIdentityModel *model = [[QIMWorkMomentUserIdentityModel alloc] init];
+                model.isAnonymous = YES;
+                model.anonymousId = anonymousId;
+                model.anonymousName = anonymousName;
+                model.anonymousPhoto = anonymousPhoto;
+                model.replaceable = replaceable;
+                [weakSelf.userIdentityList replaceObjectAtIndex:1 withObject:model];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.userIdentityListView reloadData];
+                });
+            }
+        }];
+    });
+    */
 }
 
 - (void)backBtnClick:(id)sender {

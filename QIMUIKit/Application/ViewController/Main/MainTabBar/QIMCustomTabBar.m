@@ -136,6 +136,7 @@
             countStr = [NSString stringWithFormat:@"%lu",(unsigned long)bagdeNumber];
         }
         CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
+        [itemButton.badgeNumberLabel setHeight:16];
         CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
         [itemButton.badgeNumberLabel setWidth:width];
         [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];
@@ -167,6 +168,7 @@
             countStr = [NSString stringWithFormat:@"%lu",(unsigned long)bagdeNumber];
         }
         CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
+        [itemButton.badgeNumberLabel setHeight:16];
         CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
         [itemButton.badgeNumberLabel setWidth:width];
         [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];

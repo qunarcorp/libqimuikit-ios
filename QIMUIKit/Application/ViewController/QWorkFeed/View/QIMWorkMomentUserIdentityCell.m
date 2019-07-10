@@ -68,8 +68,10 @@
     if (replaceable == YES) {
         self.replaceBtn.frame = CGRectMake(SCREEN_WIDTH - 90, self.contentView.bottom - 40, 90, 40);
         [self.contentView addSubview:self.replaceBtn];
+        self.replaceBtn.hidden = NO;
         self.replaceBtn.enabled = YES;
     } else {
+        _replaceBtn.hidden = YES;
         self.canNotReplaceLabel.frame = CGRectMake(SCREEN_WIDTH - 175, self.contentView.bottom - 30, 160, 15);
         [self.contentView addSubview:self.canNotReplaceLabel];
     }

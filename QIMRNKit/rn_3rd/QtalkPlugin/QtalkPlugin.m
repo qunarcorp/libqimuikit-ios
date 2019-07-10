@@ -9,6 +9,7 @@
 
 #import "QtalkPlugin.h"
 #import "QIMFastEntrance.h"
+#import "QIMNotificationKeys.h"
 #import "QIMJSONSerializer.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -212,6 +213,101 @@ RCT_EXPORT_METHOD(getFoundInfo:(RCTResponseSenderBlock)callback) {
     callback(@[mutableResult ? mutableResult : @{}]);
 
     NSLog(@"foundList : %@", foundListStr);
+}
+
+RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(NSDictionary *)cookie :(RCTResponseSenderBlock)callback1 :(RCTResponseSenderBlock)callback2) {
+    NSLog(@"searchUrl : %@", searchUrl);
+    NSLog(@"params : %@", params);
+    NSLog(@"Cookie : %@", cookie);
+    [[QIMKit sharedInstance] searchWithUrl:searchUrl withParams:params withSuccessCallBack:^(BOOL successed, NSString *responseJson) {
+        NSLog(@"请求搜索结果 : %@", responseJson);
+        NSMutableDictionary *resultMap = [NSMutableDictionary dictionaryWithCapacity:3];
+        [resultMap setObject:@(successed) forKey:@"isOk"];
+        [resultMap setObject:responseJson?responseJson:@"" forKey:@"responseJson"];
+        callback2(@[resultMap ? resultMap : @{}]);
+    } withFaildCallBack:^(BOOL successed, NSString *errmsg) {
+        NSMutableDictionary *resultMap = [NSMutableDictionary dictionaryWithCapacity:3];
+        [resultMap setObject:@(NO) forKey:@"isOk"];
+        [resultMap setObject:@"" forKey:@"responseJson"];
+        NSLog(@"请求搜索失败");
+        callback2(@[resultMap ? resultMap : @{}]);
+    }];
+}
+
+RCT_EXPORT_METHOD(openGroupChat:(NSDictionary *)params) {
+    NSString *groupId = [params objectForKey:@"GroupId"];
+    if (groupId.length > 0) {
+        [QIMFastEntrance openGroupChatVCByGroupId:groupId];
+    }
+}
+
+RCT_EXPORT_METHOD(openSignleChat:(NSDictionary *)params) {
+    NSString *userId = [params objectForKey:@"UserId"];
+    if (userId.length > 0) {
+        [QIMFastEntrance openSingleChatVCByUserId:userId];
+    }
+}
+
+RCT_EXPORT_METHOD(openUserCard:(NSDictionary *)params) {
+    NSString *userId = [params objectForKey:@"UserId"];
+    if (userId.length > 0) {
+        [QIMFastEntrance openUserCardVCByUserId:userId];
+    }
+}
+
+RCT_EXPORT_METHOD(showSearchHistoryResult:(NSDictionary *)params) {
+    NSString *userJid = [params objectForKey:@"to"];
+    NSString *from = [params objectForKey:@"from"];
+    NSString *realfrom = [params objectForKey:@"realfrom"];
+
+    NSString *realJid = [params objectForKey:@"realto"];
+    long long time = [[params objectForKey:@"time"] longLongValue];
+    NSInteger todoType = [[params objectForKey:@"todoType"] integerValue];
+    ChatType chatType = ChatType_SingleChat;
+    if (todoType == 16) {
+        //群聊
+        chatType = ChatType_GroupChat;
+        [QIMFastEntrance openGroupChatVCByGroupId:userJid withFastTime:time withRemoteSearch:YES];
+    } else {
+        //单聊
+        if([[[QIMKit sharedInstance] getLastJid] isEqualToString:from]){
+//            userJid = userJid;
+//            realJid = realto;
+        }else{
+            userJid = from;
+            realJid = realfrom;
+        }
+        chatType="0";
+        chatType = ChatType_SingleChat;
+        [QIMFastEntrance openSingleChatVCByUserId:userJid withFastTime:time withRemoteSearch:YES];
+    }
+}
+
+RCT_EXPORT_METHOD(exitSearchApp) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotify_RN_QTALK_SEARCH_GO_BACK object:nil];
+    });
+}
+
+#pragma mark - SearchKey History
+
+//获取本地搜索Key历史
+RCT_EXPORT_METHOD(getLocalSearchKeyHistory:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
+    
+    NSInteger limit = [[param objectForKey:@"limit"] integerValue];
+    NSInteger searchType = [[param objectForKey:@"searchType"] integerValue];
+    NSArray *searchKeys = [[QIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:searchType withLimit:limit];
+    callback(@[@{@"ok" : @(YES), @"searchKeys" : searchKeys ? searchKeys : @[]}]);
+}
+
+//更新本地搜索Key历史
+RCT_EXPORT_METHOD(updateLocalSearchKeyHistory:(NSDictionary *)param) {
+    [[QIMKit sharedInstance] updateLocalSearchKeyHistory:param];
+}
+
+//清空本地搜索历史Key
+RCT_EXPORT_METHOD(clearLocalSearchKeyHistory:(NSInteger)searchType) {
+    [[QIMKit sharedInstance] deleteSearchKeyHistory];
 }
 
 @end

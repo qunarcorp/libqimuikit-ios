@@ -95,13 +95,14 @@
             default:
                 break;
         }
+
         if (![headerUrl qim_hasPrefixHttpHeader] && headerUrl.length > 0) {
             headerUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], headerUrl];
         } else {
 
             if (!headerUrl.length && (jid || realJid)) {
                 if (chatType == ChatType_GroupChat) {
-                    [[QIMKit sharedInstance] updateGroupCard:@[jid]];
+                    [[QIMKit sharedInstance] updateGroupCardByGroupId:jid withCache:YES];
                 } else if (chatType == ChatType_ConsultServer) {
                     [[QIMKit sharedInstance] updateUserCard:realJid withCache:YES];
                 } else {
@@ -109,6 +110,23 @@
                 }
             } else {
                 
+            }
+        }
+        if (headerUrl.length > 0 && ![headerUrl containsString:@"?"]) {
+            headerUrl = [headerUrl stringByAppendingString:@"?"];
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"platform"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"platform=touch"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
+            }
+        }
+        else{
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"platform"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{

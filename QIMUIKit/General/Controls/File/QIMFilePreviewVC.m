@@ -105,6 +105,7 @@
     
     [self initBottomView];
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+    
     _fileName = [infoDic objectForKey:@"FileName"];
     
     NSString *downLoad = [[QIMKit sharedInstance] getDownloadFilePath];
@@ -128,7 +129,19 @@
         fileExt = [_fileName pathExtension];
         fileMd5 = [NSString stringWithFormat:@"%@.%@", fileMd5, fileExt];
     }
+    
     _filePath = [downLoad stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileMd5 ? fileMd5 : @""]];
+    
+    NSString * localPath = [infoDic objectForKey:@"IPLocalPath"];
+    
+    if (localPath && localPath.length> 0) {
+        if([[NSFileManager defaultManager] fileExistsAtPath:localPath isDirectory:nil]){
+           _filePath = localPath;
+        } else {
+
+        }
+    }
+    
     {
         _downloadView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height-_bottomView.top)];
         [_downloadView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];

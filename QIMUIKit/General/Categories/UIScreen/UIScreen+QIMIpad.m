@@ -21,14 +21,21 @@
 
 - (CGFloat)qim_leftWidth {
 #if __has_include("QIMIPadWindowManager.h")
-    NSString *deviceType = [UIDevice currentDevice].model;
     
     if ([[QIMKit sharedInstance] getIsIpad]) {
+        
+        CGFloat leftWidth = [UIScreen mainScreen].bounds.size.width - [self qim_dockWidth] - [self qim_rightWidth];
+        return leftWidth;
         //iPad
+//        UIView *view = [[[UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers firstObject] view];
+//        CGFloat width = CGRectGetWidth(view.frame) - [self qim_dockWidth];
+//        return width;
+        /*
         if ([UIScreen mainScreen].width * 0.21 < 295) {
             return 295;
         }
         return [UIScreen mainScreen].width * 0.21;
+        */
     } else {
         return [UIScreen mainScreen].bounds.size.width;
     }

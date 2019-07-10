@@ -14,11 +14,12 @@
 #import "QIMVideoPlayerVC.h"
 #import "UILabel+VerticalAlign.h"
 #import "NSBundle+QIMLibrary.h"
+#import "ASIProgressDelegate.h"
 
 #define kCellWidth      250
 #define kCellHeight     109
 
-@interface QIMFileCell()<QIMMenuImageViewDelegate>
+@interface QIMFileCell()<QIMMenuImageViewDelegate,ASIProgressDelegate>
 
 @property (nonatomic, strong) UIView *bgView;
 @property (nonatomic, strong) UIImageView *iconImageView;
@@ -27,7 +28,7 @@
 @property (nonatomic, strong) UIView *lineView;
 @property (nonatomic, strong) UILabel *fileStateLabel;
 @property (nonatomic, strong) UILabel *platFormLabel;
-
+@property (nonatomic, strong) UIProgressView * progressView;
 @end
 
 @implementation QIMFileCell
@@ -93,10 +94,18 @@
         [_fileStateLabel setTextAlignment:NSTextAlignmentRight];
         [_bgView addSubview:_fileStateLabel];
         
+        _progressView = [[UIProgressView alloc]initWithFrame:CGRectMake(8, _platFormLabel.bottom + 5,kCellWidth-15, 1)];
+        _progressView.progress = 0;
+        _progressView.progressTintColor = [UIColor redColor];
+        [_bgView addSubview:_progressView];
+        _progressView.hidden = YES;
+        
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandle:)];
         [self.backView addGestureRecognizer:tap];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downfileNotify:) name:kNotifyDownloadFileComplete object:nil];
+        
+        
     }
     return self;
 }
@@ -116,6 +125,41 @@
 
 #pragma mark - ui
 
+-(void)setMessage:(QIMMessageModel *)message{
+    [super setMessage:message];
+    
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+    
+    NSString * url = [infoDic objectForKey:@"HttpUrl"];
+    
+    
+    NSData * data = [[QIMKit sharedInstance] getFileDataFromUrl:url forCacheType:QIMFileCacheTypeDefault];
+    
+    if ([url hasPrefix:@"file://"]) {
+        [[QIMKit sharedInstance] uploadFileForData:data forCacheType:QIMFileCacheTypeDefault fileExt:[NSURL URLWithString:url].pathExtension isFile:YES uploadProgressDelegate:self.progressView completionBlock:^(UIImage *image, NSError *error, QIMFileCacheType cacheType, NSString *imageURL) {
+            [self uploadFileFinished];
+            if (imageURL.length > 0) {
+                if (self.message.extendInformation.length > 0) {
+                    self.message.message = self.message.extendInformation;
+                }
+                NSMutableDictionary *infoDic = [[[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil] mutableCopy];
+                [infoDic setObject:imageURL forKey:@"HttpUrl"];
+                
+                NSString * infoStr = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
+                if (self.message.extendInformation.length > 0) {
+                    self.message.extendInformation = infoStr;
+                    self.message.from = [[QIMKit sharedInstance] getLastJid];
+                    self.message.message = self.message.extendInformation;
+                    [[QIMKit sharedInstance] updateMsg:self.message ByJid:[[QIMKit sharedInstance] getLastJid]];
+                    [[QIMKit sharedInstance] sendMessage:self.message ToUserId:[[QIMKit sharedInstance] getLastJid]];
+                }
+            }
+            [self refreshUI];
+        } progressBlock:^(CGFloat progress) {
+            [self.progressView setProgress:progress];
+        }];
+    }
+}
 - (void)refreshUI {
     
     self.backView.message = self.message;
@@ -131,7 +175,11 @@
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *fileSize = [[infoDic objectForKey:@"FileSize"] description];
     NSString *fileUrl = [infoDic objectForKey:@"HttpUrl"];
-    if (![fileUrl qim_hasPrefixHttpHeader]) {
+    if ([fileUrl hasPrefix:@"file://"]) {
+        self.progressView.hidden = NO;
+    }
+    
+    if (![fileUrl qim_hasPrefixHttpHeader] && ![fileUrl hasPrefix:@"file"]) {
         fileUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_HttpHost], fileUrl];
     }
     
@@ -154,8 +202,13 @@
         } else {
             fileState = [NSBundle qim_localizedStringForKey:@"common_already_download"];
         }
-    } else {
-        
+    } else if(self.message.messageDirection == QIMMessageDirection_Sent) {
+        if ([fileUrl hasPrefix:@"file"]) {
+            fileState = @"发送中";
+        }
+        else{
+            fileState = [NSBundle qim_localizedStringForKey:@"common_sent"];
+        }
     }
     if (fileName.length <= 0) {
         fileName = [NSBundle qim_localizedStringForKey:@"common_old_file"];
@@ -210,6 +263,14 @@
     return menuList;
 }
 
+
+- (void)setProgress:(float)newProgress{
+    [self.progressView setProgress:newProgress];
+}
+
+-(void)uploadFileFinished{
+    [self.progressView setHidden:YES];
+}
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
