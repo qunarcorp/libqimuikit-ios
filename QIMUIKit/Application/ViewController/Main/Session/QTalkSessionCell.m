@@ -645,6 +645,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             NSString *messageId = [revokeMsgDic objectForKey:@"messageId"];
             NSString *userJid = [revokeMsgDic objectForKey:@"fromId"];
             NSString *message = [revokeMsgDic objectForKey:@"message"];
+            message = @"撤回了一条消息";
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
                 NSDictionary * userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userJid];
                 NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userJid];
