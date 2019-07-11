@@ -18,10 +18,12 @@
 #import "QIMZBarViewController.h"
 #import "MBProgressHUD.h"
 #import "QIMWebView.h"
+#import "QIMNavConfigManagerVC.h"
+#import "loginUnSettingNavView.h"
 
 static const int companyTag = 10001;
 
-@interface QIMPublicLogin () <UITextFieldDelegate, YYKeyboardObserver, UITableViewDelegate, UITableViewDataSource>
+@interface QIMPublicLogin () <UITextFieldDelegate, YYKeyboardObserver, UITableViewDelegate, UITableViewDataSource,UIAlertViewDelegate,loginUnSettingNavViewDelegate>
 
 @property (nonatomic, strong) UILabel *loginTitleLabel;  //登录Label
 
@@ -63,11 +65,14 @@ static const int companyTag = 10001;
 
 @property (nonatomic, strong) UIButton * scanSettingNavBtn;
 
+@property (nonatomic, strong) loginUnSettingNavView * alertView;
+
 @end
 
 @implementation QIMPublicLogin
 
 #pragma mark - setter and getter
+
 
 - (UILabel *)loginTitleLabel {
     if (!_loginTitleLabel) {
@@ -86,7 +91,7 @@ static const int companyTag = 10001;
         [_registerNewCompanyBtn setTitle:@"还没有公司? 创建一个" forState:UIControlStateNormal];
         _registerNewCompanyBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         [_registerNewCompanyBtn setTitleColor:[UIColor qim_colorWithHex:0x888888] forState:UIControlStateNormal];
-        [_registerNewCompanyBtn addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];
+        [_registerNewCompanyBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
         [_registerNewCompanyBtn.titleLabel setFont:[UIFont systemFontOfSize:16]];
     }
     return _registerNewCompanyBtn;
@@ -568,7 +573,11 @@ static const int companyTag = 10001;
 }
 
 - (void)forgotPWD:(id)sender {
-
+    if (!(self.companyModel != nil && self.companyModel.nav.length >0)) {
+        self.alertView = [[loginUnSettingNavView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) delegate:self];
+        [self.view addSubview:self.alertView];
+        return;
+    }
     [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_resetPwdUrl] showNavBar:YES];
 }
 
@@ -718,10 +727,6 @@ static const int companyTag = 10001;
                 navUrl = str;
             }
             navAddress = str;
-            if (navAddress.length) {
-                navAddress = [[str.lastPathComponent componentsSeparatedByString:@"="] lastObject];
-            }
-            
             [self onSaveWith:navAddress navUrl:navUrl];
         }
     }];
@@ -762,8 +767,33 @@ static const int companyTag = 10001;
     }
 }
 
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 1) {
+        [self scanCodeSettingBtnClick:nil];
+    }
+    if (buttonIndex == 2) {
+        QIMNavConfigManagerVC *navURLsSettingVc = [[QIMNavConfigManagerVC alloc] init];
+        QIMNavController *navURLsSettingNav = [[QIMNavController alloc] initWithRootViewController:navURLsSettingVc];
+        [self presentViewController:navURLsSettingNav animated:YES completion:nil];
+    }
+    else{
+        
+    }
+}
 
 - (void)registerNewUserBtnClicked:(UIButton *)btn{
-    [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_webAppUrl] showNavBar:NO];
+    [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_webAppUrl] showNavBar:YES];
+}
+
+#pragma loginUnSettingNavViewDelegate
+
+- (void)showScanViewController{
+    [self scanCodeSettingBtnClick:nil];
+}
+
+-(void)showSettingNavViewController{
+    QIMNavConfigManagerVC *navURLsSettingVc = [[QIMNavConfigManagerVC alloc] init];
+    QIMNavController *navURLsSettingNav = [[QIMNavController alloc] initWithRootViewController:navURLsSettingVc];
+    [self presentViewController:navURLsSettingNav animated:YES completion:nil];
 }
 @end

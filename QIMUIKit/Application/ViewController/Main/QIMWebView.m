@@ -16,6 +16,9 @@
 #import "UIImage+QIMButtonIcon.h"
 #import "NSBundle+QIMLibrary.h"
 #import "QIMJSONSerializer.h"
+#import "QIMKit+QIMNavConfig.h"
+#import "QIMMWPhoto.h"
+#import "QIMSDWebImageManager.h"
 
 static NSString *__default_ua = nil;
 
@@ -632,9 +635,18 @@ static NSString *__default_ua = nil;
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
                 NSHTTPCookie *dCookie = [NSHTTPCookie cookieWithProperties:dcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:dCookie];
-
                
             }
+        }
+        if ([self.url isEqualToString:[[QIMKit sharedInstance] qimNav_getManagerAppUrl]]) {
+            NSMutableDictionary *tcookieProperties = [NSMutableDictionary dictionary];
+            [tcookieProperties setQIMSafeObject:@"confignav" forKey:NSHTTPCookieName];
+            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_NavUrl] forKey:NSHTTPCookieValue];
+            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [tcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [tcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
+            NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:tcookieProperties];
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
         }
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
         [cook setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
@@ -980,6 +992,9 @@ static NSString *__default_ua = nil;
         } else if ([[components objectAtIndex:1] hasPrefix:@"//publicNav/resetpwdSuccessed"]) {
             [QIMFastEntrance reloginAccount];
             return NO;
+        } else if ([[components objectAtIndex:1] hasPrefix:@"//qrCodeShareImg"]){
+            [self shareUrlImg:[request URL]];
+            return NO;
         }
     } else if ([urlStr hasPrefix:@"qtalkaphone://"]  && components.count > 1) {
 //        qtalkaphone://uploadNoteImage?fileName=2AE022E5-34DF-416A-8EB4-F29CBB7FCFB4.jpeg&fileStr=data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD/
@@ -1065,6 +1080,45 @@ static NSString *__default_ua = nil;
         self.toolbarItems = nil;
         [self.navigationController setToolbarHidden:YES animated:NO];
     }
+}
+
+- (void)shareUrlImg:(NSURL *)url{
+    
+    NSString * query = url.query;
+    NSString * urlStr;
+    if (query.length > 0 && query) {
+        urlStr = [query stringByReplacingOccurrencesOfString:@"imgUrl=" withString:@""];
+    }
+    else{
+        return;
+    }
+    if (!urlStr && !urlStr<0) {
+        return;
+    }
+    // Show activity view controller
+    __weak typeof(self) weakSelf = self;
+    [[QIMSDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:urlStr] options:QIMSDWebImageDownloaderLowPriority gifFlag:NO progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        
+    } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+        NSMutableArray *items = [NSMutableArray arrayWithObject:image];
+        weakSelf.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+        
+        // Show loading spinner after a couple of seconds
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            if (weakSelf.activityViewController) {
+                //                    [self showProgressHUDWithMessage:nil];
+            }
+        });
+        
+        // Show
+        typeof(self) __weak weakSelf = weakSelf;
+        [weakSelf.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
+            weakSelf.activityViewController = nil;
+        }];
+        [self presentViewController:self.activityViewController animated:YES completion:nil];
+    }];
 }
 
 @end

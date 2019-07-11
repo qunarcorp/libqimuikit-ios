@@ -19,6 +19,8 @@
 
 @property (nonatomic, assign) BOOL showNotReadList;
 
+- (instancetype)initWithFrame:(CGRect)frame;
+
 - (instancetype)initWithFrame:(CGRect)frame withRootViewController:(QIMMainVC *)rootVc;
 
 - (void)prepareNotReaderIndexPathList;
