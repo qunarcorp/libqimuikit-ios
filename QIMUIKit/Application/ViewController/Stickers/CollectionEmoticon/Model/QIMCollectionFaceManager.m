@@ -69,6 +69,9 @@
         NSString *httpUrl = [[QIMCollectionFaceManager sharedInstance] getCollectionFaceHttpUrlWithIndex:index];
         
             //在这里下载
+        if (![httpUrl qim_hasPrefixHttpHeader]) {
+            httpUrl = [[[QIMKit sharedInstance] qimNav_InnerFileHttpHost] stringByAppendingFormat:@"/%@", httpUrl];
+        }
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             [[QIMKit sharedInstance] downloadCollectionEmoji:httpUrl width:CollectionFaceWidth height:CollectionFaceHeight forCacheType:QIMFileCacheTypeColoction complation:^(NSData *data) {
                 

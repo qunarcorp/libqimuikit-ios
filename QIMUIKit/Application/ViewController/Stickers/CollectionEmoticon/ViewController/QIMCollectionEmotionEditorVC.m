@@ -286,26 +286,28 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
 
 - (void)refresh {
     
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_dataList];
-    if (self.sortBtn.selected) {
-        
-        [tempArray removeAllObjects];
-        [tempArray addObjectsFromArray:[[QIMCollectionFaceManager sharedInstance] getCollectionFaceList]];
-        _dataList = [NSMutableArray arrayWithArray:tempArray];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.mainCollectionView reloadData];
-        });
-    } else {
-        
-        [tempArray removeAllObjects];
-        [tempArray addObjectsFromArray:[[QIMCollectionFaceManager sharedInstance] getCollectionFaceList]];
-        [tempArray addObject:kImageFacePageViewAddFlagName];
-        _dataList = [NSMutableArray arrayWithArray:tempArray];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.mainCollectionView reloadData];
-        });
-    }
-    _emotionSelectedList = nil;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_dataList];
+        if (self.sortBtn.selected) {
+            
+            [tempArray removeAllObjects];
+            [tempArray addObjectsFromArray:[[QIMCollectionFaceManager sharedInstance] getCollectionFaceList]];
+            _dataList = [NSMutableArray arrayWithArray:tempArray];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.mainCollectionView reloadData];
+            });
+        } else {
+            
+            [tempArray removeAllObjects];
+            [tempArray addObjectsFromArray:[[QIMCollectionFaceManager sharedInstance] getCollectionFaceList]];
+            [tempArray addObject:kImageFacePageViewAddFlagName];
+            _dataList = [NSMutableArray arrayWithArray:tempArray];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.mainCollectionView reloadData];
+            });
+        }
+        _emotionSelectedList = nil;
+    });
 }
 
 #pragma mark - life ctyle

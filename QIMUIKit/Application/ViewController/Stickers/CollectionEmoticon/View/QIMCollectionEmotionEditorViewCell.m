@@ -134,6 +134,9 @@
         [[QIMCollectionFaceManager sharedInstance] showSmallImage:^(UIImage *image) {
             
             itemImage = image;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [itemView setImage:itemImage];
+            });
         } withIndex:self.tag];
     }
     
