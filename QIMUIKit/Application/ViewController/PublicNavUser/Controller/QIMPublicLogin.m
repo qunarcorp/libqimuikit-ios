@@ -15,14 +15,21 @@
 #import "QIMProgressHUD.h"
 #import "QIMAgreementViewController.h"
 #import "QIMSelectComponyViewController.h"
+#import "QIMZBarViewController.h"
+#import "MBProgressHUD.h"
+#import "QIMWebView.h"
+#import "QIMNavConfigManagerVC.h"
+#import "loginUnSettingNavView.h"
 
 static const int companyTag = 10001;
 
-@interface QIMPublicLogin () <UITextFieldDelegate, YYKeyboardObserver, UITableViewDelegate, UITableViewDataSource>
+@interface QIMPublicLogin () <UITextFieldDelegate, YYKeyboardObserver, UITableViewDelegate, UITableViewDataSource,UIAlertViewDelegate,loginUnSettingNavViewDelegate>
 
 @property (nonatomic, strong) UILabel *loginTitleLabel;  //登录Label
 
-@property (nonatomic, strong) UIButton *registerBtn;  //注册按钮
+@property (nonatomic, strong) UIButton *registerNewCompanyBtn;  //注册新公司按钮
+
+@property (nonatomic, strong) UIButton * registerUserBtn;
 
 @property (nonatomic, assign) BOOL multipleLogin;  //是否为多次登录
 
@@ -38,9 +45,9 @@ static const int companyTag = 10001;
 
 @property (nonatomic, strong) UIView *userPwdLineView;         //用户密码LineView
 
-@property (nonatomic, strong) UITextField *companyTextField;    //公司名TextField
+//@property (nonatomic, strong) UITextField *companyTextField;    //公司名TextField
 
-@property (nonatomic, strong) UIView *companyLineView;         //公司名LineView
+//@property (nonatomic, strong) UIView *companyLineView;         //公司名LineView
 
 @property (nonatomic, strong) UIButton *checkBtn;               //条款Btn
 
@@ -50,17 +57,22 @@ static const int companyTag = 10001;
 
 @property (nonatomic, strong) UIButton *forgotBtn;  //忘记密码
 
-@property (nonatomic, strong) UIButton *settingBtn;             //设置Btn
+//@property (nonatomic, strong) UIButton *settingBtn;             //设置Btn
 
 @property (nonatomic, assign) CGFloat keyboardOriginY;
 
 @property (nonatomic, strong) QIMPublicCompanyModel *companyModel;
+
+@property (nonatomic, strong) UIButton * scanSettingNavBtn;
+
+@property (nonatomic, strong) loginUnSettingNavView * alertView;
 
 @end
 
 @implementation QIMPublicLogin
 
 #pragma mark - setter and getter
+
 
 - (UILabel *)loginTitleLabel {
     if (!_loginTitleLabel) {
@@ -73,15 +85,27 @@ static const int companyTag = 10001;
     return _loginTitleLabel;
 }
 
-- (UIButton *)registerBtn {
-    if (!_registerBtn) {
-        _registerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_registerBtn setTitle:@"创建公司" forState:UIControlStateNormal];
-        [_registerBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
-        [_registerBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
-        [_registerBtn.titleLabel setFont:[UIFont systemFontOfSize:16]];
+- (UIButton *)registerNewCompanyBtn {
+    if (!_registerNewCompanyBtn) {
+        _registerNewCompanyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_registerNewCompanyBtn setTitle:@"还没有公司? 创建一个" forState:UIControlStateNormal];
+        _registerNewCompanyBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        [_registerNewCompanyBtn setTitleColor:[UIColor qim_colorWithHex:0x888888] forState:UIControlStateNormal];
+        [_registerNewCompanyBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
+        [_registerNewCompanyBtn.titleLabel setFont:[UIFont systemFontOfSize:16]];
     }
-    return _registerBtn;
+    return _registerNewCompanyBtn;
+}
+
+- (UIButton *)registerUserBtn{
+    if (!_registerUserBtn) {
+        _registerUserBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_registerUserBtn setTitle:@"注册" forState:UIControlStateNormal];
+        [_registerUserBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
+        _registerUserBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+        [_registerUserBtn addTarget:self action:@selector(registerNewUserBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _registerUserBtn;
 }
 
 - (UILabel *)companyShowLabel {
@@ -149,25 +173,43 @@ static const int companyTag = 10001;
     return _userPwdLineView;
 }
 
-- (UITextField *)companyTextField {
-    if (!_companyTextField) {
-        _companyTextField = [[UITextField alloc] init];
-        _companyTextField.placeholder = @"请输入公司名";
-        _companyTextField.delegate = self;
-        _companyTextField.backgroundColor = [UIColor whiteColor];
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gotoSelectCompany:)];
-        [_companyTextField addGestureRecognizer:tap];
+//- (UITextField *)companyTextField {
+//    if (!_companyTextField) {
+//        _companyTextField = [[UITextField alloc] init];
+//        _companyTextField.placeholder = @"请输入公司名";
+//        _companyTextField.delegate = self;
+//        _companyTextField.backgroundColor = [UIColor whiteColor];
+//        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gotoSelectCompany:)];
+//        [_companyTextField addGestureRecognizer:tap];
+//    }
+//    return _companyTextField;
+//}
+
+- (UIButton *)scanSettingNavBtn{
+    if (!_scanSettingNavBtn) {
+        _scanSettingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _scanSettingNavBtn.backgroundColor = [UIColor qim_colorWithHex:0x00CABE];
+        [_scanSettingNavBtn setTitle:@"扫码配置导航" forState:UIControlStateNormal];
+        [_scanSettingNavBtn setTitleColor:[UIColor qim_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
+        _scanSettingNavBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:4];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateNormal];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateSelected];
+        [_scanSettingNavBtn addTarget:self action:@selector(scanCodeSettingBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+        _scanSettingNavBtn.layer.masksToBounds = YES;
+        _scanSettingNavBtn.layer.cornerRadius = 4;
+        _scanSettingNavBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0 - 7 / 2, 0, 0 + 7 / 2);
+        _scanSettingNavBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0 + 7 / 2, 0, 0 - 7 / 2);
     }
-    return _companyTextField;
+    return _scanSettingNavBtn;
 }
 
-- (UIView *)companyLineView {
-    if (!_companyLineView) {
-        _companyLineView = [[UIView alloc] init];
-        _companyLineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
-    }
-    return _companyLineView;
-}
+//- (UIView *)companyLineView {
+//    if (!_companyLineView) {
+//        _companyLineView = [[UIView alloc] init];
+//        _companyLineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
+//    }
+//    return _companyLineView;
+//}
 
 - (UIButton *)forgotBtn {
     if (!_forgotBtn) {
@@ -227,18 +269,18 @@ static const int companyTag = 10001;
     return _loginBtn;
 }
 
-- (UIButton *)settingBtn {
-    if (_settingBtn == nil) {
-        
-        _settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_settingBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [_settingBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
-        [_settingBtn setTitle:@"设置服务地址" forState:UIControlStateNormal];
-        [_settingBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconSetting"] forState:UIControlStateNormal];
-        [_settingBtn addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _settingBtn;
-}
+//- (UIButton *)settingBtn {
+//    if (_settingBtn == nil) {
+//
+//        _settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//        [_settingBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
+//        [_settingBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
+//        [_settingBtn setTitle:@"设置服务地址" forState:UIControlStateNormal];
+//        [_settingBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconSetting"] forState:UIControlStateNormal];
+//        [_settingBtn addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];
+//    }
+//    return _settingBtn;
+//}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -342,17 +384,25 @@ static const int companyTag = 10001;
     [self.view addSubview:self.loginTitleLabel];
     [self.loginTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_offset(33);
-        make.top.mas_offset(55);
+        make.top.mas_offset(56);
         make.width.mas_equalTo(60);
         make.height.mas_equalTo(38);
     }];
     
-    [self.view addSubview:self.registerBtn];
-    [self.registerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_offset(-16);
-        make.top.mas_offset(55);
-        make.width.mas_equalTo(80);
-        make.height.mas_equalTo(18);
+    [self.view addSubview:self.registerNewCompanyBtn];
+    [self.registerNewCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(self.view.mas_centerX);
+        make.bottom.mas_offset(-30);
+        make.width.mas_equalTo(200);
+        make.height.mas_equalTo(21);
+    }];
+    
+    [self.view addSubview:self.scanSettingNavBtn];
+    [self.scanSettingNavBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo((56 + 38/2) - 30/2);
+        make.height.mas_equalTo(@(30));
+        make.width.mas_equalTo(@(126));
+        make.right.mas_equalTo(@(-24));
     }];
     
     if (self.multipleLogin) {
@@ -391,6 +441,7 @@ static const int companyTag = 10001;
             make.right.mas_equalTo(self.userNameTextField.mas_right);
             make.height.mas_equalTo(1);
         }];
+        
         [self updateLoginUI];
     } else {
         
@@ -410,7 +461,16 @@ static const int companyTag = 10001;
             make.height.mas_equalTo(1);
         }];
     }
-
+    if ([[QIMKit sharedInstance] qimNav_isToC]) {
+        self.scanSettingNavBtn.hidden = YES;
+        [self.view addSubview:self.registerUserBtn];
+        [self.registerUserBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo((56 + 38/2) - 30/2);
+            make.height.mas_equalTo(@(30));
+            make.width.mas_equalTo(@(50));
+            make.right.mas_equalTo(@(-16));
+        }];
+    }
     
     
     [self.view addSubview:self.userPwdTextField];
@@ -429,6 +489,14 @@ static const int companyTag = 10001;
     }];
     
     if (self.multipleLogin) {
+        
+//        [self.view addSubview:self.companyTextField];
+//        [self.companyTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(30);
+//            make.left.mas_equalTo(self.userPwdLineView.mas_left);
+//            make.right.mas_equalTo(self.userPwdLineView.mas_right);
+//            make.height.mas_equalTo(35);
+//        }];
         
         [self.view addSubview:self.forgotBtn];
         [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -449,25 +517,10 @@ static const int companyTag = 10001;
         
     } else {
         
-        [self.view addSubview:self.companyTextField];
-        [self.companyTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(30);
-            make.left.mas_equalTo(self.userPwdLineView.mas_left);
-            make.right.mas_equalTo(self.userPwdLineView.mas_right);
-            make.height.mas_equalTo(35);
-        }];
-        [self.view addSubview:self.companyLineView];
-        [self.companyLineView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.companyTextField.mas_bottom).mas_offset(5);
-            make.left.mas_equalTo(self.companyTextField.mas_left);
-            make.right.mas_equalTo(self.companyTextField.mas_right);
-            make.height.mas_equalTo(1);
-        }];
-        
         [self.view addSubview:self.forgotBtn];
         [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.companyLineView.mas_bottom).mas_offset(31);
-            make.right.mas_equalTo(self.companyLineView.mas_right);
+            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(45);
+            make.right.mas_equalTo(self.userPwdLineView.mas_right);
             make.height.mas_equalTo(16);
             make.width.mas_equalTo(80);
         }];
@@ -475,8 +528,8 @@ static const int companyTag = 10001;
         
         [self.view addSubview:self.checkBtn];
         [self.checkBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.companyLineView.mas_bottom).mas_offset(31);
-            make.left.mas_equalTo(self.companyTextField.mas_left);
+            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(45);
+            make.left.mas_equalTo(self.userPwdLineView.mas_left);
             make.height.mas_equalTo(17);
             make.width.mas_equalTo(17);
         }];
@@ -493,18 +546,18 @@ static const int companyTag = 10001;
     
     [self.view addSubview:self.loginBtn];
     [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.forgotBtn.mas_bottom).mas_offset(44);
+        make.top.mas_equalTo(self.forgotBtn.mas_bottom).mas_offset(56);
         make.left.mas_offset(40);
         make.right.mas_offset(-40);
         make.height.mas_equalTo(48);
     }];
     
-    [self.view addSubview:self.settingBtn];
-    [self.settingBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.mas_equalTo(0);
-        make.bottom.mas_equalTo(-30);
-        make.height.mas_equalTo(24);
-    }];
+//    [self.view addSubview:self.settingBtn];
+//    [self.settingBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.right.mas_equalTo(0);
+//        make.bottom.mas_equalTo(-30);
+//        make.height.mas_equalTo(24);
+//    }];
 }
 
 - (void)keyboardChangedWithTransition:(YYKeyboardTransition)transition {
@@ -520,7 +573,11 @@ static const int companyTag = 10001;
 }
 
 - (void)forgotPWD:(id)sender {
-
+    if (!(self.companyModel != nil && self.companyModel.nav.length >0)) {
+        self.alertView = [[loginUnSettingNavView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) delegate:self];
+        [self.view addSubview:self.alertView];
+        return;
+    }
     [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_resetPwdUrl] showNavBar:YES];
 }
 
@@ -606,11 +663,11 @@ static const int companyTag = 10001;
         NSString *companyName = companyModel.name;
         QIMVerboseLog(@"companyName : %@", companyName);
         if (companyName.length > 0) {
-            [self.companyTextField setText:companyName];
+//            [self.companyTextField setText:companyName];
             [self.companyShowLabel setText:companyName];
         } else {
             NSString *companyDomain = companyModel.domain;
-            [self.companyTextField setText:companyDomain];
+//            [self.companyTextField setText:companyDomain];
             [self.companyShowLabel setText:companyDomain];
         }
         [self updateLoginUI];
@@ -650,4 +707,93 @@ static const int companyTag = 10001;
     });
 }
 
+#pragma mark 扫码配置导航
+
+- (void)scanCodeSettingBtnClick:(UIButton *)btnClick{
+    __weak typeof(self) weakSelf = self;
+    QIMZBarViewController *vc=[[QIMZBarViewController alloc] initWithBlock:^(NSString *str, BOOL isScceed) {
+        if (isScceed) {
+            QIMVerboseLog(@"str : %@", str);
+            NSString * navAddress;
+            NSString * navUrl;
+            if ([str containsString:@"publicnav?c="]) {
+                str = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
+                navUrl = str;
+            } else if ([str containsString:@"confignavigation?configurl="]) {
+                NSString *base64NavUrl = [[str componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
+                str = [base64NavUrl qim_base64DecodedString];
+                navUrl = str;
+            } else {
+                navUrl = str;
+            }
+            navAddress = str;
+            [self onSaveWith:navAddress navUrl:navUrl];
+        }
+    }];
+    vc.isSettingNav = YES;
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
+- (void)onSaveWith:(NSString *)navAddressText navUrl:(NSString *)navUrl{
+    NSString *navHttpName = navAddressText;
+    if (navAddressText.length > 0) {
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        __block NSDictionary *userWillsaveNavDict = @{QIMNavNameKey:(navHttpName.length > 0) ? navHttpName : [[navUrl.lastPathComponent componentsSeparatedByString:@"="] lastObject], QIMNavUrlKey:navUrl};
+        [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_UserWillSaveNavDict"];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            BOOL success = [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithCheck:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                if (success) {
+                    [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_CurrentNavDict"];
+                    [self setupUI];
+                } else {
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                                        message:@"无可用的导航信息"
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"确定"
+                                                              otherButtonTitles:nil];
+                    [alertView show];
+                }
+            });
+        });
+    } else {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                            message:@"请输入可用的导航地址"
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"确定"
+                                                  otherButtonTitles:nil];
+        [alertView show];
+    }
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 1) {
+        [self scanCodeSettingBtnClick:nil];
+    }
+    if (buttonIndex == 2) {
+        QIMNavConfigManagerVC *navURLsSettingVc = [[QIMNavConfigManagerVC alloc] init];
+        QIMNavController *navURLsSettingNav = [[QIMNavController alloc] initWithRootViewController:navURLsSettingVc];
+        [self presentViewController:navURLsSettingNav animated:YES completion:nil];
+    }
+    else{
+        
+    }
+}
+
+- (void)registerNewUserBtnClicked:(UIButton *)btn{
+    [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_webAppUrl] showNavBar:YES];
+}
+
+#pragma loginUnSettingNavViewDelegate
+
+- (void)showScanViewController{
+    [self scanCodeSettingBtnClick:nil];
+}
+
+-(void)showSettingNavViewController{
+    QIMNavConfigManagerVC *navURLsSettingVc = [[QIMNavConfigManagerVC alloc] init];
+    QIMNavController *navURLsSettingNav = [[QIMNavController alloc] initWithRootViewController:navURLsSettingVc];
+    [self presentViewController:navURLsSettingNav animated:YES completion:nil];
+}
 @end

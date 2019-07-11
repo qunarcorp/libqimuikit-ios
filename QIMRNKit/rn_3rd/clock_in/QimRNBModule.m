@@ -54,6 +54,7 @@
 #import "Toast.h"
 #import "QIMPublicRedefineHeader.h"
 #import "QIMAddIndexViewController.h"
+#import "QIMUserCacheManager.h"
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
@@ -146,6 +147,7 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
     BOOL notNeedShowLeaderInfo = ([[QIMKit sharedInstance] qimNav_LeaderUrl].length > 0) ? NO : YES;
     BOOL notNeedShowMobileInfo = ([[QIMKit sharedInstance] qimNav_Mobileurl].length > 0) ? NO : YES;
     BOOL notNeedShowCamelNotify = NO;
+    BOOL isToCManager = [[[QIMKit sharedInstance] userObjectForKey:@"isToCManager"] boolValue];
     if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
         isShowRedPackage = NO;
         isEasyTrip = YES;
@@ -154,7 +156,8 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
         isEasyTrip = [[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"] ? NO : YES;
         notNeedShowCamelNotify = [[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"] ? NO : YES;
     }
-    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState": @([[QIMKit sharedInstance] isMerchant]), @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(WorkFeedEntrance), @"isShowGroupQRCode":@(YES), @"isShowLocalQuickSearch":@(YES), @"isShowRedPackage":@(isShowRedPackage), @"isEasyTrip":@(isEasyTrip), @"isiOSIpad":@([[QIMKit sharedInstance] getIsIpad]), @"ScreenWidth":@([[UIScreen mainScreen] qim_rightWidth]), @"notNeedShowEmailInfo":@(notNeedShowEmailInfo), @"notNeedShowMobileInfo":@(notNeedShowMobileInfo), @"notNeedShowLeaderInfo":@(notNeedShowLeaderInfo), @"notNeedShowCamelNotify":@(notNeedShowCamelNotify)}];
+    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState": @([[QIMKit sharedInstance] isMerchant]), @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(WorkFeedEntrance), @"isShowGroupQRCode":@(YES), @"isShowLocalQuickSearch":@(YES), @"isShowRedPackage":@(isShowRedPackage), @"isEasyTrip":@(isEasyTrip), @"isiOSIpad":@([[QIMKit sharedInstance] getIsIpad]), @"ScreenWidth":@([[UIScreen mainScreen] qim_rightWidth]), @"notNeedShowEmailInfo":@(notNeedShowEmailInfo), @"notNeedShowMobileInfo":@(notNeedShowMobileInfo), @"notNeedShowLeaderInfo":@(notNeedShowLeaderInfo), @"notNeedShowCamelNotify":@(notNeedShowCamelNotify),
+        @"isToCManager":@(isToCManager)}];
     QIMVerboseLog(@"AppConfig : %@", appConfig);
     success(appConfig);
 }
@@ -306,7 +309,10 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
     } else if ([nativeName isEqualToString:@"SearchContact"]){
         
         [QIMFastEntrance openRNSearchVC];
-    } else if ([nativeName isEqualToString:@"PublicNumberChat"]){
+    }else if ([nativeName isEqualToString:@"OpenToCManager"]){
+        [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_getManagerAppUrl] showNavBar:YES];
+    }
+    else if ([nativeName isEqualToString:@"PublicNumberChat"]){
         dispatch_async(dispatch_get_main_queue(), ^{
             NSString *publicNumberId = [params objectForKey:@"PublicNumberId"];
             [QIMFastEntrance openRobotChatVC:publicNumberId];
@@ -396,6 +402,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  */
 + (NSURL *)getJsCodeLocation {
 //    return [NSURL URLWithString:@"http://ip:8081/index.ios.bundle?platform=ios&dev=true"];
+
     NSString *qtalkFoundRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkFoundRNDebugUrl"];
     if (qtalkFoundRNDebugUrlStr.length > 0) {
         NSURL *qtalkFoundRNDebugUrlStrUrl = [NSURL URLWithString:qtalkFoundRNDebugUrlStr];

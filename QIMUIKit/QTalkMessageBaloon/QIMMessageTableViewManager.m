@@ -49,6 +49,8 @@
 #import "QIMEncryptChat.h"
 #endif
 
+#import "QIMFileCell.h"
+
 @interface QIMMessageTableViewManager () 
 
 @property (nonatomic, copy) NSString *chatId;
