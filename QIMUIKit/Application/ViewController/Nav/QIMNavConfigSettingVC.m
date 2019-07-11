@@ -15,7 +15,7 @@
     UILabel *_navAddressLabel;
     UITextField *_navNickNameTextField;
     UITextField *_navAddressTextField;
-    UIButton *_qrcodeNavBtn;
+//    UIButton *_qrcodeNavBtn;
 }
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *navConfigUrls;
@@ -24,6 +24,7 @@
 @property (nonatomic, copy) NSString *navUrl;
 @property (nonatomic, assign) BOOL edited;
 @property (nonatomic, assign) BOOL added;
+@property (nonatomic, strong) UIButton * scanSettingNavBtn;
 @end
 
 @implementation QIMNavConfigSettingVC
@@ -56,7 +57,18 @@
 }
 
 - (void)setupUI {
-    _navNickNameLable = [[UILabel alloc] initWithFrame:CGRectMake(20, 30, self.view.width - 40, 20)];
+    
+    [self.scanSettingNavBtn setFrame:CGRectMake((SCREEN_WIDTH - 175)/2, 26, 175, 40)];
+    [self.view addSubview:self.scanSettingNavBtn];
+    
+    UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(20, self.scanSettingNavBtn.bottom + 36, SCREEN_WIDTH - 20, 16)];
+    label.text = @"您也可以手动输入导航";
+    label.font = [UIFont systemFontOfSize:14];
+    label.textAlignment = NSTextAlignmentLeft;
+    label.textColor = [UIColor qim_colorWithHex:0xBFBFBF];
+    [self.view addSubview:label];
+    
+    _navNickNameLable = [[UILabel alloc] initWithFrame:CGRectMake(20, label.bottom + 16, self.view.width - 40, 20)];
     [_navNickNameLable setText:@"导航名"];
     [_navNickNameLable setBackgroundColor:[UIColor clearColor]];
     [_navNickNameLable setFont:[UIFont systemFontOfSize:16]];
@@ -105,13 +117,13 @@
     }
     [navAddressTextBgView addSubview:_navAddressTextField];
     
-    _qrcodeNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    _qrcodeNavBtn.frame = CGRectMake(_navAddressTextField.right + 5, 0, 36, 36);
-    _qrcodeNavBtn.layer.masksToBounds = YES;
-    _qrcodeNavBtn.layer.cornerRadius = CGRectGetWidth(_qrcodeNavBtn.frame) / 2.0;
-    [_qrcodeNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
-    [_qrcodeNavBtn addTarget:self action:@selector(scanNav:) forControlEvents:UIControlEventTouchUpInside];
-    [navAddressTextBgView addSubview:_qrcodeNavBtn];
+//    _qrcodeNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    _qrcodeNavBtn.frame = CGRectMake(_navAddressTextField.right + 5, 0, 36, 36);
+//    _qrcodeNavBtn.layer.masksToBounds = YES;
+//    _qrcodeNavBtn.layer.cornerRadius = CGRectGetWidth(_qrcodeNavBtn.frame) / 2.0;
+//    [_qrcodeNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
+//    [_qrcodeNavBtn addTarget:self action:@selector(scanNav:) forControlEvents:UIControlEventTouchUpInside];
+//    [navAddressTextBgView addSubview:_qrcodeNavBtn];
     [self.view addSubview:navAddressTextBgView];
 }
 
@@ -190,4 +202,22 @@
     }
 }
 
+
+- (UIButton *)scanSettingNavBtn{
+    if (!_scanSettingNavBtn) {
+        _scanSettingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _scanSettingNavBtn.backgroundColor = [UIColor qim_colorWithHex:0x00CABE];
+        [_scanSettingNavBtn setTitle:@"扫码配置导航" forState:UIControlStateNormal];
+        [_scanSettingNavBtn setTitleColor:[UIColor qim_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
+        _scanSettingNavBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:4];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateNormal];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateSelected];
+        [_scanSettingNavBtn addTarget:self action:@selector(scanNav:) forControlEvents:UIControlEventTouchUpInside];
+        _scanSettingNavBtn.layer.masksToBounds = YES;
+        _scanSettingNavBtn.layer.cornerRadius = 4;
+        _scanSettingNavBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0 - 7 / 2, 0, 0 + 7 / 2);
+        _scanSettingNavBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0 + 7 / 2, 0, 0 - 7 / 2);
+    }
+    return _scanSettingNavBtn;
+}
 @end

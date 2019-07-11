@@ -2261,8 +2261,10 @@
 
 - (void)updateMessageList:(NSNotification *)notify {
     NSString *userId = nil;
-    NSIndexPath *indexpath = [[self.tableView indexPathsForVisibleRows] lastObject];
-    self.currentMsgIndexs = indexpath.row;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSIndexPath *indexpath = [[self.tableView indexPathsForVisibleRows] lastObject];
+        self.currentMsgIndexs = indexpath.row;
+    });
     if (self.chatType == ChatType_Consult) {
         userId = [NSString stringWithFormat:@"%@-%@",self.virtualJid,self.virtualJid];
     } else if (self.chatType == ChatType_ConsultServer) {

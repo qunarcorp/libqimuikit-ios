@@ -9,8 +9,10 @@
 #import "QIMZBarViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "NSBundle+QIMLibrary.h"
-@interface QIMZBarViewController ()
+#import "QIMNavConfigManagerVC.h"
 
+@interface QIMZBarViewController ()
+@property (nonatomic , strong) UIButton * settingNavBtn;
 @end
 
 @implementation QIMZBarViewController
@@ -23,6 +25,16 @@
     }
     return self;
 }
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.isSettingNav = NO;
+    }
+    return self;
+}
+
 -(id)initWithBlock:(void(^)(NSString*,BOOL))a{
     if (self=[super init]) {
         self.ScanResult=a;
@@ -68,11 +80,34 @@
     [bgImageView addSubview:_line];
    
     
+    CGFloat scanBarY = 0;
+    CGFloat scanBarHeight = 0;
+    if (self.isSettingNav) {
+        scanBarY = bgImageView.frame.size.height;
+        scanBarHeight = 200;
+    }
+    else{
+        scanBarY = bgImageView.frame.size.height+64;
+        scanBarHeight = 100;
+    }
   //下方相册
-    UIImageView*scanImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, bgImageView.frame.size.height+64, self.view.frame.size.width, 100)];
+    UIImageView*scanImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, scanBarY, self.view.frame.size.width, scanBarHeight)];
     scanImageView.image=[UIImage qim_imageNamedFromQIMUIKitBundle:@"qrcode_scan_bar"];
     scanImageView.userInteractionEnabled=YES;
     [self.view addSubview:scanImageView];
+    
+    if (self.isSettingNav) {
+        self.settingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.settingNavBtn setTitle:@"手动配置导航" forState:UIControlStateNormal];
+        [self.settingNavBtn setTitleColor:[UIColor qim_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
+        self.settingNavBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+        [self.settingNavBtn setFrame:CGRectMake((self.view.width - 200)/2, self.view.height - 45, 200, 45)];
+        [self.settingNavBtn addTarget:self action:@selector(settingNavBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:self.settingNavBtn];
+    }
+    else{
+        
+    }
     NSArray*unSelectImageNames=@[@"qrcode_scan_btn_photo_nor",@"qrcode_scan_btn_flash_nor",@"qrcode_scan_btn_myqrcode_nor"];
     NSArray*selectImageNames=@[@"qrcode_scan_btn_photo_down",@"qrcode_scan_btn_flash_down",@"qrcode_scan_btn_myqrcode_down"];
     
@@ -501,6 +536,12 @@
         }
     }
     return nil;
+}
+
+- (void)settingNavBtnClicked:(UIButton *)clicked{
+    QIMNavConfigManagerVC *navURLsSettingVc = [[QIMNavConfigManagerVC alloc] init];
+    QIMNavController *navURLsSettingNav = [[QIMNavController alloc] initWithRootViewController:navURLsSettingVc];
+    [self presentViewController:navURLsSettingNav animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning
