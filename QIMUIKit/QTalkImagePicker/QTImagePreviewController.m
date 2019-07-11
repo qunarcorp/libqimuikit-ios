@@ -68,12 +68,12 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
     _photoBrowser.wantsFullScreenLayout = YES;
 #endif 
-    [_photoBrowser.view setFrame:CGRectMake(0, -64, self.view.width, self.view.height + 64)];
+    [_photoBrowser.view setFrame:CGRectMake(0, -64, self.view.width, self.view.height + 64 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 49)];
     [self.view addSubview:_photoBrowser.view];
 }
 
 - (void)initBottomView{
-    _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], self.view.width, 49)];
+    _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 49, self.view.width, 49)];
     [_bottomView setBackgroundColor:[UIColor qim_colorWithHex:0xf1f1f1 alpha:1]];
     [self.view addSubview:_bottomView];
     

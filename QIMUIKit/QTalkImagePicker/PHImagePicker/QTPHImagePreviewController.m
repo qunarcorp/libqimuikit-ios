@@ -103,7 +103,7 @@
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.contentSize = CGSizeMake(_scrollView.width * self.photoArray.count, _scrollView.height);
     _scrollView.bounces = NO;
-    _scrollView.backgroundColor = [UIColor spectralColorBlueColor];
+    _scrollView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:_scrollView];
     [self setUpPhotos];
     _lastPageNum = -1;
@@ -182,7 +182,7 @@
                 bgScrollView.backgroundColor = [UIColor whiteColor];
                 bgScrollView.showsHorizontalScrollIndicator = NO;
                 bgScrollView.showsVerticalScrollIndicator = NO;
-                
+         
                 UIImageView * imageView = [[UIImageView alloc] initWithFrame:bgScrollView.bounds];
                 UIImage * imageFix = [QIMImageUtil fixOrientation:result];
                 imageView.image = imageFix;
@@ -318,6 +318,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self closeHUD];
                 QIMImageEditViewController * imageEditVC = [[QIMImageEditViewController alloc] initWithImage:result];
+                imageEditVC.fromAlum = YES;
                 imageEditVC.delegate = self;
                 [weakSelf.navigationController pushViewController:imageEditVC animated:YES];
             });

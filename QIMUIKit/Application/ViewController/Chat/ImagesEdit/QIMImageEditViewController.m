@@ -188,13 +188,16 @@ const float colormatrix_yese[] = {
 
 - (void)initNaviBar
 {
-    _naviBar = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight([UIScreen mainScreen].bounds) - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT] + 5, CGRectGetWidth([UIScreen mainScreen].bounds), 44)];
+    if (self.fromAlum) {
+        _naviBar = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight([UIScreen mainScreen].bounds) - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 44, CGRectGetWidth([UIScreen mainScreen].bounds), 44)];
+    } else {
+        _naviBar = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 44, CGRectGetWidth([UIScreen mainScreen].bounds), 44)];
+    }
     _naviBar.backgroundColor = [UIColor qim_colorWithHex:0x414141 alpha:1.0];
     [self.view addSubview:_naviBar];
     
     UIButton * cancelBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     cancelBtn.frame = CGRectMake(0, 12, 50, 20);
-//    [NSBundle qim_localizedStringForKey:@"common_cancel"];
     [cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"common_cancel"] forState:UIControlStateNormal];
     [cancelBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [cancelBtn addTarget:self action:@selector(cancelBtnHandle:) forControlEvents:UIControlEventTouchUpInside];

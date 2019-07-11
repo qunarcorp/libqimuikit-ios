@@ -247,7 +247,12 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 {
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.collectionView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 46);
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        self.view.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]);
+        [self.collectionView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    } else {
+        self.collectionView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 46);
+    }
 }
 
 - (void)setupButtons
@@ -267,6 +272,9 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 - (void)initBottomView{
     
     _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 64 - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT], [UIScreen mainScreen].bounds.size.width, 49)];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 64 - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT], [[UIScreen mainScreen] qim_rightWidth], 49)];
+    }
     [_bottomView setBackgroundColor:[UIColor qim_colorWithHex:0xf1f1f1 alpha:1]];
     [self.view addSubview:_bottomView];
     
@@ -306,6 +314,9 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     [_bottomView addSubview:_photoTypeButton];
     
     _sendButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 90, 8, 80, 30)];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        _sendButton.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 90, 8, 80, 30);
+    }
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
     [_sendButton setBackgroundImage:[[UIImage imageNamed:@"common_button_focus_nor"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateNormal];
     [_sendButton setBackgroundImage:[[UIImage imageNamed:@"common_button_focus_pressed"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateHighlighted];
@@ -373,6 +384,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self closeHUD];
                 QIMImageEditViewController * imageEditVC = [[QIMImageEditViewController alloc] initWithImage:result];
+                imageEditVC.fromAlum = YES;
                 imageEditVC.delegate = self;
                 [weakSelf.navigationController pushViewController:imageEditVC animated:YES];
             });
@@ -467,9 +479,9 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
+{    
     QTPHGridViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:QTPHGridViewCellIdentifier
-                                                             forIndexPath:indexPath];
+                                                                       forIndexPath:indexPath];
     
     // Increment the cell's tag
     NSInteger currentTag = cell.tag + 1;
@@ -485,7 +497,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
                                     contentMode:PHImageContentModeAspectFit
                                         options:nil
                                   resultHandler:^(UIImage *result, NSDictionary *info) {
-                                      
+     
                                       // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
                                       if (cell.tag == currentTag) {
                                           [cell.imageView setImage:result];
@@ -497,12 +509,11 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
         //QIMVerboseLog(@"Image manager: Requesting FILL image for iPhone");
         @autoreleasepool {
             PHImageRequestOptions *options = [PHImageRequestOptions new];
-            options.networkAccessAllowed = YES;
+            options.networkAccessAllowed = NO;
             options.resizeMode = PHImageRequestOptionsResizeModeFast;
             options.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
-            options.synchronous = YES;
             
-            [self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(92, 92) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            [self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(92, 92) contentMode:PHImageContentModeAspectFit options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                 [cell.imageView setImage:result];
             }];
             
