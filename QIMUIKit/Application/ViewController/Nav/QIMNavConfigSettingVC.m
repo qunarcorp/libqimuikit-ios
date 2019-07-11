@@ -10,7 +10,7 @@
 #import "QIMZBarViewController.h"
 #import "MBProgressHUD.h"
 
-@interface QIMNavConfigSettingVC()<UIAlertViewDelegate>{
+@interface QIMNavConfigSettingVC()<UIAlertViewDelegate,NSURLSessionTaskDelegate>{
     UILabel *_navNickNameLable;
     UILabel *_navAddressLabel;
     UITextField *_navNickNameTextField;
@@ -141,6 +141,7 @@
                 weakSelf.navUrl = str;
             } else {
                 weakSelf.navUrl = str;
+                [weakSelf requestByURLSessionWithUrl:str];
             }
             _navAddressTextField.text = str;
             if (!_navNickNameTextField.text.length) {
@@ -149,6 +150,64 @@
         }
     }];
     [self presentViewController:vc animated:YES completion:nil];
+}
+
+
+- (void)requestByURLSessionWithUrl:(NSString *)urlStr{
+    NSURL *url = [NSURL URLWithString:urlStr];
+    NSMutableURLRequest *quest = [NSMutableURLRequest requestWithURL:url];
+    quest.HTTPMethod = @"GET";
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    NSURLSession *urlSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue currentQueue]];
+    NSURLSessionDataTask *task = [urlSession dataTaskWithRequest:quest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
+                                  {
+                                      NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
+                                      
+                                      NSLog(@"statusCode: %ld", urlResponse.statusCode);
+                                      
+                                      NSLog(@"%@", urlResponse.allHeaderFields);
+                                      if (urlResponse.allHeaderFields.count >0 && urlResponse.allHeaderFields) {
+                                          NSString * requestLocation = [urlResponse.allHeaderFields objectForKey:@"Location"];
+                                          if (requestLocation.length >0 && requestLocation) {
+                                              QIMVerboseLog(@"%@",requestLocation);
+                                              if ([requestLocation containsString:@"publicnav?c="]) {
+                                                  requestLocation = [[requestLocation componentsSeparatedByString:@"publicnav?c="] lastObject];
+                                                  self.navUrl = requestLocation;
+                                                  _navAddressTextField.text = requestLocation;
+                                                  _navNickNameTextField.text = requestLocation;
+                                              } else if ([requestLocation containsString:@"confignavigation?configurl="]) {
+                                                  NSString *base64NavUrl = [[requestLocation componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
+                                                  requestLocation = [base64NavUrl qim_base64DecodedString];
+                                                  self.navUrl = requestLocation;
+                                                  _navAddressTextField.text = requestLocation;
+                                                  if ([requestLocation containsString:@"publicnav?c="]) {
+                                                      _navNickNameTextField.text  = [[requestLocation componentsSeparatedByString:@"publicnav?c="] lastObject];
+                                                      _navAddressTextField.text = requestLocation;
+                                                  }
+                                                  else{
+                                                      
+                                                  }
+                                                  
+                                              } else {
+                                                  self.navUrl = requestLocation;
+                                                  _navAddressTextField.text = requestLocation;
+                                                  _navNickNameTextField.text = requestLocation;
+                                              }
+                                          }
+                                      }
+                                  }];
+    [task resume];
+}
+
+#pragma mark - NSURLSessionTaskDelegate
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest * __nullable))completionHandler
+{
+    NSLog(@"statusCode: %ld", response.statusCode);
+    
+    NSDictionary *headers = response.allHeaderFields;
+    NSString * requestLocation = [headers objectForKey:@"Location"];
+    completionHandler(nil);
 }
 
 - (void)setupNav {

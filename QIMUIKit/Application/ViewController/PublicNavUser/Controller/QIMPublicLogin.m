@@ -23,7 +23,7 @@
 
 static const int companyTag = 10001;
 
-@interface QIMPublicLogin () <UITextFieldDelegate, YYKeyboardObserver, UITableViewDelegate, UITableViewDataSource,UIAlertViewDelegate,loginUnSettingNavViewDelegate>
+@interface QIMPublicLogin () <UITextFieldDelegate, YYKeyboardObserver, UITableViewDelegate, UITableViewDataSource,loginUnSettingNavViewDelegate,NSURLSessionTaskDelegate>
 
 @property (nonatomic, strong) UILabel *loginTitleLabel;  //登录Label
 
@@ -719,20 +719,82 @@ static const int companyTag = 10001;
             if ([str containsString:@"publicnav?c="]) {
                 str = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
                 navUrl = str;
+                navAddress = str;
+                [self onSaveWith:navAddress navUrl:navUrl];
             } else if ([str containsString:@"confignavigation?configurl="]) {
                 NSString *base64NavUrl = [[str componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
                 str = [base64NavUrl qim_base64DecodedString];
                 navUrl = str;
+                navAddress = str;
+                [self onSaveWith:navAddress navUrl:navUrl];
             } else {
                 navUrl = str;
+                [self requestByURLSessionWithUrl:str];
             }
-            navAddress = str;
-            [self onSaveWith:navAddress navUrl:navUrl];
         }
     }];
     vc.isSettingNav = YES;
     [self presentViewController:vc animated:YES completion:nil];
 }
+
+
+- (void)requestByURLSessionWithUrl:(NSString *)urlStr{
+    NSURL *url = [NSURL URLWithString:urlStr];
+    NSMutableURLRequest *quest = [NSMutableURLRequest requestWithURL:url];
+    quest.HTTPMethod = @"GET";
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    NSURLSession *urlSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue currentQueue]];
+    NSURLSessionDataTask *task = [urlSession dataTaskWithRequest:quest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
+                                  {
+                                      NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
+                                      
+                                      NSLog(@"statusCode: %ld", urlResponse.statusCode);
+                                      
+                                      NSLog(@"%@", urlResponse.allHeaderFields);
+                                      if (urlResponse.allHeaderFields.count >0 && urlResponse.allHeaderFields) {
+                                          NSString * requestLocation = [urlResponse.allHeaderFields objectForKey:@"Location"];
+                                          if (requestLocation.length >0 && requestLocation) {
+                                              QIMVerboseLog(@"%@",requestLocation);
+                                              NSString * navAddress;
+                                              NSString * navUrl;
+                                              if ([requestLocation containsString:@"publicnav?c="]) {
+                                                  requestLocation = [[requestLocation componentsSeparatedByString:@"publicnav?c="] lastObject];
+                                                  navUrl = requestLocation;
+                                                  navAddress = requestLocation;
+                                                  [self onSaveWith:navAddress navUrl:navUrl];
+                                              } else if ([requestLocation containsString:@"confignavigation?configurl="]) {
+                                                  NSString *base64NavUrl = [[requestLocation componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
+                                                  requestLocation = [base64NavUrl qim_base64DecodedString];
+                                                  navUrl = requestLocation;
+                                                  navAddress = requestLocation;
+                                                  if ([requestLocation containsString:@"publicnav?c="]) {
+                                                      navAddress = [[requestLocation componentsSeparatedByString:@"publicnav?c="] lastObject];
+                                                  }
+                                                  else{
+                                                      
+                                                  }
+                                                  [self onSaveWith:navAddress navUrl:navUrl];
+                                              } else {
+                                                  navUrl = requestLocation;
+                                                  [self onSaveWith:navAddress navUrl:navUrl];
+                                              }
+                                          }
+                                      }
+                                  }];
+    [task resume];
+}
+
+#pragma mark - NSURLSessionTaskDelegate
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest * __nullable))completionHandler
+{
+    NSLog(@"statusCode: %ld", response.statusCode);
+    
+    NSDictionary *headers = response.allHeaderFields;
+    NSString * requestLocation = [headers objectForKey:@"Location"];
+    completionHandler(nil);
+}
+
 
 - (void)onSaveWith:(NSString *)navAddressText navUrl:(NSString *)navUrl{
     NSString *navHttpName = navAddressText;
