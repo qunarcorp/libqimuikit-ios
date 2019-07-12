@@ -196,6 +196,11 @@
                                               }
                                           }
                                       }
+                                      else{
+                                          self.navUrl = urlStr;
+                                          _navAddressTextField.text = urlStr;
+                                          _navNickNameTextField.text = urlStr;
+                                      }
                                   }];
     [task resume];
 }

@@ -397,6 +397,16 @@ static const int companyTag = 10001;
         make.height.mas_equalTo(21);
     }];
     
+    UILabel * label = [[UILabel alloc]init];
+    label.backgroundColor = [UIColor grayColor];
+    [self.view addSubview:label];
+    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.registerNewCompanyBtn.mas_bottom).offset(1);
+        make.centerX.mas_equalTo(self.view.mas_centerX);
+        make.width.mas_equalTo(160);
+        make.height.mas_equalTo(1);
+    }];
+    
     [self.view addSubview:self.scanSettingNavBtn];
     [self.scanSettingNavBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo((56 + 38/2) - 30/2);
@@ -726,6 +736,9 @@ static const int companyTag = 10001;
                 str = [base64NavUrl qim_base64DecodedString];
                 navUrl = str;
                 navAddress = str;
+                if ([str containsString:@"publicnav?c="]) {
+                    navAddress = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
+                }
                 [self onSaveWith:navAddress navUrl:navUrl];
             } else {
                 navUrl = str;
@@ -779,6 +792,10 @@ static const int companyTag = 10001;
                                                   navUrl = requestLocation;
                                                   [self onSaveWith:navAddress navUrl:navUrl];
                                               }
+                                          }
+                                          else{
+                                              
+                                              [self onSaveWith:urlStr navUrl:urlStr];
                                           }
                                       }
                                   }];
