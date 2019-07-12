@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "3.0.10211660"
+  s.version      = "3.0.10211661"
   s.summary      = "QIM App UI 9.0+ version"
   s.description  = <<-DESC
                    QIM UI
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.license      = "Copyright 2018 im.qunar.com"
   s.author       = { "Qunar IM" => "qtalk@qunar.com" }
 
-  s.source       = { :git => "https://github.com/qunarcorp/libqimuikit-ios.git", :tag=> s.version.to_s}
+  s.source       = { :git => "http://gitlab.corp.qunar.com/qchat/libQIMUIKit-iOS.git", :tag=> s.version.to_s}
 
   s.ios.deployment_target   = '9.0'
 
