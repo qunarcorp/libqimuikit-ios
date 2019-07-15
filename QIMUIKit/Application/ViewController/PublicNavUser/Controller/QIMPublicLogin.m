@@ -415,6 +415,15 @@ static const int companyTag = 10001;
         make.right.mas_equalTo(@(-24));
     }];
     
+    [self.view addSubview:self.registerUserBtn];
+    [self.registerUserBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo((56 + 38/2) - 30/2);
+        make.height.mas_equalTo(@(30));
+        make.width.mas_equalTo(@(50));
+        make.right.mas_equalTo(@(-16));
+    }];
+    self.registerUserBtn.hidden = YES;
+    
     if (self.multipleLogin) {
         //多次登录，展示切换公司按钮，不展示公司TextField
         
@@ -472,14 +481,12 @@ static const int companyTag = 10001;
         }];
     }
     if ([[QIMKit sharedInstance] qimNav_isToC]) {
+        self.registerUserBtn.hidden = NO;
         self.scanSettingNavBtn.hidden = YES;
-        [self.view addSubview:self.registerUserBtn];
-        [self.registerUserBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo((56 + 38/2) - 30/2);
-            make.height.mas_equalTo(@(30));
-            make.width.mas_equalTo(@(50));
-            make.right.mas_equalTo(@(-16));
-        }];
+    }
+    else{
+        self.registerUserBtn.hidden = YES;
+        self.scanSettingNavBtn.hidden = NO;
     }
     
     
@@ -666,23 +673,24 @@ static const int companyTag = 10001;
 }
 
 - (void)gotoSelectCompany:(UITapGestureRecognizer *)tap {
-    QIMSelectComponyViewController *companyVC = [[QIMSelectComponyViewController alloc] init];
-    __weak __typeof(self) weakSelf = self;
-    [companyVC setCompanyBlock:^(QIMPublicCompanyModel * _Nonnull companyModel) {
-        weakSelf.companyModel = companyModel;
-        NSString *companyName = companyModel.name;
-        QIMVerboseLog(@"companyName : %@", companyName);
-        if (companyName.length > 0) {
-//            [self.companyTextField setText:companyName];
-            [self.companyShowLabel setText:companyName];
-        } else {
-            NSString *companyDomain = companyModel.domain;
-//            [self.companyTextField setText:companyDomain];
-            [self.companyShowLabel setText:companyDomain];
-        }
-        [self updateLoginUI];
-    }];
-    [self.navigationController pushViewController:companyVC animated:YES];
+//    QIMSelectComponyViewController *companyVC = [[QIMSelectComponyViewController alloc] init];
+//    __weak __typeof(self) weakSelf = self;
+//    [companyVC setCompanyBlock:^(QIMPublicCompanyModel * _Nonnull companyModel) {
+//        weakSelf.companyModel = companyModel;
+//        NSString *companyName = companyModel.name;
+//        QIMVerboseLog(@"companyName : %@", companyName);
+//        if (companyName.length > 0) {
+////            [self.companyTextField setText:companyName];
+//            [self.companyShowLabel setText:companyName];
+//        } else {
+//            NSString *companyDomain = companyModel.domain;
+////            [self.companyTextField setText:companyDomain];
+//            [self.companyShowLabel setText:companyDomain];
+//        }
+//        [self updateLoginUI];
+//    }];
+//    [self.navigationController pushViewController:companyVC animated:YES];
+    [self showSettingNavViewController];
 }
 
 #pragma mark - NSNotification
@@ -740,7 +748,7 @@ static const int companyTag = 10001;
                     navAddress = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
                 }
                 [self onSaveWith:navAddress navUrl:navUrl];
-            } else {
+            } else if ([str containsString:@"startalk_nav"]){
                 navUrl = str;
                 [self requestByURLSessionWithUrl:str];
             }
@@ -763,7 +771,18 @@ static const int companyTag = 10001;
                                       NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
                                       
                                       NSLog(@"statusCode: %ld", urlResponse.statusCode);
+                                      NSDictionary * dataSerialDic = [[QIMJSONSerializer sharedInstance] deserializeObject:data error:nil];
                                       
+                                      if (dataSerialDic && dataSerialDic.count > 0) {
+                                          NSDictionary * baseAddress = [dataSerialDic objectForKey:@"baseaddess"];
+                                          if (baseAddress && baseAddress.count >0) {
+                                              NSString * domain = [baseAddress objectForKey:@"domain"];
+                                              if (domain && domain.length >0) {
+                                                  [self onSaveWith:domain navUrl:urlStr];
+                                                  return ;
+                                              }
+                                          }
+                                      }
                                       NSLog(@"%@", urlResponse.allHeaderFields);
                                       if (urlResponse.allHeaderFields.count >0 && urlResponse.allHeaderFields) {
                                           NSString * requestLocation = [urlResponse.allHeaderFields objectForKey:@"Location"];
@@ -783,6 +802,10 @@ static const int companyTag = 10001;
                                                   navAddress = requestLocation;
                                                   if ([requestLocation containsString:@"publicnav?c="]) {
                                                       navAddress = [[requestLocation componentsSeparatedByString:@"publicnav?c="] lastObject];
+                                                  }
+                                                  else if([requestLocation containsString:@"startalk_nav"]){
+                                                      [self requestByURLSessionWithUrl:navUrl];
+                                                      return;
                                                   }
                                                   else{
                                                       
