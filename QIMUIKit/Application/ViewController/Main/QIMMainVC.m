@@ -76,6 +76,8 @@
 
 @property(nonatomic, strong) UIButton *scanBtn;
 
+@property(nonatomic, strong) UIButton *momentSearchBtn;
+
 @property(nonatomic, strong) UIButton *momentBtn;
 
 @property(nonatomic, strong) UIButton *settingBtn;
@@ -1071,8 +1073,10 @@ static dispatch_once_t __onceMainToken;
 
 
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]];
-        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.momentBtn];
-        [self.navigationItem setRightBarButtonItem:rightBarItem];
+        UIBarButtonItem *searchMomentItem = [[UIBarButtonItem alloc] initWithCustomView:self.momentSearchBtn];
+        
+        UIBarButtonItem *momentItem = [[UIBarButtonItem alloc] initWithCustomView:self.momentBtn];
+        [self.navigationItem setRightBarButtonItems:@[momentItem, searchMomentItem]];
 
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
 
@@ -1123,6 +1127,17 @@ static dispatch_once_t __onceMainToken;
     return _scanBtn;
 }
 
+- (UIButton *)momentSearchBtn {
+    if (!_momentSearchBtn) {
+        _momentSearchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _momentSearchBtn.frame = CGRectMake(0, 0, 28, 28);
+        [_momentSearchBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_mymoment_font size:28 color:qim_nav_moment_color]] forState:UIControlStateNormal];
+        [_momentSearchBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_mymoment_font size:28 color:qim_nav_moment_color]] forState:UIControlStateSelected];
+        [_momentSearchBtn addTarget:self action:@selector(searchMoment:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _momentSearchBtn;
+}
+
 - (UIButton *)momentBtn {
     if (!_momentBtn) {
         _momentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -1163,6 +1178,10 @@ static dispatch_once_t __onceMainToken;
 #if __has_include("QIMAutoTracker.h")
     [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"add a contact" withDescription:@"添加联系人"];
 #endif
+}
+
+- (void)searchMoment:(id)sender {
+    NSLog(@"驼圈搜索");
 }
 
 //我的驼圈儿navbar入口
