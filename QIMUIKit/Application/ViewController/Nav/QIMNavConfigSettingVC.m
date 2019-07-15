@@ -166,6 +166,21 @@
                                       
                                       NSLog(@"statusCode: %ld", urlResponse.statusCode);
                                       
+                                      NSDictionary * dataSerialDic = [[QIMJSONSerializer sharedInstance] deserializeObject:data error:nil];
+                                      
+                                      if (dataSerialDic && dataSerialDic.count > 0) {
+                                          NSDictionary * baseAddress = [dataSerialDic objectForKey:@"baseaddess"];
+                                          if (baseAddress && baseAddress.count >0) {
+                                              NSString * domain = [baseAddress objectForKey:@"domain"];
+                                              if (domain && domain.length >0) {
+                                                  self.navUrl = urlStr;
+                                                  _navAddressTextField.text = urlStr;
+                                                  _navNickNameTextField.text = domain;
+                                                  return;
+                                              }
+                                          }
+                                      }
+                                      
                                       NSLog(@"%@", urlResponse.allHeaderFields);
                                       if (urlResponse.allHeaderFields.count >0 && urlResponse.allHeaderFields) {
                                           NSString * requestLocation = [urlResponse.allHeaderFields objectForKey:@"Location"];
@@ -184,6 +199,10 @@
                                                   if ([requestLocation containsString:@"publicnav?c="]) {
                                                       _navNickNameTextField.text  = [[requestLocation componentsSeparatedByString:@"publicnav?c="] lastObject];
                                                       _navAddressTextField.text = requestLocation;
+                                                  }
+                                                  else if([requestLocation containsString:@"startalk_nav"]){
+                                                      [self requestByURLSessionWithUrl:requestLocation];
+                                                      return;
                                                   }
                                                   else{
                                                       
@@ -212,7 +231,12 @@
     
     NSDictionary *headers = response.allHeaderFields;
     NSString * requestLocation = [headers objectForKey:@"Location"];
-    completionHandler(nil);
+    if (requestLocation.length >0 && requestLocation) {
+        completionHandler(nil);
+    }
+    else{
+        completionHandler(request);
+    }
 }
 
 - (void)setupNav {
