@@ -15,6 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 @class QIMWorkMomentModel;
 @class QIMWorkMomentLabel;
 @class QIMWorkMomentImageListView;
+@class QIMWorkMomentLinkView;
+@class QIMWorkAttachCommentListView;
+@class QIMWorkMomentTagCollectionView;
 
 @protocol MomentCellDelegate <NSObject>
 
@@ -49,8 +52,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UILabel *timeLab;
 // 操作按钮
 @property (nonatomic, strong) UIButton *controlBtn;
-//操作按钮
-@property (nonatomic, strong) UIButton *controlDebugBtn;
 // 查看全文按钮
 @property (nonatomic, strong) UIButton *showAllBtn;
 // 内容
@@ -58,6 +59,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 图片
 @property (nonatomic, strong) QIMWorkMomentImageListView *imageListView;
+
+//Link
+@property (nonatomic, strong) QIMWorkMomentLinkView *linkView;
+
+//标签collectionView
+@property (nonatomic, strong) QIMWorkMomentTagCollectionView *tagCollectionView;
+
+//附带评论listView
+@property (nonatomic, strong) QIMWorkAttachCommentListView *attachCommentListView;
 
 //点赞按钮
 @property (nonatomic, strong) UIButton *likeBtn;
@@ -79,6 +89,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL commentActionHidden;
 
 @property (nonatomic, assign) BOOL alwaysFullText;
+
+@property (nonatomic, assign) BOOL isFullText;
 
 @property (nonatomic, assign) BOOL notShowControl;
 

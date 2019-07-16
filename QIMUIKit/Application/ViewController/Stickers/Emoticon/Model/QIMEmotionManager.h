@@ -40,7 +40,7 @@ typedef enum {
 
 typedef enum {
     EmotionListUpdate = 0,
-    EmotionListDownload ,
+    EmotionListDownload,
     EmotionListRemove,
 } EmotionListUpdateType;
 
@@ -48,27 +48,28 @@ typedef enum {
 
 @interface Emotion : NSObject
 
-@property (nonatomic, strong) NSString *faceId;
-@property (nonatomic, strong) NSString *shortcut;
-@property (nonatomic, strong) NSString *tip;
-@property (nonatomic, assign) int multiframe;
-@property (nonatomic, strong) NSString *file_org;
-@property (nonatomic, strong) NSString *orgpath;
-@property (nonatomic, strong) NSString *file_fixed;
+@property(nonatomic, strong) NSString *faceId;
+@property(nonatomic, strong) NSString *shortcut;
+@property(nonatomic, strong) NSString *tip;
+@property(nonatomic, assign) int multiframe;
+@property(nonatomic, strong) NSString *file_org;
+@property(nonatomic, strong) NSString *orgpath;
+@property(nonatomic, strong) NSString *file_fixed;
 
 @end
 
-@interface QIMEmotionManager : NSObject<NSXMLParserDelegate>
+@interface QIMEmotionManager : NSObject <NSXMLParserDelegate>
 
-@property(nonatomic,assign)EmotionType      currentEmotionType;
+@property(nonatomic, assign) EmotionType currentEmotionType;
 
-@property(nonatomic,copy) NSString      * currentPackageId;
+@property(nonatomic, copy) NSString *currentPackageId;
 
 + (instancetype)sharedInstance;
 
 - (void)updateEmotions:(NSArray *)items;
 
 - (UIImage *)getEmotionThumbIconWithImageStr:(NSString *)imageStr BySize:(CGSize)size;
+
 - (NSData *)getEmotionThumbIconDataWithImageStr:(NSString *)imageStr;
 
 //------------------------ new ---------------------
@@ -129,6 +130,7 @@ typedef enum {
 @interface QIMEmotionManager (DecodeHTMLURL)
 
 - (NSString *)decodeHtmlUrlForText:(NSString *)text;
+
 - (NSString *)decodeHtmlUrlForText:(NSString *)text WithFilterAppendArray:(NSArray *)paramDict;
 
 

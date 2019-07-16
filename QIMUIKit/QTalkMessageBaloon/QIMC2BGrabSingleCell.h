@@ -9,7 +9,7 @@
 
 @interface QIMC2BGrabSingleCell : QIMMsgBaloonBaseCell
 
-//NSDictionary *dict = @{@"title":@"[抢单] 北京——三亚 2人 2017-09-24 出行", @"dealid":@"123456", @"deadUrl":@"https://qt.qunar.com/sharemsg/index.php", @"detail":@{@"budgetinfo": @"3422元-3444元",@"OrderTime": @"2017-09-21 14:20:31", @"Remarks":@"希望直飞 不需要中转"}};
+//NSDictionary *dict = @{@"title":@"[抢单] 北京——三亚 2人 2017-09-24 出行", @"dealid":@"123456", @"deadUrl":@"https://qim.qunar.com/sharemsg/index.php", @"detail":@{@"budgetinfo": @"3422元-3444元",@"OrderTime": @"2017-09-21 14:20:31", @"Remarks":@"希望直飞 不需要中转"}};
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *dealid;
 @property (nonatomic, strong) NSString *deadUrl;
@@ -23,7 +23,7 @@
 
 + (CGFloat)getCellHeight;
 
-- (void)setMessage:(Message *)message;
+- (void)setMessage:(QIMMessageModel *)message;
 
 - (void)refreshUI;
 

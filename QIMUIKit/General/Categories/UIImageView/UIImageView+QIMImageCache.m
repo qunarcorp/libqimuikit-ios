@@ -7,11 +7,17 @@
 //
 
 #import "UIImageView+QIMImageCache.h"
+#import "UIImage+QIMUIKit.h"
+#import "YYDispatchQueuePool.h"
 
 @implementation UIImageView (QIMImageCache)
 
 - (void)qim_setImageWithJid:(NSString *)jid {
     [self qim_setImageWithJid:jid WithChatType:ChatType_SingleChat];
+}
+
+- (void)qim_setImageWithJid:(NSString *)jid placeholderImage:(UIImage *)placeholder{
+    [self qim_setImageWithJid:jid WithChatType:ChatType_SingleChat placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
 }
 
 - (void)qim_setImageWithJid:(NSString *)jid WithChatType:(ChatType)chatType {
@@ -29,7 +35,7 @@
 - (void)qim_setImageWithJid:(NSString *)jid WithRealJid:(NSString *)realJid WithChatType:(ChatType)chatType placeholderImage:(UIImage *)placeholder {
     __block NSString *headerUrl = nil;
     __block UIImage *placeholderImage = placeholder;
-    dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
+    dispatch_async([[QIMKit sharedInstance] getLoadHeaderImageQueue], ^{
 
         switch (chatType) {
             case ChatType_SingleChat: {
@@ -48,22 +54,22 @@
                 break;
             case ChatType_System: {
                 if ([jid hasPrefix:@"FriendNotify"]) {
-                    placeholderImage = [UIImage imageNamed:@"conversation_address-book_avatar"];
+                    placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"conversation_address-book_avatar"];
                 } else {
                     if ([jid hasPrefix:@"rbt-notice"]) {
-                        placeholderImage = [UIImage imageNamed:@"rbt_notice"];
+                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt_notice"];
                     } else if ([jid hasPrefix:@"rbt-qiangdan"]) {
-                        placeholderImage = [UIImage imageNamed:@"rbt-qiangdan"];
+                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-qiangdan"];
                     } else if ([jid hasPrefix:@"rbt-zhongbao"]) {
-                        placeholderImage = [UIImage imageNamed:@"rbt-qiangdan"];
+                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-qiangdan"];
                     } else {
-                        placeholderImage = [UIImage imageNamed:@"icon_speaker_h39"];
+                        placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-system"];
                     }
                 }
             }
                 break;
             case ChatType_PublicNumber: {
-                placeholderImage = [UIImage imageNamed:@"ReadVerified_icon"];
+                placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"ReadVerified_icon"];
             }
                 break;
             case ChatType_Consult: {
@@ -81,31 +87,50 @@
             }
                 break;
             case ChatType_CollectionChat: {
-                placeholderImage = [UIImage imageNamed:@"relation"];
+                headerUrl = [[QIMKit sharedInstance] getUserHeaderSrcByUserId:realJid];
+                placeholderImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"relation"];
             }
                 break;
                 
             default:
                 break;
         }
+
         if (![headerUrl qim_hasPrefixHttpHeader] && headerUrl.length > 0) {
             headerUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], headerUrl];
         } else {
 
             if (!headerUrl.length && (jid || realJid)) {
                 if (chatType == ChatType_GroupChat) {
-                    [[QIMKit sharedInstance] updateGroupCard:@[jid]];
+                    [[QIMKit sharedInstance] updateGroupCardByGroupId:jid withCache:YES];
                 } else if (chatType == ChatType_ConsultServer) {
-                    [[QIMKit sharedInstance] updateUserCard:@[realJid]];
+                    [[QIMKit sharedInstance] updateUserCard:realJid withCache:YES];
                 } else {
-                    [[QIMKit sharedInstance] updateUserCard:@[jid]];
+                    [[QIMKit sharedInstance] updateUserCard:jid withCache:YES];
                 }
             } else {
                 
             }
         }
+        if (headerUrl.length > 0 && ![headerUrl containsString:@"?"]) {
+            headerUrl = [headerUrl stringByAppendingString:@"?"];
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"platform"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"platform=touch"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
+            }
+        }
+        else{
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"platform"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
+            }
+        }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sd_setImageWithURL:headerUrl placeholderImage:placeholderImage];
+            [self qimsd_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
         });
     });
 }
@@ -113,7 +138,7 @@
 - (void)qim_setCollectionImageWithJid:(NSString *)jid WithChatType:(ChatType)chatType {
     __block NSString *headerUrl = nil;
     __block UIImage *placeholderImage = nil;
-    dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
+    dispatch_async([[QIMKit sharedInstance] getLoadHeaderImageQueue], ^{
         switch (chatType) {
             case ChatType_SingleChat: {
                 headerUrl = [[QIMKit sharedInstance] getCollectionUserHeaderUrlWithXmppId:jid];
@@ -131,27 +156,33 @@
         if (![headerUrl qim_hasPrefixHttpHeader] && headerUrl.length > 0) {
             headerUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], headerUrl];
         } else {
-            dispatch_async([[QIMKit sharedInstance] getLastQueue], ^{
-                if (!headerUrl && jid) {
-                    if (chatType == ChatType_GroupChat) {
-                        [[QIMKit sharedInstance] updateCollectionGroupCardByGroupId:jid];
-                    } else {
-                        [[QIMKit sharedInstance] updateCollectionUserCardByUserIds:@[jid]];
-                    }
+            if (!headerUrl && jid) {
+                if (chatType == ChatType_GroupChat) {
+                    [[QIMKit sharedInstance] updateCollectionGroupCardByGroupId:jid];
                 } else {
-                    
+                    [[QIMKit sharedInstance] updateCollectionUserCardByUserIds:@[jid]];
                 }
-            });
+            } else {
+                
+            }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sd_setImageWithURL:headerUrl placeholderImage:placeholderImage];
+            [self qimsd_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
         });
     });
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url {
-    [self sd_setImageWithURL:url];
+    [self qimsd_setImageWithURL:url placeholderImage:nil options:0 gifFlag:NO progress:nil completed:nil];
 }
+
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage {
+    if (placeholderImage == nil) {
+        placeholderImage = [UIImage imageWithData:[QIMKit defaultUserHeaderImage]];
+    }
+    [self qimsd_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
+}
+
 
 - (void)qim_setImageWithURL:(NSURL *)url WithChatType:(ChatType)chatType {
     
@@ -168,16 +199,11 @@
         default:
             break;
     }
-    [self sd_setImageWithURL:url placeholderImage:placeholderImage];
+    [self qimsd_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
 }
 
-
-- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder {
-    [self sd_setImageWithURL:url placeholderImage:placeholder];
-}
-
-- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDExternalCompletionBlock)completedBlock {
-    [self sd_setImageWithURL:url placeholderImage:placeholder completed:completedBlock];
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(QIMSDWebImageCompletionBlock)completedBlock {
+    [self qimsd_setImageWithURL:url placeholderImage:placeholder options:0 gifFlag:NO progress:nil completed:nil];
 }
 
 @end

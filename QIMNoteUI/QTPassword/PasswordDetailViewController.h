@@ -6,8 +6,8 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
+#import "QIMCommonUIFramework.h"
+#if __has_include("QIMNoteManager.h")
 @class QIMNoteModel;
 @interface PasswordDetailViewController : UIViewController
 
@@ -16,3 +16,4 @@
 @property (nonatomic, copy) NSString *pk;
 
 @end
+#endif

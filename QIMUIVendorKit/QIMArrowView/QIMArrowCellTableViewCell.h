@@ -9,8 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface QIMArrowCellTableViewCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UIImageView *myImageView;
 
-@property (weak, nonatomic) IBOutlet UILabel *descLabel;
+@property (nonatomic, strong) UIImageView *iconView;
+
+@property (nonatomic, strong) UILabel *titleLabel;
+
+//@property (weak, nonatomic) IBOutlet UIImageView *myImageView;
+//
+//@property (weak, nonatomic) IBOutlet UILabel *descLabel;
 
 @end

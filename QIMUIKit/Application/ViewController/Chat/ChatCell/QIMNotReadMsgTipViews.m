@@ -22,9 +22,9 @@
 }
 
 - (CGFloat)getWidthForNotReadCount:(int)notReadCount{
-    _title = [NSString stringWithFormat:@"%d条未读消息",notReadCount];
-    CGSize titleSize = [_title sizeWithFont:[UIFont systemFontOfSize:14] forWidth:INT8_MAX lineBreakMode:NSLineBreakByCharWrapping];
-    return titleSize.width + [self getHeight] / 2.0 - 5 + 10 + 14;
+    _title = [NSString stringWithFormat:@"%d条新消息",notReadCount];
+    CGSize titleSize = [_title sizeWithFont:[UIFont systemFontOfSize:13] forWidth:INT8_MAX lineBreakMode:NSLineBreakByCharWrapping];
+    return titleSize.width + [self getHeight] / 2.0 - 5 + 10 + 17 + 8;
 }
 
 - (instancetype)initWithNotReadCount:(int)notReadCount{
@@ -45,20 +45,19 @@
         [_backView setBackgroundColor:[UIColor whiteColor]];
         [self addSubview:_backView];
         
-        _leftArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_backView.left - 5, ([self getHeight] - 14)/2.0, 14, 14)];
-        [_leftArrowImageView setImage:[UIImage imageNamed:@"left_arrow"]];
+        _leftArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_backView.left - 5, ([self getHeight] - 17)/2.0, 17, 17)];
+        [_leftArrowImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"up_arrow"]];
         [self addSubview:_leftArrowImageView];
         
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(_leftArrowImageView.right, 0, self.width - 10 - (_backView.left - 5), [self getHeight])];
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(_leftArrowImageView.right + 8, 0, self.width - 10 - (_backView.left - 5), [self getHeight])];
         [_titleLabel setBackgroundColor:[UIColor clearColor]];
-        [_titleLabel setTextColor:[UIColor qim_colorWithHex:0x1cb252 alpha:1]];
-        [_titleLabel setFont:[UIFont systemFontOfSize:14]];
+        [_titleLabel setTextColor:qim_newmessageUpArrowTextColor];
+        [_titleLabel setFont:[UIFont systemFontOfSize:13]];
         [_titleLabel setText:_title];
         [self addSubview:_titleLabel];
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onClick)];
         [self addGestureRecognizer:tap];
-        
     }
     return self;
 }

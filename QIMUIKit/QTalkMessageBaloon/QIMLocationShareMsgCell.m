@@ -7,7 +7,7 @@
 //
 #define kQIMLocationShareMsgCellHeight    150
 #define kTextLabelTop       10
-#define kTextLableLeft      10
+#define kTextLableLeft      12
 #define kTextLableBottom    10
 #define kTextLabelRight     10
 #define kMinTextWidth       30
@@ -18,7 +18,7 @@
 #import "QIMJSONSerializer.h"
 #import "QIMLocationShareMsgCell.h"
 #import "UserLocationViewController.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "ShapedImageView.h"
 
 @interface QIMLocationShareMsgCell()<QIMMenuImageViewDelegate>
@@ -30,7 +30,7 @@
 
 @implementation QIMLocationShareMsgCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
     return kQIMLocationShareMsgCellHeight + 20 + (chatType == ChatType_GroupChat ? 20 : 0);
 }
@@ -40,7 +40,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        _imageView = [[ShapedImageView alloc] initWithImage:[UIImage imageNamed:@"map_located"]];
+        _imageView = [[ShapedImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"]];
         _imageView.clipsToBounds = YES;
         _imageView.userInteractionEnabled = YES;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -63,7 +63,7 @@
     self.selectedBackgroundView.frame = CGRectMake(0, 0, 30, self.contentView.height);
     
     self.backView.message = self.message;
-    if (self.message.extendInformation) {
+    if (self.message.extendInformation.length > 0) {
         self.message.message = self.message.extendInformation;
     }
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
@@ -74,20 +74,20 @@
         _imageView.image = localImage;
     }else if ([infoDic[@"fileUrl"] length] > 0){
         NSString  * imageUrlStr = [NSString stringWithFormat:@"%@/%@",[QIMKit sharedInstance].qimNav_InnerFileHttpHost,infoDic[@"fileUrl"]];
-        [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrlStr] placeholderImage:[UIImage imageNamed:@"map_located"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        [_imageView qimsd_setImageWithURL:[NSURL URLWithString:imageUrlStr] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"] options:0 gifFlag:YES progress:nil completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, NSURL *imageURL) {
             [[QIMKit sharedInstance] saveFileData:UIImageJPEGRepresentation(image, 1.0) withFileName:nil forCacheType:QIMFileCacheTypeColoction];
         }];
     }else{
-        _imageView.image = [UIImage imageNamed:@"map_located"];
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"];
     }
     
     float backWidth = 215;
     float backHeight = kQIMLocationShareMsgCellHeight;
     
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
 //            [self.backView setMenuActionTypeList:@[@(MA_Repeater), @(MA_Delete) /*@(MA_ReplyMsg) , @(MA_Favorite)*/]];
 //            CGRect frame = {{kBackViewCap + (self.chatType == ChatType_GroupChat ? self.HeadView.width + 10: 0),kCellHeightCap / 2.0 + self.nameLabel.bottom},{backWidth,backHeight}};
@@ -100,7 +100,7 @@
             [_imageView setup];
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
 //            NSMutableArray * menuList = [NSMutableArray arrayWithArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete)/*, @(MA_Favorite)*/]];
 //            [self.backView setMenuActionTypeList:menuList];
@@ -142,11 +142,11 @@
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;
@@ -157,7 +157,11 @@
         [menuList addObject:@(MA_CopyOriginMsg)];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeAllObjects];
+//        [menuList removeObject:@(MA_Refer)];
+//        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Delete)];
+        [menuList removeObject:@(MA_Forward)];
+//        [menuList removeObject:@(MA_Repeater)];
     }
     return menuList;
 }

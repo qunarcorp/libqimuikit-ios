@@ -7,7 +7,6 @@
 
 #import "QIMCollectionChatViewController.h"
 #import "QTalkSessionCell.h"
-#import "QTalkSessionView.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMChatVC.h"
 #import "QIMGroupChatVC.h"
@@ -71,7 +70,7 @@
         _mainTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
         _mainTableView.delegate = self;
         _mainTableView.dataSource = self;
-        _mainTableView.backgroundColor = [UIColor qtalkChatBgColor];
+        _mainTableView.backgroundColor = qim_chatBgColor;
         _mainTableView.tableFooterView = [UIView new];
         _mainTableView.separatorInset = UIEdgeInsetsMake(0,20, 0, 0);           //top left bottom right 左右边距相同
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
@@ -176,13 +175,12 @@
     QTalkSessionCell *cell = [tableView dequeueReusableCellWithIdentifier:name];
     if (!cell) {
         cell = [[QTalkSessionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:name];
-        cell.firstRefresh = YES;
     } else {
-        cell.firstRefresh = NO;
+
     }
     cell.bindId = bindId;
     cell.infoDic = infoDic;
-//    [cell refreshUI];
+    [cell refreshUI];
     return cell;
 }
 
@@ -201,37 +199,31 @@
 
 - (QTalkViewController *)sessionViewDidSelectRowAtIndexPath:(NSIndexPath *)indexPath infoDic:(NSDictionary *)infoDic BindId:(NSString *)bindId{
     
+//     Mark by DB
     NSString *jid = [infoDic objectForKey:@"XmppId"];
     NSString *name = [infoDic objectForKey:@"Name"];
     ChatType chatType = [[infoDic objectForKey:@"ChatType"] intValue];
-    NSInteger notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid];
+    NSInteger notReadCount = [[QIMKit sharedInstance] getNotReadMsgCountByJid:jid WithRealJid:jid];
     if (jid) {
         switch (chatType) {
                 
             case ChatType_GroupChat: {
                 [[QIMKit sharedInstance] clearNotReadCollectionMsgByBindId:bindId WithUserId:jid];
-//                QIMGroupChatVC *chatGroupVC = (QIMGroupChatVC *)[[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:jid];
-//                [chatGroupVC setBindId:bindId];
-
-                
                 QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
                 [chatGroupVC setBindId:bindId];
                 [chatGroupVC setChatId:jid];
                 [chatGroupVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatGroupVC setNotReadCount:notReadCount];
                 [chatGroupVC setReadedMsgTimeStamp:-1];
-                
                 if (chatGroupVC.needShowNewMsgTagCell) {
                     
-                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WithRealJid:chatGroupVC.chatId WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
                 }
                 return chatGroupVC;
             }
                 break;
             case ChatType_SingleChat: {
                 [[QIMKit sharedInstance] clearNotReadCollectionMsgByBindId:bindId WithUserId:jid];
-//                QIMChatVC *chatSingleVC = [[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
-//                [chatSingleVC setBindId:bindId];
                 
                 QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
                 [chatSingleVC setBindId:bindId];
@@ -246,9 +238,8 @@
                 [chatSingleVC setNotReadCount:notReadCount];
                 if (chatSingleVC.needShowNewMsgTagCell) {
                     
-                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WihtMsgDirection:MessageDirection_Received WithReadedState:MessageState_didRead];
+                    chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatSingleVC.chatId WithRealJid:chatSingleVC.chatId WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
                 }
-                
                 return chatSingleVC;
             }
                 break;

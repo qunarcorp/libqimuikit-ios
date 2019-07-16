@@ -29,7 +29,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        self.view.width = [[UIScreen mainScreen] qim_rightWidth];
+    }
+
     self.navigationItem.title = [NSBundle qim_localizedStringForKey:@"explore_tab_my_file"];
     
     self.view.backgroundColor = [UIColor whiteColor];
@@ -77,7 +80,7 @@
         [_filesDic removeAllObjects];
         [_fileKeys removeAllObjects];
     }
-    for (Message * msg in files) {
+    for (QIMMessageModel * msg in files) {
         long long msgDate = msg.messageDate; 
         NSString * key = [[[[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:msgDate] qim_formattedDateDescription] componentsSeparatedByString:@" "] firstObject];
         NSMutableArray * keyArr = [NSMutableArray arrayWithCapacity:1];
@@ -105,9 +108,6 @@
 {
     if (!_bottomView) {
         _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - 44, self.view.width, 44)];
-        if ([[QIMKit sharedInstance] getIsIpad]) {
-            _bottomView.frame = CGRectMake(0, [[UIScreen mainScreen] height] - 44, [[UIScreen mainScreen] width], 44);
-        }
         _bottomView.backgroundColor = [UIColor whiteColor];
         [self.view addSubview:_bottomView];
         
@@ -132,14 +132,14 @@
 
 - (void)sendBtnHandle:(UIButton *)sender
 {
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
 
     //获取加密状态
     QIMEncryptChatState encryptState = [[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.userId];
 #endif
-    for (Message * message in _selectArr) {
-        Message *msg = message;
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+    for (QIMMessageModel * message in _selectArr) {
+       QIMMessageModel *msg = message;
+#if __has_include("QIMNoteManager.h")
         if (encryptState == QIMEncryptChatStateEncrypting) {
             NSString *encryptContent = [[QIMEncryptChat sharedInstance] encryptMessageWithMsgType:[msg messageType] WithOriginBody:msg.message WithOriginExtendInfo:msg.extendInformation WithUserId:self.userId];
             msg.message = @"加密文件消息iOS";
@@ -148,9 +148,9 @@
         }
 #endif
         if (self.messageSaveType == ChatType_GroupChat) {
-         msg = [[QIMKit sharedInstance] sendMessage:[msg message] WithInfo:[msg extendInformation] ToGroupId:self.userId WihtMsgType:[msg messageType]];
+         msg = [[QIMKit sharedInstance] sendMessage:[msg message] WithInfo:[msg extendInformation] ToGroupId:self.userId WithMsgType:[msg messageType]];
         }else{
-         msg = [[QIMKit sharedInstance] sendMessage:[msg message] WithInfo:[msg extendInformation] ToUserId:self.userId WihtMsgType:[msg messageType]];
+         msg = [[QIMKit sharedInstance] sendMessage:[msg message] WithInfo:[msg extendInformation] ToUserId:self.userId WithMsgType:[msg messageType]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:self.userId userInfo:@{@"message":msg}];
             });
@@ -178,7 +178,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Message * message = [[_filesDic objectForKey:[_fileKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
+   QIMMessageModel * message = [[_filesDic objectForKey:[_fileKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
     QIMFileManagerCell * cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     if (!cell) {
         cell = [[QIMFileManagerCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
@@ -225,8 +225,8 @@
         if ([cell isCellSelected]) {
             [_selectArr addObject:[[_filesDic objectForKey:[_fileKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row]];
         }else{
-            Message * message = [[_filesDic objectForKey:[_fileKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
-            for (Message * msg in _selectArr) {
+           QIMMessageModel * message = [[_filesDic objectForKey:[_fileKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
+            for (QIMMessageModel * msg in _selectArr) {
                 if ([msg.messageId isEqualToString:message.messageId]) {
                     [_selectArr removeObject:msg];
                     break;
@@ -258,7 +258,7 @@
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{//请求数据源提交的插入或删除指定行接收者。
     if (editingStyle ==UITableViewCellEditingStyleDelete) {//如果编辑样式为删除样式
-        Message * message = [[_filesDic objectForKey:[_fileKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
+       QIMMessageModel * message = [[_filesDic objectForKey:[_fileKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
         NSString *fileUrl = [infoDic objectForKey:@"HttpUrl"];
         NSString *fileName = [[fileUrl pathComponents] lastObject];

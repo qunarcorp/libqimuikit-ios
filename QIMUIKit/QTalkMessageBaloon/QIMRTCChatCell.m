@@ -9,14 +9,14 @@
 #define kRTCCellWidth       170
 #define kRTCCellHeight      40
 #define kTextLabelTop       10
-#define kTextLableLeft      10
+#define kTextLableLeft      12
 #define kTextLableBottom    10
 #define kTextLabelRight     10
 #define kMinTextWidth       30
 #define kMinTextHeight      30
 
 #import "QIMMsgBaloonBaseCell.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "QIMRTCChatCell.h"
 
 @interface QIMRTCChatCell () <QIMMenuImageViewDelegate>
@@ -29,9 +29,9 @@
 
 @implementation QIMRTCChatCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
-    return kRTCCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == MessageDirection_Received) ? 40 : 20);
+    return kRTCCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == QIMMessageDirection_Received) ? 40 : 20);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -39,7 +39,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"QIMRTCChatCell_Call"]];
+        _imageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"QIMRTCChatCell_Call"]];
         _imageView.clipsToBounds = YES;
         _imageView.userInteractionEnabled = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -55,8 +55,8 @@
 }
 
 - (void)tapGesHandle:(UITapGestureRecognizer *)tap{
-    if (self.message.messageState == MessageState_Faild) {
-        if (self.message.extendInformation) {
+    if (self.message.messageSendState == QIMMessageSendState_Faild) {
+        if (self.message.extendInformation.length > 0) {
             self.message.message = self.message.extendInformation;
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:kXmppStreamReSendMessage object:self.message];
@@ -71,11 +71,11 @@
     
     float backWidth = kRTCCellWidth;
     float backHeight = kRTCCellHeight;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
 
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             _titleLabel.textColor = [UIColor blackColor];
             _imageView.frame = CGRectMake(self.backView.left + 16, self.backView.top + 5, 24, 24);
             _titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top, self.backView.width - 40 - 10, self.backView.height);
@@ -83,7 +83,7 @@
             _titleLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             _titleLabel.textColor = [UIColor whiteColor];
             _imageView.frame = CGRectMake(self.backView.left + 10, self.backView.top + 5, 24, 24);
             _titleLabel.frame = CGRectMake(_imageView.right + 5, 5, self.backView.width - 40 - 10, self.backView.height);
@@ -96,13 +96,13 @@
     }
     if (self.message.messageType == QIMWebRTC_MsgType_Audio) {
         _titleLabel.text = @"发起了语音聊天";
-        _imageView.image = [UIImage imageNamed:@"QTalkRTCChatCell_Call"];
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Call"];
     } else if (self.message.messageType == QIMWebRTC_MsgType_Video) {
         _titleLabel.text = @"发起了视频聊天";
-        _imageView.image = [UIImage imageNamed:@"QTalkRTCChatCell_Video"];
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Video"];
     } else if (self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoMeeting) {
         _titleLabel.text = @"发起了视频会议";
-        _imageView.image = [UIImage imageNamed:@"QTalkRTCChatCell_Meeting"];
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Meeting"];
     }
 }
 

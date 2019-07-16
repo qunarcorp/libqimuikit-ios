@@ -55,6 +55,9 @@
     self = [super init];
     if (self) {
         [self registeNotifications];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+        }
     }
     return self;
 }
@@ -69,9 +72,7 @@
     //        QIMGroupMemberWillUpdate
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateGroupMember:) name:@"QIMGroupMemberWillUpdate" object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMyPersonalSignature:) name:kUpdateMyPersonalSignature object:nil];
-
-    //开始上传头像
+    //update个性签名
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMyPersonalSignature:) name:kUpdateMyPersonalSignature object:nil];
 
     //上传头像结果 成功 ：{"ok":YES, "headerUrl":xxx} / 失败 : {"ok":NO}
@@ -178,7 +179,7 @@
     NSDictionary *userLeaderInfo = [QimRNBModule qimrn_getUserLeaderInfoByUserId:userId];
     if (userId.length > 0 && userLeaderInfo.count > 0) {
         QIMVerboseLog(@"updateLeaderInfo : %@", userLeaderInfo);
-        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateLeader" body:@{@"LeaderInfo":userLeaderInfo ? userLeaderInfo : @{}}];
+        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateLeader" body:@{@"LeaderInfo":userLeaderInfo ? userLeaderInfo : @{}, @"UserId": userId ? userId : @""}];
     }
 }
 
@@ -209,13 +210,15 @@
     NSString *groupId = notify.object;
     if (groupId.length > 0) {
         NSArray *groupmembers = [QimRNBModule qimrn_getGroupMembersByGroupId:groupId];
-        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateGroupMember" body:@{@"GroupId":groupId, @"GroupMembers": groupmembers?groupmembers:@[]}];
+        QIMGroupIdentity groupIdentity = [[QIMKit sharedInstance] GroupIdentityForUser:[[QIMKit sharedInstance] getLastJid] byGroup:groupId];
+        [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateGroupMember" body:@{@"GroupId":groupId, @"GroupMembers": groupmembers?groupmembers:@[], @"permissions":@(groupIdentity)}];
     }
 }
 
 - (void)updateMyPersonalSignature:(NSNotification *)notify {
     
-    [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updatePersonalSignature" body:@{@"UserId":[[QIMKit sharedInstance] getLastJid], @"PersonalSignature":[QimRNBModule qimrn_getUserMoodByUserId:[[QIMKit sharedInstance] getLastJid]]}];
+    NSString *personalSignature = notify.object;
+    [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updatePersonalSignature" body:@{@"UserId":[[QIMKit sharedInstance] getLastJid], @"PersonalSignature":(personalSignature.length > 0) ? personalSignature : @""}];
 }
 
 - (void)updateMyPhotoSuccess:(NSNotification *)notify {

@@ -3,7 +3,7 @@
 #import "QIMChatToolBarItem.h"
 #import "QIMChatKeyBoardMacroDefine.h"
 
-#define Image(str)              (str == nil || str.length == 0) ? nil : [UIImage imageNamed:str]
+#define Image(str)              (str == nil || str.length == 0) ? nil : [UIImage qim_imageNamedFromQIMUIKitBundle:str]
 #define ItemW                   44                  //44
 #define ItemH                   kQIMChatToolBarHeight  //49
 #define TextViewH               36
@@ -22,7 +22,7 @@
 @property (nonatomic, strong) UIButton *faceBtn;
 @property (nonatomic, strong) UIButton *moreBtn;
 @property (nonatomic, strong) QTalkTextView *textView;
-//@property (nonatomic, strong) QIMRecordButton *recordBtn;
+@property (nonatomic, strong) QIMRecordButton *recordBtn;
 
 @property (readwrite) BOOL voiceSelected;
 @property (readwrite) BOOL faceSelected;
@@ -62,7 +62,8 @@
 - (void)initSubviews
 {
     // barView
-    self.image = [[UIImage imageNamed:@"input-bar-flat"] resizableImageWithCapInsets:UIEdgeInsetsMake(2.0f, 0.0f, 0.0f, 0.0f) resizingMode:UIImageResizingModeStretch];
+    self.image = [[UIImage qim_imageNamedFromQIMUIKitBundle:@"input-bar-flat"] resizableImageWithCapInsets:UIEdgeInsetsMake(2.0f, 0.0f, 0.0f, 0.0f) resizingMode:UIImageResizingModeStretch];
+    self.image = [UIImage qim_imageWithColor:[UIColor whiteColor]];
     self.userInteractionEnabled = YES;
     self.previousTextViewHeight = TextViewH;
     
@@ -72,7 +73,7 @@
     self.voiceBtn = [self createBtn:kButKindVoice action:@selector(toolbarBtnClick:)];
     self.faceBtn = [self createBtn:kButKindFace action:@selector(toolbarBtnClick:)];
     self.moreBtn = [self createBtn:kButKindMore action:@selector(toolbarBtnClick:)];
-//    self.recordBtn = [[QIMRecordButton alloc] init];
+    self.recordBtn = [[QIMRecordButton alloc] init];
     
     self.textView = [[QTalkTextView alloc] init];
     self.textView.frame = CGRectMake(0, 0, 0, TextViewH);
@@ -88,7 +89,7 @@
     [self addSubview:self.switchBarBtn];
     [self.switchBarBtn setAccessibilityIdentifier:@"switchBtn"];
     [self addSubview:self.textView];
-//    [self addSubview:self.recordBtn];
+    [self addSubview:self.recordBtn];
     
     //设置frame
     [self setbarSubViewsFrame];
@@ -96,7 +97,6 @@
     //KVO
     [self addObserver:self forKeyPath:@"self.textView.contentSize" options:(NSKeyValueObservingOptionNew) context:nil];
    
-    /*
     __weak __typeof(self) weekSelf = self;
     self.recordBtn.recordTouchDownAction = ^(QIMRecordButton *sender){
         QIMVerboseLog(@"开始录音");
@@ -143,7 +143,7 @@
         if ([weekSelf.delegate respondsToSelector:@selector(chatToolBarContineRecording:)]) {
             [weekSelf.delegate chatToolBarContineRecording:weekSelf];
         }
-    }; */
+    };
 }
 
 // 设置子视图frame
@@ -190,14 +190,14 @@
     
     self.textView.frame = CGRectMake(textViewX, TextViewVerticalOffset, textViewW, self.textView.frame.size.height);
     
-//    self.recordBtn.frame = self.textView.frame;
+    self.recordBtn.frame = self.textView.frame;
 }
 #pragma mark -- 加载barItems
 - (void)loadBarItems:(NSArray<QIMChatToolBarItem *> *)barItems
 {
     for (QIMChatToolBarItem* barItem in barItems)
     {
-        [self setBtn:(NSInteger)barItem.itemKind normalStateImageStr:barItem.normalStr selectStateImageStr:barItem.selectStr highLightStateImageStr:barItem.highLStr];
+        [self setBtn:(NSInteger)barItem.itemKind normalStateImageImage:barItem.normal selectStateImage:barItem.selectImage highLightStateImage:barItem.highImage];
     }
 }
 
@@ -235,7 +235,7 @@
     self.voiceSelected = self.voiceBtn.selected = NO;
     self.faceSelected = self.faceBtn.selected = NO;
     self.moreFuncSelected = self.moreBtn.selected = NO;
-//    self.recordBtn.hidden = YES;
+    self.recordBtn.hidden = YES;
     self.textView.hidden = NO;
 }
 - (void)prepareForEndComment
@@ -243,7 +243,7 @@
     self.voiceSelected = self.voiceBtn.selected = NO;
     self.faceSelected = self.faceBtn.selected = NO;
     self.moreFuncSelected = self.moreBtn.selected = NO;
-//    self.recordBtn.hidden = YES;
+    self.recordBtn.hidden = YES;
     self.textView.hidden = NO;
     if ([self.textView isFirstResponder]) {
         [self.textView resignFirstResponder];
@@ -251,8 +251,8 @@
 }
 
 #pragma mark -- 关于按钮
-- (void)setBtn:(ButKind)btnKind normalStateImageStr:(NSString *)normalStr
-selectStateImageStr:(NSString *)selectStr highLightStateImageStr:(NSString *)highLightStr
+- (void)setBtn:(ButKind)btnKind normalStateImageImage:(NSString *)normalImage
+selectStateImage:(NSString *)selectImage highLightStateImage:(UIImage *)highLightImage
 {
     UIButton *btn;
     
@@ -272,9 +272,12 @@ selectStateImageStr:(NSString *)selectStr highLightStateImageStr:(NSString *)hig
         default:
             break;
     }
-    [btn setImage:Image(normalStr) forState:UIControlStateNormal];
-    [btn setImage:Image(selectStr) forState:UIControlStateSelected];
-    [btn setImage:Image(highLightStr) forState:UIControlStateHighlighted];
+    [btn setImage:normalImage forState:UIControlStateNormal];
+    [btn setImage:selectImage forState:UIControlStateSelected];
+    [btn setImage:highLightImage forState:UIControlStateHighlighted];
+//    [btn setImage:Image(normalStr) forState:UIControlStateNormal];
+//    [btn setImage:Image(selectStr) forState:UIControlStateSelected];
+//    [btn setImage:Image(highLightStr) forState:UIControlStateHighlighted];
 }
 
 
@@ -421,7 +424,7 @@ selectStateImageStr:(NSString *)selectStr highLightStateImageStr:(NSString *)hig
     }
     
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-//        self.recordBtn.hidden = !sender.selected;
+        self.recordBtn.hidden = !sender.selected;
         self.textView.hidden = sender.selected;
     } completion:nil];
     
@@ -454,7 +457,7 @@ selectStateImageStr:(NSString *)selectStr highLightStateImageStr:(NSString *)hig
 //    [self resumeTextViewContentSize];
     
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-//        self.recordBtn.hidden = YES;
+        self.recordBtn.hidden = YES;
         self.textView.hidden = NO;
     } completion:nil];
     
@@ -485,7 +488,7 @@ selectStateImageStr:(NSString *)selectStr highLightStateImageStr:(NSString *)hig
     }
     
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-//        self.recordBtn.hidden = YES;
+        self.recordBtn.hidden = YES;
         self.textView.hidden = NO;
     } completion:nil];
     
@@ -574,7 +577,7 @@ selectStateImageStr:(NSString *)selectStr highLightStateImageStr:(NSString *)hig
     self.currentText = self.textView.text;
     self.textView.text = @"";
     self.textView.contentSize = CGSizeMake(CGRectGetWidth(self.textView.frame), TextViewH);
-//    self.recordBtn.frame = CGRectMake(self.textView.frame.origin.x, TextViewVerticalOffset, self.textView.frame.size.width, TextViewH);
+    self.recordBtn.frame = CGRectMake(self.textView.frame.origin.x, TextViewVerticalOffset, self.textView.frame.size.width, TextViewH);
 }
 
 - (void)resumeTextViewContentSize

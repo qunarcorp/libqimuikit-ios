@@ -52,7 +52,7 @@
         QIMCommonTableViewCellData *onlinePush = [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"myself_tab_myPush"] iconName:nil  cellDataType:QIMCommonTableViewCellDataTypeMessageOnlineNotification];
         QIMCommonTableViewCellData *mconfig = [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"myself_tab_mconfig"] iconName:nil cellDataType:QIMCommonTableViewCellDataTypeMconfig];
         NSArray<QIMCommonTableViewCellData *> *section0 = nil;
-        if ([[[QIMKit sharedInstance] qimNav_GetPushState] length] > 0 && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([[[QIMKit sharedInstance] qimNav_GetPushState] length] > 0 && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             section0 = @[onlinePush, [[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"myself_tab_notify_tone"] iconName:nil   cellDataType:QIMCommonTableViewCellDataTypeMessageNotification]];
         } else {
             section0 = @[[[QIMCommonTableViewCellData alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"myself_tab_notify_tone"] iconName:nil   cellDataType:QIMCommonTableViewCellDataTypeMessageNotification]];

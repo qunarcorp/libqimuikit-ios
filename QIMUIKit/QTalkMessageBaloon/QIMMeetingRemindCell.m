@@ -24,7 +24,7 @@
 
 @implementation QIMMeetingRemindCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     
     NSString *infoStr = message.extendInformation.length <= 0 ? message.message : message.extendInformation;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
@@ -136,12 +136,12 @@
 - (void)refreshUI {
     
     self.selectedBackgroundView.frame = self.contentView.frame;
-    CGFloat cellHeight = [QIMMeetingRemindCell getCellHeightWihtMessage:self.message chatType:self.chatType];
+    CGFloat cellHeight = [QIMMeetingRemindCell getCellHeightWithMessage:self.message chatType:self.chatType];
     CGFloat cellWidth = kCommonMeetingRemindCellWidth;
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:cellWidth WihtHeight:cellHeight];
+    [self setBackViewWithWidth:cellWidth WithHeight:cellHeight];
     
-    CGFloat titleLeft = (self.message.messageDirection == MessageDirection_Sent) ? 15 : 25;
+    CGFloat titleLeft = (self.message.messageDirection == QIMMessageDirection_Sent) ? 15 : 25;
     NSString *content = [self getMeetingRemindContent];
     [_titleLabel setText:content.length > 0 ? content : @""];
     

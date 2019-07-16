@@ -11,6 +11,10 @@
 
 @implementation QIMWorkMomentModel
 
++ (NSDictionary *)modelContainerPropertyGenericClass {
+    return @{@"attachCommentList" : @"QIMWorkCommentModel" };
+}
+
 + (NSDictionary *)modelCustomPropertyMapper {
     return @{@"rId": @"id",
              @"momentId" : @"uuid",

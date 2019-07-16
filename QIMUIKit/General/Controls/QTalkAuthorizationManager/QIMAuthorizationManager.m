@@ -17,7 +17,7 @@ static NSString* const kAuthorizationPhotosMessage = @"请在iPhone的\"设置-�
 static NSString* const kAuthorizationPhotosOpenURL = @"";
 
 static NSString* const kAuthorizationCameraPromot = @"无法使用相机";
-static NSString* const kAuthorizationCameraMessage = @"请在iPhone的\"设置-隐私-相机\"中允许访问相机。";
+static NSString* const kAuthorizationCameraMessage = @"请在iPhone的\"设置-隐私\"选项中，允许我们访问您的摄像头和麦克风。";
 static NSString* const kAuthorizationCameraOpenURL = @"";
 
 static NSString* const kAuthorizationLocationPromot = @"无法使用定位";
@@ -85,9 +85,10 @@ static QIMAuthorizationManager *instance = nil;
 
 - (void)requestAuthorizationForCamera {
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    if (status == AVAuthorizationStatusDenied || status == AVAuthorizationStatusRestricted) {
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    if (status == AVAuthorizationStatusDenied || status == AVAuthorizationStatusRestricted || authStatus == AVAuthorizationStatusDenied || authStatus == AVAuthorizationStatusRestricted) {
         [self settingAuthorizationsTitle:kAuthorizationCameraPromot Message:kAuthorizationCameraMessage openUrl:kAuthorizationCameraOpenURL];
-    }else if (status == AVAuthorizationStatusNotDetermined) {
+    } else if (status == AVAuthorizationStatusNotDetermined) {
         [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
             if (granted) {
                 //QIMVerboseLog(@"允许当前应用访问相机");
@@ -100,7 +101,19 @@ static QIMAuthorizationManager *instance = nil;
             }
         }];
         
-    }else if (status == AVAuthorizationStatusAuthorized){
+    } else if (authStatus == AVAuthorizationStatusNotDetermined) {
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+            if (granted) {
+                //QIMVerboseLog(@"允许当前应用访问相机");
+                if (self.authorizedBlock) {
+                    self.authorizedBlock();
+                }
+            } else {
+                //不允许就不让进入相册
+                return ;
+            }
+        }];
+    } else if (status == AVAuthorizationStatusAuthorized){
         if (self.authorizedBlock) {
             self.authorizedBlock();
         }

@@ -35,7 +35,7 @@
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
-        [_headerView setImage:[UIImage imageNamed:@"singleHeaderDefault"]];
+        [_headerView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"singleHeaderDefault"]];
         _headerView.layer.masksToBounds = YES;
         _headerView.layer.cornerRadius  = _headerView.height / 2.0;
         _headerView.layer.borderWidth   = 1;
@@ -100,12 +100,9 @@
     _headerView.layer.cornerRadius = _headerView.width / 2;
     _nameLabel.frame = CGRectMake(_headerView.right + 10, 0, [UIScreen mainScreen].bounds.size.width - _headerView.right - 10 - 10, [self.class getCellHeightForGroupName:self.userName]);
     _nameLabel.font = [UIFont fontWithName:FONT_NAME size:[[QIMCommonFont sharedInstance] currentFontSize]];
-    [_nameLabel setText:self.userName];
+    [_nameLabel setText:(self.userName.length > 0) ? self.userName : [[self.groupID componentsSeparatedByString:@"@"] firstObject]];
     UIImage * headImage = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.groupID];
     [_headerView setImage:headImage];
-//    if ([self.groupID containsString:self.userName]) {
-//        [[QIMKit sharedInstance] updateGroupCardByGroupId:self.groupID];
-//    }
 }
 
 - (void)drawRect:(CGRect)rect

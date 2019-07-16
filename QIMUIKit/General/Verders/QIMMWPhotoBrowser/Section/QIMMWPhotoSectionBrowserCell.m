@@ -28,7 +28,7 @@
 - (UIImageView *)imageView {
     if (!_imageView) {
         _imageView = [[UIImageView alloc] initWithFrame:self.bounds];
-        _imageView.image = [UIImage imageNamed:@"LaunchImage"];
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"LaunchImage"];
     }
     return _imageView;
 }
@@ -60,8 +60,8 @@
         _photoSelectBtn.backgroundColor = [UIColor clearColor];
         _photoSelectBtn.contentMode = UIViewContentModeTopRight;
         _photoSelectBtn.adjustsImageWhenHighlighted = NO;
-        [_photoSelectBtn setImage:[UIImage imageNamed:@"uncheck"] forState:UIControlStateNormal];
-        [_photoSelectBtn setImage:[UIImage imageNamed:@"checked"] forState:UIControlStateSelected];
+        [_photoSelectBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"uncheck"] forState:UIControlStateNormal];
+        [_photoSelectBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checked"] forState:UIControlStateSelected];
         [_photoSelectBtn addTarget:self action:@selector(choosePhoto:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _photoSelectBtn;
@@ -77,7 +77,7 @@
         UIImage *placeHolderImage = [UIImage imageWithContentsOfFile:placeholdImagePath];
         [self.imageView qim_setImageWithURL:_thumbUrl placeholderImage:placeHolderImage];
     } else {
-        self.imageView.image = [UIImage imageNamed:@"LaunchImage"];
+        self.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"LaunchImage"];
     }
 }
 

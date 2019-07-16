@@ -52,13 +52,8 @@
 #import "QIMCollectionFaceManager.h"
 #import "QTImagePickerController.h"
 #import "MBProgressHUD.h"
-#import "QIMHistoryMsgManager.h"
-
-#import "QIMHistoryMsgListViewController.h"
-
 #import "QIMEmojiTextAttachment.h"
 
-#import "QIMTextView.h"
 #import "QIMUIImagePickerBrowserVC.h"
 #import "QIMEmotionsDownloadViewController.h"
 #import "QIMOfficialAccountToolbar.h"
@@ -67,8 +62,13 @@
 #import "QTPHImagePickerController.h"
 #import "QIMEmotionManagerView.h"
 #endif
-
+#if __has_include("QIMIPadWindowManager.h")
+#import "QIMIPadWindowManager.h"
+#endif
 #import "QIMAuthorizationManager.h"
+#if __has_include("QIMImagePickerController.h")
+#import "QIMImagePickerController.h"
+#endif
 
 @interface NSAttributedString (EmojiExtension)
 - (NSString *)getPlainString;
@@ -98,6 +98,9 @@
                           base += [((QIMEmojiTextAttachment *) value) getSendText].length - 1;
                       } else if (value && [value isKindOfClass:[QIMATGroupMemberTextAttachment class]]) {
                           QIMVerboseLog(@"value : %@", value);
+                          QIMATGroupMemberTextAttachment *groupAt = (QIMATGroupMemberTextAttachment *)value;
+                          [plainString replaceCharactersInRange:NSMakeRange(range.location + base, range.length) withString:groupAt.groupMemberName];
+                          base += [((QIMATGroupMemberTextAttachment *) value) getSendText].length - 1;
                       }
                   }];
     
@@ -124,7 +127,7 @@
 
 @end
 
-@interface QIMTextBar(ChatVoice)<QIMVoiceOperatorDelegate,QIMTextViewDelegate,QIMTextBarExpandViewDelegate,QIMRemoteAudioPlayerDelegate,UIAlertViewDelegate,CameraViewControllerDelegate,QTImagePickerControllerDelegate,QTPHImagePickerControllerDelegate>
+@interface QIMTextBar(ChatVoice)<QIMVoiceOperatorDelegate,QIMTextBarExpandViewDelegate,QIMRemoteAudioPlayerDelegate,UIAlertViewDelegate,CameraViewControllerDelegate,QTImagePickerControllerDelegate,QTPHImagePickerControllerDelegate>
 @end
 
 @interface VoiceRecorderButton : UIButton
@@ -146,7 +149,7 @@ typedef void(^SelectedEmotion)(NSString *);
 
 
 #pragma mark - QIMTextBar
-@interface QIMTextBar () <UITextViewDelegate,UIScrollViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIGestureRecognizerDelegate,QIMUIImagePickerBrowserVCDelegate, QIMMessageManagerFaceViewDelegate,QIMVoiceChatViewDelegate,QIMHistoryMsgListViewControllerDelegate, QIMChatToolBarDelegate, QTalkQIMEmotionManagerDelegate> {
+@interface QIMTextBar () <UITextViewDelegate,UIScrollViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIGestureRecognizerDelegate,QIMUIImagePickerBrowserVCDelegate, QIMMessageManagerFaceViewDelegate,QIMVoiceChatViewDelegate, QIMChatToolBarDelegate, QTalkQIMEmotionManagerDelegate> {
     __weak UITableView *_associateTableView;
 }
 
@@ -157,14 +160,10 @@ typedef void(^SelectedEmotion)(NSString *);
  */
 @property (nonatomic, assign) CGFloat lastChatKeyboardY;
 
-@property (nonatomic, strong) QIMTextView *myTextView;
-
 @property (nonatomic, strong) UIImageView *myTextViewBgImageView;
 
 //表情发送
 @property (nonatomic, strong) UIButton *sendButton;
-
-@property (nonatomic, strong) UIButton *emotionButton;
 
 @property (nonatomic, strong) QIMVoiceChatView *voiceView;
 
@@ -264,11 +263,35 @@ static QIMTextBar *__consultTextBar = nil;
 static QIMTextBar *__consultServerTextBar = nil;
 static QIMTextBar *__publicNumberTextBar = nil;
 
+static dispatch_once_t __norMalTextBarOnceToken;
+static dispatch_once_t __singleTextBarOnceToken;
+static dispatch_once_t __groupTextBarOnceToken;
+static dispatch_once_t __robotTextBarOnceToken;
+static dispatch_once_t __consultTextBarOnceToken;
+static dispatch_once_t __consultServerTextBarOnceToken;
+static dispatch_once_t __publicNumberTextBarOnceToken;
+
++ (void)clearALLTextBar {
+    __robotTextBar = nil;
+    __norMalTextBar = nil;
+    __singleTextBar = nil;
+    __groupTextBar = nil;
+    __consultTextBar = nil;
+    __consultServerTextBar = nil;
+    __publicNumberTextBar = nil;
+    __norMalTextBarOnceToken = 0;
+    __singleTextBarOnceToken = 0;
+    __groupTextBarOnceToken = 0;
+    __robotTextBarOnceToken = 0;
+    __consultTextBarOnceToken = 0;
+    __consultServerTextBarOnceToken = 0;
+    __publicNumberTextBarOnceToken = 0;
+}
+
 + (instancetype)sharedIMTextBarWithBounds:(CGRect)bounds WithExpandViewType:(QIMTextBarExpandViewType)expandType {
     switch (expandType) {
         case QIMTextBarExpandViewTypeRobot: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__robotTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __robotTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -282,8 +305,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypePublicNumber: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__publicNumberTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __publicNumberTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -297,8 +319,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypeGroup: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__groupTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __groupTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -312,8 +333,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypeConsult: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__consultTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __consultTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -327,8 +347,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypeConsultServer: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__consultTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __consultServerTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -342,8 +361,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         case QIMTextBarExpandViewTypeSingle: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__singleTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __singleTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -357,8 +375,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         }
             break;
         default: {
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
+            dispatch_once(&__norMalTextBarOnceToken, ^{
                 CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
                 __norMalTextBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
             });
@@ -378,7 +395,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
     
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor qtalkChatBgColor];
+        self.backgroundColor = [UIColor whiteColor];
         [self resgisterNSNotifications];
         
         self.hasAtFun = FALSE;
@@ -394,14 +411,14 @@ static QIMTextBar *__publicNumberTextBar = nil;
         [self addSubview:self.chatToolBar];
         _isScrollToBottom = YES;
         NSMutableArray *items = [NSMutableArray arrayWithCapacity:5];
-        QIMChatToolBarItem *item1 = [QIMChatToolBarItem barItemWithKind:kBarItemFace normal:@"face" high:@"face_HL" select:@"keyboard"];
+        QIMChatToolBarItem *item1 = [QIMChatToolBarItem barItemWithKind:kBarItemFace normal:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_face_font size:28 color:qim_texbar_button_normalColor]] high:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_face_font size:28 color:qim_texbar_button_highColor]] select:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_keyboard_font size:28 color:qim_texbar_button_normalColor]]];
         [items addObject:item1];
-        QIMChatToolBarItem *item2 = [QIMChatToolBarItem barItemWithKind:kBarItemVoice normal:@"voice" high:@"voice_HL" select:@"keyboard"];
+        QIMChatToolBarItem *item2 = [QIMChatToolBarItem barItemWithKind:kBarItemVoice normal:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_voice_font size:28 color:qim_texbar_button_normalColor]] high:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_voice_font size:28 color:qim_texbar_button_highColor]] select:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_keyboard_font size:28 color:qim_texbar_button_normalColor]]];
         [items addObject:item2];
-        QIMChatToolBarItem *item3 = [QIMChatToolBarItem barItemWithKind:kBarItemMore normal:@"more_ios" high:@"more_ios_HL" select:nil];
+        QIMChatToolBarItem *item3 = [QIMChatToolBarItem barItemWithKind:kBarItemMore normal:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_expand_font size:28 color:qim_texbar_button_normalColor]] high:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_expand_font size:28 color:qim_texbar_button_highColor]] select:nil];
         [items addObject:item3];
         
-        QIMChatToolBarItem *item4 = [QIMChatToolBarItem barItemWithKind:kBarItemSwitchBar normal:@"Mode_texttolist" high:@"Mode_texttolistHL" select:nil];
+        QIMChatToolBarItem *item4 = [QIMChatToolBarItem barItemWithKind:kBarItemSwitchBar normal:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_switch_font size:28 color:qim_texbar_button_normalColor]] high:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_textbar_switch_font size:28 color:qim_texbar_button_highColor]] select:nil];
         [items addObject:item4];
         [self.chatToolBar loadBarItems:items];
         
@@ -503,14 +520,14 @@ static QIMTextBar *__publicNumberTextBar = nil;
             _quickReplyExpandView.hidden = YES;
             [self.expandPanel sendSubviewToBack:_quickReplyExpandView];
             self.emotionPanel.hidden = NO;
-            self.voiceView.hidden = YES;
+//            self.voiceView.hidden = YES;
             self.maskView.hidden = YES;
             self.robotActionToolBar.hidden = YES;
             self.lastChatKeyboardY = self.frame.origin.y;
             self.frame = CGRectMake(0, [self getSuperViewH]-CGRectGetHeight(self.frame), self.width, CGRectGetHeight(self.frame));
             self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame)-kFacePanelHeight, CGRectGetWidth(self.frame), kFacePanelHeight);
             self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
-            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             self.maskView.frame = CGRectMake(0, self.chatToolBar.bottom, CGRectGetWidth(self.frame), kFacePanelHeight);
             [self updateAssociateTableViewFrame];
             
@@ -526,7 +543,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
             self.expandPanel.hidden = NO;
             self.emotionPanel.hidden = YES;
             self.maskView.hidden = YES;
-            self.voiceView.hidden = YES;
+//            self.voiceView.hidden = YES;
             _quickReplyExpandView.hidden = YES;
             [self.expandPanel sendSubviewToBack:_quickReplyExpandView];
             self.robotActionToolBar.hidden = YES;
@@ -534,7 +551,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
             self.frame = CGRectMake(0, [self getSuperViewH]-CGRectGetHeight(self.frame), self.width, CGRectGetHeight(self.frame));
             self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame)-kFacePanelHeight, CGRectGetWidth(self.frame), kFacePanelHeight);
             self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
-            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             self.maskView.frame = CGRectMake(0, self.chatToolBar.bottom, CGRectGetWidth(self.frame), kFacePanelHeight);
             [self.expandPanel displayItems];
             
@@ -543,6 +560,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:kQIMTextBarIsFirstResponder object:nil];
         }];
     }
+    /*
     else if (self.chatToolBar.voiceSelected) {
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
             self.voiceView.hidden = NO;
@@ -564,6 +582,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:kQIMTextBarIsFirstResponder object:nil];
         }];
     }
+    */
     else
     {
         [UIView animateWithDuration:0.25 animations:^{
@@ -581,7 +600,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
             {
                 // 键盘弹起 (包括，第三方键盘回调三次问题，监听仅执行最后一次)
 //                QIMVerboseLog(@" 键盘弹起 (包括，第三方键盘回调三次问题，监听仅执行最后一次)");
-                self.voiceView.hidden = NO;
+//                self.voiceView.hidden = NO;
                 self.expandPanel.hidden = YES;
                 self.maskView.hidden = NO;
                 self.emotionPanel.hidden = YES;
@@ -590,7 +609,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
                 self.robotActionToolBar.hidden = YES;
                 self.lastChatKeyboardY = self.frame.origin.y;
                 self.frame = CGRectMake(0, targetY, CGRectGetWidth(self.frame), self.frame.size.height);
-                self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//                self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
                 self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
                 self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
                 self.robotActionToolBar.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kQIMChatToolBarHeight);
@@ -707,7 +726,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
                     CGFloat y = self.frame.origin.y;
                     y = [self getSuperViewH] - self.chatToolBar.frame.size.height;
                     self.frame = CGRectMake(0, y, self.frame.size.width, self.frame.size.height);
-                    self.voiceView.hidden = YES;
+//                    self.voiceView.hidden = YES;
                     self.expandPanel.hidden = YES;
                     _quickReplyExpandView.hidden = YES;
                     [self.expandPanel sendSubviewToBack:_quickReplyExpandView];
@@ -735,6 +754,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
 - (void)chatToolBar:(QIMChatToolBar *)toolBar voiceBtnPressed:(BOOL)select keyBoardState:(BOOL)change
 {
 //    QIMVerboseLog(@"第n次点击语音");
+    /*
     if (select && change == NO) {
         self.voiceView.hidden = NO;
         _quickReplyExpandView.hidden = YES;
@@ -754,6 +774,25 @@ static QIMTextBar *__publicNumberTextBar = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:kQIMTextBarIsFirstResponder object:nil];
         }];
     }
+    */
+    if (select && change == NO) {
+        
+//        self.voiceView.hidden = NO;
+        _quickReplyExpandView.hidden = YES;
+        self.emotionPanel.hidden = YES;
+        self.expandPanel.hidden = YES;
+        self.robotActionToolBar.hidden = YES;
+        [UIView animateWithDuration:0.25 animations:^{
+            
+            self.lastChatKeyboardY = self.frame.origin.y;
+            CGFloat y = self.frame.origin.y;
+            y = [self getSuperViewH] - self.chatToolBar.frame.size.height;
+            self.frame = CGRectMake(0, y, self.frame.size.width, self.frame.size.height);
+            
+            [self updateAssociateTableViewFrame];
+            
+        }];
+    }
 }
 
 /**
@@ -764,7 +803,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
 {
     if (select && change == NO)
     {
-        self.voiceView.hidden =  YES;
+//        self.voiceView.hidden =  YES;
         self.expandPanel.hidden = YES;
         _quickReplyExpandView.hidden = YES;
         [self.expandPanel sendSubviewToBack:_quickReplyExpandView];
@@ -777,7 +816,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
             
             self.lastChatKeyboardY = self.frame.origin.y;
             self.frame = CGRectMake(0, [self getSuperViewH]-CGRectGetHeight(self.frame), self.width, CGRectGetHeight(self.frame));
-            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame)-kFacePanelHeight, CGRectGetWidth(self.frame), kFacePanelHeight);
             self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             
@@ -796,7 +835,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
 {
     if (select && change == NO)
     {
-        self.voiceView.hidden = YES;
+//        self.voiceView.hidden = YES;
         self.expandPanel.hidden = NO;
         self.emotionPanel.hidden = YES;
         _quickReplyExpandView.hidden = YES;
@@ -806,7 +845,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
             
             self.lastChatKeyboardY = self.frame.origin.y;
             self.frame = CGRectMake(0, [self getSuperViewH]-CGRectGetHeight(self.frame), self.width, CGRectGetHeight(self.frame));
-            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
+//            self.voiceView.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             self.expandPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame)-kMorePanelHeight, CGRectGetWidth(self.frame), kMorePanelHeight);
             self.emotionPanel.frame = CGRectMake(0, CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), kFacePanelHeight);
             [self.expandPanel displayItems];
@@ -822,7 +861,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         [UIView animateWithDuration:0.25 animations:^{
             
             self.lastChatKeyboardY = self.frame.origin.y;
-            self.voiceView.hidden = YES;
+//            self.voiceView.hidden = YES;
             self.expandPanel.hidden = NO;
             self.emotionPanel.hidden = YES;
             _quickReplyExpandView.hidden = YES;
@@ -863,28 +902,11 @@ static QIMTextBar *__publicNumberTextBar = nil;
         
         [self.delegate sendText:text];
         [self.chatToolBar clearTextViewContent];
-        /*
-         if (self.replyName&&[_myTextView.text isEqualToString:self.replyName]) {
-         [self.delegate emptyText:@"暂无回复内容"];
-         }
-         else {
-         _isScrollToBottom = YES;
-         [self.delegate sendText:text];
-         }*/
     }
 }
 
 - (void)chatToolBarTextViewDidChange:(UITextView *)textView {
-    if (textView.text.length > 0) {
-        //        QIMVerboseLog(@"键盘彩蛋：打开输入历史Vc");
-        //键盘彩蛋：打开输入历史Vc
-        //        if ([_myTextView.text hasPrefix:@"#h"] || [_myTextView.text hasSuffix:@"#H"]) {
-        //            QIMHistoryMsgListViewController *historyMsgListVc = [[QIMHistoryMsgListViewController alloc] init];
-        //            historyMsgListVc.delegate = self;
-        //            QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:historyMsgListVc];
-        //            [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
-        //        }
-    }
+    
 }
 
 - (void)chatToolBarTextView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
@@ -926,35 +948,41 @@ static QIMTextBar *__publicNumberTextBar = nil;
                     NSString *name = [memberInfoDic objectForKey:@"name"];
                     NSString *jid = [memberInfoDic objectForKey:@"jid"];
                     NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
-                    if ([[QIMKit sharedInstance] getIsIpad]) {
-                        memberName = [NSString stringWithFormat:@"%@ ", name];
-                    }
 
+                    
                     QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
-                    atTextAttachment.groupMemberName = name;
+                    CGSize size = [memberName qim_sizeWithFontCompatible:self.chatToolBar.textView.font];
+                    atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.chatToolBar.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.chatToolBar.textView.font} circular:NO];
+                    atTextAttachment.groupMemberName = memberName;
                     atTextAttachment.groupMemberJid = jid;
                     
+                    /*
                     NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] init];
                     NSAttributedString *textAtt2 = [NSAttributedString attributedStringWithAttachment:atTextAttachment];
                     [textAtt appendAttributedString:textAtt2];
-                    [textAtt appendAttributedString:[[NSAttributedString alloc] initWithString:memberName]];
                     
                     [self.chatToolBar.textView.textStorage insertAttributedString:textAtt atIndex:self.chatToolBar.textView.selectedRange.location];
-                    weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(weakSelf.chatToolBar.textView.selectedRange.location + _myTextView.selectedRange.length + memberName.length + 1, 0);
+                    weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(weakSelf.chatToolBar.textView.selectedRange.location + weakSelf.chatToolBar.textView.selectedRange.length + memberName.length + 2, 0);
+                    [weakSelf resetTextStyle];
+                    */
+                    //插入表情
+                    [weakSelf.chatToolBar.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:weakSelf.chatToolBar.textView.selectedRange.location];
+                    weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(MIN(weakSelf.chatToolBar.textView.selectedRange.location + 1, weakSelf.chatToolBar.textView.text.length - weakSelf.chatToolBar.textView.selectedRange.length), weakSelf.chatToolBar.textView.selectedRange.length);
                     [weakSelf resetTextStyle];
                 } else {
                     QIMVerboseLog(@"未选择要艾特的群成员");
                     [self.chatToolBar.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:text] atIndex:self.chatToolBar.textView.selectedRange.location];
-                    weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(weakSelf.chatToolBar.textView.selectedRange.location + _myTextView.selectedRange.length + 1, 0);
+                    weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(weakSelf.chatToolBar.textView.selectedRange.location + weakSelf.chatToolBar.textView.selectedRange.length + 1, 0);
                     [weakSelf resetTextStyle];
                 }
             }];            
             if ([[QIMKit sharedInstance] getIsIpad]) {
-                Class RunC = NSClassFromString(@"QIMIPadWindowManager");
-                SEL sel = NSSelectorFromString(@"detaiPushViewController:");
-                if ([RunC respondsToSelector:sel]) {
-                    [RunC performSelector:sel withObject:qNoticeVC];
-                }
+                qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+                QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+                qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
             } else {
                 QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
                 [(UIViewController *)weakSelf.delegate presentViewController:qtalNav animated:YES completion:nil];
@@ -977,15 +1005,45 @@ static QIMTextBar *__publicNumberTextBar = nil;
     
     if (handleText.length > 0) {
         
-        //        [self deleteBackward:handleText appendText:appendText];
+        [self deleteBackward:handleText appendText:appendText];
     }
+}
+
+#pragma mark - 回删表情或文字
+
+
+- (void)deleteBackward:(NSString *)text appendText:(NSString *)appendText
+{
+    /*
+    if (IsTextContainFace(text)) { // 如果最后一个是表情
+        
+        NSRange startRang = [text rangeOfString:@"[" options:NSBackwardsSearch];
+        NSString *current = [text substringToIndex:startRang.location];
+        [self.chatToolBar setTextViewContent:[current stringByAppendingString:appendText]];
+        self.chatToolBar.textView.selectedRange = NSMakeRange(current.length, 0);
+        
+    }else { // 如果最后一个系统键盘输入的文字
+        
+        if (text.length > 0) { // 如果是Emoji表情
+            NSString *current = [text substringToIndex:text.length - 2];
+            
+            [self.chatToolBar setTextViewContent:[current stringByAppendingString:appendText]];
+            self.chatToolBar.textView.selectedRange = NSMakeRange(current.length, 0);
+            
+        }else { // 如果是纯文字
+            NSString *current = [text substringToIndex:text.length - 1];
+            
+            [self.chatToolBar setTextViewContent:[current stringByAppendingString:appendText]];
+            self.chatToolBar.textView.selectedRange = NSMakeRange(current.length, 0);
+        }
+    }
+    */
 }
 
 /**
  *  调整关联的表的高度
  */
-- (void)updateAssociateTableViewFrame
-{
+- (void)updateAssociateTableViewFrame {
     //表的原来的偏移量
     CGFloat original =  _associateTableView.contentOffset.y;
     
@@ -1069,6 +1127,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         if (collectionViewBg == nil) {
             collectionViewBg = [[QIMEmotionManagerView alloc] initWithFrame:CGRectMake(0, 0, self.width, 220 - 38.5) WithPkId:kEmotionCollectionPKId];
             collectionViewBg.hidden = YES;
+            collectionViewBg.delegate = self;
             [self.faceViewsDic setObject:collectionViewBg forKey:kEmotionCollectionPKId];
         } else {
             [collectionViewBg removeFromSuperview];
@@ -1104,7 +1163,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
 - (UIView *)maskView {
     if (!_maskView) {
         _maskView = [[UIView alloc] initWithFrame:CGRectMake(0, self.chatToolBar.bottom, self.width, kFacePanelHeight)];
-        _maskView.backgroundColor = [UIColor qtalkChatBgColor];
+        _maskView.backgroundColor = [UIColor whiteColor];
         [self addSubview:_maskView];
     }
     return _maskView;
@@ -1113,7 +1172,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
 - (UIView *)emotionPanel {
     if (!_emotionPanel) {
         _emotionPanel = [[UIView alloc] initWithFrame:CGRectMake(0, kChatKeyBoardHeight - kFacePanelHeight, self.width, kFacePanelHeight)];
-        _emotionPanel.backgroundColor = [UIColor qtalkChatBgColor];
+        _emotionPanel.backgroundColor = [UIColor whiteColor];
         [self addSubview:_emotionPanel];
     }
     return _emotionPanel;
@@ -1122,7 +1181,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
 - (QIMTextBarExpandView *)expandPanel {
     if (!_expandPanel) {
         _expandPanel = [[QIMTextBarExpandView alloc] initWithFrame:CGRectMake(0, kChatKeyBoardHeight - kFacePanelHeight, self.width, kFacePanelHeight)];
-        _expandPanel.backgroundColor = [UIColor qtalkChatBgColor];
+        _expandPanel.backgroundColor = [UIColor whiteColor];
         _expandPanel.delegate = self;
         _expandPanel.type = self.expandViewType;
         _expandPanel.parentVC = (UIViewController *)self.delegate;
@@ -1149,7 +1208,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         _voiceView = [[QIMVoiceChatView alloc] initWithFrame:CGRectMake(0, kChatKeyBoardHeight - kFacePanelHeight, self.width, kFacePanelHeight)];
         _voiceView.hidden = YES;
         _voiceView.delegate = self;
-        _voiceView.backgroundColor = [UIColor qtalkChatBgColor];
+        _voiceView.backgroundColor = [UIColor whiteColor];
         [self addSubview:_voiceView];
     }
     return _voiceView;
@@ -1170,8 +1229,8 @@ static QIMTextBar *__publicNumberTextBar = nil;
     if (!_referButton) {
         
         _referButton = [[UIButton alloc] initWithFrame:CGRectMake(3, 0, 30, 30)];
-        [_referButton setImage:[UIImage imageNamed:@"chat_bottom_refer"] forState:UIControlStateNormal];
-        [_referButton setImage:[UIImage imageNamed:@"chat_bottom_refer"] forState:UIControlStateSelected];
+        [_referButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_refer"] forState:UIControlStateNormal];
+        [_referButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_refer"] forState:UIControlStateSelected];
         [_referButton addTarget:self action:@selector(referBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _referButton;
@@ -1201,7 +1260,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
         
         CGFloat btnWidth = 38.5;
         _addEmotionsBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.expandPanel.height - 38.5, btnWidth, 36 + 2.5)];
-        [_addEmotionsBtn setImage:[UIImage imageNamed:@"Card_AddIcon"] forState:UIControlStateNormal];
+        [_addEmotionsBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Card_AddIcon"] forState:UIControlStateNormal];
         [_addEmotionsBtn setBackgroundImage:normalImage forState:UIControlStateNormal];
         [_addEmotionsBtn addTarget:self action:@selector(addEmotionBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -1214,7 +1273,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
 - (UIButton *)collectEmotionBtn {
     
     NSString * currentPKId = [[QIMEmotionManager sharedInstance] currentPackageId];
-    UIImage * colBtnImage = [UIImage imageNamed:@"braceletLiked"];
+    UIImage * colBtnImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"braceletLiked"];
     
     if (!_collectEmotionBtn) {
         
@@ -1293,10 +1352,9 @@ static QIMTextBar *__publicNumberTextBar = nil;
         CGSize pagesize = [_expandPageControl sizeForNumberOfPages:pages];
         _expandPageControl.size = pagesize;
         _expandPageControl.y = 185;
-//        _expandPageControl.centerY = CGRectGetMaxY(self.expandPanel.frame) - 35 - HOME_INDICATOR_HEIGHT;
         _expandPageControl.centerX = self.centerX;
-        _expandPageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-        _expandPageControl.currentPageIndicatorTintColor = [UIColor redColor];
+        _expandPageControl.pageIndicatorTintColor = [UIColor qim_colorWithHex:0xD8D8D8];
+        _expandPageControl.currentPageIndicatorTintColor = [UIColor qim_colorWithHex:0x84AEBF];
         
         _expandPageControl.numberOfPages = pages;
     }
@@ -1315,7 +1373,6 @@ static QIMTextBar *__publicNumberTextBar = nil;
 
 #pragma mark - Method
 
-
 /**
  下载表情包
  */
@@ -1326,16 +1383,16 @@ static QIMTextBar *__publicNumberTextBar = nil;
     [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
 }
 
+//选择某个表情面版
 - (void)emoticonsHandle:(UIButton *)btn {
     [self segmentBtnDidClickedAtIndex:btn.tag - kEmotionBtnFrom];
-    //    [_faceView.delegate segmentBtnDidClickedAtIndex:btn.tag - kEmotionBtnFrom];
 }
 
-- (void)updateFilrStatus:(BOOL) on {
+- (void)updateFilrStatus:(BOOL)on {
     if (on) {
         if (!_fireButton) {
-            _fireButton = [[UIButton alloc] initWithFrame:CGRectMake(_myTextView.right - 28, _myTextView.top + 2.5, 25, 25)];
-            [_fireButton setImage:[UIImage imageNamed:@"iconfont-fire_select"] forState:UIControlStateNormal];
+            _fireButton = [[UIButton alloc] initWithFrame:CGRectMake(self.chatToolBar.textView.right - 28, self.chatToolBar.textView.top + 2.5, 25, 25)];
+            [_fireButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconfont-fire_select"] forState:UIControlStateNormal];
             [self addSubview:_fireButton];
         }
         [self bringSubviewToFront:_fireButton];
@@ -1350,26 +1407,35 @@ static QIMTextBar *__publicNumberTextBar = nil;
     NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userXmppId];
     NSString *name = [userInfo objectForKey:@"Name"];
     NSString *jid = userXmppId;
-    NSString *memberName = nil;
+    NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+    /*
     NSString *textName = [self.chatToolBar.textView.text substringWithRange:NSMakeRange(self.chatToolBar.textView.selectedRange.location-1, 1)];
     if ([textName isEqualToString:@"@"]) {
         memberName = [NSString stringWithFormat:@"%@ ", name];
     } else {
         memberName = [NSString stringWithFormat:@"@%@ ", name];
     }
+    */
     
     QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
-    atTextAttachment.groupMemberName = name;
+    CGSize size = [memberName qim_sizeWithFontCompatible:self.chatToolBar.textView.font];
+    atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.chatToolBar.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.chatToolBar.textView.font} circular:NO];
+    atTextAttachment.groupMemberName = memberName;
     atTextAttachment.groupMemberJid = jid;
     
+    [self.chatToolBar.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:self.chatToolBar.textView.selectedRange.location];
+    self.chatToolBar.textView.selectedRange = NSMakeRange(MIN(self.chatToolBar.textView.selectedRange.location + 1, self.chatToolBar.textView.text.length - self.chatToolBar.textView.selectedRange.length), self.chatToolBar.textView.selectedRange.length);
+    [self resetTextStyle];
+    
+    /*
     NSMutableAttributedString *textAtt = [[NSMutableAttributedString alloc] init];
     NSAttributedString *textAtt2 = [NSAttributedString attributedStringWithAttachment:atTextAttachment];
     [textAtt appendAttributedString:textAtt2];
-    [textAtt appendAttributedString:[[NSAttributedString alloc] initWithString:memberName]];
     
     [self.chatToolBar.textView.textStorage insertAttributedString:textAtt atIndex:self.chatToolBar.textView.selectedRange.location];
-    self.chatToolBar.textView.selectedRange = NSMakeRange(self.chatToolBar.textView.selectedRange.location + _myTextView.selectedRange.length + memberName.length + 1, 0);
+    self.chatToolBar.textView.selectedRange = NSMakeRange(self.chatToolBar.textView.selectedRange.location + self.chatToolBar.textView.selectedRange.length + memberName.length + 2, 0);
     [self resetTextStyle];
+    */
 }
 
 #pragma mark - Property
@@ -1463,8 +1529,8 @@ static QIMTextBar *__publicNumberTextBar = nil;
     [self resetTextStyle];
 }
 
-- (NSRange) selectedRange {
-    return [_myTextView selectedRange];
+- (NSRange)selectedRange {
+    return [self.chatToolBar.textView selectedRange];
 }
 
 - (void)setText:(NSString *)text {
@@ -1477,7 +1543,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
     return self.chatToolBar.textView.attributedText;
 }
 
-- (NSString *)getSendAttributedText{
+- (NSString *)getSendAttributedText {
     NSString *attributedText = [self.chatToolBar.textView.attributedText getPlainString];
     if (attributedText.length > 0) {
         return attributedText;
@@ -1485,8 +1551,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
     return self.chatToolBar.textView.text;
 }
 
-
-- (NSArray *)encodeInputItems{
+- (NSArray *)encodeInputItems {
     NSMutableArray * encodeItems = [NSMutableArray arrayWithCapacity:1];
     for (IMTextBarInputItem * item in self.inputItems) {
         [encodeItems addObject:[NSString stringWithFormat:@"%@____%@____%@",@(item.type),item.dispalyStr,item.emotionPKId]];
@@ -1494,7 +1559,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
     return encodeItems;
 }
 
-- (void)decodeInputItems:(NSArray *)items{
+- (void)decodeInputItems:(NSArray *)items {
     self.inputItems = [NSMutableArray arrayWithCapacity:1];
     for (NSString * itemStr in items) {
         NSArray * itemInfoArr = [itemStr componentsSeparatedByString:@"____"];
@@ -1531,22 +1596,22 @@ static QIMTextBar *__publicNumberTextBar = nil;
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
-                             self.frame = CGRectMake(0, self.rootFrame.size.height-(_voiceButton.selected ? _voiceButton.bottom : _myTextView.bottom) - 10, self.frame.size.width, self.frame.size.height);
+                             self.frame = CGRectMake(0, self.rootFrame.size.height-(_voiceButton.selected ? _voiceButton.bottom : self.chatToolBar.textView.bottom) - 10, self.frame.size.width, self.frame.size.height);
                          } completion:nil];
         
         if ([self.delegate respondsToSelector:@selector(setKeyBoardHeight: WithScrollToBottom:)]) {
-            [self.delegate setKeyBoardHeight:(_voiceButton.selected ? _voiceButton.frame.size.height : _myTextView.frame.size.height) - 27 WithScrollToBottom:_isScrollToBottom];
+            [self.delegate setKeyBoardHeight:(_voiceButton.selected ? _voiceButton.frame.size.height : self.chatToolBar.textView.frame.size.height) - 27 WithScrollToBottom:_isScrollToBottom];
         }
     }else{
         [UIView animateWithDuration:_keyboardDuration
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
-                             self.frame = CGRectMake(0, self.rootFrame.size.height-_myTextView.frame.size.height - (self.removeStateBarHeight?0:20) - 216, self.frame.size.width, self.frame.size.height);
+                             self.frame = CGRectMake(0, self.rootFrame.size.height - self.chatToolBar.textView.frame.size.height - (self.removeStateBarHeight?0:20) - 216, self.frame.size.width, self.frame.size.height);
                          } completion:nil];
         
         if ([self.delegate respondsToSelector:@selector(setKeyBoardHeight: WithScrollToBottom:)]) {
-            [self.delegate setKeyBoardHeight:216 + _myTextView.frame.size.height - 30 WithScrollToBottom:_isScrollToBottom];
+            [self.delegate setKeyBoardHeight:216 + self.chatToolBar.textView.frame.size.height - 30 WithScrollToBottom:_isScrollToBottom];
         }
     }
     btn.selected = !btn.selected;
@@ -1742,6 +1807,17 @@ static QIMTextBar *__publicNumberTextBar = nil;
 
 - (void)onPhotoButtonClick:(UIButton *)sender{
     [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
+        /*
+        QIMImagePickerController *pickerVc = [[QIMImagePickerController alloc] initWithMaxImagesCount:9 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            pickerVc.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:pickerVc animated:YES completion:nil];
+#endif
+        } else {
+            [[[UIApplication sharedApplication] visibleViewController] presentViewController:pickerVc animated:YES completion:nil];
+        }
+        */
         QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
         picker.delegate = self;
         picker.title = @"选取照片";
@@ -1752,8 +1828,14 @@ static QIMTextBar *__publicNumberTextBar = nil;
         picker.colsInPortrait = 4;
         picker.colsInLandscape = 5;
         picker.minimumInteritemSpacing = 2.0;
-        [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
-//        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:picker animated:YES completion:nil];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
+#endif
+        } else {
+            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+        }
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }
@@ -1766,27 +1848,6 @@ static QIMTextBar *__publicNumberTextBar = nil;
         [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeCamera];
-    
-#pragma --qam
-    /*
-     AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-     if (authStatus == AVAuthorizationStatusRestricted || authStatus ==AVAuthorizationStatusDenied)
-     {
-     //无权限
-     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"温馨提示" message:@"请前往“设置-QTalk-相机”,开启访问权限。" preferredStyle:UIAlertControllerStyleAlert];
-     UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-     
-     }];
-     [alertController addAction:cancelAction];
-     [(UIViewController *)self.delegate presentViewController:alertController animated:YES completion:nil];
-     return;
-     }
-     
-     CameraViewController * cameraVC = [[CameraViewController alloc] init];
-     cameraVC.delegate = self;
-     QIMNavController * nav = [[QIMNavController alloc] initWithRootViewController:cameraVC];
-     [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
-     */
 }
 
 //判断内容是否全部为空格  YES 全部为空格
@@ -1801,45 +1862,6 @@ static QIMTextBar *__publicNumberTextBar = nil;
             return YES;
         } else {
             return NO;
-        }
-    }
-}
-
-- (void)sendButtonClick:(UIButton *)sender{
-    if (_myTextView.text.length > 0 && ![self isEmpty:_myTextView.text]) {
-        [[QIMHistoryMsgManager sharedInstance] saveMsgText:_myTextView.text];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(sendText:)]) {
-            
-            if (self.replyName&&[_myTextView.text isEqualToString:self.replyName]) {
-                [self.delegate emptyText:@"暂无回复内容"];
-            }
-            else {
-                _isScrollToBottom = YES;
-                [self.delegate sendText:_myTextView.text];
-            }
-        }
-        [_myTextView setText:@""];
-        [self resetTextStyle];
-        [self textViewDidChange:_myTextView];
-        //fix bug:多行发送后 tableView 回不到底部
-        if ([_myTextView isFirstResponder]) {
-            if ([self.delegate respondsToSelector:@selector(setKeyBoardHeight:WithScrollToBottom:)]) {
-                [self.delegate setKeyBoardHeight:_myTextView.frame.size.height - 30 + _keyboardRect.size.height WithScrollToBottom:_isScrollToBottom];
-            }
-        }else{
-            if ([self.delegate respondsToSelector:@selector(setKeyBoardHeight: WithScrollToBottom:)]) {
-                [self.delegate setKeyBoardHeight:216 + _myTextView.frame.size.height - 30 WithScrollToBottom:_isScrollToBottom];
-            }
-        }
-        //        _isExpand = NO;
-        //        [_myTextView resignFirstResponder];
-    }
-    else {
-        if (self.delegate && [self.delegate respondsToSelector:@selector(emptyText:)]) {
-            [_myTextView setText:@""];
-            [self resetTextStyle];
-            [self textViewDidChange:_myTextView];
-            [self.delegate emptyText:@"暂无评论内容"];
         }
     }
 }
@@ -1865,8 +1887,6 @@ static QIMTextBar *__publicNumberTextBar = nil;
         [self.loadView addSubview:self.loadingLabel];
         self.loadView.center = cameraVC.view.center;
         [cameraVC.view addSubview:self.loadView];
-        //        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"提示" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"高质量压缩",@"中质量压缩",@"低质量压缩", nil];
-        //        [actionSheet showInView:picker.view];
         
         NSURL *sourceURL = [info objectForKey:UIImagePickerControllerMediaURL];
         CGFloat videoLength = [self getVideoLength:sourceURL];
@@ -1932,102 +1952,6 @@ static QIMTextBar *__publicNumberTextBar = nil;
     
 }
 
-#pragma mark - QIMTextViewDelegate
-//textView高度改变时，按照用户体验的设计，对其他控件进行布局
-- (void)textView:(QIMTextView *)textView heightChanged:(NSInteger)height
-{
-    if (ABS(height) < 16) {
-        return;
-    }
-    self.frame = CGRectMake(0, self.frame.origin.y - height, self.frame.size.width, self.frame.size.height + height);
-    
-    CGRect textViewBGFrame = _myTextView.frame;
-    textViewBGFrame.origin.y -= 2.5;
-    textViewBGFrame.size.height = MAX(textViewBGFrame.size.height + 5, 30);
-    _myTextViewBgImageView.frame = textViewBGFrame;
-    self.voiceButton.frame = CGRectMake(_voiceButton.frame.origin.x, CGRectGetMaxY(textViewBGFrame) - 35, 35, 35);
-    self.showActionBtn.frame = CGRectMake(_showActionBtn.frame.origin.x, _showActionBtn.frame.origin.y  + height, _showActionBtn.frame.size.width, _showActionBtn.frame.size.height);
-    
-    self.expandButton.frame = CGRectMake(self.width - 5 - 35, CGRectGetMaxY(textViewBGFrame) - 35, 35, 35);
-    self.emotionButton.frame = CGRectMake(self.width - 5 - (self.hasVoice ? 70 : 35), CGRectGetMaxY(textViewBGFrame) - 35, 35, 35);
-    self.expandPanel.frame = CGRectMake(0, self.expandPanel.frame.origin.y + height, self.width, 220);
-    
-    self.voiceView.frame = CGRectMake(self.voiceView.frame.origin.x, self.voiceView.frame.origin.y + height, self.width, 215);
-}
-
--(void)textView:(QIMTextView *)textView handleResponderAction:(SEL)action{
-    if (action == @selector(copy:) || action == @selector(cut:)) {
-        [self saveCopyOrCutTextInfoWithRange:_myTextView.selectedRange];
-    }else if (action == @selector(paste:)){
-        NSDictionary * copyOrCutInfo = [[QIMHistoryMsgManager sharedInstance] getCopyOrCutTextInfo];
-        if (copyOrCutInfo) {
-            for (IMTextBarInputItem * item in copyOrCutInfo[@"inputItems"]) {
-                [self refreshTextInputCacheWithRange:_myTextView.selectedRange text:item.dispalyStr itemType:item.type isDel:NO];
-            }
-        } else {
-            if ([[UIPasteboard generalPasteboard] image]) {
-                /*
-                UIImage *image = [[UIPasteboard generalPasteboard] image];
-                if (image) {
-                    if (image.images.count) {
-                        UIAlertController *notSupportGifCopyVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"暂不支持Gif动图拷贝发送" preferredStyle:UIAlertControllerStyleAlert];
-                        UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ok", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        }];
-                        [notSupportGifCopyVc addAction:okAction];
-                        [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:notSupportGifCopyVc animated:YES completion:nil];
-                    } else {
-                        QIMCustomAlertView *customAlertView = [[QIMCustomAlertView alloc] init];
-                        [customAlertView setContainerView:[self createImagePreViewWithImage:image]];
-                        [customAlertView setButtonTitles:[NSMutableArray arrayWithObjects:NSLocalizedString(@"cancel", nil), NSLocalizedString(@"send", nil), nil]];
-                        [customAlertView setDelegate:self];
-                        [customAlertView setOnButtonTouchUpInside:^(QIMCustomAlertView *alertView, int buttonIndex) {
-                            [alertView close];
-                        }];
-                        [customAlertView setUseMotionEffects:YES];
-                        [customAlertView show];
-                        [self resignFirstResponder];
-                    }
-                }
-                */
-            } else if ([[UIPasteboard generalPasteboard] string]) {
-                [self refreshTextInputCacheWithRange:_myTextView.selectedRange text:[[UIPasteboard generalPasteboard] string] itemType:IMTextBarInputItemTypeText isDel:NO];
-                _placeholderLabel.hidden = YES;
-            }
-        }
-    }
-}
-
-/*
-- (void)customIOS7dialogButtonTouchUpInside: (QIMCustomAlertView *)alertView clickedButtonAtIndex: (NSInteger)buttonIndex
-{
-    if (buttonIndex == 0) {
-        [alertView close];
-    } else {
-        UIImage *image = [[UIPasteboard generalPasteboard] image];
-        if (image.images.count) {
-            if (image.images[0] && ![image.images[0] isKindOfClass:[NSNull class]]) {
-                image = image.images[0];
-            }
-        }
-        NSData *imageData = UIImageJPEGRepresentation(image, 1);
-        [self.delegate sendImageData:imageData];
-        _isScrollToBottom = YES;
-        [self needFirstResponder:NO];
-    }
-}
-*/
-
-- (UIView *)createImagePreViewWithImage:(UIImage *)image
-{
-    UIView *backImageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 290, 200)];
-    
-    YLImageView *imageView = [[YLImageView alloc] initWithFrame:CGRectMake(10, 10, 270, 180)];
-    [imageView setImage:image];
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [backImageView addSubview:imageView];
-    return backImageView;
-}
-
 /**
  发送表情
  
@@ -2035,8 +1959,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
  @param packageId 表情包Id
  @param dele 是否为删除
  */
-- (void)SendTheFaceStr:(NSString *)faceStr withPackageId:(NSString *)packageId isDelete:(BOOL)dele
-{
+- (void)SendTheFaceStr:(NSString *)faceStr withPackageId:(NSString *)packageId isDelete:(BOOL)dele {
     if (dele) {
         if (self.chatToolBar.textView.text.length == 0) {
             self.chatToolBar.textView.text = @"";
@@ -2066,6 +1989,18 @@ static QIMTextBar *__publicNumberTextBar = nil;
 - (void)SendTheFaceStr:(NSString *)faceStr withPackageId:(NSString *)packageId {
     if (self.delegate && [self.delegate respondsToSelector:@selector(sendNormalEmotion:WithPackageId:)]) {
         [self.delegate sendNormalEmotion:faceStr WithPackageId:packageId];
+    }
+}
+
+- (void)SendTheCollectionFaceStr:(NSString *)faceStr {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(sendCollectionFaceStr:)]) {
+        [self.delegate sendCollectionFaceStr:faceStr];
+    }
+}
+
+- (void)didSelectFaildCollectionFace {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(clickFaildCollectionFace)]) {
+        [self.delegate clickFaildCollectionFace];
     }
 }
 
@@ -2101,8 +2036,7 @@ static QIMTextBar *__publicNumberTextBar = nil;
     return textIndex;
 }
 
-- (int)rightBorderIndexForText:(NSString *)text index:(NSInteger)index
-{
+- (int)rightBorderIndexForText:(NSString *)text index:(NSInteger)index {
     int textIndex = -1;
     if (index >= 0 && text && index < text.length && [text characterAtIndex:index] == ']') {
         return (int)index;
@@ -2121,344 +2055,11 @@ static QIMTextBar *__publicNumberTextBar = nil;
     return textIndex;
 }
 
-- (void)resetTextWithDelInRange:(NSRange)range forTextView:(UITextView *)textView
-{
-    NSMutableString * mulTextStr = [NSMutableString stringWithString:textView.text];
-    if (range.location + range.length > mulTextStr.length) {
-        return;
-    }
-    [mulTextStr replaceCharactersInRange:range withString:@""];
-    textView.text = mulTextStr;
-    textView.selectedRange = NSMakeRange(range.location, 0);
-    _currentRange = textView.selectedRange;
-}
-
-- (void)delFullFaceTextForTextView:(UITextView *)textView inRange:(NSRange)range
-{
-    NSMutableString * mulTextStr = [NSMutableString stringWithString:textView.text];
-    NSInteger startIndex = range.location;
-    NSInteger endIndex = range.location;
-    BOOL  flag = (startIndex = [self leftBorderIndexForText:mulTextStr index:startIndex - 1]) > -1;
-    [self resetTextWithDelInRange:flag ? NSMakeRange(startIndex, endIndex - startIndex + 1) : NSMakeRange(range.location, 1) forTextView:textView];
-    
-}
-
-- (void) delTextForTextView:(UITextView *)textView inRange:(NSRange)range
-{
-    //光标在最前面，删除无效
-    if (range.location + range.length == 0) {
-        return;
-    }
-    NSMutableString * mulTextStr = [NSMutableString stringWithString:textView.text];
-    NSInteger startIndex = range.location;
-    NSInteger endIndex = range.location;
-    //    if ([mulTextStr characterAtIndex:startIndex] == ']') {
-    //        [self delFullFaceTextForTextView:textView inRange:range];
-    //        return;
-    //    }
-    BOOL  flag = (startIndex = [self leftBorderIndexForText:mulTextStr index:startIndex]) > -1;
-    if (flag) {
-        flag = (endIndex = [self rightBorderIndexForText:mulTextStr index:endIndex]) > -1;
-    }
-    [self resetTextWithDelInRange:flag ? NSMakeRange(startIndex, endIndex - startIndex + 1) : NSMakeRange(range.location, 1) forTextView:textView];
-    
-}
-
-- (void)setCurrentRangeForTextView:(UITextView *)textView
-{
-    NSInteger index = textView.selectedRange.location + textView.selectedRange.length;
-    BOOL  flag = (index = [self leftBorderIndexForText:textView.text index:index]) > -1;
-    if (flag) {
-        flag = (index = [self rightBorderIndexForText:textView.text index:index]) > -1;
-    }
-    _currentRange = flag ? NSMakeRange(index + 1, 0) : NSMakeRange(textView.selectedRange.location + textView.selectedRange.length, 0);
-    textView.selectedRange = _currentRange;
-}
-
--(void)SendTheContent
-{
+//发送文本消息
+-(void)SendTheContent {
     [self.delegate sendText:self.chatToolBar.textView.text];
     [self.chatToolBar clearTextViewContent];
 }
-
-- (void)saveCopyOrCutTextInfoWithRange:(NSRange)range{
-    if (range.length) {
-        __block NSRange currentRange = NSMakeRange(0, 0);
-        __block NSMutableString * textMulStr = [NSMutableString stringWithCapacity:1];
-        __block NSMutableArray  * items = [NSMutableArray arrayWithCapacity:1];
-        [self.inputItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            IMTextBarInputItem * item = self.inputItems[idx];
-            currentRange.length = item.dispalyStr.length;
-            if (range.location >= currentRange.location && range.location <= currentRange.location + currentRange.length)
-            {
-                if (item.type == IMTextBarInputItemTypeEmotion) {
-                    [textMulStr appendString:item.dispalyStr];
-                    [items addObject:item];
-                }else{
-                    NSRange selRange = NSMakeRange(range.location - currentRange.location, MIN(range.location + range.length, currentRange.location + currentRange.length) - range.location);
-                    [textMulStr appendString:[item.dispalyStr substringWithRange:selRange]];
-                    IMTextBarInputItem * newItem = [[IMTextBarInputItem alloc] init];
-                    newItem.type = IMTextBarInputItemTypeText;
-                    newItem.dispalyStr = [item.dispalyStr substringWithRange:selRange];
-                    [items addObject:newItem];
-                    
-                }
-                if(range.location + range.length >= currentRange.location && range.location + range.length <= currentRange.location + currentRange.length){
-                    *stop = YES;
-                    [[QIMHistoryMsgManager sharedInstance] saveCopyOrCutTextInfoWithText:textMulStr inputItems:items];
-                }
-            }else if(range.location + range.length >= currentRange.location && range.location + range.length <= currentRange.location + currentRange.length){
-                if (item.type == IMTextBarInputItemTypeEmotion) {
-                    [textMulStr appendString:item.dispalyStr];
-                    [items addObject:item];
-                }else{
-                    NSRange selRange = NSMakeRange(0, range.location + range.length - currentRange.location);
-                    [textMulStr appendString:[item.dispalyStr substringWithRange:selRange]];
-                    IMTextBarInputItem * newItem = [[IMTextBarInputItem alloc] init];
-                    newItem.type = IMTextBarInputItemTypeText;
-                    newItem.dispalyStr = [item.dispalyStr substringWithRange:selRange];
-                    [items addObject:newItem];
-                    
-                }
-                [[QIMHistoryMsgManager sharedInstance] saveCopyOrCutTextInfoWithText:textMulStr inputItems:items];
-                *stop = YES;
-            }else{
-                [textMulStr appendString:item.dispalyStr];
-                [items addObject:item];
-            }
-            currentRange.location += currentRange.length;
-            currentRange.length = 0;
-        }];
-    }
-}
-
-
-- (void)delTextForRange:(NSRange)range{
-    if (range.length) {
-        __block NSRange currentRange = NSMakeRange(0, 0);
-        __block NSMutableString * mulText = [NSMutableString stringWithString:_myTextView.text];
-        __block NSRange delRange = NSMakeRange(0, 0);
-        __block NSRange afterRange = _myTextView.selectedRange;
-        [self.inputItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            IMTextBarInputItem * item = self.inputItems[idx];
-            currentRange.length = item.dispalyStr.length;
-            if (range.location >= currentRange.location && range.location < currentRange.location + currentRange.length)
-            {
-                if (item.type == IMTextBarInputItemTypeEmotion) {
-                    //                    [mulText replaceCharactersInRange:currentRange withString:@""];
-                    [self.inputItems removeObjectAtIndex:idx];
-                    afterRange = NSMakeRange(currentRange.location, 0);
-                    delRange.location = currentRange.location;
-                    delRange.length = currentRange.length;
-                }else{
-                    NSRange selRange = NSMakeRange(range.location - currentRange.location, MIN(range.location + range.length, currentRange.location + currentRange.length) - range.location);
-                    //                    [mulText replaceCharactersInRange:selRange withString:@""];
-                    IMTextBarInputItem * newItem = [[IMTextBarInputItem alloc] init];
-                    newItem.type = IMTextBarInputItemTypeText;
-                    newItem.dispalyStr = [NSString stringWithFormat:@"%@%@",[item.dispalyStr substringToIndex:selRange.location],[item.dispalyStr substringFromIndex:selRange.location + selRange.length]];
-                    if (newItem.dispalyStr.length == 0) {
-                        [self.inputItems removeObjectAtIndex:idx];
-                    }else{
-                        [self.inputItems replaceObjectAtIndex:idx withObject:newItem];
-                    }
-                    afterRange = NSMakeRange(range.location, 0);
-                    delRange.location = range.location;
-                    delRange.length = selRange.length;
-                    //                    currentRange.length = newItem.dispalyStr.length;
-                }
-                if(range.location + range.length >= currentRange.location && range.location + range.length <= currentRange.location + currentRange.length){
-                    [mulText replaceCharactersInRange:delRange withString:@""];
-                    _myTextView.text = mulText;
-                    //记录光标位置，设置光标位置
-                    self.currentRange = afterRange;
-                    _myTextView.selectedRange = afterRange;
-                    *stop = YES;
-                }
-            }else if(range.location + range.length >= currentRange.location && range.location + range.length < currentRange.location + currentRange.length){
-                if (item.type == IMTextBarInputItemTypeEmotion) {
-                    //                    [mulText replaceCharactersInRange:currentRange withString:@""];
-                    [self.inputItems removeObjectAtIndex:idx];
-                    afterRange = NSMakeRange(currentRange.location, 0);
-                    //                    currentRange.length = 0;
-                    delRange.length += currentRange.length;
-                }else{
-                    NSRange selRange = NSMakeRange(0, range.location + range.length - currentRange.location);
-                    //                    [mulText replaceCharactersInRange:selRange withString:@""];
-                    IMTextBarInputItem * newItem = [[IMTextBarInputItem alloc] init];
-                    newItem.type = IMTextBarInputItemTypeText;
-                    newItem.dispalyStr = [NSString stringWithFormat:@"%@%@",[item.dispalyStr substringToIndex:selRange.location],[item.dispalyStr substringFromIndex:selRange.location + selRange.length]];
-                    if (newItem.dispalyStr.length == 0) {
-                        [self.inputItems removeObjectAtIndex:idx];
-                    }else{
-                        [self.inputItems replaceObjectAtIndex:idx withObject:newItem];
-                    }
-                    afterRange = NSMakeRange(currentRange.location, 0);
-                    //                    currentRange.length = newItem.dispalyStr.length;
-                    delRange.length += selRange.length;
-                }
-                [mulText replaceCharactersInRange:delRange withString:@""];
-                _myTextView.text = mulText;
-                //记录光标位置，设置光标位置
-                self.currentRange = afterRange;
-                _myTextView.selectedRange = afterRange;
-                *stop = YES;
-            }else if(currentRange.location > range.location && currentRange.location + currentRange.length < range.location + range.length){
-                //                [mulText replaceCharactersInRange:currentRange withString:@""];
-                [self.inputItems removeObjectAtIndex:idx];
-                afterRange = NSMakeRange(currentRange.location, 0);
-                delRange.length = currentRange.length;
-                //                currentRange.length = 0;
-            }
-            currentRange.location += currentRange.length;
-            currentRange.length = 0;
-        }];
-    }
-}
-
-- (void)refreshTextInputCacheWithRange:(NSRange )range text:(NSString *)text itemType:(IMTextBarInputItemType)type isDel:(BOOL)isDel{
-    if (self.inputItems == nil) {
-        //懒加载
-        self.inputItems = [NSMutableArray arrayWithCapacity:1];
-    }
-    
-    if (range.length) {
-        [self delTextForRange:range];
-    }
-    
-    if (isDel) {
-        return;
-    }
-    
-    __block NSRange currentRange = NSMakeRange(0, 0);
-    
-    if (self.inputItems.count == 0) {
-        //inputItems 中没有元素，不会遍历，单独处理
-        if (isDel) {
-            return;
-        }else{
-            IMTextBarInputItem * newItem = [[IMTextBarInputItem alloc] init];
-            newItem.type = type;
-            newItem.dispalyStr = text;
-            if (type == IMTextBarInputItemTypeEmotion) {
-                newItem.emotionPKId = self.currentPKId;
-            }
-            [self.inputItems addObject:newItem];
-            _myTextView.text = text;
-            return;
-        }
-    }
-    
-    
-    //遍历inputItems,找到插入/删除位置
-    [self.inputItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        IMTextBarInputItem * item = self.inputItems[idx];
-        currentRange.length = item.dispalyStr.length;
-        if (range.location >= currentRange.location && range.location <= currentRange.location + currentRange.length) {
-            //该判断原因：如果是add 应该包含右边界；而如果是del location==右边界 时，应该算入下次遍历
-            if (!(range.location == currentRange.location + currentRange.length && isDel)) {
-                NSRange afterRange = _myTextView.selectedRange;
-                NSMutableString * mulText = [NSMutableString stringWithString:_myTextView.text];
-                if (isDel) {//删除
-                    
-                }else{
-                    //要添加一个表情
-                    if (type == IMTextBarInputItemTypeEmotion) {
-                        if (item.type == IMTextBarInputItemTypeEmotion) {
-                            [mulText replaceCharactersInRange:NSMakeRange(currentRange.location + currentRange.length, 0) withString:text];
-                            IMTextBarInputItem * newItem = [[IMTextBarInputItem alloc] init];
-                            newItem.type = IMTextBarInputItemTypeEmotion;
-                            newItem.dispalyStr = text;
-                            newItem.emotionPKId = self.currentPKId;
-                            [self.inputItems insertObject:newItem atIndex:idx + 1];
-                            afterRange = NSMakeRange(currentRange.location + currentRange.length + text.length, 0);
-                        }else{
-                            [mulText replaceCharactersInRange:range withString:text];
-                            
-                            IMTextBarInputItem * subPreItem = [[IMTextBarInputItem alloc] init];
-                            subPreItem.type = IMTextBarInputItemTypeText;
-                            subPreItem.dispalyStr = [item.dispalyStr substringToIndex:range.location - currentRange.location];
-                            [self.inputItems replaceObjectAtIndex:idx withObject:subPreItem];
-                            
-                            IMTextBarInputItem * newItem = [[IMTextBarInputItem alloc] init];
-                            newItem.type = IMTextBarInputItemTypeEmotion;
-                            newItem.dispalyStr = text;
-                            newItem.emotionPKId = self.currentPKId;
-                            [self.inputItems insertObject:newItem atIndex:idx + 1];
-                            
-                            IMTextBarInputItem * subSufItem = [[IMTextBarInputItem alloc] init];
-                            subSufItem.type = IMTextBarInputItemTypeText;
-                            subSufItem.dispalyStr = [item.dispalyStr substringFromIndex:range.location - currentRange.location];
-                            [self.inputItems insertObject:subSufItem atIndex:idx + 2];
-                            afterRange = NSMakeRange(currentRange.location + subPreItem.dispalyStr.length + text.length, 0);
-                        }
-                        
-                    }
-                    //添加字符串
-                    else if (type == IMTextBarInputItemTypeText){
-                        //当前位置在一个表情中，可能需要顺延插入表情后面
-                        if (item.type == IMTextBarInputItemTypeEmotion) {
-                            BOOL willAddNew = NO;
-                            //看看该item后面还有元素没
-                            if (idx + 1 < self.inputItems.count) {
-                                IMTextBarInputItem * itemNext = self.inputItems[idx + 1];
-                                //下一个item是一个表情，需新建字符串类型item
-                                if (itemNext.type == IMTextBarInputItemTypeEmotion) {
-                                    willAddNew = YES;
-                                }
-                                //下一个item是字符串，插入该字符串前面
-                                else if (itemNext.type == IMTextBarInputItemTypeText){
-                                    currentRange.location += currentRange.length;
-                                    currentRange.length = itemNext.dispalyStr.length;
-                                    itemNext.dispalyStr = [NSString stringWithFormat:@"%@%@",text,itemNext.dispalyStr];
-                                    [mulText replaceCharactersInRange:NSMakeRange(currentRange.location, 0) withString:text];
-                                    afterRange = NSMakeRange(currentRange.location + text.length, 0);
-                                }
-                            }
-                            //该item后面没有元素了，需新建字符串类型item
-                            else{
-                                willAddNew = YES;
-                            }
-                            
-                            //新建字符串类型item，插入当前item后面
-                            if (willAddNew == YES) {
-                                [mulText replaceCharactersInRange:NSMakeRange(currentRange.location + currentRange.length, 0) withString:text];
-                                IMTextBarInputItem * newItem = [[IMTextBarInputItem alloc] init];
-                                newItem.type = IMTextBarInputItemTypeText;
-                                newItem.dispalyStr = text;
-                                [self.inputItems insertObject:newItem atIndex:idx + 1];
-                                
-                                afterRange = NSMakeRange(currentRange.location + currentRange.length + text.length, 0);
-                            }
-                            
-                        }
-                        //当前位置在字符串类型item中，直接插入
-                        else if (item.type == IMTextBarInputItemTypeText){
-                            NSMutableString * descMulStr = [NSMutableString stringWithString:item.dispalyStr];
-                            [descMulStr replaceCharactersInRange:NSMakeRange(range.location - currentRange.location, 0) withString:text];
-                            item.dispalyStr = descMulStr;
-                            [mulText replaceCharactersInRange:NSMakeRange(range.location, 0) withString:text];
-                            afterRange = NSMakeRange(range.location + text.length, 0);
-                        }
-                    }
-                }
-                _myTextView.text = mulText;
-                //记录光标位置，设置光标位置
-                self.currentRange = afterRange;
-                _myTextView.selectedRange = afterRange;
-                
-                //                //删除的text可能是选中的某一段，可能包含多个字符串/表情串的全部/部分的组合，不一定都在这一个item中
-                //                if (remainLenth > 0 && isDel) {
-                //                    //跨模块 递归
-                //                    [self refreshTextInputCacheWithRange:NSMakeRange(afterRange.location, remainLenth) text:[mulText substringWithRange:NSMakeRange(afterRange.location, remainLenth)] itemType:type isDel:isDel];
-                //                }
-                *stop = YES;
-            }
-        }
-        currentRange.location += currentRange.length;
-        currentRange.length = 0;
-    }];
-}
-
 
 - (void)resetTextStyle {
     //After changing text selection, should reset style.
@@ -2685,8 +2286,8 @@ static QIMTextBar *__publicNumberTextBar = nil;
 #pragma mark - QIMVoiceChatViewDelegate
 
 //录制声音状态
--(void)voiceChatView:(QIMVoiceChatView *)voiceChatView RecordingAtStatus:(VoiceChatRecordingStatus)status
-{
+-(void)voiceChatView:(QIMVoiceChatView *)voiceChatView RecordingAtStatus:(VoiceChatRecordingStatus)status {
+    
     _recordingStatus = status;
     switch (status) {
         case VoiceChatRecordingStatusStart:
@@ -2702,28 +2303,24 @@ static QIMTextBar *__publicNumberTextBar = nil;
             [self.voiceOperator doVoiceRecordByFilename:self.fileName];
         }
             break;
-        case VoiceChatRecordingStatusRecording:
-        {
+        case VoiceChatRecordingStatusRecording: {
             
         }
             break;
-        case VoiceChatRecordingStatusEnd:
-        {
+        case VoiceChatRecordingStatusEnd: {
+            
             [self.voiceOperator finishRecoderWithSave:YES];
         }
             break;
-        case VoiceChatRecordingStatusCancel:
-        {
+        case VoiceChatRecordingStatusCancel: {
             [self.voiceOperator finishRecoderWithSave:NO];
         }
             break;
-        case VoiceChatRecordingStatusAudition:
-        {
+        case VoiceChatRecordingStatusAudition: {
             [self.voiceOperator finishRecoderWithSave:YES];
         }
             break;
-        case VoiceChatRecordingStatusSend:
-        {
+        case VoiceChatRecordingStatusSend: {
             [self sendVoice];
         }
             break;
@@ -2957,12 +2554,6 @@ static QIMTextBar *__publicNumberTextBar = nil;
     [picker dismissViewControllerAnimated:NO completion:nil];
 }
 
-#pragma mark - QIMHistoryMsgListViewControllerDelegate
-
--(void)QIMHistoryMsgListViewController:(QIMHistoryMsgListViewController *)vc didSelectedText:(NSString *)text{
-    _myTextView.text = text;
-}
-
 #pragma mark - HUD
 - (MBProgressHUD *)tipHUDWithText:(NSString *)text {
     if (!_tipHUD) {
@@ -2980,6 +2571,78 @@ static QIMTextBar *__publicNumberTextBar = nil;
     if (_tipHUD) {
         [_tipHUD hide:YES];
     }
+}
+
+#pragma mark - 录音Delegate
+/*
+_recordingStatus = status;
+switch (status) {
+    case VoiceChatRecordingStatusStart:
+    {
+        //设置文件名
+        self.fileName = [QIMUUIDTools UUID];
+        QIMVerboseLog(@"UUID == %@",self.fileName);
+        //开始录音
+        //            [recorderVC beginRecordByFileName:self.fileName];
+        if ([self.delegate respondsToSelector:@selector(beginDoVoiceRecord)]) {
+            [self.delegate beginDoVoiceRecord];
+        }
+        [self.voiceOperator doVoiceRecordByFilename:self.fileName];
+    }
+        break;
+    case VoiceChatRecordingStatusRecording: {
+        
+    }
+        break;
+    case VoiceChatRecordingStatusEnd: {
+        
+        [self.voiceOperator finishRecoderWithSave:YES];
+    }
+        break;
+    case VoiceChatRecordingStatusCancel: {
+        [self.voiceOperator finishRecoderWithSave:NO];
+    }
+        break;
+    case VoiceChatRecordingStatusAudition: {
+        [self.voiceOperator finishRecoderWithSave:YES];
+    }
+        break;
+    case VoiceChatRecordingStatusSend: {
+        [self sendVoice];
+    }
+        break;
+        
+    default:
+        break;
+}
+*/
+
+- (void)chatToolBarDidStartRecording:(QIMChatToolBar *)toolBar {
+    self.fileName = [QIMUUIDTools UUID];
+    QIMVerboseLog(@"UUID == %@",self.fileName);
+    //开始录音
+    //            [recorderVC beginRecordByFileName:self.fileName];
+    if ([self.delegate respondsToSelector:@selector(beginDoVoiceRecord)]) {
+        [self.delegate beginDoVoiceRecord];
+    }
+    [self.voiceOperator doVoiceRecordByFilename:self.fileName];
+
+}
+
+- (void)chatToolBarDidCancelRecording:(QIMChatToolBar *)toolBar {
+    [self.voiceOperator finishRecoderWithSave:NO];
+}
+
+- (void)chatToolBarDidFinishRecoding:(QIMChatToolBar *)toolBar {
+    [self.voiceOperator finishRecoderWithSave:YES];
+}
+
+- (void)chatToolBarWillCancelRecoding:(QIMChatToolBar *)toolBar {
+    [self.voiceOperator finishRecoderWithSave:NO];
+}
+
+- (void)chatToolBarContineRecording:(QIMChatToolBar *)toolBar {
+    
 }
 
 @end

@@ -15,7 +15,7 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMAACollectionCell.h"
 #import "QIMJSONSerializer.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 
 @interface QIMAACollectionCell (){
     UILabel         * _titleLabel;          //活动标题
@@ -33,7 +33,7 @@
 
 @implementation QIMAACollectionCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     return kAACollectionCellWidthHeight;
 }
 
@@ -116,12 +116,12 @@
     }
     
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:kAACollectionCellWidth WihtHeight:kAACollectionCellWidthHeight - 20];
-    CGFloat leftOffset = (self.message.messageDirection == MessageDirection_Sent) ? 15 : 20;
+    [self setBackViewWithWidth:kAACollectionCellWidth WithHeight:kAACollectionCellWidthHeight - 20];
+    CGFloat leftOffset = (self.message.messageDirection == QIMMessageDirection_Sent) ? 15 : 20;
     _titleLabel.frame = CGRectMake(leftOffset, 5, self.backView.width - 25, 25);
     _descInfoView.frame = CGRectMake(_titleLabel.left, _titleLabel.bottom + 5, kAACollectionCellWidth, 60);
     _lineView = [[UIView alloc] initWithFrame:CGRectMake(leftOffset - 15, _descInfoView.bottom, kAACollectionCellWidth - leftOffset + 5.0f, 0.5f)];
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         _lineView.frame = CGRectMake(leftOffset - 10, _descInfoView.bottom, kAACollectionCellWidth - leftOffset + 10, 0.5f);
     }
     _lineView.backgroundColor = [UIColor qim_colorWithHex:0x9E9E9E];

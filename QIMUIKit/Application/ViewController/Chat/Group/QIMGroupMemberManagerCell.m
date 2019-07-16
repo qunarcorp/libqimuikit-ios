@@ -39,7 +39,7 @@
         _headImageView.layer.cornerRadius = kHeadImageWidth / 2;
         _headImageView.clipsToBounds = YES;
         _headImageView.contentMode = UIViewContentModeScaleAspectFit;
-        _headImageView.image = [UIImage imageNamed:@"singleHeaderDefault"];
+        _headImageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"singleHeaderDefault"];
         [self.contentView addSubview:_headImageView];
         
         _identityLabel = [[UILabel alloc] initWithFrame:CGRectZero];

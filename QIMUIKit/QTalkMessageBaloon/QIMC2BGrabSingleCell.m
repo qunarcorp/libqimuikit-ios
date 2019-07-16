@@ -7,12 +7,12 @@
 
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMC2BGrabSingleCell.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "QIMWebView.h"
 #import "QIMJSONSerializer.h"
 //#import "NSAttributedString+Attributes.h"
 #define kTextLabelTop       10
-#define kTextLableLeft      10
+#define kTextLableLeft      12
 #define kTextLableBottom    10
 #define kTextLabelRight     10
 #define kCellHeightCap      10
@@ -31,7 +31,7 @@
     UIButton *_grabSingleButtton;    //抢单按钮
     UILabel *_priceStrLabel;
     UILabel *_typeLabel;
-    Message *_c2BMessage;
+   QIMMessageModel *_c2BMessage;
 }
 
 + (CGFloat)getCellHeight {
@@ -42,7 +42,7 @@
     NSString *msgId = notify.object;
     if ([msgId isEqualToString:_c2BMessage.messageId] && [notify.userInfo objectForKey:@"message"]) {
         
-        Message *msg = [notify.userInfo objectForKey:@"message"];
+       QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         NSString *c2BExtendInfo = msg.extendInformation;
         NSDictionary *c2BMsgDict = [[QIMJSONSerializer sharedInstance] deserializeObject:c2BExtendInfo error:nil];
         NSString *c2BMsgId = nil;
@@ -66,11 +66,11 @@
     }
 }
 
-- (void)setMessage:(Message *)message {
+- (void)setMessage:(QIMMessageModel *)message {
     
     _c2BMessage = message;
     NSDictionary *grabSingleDic = nil;
-    if (message.extendInformation) {
+    if (message.extendInformation.length > 0) {
         grabSingleDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.extendInformation error:nil];
     } else {
         grabSingleDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];

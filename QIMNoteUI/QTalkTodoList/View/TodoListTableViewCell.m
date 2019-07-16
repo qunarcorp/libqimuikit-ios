@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/31.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "TodoListTableViewCell.h"
 #import "QIMNoteModel.h"
 #import "QIMNoteUICommonFramework.h"
@@ -78,3 +78,4 @@
 }
 
 @end
+#endif

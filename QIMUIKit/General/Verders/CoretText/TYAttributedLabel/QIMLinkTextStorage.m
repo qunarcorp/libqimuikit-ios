@@ -14,7 +14,7 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        self.underLineStyle = kCTUnderlineStyleSingle;
+        self.underLineStyle = kCTUnderlineStyleNone;
         self.modifier = kCTUnderlinePatternSolid;
     }
     return self;

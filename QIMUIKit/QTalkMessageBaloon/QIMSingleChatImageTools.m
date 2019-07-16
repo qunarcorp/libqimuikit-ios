@@ -26,8 +26,8 @@ static QIMSingleChatImageTools *__global_chat_image_tools = nil;
 - (id)init{
     self = [super init];
     if (self) {
-        _sentImageBg = [[UIImage imageNamed:@"im_sent_msg_bg"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
-        _receivedImageBg = [[UIImage imageNamed:@"im_receive_msg_bg"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
+        _sentImageBg = [[UIImage qim_imageNamedFromQIMUIKitBundle:@"im_sent_msg_bg"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
+        _receivedImageBg = [[UIImage qim_imageNamedFromQIMUIKitBundle:@"singleChatAddbg"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
     }
     return self;
 }
@@ -42,12 +42,12 @@ static QIMSingleChatImageTools *__global_chat_image_tools = nil;
 - (UIImage *)getImageDownloadFaildWithDirect:(int)direct{
     if (direct == 0) {
         if (_downFaildImage_Sent == nil) {
-            _downFaildImage_Sent = [UIImage imageNamed:kImageDownloadFailImageFileName];
+            _downFaildImage_Sent = [UIImage qim_imageNamedFromQIMUIKitBundle:kImageDownloadFailImageFileName];
         }
         return _downFaildImage_Sent;
     } else {
         if (_downFaildImage_Receive == nil) {
-            _downFaildImage_Receive = [UIImage imageNamed:kImageDownloadFailImageFileName];
+            _downFaildImage_Receive = [UIImage qim_imageNamedFromQIMUIKitBundle:kImageDownloadFailImageFileName];
         }
         return _downFaildImage_Receive;
     }
@@ -55,7 +55,7 @@ static QIMSingleChatImageTools *__global_chat_image_tools = nil;
 
 - (UIImage *)getImageDownloading{
     if (_downingImage == nil) {
-        _downingImage = [UIImage imageNamed:kImageDownloadFailImageFileName];
+        _downingImage = [UIImage qim_imageNamedFromQIMUIKitBundle:kImageDownloadFailImageFileName];
     }
     return _downingImage;
 }

@@ -47,7 +47,7 @@ static NSArray *_sentImageArray = nil;
 
 @synthesize delegate = _delegate;
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     return kBackViewHeight + kCellHeightCap + 20;
 }
 
@@ -68,11 +68,11 @@ static NSArray *_sentImageArray = nil;
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         
         if (_receiveImageArray == nil) {
-            _receiveImageArray = [[NSArray alloc] initWithObjects:[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon1"],[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon2"],[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon3"],[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon4"], nil];
+            _receiveImageArray = [[NSArray alloc] initWithObjects:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon1"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon2"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon3"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon4"], nil];
         }
         
         if (_sentImageArray == nil) {
-            _sentImageArray = [[NSArray alloc] initWithObjects:[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon1"],[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon2"],[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon3"],[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon4"], nil];
+            _sentImageArray = [[NSArray alloc] initWithObjects:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon1"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon2"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon3"],[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon4"], nil];
         }
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onClick)];
@@ -100,7 +100,7 @@ static NSArray *_sentImageArray = nil;
         
         _errorButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 17, 17)];
         [_errorButton setHidden:YES];
-        [_errorButton setImage:[UIImage imageNamed:@"SignUpError"] forState:UIControlStateNormal];
+        [_errorButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"SignUpError"] forState:UIControlStateNormal];
         [_errorButton addTarget:self action:@selector(resendMessage) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_errorButton];
         
@@ -121,25 +121,27 @@ static NSArray *_sentImageArray = nil;
     
 }
 
-- (void)updatePlayVoiceTime:(NSNotification *)notify{
+- (void)updatePlayVoiceTime:(NSNotification *)notify {
     NSDictionary *userInfo = notify.userInfo;
     NSString *msgId = [userInfo objectForKey:kNotifyPlayVoiceTimeMsgId];
     long long time = [[userInfo objectForKey:kNotifyPlayVoiceTimeTime] longLongValue];
     if ([msgId isEqualToString:self.message.messageId]) {
-        int sec = time % 60;
-        if (!_minute) {
-            
-            [_timeLabel setText:[NSString stringWithFormat:@"%02d''", (sec + 1) % 60]];
-        } else {
-            
-            if (sec + 1 == 60) {
-                sec = -1;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            int sec = time % 60;
+            if (!_minute) {
+                
+                [_timeLabel setText:[NSString stringWithFormat:@"%02d''", (sec + 1) % 60]];
+            } else {
+                
+                if (sec + 1 == 60) {
+                    sec = -1;
+                }
+                [_timeLabel setText:[NSString stringWithFormat:@"%ld'%02d''", (long)_minute, (sec + 1) % 60]];
             }
-            [_timeLabel setText:[NSString stringWithFormat:@"%ld'%02d''", (long)_minute, (sec + 1) % 60]];
-        }
-        if (sec == 58) {
-            _minute += 1;
-        }
+            if (sec == 58) {
+                _minute += 1;
+            }
+        });
     }
 }
 
@@ -150,7 +152,8 @@ static NSArray *_sentImageArray = nil;
     
     NSString *msgId = notifi.object;
     if ([msgId isEqual:self.message.messageId]) {
-        self.message.readTag = 1;
+        //Mark By DB
+//        self.message.readTag = 1;
         [self refreshUI];
     }
 }
@@ -159,7 +162,8 @@ static NSArray *_sentImageArray = nil;
     
     NSString *msgId = notification.object;
     if ([msgId isEqual:self.message.messageId]) {
-        self.message.readTag = 1;
+        //Mark By DB
+//        self.message.readTag = 1;
         [self refreshUI];
         [_voiceImageView stopAnimating];
     }
@@ -176,10 +180,11 @@ static NSArray *_sentImageArray = nil;
         [[QIMPlayVoiceManager defaultPlayVoiceManager] playVoiceWithMsgId:self.message.messageId];
         [_timeLabel setText:@"00''"];
         [_voiceImageView startAnimating];
-        if (self.message.messageDirection == MessageDirection_Received) {
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
             //如果语音未读，mssageID落地
             [[QIMVoiceNoReadStateManager sharedVoiceNoReadStateManager] setVoiceNoReadStateWithMsgId:self.message.messageId ChatId:self.chatId withState:YES];
-            self.message.readTag = 1;
+            //Mark By DB
+//            self.message.readTag = 1;
             [self refreshUI];
         }
     }
@@ -206,7 +211,8 @@ static NSArray *_sentImageArray = nil;
 
 - (void)doChatVCRefresh
 {
-    NSDictionary *infoDic = [self.message getMsgInfoDic];
+//    NSDictionary *infoDic = [self.message getMsgInfoDic];
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     int voiceLength = [[infoDic objectForKey:@"Seconds"] intValue];
     int minute = voiceLength / 60 ;
     int sec = voiceLength % 60;
@@ -223,16 +229,16 @@ static NSArray *_sentImageArray = nil;
             frameWeight = kBackViewWidth;
         }
         
-        if (self.message.messageDirection == MessageDirection_Received) {
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
             
             CGRect frame = {{kBackViewCap+45,kCellHeightCap / 2.0},{frameWeight,kBackViewHeight}};
             [self.backView setFrame:frame];
-            UIImage *imageFriend = [UIImage imageNamed:@"chat_Avoice_bg"];
+            UIImage *imageFriend = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_Avoice_bg"];
             
             [self.backView setImage:[imageFriend stretchableImageWithLeftCapWidth:20 topCapHeight:17]];
             
             [_voiceImageView setFrame:CGRectMake(kVoiceImageLeft, kVoiceImageTop, kVoiceImageWidth, kVoiceImageHeight)];
-            [_voiceImageView setImage:[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon1"]];
+            [_voiceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon1"]];
             [_voiceImageView setAnimationImages:_receiveImageArray];
             [_voiceImageView setAnimationDuration:1];
             
@@ -251,21 +257,21 @@ static NSArray *_sentImageArray = nil;
             
             CGRect frame = {{self.frameWidth - kBackViewCap - frameWeight - 45,kBackViewCap},{frameWeight,kBackViewHeight}};
             [self.backView setFrame:frame];
-            UIImage *imageMyself = [UIImage imageNamed:@"chat_Bvoice_bg"];
+            UIImage *imageMyself = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_Bvoice_bg"];
             
             [self.backView setImage:[imageMyself stretchableImageWithLeftCapWidth:20 topCapHeight:15]];
             
             
             CGRect voiceImageFrame = CGRectMake(self.backView.frame.size.width-kVoiceImageWidth-KVoiceImageRight-8, kVoiceImageTop, kVoiceImageWidth, kVoiceImageHeight);
             [_voiceImageView setFrame:voiceImageFrame];
-            [_voiceImageView setImage:[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon1"]];
+            [_voiceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon1"]];
             [_voiceImageView setAnimationImages:_sentImageArray];
             [_voiceImageView setAnimationDuration:1];
             
             CGRect timeFrame = CGRectMake(self.backView.frame.origin.x-4-KTimeLabelWeight, kBackViewCap, KTimeLabelWeight, kBackViewHeight);
             [_timeLabel setFrame:timeFrame];
-            [_errorButton setHidden:self.message.messageState != MessageState_Faild];
-            [_errorButton setHidden:self.message.messageState != MessageState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
             CGRect errorFrame = _errorButton.frame;
             errorFrame.origin.x = _timeLabel.frame.origin.x - kBackViewCap - errorFrame.size.width;
             errorFrame.origin.y = _timeLabel.frame.origin.y;
@@ -300,7 +306,8 @@ static NSArray *_sentImageArray = nil;
 
 - (void)doGroupChatVCRefresh
 {
-    NSDictionary *infoDic = [self.message getMsgInfoDic];
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+//    [self.message getMsgInfoDic];
     int voiceLength = [[infoDic objectForKey:@"Seconds"] intValue];
     int minute = voiceLength / 60;
     int sec = voiceLength % 60;
@@ -316,7 +323,7 @@ static NSArray *_sentImageArray = nil;
         else {
             frameWeight = kBackViewWidth;
         }
-        if (self.message.messageDirection == MessageDirection_Received) {
+        if (self.message.messageDirection == QIMMessageDirection_Received) {
             
             [_dateLabel setText:self.messageDate];
             [_dateLabel setTextColor:[UIColor darkGrayColor]];
@@ -326,12 +333,12 @@ static NSArray *_sentImageArray = nil;
 
             CGRect frame = {{kBackViewCap+45,kCellHeightCap / 2.0+20},{frameWeight,kBackViewHeight}};
             [self.backView setFrame:frame];
-            UIImage *imageFriend = [UIImage imageNamed:@"chat_Avoice_bg"];
+            UIImage *imageFriend = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_Avoice_bg"];
             
             [self.backView setImage:[imageFriend stretchableImageWithLeftCapWidth:20 topCapHeight:15]];
             
             [_voiceImageView setFrame:CGRectMake(kVoiceImageLeft, kVoiceImageTop, kVoiceImageWidth, kVoiceImageHeight)];
-            [_voiceImageView setImage:[UIImage imageNamed:@"Chat_VoiceBubble_Friend_Icon1"]];
+            [_voiceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Friend_Icon1"]];
             [_voiceImageView setAnimationImages:_receiveImageArray];
             [_voiceImageView setAnimationDuration:1];
             
@@ -348,13 +355,13 @@ static NSArray *_sentImageArray = nil;
             
             CGRect frame = {{self.frameWidth - kBackViewCap - frameWeight - 45,kBackViewCap},{frameWeight,kBackViewHeight}};
             [self.backView setFrame:frame];
-            UIImage *imageMyself = [UIImage imageNamed:@"chat_Bvoice_bg"];
+            UIImage *imageMyself = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_Bvoice_bg"];
             
             [self.backView setImage:[imageMyself stretchableImageWithLeftCapWidth:20 topCapHeight:15]];
             
             CGRect voiceImageFrame = CGRectMake(self.backView.frame.size.width-kVoiceImageWidth-KVoiceImageRight-8, kVoiceImageTop, kVoiceImageWidth, kVoiceImageHeight);
             [_voiceImageView setFrame:voiceImageFrame];
-            [_voiceImageView setImage:[UIImage imageNamed:@"Chat_VoiceBubble_Myself_Icon1"]];
+            [_voiceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Chat_VoiceBubble_Myself_Icon1"]];
             [_voiceImageView setAnimationImages:_sentImageArray];
             [_voiceImageView setAnimationDuration:1];
             
@@ -362,8 +369,8 @@ static NSArray *_sentImageArray = nil;
             [_timeLabel setFrame:timeFrame];
             [_timeLabel setTextColor:[UIColor qtalkTextBlackColor]];
             
-            [_errorButton setHidden:self.message.messageState != MessageState_Faild];
-            [_errorButton setHidden:self.message.messageState != MessageState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
+            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
             CGRect errorFrame = _errorButton.frame;
             errorFrame.origin.x = self.backView.frame.origin.x - kBackViewCap - errorFrame.size.width;
             errorFrame.origin.y = self.backView.frame.origin.y;
@@ -392,11 +399,11 @@ static NSArray *_sentImageArray = nil;
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;
@@ -407,7 +414,11 @@ static NSArray *_sentImageArray = nil;
         [menuList addObject:@(MA_CopyOriginMsg)];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeAllObjects];
+//        [menuList removeObject:@(MA_Refer)];
+//        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Delete)];
+        [menuList removeObject:@(MA_Forward)];
+//        [menuList removeObject:@(MA_Repeater)];
     }
     return menuList;
 }

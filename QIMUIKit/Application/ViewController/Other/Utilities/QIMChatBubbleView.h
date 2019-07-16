@@ -19,6 +19,8 @@ typedef enum {
 
 - (void)removeMask;
 
--(void)setBgColor:(UIColor *)color;
+- (void)setBgColor:(UIColor *)color;
+
+- (void)setStrokeColor:(UIColor *)color;
 
 @end

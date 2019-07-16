@@ -17,6 +17,7 @@
 #import "QTalkVideoAssetViewController.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 #import "MBProgressHUD.h"
+#import "QIMWatchDog.h"
 #import "QTPHImagePickerManager.h"
 
 //Helper methods
@@ -247,7 +248,12 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 {
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.collectionView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 46);
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        self.view.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]);
+        [self.collectionView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    } else {
+        self.collectionView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 46);
+    }
 }
 
 - (void)setupButtons
@@ -267,6 +273,9 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 - (void)initBottomView{
     
     _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 64 - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT], [UIScreen mainScreen].bounds.size.width, 49)];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 64 - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT], [[UIScreen mainScreen] qim_rightWidth], 49)];
+    }
     [_bottomView setBackgroundColor:[UIColor qim_colorWithHex:0xf1f1f1 alpha:1]];
     [self.view addSubview:_bottomView];
     
@@ -297,8 +306,8 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     [_photoTypeButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
     [_photoTypeButton setFrame:CGRectMake(_editButton.right + 15, 8, 100, 30)];
     [_photoTypeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-    [_photoTypeButton setImage:[UIImage imageNamed:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
-    [_photoTypeButton setImage:[UIImage imageNamed:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
+    [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
+    [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
     [_photoTypeButton setTitle:self.picker.isOriginal ? @" 原图" : @" 标清" forState:UIControlStateNormal];
     [_photoTypeButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_photoTypeButton setEnabled:NO];
@@ -306,10 +315,13 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     [_bottomView addSubview:_photoTypeButton];
     
     _sendButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 90, 8, 80, 30)];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        _sendButton.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 90, 8, 80, 30);
+    }
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_sendButton setBackgroundImage:[[UIImage imageNamed:@"common_button_focus_nor"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateNormal];
-    [_sendButton setBackgroundImage:[[UIImage imageNamed:@"common_button_focus_pressed"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateHighlighted];
-    [_sendButton setBackgroundImage:[[UIImage imageNamed:@"common_button_disabled"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateDisabled];
+    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_focus_nor"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateNormal];
+    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_focus_pressed"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateHighlighted];
+    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_disabled"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateDisabled];
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_sendButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
@@ -373,6 +385,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self closeHUD];
                 QIMImageEditViewController * imageEditVC = [[QIMImageEditViewController alloc] initWithImage:result];
+                imageEditVC.fromAlum = YES;
                 imageEditVC.delegate = self;
                 [weakSelf.navigationController pushViewController:imageEditVC animated:YES];
             });
@@ -468,6 +481,8 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    CFAbsoluteTime startTime1 = [[QIMWatchDog sharedInstance] startTime];
+
     QTPHGridViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:QTPHGridViewCellIdentifier
                                                              forIndexPath:indexPath];
     
@@ -476,33 +491,16 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     cell.tag = currentTag;
     
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
-    
-    /*if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        QIMVerboseLog(@"Image manager: Requesting FIT image for iPad");
-        [self.imageManager requestImageForAsset:asset
-                                     targetSize:AssetGridThumbnailSize
-                                    contentMode:PHImageContentModeAspectFit
-                                        options:nil
-                                  resultHandler:^(UIImage *result, NSDictionary *info) {
-                                      
-                                      // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                                      if (cell.tag == currentTag) {
-                                          [cell.imageView setImage:result];
-                                      }
-                                  }];
-    }
-    else*/
+
     {
         //QIMVerboseLog(@"Image manager: Requesting FILL image for iPhone");
         @autoreleasepool {
             PHImageRequestOptions *options = [PHImageRequestOptions new];
-            options.networkAccessAllowed = YES;
+            options.networkAccessAllowed = NO;
             options.resizeMode = PHImageRequestOptionsResizeModeFast;
             options.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
-            options.synchronous = YES;
             
-            [self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(92, 92) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            [self.imageManager requestImageForAsset:asset targetSize:CGSizeMake(92, 92) contentMode:PHImageContentModeAspectFit options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                 [cell.imageView setImage:result];
             }];
             
@@ -541,7 +539,6 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     } else {
         cell.selected = NO;
     }
-    
     return cell;
 }
 

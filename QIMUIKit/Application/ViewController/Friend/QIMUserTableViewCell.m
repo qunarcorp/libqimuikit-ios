@@ -68,8 +68,6 @@
     if (self) {
         [self.contentView addSubview:self.headerView];
         [self.contentView addSubview:self.nameLabel];
-//        self.headerView.centerY = self.contentView.centerY;
-//        self.nameLabel.centerY = self.contentView.centerY;
     }
     return self;
 }

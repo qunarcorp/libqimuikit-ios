@@ -73,7 +73,7 @@
         [NSString stringWithFormat:@"chatBGImage_%@.jpg",@(indexPath.row * 3 + i)];
         UIImage * image = [_chatBgDic objectForKey:imageName];
         if (image == nil) {
-            image = [UIImage imageNamed:imageName];
+            image = [UIImage qim_imageNamedFromQIMUIKitBundle:imageName];
             if (image) {
                 UIGraphicsBeginImageContextWithOptions([QIMChatBGImageDisplayCell getImageSize], NO, [UIScreen mainScreen].scale);
                 [image drawInRect:CGRectMake(0, 0, [QIMChatBGImageDisplayCell getImageSize].width, [QIMChatBGImageDisplayCell getImageSize].height)];
@@ -109,7 +109,7 @@
 -(void)imageDisplayCell:(QIMChatBGImageDisplayCell *)cell didSelectedImageAtIndex:(NSInteger )index
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(defaultQIMChatBGImageSelectController:willPopWithImage:)]) {
-        [self.delegate defaultQIMChatBGImageSelectController:self willPopWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"chatBGImage_%@.jpg",@([_mainTableView indexPathForCell:cell].row * 3 + index)]]];
+        [self.delegate defaultQIMChatBGImageSelectController:self willPopWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:[NSString stringWithFormat:@"chatBGImage_%@.jpg",@([_mainTableView indexPathForCell:cell].row * 3 + index)]]];
     }
     [self.navigationController popViewControllerAnimated:YES];
 }

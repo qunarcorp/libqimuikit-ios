@@ -14,7 +14,7 @@
 #import "QIMJSONSerializer.h"
 #import "NSBundle+QIMLibrary.h"
 
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
 #import "QIMLocalLog.h"
 #endif
 #import "QIMLocalLogTableViewCell.h"
@@ -169,7 +169,7 @@
 }
 
 - (void)sendLogAlertMessage {
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     NSMutableArray *logArray = [NSMutableArray arrayWithCapacity:5];
     for (NSInteger i = 0; i < self.selectArray.count; i++) {
         NSDictionary *logFileDict = self.selectArray[i];
@@ -179,10 +179,10 @@
     NSString *zipFileName = [NSString stringWithFormat:@"%@-log.zip", [[QIMKit sharedInstance] getLastJid]];
 
     NSString *zipFilePath = [[QIMZipArchive sharedInstance] zipFiles:logArray ToFile:[[QIMLocalLog sharedInstance] getLocalZipLogsPath] ToZipFileName:zipFileName WithZipPassword:@"lilulucas.li"];
-    NSString *httpUrl = [QIMKit updateLoadFile:[NSData dataWithContentsOfFile:zipFilePath] WithMsgId:nil WithMsgType:QIMMessageType_File WihtPathExtension:zipFilePath.pathExtension];
+    NSString *httpUrl = [QIMKit updateLoadFile:[NSData dataWithContentsOfFile:zipFilePath] WithMsgId:nil WithMsgType:QIMMessageType_File WithPathExtension:zipFilePath.pathExtension];
     if (httpUrl.length) {
         if (![httpUrl qim_hasPrefixHttpHeader]) {
-            httpUrl = [NSString stringWithFormat:@"%@/%@", @"https://qt.qunar.com", httpUrl];
+            httpUrl = [NSString stringWithFormat:@"%@/%@", @"https://qim.qunar.com", httpUrl];
         }
         [self submitLogWithFileUrl:httpUrl];
     }
@@ -217,7 +217,7 @@
     [requestDic setObject:@"日志反馈" forKey:@"alt_body"];
     [requestDic setObject:@(YES) forKey:@"is_html"];
     NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:requestDic error:nil];
-    NSURL *requestUrl = [NSURL URLWithString:@"http://qt.qunar.com/test_public/public/mainSite/sendMail.php"];
+    NSURL *requestUrl = [NSURL URLWithString:@"http://qim.qunar.com/test_public/public/mainSite/sendMail.php"];
     QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:requestUrl];
     [request setHTTPMethod:QIMHTTPMethodPOST];
     [request setHTTPBody:requestData];
@@ -253,7 +253,7 @@
 
 - (void)sendLogWithDetail:(NSString *)detailLog {
     
-    [[QIMKit sharedInstance] sendMessage:detailLog WithInfo:nil ToUserId:@"lilulucas.li@ejabhost1" WihtMsgType:QIMMessageType_Text];
+    [[QIMKit sharedInstance] sendMessage:detailLog WithInfo:nil ToUserId:@"lilulucas.li@ejabhost1" WithMsgType:QIMMessageType_Text];
     
     for (NSInteger i = 0; i < self.selectArray.count; i++) {
         NSDictionary *logFileDict = self.selectArray[i];
@@ -261,14 +261,14 @@
         NSData *data = [NSData dataWithContentsOfFile:filePath];
         if (data.length > 0 && data) {
             NSString *msgId = [QIMUUIDTools UUID];
-            NSString *httpUrl = [QIMKit updateLoadFile:data WithMsgId:msgId WithMsgType:QIMMessageType_File WihtPathExtension:filePath.pathExtension];
+            NSString *httpUrl = [QIMKit updateLoadFile:data WithMsgId:msgId WithMsgType:QIMMessageType_File WithPathExtension:filePath.pathExtension];
             NSDictionary * attributes = [logFileDict objectForKey:@"logFileAttribute"];
             NSNumber *theFileSize = [attributes objectForKey:NSFileSize];
             NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:theFileSize.longLongValue];
             NSString *httpfileName = [filePath lastPathComponent];
             if (attributes && theFileSize && data && httpUrl && httpfileName && fileSizeStr) {
                 NSString *messageStr = [[QIMJSONSerializer sharedInstance] serializeObject:@{@"HttpUrl":httpUrl, @"FileName":httpfileName, @"FileSize":fileSizeStr, @"FileLength":theFileSize}];
-                [[QIMKit sharedInstance] sendMessage:messageStr WithInfo:nil ToUserId:@"lilulucas.li@ejabhost1" WihtMsgType:QIMMessageType_File];
+                [[QIMKit sharedInstance] sendMessage:messageStr WithInfo:nil ToUserId:@"lilulucas.li@ejabhost1" WithMsgType:QIMMessageType_File];
             }
         }
     }

@@ -16,6 +16,9 @@
 #import "QIMPublicNumberCardVC.h"
 #import "QIMMicroTourGuideVC.h"
 #import "QIMNavBackBtn.h"
+#if __has_include("QIMIPadWindowManager.h")
+#import "QIMIPadWindowManager.h"
+#endif
 
 @interface QIMPublicNumberVC ()<UITableViewDataSource,UITableViewDelegate,UISearchControllerDelegate,UISearchDisplayDelegate,UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UIAlertViewDelegate>{
     
@@ -73,9 +76,16 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
-- (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
+- (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
+{
     [self.view endEditing:YES];
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+#if __has_include("QIMIPadWindowManager.h")
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+#endif
+    }
 }
 
 #pragma mark - init UI
@@ -100,7 +110,7 @@
     
     [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"contact_tab_public_number"]];
     
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"header_icon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"header_icon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
     [self.navigationItem setRightBarButtonItem:rightItem animated:YES];
 }
 
@@ -174,7 +184,7 @@
     [_moreView addSubview:_moreMenuView];
     
     UIImageView *imageBgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _moreMenuView.width, _moreMenuView.height)];
-    [imageBgView setImage:[[UIImage imageNamed:@"mailapp_Attach_list"] stretchableImageWithLeftCapWidth:15 topCapHeight:20]];
+    [imageBgView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"mailapp_Attach_list"] stretchableImageWithLeftCapWidth:15 topCapHeight:20]];
     [_moreMenuView addSubview:imageBgView];
     
     CGFloat startY = 0;
@@ -265,7 +275,7 @@
     if ([searchBar respondsToSelector:@selector(setBarTintColor:)]) {
         [searchBar setBarTintColor:[UIColor qim_colorWithHex:0xe6e7e9 alpha:1.0]];
     }
-    [searchBar setBackgroundImage:[UIImage imageNamed:@"searchbar_bg"]];
+    [searchBar setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"searchbar_bg"]];
     return searchBar;
 }
 

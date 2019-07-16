@@ -28,7 +28,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _dataSource = [NSMutableArray array];
-    NSArray *msgList = [[QIMKit sharedInstance] getPublicNumberMsgListById:self.userId WihtLimit:50 WithOffset:0];
+    NSArray *msgList = [[QIMKit sharedInstance] getPublicNumberMsgListById:self.userId WithLimit:50 WithOffset:0];
     [_dataSource addObjectsFromArray:msgList]; 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageList:) name:kNotificationMessageUpdate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageState:) name:@"kNotificationUpdateQDMessageState" object:nil];
@@ -53,7 +53,7 @@
 - (void)updateMessageList:(NSNotification *)notify{
     NSString *userId = notify.object;
     if ([self.userId isEqualToString:userId]) {
-        Message *msg = [notify.userInfo objectForKey:@"message"];
+       QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         [_dataSource addObject:msg];
         if (_ready) {
             [self initMessage:msg];
@@ -62,7 +62,7 @@
     }
 }
 
-- (void)initMessage:(Message *)msg{
+- (void)initMessage:(QIMMessageModel *)msg{
     switch (msg.messageType) {
         case QIMMessageType_Time:
         {
@@ -172,7 +172,7 @@
 }
 
 - (void)initDataSource{
-    for (Message *msg in _dataSource) {
+    for (QIMMessageModel *msg in _dataSource) {
         [self initMessage:msg];
     }
     [self scrollToBottom];
@@ -180,29 +180,6 @@
 
 - (void)openSingleChat:(NSString *)jid{
     [QIMFastEntrance openSingleChatVCByUserId:jid];
-    
-    
-//    NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
-    /*
-    NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByName:jid];
-    if (userInfoDic == nil) {
-        [[QIMKit sharedInstance] updateUserHeaderImageWithXmppId:jid];
-        userInfoDic = [[QIMKit sharedInstance] getUserInfoByName:jid];
-    } */
-    /*
-    if (userInfoDic) {
-        NSString *xmppId = [userInfoDic objectForKey:@"XmppId"];
-        NSString *name = [userInfoDic objectForKey:@"Name"];
-        [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId];
-        QIMChatVC * chatVC  = [[QIMChatVC alloc] init];
-        [chatVC setStype:kSessionType_Chat];
-        [chatVC setChatId:xmppId];
-        [chatVC setName:name];
-        [chatVC setTitle:name];
-        [chatVC setChatType:ChatType_SingleChat];
-        [self.navigationController popToRootVCThenPush:chatVC animated:YES];
-    }
-     */
 }
 
 - (void)openGroupChat:(NSString *)jid{
@@ -210,14 +187,6 @@
     if (groupDic) {
         NSString *jid = [groupDic objectForKey:@"GroupId"];
         [QIMFastEntrance openGroupChatVCByGroupId:jid];
-        /*
-        NSString *name = [groupDic objectForKey:@"Name"];
-        [[QIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
-        QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
-        [chatGroupVC setTitle:name];
-        [chatGroupVC setChatId:jid];
-        [self.navigationController popToRootVCThenPush:chatGroupVC animated:YES];
-         */
     }
 }
 

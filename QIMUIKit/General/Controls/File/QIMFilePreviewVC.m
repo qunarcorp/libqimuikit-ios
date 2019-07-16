@@ -105,6 +105,7 @@
     
     [self initBottomView];
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+    
     _fileName = [infoDic objectForKey:@"FileName"];
     
     NSString *downLoad = [[QIMKit sharedInstance] getDownloadFilePath];
@@ -128,7 +129,19 @@
         fileExt = [_fileName pathExtension];
         fileMd5 = [NSString stringWithFormat:@"%@.%@", fileMd5, fileExt];
     }
+    
     _filePath = [downLoad stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileMd5 ? fileMd5 : @""]];
+    
+    NSString * localPath = [infoDic objectForKey:@"IPLocalPath"];
+    
+    if (localPath && localPath.length> 0) {
+        if([[NSFileManager defaultManager] fileExistsAtPath:localPath isDirectory:nil]){
+           _filePath = localPath;
+        } else {
+
+        }
+    }
+    
     {
         _downloadView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height-_bottomView.top)];
         [_downloadView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
@@ -136,7 +149,7 @@
         
         UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake((self.view.width - 60)/2.0, 100, 60, 60)];
         [iconView setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
-        [iconView setImage:[QIMFileIconTools getFileIconWihtExtension:_fileName.pathExtension]];
+        [iconView setImage:[QIMFileIconTools getFileIconWithExtension:_fileName.pathExtension]];
         [_downloadView addSubview:iconView];
         
         UILabel *fileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, iconView.bottom + 10, self.view.width, 40)];
@@ -344,6 +357,10 @@
 - (void)onRepeatButton:(UIButton *)sender{
     QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
     QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
+    if (self.message.extendInformation.length <= 0) {
+        self.message.extendInformation = self.message.message;
+    }
+    self.message.messageType = QIMMessageType_File;
     [controller setMessage:self.message];
     if ([[QIMKit sharedInstance] getIsIpad]){
         [[[[UIApplication sharedApplication].delegate window] rootViewController] presentViewController:nav animated:YES completion:nil];
@@ -458,8 +475,8 @@
     
     _cancelDownButton = [[UIButton alloc] initWithFrame:CGRectMake(_progressView.right + 10, 0, 40, 40)];
     [_cancelDownButton setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
-    [_cancelDownButton setImage:[UIImage imageNamed:@"cancel_down"] forState:UIControlStateNormal];
-    [_cancelDownButton setImage:[UIImage imageNamed:@"cancel_down_pressed"] forState:UIControlStateHighlighted];
+    [_cancelDownButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"cancel_down"] forState:UIControlStateNormal];
+    [_cancelDownButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"cancel_down_pressed"] forState:UIControlStateHighlighted];
     [_cancelDownButton addTarget:self action:@selector(onCancelButton:) forControlEvents:UIControlEventTouchUpInside];
     [_progressBgView addSubview:_cancelDownButton];
 }
@@ -493,7 +510,7 @@
     
     UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake((self.view.width - 60)/2.0, 100, 60, 60)];
     [iconView setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
-    [iconView setImage:[QIMFileIconTools getFileIconWihtExtension:fileName.pathExtension]];
+    [iconView setImage:[QIMFileIconTools getFileIconWithExtension:fileName.pathExtension]];
     [_downloadView addSubview:iconView];
     
     UILabel *fileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, iconView.bottom + 10, self.view.width, 40)];

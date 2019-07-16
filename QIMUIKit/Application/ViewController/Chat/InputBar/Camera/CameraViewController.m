@@ -10,7 +10,8 @@
 
 #import "CameraViewController.h"
 #import "QIMImageUtil.h"
-#import "UIImage+MultiFormat.h"
+#import "UIImage+QIMMultiFormat.h"
+#import "UIImage+QIMUIKit.h"
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
@@ -162,7 +163,7 @@ typedef enum {
     
     if (!_focusCursor) {
         
-        _focusCursor = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"camera_focus"]];
+        _focusCursor = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_focus"]];
         _focusCursor.frame = CGRectMake(0, 0, 50, 50);
         _focusCursor.alpha = 0;
         
@@ -176,7 +177,7 @@ typedef enum {
         
         _flashButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _flashButton.frame = CGRectMake(10, 5, 50, 50);
-        [_flashButton setImage:[UIImage imageNamed:@"camera_flash_auto_a"] forState:UIControlStateNormal];
+        [_flashButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_flash_auto_a"] forState:UIControlStateNormal];
         [_flashButton addTarget:self action:@selector(flashButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _flashButton;
@@ -188,7 +189,7 @@ typedef enum {
         
         _changeDeviceBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _changeDeviceBtn.frame = CGRectMake(self.view.width - 60, 5, 50, 50);
-        [_changeDeviceBtn setImage:[UIImage imageNamed:@"icon_camera_flip_a"] forState:UIControlStateNormal];
+        [_changeDeviceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_camera_flip_a"] forState:UIControlStateNormal];
         [_changeDeviceBtn addTarget:self action:@selector(toggleButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _changeDeviceBtn;
@@ -201,8 +202,8 @@ typedef enum {
         _takeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_takeButton setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleWidth];
         _takeButton.frame = CGRectMake((self.view.width - 65) / 2, self.view.height - 70 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], 65, 65);
-        [_takeButton setBackgroundImage:[UIImage imageNamed:@"btn_camera_takephoto"] forState:UIControlStateNormal];
-        [_takeButton setImage:[UIImage imageNamed:@"icon_camera_photo"] forState:UIControlStateNormal];
+        [_takeButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"btn_camera_takephoto"] forState:UIControlStateNormal];
+        [_takeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_camera_photo"] forState:UIControlStateNormal];
         [_takeButton addTarget:self action:@selector(takeButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _takeButton;
@@ -214,8 +215,8 @@ typedef enum {
         
         _recordingButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _recordingButton.frame = CGRectMake((self.view.width - 65) / 2, self.view.height - 70 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], 65, 65);
-        [_recordingButton setBackgroundImage:[UIImage imageNamed:@"mqz_v_record_start"] forState:UIControlStateNormal];
-        [_recordingButton setBackgroundImage:[UIImage imageNamed:@"mqz_v_record_stop"] forState:UIControlStateSelected];
+        [_recordingButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"mqz_v_record_start"] forState:UIControlStateNormal];
+        [_recordingButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"mqz_v_record_stop"] forState:UIControlStateSelected];
         [_recordingButton addTarget:self action:@selector(recordingButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         _recordingButton.hidden = YES;
     }
@@ -228,7 +229,7 @@ typedef enum {
         
         _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _cancelBtn.frame = CGRectMake(15, self.view.height - 70 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], 70, 70);
-        [_cancelBtn setImage:[UIImage imageNamed:@"icon_cancel_white"] forState:UIControlStateNormal];
+        [_cancelBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_cancel_white"] forState:UIControlStateNormal];
         [_cancelBtn addTarget:self action:@selector(cancelHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _cancelBtn;
@@ -806,17 +807,17 @@ typedef enum {
     switch (_flashMode) {
         case AVCaptureFlashModeAuto:
         {
-            [_flashButton setImage:[UIImage imageNamed:@"camera_flash_auto_a"] forState:UIControlStateNormal];
+            [_flashButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_flash_auto_a"] forState:UIControlStateNormal];
         }
             break;
         case AVCaptureFlashModeOn:
         {
-            [_flashButton setImage:[UIImage imageNamed:@"camera_flash_on_a"] forState:UIControlStateNormal];
+            [_flashButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_flash_on_a"] forState:UIControlStateNormal];
         }
             break;
         case AVCaptureFlashModeOff:
         {
-            [_flashButton setImage:[UIImage imageNamed:@"camera_flash_off_a"] forState:UIControlStateNormal];
+            [_flashButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_flash_off_a"] forState:UIControlStateNormal];
         }
             break;
             

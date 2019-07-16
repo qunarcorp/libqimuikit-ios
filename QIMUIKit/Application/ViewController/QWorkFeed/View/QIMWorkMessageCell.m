@@ -151,15 +151,15 @@
             self.contentLabel.text = noticeMsgModel.content;
         }
     } else {
-        NSString *userId = [NSString stringWithFormat:@"%@@%@", userFrom, userFromHost];
+        NSString *userId = [NSString stringWithFormat:@"%@@%@", userFrom, userFromHost ? userFromHost : [[QIMKit sharedInstance] getDomain]];
         if (userId.length > 0) {
-            [self.headerImageView qim_setImageWithJid:userId];
+            [self.headerImageView qim_setImageWithJid:userId placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
             self.nameLabel.text = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
             self.nameLabel.centerY = self.headerImageView.centerY;
             [self.nameLabel sizeToFit];
 
             NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-            NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
+            NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
             NSString *lastDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
             if(lastDp.length > 0) {
                 self.organLabel.text = [NSString stringWithFormat:@"%@", lastDp];
@@ -195,6 +195,9 @@
         }
     }
     self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, SCREEN_WIDTH - 56 - 6 - self.headerImageView.right - 6, 30);
+    if (noticeMsgModel.eventType == QIMWorkFeedNotifyTypePOSTAt && self.cellType == QIMWorkMomentCellTypeMyMessage) {
+        self.contentLabel.text = @"Hi~你被Cue到啦，快来看一下吧～";
+    }
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:(noticeMsgModel.createTime/1000)];
     self.timeLabel.text = [timeDate qim_timeIntervalDescription];
     self.timeLabel.frame = CGRectMake(self.headerImageView.right + 6, self.contentLabel.bottom + 6, 100, 20);

@@ -6,7 +6,8 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+#import "QIMCommonUIFramework.h"
+#if __has_include("QIMNoteManager.h")
 #import "QIMBaseSelectedTableViewCell.h"
 
 @class QIMNoteModel;
@@ -22,5 +23,5 @@
 
 - (BOOL)isCellSelected;
 
-
 @end
+#endif

@@ -3,19 +3,19 @@
 
 @implementation QIMChatToolBarItem
 
-+ (instancetype)barItemWithKind:(BarItemKind)itemKind normal:(NSString*)normalStr high:(NSString *)highLstr select:(NSString *)selectStr
++ (instancetype)barItemWithKind:(BarItemKind)itemKind normal:(UIImage*)normalImage high:(UIImage *)highImage select:(UIImage *)selectImage
 {
-    return [[[self class] alloc] initWithItemKind:itemKind normal:normalStr high:highLstr select:selectStr];
+    return [[[self class] alloc] initWithItemKind:itemKind normal:normalImage high:highImage select:selectImage];
 }
 
 
-- (instancetype)initWithItemKind:(BarItemKind)itemKind normal:(NSString*)normalStr high:(NSString *)highLstr select:(NSString *)selectStr
+- (instancetype)initWithItemKind:(BarItemKind)itemKind normal:(UIImage*)normalImage high:(UIImage *)highImage select:(UIImage *)selectImage 
 {
     if (self = [super init]) {
         self.itemKind = itemKind;
-        self.normalStr = normalStr;
-        self.highLStr = highLstr;
-        self.selectStr = selectStr;
+        self.normal = normalImage;
+        self.highImage = highImage;
+        self.selectImage = selectImage;
     }
     return self;
 }

@@ -110,7 +110,7 @@
     [self.navigationItem setTitle:[_publicNumberCardDic objectForKey:@"Name"]];
     
     if (!self.notConcern) {
-        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick:)];
+        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick:)];
         [self.navigationItem setRightBarButtonItem:rightItem];
     }
 }
@@ -168,13 +168,13 @@
     
     if (self.notConcern) {
         UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(10, 50, footerView.width-20, 40)];
-        [button setBackgroundImage:[[UIImage imageNamed:@"GreenBigBtn"] stretchableImageWithLeftCapWidth:12 topCapHeight:12] forState:UIControlStateNormal];
+        [button setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"GreenBigBtn"] stretchableImageWithLeftCapWidth:12 topCapHeight:12] forState:UIControlStateNormal];
         [button setTitle:@"关注" forState:UIControlStateNormal];
         [button addTarget:self action:@selector(onConcernClick:) forControlEvents:UIControlEventTouchUpInside];
         [footerView addSubview:button];
     } else {
         UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(10, 50, footerView.width-20, 40)];
-        [button setBackgroundImage:[[UIImage imageNamed:@"GreenBigBtn"] stretchableImageWithLeftCapWidth:12 topCapHeight:12] forState:UIControlStateNormal];
+        [button setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"GreenBigBtn"] stretchableImageWithLeftCapWidth:12 topCapHeight:12] forState:UIControlStateNormal];
         [button setTitle:@"进入公众号" forState:UIControlStateNormal];
         [button addTarget:self action:@selector(onOpenPublicNumberClick:) forControlEvents:UIControlEventTouchUpInside];
         [footerView addSubview:button];

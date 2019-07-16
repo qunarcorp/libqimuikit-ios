@@ -21,24 +21,33 @@
 #import "YLGIFImage.h"
 
 #import "UIImageView+QIMImageCache.h"
+#import "UIImage+QIMUIKit.h"
 #import "UIColor+QIMChatBallocColor.h"
 #import "UIImage+QIMIconFont.h"
 #import "UIImage+QIMButtonIcon.h"
+#import "UIScreen+QIMIpad.h"
+
+#import "UINavigationController+FDFullscreenPopGesture.h"
 #import "QIMIconFont.h"
 #import "QIMIconInfo.h"
 #import "QIMDeviceManager.h"
 
-#if defined (QIMNoteEnable) && QIMNoteEnable == 1
+#if __has_include("QIMNoteManager.h")
     #import "QIMEncryptChat.h"
 #endif
 
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     #import "QIMLocalLog.h"
 #endif
 
 #import "QIMKitPublicHeader.h"
 #import "QIMCommonCategories.h"
 #import "QIMPublicRedefineHeader.h"
+
+//App颜色，字体全局配置
+#import "QIMUIFontConfig.h"
+#import "QIMUIColorConfig.h"
+#import "QIMUISizeConfig.h"
 
 #import "QIMJSONSerializer.h"
 #import "Masonry.h"

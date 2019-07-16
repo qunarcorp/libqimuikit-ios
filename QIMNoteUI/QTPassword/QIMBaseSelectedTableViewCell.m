@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/20.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "QIMBaseSelectedTableViewCell.h"
 #import "QIMNoteUICommonFramework.h"
 
@@ -21,7 +21,7 @@
 - (UIImageView *)selectBtn {
     if (!_selectBtn) {
         _selectBtn = [[UIImageView alloc] initWithFrame:CGRectZero];
-        [_selectBtn setImage:[UIImage imageNamed:@"common_checkbox_no_44px"]];
+        [_selectBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
     }
     return _selectBtn;
 }
@@ -47,7 +47,7 @@
 
 - (void)setCellSelected:(BOOL)selected {
     _selected = selected;
-    [self.selectBtn setImage:selected ? [UIImage imageNamed:@"common_checkbox_yes_44px"] : [UIImage imageNamed:@"common_checkbox_no_44px"]];
+    [self.selectBtn setImage:selected ? [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_yes_44px"] : [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
 }
 
 - (BOOL)isCellSelected {
@@ -56,3 +56,4 @@
 
 
 @end
+#endif

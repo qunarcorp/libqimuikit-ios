@@ -7,7 +7,7 @@
 //
 #define kQIMShareLocationChatCellHeight    40
 #define kTextLabelTop       10
-#define kTextLableLeft      10
+#define kTextLableLeft      12
 #define kTextLableBottom    10
 #define kTextLabelRight     10
 #define kMinTextWidth       30
@@ -17,7 +17,7 @@
 #import "QIMJSONSerializer.h"
 #import "QIMShareLocationChatCell.h"
 #import "UserLocationViewController.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "UIApplication+QIMApplication.h"
 
 @interface QIMShareLocationChatCell()<QIMMenuImageViewDelegate>
@@ -29,7 +29,7 @@
 
 @implementation QIMShareLocationChatCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
     return kQIMShareLocationChatCellHeight + 20 + 20;
 }
@@ -39,7 +39,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"locationSharing_Icon_Location_Main"]];
+        _imageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_Location_Main"]];
         _imageView.clipsToBounds = YES;
         _imageView.userInteractionEnabled = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -67,7 +67,7 @@
     float backHeight = kQIMShareLocationChatCellHeight;
     
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             _titleLabel.textColor = [UIColor blackColor];
             CGRect frame = {{kBackViewCap + self.HeadView.width,kCellHeightCap / 2.0 + self.nameLabel.bottom},{backWidth,backHeight}};
@@ -79,7 +79,7 @@
             _titleLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             _titleLabel.textColor = [UIColor whiteColor];
             CGRect frame = {{self.frameWidth - kBackViewCap - backWidth,kBackViewCap},{backWidth,backHeight}};
@@ -108,7 +108,6 @@
         userLocationVC.dispalyName = infoDic[@"name"];
         if ([[QIMKit sharedInstance] getIsIpad]){
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:userLocationVC animated:YES completion:nil];
-//            [[[[UIApplication sharedApplication].delegate window] rootViewController] presentViewController:userLocationVC animated:YES completion:nil];
         }else{
             [self.owerViewController presentViewController:userLocationVC animated:YES completion:nil];
         }

@@ -37,7 +37,7 @@
 
 @property (nonatomic, strong) UITableViewRowAction *stickyBtn;  //右滑置顶会话
 
-@property (nonatomic, assign) int notReadCount;
+@property (nonatomic, assign) NSInteger notReadCount;
 
 @property (nonatomic, assign) BOOL firstRefresh;
 

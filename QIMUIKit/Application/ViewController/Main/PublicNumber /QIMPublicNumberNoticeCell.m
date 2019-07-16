@@ -149,7 +149,7 @@ static double _screen_width = 0;
 
 - (UIImageView *)arrowImageView {
     if (!_arrowImageView) {
-        _arrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Arrow"]];
+        _arrowImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Arrow"]];
     }
     return _arrowImageView;
 }

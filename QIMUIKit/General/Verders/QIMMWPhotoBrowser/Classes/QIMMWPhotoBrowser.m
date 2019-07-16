@@ -11,7 +11,7 @@
 #import "QIMMWCommon.h"
 #import "QIMMWPhotoBrowser.h"
 #import "QIMMWPhotoBrowserPrivate.h"
-#import "SDImageCache.h"
+#import "QIMSDImageCache.h"
 #import "LCActionSheet.h"
 #import "UIImage+QIMMWPhotoBrowser.h"
 #import "QIMMWQRCodeActivity.h"
@@ -106,7 +106,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
     _pagingScrollView.delegate = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self releaseAllUnderlyingPhotos:NO];
-    [[SDImageCache sharedImageCache] clearMemory]; // clear memory
+    [[QIMSDImageCache sharedImageCache] clearMemory]; // clear memory
 }
 
 - (void)releaseAllUnderlyingPhotos:(BOOL)preserveCurrent {
@@ -869,7 +869,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 [selectedButton setImage:[UIImage imageForResourcePath:@"QIMMWPhotoBrowser.bundle/ImageSelectedOff" ofType:@"png" inBundle:[NSBundle bundleForClass:[self class]]] forState:UIControlStateNormal];
                 UIImage *selectedOnImage;
                 if (self.customImageSelectedIconName) {
-                    selectedOnImage = [UIImage imageNamed:self.customImageSelectedIconName];
+                    selectedOnImage = [UIImage qim_imageNamedFromQIMUIKitBundle:self.customImageSelectedIconName];
                 } else {
                     selectedOnImage = [UIImage imageForResourcePath:@"QIMMWPhotoBrowser.bundle/ImageSelectedOn" ofType:@"png" inBundle:[NSBundle bundleForClass:[self class]]];
                 }
@@ -1711,7 +1711,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
         case 1: {
             NSString *photoUrl = [photo.photoURL absoluteString];
             if (photoUrl.length > 0) {
-                Message *msg = [Message new];
+                QIMMessageModel *msg = [QIMMessageModel new];
                 [msg setMessageType:QIMMessageType_Text];
                 NSString *msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\"]", photoUrl];
                 [msg setMessage:msgText];
@@ -1724,14 +1724,14 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                     
                 }];
             } else {
-                NSString *fileName = [QIMKit updateLoadFile:photo.photoData WithMsgId:nil WithMsgType:QIMMessageType_ImageNew WihtPathExtension:nil];
+                NSString *fileName = [QIMKit updateLoadFile:photo.photoData WithMsgId:nil WithMsgType:QIMMessageType_ImageNew WithPathExtension:nil];
                 NSString *fileUrl = @"";
                 if ([fileName qim_hasPrefixHttpHeader]) {
                     fileUrl = fileName;
                 } else {
-                    fileUrl = [NSString stringWithFormat:@"%@/FileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
+                    fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
                 }
-                NSString *sdimageFileKey = [[SDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
+                NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
                 [photo.photoData writeToFile:sdimageFileKey atomically:YES];
                 UIImage *image = [YLGIFImage imageWithData:photo.photoData];
                 CGFloat width = CGImageGetWidth(image.CGImage);
@@ -1740,9 +1740,9 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 if ([fileName qim_hasPrefixHttpHeader]) {
                     msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
                 } else {
-                    msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"FileName=%@\" width=%f height=%f]", fileName, width, height];
+                    msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
                 }
-                Message *msg = [Message new];
+                QIMMessageModel *msg = [QIMMessageModel new];
                 [msg setMessageType:QIMMessageType_Text];
                 [msg setMessage:msgText];
                 QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
@@ -1757,16 +1757,18 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
             break;
         case 2: {
             if (photo.photoURL.absoluteString.length > 0) {
-                [[QIMKit sharedInstance] getPermUrlWithTempUrl:[photo.photoURL absoluteString] PermHttpUrl:^(NSString *httpPermUrl) {
-                    QIMVerboseLog(@"收藏表情后的地址为 : %@", httpPermUrl);
-                    if (![httpPermUrl containsString:@"null"] && httpPermUrl.length > 0) {
-                        [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:httpPermUrl];
-                    } else {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionUpdateHandleFailedNotification object:nil];
-                        });
+                NSString *imageUrl = photo.photoURL.absoluteString;
+                QIMVerboseLog(@"收藏表情后的地址为 : %@", imageUrl);
+                if (![imageUrl containsString:@"null"] && imageUrl.length > 0) {
+                    if (![imageUrl qim_hasPrefixHttpHeader]) {
+                        imageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrl];
                     }
-                }];
+                    [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:imageUrl];
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionUpdateHandleFailedNotification object:nil];
+                    });
+                }
             }
         }
             break;
@@ -1777,7 +1779,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 if (photoData.length > 0) {
                     [self saveImageWithPhotoData:photoData];
                 } else if (photo.photoURL.absoluteString.length > 0) {
-                    NSString *localPhotoPath = [[SDImageCache sharedImageCache] defaultCachePathForKey:photo.photoURL.absoluteString];
+                    NSString *localPhotoPath = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:photo.photoURL.absoluteString];
                     NSData *imageData = [NSData dataWithContentsOfFile:localPhotoPath];
                     if (imageData.length > 0) {
                         [self saveImageWithPhotoData:imageData];

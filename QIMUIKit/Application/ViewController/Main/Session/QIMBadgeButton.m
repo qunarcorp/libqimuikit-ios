@@ -10,7 +10,8 @@
 ///默认badge宽度
 #define KDefaultWidth 20
 ///默认颜色
-#define KDefaultColor [UIColor colorWithRed:0.937 green:0.247 blue:0.227 alpha:1.00]
+#define KDefaultColor  [UIColor qim_colorWithHex:0xEB524A alpha:1.0]
+//[UIColor colorWithRed:0.937 green:0.247 blue:0.227 alpha:1.00]
 ///默认拉伸长度比率
 #define KDefaultRatio 0.15
 ///默认最小半径
@@ -81,7 +82,7 @@
 - (void)setUpWithFrame:(CGRect)frame {
     self.isShowBomAnimation = YES;
     self.isShowSpringAnimation = YES;
-    self.badgeFont = [UIFont systemFontOfSize:10];
+    self.badgeFont = [UIFont systemFontOfSize:11];
     cornerRadi = 0.5;
     ratio = KDefaultRatio;
     miniRad = KDefaultLimite;
@@ -109,7 +110,7 @@
     self.badgeLabel.textAlignment = NSTextAlignmentCenter;
     self.badgeLabel.textColor = [UIColor whiteColor];
     self.badgeLabel.frame = self.frontView.bounds;
-    self.badgeLabel.font = [UIFont systemFontOfSize:10];
+    self.badgeLabel.font = [UIFont systemFontOfSize:11];
     [self.frontView addSubview:self.badgeLabel];
     
     [self bringSubviewToFront:self.frontView];
@@ -290,7 +291,7 @@
     NSMutableArray *bomArry = [NSMutableArray array];
     for (int i =0; i < 4; i++) {
         NSString *imgName = [NSString stringWithFormat:@"bomb%d",i];
-        UIImage *img  = [UIImage imageNamed:imgName];
+        UIImage *img  = [UIImage qim_imageNamedFromQIMUIKitBundle:imgName];
         if (img) {
             [bomArry addObject:img];
         }
@@ -358,7 +359,7 @@
     self.backView.layer.cornerRadius = height * 0.5;
     self.badgeLabel.frame = self.frontView.frame;
     if (badgeWidth <= 10) {
-        self.badgeFont = [UIFont systemFontOfSize:5];
+        self.badgeFont = [UIFont systemFontOfSize:11];
     }
 }
 

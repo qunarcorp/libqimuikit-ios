@@ -15,8 +15,9 @@
 #import <CoreText/CoreText.h>
 #import "QIMContactManager.h"
 #import "NSBundle+QIMLibrary.h"
-
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#import "QIMUtility.h"
+#import "QIMDataController.h"
+#if __has_include("QIMLocalLog.h")
 
 #import "QIMLocalLogViewController.h"
 #import "QIMLocalLog.h"
@@ -95,14 +96,14 @@
     }
 
     //记录本地日志
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     QIMLocalLogType logType = [[[QIMKit sharedInstance] userObjectForKey:@"recordLogType"] integerValue];
     if (logType == QIMLocalLogTypeOpened) {
-        [_dataSource addObject:@"isLogging"];
+//        [_dataSource addObject:@"isLogging"];
         [_dataSource addObject:@"Instruments"];
       }
 #endif
-
+    [_dataSource addObject:@"DataFile"];
     return _dataSource;
 }
 
@@ -243,13 +244,13 @@
 }
 
 - (void)showLoggingAction:(UIGestureRecognizer *)gesture {
-#if defined (QIMLogEnable) && QIMLogEnable == 1
+#if __has_include("QIMLocalLog.h")
     __weak typeof(self) weakSelf = self;
     if (![self.dataSource containsObject:@"isLogging"]) {
         UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"确认开始记录App性能数据吗？再次点击屏幕五下关闭！！！" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIAlertActionStyleCancel handler:nil];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [weakSelf.dataSource addObject:@"isLogging"];
+//            [weakSelf.dataSource addObject:@"isLogging"];
             //发送日志(本地数据库,UserDefault, 本地QIMVerboseLog日志)
             [weakSelf.dataSource addObject:@"Instruments"];
             [[QIMKit sharedInstance] setUserObject:@(QIMLocalLogTypeOpened) forKey:@"recordLogType"];
@@ -272,8 +273,10 @@
     
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
         self.title = [NSBundle qim_localizedStringForKey:@"About_nav_title_QTalk"];
+    } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+        self.title  =[NSBundle qim_localizedStringForKey:@"About_nav_title_QChat"];
     } else {
-        self.title = [NSBundle qim_localizedStringForKey:@"About_nav_title_QChat"];
+        self.title = [NSBundle qim_localizedStringForKey:@"About_nav_title_Startalk"];
     }
     self.navigationController.navigationBar.translucent = NO;
 }
@@ -376,12 +379,16 @@
         [cell setAccessoryView:switchButton];
     } else if ([value isEqualToString:@"Instruments"]) {
         cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"About_tab_instruments"];
-        cell.textLabel.text = @"监测";
         UISwitch *switchButton = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 60, 25)];
         BOOL isInstrument = [[[QIMKit sharedInstance] userObjectForKey:@"isInstruments"] boolValue];
         [switchButton setOn:isInstrument];
         [switchButton addTarget:self action:@selector(recordInstruments:) forControlEvents:UIControlEventValueChanged];
         [cell setAccessoryView:switchButton];
+    } else if ([value isEqualToString:@"DataFile"]) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier];
+        cell.textLabel.text = @"聊天记录存储空间";
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.detailTextLabel.text = [self dataFileSize];
     }
     return cell;
 }
@@ -394,6 +401,12 @@
     } else {
         [[QIMGDPerformanceMonitor sharedInstance] stopMonitoring];
     }
+}
+
+- (NSString *)dataFileSize {
+    long long totalSize = [[QIMDataController getInstance] sizeOfDBPath];
+    NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
+    return str;
 }
 
 @end

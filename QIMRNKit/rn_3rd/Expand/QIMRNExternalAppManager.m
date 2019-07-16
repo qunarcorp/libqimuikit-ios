@@ -46,6 +46,25 @@ static QIMRNExternalAppManager *_manager = nil;
     return _rnExternalAppVersionDict;
 }
 
+
+- (BOOL)checkQIMRNExternalAppWithBundleUrl:(NSString *)bundleUrl {
+    BOOL checkSuccess = NO;
+    NSString *qimrnCachePath = [UserCachesPath stringByAppendingPathComponent:[QimRNBModule getCachePath]];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:qimrnCachePath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:qimrnCachePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *bundleMD5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrl] stringByAppendingFormat:@".jsbundle"];
+//    [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:bundleUrl];
+    NSString *localBundlePath = [qimrnCachePath stringByAppendingPathComponent: bundleMD5Name];
+    //版本号一致 && bundleName一致 && bundle文件存在
+    if (localBundlePath && [[NSFileManager defaultManager] fileExistsAtPath:localBundlePath]) {
+        checkSuccess = YES;
+    } else {
+        checkSuccess = NO;
+    }
+    return checkSuccess;
+}
+
 - (BOOL)checkQIMRNExternalAppWithBundleName:(NSString *)bundleName BundleVersion:(NSString *)version {
     BOOL checkSuccess = NO;
     NSString *localBundleName = [NSString stringWithFormat:@"%@.jsbundle", bundleName];
@@ -68,13 +87,9 @@ static QIMRNExternalAppManager *_manager = nil;
     NSString *bundleName= [params objectForKey:@"Bundle"];
     NSString *bundleUrls = [params objectForKey:@"BundleUrls"];
     NSDictionary *bundleDic = [[QIMJSONSerializer sharedInstance] deserializeObject:bundleUrls error:nil];
-    NSString *iosBundleUrl = @"";
-    if (bundleDic) {
-        iosBundleUrl = [bundleDic objectForKey:@"ios-link-url"];
-    }
     BOOL updateBundleSuccess = NO;
-    if (iosBundleUrl.length > 0) {
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:iosBundleUrl]];
+    if (bundleUrls.length > 0) {
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:bundleUrls]];
         request.downloadProgressDelegate = self;
         [request setTimeOutSeconds:15];
         [request startSynchronous];
@@ -82,15 +97,19 @@ static QIMRNExternalAppManager *_manager = nil;
         if (!error && [request responseStatusCode] == 200) {
             NSData *bundleData = [request responseData];
             if (bundleData.length > 0) {
-                NSString *localBundleName = [NSString stringWithFormat:@"%@.jsbundle", bundleName];
                 NSString *qimrnCachePath = [UserCachesPath stringByAppendingPathComponent:[QimRNBModule getCachePath]];
                 if (![[NSFileManager defaultManager] fileExistsAtPath:qimrnCachePath]) {
                     [[NSFileManager defaultManager] createDirectoryAtPath:qimrnCachePath withIntermediateDirectories:YES attributes:nil error:nil];
                 }
-                NSString *localBundlePath = [qimrnCachePath stringByAppendingPathComponent: localBundleName];
+                NSString *bundleMD5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrls] stringByAppendingFormat:@".jsbundle"];
+
+//                [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:bundleUrls];
+//                [[QIMKit sharedInstance] getFileNameFromUrl:bundleUrls];
+
+                NSString *localBundlePath = [qimrnCachePath stringByAppendingPathComponent: bundleMD5Name];
                 [bundleData writeToFile:localBundlePath atomically:YES];
-                NSString *version = [params objectForKey:@"Version"];
-                [self.rnExternalAppVersionDict setObject:version forKey:bundleName];
+//                NSString *version = [params objectForKey:@"Version"];
+//                [self.rnExternalAppVersionDict setObject:version forKey:bundleName];
                 [self updateLocalRNExternalAppVersion];
                 updateBundleSuccess = YES;
             } else {

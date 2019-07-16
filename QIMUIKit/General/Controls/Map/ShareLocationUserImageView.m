@@ -12,6 +12,7 @@
 #define kUserLoactionDirectionWidth  18.0f
 
 #import "ShareLocationUserImageView.h"
+#import "UIImage+QIMUIKit.h"
 
 @interface ShareLocationUserImageView()
 {
@@ -39,7 +40,7 @@
 - (void)initUI{
     if (_userHeadBgImgView == nil) {
         _userHeadBgImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kUserHeadBgWidth, kUserHeadBgWidth)];
-        _userHeadBgImgView.image = [UIImage imageNamed:@"locationSharing_Member_bg"];
+        _userHeadBgImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Member_bg"];
         [self addSubview:_userHeadBgImgView];
     }
     if (_userHeadImgView == nil) {
@@ -61,9 +62,9 @@
     if (_userLctImgView == nil) {
         _userLctImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, _userLctBgView.height - kUserLocationWith, kUserLocationWith, kUserLocationWith)];
         if ([_userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-            _userLctImgView.image = [UIImage imageNamed:@"locationSharing_Icon_MySelf"];
+            _userLctImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_MySelf"];
         }else{
-            _userLctImgView.image = [UIImage imageNamed:@"locationSharing_Icon_Friend"];
+            _userLctImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_Friend"];
         }
         [_userLctBgView addSubview:_userLctImgView];
     }
@@ -71,9 +72,9 @@
     if (_userLctDrctImgView == nil) {
         _userLctDrctImgView = [[UIImageView alloc] initWithFrame:CGRectMake((kUserLocationWith - kUserLoactionDirectionWidth) / 2, 0, kUserLoactionDirectionWidth, kUserLoactionDirectionWidth)];
         if ([_userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-            _userLctDrctImgView.image = [UIImage imageNamed:@"locationSharing_Icon_Myself_Heading"];
+            _userLctDrctImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_Myself_Heading"];
         }else{
-            _userLctDrctImgView.image = [UIImage imageNamed:@"locationSharing_Icon_Friend_Heading"];
+            _userLctDrctImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_Friend_Heading"];
         }
         [_userLctBgView insertSubview:_userLctDrctImgView aboveSubview:_userLctImgView];
     }

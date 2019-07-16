@@ -38,9 +38,9 @@ static NSMutableArray *_myFavoritesArray = nil;
     return _myFavoritesArray;
 }
 
-- (void)setMyFavoritesArrayWithMsg:(Message *)message {
+- (void)setMyFavoritesArrayWithMsg:(QIMMessageModel *)message {
     
-    message.messageDirection = MessageDirection_Received;
+    message.messageDirection = QIMMessageDirection_Received;
     
     NSData *messageData = [NSKeyedArchiver archivedDataWithRootObject:message];
     BOOL isContain = [self isContainWithMsg:messageData];

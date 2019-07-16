@@ -21,6 +21,8 @@
 @property (nonatomic, strong)   NSString    *text;
 @property (nonatomic, strong)   NSAttributedString *attributedText;
 
+@property (nonatomic, assign)  NSUInteger   totalNumLine; //实际行数
+
 @property (nonatomic, assign)   NSInteger   numberOfLines;      //行数
 @property (nonatomic, strong)   UIColor     *textColor;         // 文字颜色
 @property (nonatomic, strong)   UIColor     *linkColor;         //链接颜色

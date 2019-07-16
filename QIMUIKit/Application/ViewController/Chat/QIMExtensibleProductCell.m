@@ -18,7 +18,7 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMJSONSerializer.h"
 #import "QIMExtensibleProductCell.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "QIMWebView.h"
 
 @interface QCKeyValueView : UIView {
@@ -134,7 +134,7 @@
 //    infoDic = @{@"titleimg":@"http://c.hiphotos.baidu.com/image/h%3D200/sign=43c5dc24ce5c10383b7ec9c28210931c/e1fe9925bc315c609e3db7d185b1cb1349547760.jpg",@"titletxt":@"可扩展的产品展示cell，四的计划是给对方赛旧的反应会是当否是打发啥的认同感",@"productimg":@"http://c.hiphotos.baidu.com/image/h%3D200/sign=43c5dc24ce5c10383b7ec9c28210931c/e1fe9925bc315c609e3db7d185b1cb1349547760.jpg",@"detailurl":@"http://www.baidu.com",@"descs":@[@{@"k":@"是打发按",@"v":@"就是个得分是东方红狗沙发阿萨德的撒",@"c":@"666666"},@{@"k":@"是打发按",@"v":@"就是个得分是东方红狗沙发阿萨德的撒",@"c":@"666666"},@{@"k":@"是打发按",@"v":@"就是个得分是东方红狗沙发阿萨德的撒",@"c":@"666666"},@{@"k":@"是打发按",@"v":@"就是个得分是东方红狗沙发阿萨德的撒阿萨德的撒啥的各环节",@"c":@"666666"}]};
     _productInfoDic = infoDic;
     
-    [_titleIcon qim_setImageWithURL:[NSURL URLWithString:infoDic[@"titleimg"]] placeholderImage:[UIImage imageNamed:@"vacation"]];
+    [_titleIcon qim_setImageWithURL:[NSURL URLWithString:infoDic[@"titleimg"]] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"vacation"]];
     _titleLabel.text = infoDic[@"titletxt"];
     
     NSString * imageStr = infoDic[@"productimg"];

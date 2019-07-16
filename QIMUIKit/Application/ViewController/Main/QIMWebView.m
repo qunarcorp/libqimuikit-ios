@@ -16,10 +16,84 @@
 #import "UIImage+QIMButtonIcon.h"
 #import "NSBundle+QIMLibrary.h"
 #import "QIMJSONSerializer.h"
-//#import "QIMHttpApi.h"
-//#import "QIMUUIDTools.h"
 
 static NSString *__default_ua = nil;
+
+@protocol QActivityToWorkFeedDelegate <NSObject>
+@optional
+- (void)performShareWorkMomentActivity;
+@end
+@interface QActivityToWorkFeed : UIActivity
+@property (nonatomic, weak) id<QActivityToWorkFeedDelegate> delegate;
+@end
+@implementation QActivityToWorkFeed
++ (UIActivityCategory)activityCategory {
+    return UIActivityCategoryShare;
+}
+
+- (NSString *)activityType {
+    return @"QTalk.WebView.ToWorkFeed";
+}
+
+- (NSString *)activityTitle {
+    return [NSBundle qim_localizedStringForKey:@"webview_share_workmoment"];
+}
+
+- (UIImage *)activityImage {
+    return [UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareworkmoment"];
+}
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
+    return YES;
+}
+- (void) performActivity {
+    if ([self.delegate respondsToSelector:@selector(performShareWorkMomentActivity)]) {
+        [self.delegate performShareWorkMomentActivity];
+    }
+}
+- (void)prepareWithActivityItems:(NSArray *)activityItems {
+}
+- (UIViewController *)activityViewController{
+    return nil;
+}
+@end
+
+@protocol QActivityCopyLinkDelegate <NSObject>
+@optional
+- (void)performCopyLinkActivity;
+@end
+@interface QActivityCopyLink : UIActivity
+@property (nonatomic, weak) id<QActivityCopyLinkDelegate> delegate;
+@end
+@implementation QActivityCopyLink
++ (UIActivityCategory)activityCategory {
+    return UIActivityCategoryShare;
+}
+
+- (NSString *)activityType {
+    return @"QTalk.WebView.CopyLink";
+}
+
+- (NSString *)activityTitle {
+    return [NSBundle qim_localizedStringForKey:@"webview_copy_link"];
+}
+
+- (UIImage *)activityImage {
+    return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_copylink"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+}
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
+    return YES;
+}
+- (void) performActivity {
+    if ([self.delegate respondsToSelector:@selector(performCopyLinkActivity)]) {
+        [self.delegate performCopyLinkActivity];
+    }
+}
+- (void)prepareWithActivityItems:(NSArray *)activityItems {
+}
+- (UIViewController *)activityViewController{
+    return nil;
+}
+@end
 
 @protocol QActivityToFriendDelegate <NSObject>
 @optional
@@ -38,11 +112,11 @@ static NSString *__default_ua = nil;
 }
 
 - (NSString *)activityTitle {
-    return [NSBundle qim_localizedStringForKey:@"common_send_friend"];
+    return [NSBundle qim_localizedStringForKey:@"webview_share_conversion"];
 }
 
 - (UIImage *)activityImage {
-    return [UIImage imageNamed:@"Action_Share"];
+    return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_shareConversion"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -70,10 +144,10 @@ static NSString *__default_ua = nil;
     return @"QTalk.WebView.OpenSafari";
 }
 - (NSString *)activityTitle {
-    return [NSBundle qim_localizedStringForKey:@"common_open_in_safari"];
+    return [NSBundle qim_localizedStringForKey:@"webview_open_safari"];
 }
 - (UIImage *)activityImage {
-    return [UIImage imageNamed:@"safari_button"];
+    return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"safari_button"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -101,10 +175,10 @@ static NSString *__default_ua = nil;
 }
 
 - (NSString *)activityTitle {
-    return [NSBundle qim_localizedStringForKey:@"common_refresh"];
+    return [NSBundle qim_localizedStringForKey:@"webview_refresh"];
 }
 - (UIImage *)activityImage {
-    return [UIImage imageNamed:@"Action_Refresh"];
+    return [[UIImage qim_imageNamedFromQIMUIKitBundle:@"webview_refresh"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 }
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     return YES;
@@ -151,6 +225,9 @@ static NSString *__default_ua = nil;
     [self setToolbarItems:nil animated:YES];
     [self.navigationController setToolbarHidden:YES animated:NO];
     [self setUrl:nil];
+    UIImage *image = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0xDDDDDD] size:CGSizeMake([[UIScreen mainScreen] qim_rightWidth], 0.5)];
+    [[UINavigationBar appearance] setBackgroundImage:image forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setShadowImage:image];
 }
 
 - (BOOL)shouldAutorotate {
@@ -165,17 +242,52 @@ static NSString *__default_ua = nil;
     [vc sendText:self.url];
 }
 
+//分享到会话delegate
 - (void)performActivity{
     NSURL *url = _webView.request.URL;
     QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
     QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
-    Message *message = [Message new];
-    [message setMessageType:QIMMessageType_Text];
-    [message setMessage:[NSString stringWithFormat:@"[obj type=\"url\" value=\"%@\"]", [url absoluteString]]];
+    
+    NSString *title = self.title;
+    NSURL *linkurl = _webView.request.URL;
+    NSString *img = [NSString stringWithFormat:@"%@://%@/favicon.ico", [linkurl scheme], [linkurl host]];
+    NSString *desc = @"点击查看全文";
+    
+    NSMutableDictionary *infoDic = [NSMutableDictionary dictionaryWithCapacity:1];
+    [infoDic setQIMSafeObject:(title.length > 0) ? title : linkurl.absoluteString forKey:@"title"];
+    [infoDic setQIMSafeObject:desc forKey:@"desc"];
+    [infoDic setQIMSafeObject:linkurl.absoluteString forKey:@"linkurl"];
+    [infoDic setQIMSafeObject:img forKey:@"img"];
+    NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
+
+    QIMMessageModel *message = [QIMMessageModel new];
+    [message setMessageType:QIMMessageType_CommonTrdInfo];
+    [message setMessage:@"系统分享消息，请升级客户端版本进行查看"];
+    message.extendInformation = msgContent;
     [controller setMessage:message];
+    
     [controller setDelegate:self];
     [[self navigationController] presentViewController:nav animated:YES completion:^{
     }];
+}
+
+//分享到驼圈delegate
+- (void)performShareWorkMomentActivity {
+    NSString *title = self.title;
+    NSURL *linkurl = _webView.request.URL;
+    NSString *img = [NSString stringWithFormat:@"%@://%@/favicon.ico", [linkurl scheme], [linkurl host]];
+    NSString *desc = @"点击查看全文";
+    BOOL auth = NO;
+    BOOL showas667 = NO;
+    BOOL showbar = YES;
+    NSDictionary *linkDic = @{@"title":title, @"img":img, @"desc":desc, @"linkurl":linkurl.absoluteString, @"showas667":@(showas667), @"showbar":@(showbar), @"auth":@(auth)};
+    [QIMFastEntrance presentWorkMomentPushVCWithLinkDic:linkDic withNavVc:self.navigationController];
+}
+
+//拷贝Url
+- (void)performCopyLinkActivity {
+    NSURL *linkurl = _webView.request.URL;
+    [[UIPasteboard generalPasteboard] setString:linkurl.absoluteString];
 }
 
 - (void)onMoreClick{
@@ -196,20 +308,29 @@ static NSString *__default_ua = nil;
     QActivityToFriend *toFriend = [[QActivityToFriend alloc] init];
     [toFriend setDelegate:self];
     
-    QActivityRefresh *fefresh = [[QActivityRefresh alloc] init];
-    [fefresh setWebView:_webView];
+    QActivityToWorkFeed *shareWorkMoment = [[QActivityToWorkFeed alloc] init];
+    [shareWorkMoment setDelegate:self];
+    
+    QActivityRefresh *refresh = [[QActivityRefresh alloc] init];
+    [refresh setWebView:_webView];
+    
+    QActivityCopyLink *copyLink = [[QActivityCopyLink alloc] init];
+    [copyLink setDelegate:self];
     
     QActivitySafari *safari = [[QActivitySafari alloc] init];
     [safari setUrl:tempUrl];
     
-    self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend,fefresh,safari]];
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, shareWorkMoment, refresh, copyLink, safari]];
+    } else {
+        self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend, refresh, copyLink, safari]];
+    }
     [self.activityViewController setExcludedActivityTypes:@[UIActivityTypeMail]];
     typeof(self) __weak weakSelf = self;
     [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
         weakSelf.activityViewController = nil;
     }];
     [self presentViewController:self.activityViewController animated:YES completion:nil];
-    
 }
 
 - (instancetype)init{
@@ -229,17 +350,19 @@ static NSString *__default_ua = nil;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.translucent = NO;
+    [[UINavigationBar appearance] setBackgroundImage:nil forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setShadowImage:nil];
     if (![[QIMKit sharedInstance] getIsIpad] && self.fromRegPackage == NO) {
         UIView *leftItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
         UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
         [backButton setTitle:[NSBundle qim_localizedStringForKey:@"common_back"] forState:UIControlStateNormal];
         [backButton setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
-        [backButton setImage:[UIImage imageNamed:@"barbuttonicon_back"] forState:UIControlStateNormal];
+        [backButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_back"] forState:UIControlStateNormal];
         [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
         [leftItem addSubview:backButton];
         UIBarButtonItem *leftBarItem = [[UIBarButtonItem alloc] initWithCustomView:leftItem];
         [self.navigationController.navigationItem setLeftBarButtonItem:leftBarItem];
-        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
+        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
         [self.navigationItem setRightBarButtonItem:rightItem];
     }
     
@@ -260,7 +383,7 @@ static NSString *__default_ua = nil;
         _webView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], self.view.height);
     }
     if (self.needAuth) {
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:@" qunartalk-ios-client"];
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : ua, @"User-Agent":ua}];
         } else {
@@ -285,8 +408,6 @@ static NSString *__default_ua = nil;
     [_webView setScalesPageToFit:YES];
     [_webView setMultipleTouchEnabled:YES];
     [self.view addSubview:_webView];
-//    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"CKEditor5Edit" ofType:@"html"];
-//    self.htmlString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
     if (self.htmlString) {
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
@@ -313,23 +434,23 @@ static NSString *__default_ua = nil;
             
             NSString *qckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
             NSString *quserId = [QIMKit getLastUserName];
-            [qckeyCookieProperties setObject:qckey forKey:NSHTTPCookieValue];
-            [qckeyCookieProperties setObject:@"q_ckey" forKey:NSHTTPCookieName];
-            [qckeyCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [qckeyCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [qckeyCookieProperties setQIMSafeObject:qckey forKey:NSHTTPCookieValue];
+            [qckeyCookieProperties setQIMSafeObject:@"q_ckey" forKey:NSHTTPCookieName];
+            [qckeyCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [qckeyCookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [qckeyCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
-            [quCookieProperties setObject:quserId forKey:NSHTTPCookieValue];
-            [quCookieProperties setObject:@"q_u" forKey:NSHTTPCookieName];
-            [quCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [quCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [quCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [quCookieProperties setQIMSafeObject:quserId forKey:NSHTTPCookieValue];
+            [quCookieProperties setQIMSafeObject:@"q_u" forKey:NSHTTPCookieName];
+            [quCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [quCookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [quCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
-            [qnmCookieProperties setObject:quserId forKey:NSHTTPCookieValue];
-            [qnmCookieProperties setObject:@"q_nm" forKey:NSHTTPCookieName];
-            [qnmCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [qnmCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [qnmCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [qnmCookieProperties setQIMSafeObject:quserId forKey:NSHTTPCookieValue];
+            [qnmCookieProperties setQIMSafeObject:@"q_nm" forKey:NSHTTPCookieName];
+            [qnmCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [qnmCookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [qnmCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
             NSHTTPCookie*qckeyCookie = [NSHTTPCookie cookieWithProperties:qckeyCookieProperties];
             NSHTTPCookie*quCookie = [NSHTTPCookie cookieWithProperties:quCookieProperties];
@@ -344,11 +465,11 @@ static NSString *__default_ua = nil;
             NSMutableDictionary *qckeyCookieProperties = [NSMutableDictionary dictionary];
             
             NSString *qckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
-            [qckeyCookieProperties setObject:qckey forKey:NSHTTPCookieValue];
-            [qckeyCookieProperties setObject:@"q_ckey" forKey:NSHTTPCookieName];
-            [qckeyCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost]  forKey:NSHTTPCookieDomain];
-            [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [qckeyCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [qckeyCookieProperties setQIMSafeObject:qckey forKey:NSHTTPCookieValue];
+            [qckeyCookieProperties setQIMSafeObject:@"q_ckey" forKey:NSHTTPCookieName];
+            [qckeyCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [qckeyCookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [qckeyCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             NSHTTPCookie*qckeyCookie = [NSHTTPCookie cookieWithProperties:qckeyCookieProperties];
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
             NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -365,7 +486,7 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *qcookieProperties = [NSMutableDictionary dictionary];
                 [qcookieProperties setQIMSafeObject:@"_q" forKey:NSHTTPCookieName];
                 [qcookieProperties setQIMSafeObject:qCookie forKey:NSHTTPCookieValue];
-                [qcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                [qcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost]forKey:NSHTTPCookieDomain];
                 [qcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
                 [qcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
@@ -373,11 +494,11 @@ static NSString *__default_ua = nil;
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qcookie];
                 
                 NSMutableDictionary *vcookieProperties = [NSMutableDictionary dictionary];
-                [vcookieProperties setObject:@"_v" forKey:NSHTTPCookieName];
+                [vcookieProperties setQIMSafeObject:@"_v" forKey:NSHTTPCookieName];
                 [vcookieProperties setQIMSafeObject:vCookie forKey:NSHTTPCookieValue];
-                [vcookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-                [vcookieProperties setObject:@"/" forKey:NSHTTPCookiePath];
-                [vcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [vcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                [vcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+                [vcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
                 NSHTTPCookie*vcookie = [NSHTTPCookie cookieWithProperties:vcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:vcookie];
@@ -398,17 +519,17 @@ static NSString *__default_ua = nil;
             NSString *u = [QIMKit getLastUserName];
             NSString *k = [[QIMKit sharedInstance] remoteKey];
             
-            [ucookieProperties setObject:u forKey:NSHTTPCookieValue];
-            [ucookieProperties setObject:@"_u" forKey:NSHTTPCookieName];
-            [ucookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [ucookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [ucookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [ucookieProperties setQIMSafeObject:u forKey:NSHTTPCookieValue];
+            [ucookieProperties setQIMSafeObject:@"_u" forKey:NSHTTPCookieName];
+            [ucookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [ucookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [ucookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
-            [kcookieProperties setObject:k forKey:NSHTTPCookieValue];
-            [kcookieProperties setObject:@"_k" forKey:NSHTTPCookieName];
+            [kcookieProperties setQIMSafeObject:k forKey:NSHTTPCookieValue];
+            [kcookieProperties setQIMSafeObject:@"_k" forKey:NSHTTPCookieName];
             [kcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [kcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [kcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [kcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
             NSHTTPCookie *uCookie = [NSHTTPCookie cookieWithProperties:ucookieProperties];
             NSHTTPCookie *kCookie = [NSHTTPCookie cookieWithProperties:kcookieProperties];
@@ -419,11 +540,11 @@ static NSString *__default_ua = nil;
             NSMutableDictionary *dcookieProperties = [NSMutableDictionary dictionary];
             NSString *domain = [[QIMKit sharedInstance] getDomain];
             
-            [dcookieProperties setObject:domain forKey:NSHTTPCookieValue];
-            [dcookieProperties setObject:@"q_d" forKey:NSHTTPCookieName];
+            [dcookieProperties setQIMSafeObject:domain forKey:NSHTTPCookieValue];
+            [dcookieProperties setQIMSafeObject:@"q_d" forKey:NSHTTPCookieName];
             [dcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
             [dcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-            [dcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+            [dcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
             
             NSHTTPCookie *dCookie = [NSHTTPCookie cookieWithProperties:dcookieProperties];
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:dCookie];
@@ -447,11 +568,11 @@ static NSString *__default_ua = nil;
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qcookie];
                 
                 NSMutableDictionary *vcookieProperties = [NSMutableDictionary dictionary];
-                [vcookieProperties setObject:@"_v" forKey:NSHTTPCookieName];
+                [vcookieProperties setQIMSafeObject:@"_v" forKey:NSHTTPCookieName];
                 [vcookieProperties setQIMSafeObject:vCookie forKey:NSHTTPCookieValue];
-                [vcookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-                [vcookieProperties setObject:@"/" forKey:NSHTTPCookiePath];
-                [vcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [vcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                [vcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+                [vcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
                 NSHTTPCookie*vcookie = [NSHTTPCookie cookieWithProperties:vcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:vcookie];
@@ -469,11 +590,11 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *dcookieProperties = [NSMutableDictionary dictionary];
                 NSString *domain = [[QIMKit sharedInstance] getDomain];
                 
-                [dcookieProperties setObject:domain forKey:NSHTTPCookieValue];
-                [dcookieProperties setObject:@"q_d" forKey:NSHTTPCookieName];
+                [dcookieProperties setQIMSafeObject:domain forKey:NSHTTPCookieValue];
+                [dcookieProperties setQIMSafeObject:@"q_d" forKey:NSHTTPCookieName];
                 [dcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [dcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-                [dcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [dcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 NSHTTPCookie *dcookie = [NSHTTPCookie cookieWithProperties:dcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:dcookie];
             } else {
@@ -482,24 +603,37 @@ static NSString *__default_ua = nil;
                 NSMutableDictionary *dcookieProperties = [NSMutableDictionary dictionary];
                 NSString *domain = [[QIMKit sharedInstance] getDomain];
                 
-                [dcookieProperties setObject:domain forKey:NSHTTPCookieValue];
-                [dcookieProperties setObject:@"q_d" forKey:NSHTTPCookieName];
+                [dcookieProperties setQIMSafeObject:domain forKey:NSHTTPCookieValue];
+                [dcookieProperties setQIMSafeObject:@"q_d" forKey:NSHTTPCookieName];
                 [dcookieProperties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [dcookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-                [dcookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [dcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 
                 NSMutableDictionary *qckeyCookieProperties = [NSMutableDictionary dictionary];
                 NSString *qckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
-                [qckeyCookieProperties setObject:qckey forKey:NSHTTPCookieValue];
-                [qckeyCookieProperties setObject:@"q_ckey" forKey:NSHTTPCookieName];
-                [qckeyCookieProperties setObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                [qckeyCookieProperties setQIMSafeObject:qckey forKey:NSHTTPCookieValue];
+                [qckeyCookieProperties setQIMSafeObject:@"q_ckey" forKey:NSHTTPCookieName];
+                [qckeyCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
                 [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
-                [qckeyCookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+                [qckeyCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
+                
+            
+                NSDictionary*properties = [[NSMutableDictionary alloc] init];
+                [properties setValue:[QIMKit getLastUserName] forKey:NSHTTPCookieValue];//value值
+                [properties setValue:@"q_u" forKey:NSHTTPCookieName];//kay
+                [properties setValue:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                
+                [properties setValue:[[NSURL URLWithString:@"/"] path] forKey:NSHTTPCookiePath];
+                NSHTTPCookie*cookie = [[NSHTTPCookie alloc] initWithProperties:properties];
+                [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+
                 
                 NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:qckeyCookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
                 NSHTTPCookie *dCookie = [NSHTTPCookie cookieWithProperties:dcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:dCookie];
+
+               
             }
         }
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -507,8 +641,11 @@ static NSString *__default_ua = nil;
         request = [[NSMutableURLRequest alloc] initWithURL:_requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
         [_webView loadRequest:request];
     }
+    _webView.mediaPlaybackRequiresUserAction = NO;
     QIMVerboseLog(@"WebView LoadRequest : %@ \n Cookie : %@", _requestUrl, [NSHTTPCookieStorage sharedHTTPCookieStorage].cookies);
-    self.view.backgroundColor = [UIColor yellowColor];
+    if ([[QIMDeviceManager sharedInstance] isIphoneXSeries] == YES && @available(iOS 11.0, *)) {
+        _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
 }
     
 - (void)clearLoginCookie{
@@ -700,7 +837,8 @@ static NSString *__default_ua = nil;
     
     NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
     if (userInfoDic == nil) {
-        [[QIMKit sharedInstance] updateUserCard:@[jid]];
+//        [[QIMKit sharedInstance] updateUserCard:@[jid]];
+        [[QIMKit sharedInstance] updateUserCard:jid withCache:YES];
         userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:jid];
     }
     if (userInfoDic) {
@@ -708,15 +846,6 @@ static NSString *__default_ua = nil;
         NSString *name = [userInfoDic objectForKey:@"Name"];
         [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId];
         [QIMFastEntrance openSingleChatVCByUserId:xmppId];
-        /*
-        QIMChatVC * chatVC  = [[QIMChatVC alloc] init];
-        [chatVC setStype:kSessionType_Chat];
-        [chatVC setChatId:xmppId];
-        [chatVC setName:name];
-        [chatVC setChatType:ChatType_SingleChat];
-        [chatVC setTitle:name];
-        [self.navigationController popToRootVCThenPush:chatVC animated:YES];
-         */
     }
 }
 
@@ -724,15 +853,8 @@ static NSString *__default_ua = nil;
     NSDictionary *groupDic = [[QIMKit sharedInstance] getGroupCardByGroupId:jid];
     if (groupDic) {
         NSString *jid = [groupDic objectForKey:@"GroupId"];
-//        NSString *name = [groupDic objectForKey:@"Name"];
         [[QIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
         [QIMFastEntrance openGroupChatVCByGroupId:jid];
-        /*
-        QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
-        [chatGroupVC setTitle:name];
-        [chatGroupVC setChatId:jid];
-        [self.navigationController popToRootVCThenPush:chatGroupVC animated:YES];
-         */
     }
 }
 
@@ -791,7 +913,7 @@ static NSString *__default_ua = nil;
         UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 44)];
         [backButton setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         [backButton setTitle:[NSBundle qim_localizedStringForKey:@"common_back"] forState:UIControlStateNormal];
-        [backButton setImage:[UIImage imageNamed:@"barbuttonicon_back"] forState:UIControlStateNormal];
+        [backButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_back"] forState:UIControlStateNormal];
         [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
         [leftItem addSubview:backButton];
         if (_webView.canGoBack) {
@@ -809,10 +931,6 @@ static NSString *__default_ua = nil;
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    if (navigationType==UIWebViewNavigationTypeBackForward) {
-        [self goBack];
-    }
-//    _requestUrl = [request URL];
     NSString *urlStr = [[request URL] absoluteString];
     NSArray * components = [urlStr componentsSeparatedByString:@":"];
     if ([urlStr hasPrefix:@"qchatiphone://"] && components.count > 1) {
@@ -847,7 +965,7 @@ static NSString *__default_ua = nil;
                 NSString *value = [[dicArray objectAtIndex:1] qim_URLDecodedString];
                 NSString *key = [[dicArray objectAtIndex:0] qim_URLDecodedString];
                 if (key && value) {
-                    [tempDic setObject:value forKey:key];
+                    [tempDic setQIMSafeObject:value forKey:key];
                 }
             }
             QIMVerboseLog(@"打印参数列表生成的字典：\n%@", tempDic);
@@ -859,6 +977,9 @@ static NSString *__default_ua = nil;
     } else if ([urlStr hasPrefix:@"qim://"]) {
         if ([[[components objectAtIndex:1] lowercaseString] hasPrefix:@"//close"]) {
             [self quitItemHandle:nil];
+            return NO;
+        } else if ([[components objectAtIndex:1] hasPrefix:@"//publicNav/resetpwdSuccessed"]) {
+            [QIMFastEntrance reloginAccount];
             return NO;
         }
     } else if ([urlStr hasPrefix:@"qtalkaphone://"]  && components.count > 1) {
@@ -877,7 +998,7 @@ static NSString *__default_ua = nil;
                 NSString *value = [[dicArray objectAtIndex:1] qim_URLDecodedString];
                 NSString *key = [[dicArray objectAtIndex:0] qim_URLDecodedString];
                 if (key && value) {
-                    [tempDic setObject:value forKey:key];
+                    [tempDic setQIMSafeObject:value forKey:key];
                 }
             }
             NSString *fileName = [tempDic objectForKey:@"fileName"];
@@ -885,7 +1006,7 @@ static NSString *__default_ua = nil;
             NSString *fileBaseStr = [[[[fileStr componentsSeparatedByString:@";"] lastObject] componentsSeparatedByString:@","] lastObject];
             NSData *decodedImgData = [[NSData alloc] initWithBase64EncodedString:fileBaseStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
             NSLog(@"%@", fileBaseStr);
-            NSString *fileUrl = [QIMHttpApi updateLoadFile:decodedImgData WithMsgId:[QIMUUIDTools UUID] WithMsgType:1 WihtPathExtension:nil];
+            NSString *fileUrl = [QIMHttpApi updateLoadFile:decodedImgData WithMsgId:[QIMUUIDTools UUID] WithMsgType:1 WithPathExtension:nil];
             NSLog(@"fileUrl : %@", fileUrl);
             if (![fileUrl qim_hasPrefixHttpHeader]) {
                 fileUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileUrl];

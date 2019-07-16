@@ -8,13 +8,14 @@
 
 #import "QIMAddIndexViewController.h"
 #import "QIMAddSomeViewController.h"
-#import "MMPickerView.h"
+#import "QIMPickerView.h"
 #import "QIMJSONSerializer.h"
 #import "QIMChatVC.h"
 #import "QIMAddSomeCell.h"
 #import "QIMHttpRequestMonitor.h"
 #import "NSBundle+QIMLibrary.h"
 #import "SearchBar.h"
+#import "UIImage+QIMUIKit.h"
 
 static NSInteger limitCount = 15;
 @interface QIMAddIndexViewController ()<UITableViewDataSource,UITableViewDelegate,SearchBarDelgt>{
@@ -143,7 +144,7 @@ static NSInteger limitCount = 15;
     self.emptyView.center = self.view.center;
     UIImageView *emptyIconView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 150, 100)];
     emptyIconView.backgroundColor = [UIColor whiteColor];
-    emptyIconView.image = [UIImage imageNamed:@"EmptyNotReadList"];
+    emptyIconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"EmptyNotReadList"];
     [self.emptyView addSubview:emptyIconView];
     UILabel *emptyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, emptyIconView.bottom + 5, 150, 25)];
     [emptyLabel setText:@"查无此人"];
@@ -158,9 +159,9 @@ static NSInteger limitCount = 15;
     self.stringsArray = [NSMutableArray arrayWithCapacity:5];
     [[QIMHttpRequestMonitor sharedInstance] syncRunBlock:^{
         
-        NSString *urlStr = @"https://qt.qunar.com/s/qtalk/domainlist.php?t=qtalk";
+        NSString *urlStr = @"https://qim.qunar.com/s/qtalk/domainlist.php?t=qtalk";
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-           urlStr = [urlStr stringByReplacingOccurrencesOfString:@"qtalk" withString:@"qchat"];
+            urlStr = [urlStr stringByReplacingOccurrencesOfString:@"qtalk" withString:@"qchat"];
         }
         NSURL *url = [NSURL URLWithString:urlStr];
         NSDictionary *paramDic = @{@"version":@0};
@@ -178,7 +179,7 @@ static NSInteger limitCount = 15;
             self.objectsArray = responseDict[@"data"][@"domains"];
         }
         
-    } url:@"https://qt.qunar.com/s/qtalk/domainlist.php"];
+    } url:@"https://qim.qunar.com/s/qtalk/domainlist.php"];
     for (NSDictionary *dict in self.objectsArray) {
         if (dict) {
             if (dict[@"name"]) {
@@ -210,24 +211,24 @@ static NSInteger limitCount = 15;
 }
 
 - (void)selectDomain {
-//    [self.searchBar resignFirstResponder];
+    //    [self.searchBar resignFirstResponder];
     [UIView animateWithDuration:0.3 animations:^{
         [self.view endEditing:YES];
-        [MMPickerView dismissWithCompletion:^(NSString *str) {
+        [QIMPickerView dismissWithCompletion:^(NSString *str) {
             
         }];
-
+        
     } completion:^(BOOL finished) {
         __weak typeof(self) weakSelf = self;
-        NSDictionary *dict = @{MMbackgroundColor: [UIColor whiteColor],
-                               MMtextColor: [UIColor blackColor],
-                               MMtoolbarColor: [UIColor whiteColor],
-                               MMbuttonColor: [UIColor blueColor],
-                               MMfont: [UIFont systemFontOfSize:18],
-                               MMvalueY: @3,
-                               MMselectedObject:_selectedString};
+        NSDictionary *dict = @{QIMMMbackgroundColor: [UIColor whiteColor],
+                               QIMMMtextColor: [UIColor blackColor],
+                               QIMMMtoolbarColor: [UIColor whiteColor],
+                               QIMMMbuttonColor: [UIColor blueColor],
+                               QIMMMfont: [UIFont systemFontOfSize:18],
+                               QIMMMvalueY: @3,
+                               QIMMMselectedObject:_selectedString};
         
-        [MMPickerView showPickerViewInView:self.view withStrings:_stringsArray withOptions:dict completion:^(NSString *selectedString) {
+        [QIMPickerView showPickerViewInView:self.view withStrings:_stringsArray withOptions:dict completion:^(NSString *selectedString) {
             weakSelf.selectedString = selectedString;
             [weakSelf.selectDomainBtn setTitle:selectedString forState:UIControlStateNormal];
             NSInteger index = [weakSelf getIndexWithSelectedRowString:selectedString];
@@ -263,7 +264,7 @@ static NSInteger limitCount = 15;
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     [self.searchBar resignFirstResponder];
-    [MMPickerView dismissWithCompletion:^(NSString *dismissRow) {
+    [QIMPickerView dismissWithCompletion:^(NSString *dismissRow) {
         
     }];
 }
@@ -302,7 +303,7 @@ static NSInteger limitCount = 15;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-
+    
     if (_searchResults.count > 0) {
         NSDictionary *userInfo = [_searchResults objectAtIndex:indexPath.row];
         NSString *userId = [userInfo objectForKey:@"XmppId"];
@@ -316,7 +317,7 @@ static NSInteger limitCount = 15;
 #pragma mark UISearchBar and UISearchDisplayController Delegate Methods
 
 - (void)searchList {
-
+    
     NSString *searchString = self.searchBar.text;
     NSArray *searchList = [[QIMKit sharedInstance] searchUserListBySearchStr:searchString Url:self.domainURL id:self.domainId limit:limitCount offset:0];
     [_searchResults removeAllObjects];
@@ -324,7 +325,7 @@ static NSInteger limitCount = 15;
         
         [_searchResults addObjectsFromArray:searchList];
     }
-
+    
     NSLog(@"_searchResults : %@", _searchResults);
     [self.tableView reloadData];
     if (_searchResults.count <= 0) {
@@ -357,13 +358,13 @@ static NSInteger limitCount = 15;
     [[QIMKit sharedInstance] openChatSessionByUserId:_infoDic[@"XmppId"]];
     [QIMFastEntrance openSingleChatVCByUserId:_infoDic[@"XmppId"]];
     /*
-    QIMChatVC * chatVC  = [[QIMChatVC alloc] init];
-    [chatVC setStype:kSessionType_Chat];
-    [chatVC setChatId:_infoDic[@"XmppId"]];
-    [chatVC setName:_infoDic[@"Name"]];
-    [chatVC setTitle:_infoDic[@"Name"]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-    [self.navigationController popToRootVCThenPush:chatVC animated:YES];
+     QIMChatVC * chatVC  = [[QIMChatVC alloc] init];
+     [chatVC setStype:kSessionType_Chat];
+     [chatVC setChatId:_infoDic[@"XmppId"]];
+     [chatVC setName:_infoDic[@"Name"]];
+     [chatVC setTitle:_infoDic[@"Name"]];
+     [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
+     [self.navigationController popToRootVCThenPush:chatVC animated:YES];
      */
 }
 
@@ -371,7 +372,7 @@ static NSInteger limitCount = 15;
     
     unsigned long count = _searchResults.count;
     if (count>0) {
-
+        
         CGFloat heigth = CGRectGetHeight(scrollView.frame);
         CGFloat contentYoffset = scrollView.contentOffset.y;
         CGFloat distanceFromBottom = scrollView.contentSize.height - contentYoffset;
@@ -395,7 +396,7 @@ static NSInteger limitCount = 15;
 
 - (BOOL)searchBarShouldBeginEditing:(SearchBar *)searchBar {
     limitCount = 12;
-    [MMPickerView dismissWithCompletion:^(NSString *str) {
+    [QIMPickerView dismissWithCompletion:^(NSString *str) {
         
     }];
     return YES;

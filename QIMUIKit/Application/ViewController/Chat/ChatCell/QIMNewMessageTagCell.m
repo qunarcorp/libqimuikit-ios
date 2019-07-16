@@ -25,7 +25,7 @@
         [self setBackgroundColor:[UIColor clearColor]];
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
         
-        NSString *content = @"以下是新消息";
+        NSString *content = @"以下为新消息";
         UIFont *font = [UIFont systemFontOfSize:14];
         CGSize contentSize = [content sizeWithFont:font forWidth:INT8_MAX lineBreakMode:NSLineBreakByCharWrapping];
         

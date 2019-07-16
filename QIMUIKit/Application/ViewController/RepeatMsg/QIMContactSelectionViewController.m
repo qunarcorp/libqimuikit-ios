@@ -11,7 +11,6 @@
 #import "QIMContactUserCell.h"
 #import "SearchBar.h"
 #import "QIMGroupListVC.h"
-#import "QIMUserListVC.h"
 #import "QIMGroupChatVC.h"
 #import "QIMChatVC.h"
 #import "QIMBuddyItemCell.h"
@@ -20,10 +19,13 @@
 #import "QIMFriendListSelectionVC.h"
 #import "QIMIconInfo.h"
 #import "NSBundle+QIMLibrary.h"
+#if __has_include("QIMIPadWindowManager.h")
+#import "QIMIPadWindowManager.h"
+#endif
 
 #define kKeywordSearchBarHeight 44
 
-@interface QIMContactSelectionViewController ()<UITableViewDataSource,UITableViewDelegate,SearchBarDelgt,UIGestureRecognizerDelegate,QIMGroupListVCDelegate,QIMUserListVCDelegate,QIMFriendListSelectionVCDelegate>{
+@interface QIMContactSelectionViewController ()<UITableViewDataSource,UITableViewDelegate,SearchBarDelgt,UIGestureRecognizerDelegate,QIMGroupListVCDelegate,QIMFriendListSelectionVCDelegate>{
     UITableView     * _tableView;
     NSMutableArray *_itemArray;
     SearchBar *_searchBarKeyTmp;
@@ -71,7 +73,10 @@
     }
     return NO;
 }
-
+-(void)viewWillAppear:(BOOL)animated{
+    self.navigationController.navigationBar.translucent = NO;
+}
+    
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -123,6 +128,9 @@
     if ([[QIMKit sharedInstance] getIsIpad]) {
         _tableView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] width], [[UIScreen mainScreen] height]);
     }
+    else{
+        _tableView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] width], [UIScreen mainScreen].height - NAVIGATION_BAR_HEIGHT);
+    }
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
     _tableView.estimatedRowHeight = 0;
@@ -146,11 +154,12 @@
     [_searchBarKeyTmp setAutocorrectionType:UITextAutocorrectionTypeNo];
     [_searchBarKeyTmp setDelegate:self];
     [_searchBarKeyTmp setText:nil];
-    [_searchBarKeyTmp setFrame:CGRectMake(0, 0, self.view.width, kKeywordSearchBarHeight)];
+    [_searchBarKeyTmp setFrame:CGRectMake(0, 15, self.view.width, kKeywordSearchBarHeight)];
 }
 
 - (void)initTableViewHeader {
-    UIView * headerBG = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, kKeywordSearchBarHeight + 54 + 21)];
+    UIView * headerBG = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, kKeywordSearchBarHeight + 54 + 21 + 15)];
+    headerBG.backgroundColor = [UIColor whiteColor];
     //搜索框
     [self setupSearchBar];
     [headerBG addSubview:_searchBarKeyTmp];
@@ -167,6 +176,8 @@
     
     UIView *groupView = [[UIView alloc] initWithFrame:CGRectMake(0, _searchBarKeyTmp.bottom + 0.5f, self.view.width, 54)];
     groupView.backgroundColor = [UIColor whiteColor];
+    
+    
     UILabel *groupTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.width - 60, 54)];
     groupTitleLabel.text = @"选择一个群聊";
     groupTitleLabel.textColor = [UIColor qtalkTextBlackColor];
@@ -399,7 +410,7 @@
 }
 
 //解析原始消息
-- (NSDictionary *)getOriginMessageWithMsg:(Message *)msg {
+- (NSDictionary *)getOriginMessageWithMsg:(QIMMessageModel *)msg {
     if (msg.messageId.length <= 0) {
         return nil;
     }
@@ -441,14 +452,21 @@
     */
     _selectInfoDic = @{@"userId":jid,@"isGroup":@(NO)};
     if (self.ExternalForward) {
-        Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
-        [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
+       
+        NSDictionary * msgExtendInfo =[[QIMJSONSerializer sharedInstance]deserializeObject:self.message.extendInformation error:nil];
+        if ([msgExtendInfo objectForKey:@"HttpUrl"] && [[msgExtendInfo objectForKey:@"HttpUrl"] hasPrefix:@"file"]) {
+                QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
+        }
+        else{
+            QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
+            [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
+        }
     } else {
         if (self.message) {
             NSString *msgContent = self.message.message;
             NSString *msgExtendInfo = self.message.extendInformation;
             if (msgContent.length > 0 && msgExtendInfo.length > 0) {
-                Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:self.message.backupInfo];
+               QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:self.message.backupInfo];
                 [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
             } else {
                 NSDictionary *originMsg = [self getOriginMessageWithMsg:self.message];
@@ -457,23 +475,23 @@
                 NSString *backUpInfo = [originMsg objectForKey:@"backupInfo"];
                 QIMMessageType msgType = [[originMsg objectForKey:@"MsgType"] integerValue];
                 if (msgType == QIMMessageType_None && !self.ExternalForward) {
-                    [[QIMKit sharedInstance] sendMessage:self.message.message WithInfo:self.message.extendInformation ToUserId:jid WihtMsgType:self.message.messageType];
+                    [[QIMKit sharedInstance] sendMessage:self.message.message WithInfo:self.message.extendInformation ToUserId:jid WithMsgType:self.message.messageType];
                 } else {
-                    Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:msgType backinfo:backUpInfo];
+                   QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:msgType backinfo:backUpInfo];
                     [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
                 }
             }
         } else if (self.messageList.count){
-            for (Message * msg in self.messageList) {
+            for (QIMMessageModel * msg in self.messageList) {
                 NSDictionary *originMsg = [self getOriginMessageWithMsg:msg];
                 NSString *msgContent = [originMsg objectForKey:@"Content"];
                 NSString *msgExtendInfo = [originMsg objectForKey:@"ExtendInfo"];
                 NSString *backUpInfo = [originMsg objectForKey:@"backupInfo"];
                 QIMMessageType msgType = [[originMsg objectForKey:@"MsgType"] integerValue];
                 if (msgType == QIMMessageType_None && !self.ExternalForward) {
-                    [[QIMKit sharedInstance] sendMessage:msg.message WithInfo:msg.extendInformation ToUserId:jid WihtMsgType:msg.messageType];
+                    [[QIMKit sharedInstance] sendMessage:msg.message WithInfo:msg.extendInformation ToUserId:jid WithMsgType:msg.messageType];
                 } else {
-                    Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:msgType backinfo:backUpInfo];
+                   QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_SingleChat msgType:msgType backinfo:backUpInfo];
                     [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
                 }
             }
@@ -487,11 +505,12 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
     if (!self.isTransfer) {
-        id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        if ([nav isKindOfClass:[QIMNavController class]]) {
-            [nav popToRootVCThenPush:chatVC animated:YES];
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+#if __has_include("QIMIPadWindowManager.h")
+            [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatVC];
+#endif
         } else {
-            nav = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            QIMNavController *nav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
             [nav popToRootVCThenPush:chatVC animated:YES];
         }
     }
@@ -511,15 +530,22 @@
      */
     _selectInfoDic = @{@"userId":jid,@"isGroup":@(YES)};
     if (self.ExternalForward) {
-        Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
-        Message *tempMsg = [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
+        NSDictionary * msgExtendInfo =[[QIMJSONSerializer sharedInstance]deserializeObject:self.message.extendInformation error:nil];
+        if ([msgExtendInfo objectForKey:@"HttpUrl"] && [[msgExtendInfo objectForKey:@"HttpUrl"] hasPrefix:@"file"]) {
+            QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
+        }
+        else{
+            QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
+            QIMMessageModel *tempMsg = [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:jid userInfo:@{@"message":tempMsg}];
+        }
+       
     } else {
         if (self.message) {
             NSString *msgContent = self.message.message;
             NSString *msgExtendInfo = self.message.extendInformation;
             if (msgContent.length > 0 && msgExtendInfo.length > 0) {
-                Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:self.message.backupInfo];
+               QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:self.message.backupInfo];
                 [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
             } else {
                 NSDictionary *originMsg = [self getOriginMessageWithMsg:self.message];
@@ -528,23 +554,23 @@
                 NSString *backUpInfo = [originMsg objectForKey:@"backupInfo"];
                 QIMMessageType msgType = [[originMsg objectForKey:@"MsgType"] integerValue];
                 if (msgType == QIMMessageType_None && !self.ExternalForward) {
-                    [[QIMKit sharedInstance] sendMessage:self.message.message WithInfo:self.message.extendInformation ToGroupId:jid WihtMsgType:self.message.messageType];
+                    [[QIMKit sharedInstance] sendMessage:self.message.message WithInfo:self.message.extendInformation ToGroupId:jid WithMsgType:self.message.messageType];
                 } else {
-                    Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:msgType backinfo:backUpInfo];
+                   QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:msgType backinfo:backUpInfo];
                     [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
                 }
             }
         } else if (self.messageList.count){
-            for (Message * msg in self.messageList) {
+            for (QIMMessageModel * msg in self.messageList) {
                 NSDictionary *originMsg = [self getOriginMessageWithMsg:msg];
                 NSString *msgContent = [originMsg objectForKey:@"Content"];
                 NSString *msgExtendInfo = [originMsg objectForKey:@"ExtendInfo"];
                 NSString *backUpInfo = [originMsg objectForKey:@"backupInfo"];
                 QIMMessageType msgType = [[originMsg objectForKey:@"MsgType"] integerValue];
                 if (msgType == QIMMessageType_None && self.ExternalForward) {
-                    [[QIMKit sharedInstance] sendMessage:self.message.message WithInfo:self.message.extendInformation ToGroupId:jid WihtMsgType:self.message.messageType];
+                    [[QIMKit sharedInstance] sendMessage:self.message.message WithInfo:self.message.extendInformation ToGroupId:jid WithMsgType:self.message.messageType];
                 } else {
-                    Message *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:msgType backinfo:backUpInfo];
+                   QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:msgContent extenddInfo:msgExtendInfo userId:jid userType:ChatType_GroupChat msgType:msgType backinfo:backUpInfo];
                     [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
                 }
             }
@@ -557,11 +583,12 @@
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
-    id nav = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-    if ([nav isKindOfClass:[QIMNavController class]]) {
-        [nav popToRootVCThenPush:chatGroupVC animated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+#if __has_include("QIMIPadWindowManager.h")
+        [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatGroupVC];
+#endif
     } else {
-        nav = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        QIMNavController *nav = (QIMNavController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
         [nav popToRootVCThenPush:chatGroupVC animated:YES];
     }
 }

@@ -62,7 +62,7 @@
     [self.view addSubview:_actionMenuView];
     
     UIImageView *bgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _actionMenuView.width, _actionMenuView.height)];
-    [bgView setImage:[[UIImage imageNamed:@"MoreFunctionFrame"] stretchableImageWithLeftCapWidth:10 topCapHeight:20]];
+    [bgView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"MoreFunctionFrame"] stretchableImageWithLeftCapWidth:10 topCapHeight:20]];
     [_actionMenuView addSubview:bgView];
     
     UIButton *addGroupButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 14, _actionMenuView.width-10, 20)];
@@ -152,7 +152,7 @@
 
 - (void)getGroupList {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             [[QIMKit sharedInstance] getIncrementMucList:0];
         } else {
             [[QIMKit sharedInstance] quickJoinAllGroup];
@@ -325,13 +325,6 @@
             [[QIMKit sharedInstance] openGroupSessionByGroupId:groupViewCell.groupID ByName:groupViewCell.userName];
         }
         [QIMFastEntrance openGroupChatVCByGroupId:groupViewCell.groupID];
-        /*
-        QIMGroupChatVC * chatGroupVC = [[QIMGroupChatVC alloc] init];
-        [chatGroupVC setTitle:groupViewCell.userName];
-        [chatGroupVC setChatId:groupViewCell.groupID];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-        [self.navigationController popToRootVCThenPush:chatGroupVC animated:YES];
-        */
     }
 }
 

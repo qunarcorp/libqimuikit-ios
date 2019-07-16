@@ -49,21 +49,22 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        self.backgroundColor = [UIColor qim_colorWithHex:0xfafafa alpha:1.0];
+        self.backgroundColor = [UIColor whiteColor];
         
-        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.width, self.height)];
+        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0.5, self.width, self.height)];
         [self addSubview:toolbar];
         
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 0.5)];
-        [lineView setBackgroundColor:[UIColor spectralColorGrayColor]];
+        [lineView setBackgroundColor:[UIColor qim_colorWithHex:0xEAEAEA]];
         [self addSubview:lineView];
         
         CGFloat buttonWidth = self.width / _itemCount;
         
         for (int i = 0 ; i < _itemCount ; i++ ) {
             
-            UIView *tapView = [[UIView alloc] initWithFrame:CGRectMake(buttonWidth*i, 2, buttonWidth, self.height)];
-            [tapView setBackgroundColor:[UIColor qim_colorWithHex:0xfafafa alpha:1.0]];
+            UIView *tapView = [[UIView alloc] initWithFrame:CGRectMake(buttonWidth*i, 0.5, buttonWidth, self.height)];
+            [tapView setBackgroundColor:[UIColor whiteColor]];
+
             [tapView setTag:kItemViewPirex+i];
             [self addSubview:tapView];
             
@@ -80,7 +81,7 @@
             longGes.allowableMovement = 1000;
             [tapView addGestureRecognizer:longGes];
             
-             [singleTapGestureRecognizer requireGestureRecognizerToFail:doubleTapGestureRecognizer];
+            [singleTapGestureRecognizer requireGestureRecognizerToFail:doubleTapGestureRecognizer];
             CustomTabBarButton *itemButton = [[CustomTabBarButton alloc] initWithFrame:CGRectMake(buttonWidth*i, 2, buttonWidth, self.height)];
             [itemButton setTag:kItemButtonPirex+i];
             [itemButton addTarget:self action:@selector(onItemClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -90,20 +91,18 @@
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, itemButton.height - 16, itemButton.width, 12)];
             [label setBackgroundColor:[UIColor clearColor]];
             [label setTextAlignment:NSTextAlignmentCenter];
-            [label setFont:[UIFont fontWithName:FONT_NAME size:FONT_SIZE - 4-2]];
-//            [label setTextColor:kTabBarNormalColor];
-//            [label setHighlightedTextColor:kTabBarHighlightedColor];
+            [label setFont:[UIFont systemFontOfSize:12]];
             [itemButton setBarTitleLabel:label];
             [itemButton addSubview:label];
             
             
-            UILabel *badgeNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake((buttonWidth / 2.0 + 5), 2, 22, 15)];
+            UILabel *badgeNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake((buttonWidth / 2.0 + 5), 2, 25, 16)];
             [badgeNumberLabel setHidden:YES];
-            [badgeNumberLabel.layer setCornerRadius:7];
+            [badgeNumberLabel.layer setCornerRadius:8];
             [badgeNumberLabel.layer setMasksToBounds:YES];
-            [badgeNumberLabel setBackgroundColor:[UIColor redColor]];
+            [badgeNumberLabel setBackgroundColor:qim_mainViewBadgeNumberLabelBgColor];
             [badgeNumberLabel setTextColor:[UIColor whiteColor]];
-            [badgeNumberLabel setFont:[UIFont boldSystemFontOfSize:12]];
+            [badgeNumberLabel setFont:[UIFont systemFontOfSize:qim_mainViewBadgeNumberLabelTextFont]];
             [badgeNumberLabel setTextAlignment:NSTextAlignmentCenter];
             [itemButton setBadgeNumberLabel:badgeNumberLabel];
             [itemButton addSubview:badgeNumberLabel];
@@ -114,7 +113,7 @@
     return self;
 }
 
-- (id)initWithItemCount:(NSUInteger)count WihtFrame:(CGRect)frame{
+- (id)initWithItemCount:(NSUInteger)count WithFrame:(CGRect)frame{
     _itemCount = count;
     self = [self initWithFrame:frame];
     if (self) {
@@ -123,25 +122,39 @@
     return self;
 }
 
-- (void)setBadgeNumber:(NSUInteger)bagdeNumber ByItemIndex:(NSUInteger)index showNumber:(BOOL)showNum{
-    if (showNum) {
-        [self setBadgeNumber:bagdeNumber ByItemIndex:index];
-    }else{
-        CustomTabBarButton *itemButton = (CustomTabBarButton *)[self viewWithTag:kItemButtonPirex+index];
-        if (bagdeNumber > 0) {
-            CGSize size = CGSizeMake(10, 10);
-            [itemButton.badgeNumberLabel setWidth:size.width];
-            [itemButton.badgeNumberLabel setHeight:size.height];
-            [itemButton.badgeNumberLabel.layer setCornerRadius:size.width / 2];
-            [itemButton.badgeNumberLabel setHidden:NO];
-            [itemButton.badgeNumberLabel setText:@""];
+- (void)setBadgeNumber:(NSUInteger)bagdeNumber ByItemIndex:(NSUInteger)index showNumber:(BOOL)showNum {
+    CustomTabBarButton *itemButton = (CustomTabBarButton *)[self viewWithTag:kItemButtonPirex+index];
+    if (bagdeNumber > 0 && showNum) {
+        
+        NSString *countStr;
+        
+        if (bagdeNumber > 99) {
+            
+            countStr = [NSString stringWithFormat:@"99+"];
         } else {
-            [itemButton.badgeNumberLabel setHidden:YES];
+            
+            countStr = [NSString stringWithFormat:@"%lu",(unsigned long)bagdeNumber];
         }
+        CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
+        [itemButton.badgeNumberLabel setHeight:16];
+        CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
+        [itemButton.badgeNumberLabel setWidth:width];
+        [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];
+        [itemButton.badgeNumberLabel setHidden:NO];
+        [itemButton.badgeNumberLabel setText:countStr];
+    } else if (bagdeNumber > 0 && showNum == NO) {
+        CGSize size = CGSizeMake(10, 10);
+        [itemButton.badgeNumberLabel setWidth:size.width];
+        [itemButton.badgeNumberLabel setHeight:size.height];
+        [itemButton.badgeNumberLabel.layer setCornerRadius:size.height*0.5];
+        [itemButton.badgeNumberLabel setHidden:NO];
+        [itemButton.badgeNumberLabel setText:@""];
+    } else {
+        [itemButton.badgeNumberLabel setHidden:YES];
     }
 }
 
-- (void)setBadgeNumber:(NSUInteger)bagdeNumber ByItemIndex:(NSUInteger)index{
+- (void)setBadgeNumber:(NSUInteger)bagdeNumber ByItemIndex:(NSUInteger)index {
     CustomTabBarButton *itemButton = (CustomTabBarButton *)[self viewWithTag:kItemButtonPirex+index];
     if (bagdeNumber > 0) {
         
@@ -155,8 +168,10 @@
             countStr = [NSString stringWithFormat:@"%lu",(unsigned long)bagdeNumber];
         }
         CGSize size = [countStr sizeWithFont:itemButton.badgeNumberLabel.font forWidth:INT32_MAX lineBreakMode:NSLineBreakByCharWrapping];
+        [itemButton.badgeNumberLabel setHeight:16];
         CGFloat width = MAX(size.width + 6,itemButton.badgeNumberLabel.height);
         [itemButton.badgeNumberLabel setWidth:width];
+        [itemButton.badgeNumberLabel.layer setCornerRadius:itemButton.badgeNumberLabel.height*0.5];
         [itemButton.badgeNumberLabel setHidden:NO];
         [itemButton.badgeNumberLabel setText:countStr];
     } else {
@@ -272,9 +287,7 @@
 }
 
 - (void)setSelectedIndex:(NSUInteger)selectedIndex animated:(BOOL)animated{
-//    if (self.selectedIndex == selectedIndex) {
-//        return;
-//    }
+
     UIButton *oldButton = (UIButton *)[self viewWithTag:kItemButtonPirex+_selectedIndex];
     [oldButton setSelected:NO];
     [oldButton setUserInteractionEnabled:YES];

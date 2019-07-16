@@ -8,13 +8,13 @@
 
 #import "QIMVoiceRecordingView.h"
 
-#define Image_Name_0 [UIImage imageNamed:@"voiceRecording1"]
-#define Image_Name_1 [UIImage imageNamed:@"voiceRecording2"]
-#define Image_Name_2 [UIImage imageNamed:@"voiceRecording3"]
-#define Image_Name_3 [UIImage imageNamed:@"voiceRecording4"]
-#define Image_Name_4 [UIImage imageNamed:@"voiceRecording5"]
-#define Image_Name_5 [UIImage imageNamed:@"voiceRecording6"]
-#define Image_Name_6 [UIImage imageNamed:@"voiceRecording7"]
+#define Image_Name_0 [UIImage qim_imageNamedFromQIMUIKitBundle:@"voiceRecording1"]
+#define Image_Name_1 [UIImage qim_imageNamedFromQIMUIKitBundle:@"voiceRecording2"]
+#define Image_Name_2 [UIImage qim_imageNamedFromQIMUIKitBundle:@"voiceRecording3"]
+#define Image_Name_3 [UIImage qim_imageNamedFromQIMUIKitBundle:@"voiceRecording4"]
+#define Image_Name_4 [UIImage qim_imageNamedFromQIMUIKitBundle:@"voiceRecording5"]
+#define Image_Name_5 [UIImage qim_imageNamedFromQIMUIKitBundle:@"voiceRecording6"]
+#define Image_Name_6 [UIImage qim_imageNamedFromQIMUIKitBundle:@"voiceRecording7"]
 
 @interface QIMVoiceRecordingView() {
     UIImageView *_imageView;
@@ -56,7 +56,7 @@
     CGRect backRect = CGRectMake(10, 10, self.frame.size.width-20, self.frame.size.height-20-35);
     
 //    _staticImageView = [[UIImageView alloc] initWithFrame:CGRectMake(backRect.origin.x, backRect.origin.y, backRect.size.width/2, backRect.size.height)];
-//    [_staticImageView setImage:[UIImage imageNamed:@"voiceRecording"]];
+//    [_staticImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"voiceRecording"]];
 //    [self addSubview:_staticImageView];
     
     _imageArray = [[NSArray alloc] initWithObjects: Image_Name_0, Image_Name_1, Image_Name_2, Image_Name_3, Image_Name_4, Image_Name_5, Image_Name_6, nil];
@@ -65,7 +65,7 @@
     
     //取消发送的图片
     _maybeCancelView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 17, self.frame.size.height/2 - 22, 34, 34)];
-    [_maybeCancelView setImage:[UIImage imageNamed:@"SignUpError"]];
+    [_maybeCancelView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"SignUpError"]];
     [self addSubview:_maybeCancelView];
     _maybeCancelView.hidden = YES;
     

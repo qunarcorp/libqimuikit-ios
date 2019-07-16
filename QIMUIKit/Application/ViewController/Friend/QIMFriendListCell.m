@@ -99,13 +99,6 @@
     
     NSString *jid = [self.userInfoDic objectForKey:@"XmppId"];
     _headerView.frame = CGRectMake(10, ([self.class getCellHeightForDesc:[self.userInfoDic objectForKey:@"DescInfo"]] - 50) / 2, 50, 50);
-    /*
-    UIImage *headerImage = [[QIMKit sharedInstance] getUserHeaderImageByUserId:jid];
-    if (![[QIMKit sharedInstance] isUserOnline:jid]) {
-        headerImage = [headerImage qim_grayImage];
-    }
-    [self.headerView setImage:headerImage];
-    */
     [self.headerView qim_setImageWithJid:jid];
 }
 

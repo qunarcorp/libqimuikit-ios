@@ -10,6 +10,6 @@
 @class QIMMsgBaloonBaseCell;
 @interface QIMRedPackCell : QIMMsgBaloonBaseCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message  chatType:(ChatType)chatType;
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message  chatType:(ChatType)chatType;
 
 @end

@@ -5,7 +5,7 @@
 //  Created by lihuaqi on 2017/9/21.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "QTNotebookCell.h"
 #import "QIMNoteModel.h"
 #import "QIMNoteUICommonFramework.h"
@@ -51,7 +51,7 @@
 }
 
 -(void)refreshCellWithModel:(QIMNoteModel *)model {
-    _iconImgV.image = [UIImage imageNamed:@"evernote_notebook"];
+    _iconImgV.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"evernote_notebook"];
     _titleLb.text = [NSString stringWithFormat:@"%@",model.q_title? model.q_title:@""];
     _desLb.text =  [NSString stringWithFormat:@"%@",model.q_introduce?model.q_introduce:@""];
 }
@@ -68,3 +68,4 @@
 }
 
 @end
+#endif

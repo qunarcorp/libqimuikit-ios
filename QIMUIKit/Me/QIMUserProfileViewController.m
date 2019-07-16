@@ -44,7 +44,7 @@
         if (self.myOwnerProfile) {
             NSArray *section0 = @[@(QCUserProfileHeader), @(QCUserProfileUserSignature), @(QCUserProfileMyQrcode)];
             NSArray *section1 = @[];
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 section1 = @[@(QCUserProfileUserName), @(QCUserProfileUserId), @(QCUserProfileDepartment)];
             } else {
                 section1 = @[@(QCUserProfileUserName), @(QCUserProfileUserId)];
@@ -55,17 +55,15 @@
             NSArray *section0 = @[@(QCUserProfileUserInfo)];
             NSArray *section1 = @[@(QCUserProfileRemark)];
             NSArray *section2 = @[@(QCUserProfileUserId)];
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 section2 = @[@(QCUserProfileUserId), @(QCUserProfileDepartment)];
             }
-            NSArray *section3 = @[@(QCUserProfileRNView)];
-            NSArray *section4 = @[@(QCUserProfileComment), @(QCUserProfileSendMail)];
+            NSArray *section3 = @[@(QCUserProfileComment), @(QCUserProfileSendMail)];
             [_dataSource addObject:section0];
             [_dataSource addObject:section1];
             [_dataSource addObject:section2];
-            if ([[QIMKit sharedInstance] qimNav_OpsHost].length > 0 && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([[QIMKit sharedInstance] qimNav_OpsHost].length > 0 && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
                 [_dataSource addObject:section3];
-                [_dataSource addObject:section4];
             }
         }
     }
@@ -193,21 +191,15 @@
 #pragma mark - life ctyle
 
 - (void)loadUserInfo {
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        [[QIMKit sharedInstance] getQChatUserInfoForUser:self.userId];
-        self.userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.userId];
-    } else {
-        self.userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.userId];
-    }
+    self.userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.userId];
 }
 
 - (void)getUserVcardInfo {
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSDictionary * usersInfo = [[QIMKit sharedInstance] getRemoteUserProfileForUserIds:@[weakSelf.userId]];
-        weakSelf.userVCardInfo = usersInfo[weakSelf.userId];
+        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:weakSelf.userId];
         dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.model.personalSignature = [weakSelf.userVCardInfo objectForKey:@"M"];
+            weakSelf.model.personalSignature = [userInfo objectForKey:@"Mood"];
             [weakSelf.tableView reloadData];
         });
     });
@@ -231,7 +223,7 @@
 }
 
 - (void)registerNSNotifications {
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
+#if __has_include("RNSchemaParse.h")
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeRNCardViewHeight:) name:@"kNotify_RN_QTALK_CARD_ViewHeight_UPDATE" object:nil];
 #endif
 }

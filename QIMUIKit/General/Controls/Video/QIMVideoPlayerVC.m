@@ -67,7 +67,7 @@ static NSString *totalDurationStr = nil;
     if (!_repeatBtn) {
         _repeatBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _repeatBtn.frame = CGRectMake(0, 0, 64, 64);
-        [_repeatBtn setImage:[UIImage imageNamed:@"player_repeat_video"] forState:UIControlStateNormal];
+        [_repeatBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_repeat_video"] forState:UIControlStateNormal];
         [_repeatBtn addTarget:self action:@selector(playClick:) forControlEvents:UIControlEventTouchUpInside];
         _repeatBtn.hidden = YES;
     }
@@ -120,8 +120,8 @@ static NSString *totalDurationStr = nil;
         _playOrPause = [UIButton buttonWithType:UIButtonTypeCustom];
         _playOrPause.frame = CGRectMake(10, 6, 28, 28);
         [_playOrPause setAutoresizingMask:UIViewAutoresizingFlexibleRightMargin];
-        [_playOrPause setImage:[UIImage imageNamed:@"video_button_play_normal"] forState:UIControlStateNormal];
-        [_playOrPause setImage:[UIImage imageNamed:@"video_button_stop_normal"] forState:UIControlStateSelected];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"video_button_play_normal"] forState:UIControlStateNormal];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"video_button_stop_normal"] forState:UIControlStateSelected];
         [_playOrPause addTarget:self action:@selector(playClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _playOrPause;

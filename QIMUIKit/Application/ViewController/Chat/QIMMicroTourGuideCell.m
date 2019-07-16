@@ -19,7 +19,7 @@
     
 }
 
-+ (CGFloat)getCellHeigthWithMessage:(Message *)message{
++ (CGFloat)getCellHeigthWithMessage:(QIMMessageModel *)message{
     return 100;
 }
 

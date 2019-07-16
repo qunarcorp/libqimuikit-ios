@@ -263,8 +263,8 @@
             _userNameInputView = [[UITextField alloc] initWithFrame:CGRectMake([self userNameSepline].left, [self userNameSepline].top - kInputViewHeight, [self userNameSepline].width - 40, kInputViewHeight)];
             _userNameDropBtn = [UIButton buttonWithType:UIButtonTypeCustom];
             _userNameDropBtn.frame = CGRectMake(_userNameInputView.right + 10, _userNameInputView.top, kInputViewHeight, kInputViewHeight);
-            [_userNameDropBtn setImage:[UIImage imageNamed:@"chat_bottom_arrowup_nor"] forState:UIControlStateNormal];
-            [_userNameDropBtn setImage:[UIImage imageNamed:@"chat_bottom_arrowdown_nor"] forState:UIControlStateSelected];
+            [_userNameDropBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowup_nor"] forState:UIControlStateNormal];
+            [_userNameDropBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowdown_nor"] forState:UIControlStateSelected];
             [_userNameDropBtn addTarget:self action:@selector(dropLoginUserTableView:) forControlEvents:UIControlEventTouchUpInside];
         } else {
             _userNameInputView = [[UITextField alloc] initWithFrame:CGRectMake([self userNameSepline].left, [self userNameSepline].top - kInputViewHeight, [self userNameSepline].width, kInputViewHeight)];
@@ -422,8 +422,8 @@
     if (_agreeBtn == nil) {
         _agreeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _agreeBtn.frame = CGRectMake(([self loginBgView].width - 258) / 2, [self commitBtn].bottom + 30, 18, 18);
-        [_agreeBtn setImage:[UIImage imageNamed:@"checkbox_normal"] forState:UIControlStateNormal];
-        [_agreeBtn setImage:[UIImage imageNamed:@"checkbox_click"] forState:UIControlStateSelected];
+        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_normal"] forState:UIControlStateNormal];
+        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_click"] forState:UIControlStateSelected];
         _agreeBtn.selected = YES;
         [_agreeBtn addTarget:self action:@selector(agreeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [[self loginBgView] addSubview:_agreeBtn];
@@ -452,9 +452,9 @@
         _settingBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.height - 44, self.view.width, 24)];
         [_settingBtn setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
         [_settingBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [_settingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_settingBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
         [_settingBtn setTitle:@"设置服务地址" forState:UIControlStateNormal];
-        [_settingBtn setImage:[UIImage imageNamed:@"iconSetting"] forState:UIControlStateNormal];
+        [_settingBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconSetting"] forState:UIControlStateNormal];
         [_settingBtn addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:_settingBtn];
     }
@@ -743,7 +743,7 @@
                 NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
                 if (token.length <= 0) {
                     NSDictionary *tokenDic = [QIMKit getUserTokenWithUserName:userName
-                                                                  WihtVerifyCode:validCode];
+                                                                  WithVerifyCode:validCode];
                     int statusId = (tokenDic && [[tokenDic allKeys] containsObject:@"status_id"]) ?
                     [[tokenDic objectForKey:@"status_id"] intValue] : -1;
                     

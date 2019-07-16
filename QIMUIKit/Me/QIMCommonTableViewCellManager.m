@@ -25,7 +25,6 @@
 #import "QIMUserInfoModel.h"
 #import "QCGroupModel.h"
 #import "QIMMenuView.h"
-#import "QIMFriendListViewController.h"
 #import "QIMServiceStatusViewController.h"
 
 @interface QIMCommonTableViewCellManager ()
@@ -110,7 +109,7 @@
         }
             break;
         case QIMCommonTableViewCellDataTypeAttendance:{
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
             Class RunC = NSClassFromString(@"QimRNBModule");
             SEL sel = NSSelectorFromString(@"clockOnVC");
             UIViewController *vc = nil;
@@ -122,17 +121,9 @@
         }
             break;
         case QIMCommonTableViewCellDataTypeTotpToken:{
-#if defined (QIMRNEnable) && QIMRNEnable == 1
+#if __has_include("QimRNBModule.h")
             [QIMFastEntrance openQIMRNVCWithModuleName:@"TOTP" WithProperties:@{}];
 #endif
-        }
-            break;
-        case QIMCommonTableViewCellDataTypeAccountInformation: {
-            dispatch_async(dispatch_get_main_queue(), ^{
-#if defined (QIMOPSRNEnable) && QIMOPSRNEnable == 1
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotify_QtalkSuggest_handle_opsapp_event" object:nil userInfo:@{@"module":@"user-info", @"initParam":@[]}];
-#endif
-            });
         }
             break;
         case QIMCommonTableViewCellDataTypeMyFile: {
@@ -183,7 +174,7 @@
         case QIMCommonTableViewCellDataTypeSearchHistory: {
             QIMWebView *webView = [[QIMWebView alloc] init];
             [webView setUrl:[NSString stringWithFormat:@"%@/lookback/main_controller.php", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost]]];
-            //@"https://qt.qunar.com/lookback/main_controller.php"];
+            //@"https://qim.qunar.com/lookback/main_controller.php"];
             [self.rootVC.navigationController pushViewController:webView animated:YES];
         }
             break;
@@ -215,7 +206,6 @@
             break;
         case QIMCommonTableViewCellDataTypeGroupQRcode: {
             [QIMFastEntrance showQRCodeWithQRId:self.groupModel.groupId withType:QRCodeType_GroupQR];
-//            [QIMFastEntrance showQRCodeWithUserId:self.groupModel.groupId withName:self.groupModel.groupName withType:QRCodeType_GroupQR];
         }
             break;
         case QIMCommonTableViewCellDataTypeGroupLeave: {
@@ -244,6 +234,7 @@
             break;
         case QIMCommonTableViewCellDataTypeClearCache: {
             [[QIMDataController getInstance] removeAllImage];
+            [[QIMDataController getInstance] clearLogFiles];
         }
             break;
         case QIMCommonTableViewCellDataTypeMconfig: {
@@ -384,23 +375,7 @@
             cell.accessoryType_LL = UITableViewCellAccessoryDisclosureIndicator;
             cell.textLabel.text = cellData.title;
             long long totalSize = [[QIMDataController getInstance] sizeofImagePath];
-            NSString *str = nil;
-            if (totalSize < 1048576) {
-                // 1024 * 1024
-                double total = (double)totalSize;
-                float result = total / 1024.0;
-                str = [NSString stringWithFormat:@"%.2fKB", result];
-            } else if (totalSize < 1073741824) {
-                // 1024 * 1024 * 1024
-                double total = (double)totalSize;
-                float result = total / 1048576.0;
-                str = [NSString stringWithFormat:@"%.2fMB", result];
-            } else if (totalSize < 1099511627776) {
-                // 1024 * 1024 * 1024
-                double total = (double)totalSize;
-                float result = total / 1073741824.0;
-                str = [NSString stringWithFormat:@"%.2fGB", result];
-            }
+            NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
             cell.detailTextLabel.text = str;
             cell.textLabel.font = [UIFont fontWithName:FONT_NAME size:[[QIMCommonFont sharedInstance] currentFontSize] - 4];
             cell.textLabel.textColor = [UIColor qtalkTextBlackColor];

@@ -76,7 +76,7 @@
     if ([searchBar respondsToSelector:@selector(setBarTintColor:)]) {
         [searchBar setBarTintColor:[UIColor qim_colorWithHex:0xe6e7e9 alpha:1.0]];
     }
-    [searchBar setBackgroundImage:[UIImage imageNamed:@"searchbar_bg"]];
+    [searchBar setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"searchbar_bg"]];
     return searchBar;
 }
 

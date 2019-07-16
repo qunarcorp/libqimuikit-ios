@@ -5,7 +5,7 @@
 //  Created by lihuaqi on 2017/9/20.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "QTalkEverNoteListVC.h"
 #import "QTalkEverNoteVC.h"
 #import "QIMNoteManager.h"
@@ -149,3 +149,4 @@
 }
 
 @end
+#endif

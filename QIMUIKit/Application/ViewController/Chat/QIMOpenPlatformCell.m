@@ -24,7 +24,7 @@
     UIView *_lineView;
 }
 
-+ (CGFloat)getCellHeightWithMessage:(Message *)message{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message{
     NSDictionary *msgDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
     NSString *content = [msgDic objectForKey:@"detail"];
     CGSize contentSize = [content sizeWithFont:[UIFont systemFontOfSize:16] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width - 40, INT32_MAX) lineBreakMode:NSLineBreakByCharWrapping];
@@ -146,7 +146,7 @@
 - (void)refreshUI{
     
 //    "source": "东京问题",
-//    "headurl": "http://qt.qunar.com/file/v2...",
+//    "headurl": "http://qim.qunar.com/file/v2...",
 //    "detail": "马桶盖子多少钱",
 //    "dealid": "deal_xxx_yyy",
 //    "dealurl": "http://qchat.qunar.com/deal.php?dealid=deal_xxx_yyy",
@@ -168,7 +168,6 @@
     
     [_backView setFrame:CGRectMake(_backView.left, _backView.top, _backView.width, _bottomButton.bottom)];
     [_lineView setFrame:CGRectMake(0, _bottomButton.top, _backView.width, 0.5)];
-    
 }
 
 @end

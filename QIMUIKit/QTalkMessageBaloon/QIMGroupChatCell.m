@@ -17,7 +17,7 @@
 #import "YLImageView.h"
 
 #define kTextLabelTop       10
-#define kTextLableLeft      10
+#define kTextLableLeft      12
 #define kTextLableBottom    10
 #define kTextLabelRight     10
 #define kMyCellHeightCap    14
@@ -43,7 +43,7 @@
 @implementation QIMGroupChatCell
 @dynamic delegate;
 
-- (void)setMessage:(Message *)aMessage {
+- (void)setMessage:(QIMMessageModel *)aMessage {
     [super setMessage:aMessage];
     _textContainer = nil;
     if (aMessage) {
@@ -99,7 +99,7 @@
 
 - (void)markNameUpdate:(NSNotification *)noti {
     NSDictionary * info = noti.object;
-    if ([info[@"nickName"] isEqualToString:self.message.nickName]) {
+    if ([info[@"nickName"] isEqualToString:self.message.from]) {
         [self refreshUI];
     }
 }
@@ -111,38 +111,39 @@
 }
 
 - (void)userHeaderImgUpdate:(NSNotification *)notify {
-    if ([notify.object isEqualToString:self.message.nickName]) {
-        [self.HeadView qim_setImageWithJid:self.message.nickName];
+    if ([notify.object isEqualToString:self.message.from]) {
+        [self.HeadView qim_setImageWithJid:self.message.from];
     }
 }
 
 - (void)applicationFileManagerUpdate:(NSNotification *)notify {
-    NSDictionary * infoDic = notify.object;
-    Message * message = [infoDic objectForKey:@"message"];
-    float propress = [[infoDic objectForKey:@"propress"] floatValue];
-    NSString * status = [infoDic objectForKey:@"status"];
-    if ([message.messageId isEqualToString:self.message.messageId] || [message.messageId isEqualToString:_imageMd5]) {
-        message.propress = (int)MAX((1-propress) * 100, 0);
-        if (propress <= 1) {
-            //update进度条
-            _propressView.hidden = NO;
-            _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (1 - propress));
-            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
-        }else{
-            if ([status isEqualToString:@"failed"]) {
-                self.message.messageState = MessageState_Faild;
-                
-                _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height);
-                _propressView.hidden = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary * infoDic = notify.object;
+        QIMMessageModel * message = [infoDic objectForKey:@"message"];
+        float propress = [[infoDic objectForKey:@"propress"] floatValue];
+        NSString * status = [infoDic objectForKey:@"status"];
+        if ([message.messageId isEqualToString:self.message.messageId] || [message.messageId isEqualToString:_imageMd5]) {
+            //        message.propress = (int)MAX((1-propress) * 100, 0);
+            if (propress <= 1) {
+                //update进度条
+                _propressView.hidden = NO;
+                _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (1 - propress));
+                //            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
             }else{
-                _propressView.hidden = YES;
+                if ([status isEqualToString:@"failed"]) {
+                    self.message.messageSendState = QIMMessageSendState_Faild;
+                    
+                    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height);
+                    _propressView.hidden = YES;
+                }else{
+                    _propressView.hidden = YES;
+                }
             }
         }
-    }
+    });
 }
 
-- (NSInteger)indexForCellImagesAtLocation:(CGPoint)location
-{
+- (NSInteger)indexForCellImagesAtLocation:(CGPoint)location {
     return 0;
 }
 
@@ -201,10 +202,10 @@
         self.backView.image = [UIImage new];
         self.backView.backgroundColor = [UIColor clearColor];
     }
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
 
-    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (self.message.propress / 100.0f));
+//    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (self.message.propress / 100.0f));
 }
 
 //判断是否有文字
@@ -273,13 +274,13 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    [_textLabel setFrameWithOrign:CGPointMake(kTextLableLeft + (self.message.messageDirection == MessageDirection_Sent ? 0 : 10),10) Width:_textContainer.textWidth];
+    [_textLabel setFrameWithOrign:CGPointMake(kTextLableLeft + (self.message.messageDirection == QIMMessageDirection_Sent ? 0 : 10),10) Width:_textContainer.textWidth];
 }
 
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             if (self.textContainer.textStorages.count > 0 && [self hasTextWithArray:self.textContainer.textStorages]) {
                 
                 [menuList addObject:@(MA_Copy)];
@@ -291,7 +292,7 @@
             [menuList addObjectsFromArray:@[@(MA_Refer),@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             if (self.textContainer.textStorages.count > 0 && [self hasTextWithArray:self.textContainer.textStorages]) {
                 
                 [menuList addObject:@(MA_Copy)];
@@ -317,7 +318,11 @@
         [menuList addObject:@(MA_CopyOriginMsg)];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeAllObjects];
+//        [menuList removeObject:@(MA_Refer)];
+//        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Delete)];
+        [menuList removeObject:@(MA_Forward)];
+//        [menuList removeObject:@(MA_Repeater)];
     }
     return menuList;
 }

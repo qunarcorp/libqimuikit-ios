@@ -79,7 +79,6 @@ pod 'QIMUIKit'
     * AMapSearch
     * AMapLocation
     * AMap3DMap
-    * MMPickerView
     * SCLAlertView-Objective-C
     * MMMarkdown'
     * Toast

@@ -39,7 +39,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOnlineState) name:kNotifyUserOnlineStateUpdate object:nil];
         
         _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
-        [_headerView setImage:[UIImage imageNamed:@"singleHeaderDefault"]];
+        [_headerView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"singleHeaderDefault"]];
         _headerView.layer.masksToBounds = YES;
         _headerView.layer.cornerRadius  = 5;
         [_headerView setClipsToBounds:YES];
@@ -108,23 +108,6 @@
         [_nameLabel setText:@"系统消息"];
     } else {
          [_headerView qim_setImageWithJid:self.jid WithChatType:ChatType_SingleChat];
-        switch ([[QIMKit sharedInstance] getUserPrecenseStatus:_jid]) {
-            case UserPrecenseStatus_Away:{
-                UIImage *image = [UIImage imageNamed:@"Header+Search_Away_Normal"];
-                [_prefrenceImageView setHidden:NO];
-                [_prefrenceImageView setImage:image];
-            }
-                break;
-            case UserPrecenseStatus_Dnd:{
-                UIImage *image = [UIImage imageNamed:@"Header+Search_Busy_Normal"];
-                [_prefrenceImageView setHidden:NO];
-                [_prefrenceImageView setImage:image];
-            }
-                break;
-            default:
-                [_prefrenceImageView setHidden:YES];
-                break;
-        }
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.jid];
         NSString *userName = [userInfo objectForKey:@"Name"];
         NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.jid];

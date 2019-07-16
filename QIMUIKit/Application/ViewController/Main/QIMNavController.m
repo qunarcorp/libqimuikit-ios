@@ -10,7 +10,7 @@
 #import "QIMNavBar.h"
 #import "UIApplication+QIMApplication.h"
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
     #import "QIMNotifyManager.h"
     #import "QIMNotifyView.h"
@@ -70,8 +70,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.navigationBar setTintColor: [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]];
-    [self.navigationBar setBackgroundImage:[UIImage qim_imageFromColor:[UIColor qim_colorWithHex:0xf7f7f7 alpha:1.0]] forBarMetrics:UIBarMetricsDefault];
-    
+//    [self.navigationBar setBackgroundImage:[UIImage qim_imageWithColor:[UIColor whiteColor]] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationBar setBackgroundImage:[UIImage qim_imageWithColor:[UIColor whiteColor]] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [[UIImage alloc] init];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self becomeFirstResponder];
 }
@@ -110,6 +111,10 @@
                     [nav popToRootVCThenPush:helperVC animated:YES];
                 }
             }
+        }
+    } else {
+        if (event.subtype == UIEventSubtypeMotionShake) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTShowDevMenuNotification" object:nil];
         }
     }
 }
@@ -187,7 +192,7 @@
 
 @end
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
 @interface QTalkViewController () <QIMNotifyManagerDelegate>
 
@@ -204,7 +209,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self registNSNotification];
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
     [[QIMNotifyManager shareNotifyManager] setNotifyManagerGlobalDelegate:self];
     
@@ -236,7 +241,7 @@
     return UIInterfaceOrientationPortrait;
 }
 
-#if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
+#if __has_include("QIMNotifyManager.h")
 
 - (void)closeNotifyView:(NSNotification *)notify {
     QIMVerboseLog(@"closeNotifyView : %@", notify);

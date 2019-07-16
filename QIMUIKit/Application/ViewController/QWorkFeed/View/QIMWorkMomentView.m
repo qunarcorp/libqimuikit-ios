@@ -8,12 +8,17 @@
 
 #import "QIMWorkMomentView.h"
 #import "QIMWorkMomentImageListView.h"
+#import "QIMWorkMomentLinkView.h"
 #import "QIMWorkMomentLabel.h"
 #import "QIMMarginLabel.h"
+#import "QIMWorkMomentParser.h"
+#import "QIMEmotionManager.h"
 
 CGFloat maxFullContentHeight = 0;
 
-@interface QIMWorkMomentView ()
+@interface QIMWorkMomentView () <QIMAttributedLabelDelegate> {
+    CGFloat _rowHeight;
+}
 
 // 头像
 @property (nonatomic, strong) UIImageView *headImageView;
@@ -27,6 +32,9 @@ CGFloat maxFullContentHeight = 0;
 @property (nonatomic, strong) UILabel *timeLab;
 // 图片
 @property (nonatomic, strong) QIMWorkMomentImageListView *imageListView;
+
+//Link
+@property (nonatomic, strong) QIMWorkMomentLinkView *linkView;
 
 //正文ContentLabel
 @property (nonatomic, strong) QIMWorkMomentLabel *contentLabel;
@@ -45,6 +53,12 @@ CGFloat maxFullContentHeight = 0;
         [self setupUI];
     }
     return self;
+}
+
+- (void)setMomentModel:(QIMWorkMomentModel *)momentModel {
+    _moment = momentModel;
+    [self removeAllSubviews];
+    [self setupUI];
 }
 
 - (void)setupUI {
@@ -96,12 +110,18 @@ CGFloat maxFullContentHeight = 0;
     _contentLabel.font = [UIFont systemFontOfSize:15];
     _contentLabel.linesSpacing = 1.0f;
     _contentLabel.characterSpacing = 0.0f;
+    _contentLabel.delegate = self;
     _contentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
     [self addSubview:_contentLabel];
 
     // 图片区
     _imageListView = [[QIMWorkMomentImageListView alloc] initWithFrame:CGRectZero];
     [self addSubview:_imageListView];
+    
+    //Link区
+    _linkView = [[QIMWorkMomentLinkView alloc] initWithFrame:CGRectZero];
+    _linkView.hidden = YES;
+    [self addSubview:_linkView];
     
     // 时间视图
     _timeLab = [[UILabel alloc] init];
@@ -121,12 +141,16 @@ CGFloat maxFullContentHeight = 0;
         
         _organLab.frame = CGRectMake(self.nameLab.right + 5, self.nameLab.top, 66, 20);
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"";
+        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
         NSString *showDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
-        _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @" 未知 ";
-        [_organLab sizeToFit];
-        [_organLab sizeThatFits:CGSizeMake(_organLab.width, _organLab.height)];
-        _organLab.height = 20;
+        if (showDp.length > 0) {
+            _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @"";
+            [_organLab sizeToFit];
+            [_organLab sizeThatFits:CGSizeMake(_organLab.width, _organLab.height)];
+            _organLab.height = 20;
+        } else {
+            _organLab.hidden = YES;
+        }
         
         _rIdLabe.frame = CGRectMake(self.organLab.right + 5, self.nameLab.top, 20, 20);
         _rIdLabe.text = [NSString stringWithFormat:@"%ld", self.moment.rId];
@@ -150,31 +174,119 @@ CGFloat maxFullContentHeight = 0;
     _organLab.centerY = self.headImageView.centerY;
     _rIdLabe.centerY = self.headImageView.centerY;
     CGFloat bottom = self.headImageView.bottom;
-    _contentLabel.text = self.moment.content.content;
-    [_contentLabel sizeToFit];
-    CGFloat textH = [_contentLabel getHeightWithWidth:SCREEN_WIDTH - self.nameLab.left - 20];
-    [self.contentLabel setFrameWithOrign:CGPointMake(self.nameLab.left, bottom + 3) Width:(SCREEN_WIDTH - self.nameLab.left - 20)];
-    self.contentLabel.height = textH;
+    
+    QIMWorkFeedContentType contentType = self.moment.content.type;
+    NSString *content = self.moment.content.content;
+    switch (contentType) {
+        case QIMWorkFeedContentTypeText: {
+            NSString *exContent = self.moment.content.exContent;
+            if (exContent) {
+                content = exContent;
+            } else {
+                
+            }
+        }
+            break;
+        case QIMWorkFeedContentTypeImage: {
+            
+        }
+            break;
+        case QIMWorkFeedContentTypeLink: {
+            NSString *exContent = self.moment.content.exContent;
+            if (exContent) {
+                content = exContent;
+            } else {
+                
+            }
+        }
+            break;
+        default: {
+            content = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.moment.content.content];
+        }
+            break;
+    }
+    
+    NSString *texg = content;
+//    [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:content];
+    QIMMessageModel *msg = [[QIMMessageModel alloc] init];
+    msg.message = texg;
+    msg.messageId = [NSString stringWithFormat:@"Full-%@", self.moment.momentId];
+    
+    QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:[[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
+    CGFloat textH = textContainer.textHeight;
+    self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, [[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20, textContainer.textHeight);
+    _contentLabel.textContainer = textContainer;
+    self.contentLabel.originContent = self.moment.content.content;
+
     bottom = _contentLabel.bottom + 8;
 
-    if (self.moment.content.imgList.count > 0) {
-        _imageListView.momentContentModel = self.moment.content;
-        _imageListView.origin = CGPointMake(self.nameLab.left, bottom + 5);
-        [_imageListView setTapSmallImageView:^(QIMWorkMomentContentModel * _Nonnull momentContentModel, NSInteger currentTag) {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(didClickSmallImage:WithCurrentTag:)]) {
-                [self.delegate didClickSmallImage:self.moment WithCurrentTag:currentTag];
-            }
-        }];
-        bottom = _imageListView.bottom;
-    } else {
-        
-    }
+    [self refreshContentUIWithType:contentType withBottom:bottom];
     
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:([self.moment.createTime longLongValue]/1000)];
     _timeLab.text = [timeDate qim_timeIntervalDescription];
-    _timeLab.frame = CGRectMake(self.contentLabel.left, bottom + 15, 60, 12);
+    _timeLab.frame = CGRectMake(self.contentLabel.left, (_rowHeight > 0) ? _rowHeight + 15 : bottom + 15, 60, 12);
     
     self.height = _timeLab.bottom + 15;
+}
+
+- (void)refreshContentUIWithType:(QIMWorkFeedContentType)type withBottom:(CGFloat)bottom {
+    switch (type) {
+        case QIMWorkFeedContentTypeText: {
+            if (self.moment.content.imgList.count > 0) {
+                _imageListView.momentContentModel = self.moment.content;
+                _imageListView.origin = CGPointMake(self.nameLab.left, bottom + 5);
+                [_imageListView setTapSmallImageView:^(QIMWorkMomentContentModel * _Nonnull momentContentModel, NSInteger currentTag) {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(didClickSmallImage:WithCurrentTag:)]) {
+                        [self.delegate didClickSmallImage:self.moment WithCurrentTag:currentTag];
+                    }
+                }];
+                _rowHeight = _imageListView.bottom;
+            } else {
+                
+            }
+        }
+            break;
+        case QIMWorkFeedContentTypeImage: {
+            if (self.moment.content.imgList.count > 0) {
+                _imageListView.momentContentModel = self.moment.content;
+                _imageListView.origin = CGPointMake(self.nameLab.left, bottom + 5);
+                [_imageListView setTapSmallImageView:^(QIMWorkMomentContentModel * _Nonnull momentContentModel, NSInteger currentTag) {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(didClickSmallImage:WithCurrentTag:)]) {
+                        [self.delegate didClickSmallImage:self.moment WithCurrentTag:currentTag];
+                    }
+                }];
+                _rowHeight = _imageListView.bottom;
+            } else {
+                
+            }
+        }
+            break;
+        case QIMWorkFeedContentTypeLink: {
+            if (self.moment.content.linkContent) {
+                _linkView.hidden = NO;
+                _linkView.frame = CGRectMake(self.nameLab.left, bottom + 15, [[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 15, 66);
+                _linkView.delegate = self;
+                _linkView.linkModel = self.moment.content.linkContent;
+                _rowHeight = _linkView.bottom;
+            }
+        }
+            break;
+        default: {
+            if (self.moment.content.imgList.count > 0) {
+                _imageListView.momentContentModel = self.moment.content;
+                _imageListView.origin = CGPointMake(self.nameLab.left, bottom + 5);
+                [_imageListView setTapSmallImageView:^(QIMWorkMomentContentModel * _Nonnull momentContentModel, NSInteger currentTag) {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(didClickSmallImage:WithCurrentTag:)]) {
+                        [self.delegate didClickSmallImage:self.moment WithCurrentTag:currentTag];
+                    }
+                }];
+                _rowHeight = _imageListView.bottom;
+            } else {
+                
+            }
+        }
+            break;
+    }
 }
 
 // 点击头像
@@ -189,6 +301,34 @@ CGFloat maxFullContentHeight = 0;
     if (self.moment.isAnonymous == NO) {
         NSString *userId = [NSString stringWithFormat:@"%@@%@", self.moment.ownerId, self.moment.ownerHost];
         [QIMFastEntrance openUserCardVCByUserId:userId];
+    }
+}
+
+// 点击代理
+- (void)attributedLabel:(QIMAttributedLabel *)attributedLabel textStorageClicked:(id<QIMTextStorageProtocol>)textStorage atPoint:(CGPoint)point {
+    if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
+        QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
+        if (![storage.linkData length]) {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView show];
+        } else {
+            [QIMFastEntrance openWebViewForUrl:storage.linkData showNavBar:YES];
+        }
+    } else {
+        
+    }
+}
+
+// 长按代理 有多个状态 begin, changes, end 都会调用,所以需要判断状态
+- (void)attributedLabel:(QIMAttributedLabel *)attributedLabel textStorageLongPressed:(id<QIMTextStorageProtocol>)textStorage onState:(UIGestureRecognizerState)state atPoint:(CGPoint)point {
+    
+}
+
+#pragma mark - QIMWorkMomentLinkViewTapDelegate
+
+- (void)didTapWorkMomentShareLinkUrl:(QIMWorkMomentContentLinkModel *)linkModel {
+    if (linkModel.linkurl.length > 0) {
+        [QIMFastEntrance openWebViewForUrl:linkModel.linkurl showNavBar:linkModel.showbar];
     }
 }
 

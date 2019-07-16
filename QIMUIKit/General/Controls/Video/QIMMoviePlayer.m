@@ -66,7 +66,7 @@
         [self.progressSlider setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin];
         [self.progressSlider setMinimumValue:0];
         [self.progressSlider setMaximumValue:1];
-        [self.progressSlider setThumbImage:[UIImage imageNamed:@"player_progressbar_current"] forState:UIControlStateNormal];
+        [self.progressSlider setThumbImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"player_progressbar_current"] forState:UIControlStateNormal];
         [self.progressSlider addTarget:self action:@selector(updateValue:) forControlEvents:UIControlEventValueChanged];
         [_playButtonView addSubview:self.progressSlider];
         
@@ -278,11 +278,11 @@
 
 - (void)setPlayButtonImage:(BOOL)flag{
     if (flag) {
-        [_playOrPause setImage:[UIImage imageNamed:@"video_button_play_normal"] forState:UIControlStateNormal];
-        [_playOrPause setImage:[UIImage imageNamed:@"video_button_play_pressed"] forState:UIControlStateHighlighted];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"video_button_play_normal"] forState:UIControlStateNormal];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"video_button_play_pressed"] forState:UIControlStateHighlighted];
     } else { 
-        [_playOrPause setImage:[UIImage imageNamed:@"video_button_stop_normal"] forState:UIControlStateNormal];
-        [_playOrPause setImage:[UIImage imageNamed:@"video_button_stop_pressed"] forState:UIControlStateHighlighted];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"video_button_stop_normal"] forState:UIControlStateNormal];
+        [_playOrPause setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"video_button_stop_pressed"] forState:UIControlStateHighlighted];
     }
 }
 

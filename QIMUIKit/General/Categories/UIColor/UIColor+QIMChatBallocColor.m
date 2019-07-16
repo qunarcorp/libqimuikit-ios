@@ -11,17 +11,24 @@
 @implementation UIColor (QIMChatBallocColor)
 
 + (UIColor *)qim_leftBallocColor{
+    return qim_messageLeftBubbleBgColor;
+    /*
+    //老版本个性装扮后的左侧气泡颜色
     NSDictionary * infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
-        return [UIColor qim_colorWithHex:0xd3ecf5 alpha:1.0];
+        return qim_messageLeftBubbleBgColor;
     }
     return [UIColor qim_colorWithHex:[infoDic[kOtherBubbleColor][@"colorHex"] integerValue] alpha:[infoDic[kOtherBubbleColor][@"alpha"] floatValue]];
+    */
 }
 
-+ (UIColor *)qim_leftBallocFontColor{
++ (UIColor *)qim_leftBallocFontColor {
+    return qim_messageLeftBubbleTextColor;
+    /*
+     //老版本个性装扮后的左侧字体颜色
     NSDictionary *infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
-        return [UIColor qim_colorWithHex:0x000000 alpha:1.0];
+        return qim_messageLeftBubbleTextColor;
     }
     CGFloat alpha = [infoDic[kOtherFontColor][@"alpha"] floatValue];
     if (alpha == 0) {
@@ -32,20 +39,28 @@
         colorHex = 0;
     }
     return [UIColor qim_colorWithHex:colorHex alpha:alpha];
+     */
 }
 
-+ (UIColor *)qim_rightBallocColor{
++ (UIColor *)qim_rightBallocColor {
+    return qim_messageRightBubbleBgColor;
+    /*
+    //老版本个性装扮后的右侧气泡颜色
     NSDictionary * infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
-        return [UIColor qim_colorWithHex:0xe6e6e6 alpha:1.0];
+        return qim_messageRightBubbleBgColor;
     }
     return [UIColor qim_colorWithHex:[infoDic[kMyBubbleColor][@"colorHex"] integerValue] alpha:[infoDic[kMyBubbleColor][@"alpha"] floatValue]];
+    */
 }
 
-+ (UIColor *)qim_rightBallocFontColor{
++ (UIColor *)qim_rightBallocFontColor {
+    return qim_messageRightBubbleTextColor;
+    /*
+     //老版本个性装扮后的右侧字体颜色
     NSDictionary * infoDic = [[QIMKit sharedInstance] userObjectForKey:kChatColorInfo];
     if (infoDic == nil) {
-        return [UIColor qim_colorWithHex:0x000000 alpha:1.0];
+        return qim_messageRightBubbleTextColor;
     }
     CGFloat alpha = [infoDic[kMyFontColor][@"alpha"] floatValue];
     if (alpha == 0) {
@@ -56,6 +71,7 @@
         colorHex = 0;
     }
     return [UIColor qim_colorWithHex:colorHex alpha:alpha];
+     */
 }
 
 @end

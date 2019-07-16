@@ -23,6 +23,7 @@
 "tab_title_travel" = "Travel";
 "tab_title_contact" = "Contact";
 "tab_title_discover" = "Discover";
+"tab_title_moment" = "Moment";
 "tab_title_explore" = "Explore";
 "tab_title_myself" = "Me";
 
@@ -58,6 +59,7 @@
 "textbar_button_share_card" = "Share Card";
 "textbar_button_red_package" = "Red Pack";
 "textbar_button_aa" = "AA Pay";
+"textbar_button_encryptchat" = "Encryptchat";
 "textbar_button_activity" = "Activity";
 "textbar_button_send" = "Send";
 "textbar_button_hold_talk" = "Hold Talk";
@@ -97,12 +99,14 @@
 "Setting_tab_Help" = "Help & Feedback";
 "Setting_tab_aboutQTalk" = "About QTalk";
 "Setting_tab_aboutQChat" = "About QChat";
+"Setting_tab_aboutStartalk" = "About Startalk";
 "Setting_tab_Logout" = "Logout";
 
 //About Tab
 
 "About_nav_title_QTalk" = "About QTalk";
 "About_nav_title_QChat" = "About QChat";
+"About_nav_title_Startalk" = "About Startalk";
 "About_nav_back" = "Back";
 "About_tab_rate" = "Rate";
 "About_tab_function" = "功能介绍";
@@ -179,6 +183,10 @@
 "user_send_msg" = "Send Message";
 "user_add_friend" = "Add Friend";
 "user_delete_friend" = "Delete Friend";
+"remove_to_blacklist" = "Remove Blacklist";
+"add_to_blacklist" = "Add Blacklist";
+"send_message" = "Send Message";
+"Complaint" = "Complaint";
 "user_camera" = "Camera";
 "user_from_album" = "From Album Select";
 "user_selected" = "Select";
@@ -193,6 +201,13 @@
 "qrcode_tips_public_number" = "Sweep, the number of public concern";
 "qrcode_tips_client_nav" = "Sweep, quickly add the client nav";
 "qrcode_@_qrcode" = "%@ QRCode";
+
+//WebView Panel
+"webview_share_conversion" = "Share To Friend";
+"webview_share_workmoment" = "Share To Moment";
+"webview_copy_link" = "Copy Link";
+"webview_refresh" = "Refresh";
+"webview_open_safari" = "Open In Safar";
 
 // Common
 "common_send_friend" = "Send To Friend";

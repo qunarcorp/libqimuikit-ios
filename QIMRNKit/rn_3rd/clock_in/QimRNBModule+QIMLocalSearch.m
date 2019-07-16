@@ -63,7 +63,7 @@
         NSLog(@"msgs : %@", localMsgs);
     }
     NSMutableArray *dateArray = [NSMutableArray arrayWithCapacity:3];
-    for (Message * msg in localMsgs) {
+    for (QIMMessageModel * msg in localMsgs) {
         NSString *timeStr = [QimRNBModule getTimeStr:msg.messageDate];
         if (![dateArray containsObject:timeStr]) {
             [dateArray addObject:timeStr];
@@ -139,13 +139,13 @@
         NSLog(@"msgs : %@", localMsgs);
     }
     NSMutableArray *dateArray = [NSMutableArray arrayWithCapacity:3];
-    for (Message * msg in localMsgs) {
+    for (QIMMessageModel * msg in localMsgs) {
         NSString *timeStr = [QimRNBModule getTimeStr:msg.messageDate];
         if (![dateArray containsObject:timeStr]) {
             [dateArray addObject:timeStr];
         }
         NSMutableDictionary *msgDic = [NSMutableDictionary dictionaryWithCapacity:3];
-        NSDictionary *fileExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation ? msg.extendInformation : msg.message error:nil];
+        NSDictionary *fileExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation.length > 0 ? msg.extendInformation : msg.message error:nil];
         if (!fileExtendInfoDic) {
             continue;
         }
@@ -220,13 +220,13 @@
         NSLog(@"msgs : %@", localMsgs);
     }
     NSMutableArray *dateArray = [NSMutableArray arrayWithCapacity:3];
-    for (Message * msg in localMsgs) {
+    for (QIMMessageModel * msg in localMsgs) {
         NSString *timeStr = [QimRNBModule getTimeStr:msg.messageDate];
         if (![dateArray containsObject:timeStr]) {
             [dateArray addObject:timeStr];
         }
         NSMutableDictionary *msgDic = [NSMutableDictionary dictionaryWithCapacity:3];
-        NSDictionary *linkExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation ? msg.extendInformation : msg.message error:nil];
+        NSDictionary *linkExtendInfoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.extendInformation.length > 0 ? msg.extendInformation : msg.message error:nil];
         if (!linkExtendInfoDic) {
             continue;
         }

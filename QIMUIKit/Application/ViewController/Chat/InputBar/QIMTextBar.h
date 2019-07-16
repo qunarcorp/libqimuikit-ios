@@ -38,6 +38,8 @@ typedef enum {
 - (void)sendText:(NSString *)text;
 - (void)emptyText:(NSString *)text;
 - (void)sendNormalEmotion:(NSString *)faceStr WithPackageId:(NSString *)packageId;
+- (void)sendCollectionFaceStr:(NSString *)faceStr;
+- (void)clickFaildCollectionFace;
 @optional
 - (void)sendImageUrl:(NSString *)imageUrl;
 - (void)sendImageData:(NSData *)imageData;
@@ -74,6 +76,10 @@ typedef enum {
 
 @class QIMRemoteAudioPlayer;
 @interface QIMTextBar : UIView
+
++ (void)clearALLTextBar;
+
+
 
 @property (nonatomic, weak) id <QIMTextBarDelegate> delegate;
 
@@ -181,7 +187,7 @@ typedef enum {
 @property (nonatomic,strong) NSMutableArray         * inputItems;
 
 @property (nonatomic,assign) BOOL    isRefer;  //是否正在引用消息输入
-@property (nonatomic,strong) Message  *referMsg; //引用的消息
+@property (nonatomic,strong) QIMMessageModel  *referMsg; //引用的消息
 
 //会话id
 @property (nonatomic, retain) NSString *chatId;
