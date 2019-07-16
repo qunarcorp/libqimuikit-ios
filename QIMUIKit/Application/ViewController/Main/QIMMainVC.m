@@ -76,6 +76,7 @@
 
 @property(nonatomic, strong) UIButton *scanBtn;
 
+@property(nonatomic, strong) UIButton *searchMomentBtn;
 @property(nonatomic, strong) UIButton *momentBtn;
 
 @property(nonatomic, strong) UIButton *settingBtn;
@@ -1071,8 +1072,9 @@ static dispatch_once_t __onceMainToken;
 
 
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]];
-        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.momentBtn];
-        [self.navigationItem setRightBarButtonItem:rightBarItem];
+        UIBarButtonItem *searchMomentItem = [[UIBarButtonItem alloc] initWithCustomView:self.searchMomentBtn];
+        UIBarButtonItem *myMomentItem = [[UIBarButtonItem alloc] initWithCustomView:self.momentBtn];
+        [self.navigationItem setRightBarButtonItems:@[myMomentItem, searchMomentItem]];
 
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
 
@@ -1123,6 +1125,19 @@ static dispatch_once_t __onceMainToken;
     return _scanBtn;
 }
 
+- (UIButton *)searchMomentBtn {
+    if (!_searchMomentBtn) {
+        _searchMomentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _searchMomentBtn.frame = CGRectMake(0, 0, 28, 28);
+//        iconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:30 color:[UIColor qim_colorWithHex:0xBFBFBF]]];
+
+        [_searchMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:28 color:[UIColor qim_colorWithHex:0xBFBFBF]]] forState:UIControlStateNormal];
+        [_searchMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:28 color:[UIColor qim_colorWithHex:0xBFBFBF]]] forState:UIControlStateSelected];
+        [_searchMomentBtn addTarget:self action:@selector(searchMoment:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _searchMomentBtn;
+}
+
 - (UIButton *)momentBtn {
     if (!_momentBtn) {
         _momentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -1163,6 +1178,10 @@ static dispatch_once_t __onceMainToken;
 #if __has_include("QIMAutoTracker.h")
     [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"add a contact" withDescription:@"添加联系人"];
 #endif
+}
+
+- (void)searchMoment:(id)sender {
+    [QIMFastEntrance openWorkMomentSearchVc];
 }
 
 //我的驼圈儿navbar入口
