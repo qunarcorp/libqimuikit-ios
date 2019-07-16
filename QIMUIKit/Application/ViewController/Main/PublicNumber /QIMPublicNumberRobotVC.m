@@ -25,7 +25,7 @@
 #import "QIMMenuImageView.h"
 #import "QIMVoiceRecordingView.h"
 #import "QIMVoiceTimeRemindView.h"
-//#import "TextCellCaChe.h" 
+#import "QIMChatBgManager.h"
 #import <AVFoundation/AVFoundation.h>
 #import "QIMMessageRefreshHeader.h"
 #import "QIMRemoteAudioPlayer.h"
@@ -61,7 +61,9 @@
 #import "QIMMessageParser.h"
 #import "QIMTextContainer.h"
 #import "QIMNavBackBtn.h"
-
+#if __has_include("QIMIPadWindowManager.h")
+#import "QIMIPadWindowManager.h"
+#endif
 #define kPageCount 20
 #define kReSendMsgAlertViewTag 10000
 
@@ -165,7 +167,7 @@
     
     UILabel         *_titleLabel;
     
-    Message * _resendMsg;
+   QIMMessageModel * _resendMsg;
     
     UIView *_actionBottomView;
     UIView *_textBarBottomView;
@@ -211,7 +213,7 @@
         [_textBar setAllowFace:YES];
         [_textBar setAllowMore:YES];
         [_textBar setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin];
-        [_textBar setPlaceHolder:@"文本信息"];
+//        [_textBar setPlaceHolder:@"文本信息"];
         __weak QIMTextBar *weakTextBar = _textBar;
         
         [_textBar setSelectedEmotion:^(NSString *faceStr) {
@@ -229,7 +231,7 @@
         NSDictionary *notSendDic = [[QIMKit sharedInstance] getNotSendTextByJid:self.robotJId];
         [_textBar setQIMAttributedTextWithItems:notSendDic[@"inputItems"]];
         [_textBar.layer setBorderColor:[UIColor qim_colorWithHex:0xadadad alpha:1].CGColor];
-        [_textBar setTextViewBackgroundImage:[[UIImage imageNamed:@"chat_bottom_textfield"] stretchableImageWithLeftCapWidth:5 topCapHeight:5]];
+        [_textBar setTextViewBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_textfield"] stretchableImageWithLeftCapWidth:5 topCapHeight:5]];
         [self updateBottomView];
     }
     return _textBar;
@@ -416,7 +418,7 @@
 
 -(void)loadData
 {
-    _dataSounce = [[NSMutableArray alloc] initWithArray:[[QIMKit sharedInstance] getPublicNumberMsgListById:self.robotJId WihtLimit:kPageCount WithOffset:0]];
+    _dataSounce = [[NSMutableArray alloc] initWithArray:[[QIMKit sharedInstance] getPublicNumberMsgListById:self.robotJId WithLimit:kPageCount WithOffset:0]];
     [_tableView reloadData];
 //    [self scrollToBottom_tableView];
     [self addImageToImageList];
@@ -448,9 +450,16 @@
     self.navigationItem.leftBarButtonItems = @[spaceItem,backBarBtn];
 }
 
-- (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
+- (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap
+{
     [self.view endEditing:YES];
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([[QIMKit sharedInstance] getIsIpad] == NO) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+#if __has_include("QIMIPadWindowManager.h")
+        [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
+#endif
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -556,12 +565,12 @@
                 NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithDictionary:dic];
                 [resultDic setObject:value forKey:@"value"];
                 NSString *json = [[QIMJSONSerializer sharedInstance] serializeObject:resultDic];
-                [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WihtMsgType:PublicNumberMsgType_PostBackCookie];
+                [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WithMsgType:PublicNumberMsgType_PostBackCookie];
             } else {
                 NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithDictionary:dic];
                 [resultDic setObject:@(404) forKey:@"errcode"];
                 NSString *json = [[QIMJSONSerializer sharedInstance] serializeObject:resultDic];
-                [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WihtMsgType:PublicNumberMsgType_PostBackCookie];
+                [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WithMsgType:PublicNumberMsgType_PostBackCookie];
             }
         } else {
             NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithDictionary:dic];
@@ -569,7 +578,7 @@
             [resultDic setObject:@"消息体格式错喔" forKey:@"errmsg"];
             [resultDic setObject:[NSString stringWithFormat:@"%@",value] forKey:@"content"];
             NSString *json = [[QIMJSONSerializer sharedInstance] serializeObject:resultDic];
-            [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WihtMsgType:PublicNumberMsgType_PostBackCookie];
+            [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WithMsgType:PublicNumberMsgType_PostBackCookie];
         }
     }
     [self hidenSubActionView];
@@ -605,8 +614,8 @@
     [_actionBottomView addSubview:lineView];
     
     UIButton *showTextBarBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
-    [showTextBarBtn setBackgroundImage:[UIImage imageNamed:@"Mode_listtotext"] forState:UIControlStateNormal];
-    [showTextBarBtn setBackgroundImage:[UIImage imageNamed:@"Mode_listtotextHL"] forState:UIControlStateHighlighted];
+    [showTextBarBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_listtotext"] forState:UIControlStateNormal];
+    [showTextBarBtn setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_listtotextHL"] forState:UIControlStateHighlighted];
     [showTextBarBtn addTarget:self action:@selector(onShowTextBarClick:) forControlEvents:UIControlEventTouchUpInside];
     [_actionBottomView addSubview:showTextBarBtn];
     
@@ -625,22 +634,22 @@
         [mainButton setTitle:mainaction forState:UIControlStateNormal];
         [mainButton setBackgroundImage:[UIImage qim_imageFromColor:[UIColor qtalkTableDefaultColor]] forState:UIControlStateHighlighted];
         if (subActions.count > 0) {
-            [mainButton setImage:[UIImage imageNamed:@"Mode_textmenuicon"] forState:UIControlStateNormal];
+            [mainButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_textmenuicon"] forState:UIControlStateNormal];
             UIView *subActionView = [[UIView alloc] initWithFrame:CGRectMake(startX, _actionBottomView.bottom, width, 0)];
             [self.view insertSubview:subActionView aboveSubview:_tableView];
             [mainButton setSubActionView:subActionView];
             
             CGFloat bianWidth = (subActionView.width-18)/2.0;
             UIImageView *leftBgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bianWidth, 0)];
-            [leftBgView setImage:[[UIImage imageNamed:@"Mode_more_frame_left"] stretchableImageWithLeftCapWidth:15 topCapHeight:32]];
+            [leftBgView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_more_frame_left"] stretchableImageWithLeftCapWidth:15 topCapHeight:32]];
             [subActionView addSubview:leftBgView];
             
             UIImageView *rightBgView = [[UIImageView alloc] initWithFrame:CGRectMake(subActionView.width-bianWidth, 0, bianWidth, 0)];
-            [rightBgView setImage:[[UIImage imageNamed:@"Mode_more_frame_right"] stretchableImageWithLeftCapWidth:15 topCapHeight:32]];
+            [rightBgView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_more_frame_right"] stretchableImageWithLeftCapWidth:15 topCapHeight:32]];
             [subActionView addSubview:rightBgView];
             
             UIImageView *middleView = [[UIImageView alloc] initWithFrame:CGRectMake(bianWidth, 0, 18, 0)];;
-            [middleView setImage:[[UIImage imageNamed:@"Mode_more_frame_middle"] stretchableImageWithLeftCapWidth:9 topCapHeight:32]];
+            [middleView setImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_more_frame_middle"] stretchableImageWithLeftCapWidth:9 topCapHeight:32]];
             [subActionView addSubview:middleView];
             
             CGFloat cap = 10;
@@ -651,7 +660,7 @@
                 ActionButton *button = [[ActionButton alloc] initWithFrame:CGRectMake(0, startY, width, 32)];
                 [button setActionContent:actioncontent];
                 [button setOwerView:subActionView];
-                [button setBackgroundImage:[[UIImage imageNamed:@"Mode_more_frame_Choose"] stretchableImageWithLeftCapWidth:40 topCapHeight:16] forState:UIControlStateHighlighted];
+                [button setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_more_frame_Choose"] stretchableImageWithLeftCapWidth:40 topCapHeight:16] forState:UIControlStateHighlighted];
                 [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
                 [button setTitleColor:[UIColor qtalkTextBlackColor] forState:UIControlStateNormal];
                 [button setTitle:subaction forState:UIControlStateNormal];
@@ -683,30 +692,51 @@
     _isActionOrTextBar = YES;
 }
 
-- (void)refreshChatBGImageView
-{
+- (void)refreshChatBGImageView {
+    
     if (!_chatBGImageView) {
+        
         _chatBGImageView = [[UIImageView alloc] initWithFrame:_tableView.bounds];
         _chatBGImageView.contentMode = UIViewContentModeScaleAspectFill;
         _chatBGImageView.clipsToBounds = YES;
     }
-    NSMutableDictionary * chatBGImageDic = [[QIMKit sharedInstance] userObjectForKey:@"chatBGImageDic"];
+    
+    if ([[QIMKit sharedInstance] waterMarkState] == YES) {
+        [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+            _chatBGImageView.image = bgImage;
+            _tableView.backgroundView = _chatBGImageView;
+        }];
+    }
+    //老版本带个性装扮时候的会话背景
+    /*
+    NSMutableDictionary *chatBGImageDic = [[QIMKit sharedInstance] userObjectForKey:@"chatBGImageDic"];
     if (chatBGImageDic) {
-        [_tableView setBackgroundColor:[UIColor clearColor]];
-        UIImage * image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:[NSString stringWithFormat:@"chatBGImageFor_%@",self.robotJId]]];
+        
+        [self.tableView setBackgroundColor:[UIColor clearColor]];
+        UIImage *image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:[NSString stringWithFormat:@"chatBGImageFor_%@", self.robotJId]]];
         if (!image) {
+            
             image = [UIImage imageWithContentsOfFile:[[QIMDataController getInstance] getSourcePath:@"chatBGImageFor_Common"]];
         }
         if (image) {
             _chatBGImageView.image = image;
-            [self.view insertSubview:_chatBGImageView belowSubview:_tableView];
-        }else{
-            [_chatBGImageView removeFromSuperview];
+            [self.view insertSubview:_chatBGImageView belowSubview:self.tableView];
+        } else {
+            if ([[QIMKit sharedInstance] waterMarkState] == YES) {
+                [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+                    _chatBGImageView.image = bgImage;
+                    _tableView.backgroundView = _chatBGImageView;
+                }];
+            }
         }
     } else {
-        [_tableView setBackgroundColor:[UIColor qtalkChatBgColor]];
-    }
-    
+        if ([[QIMKit sharedInstance] waterMarkState] == YES) {
+            [QIMChatBgManager getChatBgById:[QIMKit getLastUserName] ByName:[[QIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+                _chatBGImageView.image = bgImage;
+                _tableView.backgroundView = _chatBGImageView;
+            }];
+        }
+    } */
 }
 
 - (void)dealloc {
@@ -819,11 +849,11 @@
     NSString * msgID = [notify.object objectForKey:@"messageId"];
     
     //消息发送成功，更新消息状态，刷新tableView
-    for (Message * msg in _dataSounce) {
+    for (QIMMessageModel * msg in _dataSounce) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
-            if (msg.messageState < MessageState_Success) {
-                msg.messageState = MessageState_Success;
+            if (msg.messageSendState < QIMMessageSendState_Success) {
+                msg.messageSendState = QIMMessageSendState_Success;
             }
             break;
         }
@@ -834,11 +864,11 @@
 {
     NSString * msgID = [notify.object objectForKey:@"messageId"];
     //消息发送失败，更新消息状态，刷新tableView
-    for (Message * msg in _dataSounce) {
+    for (QIMMessageModel * msg in _dataSounce) {
         //找到对应的msg，目前还不知道msgID
         if ([[msg messageId] isEqualToString:msgID]) {
-            if (msg.messageState < MessageState_Faild) {
-                msg.messageState = MessageState_Faild;
+            if (msg.messageSendState < QIMMessageSendState_Faild) {
+                msg.messageSendState = QIMMessageSendState_Faild;
             }
             break;
         }
@@ -847,8 +877,8 @@
 
 - (void)removeFailedMsg
 {
-    Message * message = _resendMsg;
-    for (Message * msg in _dataSounce) {
+   QIMMessageModel * message = _resendMsg;
+    for (QIMMessageModel * msg in _dataSounce) {
         if ([msg isEqual:message]) {
             NSInteger index = [_dataSounce indexOfObject:msg];
             [_dataSounce removeObject:msg];
@@ -861,12 +891,13 @@
 
 - (void)reSendMsg
 {
-    Message * message = _resendMsg;
+   QIMMessageModel * message = _resendMsg;
     [self removeFailedMsg];
     if (message.messageType == QIMMessageType_LocalShare) {
         [self sendMessage:message.message WithInfo:message.extendInformation ForMsgType:message.messageType];
     }else if (message.messageType == QIMMessageType_Voice){
-        NSDictionary *infoDic = [message getMsgInfoDic];
+//        NSDictionary *infoDic = [message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
         NSString *fileName = [infoDic objectForKey:@"FileName"];
         NSString *filePath = [infoDic objectForKey:@"filepath"];
         NSNumber *Seconds = [infoDic objectForKey:@"Seconds"];
@@ -897,7 +928,8 @@
     }else if (message.messageType == QIMMessageType_CardShare){
         [self sendMessage:message.message WithInfo:message.extendInformation ForMsgType:message.messageType];
     }else if (message.messageType == QIMMessageType_SmallVideo){
-        NSDictionary *infoDic = [message getMsgInfoDic];
+//        NSDictionary *infoDic = [message getMsgInfoDic];
+        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
         NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:[infoDic objectForKey:@"ThumbName"]?[infoDic objectForKey:@"ThumbName"]:@""];
         UIImage *image = [UIImage imageWithContentsOfFile:filePath];
         
@@ -933,10 +965,10 @@
 //    NSString * jid = notify.object;
     NSString * msgID = [notify.userInfo objectForKey:@"MsgId"];
 //    NSString * content = [notify.userInfo objectForKey:@"Content"];
-    for (Message * msg in _dataSounce) {
+    for (QIMMessageModel * msg in _dataSounce) {
         if ([msg.messageId isEqualToString:msgID]) {
             NSInteger index = [_dataSounce indexOfObject:msg];
-            [(Message *)msg setMessageType:QIMMessageType_Revoke];
+            [(QIMMessageModel *)msg setMessageType:QIMMessageType_Revoke];
             [_dataSounce replaceObjectAtIndex:index withObject:msg];
             [[QIMKit sharedInstance] updateMsg:msg ByJid:self.robotJId];
             [_tableView reloadData];
@@ -974,7 +1006,7 @@
 
 - (void)updateMessageList:(NSNotification *)notify{
     if ([self.robotJId isEqualToString:notify.object]) {
-        Message *msg = [notify.userInfo objectForKey:@"message"];
+       QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         
         if (msg) {
             if (msg.messageType == PublicNumberMsgType_ClientCookie) {
@@ -993,12 +1025,12 @@
                         NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithDictionary:dic];
                         [resultDic setObject:value forKey:@"value"];
                         NSString *json = [[QIMJSONSerializer sharedInstance] serializeObject:resultDic];
-                        [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WihtMsgType:PublicNumberMsgType_PostBackCookie];
+                        [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WithMsgType:PublicNumberMsgType_PostBackCookie];
                     } else {
                         NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithDictionary:dic];
                         [resultDic setObject:@(404) forKey:@"errcode"];
                         NSString *json = [[QIMJSONSerializer sharedInstance] serializeObject:resultDic];
-                        [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WihtMsgType:PublicNumberMsgType_PostBackCookie];
+                        [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WithMsgType:PublicNumberMsgType_PostBackCookie];
                     }
                 } else {
                     NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithDictionary:dic];
@@ -1006,7 +1038,7 @@
                     [resultDic setObject:@"消息体格式错喔" forKey:@"errmsg"];
                     [resultDic setObject:[NSString stringWithFormat:@"%@",msg.message] forKey:@"content"];
                     NSString *json = [[QIMJSONSerializer sharedInstance] serializeObject:resultDic];
-                    [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WihtMsgType:PublicNumberMsgType_PostBackCookie];
+                    [[QIMKit sharedInstance] sendMessage:json ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WithMsgType:PublicNumberMsgType_PostBackCookie];
                 }
                 
             } else if (msg.messageType == PublicNumberMsgType_Action) {
@@ -1101,7 +1133,7 @@
     NSString *thumbFilePath = [videoPath stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@",pathExtension] withString:@"_thumb.jpg"];
     [thumbData writeToFile:thumbFilePath atomically:YES];
     
-    NSString *httpUrl = [QIMKit updateLoadFile:thumbData WithMsgId:msgId WithMsgType:QIMMessageType_Image WihtPathExtension:@"jpg"];
+    NSString *httpUrl = [QIMKit updateLoadFile:thumbData WithMsgId:msgId WithMsgType:QIMMessageType_Image WithPathExtension:@"jpg"];
     
     NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
     [dicInfo setQIMSafeObject:httpUrl forKey:@"ThumbUrl"];
@@ -1113,7 +1145,7 @@
     [dicInfo setQIMSafeObject:@(duration) forKey:@"Duration"];
     NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
     
-    Message *msg = [[QIMKit sharedInstance] createPublicNumberMessageWithMsg:msgContent extenddInfo:nil publicNumberId:self.robotJId msgType:PublicNumberMsgType_SmallVideo];
+   QIMMessageModel *msg = [[QIMKit sharedInstance] createPublicNumberMessageWithMsg:msgContent extenddInfo:nil publicNumberId:self.robotJId msgType:PublicNumberMsgType_SmallVideo];
     
     [_dataSounce addObject:msg];
     [_tableView reloadData];
@@ -1124,14 +1156,14 @@
 
 - (void)sendMessage:(NSString *)message WithInfo:(NSString *)info ForMsgType:(int)msgType{
     if (msgType != PublicNumberMsgType_Action) {
-        Message * msg = [[QIMKit sharedInstance] createPublicNumberMessageWithMsg:message extenddInfo:info publicNumberId:[NSString stringWithFormat:@"%@@%@",self.robotJId,[[QIMKit sharedInstance] getDomain]] msgType:msgType];
+       QIMMessageModel * msg = [[QIMKit sharedInstance] createPublicNumberMessageWithMsg:message extenddInfo:info publicNumberId:[NSString stringWithFormat:@"%@@%@",self.robotJId,[[QIMKit sharedInstance] getDomain]] msgType:msgType];
         [_dataSounce addObject:msg];
         [_tableView reloadData];
         [self scrollToBottomWithCheck:YES];
         [self addImageToImageList];
-        msg = [[QIMKit sharedInstance] sendMessage:message ToPublicNumberId:self.robotJId WithMsgId:msg.messageId WihtMsgType:msgType];
+        msg = [[QIMKit sharedInstance] sendMessage:message ToPublicNumberId:self.robotJId WithMsgId:msg.messageId WithMsgType:msgType];
     } else {
-        [[QIMKit sharedInstance] sendMessage:message ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WihtMsgType:msgType];
+        [[QIMKit sharedInstance] sendMessage:message ToPublicNumberId:self.robotJId WithMsgId:[QIMUUIDTools UUID] WithMsgType:msgType];
     }
     
 }
@@ -1168,7 +1200,7 @@
     }
     
     if ([text length] > 0) {
-        Message *msg = nil;
+       QIMMessageModel *msg = nil;
         
         text = [[QIMEmotionManager sharedInstance]  decodeHtmlUrlForText:text];
         
@@ -1177,7 +1209,7 @@
         [_tableView reloadData];
         [self scrollToBottomWithCheck:YES];
         [self addImageToImageList];
-        msg = [[QIMKit sharedInstance] sendMessage:msg.message ToPublicNumberId:self.robotJId WithMsgId:msg.messageId WihtMsgType:msg.messageType];
+        msg = [[QIMKit sharedInstance] sendMessage:msg.message ToPublicNumberId:self.robotJId WithMsgId:msg.messageId WithMsgType:msg.messageType];
     }
 }
  
@@ -1246,10 +1278,10 @@
     id temp = [_dataSounce objectAtIndex:indexPath.row];
     
     if ([temp isKindOfClass:[NSString class]]) {
-        return [[[QIMKit sharedInstance] getRegisterMsgCellClassForMessageType:QIMMessageType_Time] getCellHeightWihtMessage:temp chatType:ChatType_SingleChat];
+        return [[[QIMKit sharedInstance] getRegisterMsgCellClassForMessageType:QIMMessageType_Time] getCellHeightWithMessage:temp chatType:ChatType_SingleChat];
     } else {
         
-        Message *message = temp;
+       QIMMessageModel *message = temp;
         switch ((int)message.messageType) {
             case QIMMessageType_Text:
             case QIMMessageType_Image:
@@ -1287,7 +1319,7 @@
             {
                 Class someClass = [[QIMKit sharedInstance] getRegisterMsgCellClassForMessageType:message.messageType];
                 if (someClass && message.messageType != 6) {
-                    CGFloat height = [someClass getCellHeightWihtMessage:temp chatType:ChatType_SingleChat];
+                    CGFloat height = [someClass getCellHeightWithMessage:temp chatType:ChatType_SingleChat];
                     return height;
                 } else {
                     QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
@@ -1300,19 +1332,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSUInteger row = [indexPath row];
-    if (row < _dataSounce.count) {
-        Message  * message = [_dataSounce objectAtIndex:indexPath.row];
-        if (message.messageType == QIMMessageType_Text) {
-            if (message.messageState != MessageState_didRead) {
-                [[QIMEmotionSpirits sharedInstance] playQIMEmotionSpiritsWithMessage:message.message];
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [[QIMKit sharedInstance] updateMsgState:MessageState_didRead WithMsgId:message.messageId];
-                });
-                [message setMessageState:MessageState_didRead];
-            }
-        }
-    }
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -1320,7 +1340,7 @@
         return [[UITableViewCell alloc] init];
     }
     id temp = [_dataSounce objectAtIndex:indexPath.row];
-    Message *message = temp;
+   QIMMessageModel *message = temp;
     switch ((int)message.messageType) {
             
         case QIMMessageType_Text:
@@ -1411,11 +1431,7 @@
                 cell = [[QIMOpenPlatformCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
                 [cell setDelegate:self];
             }
-            //            [cell setTagStr:[NSString stringWithFormat:@"#%@#",@"东京"]];
-            //            [cell setContent:message.message];
-            //            [cell setMsgTime:message.messageDate];
-            //            [cell setLinkUrl:@"http://www.baidu.com/"];
-            if (message.extendInformation) {
+            if (message.extendInformation.length > 0) {
                 message.message = message.extendInformation;
             }
             [cell setMessage:message];
@@ -1546,8 +1562,8 @@
         
         //        [[self navigationController] pushViewController:controller animated:YES];
     }else if (event == MA_Delete){
-        for (Message * msg in _dataSounce) {
-            if ([msg.messageId isEqualToString:[(Message *)message messageId]]) {
+        for (QIMMessageModel * msg in _dataSounce) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *)message messageId]]) {
                 NSInteger index = [_dataSounce indexOfObject:msg];
                 [_dataSounce removeObject:msg];
                 [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -1557,12 +1573,12 @@
         }
         
     }else if (event == MA_ToWithdraw){
-        for (Message * msg in _dataSounce) {
-            if ([msg.messageId isEqualToString:[(Message *)message messageId]]) {
+        for (QIMMessageModel * msg in _dataSounce) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *)message messageId]]) {
                 NSInteger index = [_dataSounce indexOfObject:msg];
                 //                [_dataSounce removeObject:msg];
                 //                [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-                [(Message *)message setMessageType:QIMMessageType_Revoke];
+                [(QIMMessageModel *)message setMessageType:QIMMessageType_Revoke];
                 [_dataSounce replaceObjectAtIndex:index withObject:message];
                 [[QIMKit sharedInstance] updateMsg:message ByJid:self.robotJId];
                 [_tableView reloadData];
@@ -1571,20 +1587,20 @@
                 //                NSString *msgId = [infoDic objectForKey:@"messageId"];
                 //                NSString *msg = [infoDic objectForKey:@"message"];
                 NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
-                [dicInfo setObject:[(Message *)message from] forKey:@"fromId"];
-                [dicInfo setObject:[(Message *)message messageId] forKey:@"messageId"];
-                [dicInfo setObject:[(Message *)message message] forKey:@"message"];
+                [dicInfo setObject:[(QIMMessageModel *)message from] forKey:@"fromId"];
+                [dicInfo setObject:[(QIMMessageModel *)message messageId] forKey:@"messageId"];
+                [dicInfo setObject:[(QIMMessageModel *)message message] forKey:@"message"];
                 NSString *msgInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
                 
-                [[QIMKit sharedInstance] revokeMessageWithMessageId:[(Message *)message messageId] message:msgInfo ToJid:self.robotJId];
+                [[QIMKit sharedInstance] revokeMessageWithMessageId:[(QIMMessageModel *)message messageId] message:msgInfo ToJid:self.robotJId];
                 break;
             }
         }
     } else if (event == MA_Favorite) {
         
-        for (Message *msg in _dataSounce) {
+        for (QIMMessageModel *msg in _dataSounce) {
             
-            if ([msg.messageId isEqualToString:[(Message *)message messageId]]) {
+            if ([msg.messageId isEqualToString:[(QIMMessageModel *)message messageId]]) {
                 
                 [[QIMMyFavoitesManager sharedMyFavoritesManager] setMyFavoritesArrayWithMsg:message];
                 
@@ -1680,7 +1696,7 @@ static CGPoint tableOffsetPoint;
 #pragma mark - MJRefresh 代理
 - (void)loadNewPublicNumberMsgList {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSArray *list = [[QIMKit sharedInstance] getPublicNumberMsgListById:self.robotJId WihtLimit:kPageCount WithOffset:(int)_dataSounce.count];
+        NSArray *list = [[QIMKit sharedInstance] getPublicNumberMsgListById:self.robotJId WithLimit:kPageCount WithOffset:(int)_dataSounce.count];
         dispatch_async(dispatch_get_main_queue(), ^{
             CGFloat offsetY = _tableView.contentSize.height -  _tableView.contentOffset.y;
             NSRange range = NSMakeRange(0, [list count]);
@@ -1729,7 +1745,7 @@ static CGPoint tableOffsetPoint;
 
 -(NSString*)getStringFromAttributedString:(NSData*)imageData
 {
-    Message *  msg = nil; 
+   QIMMessageModel *  msg = nil; 
     msg = [[QIMKit sharedInstance] createPublicNumberMessageWithMsg:@"[obj type=\"image\" value=\"imageData\"]" extenddInfo:nil publicNumberId:self.robotJId msgType:PublicNumberMsgType_Text];
      msg.imageData = imageData;
     [_dataSounce addObject:msg];
@@ -1756,11 +1772,11 @@ static CGPoint tableOffsetPoint;
         
         notificationView = [[UIView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, self.textBar.frame.origin.y - 50, 100, 40)];
         backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-        [backImageView setImage:[UIImage imageNamed:@"notificationToast"]];
+        [backImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"notificationToast"]];
         [notificationView addSubview:backImageView];
         
         UIImageView *messageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 7, 20, 20)];
-        [messageImageView setImage:[UIImage imageNamed:@"notificationToastCommentIcon"]];
+        [messageImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"notificationToastCommentIcon"]];
         
         [notificationView addSubview:messageImageView];
         if (commentCountLabel == nil) {
@@ -1808,7 +1824,7 @@ static CGPoint tableOffsetPoint;
     NSInteger imageIndex = 0;
     NSInteger cellIndex  = 0;
     NSArray *tempDataSource = [NSArray arrayWithArray:_dataSounce];
-    for (Message *msg in tempDataSource) {
+    for (QIMMessageModel *msg in tempDataSource) {
         if (![msg isKindOfClass:[NSString class]]) {
             TextCellCache *cache = [_cellSizeDic objectForKey:msg.messageId];
 //            [self updateTextCache:msg.messageId Cache:cache];
@@ -1893,7 +1909,7 @@ static CGPoint tableOffsetPoint;
 }
 
 
-- (void)browserMessage:(Message *)message {
+- (void)browserMessage:(QIMMessageModel *)message {
     
     UIViewController * vc = nil;
     if(message.messageType == QIMMessageType_BurnAfterRead){
@@ -1927,12 +1943,14 @@ static CGPoint tableOffsetPoint;
         nc.modalTransitionStyle    = UIModalTransitionStyleCrossDissolve;
         [self presentViewController:nc animated:YES completion:nil];
     } else if(message.messageType == QIMMessageType_Text || message.messageType == QIMMessageType_Image || message.messageType == QIMMessageType_ImageNew){
+        /*
         vc = [[QIMPreviewMsgVC alloc] init];
         [(QIMPreviewMsgVC *)vc setMessage:message];
         QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:vc];
         [nc setNavigationBarHidden:YES];
         nc.modalTransitionStyle    = UIModalTransitionStyleCrossDissolve;
         [self presentViewController:nc animated:YES completion:nil];
+        */
     }
 }
 

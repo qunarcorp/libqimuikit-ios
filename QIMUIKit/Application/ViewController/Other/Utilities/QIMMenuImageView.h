@@ -31,7 +31,7 @@ typedef enum {
     MenuType_ReceiveCard,
 }MenuType;
 
-@class Message;
+@class QIMMessageModel;
 @class QIMChatBubbleView;
 @protocol QIMMenuImageViewDelegate;
 @interface QIMMenuImageView : UIImageView<UIGestureRecognizerDelegate>
@@ -46,15 +46,21 @@ typedef enum {
 @property (nonatomic, copy)   NSString *text;
 @property (nonatomic, assign) BOOL canShowMenu;
 @property (nonatomic, assign) BOOL hideToWithdraw;//是否隐藏撤回消息
-@property (nonatomic, retain) Message * message;
+@property (nonatomic, retain)QIMMessageModel * message;
 
 @property (nonatomic, retain) NSArray *menuActionTypeList;
+
+- (void)setFrame:(CGRect)frame withNeedAddBubble:(BOOL)flag;
 
 - (void)showCopyMenu;
 + (void)cancelHighlighted;
 - (void)setClipboardWitxthText:(NSString *)text;
 
 - (void)setBubbleBgColor:(UIColor *)color;
+
+- (void)setStrokeColor:(UIColor *)color;
+
+- (void)setMenuViewHidden:(BOOL)hidden;
 
 - (void)onLongEvent:(UILongPressGestureRecognizer *)tag;
 

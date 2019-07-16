@@ -108,11 +108,6 @@
                         NSString *name = [memDic objectForKey:@"name"];
                         UIImage *headerImage = [[QIMImageManager sharedInstance] getUserHeaderImageByUserId:newMemberJid];
                       
-                        BOOL isUserOnline = [[QIMKit sharedInstance] isUserOnline:newMemberJid];
-                        if (isUserOnline == NO) {
-                            headerImage = [headerImage qim_grayImage];
-                        }
-                        
                         GroupMemberButton *headerButton = [[GroupMemberButton alloc] initWithFrame:CGRectMake(cap + i % 4 * (width + cap), 20+i/4*(width+cap+10), width, width)];
                         [headerButton setMemberDic:memDic];
                         [headerButton setBackgroundImage:headerImage forState:UIControlStateNormal];
@@ -120,14 +115,6 @@
                         [headerButton setClipsToBounds:YES];
                         [headerButton addTarget:self action:@selector(singlePeople:) forControlEvents:UIControlEventTouchUpInside];
                         [headerView addSubview:headerButton];
-                        
-                        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(headerButton.left-2, headerButton.bottom+5, headerButton.width+5, 20)];
-                        [titleLabel setBackgroundColor:[UIColor clearColor]];
-                        [titleLabel setFont:[UIFont fontWithName:FONT_NAME size:FONT_SIZE - 4]];
-                        [titleLabel setTextColor:[UIColor grayColor]];
-                        [titleLabel setTextAlignment:NSTextAlignmentCenter];
-                        [titleLabel setText:[NSString stringWithFormat:@"%@%@",name, isUserOnline ? @"(在线)" : @""]];
-                        [headerView addSubview:titleLabel];
                     }
                 }
                 [_tableView setTableHeaderView:headerView];
@@ -205,7 +192,6 @@
 }
 
 -(void)singlePeople:(GroupMemberButton *)sender {
-//    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByName:sender.memberDic[@"name"]];
     NSString *userId = [sender.memberDic objectForKey:@"UserId"];
     if (userId.length > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -257,15 +243,6 @@
             }
             [[QIMKit sharedInstance] clearNotReadMsgByGroupId:groupId];
             [QIMFastEntrance openGroupChatVCByGroupId:groupId];
-            /*
-            QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
-            [chatGroupVC setTitle:groupName];
-            [chatGroupVC setChatId:groupId];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-            [self.navigationController popToRootVCThenPush:chatGroupVC animated:YES];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:kGroupNickNameChanged object:@[groupId]];
-            */
         } else {
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"创建失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
             [alertView show];
@@ -318,7 +295,7 @@
     
     UIImageView * headView  = [[UIImageView alloc] init];
     [headView setFrame:CGRectMake(10, 8, 30, 30)];
-    [headView setImage:[UIImage imageNamed:@"singleHeaderDefault" ]];
+    [headView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"singleHeaderDefault" ]];
     [bgView addSubview:headView];
     
     if (groupNameTextField == nil) {

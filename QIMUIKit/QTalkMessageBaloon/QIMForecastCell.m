@@ -9,7 +9,7 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMForecastCell.h"
 #import "QIMJSONSerializer.h"
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 
 @implementation QIMForecastCell {
     UILabel         * _titleLabel;
@@ -17,16 +17,16 @@
     UILabel         * _descLabel;
 }
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     NSString * infoStr = message.extendInformation.length <= 0 ? message.message : message.extendInformation;
     NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
     bool showas667 = [[infoDic objectForKey:@"showas667"] boolValue];
     if (message.messageType == QIMMessageType_Forecast || showas667) {
         NSString *desc = [infoDic objectForKey:@"desc"];
         CGSize descSize = [desc qim_sizeWithFontCompatible:[UIFont systemFontOfSize:12] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width * 0.65 - 20, MAXFLOAT)];
-        return (chatType == ChatType_GroupChat && message.messageDirection == MessageDirection_Received ? 115 : 90)  + MAX(descSize.height, 20) ;
+        return (chatType == ChatType_GroupChat && message.messageDirection == QIMMessageDirection_Received ? 115 : 90)  + MAX(descSize.height, 20) ;
     }else{
-        return chatType == ChatType_GroupChat && message.messageDirection == MessageDirection_Received ? 115 : 90 ;
+        return chatType == ChatType_GroupChat && message.messageDirection == QIMMessageDirection_Received ? 115 : 90 ;
     }
 }
 
@@ -76,29 +76,29 @@
     NSMutableArray * menuList = [NSMutableArray arrayWithArray:@[@(MA_Repeater) /*, @(MA_Favorite)*/, @(MA_ToWithdraw), @(MA_ReplyMsg)]];
     [self.backView setMenuActionTypeList:menuList];
     
-    CGFloat cellHeight = [QIMForecastCell getCellHeightWihtMessage:self.message chatType:self.chatType];
+    CGFloat cellHeight = [QIMForecastCell getCellHeightWithMessage:self.message chatType:self.chatType];
     CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width * 0.65;
-//    if (self.chatType == ChatType_GroupChat && self.message.messageDirection == MessageDirection_Received) {
-//        [self setBackViewWithWidth:cellWidth WihtHeight:cellHeight - 35];
+//    if (self.chatType == ChatType_GroupChat && self.message.messageDirection == QIMMessageDirection_Received) {
+//        [self setBackViewWithWidth:cellWidth WithHeight:cellHeight - 35];
 //    } else {
-//        [self setBackViewWithWidth:cellWidth WihtHeight:cellHeight - 10];
+//        [self setBackViewWithWidth:cellWidth WithHeight:cellHeight - 10];
 //    }
     float imgWidth = 60;
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         _imageView.frame = CGRectMake(25, 10, imgWidth, imgWidth);
     } else {
         _imageView.frame = CGRectMake(10, 10, imgWidth, imgWidth);
     }
     [self.backView setMessage:self.message];
-    [self setBackViewWithWidth:cellWidth WihtHeight:cellHeight];
+    [self setBackViewWithWidth:cellWidth WithHeight:cellHeight];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             [self.backView setImage:nil];
             _titleLabel.frame = CGRectMake(self.backView.left + 15, self.backView.top + 10, self.backView.width - 25, 25);
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             [self.backView setImage:nil];
             _titleLabel.frame = CGRectMake(self.backView.left + 5, self.backView.top + 10, self.backView.width - 25, 25);

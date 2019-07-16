@@ -22,6 +22,12 @@
 
 - (void)setLoadingViewWithHidden:(BOOL)hidden;
 
++ (void)setMainVCReShow:(BOOL)showMainVc;
+
++ (BOOL)getMainVCReShow;
+
++ (BOOL)checkMainVC;
+
 + (instancetype)sharedInstanceWithSkipLogin:(BOOL)skipLogin;
 
 @end

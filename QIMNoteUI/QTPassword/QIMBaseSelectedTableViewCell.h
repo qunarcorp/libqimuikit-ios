@@ -6,8 +6,8 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
+#import "QIMCommonUIFramework.h"
+#if __has_include("QIMNoteManager.h")
 @interface QIMBaseSelectedTableViewCell : UITableViewCell
 
 @property (nonatomic, strong) UIImageView *selectBtn;
@@ -19,3 +19,4 @@
 - (BOOL)isCellSelected;
 
 @end
+#endif

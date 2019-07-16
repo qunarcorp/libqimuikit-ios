@@ -1,6 +1,8 @@
 
 #import "QTalkTextView.h"
 #import "QIMChatKeyBoardMacroDefine.h"
+#import "QIMATGroupMemberTextAttachment.h"
+#import "QIMEmojiTextAttachment.h"
 
 @implementation QTalkTextView
 
@@ -12,9 +14,9 @@
     if (self) {
         self.font = [UIFont systemFontOfSize:16.f];
         self.textColor = [UIColor blackColor];
-        self.layer.borderColor = [UIColor colorWithWhite:0.6 alpha:1.0].CGColor;
+        self.layer.borderColor = [UIColor qim_colorWithHex:0xE4E4E4].CGColor;
         self.layer.cornerRadius = 5.0f;
-        self.layer.borderWidth = 0.65f;
+        self.layer.borderWidth = 0.5;
         self.contentMode = UIViewContentModeRedraw;
         self.dataDetectorTypes = UIDataDetectorTypeNone;
         self.returnKeyType = UIReturnKeySend;
@@ -26,6 +28,35 @@
         [self addTextViewNotificationObservers];
     }
     return self;
+}
+
+- (BOOL)hasATGroupMemberTextAttachment {
+    //最终纯文本
+    __block BOOL flag = NO;
+    NSMutableString *plainString = [NSMutableString stringWithString:self.text];
+    
+    //替换下标的偏移量
+    __block NSUInteger base = 0;
+    
+    //遍历
+    [self.attributedText enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, self.text.length)
+                     options:0
+                  usingBlock:^(id value, NSRange range, BOOL *stop) {
+                      
+                      //检查类型是否是自定义NSTextAttachment类
+                      if (value && [value isKindOfClass:[QIMEmojiTextAttachment class]]) {
+                          //替换
+                          [plainString replaceCharactersInRange:NSMakeRange(range.location + base, range.length)
+                                                     withString:[((QIMEmojiTextAttachment *) value) getSendText]];
+                          
+                          //增加偏移量
+                          base += [((QIMEmojiTextAttachment *) value) getSendText].length - 1;
+                      } else if (value && [value isKindOfClass:[QIMATGroupMemberTextAttachment class]]) {
+                          flag = YES;
+                      }
+                  }];
+    
+    return flag;
 }
 
 - (void)dealloc

@@ -16,8 +16,8 @@
         [lineView setBackgroundColor:[UIColor qtalkSplitLineColor]];
         [self addSubview:lineView];
         _switchBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
-        [_switchBtn setImage:[UIImage imageNamed:@"Mode_listtotext"] forState:UIControlStateNormal];
-        [_switchBtn setImage:[UIImage imageNamed:@"Mode_listtotextHL"] forState:UIControlStateHighlighted];
+        [_switchBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_listtotext"] forState:UIControlStateNormal];
+        [_switchBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Mode_listtotextHL"] forState:UIControlStateHighlighted];
         [_switchBtn addTarget:self action:@selector(switchAction:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_switchBtn];
     }

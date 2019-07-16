@@ -10,7 +10,7 @@
 #import "QIMCommonUIFramework.h"
 #import "QIMMsgBaloonBaseCell.h"
 
-@class Message;
+@class QIMMessageModel;
 
 @protocol QIMSingleChatVoiceCellDelegate;
 

@@ -12,6 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkMomentPushViewController : QTalkViewController
 
+@property (nonatomic, assign) BOOL shareWorkMoment;     //分享驼圈，不能选择本地图片
+
+@property (nonatomic, copy) NSMutableArray *selectPhoto;   //本地分享图片
+
+@property (nonatomic, strong) NSDictionary *shareLinkUrlDic;
+
 @end
 
 NS_ASSUME_NONNULL_END

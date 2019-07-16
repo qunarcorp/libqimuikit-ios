@@ -27,6 +27,7 @@
 
 #import "QIMGDMarginLabel.h"
 #import "QIMGDWindowViewController.h"
+#import "QIMDeviceManager.h"
 
 // 判断是否是iPhone X
 #define iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
@@ -313,7 +314,7 @@
     CGRect frame = CGRectZero;
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     if (window) {
-        frame = CGRectMake(0.0f, STATUS_BAR_HEIGHT - 6, CGRectGetWidth(window.bounds), 20.0f);
+        frame = CGRectMake(0.0f, [[QIMDeviceManager sharedInstance] getNAVIGATION_BAR_HEIGHT], CGRectGetWidth(window.bounds), 20.0f);
     }
     return frame;
 }

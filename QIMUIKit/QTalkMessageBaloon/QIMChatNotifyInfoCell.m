@@ -30,7 +30,7 @@ static double _global_message_cell_width = 0;
 @end
 
 @implementation QIMChatNotifyInfoCell
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType {
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType {
     
     UILabel *label = [[UILabel alloc] init];
     label.text = message.message;
@@ -49,12 +49,15 @@ static double _global_message_cell_width = 0;
     if (self) {
         // Initialization code
         [self.backView setBubbleBgColor:[UIColor clearColor]];
+        [self.backView setMenuViewHidden:YES];
+        self.backView = nil;
 
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         
         self.bgImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        [self.bgImageView setImage:[[UIImage imageNamed:@"im_time_bg"] stretchableImageWithLeftCapWidth:6 topCapHeight:6]];
+        [self.bgImageView setImage:[[UIImage qim_imageWithColor:qim_ChatTimestampCellBgColor] stretchableImageWithLeftCapWidth:6 topCapHeight:6]];
+
         [self.bgImageView setUserInteractionEnabled:YES];
         [self.contentView addSubview:self.bgImageView];
         
@@ -136,7 +139,7 @@ static double _global_message_cell_width = 0;
     QIMAttributedLabel   * _textLabel;
 }
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
      QIMTextContainer *textContaner = [[QIMMessageCellCache sharedInstance] getObjectForKey:message.messageId];
     if (textContaner == nil) {
         NSString *content = message.message;
@@ -184,7 +187,7 @@ static double _global_message_cell_width = 0;
             default:
                 break;
         }
-        Message *msg = [Message new];
+        QIMMessageModel *msg = [QIMMessageModel new];
         [msg setMessage:content];
         [msg setMessageId:message.messageId];
         [msg setMessageType:message.messageType];
@@ -198,12 +201,13 @@ static double _global_message_cell_width = 0;
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        [self.backView setBubbleBgColor:[UIColor clearColor]];
+        [self.backView setMenuViewHidden:YES];
+        self.backView = nil;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         
         _bgImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        [_bgImageView setImage:[[UIImage imageNamed:@"im_time_bg"] stretchableImageWithLeftCapWidth:6 topCapHeight:6]];
+        [_bgImageView setImage:[[UIImage qim_imageWithColor:qim_ChatTimestampCellBgColor] stretchableImageWithLeftCapWidth:6 topCapHeight:6]];
         [_bgImageView setUserInteractionEnabled:YES];
         [self.contentView addSubview:_bgImageView];
         

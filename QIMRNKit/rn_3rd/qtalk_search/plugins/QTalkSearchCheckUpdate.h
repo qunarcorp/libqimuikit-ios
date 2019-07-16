@@ -12,14 +12,19 @@
 #import <React/RCTBridgeModule.h>
 #import "QIMCommonUIFramework.h"
 
-@interface  QTalkSearchCheckUpdate: NSObject <RCTBridgeModule>
+@interface QTalkSearchCheckUpdate : NSObject <RCTBridgeModule>
 
-+(NSString*) checkAndGetRNBundlePath;
-+(void) saveBundleToCache:(NSData *)bundleInfo;
-+(void) unzipBundle;
-+(NSString *)getAssetBundleName;
-+(NSString *)getOriginBundlePath;
-+(NSString *)getDestBundlePath;
++ (NSString *)checkAndGetRNBundlePath;
+
++ (void)saveBundleToCache:(NSData *)bundleInfo;
+
++ (void)unzipBundle;
+
++ (NSString *)getAssetBundleName;
+
++ (NSString *)getOriginBundlePath;
+
++ (NSString *)getDestBundlePath;
 
 @end
 

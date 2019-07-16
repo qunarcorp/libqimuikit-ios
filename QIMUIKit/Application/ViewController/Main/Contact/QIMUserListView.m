@@ -214,12 +214,7 @@
         [item setIsParentNode:NO];
         [item setName:[infoDic objectForKey:@"Name"]];
         [item setContentValue:infoDic];
-        if ([[QIMKit sharedInstance] isUserOnline:jid]) {
-            [_friendList insertObject:item atIndex:onlineCount];
-            onlineCount++;
-        }else{
-            [_friendList addObject:item];
-        }
+        [_friendList addObject:item];
     }
     [[self.friendList lastObject] setIsLast:YES];
 }

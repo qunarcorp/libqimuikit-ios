@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/11.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "PasswordCell.h"
 #import "QIMNoteModel.h"
 #import "QIMNoteUICommonFramework.h"
@@ -42,7 +42,7 @@
 - (UIImageView *)selectBtn {
     if (!_selectBtn) {
         _selectBtn = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - 60, 0, 24, 24)];
-        [_selectBtn setImage:[UIImage imageNamed:@"common_checkbox_no_44px"]];
+        [_selectBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
         _selectBtn.centerY = self.contentView.centerY;
     }
     return _selectBtn;
@@ -52,7 +52,7 @@
     if (!_iconView) {
         _iconView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 45, 50)];
         _iconView.contentMode = UIViewContentModeScaleAspectFit;
-        _iconView.image = [UIImage imageNamed:@"explore_tab_password"];
+        _iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
     }
     _iconView.centerY = self.centerY;
     return _iconView;
@@ -81,7 +81,7 @@
         [self.contentView addSubview:self.iconView];
         [self.contentView addSubview:self.passwordTitleLabel];
         [self.contentView addSubview:self.passwordGenerateTimeLabel];
-        self.iconView.image = [UIImage imageNamed:@"explore_tab_password"];
+        self.iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
         self.passwordTitleLabel.text = @"Password";
         NSString *timeStr = [[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:self.model.qs_time] qim_formattedDateDescription];
         self.passwordGenerateTimeLabel.text = timeStr;
@@ -102,7 +102,7 @@
 
 - (void)setCellSelected:(BOOL)selected {
     _selected = selected;
-    [self.selectBtn setImage:selected ? [UIImage imageNamed:@"common_checkbox_yes_44px"] : [UIImage imageNamed:@"common_checkbox_no_44px"]];
+    [self.selectBtn setImage:selected ? [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_yes_44px"] : [UIImage qim_imageNamedFromQIMUIKitBundle:@"common_checkbox_no_44px"]];
 }
 
 - (BOOL)isCellSelected {
@@ -110,3 +110,4 @@
 }
 
 @end
+#endif

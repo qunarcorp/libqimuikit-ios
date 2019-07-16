@@ -33,7 +33,7 @@
 }
 
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType{
     return kCellHeight + 20 + 20;
 }
 
@@ -126,10 +126,10 @@
     self.backView.message = self.message;
     float backWidth = kCellWidth + kBackViewCap + 2;
     float backHeight = kCellHeight + 1;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
     
-    UIImage *image = [QIMFileIconTools getFileIconWihtExtension:@"txt"];
+    UIImage *image = [QIMFileIconTools getFileIconWithExtension:@"txt"];
     [_iconImageView setImage:image];
     
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.extendInformation error:nil];
@@ -147,7 +147,7 @@
         [_contentLabel setText:self.message.message];
     }
     
-    if (self.message.messageDirection == MessageDirection_Received) {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
         [_bgView setLeft:kBackViewCap+2];
         [_titleLabel setTextColor:[UIColor qtalkTextBlackColor]];
         [_contentLabel setTextColor:[UIColor qtalkTextBlackColor]];
@@ -161,11 +161,11 @@
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete)]];
         }
             break;
@@ -176,7 +176,11 @@
         [menuList addObject:@(MA_CopyOriginMsg)];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeAllObjects];
+//        [menuList removeObject:@(MA_Refer)];
+//        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Delete)];
+        [menuList removeObject:@(MA_Forward)];
+//        [menuList removeObject:@(MA_Repeater)];
     }
     return menuList;
 }

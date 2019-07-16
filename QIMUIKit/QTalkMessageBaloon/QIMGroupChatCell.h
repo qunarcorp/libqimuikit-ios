@@ -10,14 +10,14 @@
 #import "QIMMsgBaloonBaseCell.h"
 #define kTextLabelTag       9999
 
-@class Message;
+@class QIMMessageModel;
 
 @protocol QIMGroupChatCellDelegate <NSObject>
 @required
 
 - (void)processEvent:(int) event withMessage:(id) message;
 
-- (void)browserMessage:(Message *)message;
+- (void)browserMessage:(QIMMessageModel *)message;
 
 - (NSUInteger)getColorHex:(NSString *)text;
 

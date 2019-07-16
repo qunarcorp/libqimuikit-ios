@@ -20,8 +20,8 @@
 //@property (nonatomic, strong) NSString *content;
 //@property (nonatomic, assign) long long msgTime;
 //@property (nonatomic, assign) NSString *linkUrl;
-@property (nonatomic, strong) Message *message;
+@property (nonatomic, strong)QIMMessageModel *message;
 @property (nonatomic, weak) id<QIMOpenPlatformCellDelegate> delegate;
-+ (CGFloat)getCellHeightWithMessage:(Message *)message;
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message;
 - (void)refreshUI;
 @end

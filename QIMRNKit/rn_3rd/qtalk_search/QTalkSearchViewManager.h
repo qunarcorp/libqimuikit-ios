@@ -11,8 +11,6 @@
 
 #import "QIMCommonUIFramework.h"
 
-#define kNotify_RN_QTALK_SEARCH_GO_BACK @"kNotify_RN_QTALK_SEARCH_GO_BACK"
-
 @interface QTalkSearchViewManager : QTalkViewController
 
 - (void)goBack;

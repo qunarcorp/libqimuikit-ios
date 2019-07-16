@@ -6,7 +6,7 @@
 //
 
 #import "QIMEmotionTip.h"
-#import "UIImage+GIF.h"
+#import "UIImage+QIMGIF.h"
 #import "QIMCollectionFaceManager.h"
 #import "QIMEmotionManager.h"
 
@@ -34,7 +34,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"emoticon_keyboard_magnifier"]];
+        self.backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"emoticon_keyboard_magnifier"]];
         [self addSubview:self.backgroundImageView];
         
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake((CGRectGetWidth(self.frame) - 42)/2, 4, 42, 42)];
@@ -134,7 +134,7 @@ typedef NS_ENUM(NSInteger, QTalkTipPositionType) {
 }
 
 - (UIImageView *)imageWithResizbleImage:(NSString *)imageName {
-    UIImage *image = [UIImage imageNamed:imageName];
+    UIImage *image = [UIImage qim_imageNamedFromQIMUIKitBundle:imageName];
     CGFloat capWidth =  floorf(image.size.width / 2);
     CGFloat capHeight =  floorf(image.size.height / 2);
     image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(capHeight, capWidth, capHeight, capWidth)];
@@ -185,14 +185,14 @@ typedef NS_ENUM(NSInteger, QTalkTipPositionType) {
         if ([cell isKindOfClass:[QIMFaceViewCell class]]) {
             QIMFaceViewCell *normalEmotionCell = (QIMFaceViewCell *)cell;
             NSData *gifData = [[QIMEmotionManager sharedInstance] getEmotionThumbIconDataWithImageStr:normalEmotionCell.emojiPath];
-            self.gifImageView.image = [UIImage sd_animatedGIFWithData:gifData];
+            self.gifImageView.image = [UIImage qimsd_animatedGIFWithData:gifData];
         } else if ([cell isKindOfClass:[QIMCollectionViewCell class]]) {
             QIMCollectionViewCell *collectionCell = (QIMCollectionViewCell *)cell;
             NSData *imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getCollectionFaceEmojiLocalPathWithIndex:collectionCell.tag - 1]];
             if (!imageData.length) {
                 imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getSmallEmojiLocalPathWithIndex:collectionCell.tag - 1]];
             }
-            self.gifImageView.image = [UIImage sd_animatedGIFWithData:imageData];
+            self.gifImageView.image = [UIImage qimsd_animatedGIFWithData:imageData];
         }
     }
 }

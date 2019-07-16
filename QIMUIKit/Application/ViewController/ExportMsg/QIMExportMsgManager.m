@@ -52,7 +52,7 @@
 
 + (NSString *)parseForJsonStrFromMsgList:(NSArray *)msgList withTitle:(NSString *)title{
     NSMutableArray * jsonStrArr = [NSMutableArray arrayWithCapacity:1];
-    for (Message * msg in msgList) {
+    for (QIMMessageModel * msg in msgList) {
         NSNumber * type = @(msg.messageType);
         NSString *body = msg.message;
         if ([[QIMKit sharedInstance] getRegisterMsgCellClassForMessageType:msg.messageType]) {
@@ -60,7 +60,7 @@
             body = msg.extendInformation.length > 0 ? msg.extendInformation : msg.message;
         }
         NSDictionary * userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:msg.from];
-        NSString * nickName = userInfo[@"Name"]?userInfo[@"Name"]:msg.nickName;
+        NSString * nickName = userInfo[@"Name"]?userInfo[@"Name"]:msg.from;
         NSNumber * direction = @(msg.messageDirection + 1);
         NSNumber * stamp = @(msg.messageDate);
         if (!body) {
@@ -87,10 +87,10 @@
 
 + (NSString *)exportMsgList:(NSArray *)msgList withTitle:(NSString *)title{
     NSString * msgListStr = @"";
-    NSString * dateFrom = [[[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:[(Message *)msgList.firstObject messageDate]] qim_formattedDateDescription] componentsSeparatedByString:@" "].firstObject;
-    NSString * dateTo = [[[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:[(Message *)msgList.lastObject messageDate]] qim_formattedDateDescription] componentsSeparatedByString:@" "].firstObject;
+    NSString * dateFrom = [[[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:[(QIMMessageModel *)msgList.firstObject messageDate]] qim_formattedDateDescription] componentsSeparatedByString:@" "].firstObject;
+    NSString * dateTo = [[[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:[(QIMMessageModel *)msgList.lastObject messageDate]] qim_formattedDateDescription] componentsSeparatedByString:@" "].firstObject;
     NSString * firstTitle = [dateFrom isEqualToString:dateTo]?dateFrom:[NSString stringWithFormat:@"%@~%@",dateFrom,dateTo];
-    for (Message * msg in msgList) {
+    for (QIMMessageModel * msg in msgList) {
         msgListStr = [msgListStr stringByAppendingString:[self htmlStrForMsg:msg firstTitle:[msgList indexOfObject:msg] == 0?firstTitle:nil]];
     }
     NSString * msgListHtml = kMsgTemplateForHtml_Header;
@@ -115,7 +115,7 @@
 
 }
 
-+ (NSString *)htmlStrForMsg:(Message *)msg firstTitle:(NSString *)firstTitle {
++ (NSString *)htmlStrForMsg:(QIMMessageModel *)msg firstTitle:(NSString *)firstTitle {
     NSString * msgSepLineHtmlStr = firstTitle.length?kMsgTemplateForHtml_PageHeader:kMsgTemplateForHtml_SepLine;
     if (firstTitle.length) {
         msgSepLineHtmlStr = [msgSepLineHtmlStr stringByReplacingOccurrencesOfString:@"[MSGLISTDATE]" withString:[NSString stringWithFormat:@"%@",firstTitle]];
@@ -126,7 +126,7 @@
     NSDictionary * userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:msg.from];
     NSString *headerUrl = [[QIMKit sharedInstance] getUserHeaderSrcByUserId:userInfo[@"XmppId"]];
     msgBodyHtmlStr = [msgBodyHtmlStr stringByReplacingOccurrencesOfString:@"[MSGFROMIMG]" withString:headerUrl?headerUrl:@""];
-    msgBodyHtmlStr = [msgBodyHtmlStr stringByReplacingOccurrencesOfString:@"[MSGFROMNAME]" withString:userInfo[@"Name"]?userInfo[@"Name"]:msg.nickName];
+    msgBodyHtmlStr = [msgBodyHtmlStr stringByReplacingOccurrencesOfString:@"[MSGFROMNAME]" withString:userInfo[@"Name"]?userInfo[@"Name"]:msg.from];
     
     NSString * msgTime = [[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:msg.messageDate] qim_formattedDateDescription];
     
@@ -140,7 +140,7 @@
     return htmlStr;
 }
 
-+ (NSString *)getMsgTextForMsg:(Message *)msg {
++ (NSString *)getMsgTextForMsg:(QIMMessageModel *)msg {
     NSString * msgText = @"";
     QIMTextContainer * textContainer = [QIMMessageParser textContainerForMessage:msg fromCache:YES];
     for (id textStorage in [textContainer textStorages]) {

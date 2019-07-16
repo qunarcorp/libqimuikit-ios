@@ -7,11 +7,12 @@
 //
 
 #import "QTalkSearchRNView.h"
+#import "QTalkNewSearchRNView.h"
 #import "QTalkSearchCheckUpdate.h"
-//#import "BSDiff.h"
+#import "BSDiff.h"
 // zipHelper
 #import "ZipArchive.h"
-//#import "QTalkPatchDownloadHelper.h"
+#import "QTalkPatchDownloadHelper.h"
 
 @implementation QTalkSearchCheckUpdate
 
@@ -19,7 +20,7 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback) {
-    /*
+    
     BOOL updateResult = NO;
     
     // update param
@@ -45,7 +46,7 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
             // patch error download full package
             updateResult = [QTalkPatchDownloadHelper downloadPatchAndCheck:patchUrl patchMd5:patchMd5 fullMd5:fullMd5 cachePath: [QTalkSearchRNView getCachePath] destAssetName:[QTalkSearchRNView getAssetBundleName] innerBundleName: [QTalkSearchRNView getInnerBundleName]];
             if(!updateResult){
-
+                
                 updateResult = [QTalkPatchDownloadHelper downloadFullPackageAndCheck:fullpackageUrl md5:fullMd5 bundleName:bundleName zipName: [QTalkSearchRNView getAssetZipBundleName] cachePath:[QTalkSearchRNView getCachePath] destAssetName: [QTalkSearchRNView getAssetBundleName]];
             }
             
@@ -55,7 +56,7 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
             // patch
             // check after patch md5
             updateResult = [QTalkPatchDownloadHelper downloadPatchAndCheck:patchUrl patchMd5:patchMd5 fullMd5:fullMd5 cachePath:[QTalkSearchRNView getCachePath] destAssetName:[QTalkSearchRNView getAssetBundleName] innerBundleName: [QTalkSearchRNView getInnerBundleName]];
-
+            
         }
     }
     
@@ -72,9 +73,7 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
         NSDictionary *resp2 = @{@"is_ok": @NO, @"errorMsg": @""};
         callback(@[resp2]);
     }
-    */
-    NSDictionary *resp2 = @{@"is_ok": @NO, @"errorMsg": @""};
-    callback(@[resp2]);
+    
 }
 
 @end

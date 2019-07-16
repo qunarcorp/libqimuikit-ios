@@ -34,7 +34,7 @@
     
     self.upArrowIconView.frame = CGRectMake(0, 5, 35, 35);
     self.upArrowIconView.centerX = self.centerX;
-    self.upArrowIconView.image = [UIImage imageNamed:@"chat_bottom_arrowup_nor@2x"];
+    self.upArrowIconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowup_nor@2x"];
 }
 
 - (void)setState:(MJRefreshState)state

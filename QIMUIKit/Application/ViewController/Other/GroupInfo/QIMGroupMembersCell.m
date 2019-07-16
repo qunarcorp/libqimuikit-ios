@@ -95,32 +95,6 @@
     
     for (NSDictionary * itemDic in _items) {
         NSString *xmppId = [itemDic objectForKey:@"xmppjid"];
-//        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
-        /*
-        NSString *name = [itemDic objectForKey:@"name"];
-        UIImage *headerImage = [[QIMKit sharedInstance] getUserHeaderImageByName:name];
-        if (headerImage.images.count) {
-            if (headerImage.images[0] && ![headerImage.images[0] isKindOfClass:[NSNull class]]) {
-                headerImage = headerImage.images[0];
-            }
-        }
-        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByName:name];
-        */
-        /*
-        UIImage *headerImage = [[QIMKit sharedInstance] getUserHeaderImageByUserId:xmppId];
-        if (headerImage.images.count) {
-            if (headerImage.images[0] && ![headerImage.images[0] isKindOfClass:[NSNull class]]) {
-                headerImage = headerImage.images[0];
-            }
-        }
-        */
-        //判断用户在线状态
-        /*
-        BOOL isUserOnline = [[QIMKit sharedInstance] isUserOnline:xmppId];
-        if (!isUserOnline) {
-            headerImage = [headerImage qim_grayImage];
-        }
-         */
         UIImageView *imageView = [[UIImageView alloc] init];
         imageView.frame = CGRectMake(startX, _titleLabel.bottom + 10, kImageWidth, kImageWidth);
         imageView.layer.cornerRadius = kImageWidth / 2.0;
@@ -133,7 +107,7 @@
         }
     }
     //add
-    UIImageView * imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"mqz_add_picture"]];
+    UIImageView * imageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"mqz_add_picture"]];
     imageView.frame = CGRectMake(startX, _titleLabel.bottom + 10, kImageWidth, kImageWidth);
     imageView.layer.cornerRadius = kImageWidth / 2.0;
     imageView.userInteractionEnabled = YES;

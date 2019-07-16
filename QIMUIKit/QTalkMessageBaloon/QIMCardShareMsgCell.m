@@ -30,9 +30,9 @@
 
 @implementation QIMCardShareMsgCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message chatType:(ChatType)chatType
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType
 {
-    return kCardCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == MessageDirection_Received) ? 40 : 20);
+    return kCardCellHeight + ((chatType == ChatType_GroupChat) && (message.messageDirection == QIMMessageDirection_Received) ? 40 : 20);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -63,19 +63,19 @@
         _userDescLabel.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:_userDescLabel];
     
-        _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"lbsshare_icon"]];
+        _imageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"lbsshare_icon"]];
         [self.contentView addSubview:_imageView];
     }
     return self;
 }
 
 - (void)tapGesHandle:(UITapGestureRecognizer *)tap{
-    if (self.message.messageState == MessageState_Faild) {
-        if (self.message.extendInformation) {
+    if (self.message.messageSendState == QIMMessageSendState_Faild) {
+        if (self.message.extendInformation.length > 0) {
             self.message.message = self.message.extendInformation;
         }
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
-        NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.message.nickName];
+        NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.message.from];
         self.message.extendInformation = self.message.message;
         self.message.message = [NSString stringWithFormat:@"分享名片：\n昵称：%@\n部门：%@",[userInfoDic objectForKey:@"Name"],[userInfoDic objectForKey:@"DescInfo"]];
         
@@ -86,7 +86,7 @@
 - (void)refreshUI {
     
     self.backView.message = self.message;
-    if (self.message.extendInformation) {
+    if (self.message.extendInformation.length > 0) {
         self.message.message = self.message.extendInformation;
     }
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
@@ -102,9 +102,9 @@
     float backWidth = kCardCellWidth;
     float backHeight = kCardCellHeight;
     
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             
             _titleLabel.textColor = [UIColor qtalkTextLightColor];
@@ -123,7 +123,7 @@
             _userDescLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             _titleLabel.textColor = [UIColor whiteColor];
             _sepLine.backgroundColor = [UIColor whiteColor];
@@ -150,11 +150,11 @@
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_Delete)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             [menuList addObjectsFromArray:@[@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete)]];
         }
             break;
@@ -165,8 +165,13 @@
         [menuList addObject:@(MA_CopyOriginMsg)];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeAllObjects];
+//        [menuList removeObject:@(MA_Refer)];
+//        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Delete)];
+        [menuList removeObject:@(MA_Forward)];
+//        [menuList removeObject:@(MA_Repeater)];
     }
+    
     return menuList;
 }
 

@@ -8,6 +8,7 @@
 
 #import "QIMCommonUIFramework.h"
 #import "QIMWorkMomentPicture.h"
+#import "QIMWorkMomentContentLinkModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,7 +16,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *content;  //Content
 
+@property (nonatomic, copy) NSString *exContent;  //NewContent
+
+@property (nonatomic, assign) QIMWorkFeedContentType type;   //Type
+
 @property (nonatomic, strong) NSArray <QIMWorkMomentPicture *> *imgList;
+
+@property (nonatomic, strong) QIMWorkMomentContentLinkModel *linkContent;
 
 @end
 

@@ -18,8 +18,12 @@
 #import "QIMMWPhotoBrowser.h"
 #import "QIMPhotoBrowserNavController.h"
 #import "LCActionSheet.h"
+#import "QIMMessageCellCache.h"
 #import <YYModel/YYModel.h>
 #import <MJRefresh/MJRefresh.h>
+#if __has_include("QIMAutoTracker.h")
+#import "QIMAutoTracker.h"
+#endif
 
 @interface QIMWorkFeedViewController () <UITableViewDelegate, UITableViewDataSource, QIMWorkMomentNotifyViewDelegtae>
 
@@ -47,7 +51,7 @@
     if (!_addNewMomentBtn) {
         _addNewMomentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _addNewMomentBtn.frame = CGRectMake(0, 0, 23, 23);
-        [_addNewMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e40d" size:28 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateNormal];
+        [_addNewMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_nav_addnewmoment_font size:28 color:qim_nav_addnewmoment_btnColor]] forState:UIControlStateNormal];
         [_addNewMomentBtn addTarget:self action:@selector(jumpToAddNewMomentVc) forControlEvents:UIControlEventTouchUpInside];
     }
     return _addNewMomentBtn;
@@ -83,7 +87,7 @@
 
 - (UIView *)loadFaildView {
     if (!_loadFaildView) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 54)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 54)];
         view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F9];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 90, 21)];
@@ -131,7 +135,7 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3cd" size:20 color:[UIColor qim_colorWithHex:0x333333]]] style:UIBarButtonItemStylePlain target:self action:@selector(backBtnClick:)];
     
     [self.view addSubview:self.mainTableView];
-    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
     if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
         [self.mainTableView reloadData];
     } else {
@@ -146,13 +150,14 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLocalMomentReadState:) name:kNotify_RN_QTALK_SUGGEST_WorkFeed_UPDATE object:nil];
 }
 
 - (void)setupNav {
     self.title = (self.userId.length <= 0) ? @"驼圈" : [NSString stringWithFormat:@"%@的驼圈", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.userId]];
     if ([self.userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
         self.title = @"我的驼圈";
+        UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.addNewMomentBtn];
+        self.navigationItem.rightBarButtonItem = newMomentBtn;
     }
     if (self.userId.length <= 0) {
         UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.addNewMomentBtn];
@@ -164,7 +169,9 @@
     if (self.userId.length <= 0) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadNoticeMsg:) name:kPBPresenceCategoryNotifyWorkNoticeMessage object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadLocalWorkFeed:) name:kNotifyReloadWorkFeed object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadMomentAttachCommentList:) name:kNotifyReloadWorkFeedAttachCommentList object:nil];
     }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OpenQIMWorkFeedDetail:) name:@"openWorkMomentDetailNotify" object:nil];
 }
 
 - (void)viewDidLoad {
@@ -174,9 +181,13 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [self reloadRemoteRecenteMoments];
     });
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"tuocircle" withDescription:@"驼圈"];
+#endif
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkNoticeCount":@(0)}];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -191,14 +202,46 @@
     return index;
 }
 
-- (void)updateLocalMomentReadState:(NSNotification *)notify {
+- (NSInteger)getIndexOfMomentId:(NSString *)momentId {
+    NSInteger index = 0;
+    for (NSInteger i = 0; i < self.workMomentList.count; i++) {
+        QIMWorkMomentModel *tempMomentModel = [self.workMomentList objectAtIndex:i];
+        if ([tempMomentModel.momentId isEqualToString:momentId]) {
+            index = i;
+        }
+    }
+    return index;
+}
+
+- (void)reloadMomentAttachCommentList:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.mainTableView reloadData];
+//        NSDictionary *data = notify.object;
+//        NSString *postId = [data objectForKey:@"postId"];
+//        NSInteger momentIndex = [self getIndexOfMomentId:postId];
+//        if (momentIndex >= 0 && momentIndex < self.workMomentList.count) {
+//            [self.mainTableView reloadData];
+//        }
+    });
+}
+
+- (void)OpenQIMWorkFeedDetail:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *momentId = notify.object;
+        if (momentId.length > 0) {
+            QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
+            detailVc.momentId = momentId;
+            self.notNeedReloadMomentView = YES;
+            [self.navigationController pushViewController:detailVc animated:YES];
+        }
+    });
 }
 
 //加载本地最近的帖子
 - (void)reloadLocalRecenteMoments:(BOOL)notNeedReloadMomentView {
     if (notNeedReloadMomentView == NO && self.workMomentList.count <= 0) {
         __weak typeof(self) weakSelf = self;
-        [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WihtLimit:10 WithOffset:0 withFirstLocalMoment:YES WihtComplete:^(NSArray * _Nonnull array) {
+        [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WithLimit:10 WithOffset:0 withFirstLocalMoment:YES WithComplete:^(NSArray * _Nonnull array) {
             if (array.count) {
                 [weakSelf.workMomentList removeAllObjects];
                 for (NSDictionary *momentDic in array) {
@@ -221,13 +264,14 @@
     
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WihtLimit:20 WithOffset:0 withFirstLocalMoment:NO WihtComplete:^(NSArray * _Nonnull moments) {
-            if (moments.count > 0) {
+        [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:0 withUserXmppId:self.userId WithLimit:20 WithOffset:0 withFirstLocalMoment:NO WithComplete:^(NSArray * _Nonnull moments) {
+            if (moments) {
                 [weakSelf.workMomentList removeAllObjects];
                 for (NSDictionary *momentDic in moments) {
                     QIMWorkMomentModel *model = [weakSelf getMomentModelWithDic:momentDic];
                     [weakSelf.workMomentList addObject:model];
                 }
+                [[QIMMessageCellCache sharedInstance] clearUp];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.mainTableView reloadData];
                     [weakSelf.mainTableView.mj_header endRefreshing];
@@ -245,7 +289,7 @@
     QIMWorkMomentModel *lastModel = [self.workMomentList lastObject];
     QIMVerboseLog(@"lastModel : %@", lastModel);
     
-    [[QIMKit sharedInstance] getWorkMomentWithLastMomentTime:[lastModel.createTime longLongValue] withUserXmppId:self.userId WihtLimit:20 WithOffset:self.workMomentList.count withFirstLocalMoment:NO WihtComplete:^(NSArray * _Nonnull array) {
+    [[QIMKit sharedInstance] getWorkMoreMomentWithLastMomentTime:[lastModel.createTime longLongValue] withUserXmppId:self.userId WithLimit:20 WithOffset:self.workMomentList.count withFirstLocalMoment:NO WithComplete:^(NSArray * _Nonnull array) {
         if (array.count) {
             for (NSDictionary *momentDic in array) {
                 QIMWorkMomentModel *model = [weakSelf getMomentModelWithDic:momentDic];
@@ -277,28 +321,30 @@
 #pragma mark - NSNotifications
 
 - (void)reloadNoticeMsg:(NSNotification *)notify {
-    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCount];
+    self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
     dispatch_async(dispatch_get_main_queue(), ^{
        [self.mainTableView reloadData];
     });
 }
 
 - (void)reloadLocalWorkFeed:(NSNotification *)notify {
-    NSArray *newPosts = notify.object;
-    if (newPosts.count > 0) {
-        [self.workMomentList removeAllObjects];
-        for (NSDictionary *momentDic in newPosts) {
-            QIMWorkMomentModel *model = [self getMomentModelWithDic:momentDic];
-            [self.workMomentList addObject:model];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *newPosts = notify.object;
+        if (newPosts.count > 0) {
+            [self.workMomentList removeAllObjects];
+            for (NSDictionary *momentDic in newPosts) {
+                QIMWorkMomentModel *model = [self getMomentModelWithDic:momentDic];
+                [self.workMomentList addObject:model];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.mainTableView reloadData];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+                [UIView animateWithDuration:0.2 animations:^{
+                    [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+                } completion:nil];
+            });
         }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.mainTableView reloadData];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
-            [UIView animateWithDuration:0.2 animations:^{
-                [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-            } completion:nil];
-        });
-    }
+    });
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -313,9 +359,16 @@
 - (void)jumpToAddNewMomentVc {
     
     QIMWorkMomentPushViewController *newMomentVc = [[QIMWorkMomentPushViewController alloc] init];
-    QIMNavController *newMomentNav = [[QIMNavController alloc] initWithRootViewController:newMomentVc];
-    self.notNeedReloadMomentView = YES;
-    [self presentViewController:newMomentNav animated:YES completion:nil];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        QIMNavController *newMomentNav = [[QIMNavController alloc] initWithRootViewController:newMomentVc];
+        newMomentNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+        self.notNeedReloadMomentView = YES;
+        [self presentViewController:newMomentNav animated:YES completion:nil];
+    } else {
+        QIMNavController *newMomentNav = [[QIMNavController alloc] initWithRootViewController:newMomentVc];
+        self.notNeedReloadMomentView = YES;
+        [self presentViewController:newMomentNav animated:YES completion:nil];
+    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -481,6 +534,16 @@
     }];
 }
 
+- (void)didOpenWorkMomentDetailVc:(NSNotification *)notify {
+    NSString *momentId = notify.object;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
+        detailVc.momentId = momentId;;
+        self.notNeedReloadMomentView = YES;
+        [self.navigationController pushViewController:detailVc animated:YES];
+    });
+}
+
 // 评论
 - (void)didAddComment:(QIMWorkMomentCell *)cell {
     QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
@@ -517,6 +580,11 @@
     QIMWorkFeedMessageViewController *msgVc = [[QIMWorkFeedMessageViewController alloc] init];
     self.notNeedReloadMomentView = YES;
     [self.navigationController pushViewController:msgVc animated:YES];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    [[QIMSDImageCache sharedImageCache] clearMemory];
 }
 
 @end

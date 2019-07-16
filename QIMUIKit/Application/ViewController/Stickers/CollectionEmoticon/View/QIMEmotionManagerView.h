@@ -13,6 +13,10 @@
 
 - (void)SendTheFaceStr:(NSString *)faceStr withPackageId:(NSString *)packageId;
 
+- (void)SendTheCollectionFaceStr:(NSString *)faceStr;
+
+- (void)didSelectFaildCollectionFace;
+
 - (void)segmentBtnDidClickedAtIndex : (NSInteger)index;
 
 @end

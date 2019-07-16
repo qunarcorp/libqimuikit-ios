@@ -11,7 +11,7 @@
 #import "QIMMessageParser.h"
 
 #define kTextLabelTop       10
-#define kTextLableLeft      10
+#define kTextLableLeft      12
 #define kTextLableBottom    10
 #define kTextLabelRight     10
 #define kMyCellHeightCap    14
@@ -56,7 +56,7 @@
     CGFloat backHeight = self.messageLabel.textContainer.textHeight + 20;
     [self.backView setText:self.message.message];
     self.backView.message = self.message;
-    [self setBackViewWithWidth:backWidth WihtHeight:backHeight];
+    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     [super refreshUI];
 }
 
@@ -113,13 +113,13 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    [self.messageLabel setFrameWithOrign:CGPointMake(kTextLableLeft + (self.message.messageDirection == MessageDirection_Sent ? 0 : 10),10) Width:_textContainer.textWidth];
+    [self.messageLabel setFrameWithOrign:CGPointMake(kTextLableLeft + (self.message.messageDirection == QIMMessageDirection_Sent ? 0 : 10),10) Width:_textContainer.textWidth];
 }
 
 - (NSArray *)showMenuActionTypeList {
     NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
     switch (self.message.messageDirection) {
-        case MessageDirection_Received: {
+        case QIMMessageDirection_Received: {
             if (self.textContainer.textStorages.count > 0 && [self hasTextWithArray:self.textContainer.textStorages]) {
                 
                 [menuList addObject:@(MA_Copy)];
@@ -131,7 +131,7 @@
             [menuList addObjectsFromArray:@[@(MA_Refer),@(MA_Repeater), @(MA_ToWithdraw), @(MA_Delete), @(MA_Forward)]];
         }
             break;
-        case MessageDirection_Sent: {
+        case QIMMessageDirection_Sent: {
             if (self.textContainer.textStorages.count > 0 && [self hasTextWithArray:self.textContainer.textStorages]) {
                 
                 [menuList addObject:@(MA_Copy)];
@@ -150,7 +150,11 @@
         [menuList addObject:@(MA_CopyOriginMsg)];
     }
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        [menuList removeAllObjects];
+//        [menuList removeObject:@(MA_Refer)];
+//        [menuList removeObject:@(MA_Repeater)];
+//        [menuList removeObject:@(MA_Delete)];
+        [menuList removeObject:@(MA_Forward)];
+//        [menuList removeObject:@(MA_Repeater)];
     }
     return menuList;
 }

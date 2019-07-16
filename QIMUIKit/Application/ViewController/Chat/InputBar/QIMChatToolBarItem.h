@@ -10,11 +10,11 @@ typedef NS_ENUM(NSInteger, BarItemKind){
 
 @interface QIMChatToolBarItem : NSObject
 
-@property (nonatomic, copy) NSString *normalStr;
-@property (nonatomic, copy) NSString *highLStr;
-@property (nonatomic, copy) NSString *selectStr;
+@property (nonatomic, strong) UIImage *normal;
+@property (nonatomic, strong) UIImage *highImage;
+@property (nonatomic, strong) UIImage *selectImage;
 @property (nonatomic, assign) BarItemKind itemKind;
 
-+ (instancetype)barItemWithKind:(BarItemKind)itemKind normal:(NSString*)normalStr high:(NSString *)highLstr select:(NSString *)selectStr;
++ (instancetype)barItemWithKind:(BarItemKind)itemKind normal:(UIImage*)normal high:(UIImage *)highImage select:(UIImage *)selectImage;
 
 @end

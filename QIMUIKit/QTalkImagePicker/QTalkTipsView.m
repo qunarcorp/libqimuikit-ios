@@ -30,7 +30,7 @@
         
         [self.layer setCornerRadius:10];
         
-        _iconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tips_failed"]];
+        _iconImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"tips_failed"]];
         [_iconImageView setOrigin:CGPointMake((self.width - _iconImageView.width) / 2.0,10)];
         [self addSubview:_iconImageView];
         

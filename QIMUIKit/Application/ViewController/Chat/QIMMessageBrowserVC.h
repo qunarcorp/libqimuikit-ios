@@ -9,6 +9,6 @@
 #import "QIMCommonUIFramework.h"
 
 @interface QIMMessageBrowserVC : UIViewController
-@property (nonatomic, strong) Message *message; 
+@property (nonatomic, strong)QIMMessageModel *message; 
 @property (nonatomic, assign) UIViewController *parentVC;
 @end

@@ -71,8 +71,8 @@
         _pageControl.centerX = self.centerX;
         _pageControl.centerY = self.swipeTableView.bottom + 15/2.0f;
         _pageControl.currentPage  = 0;
-        _pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-        _pageControl.currentPageIndicatorTintColor = [UIColor redColor];
+        _pageControl.pageIndicatorTintColor = [UIColor qim_colorWithHex:0xD8D8D8];
+        _pageControl.currentPageIndicatorTintColor = [UIColor qim_colorWithHex:0x84AEBF];
         [_pageControl addTarget:self action:@selector(pageControlHandle:) forControlEvents:UIControlEventValueChanged];
     }
     _pageControl.numberOfPages = self.quickReplyGroups.count;

@@ -46,8 +46,8 @@ static QIMNotifyView *_notifyView = nil;
         _closeBtn.frame = CGRectMake(SCREEN_WIDTH - 45, 0, 21, 21);
         _closeBtn.layer.cornerRadius = CGRectGetWidth(_closeBtn.frame) / 2.0f;
         _closeBtn.layer.masksToBounds = YES;
-        [_closeBtn setImage:[UIImage imageNamed:@"title_close"] forState:UIControlStateNormal];
-        [_closeBtn setImage:[UIImage imageNamed:@"title_close"] forState:UIControlStateHighlighted];
+        [_closeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"title_close"] forState:UIControlStateNormal];
+        [_closeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"title_close"] forState:UIControlStateHighlighted];
         [_closeBtn addTarget:self action:@selector(closeNotifView) forControlEvents:UIControlEventTouchUpInside];
     }
     return _closeBtn;
@@ -144,7 +144,6 @@ static QIMNotifyView *_notifyView = nil;
         NSString *type = [linkData objectForKey:@"type"];
         if ([type isEqualToString:@"request"]) {
             NSString *url = [linkData objectForKey:@"url"];
-            url = @"http://qt.qunar.com/healthcheck.html";
             if (url) {
                 
                 QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:[NSURL URLWithString:url]];

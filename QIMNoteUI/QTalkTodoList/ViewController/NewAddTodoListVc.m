@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/27.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "NewAddTodoListVc.h"
 #import "QIMWSDatePickerView.h"
 #import "QIMNoteUICommonFramework.h"
@@ -86,9 +86,9 @@
     self.clockBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.clockBtn.frame = CGRectMake(_addNewTodoListField.right + 2, 20, 40, 40);
     if (_Edited) {
-        [self.clockBtn setImage:[UIImage imageNamed:@"clock_16x14_"] forState:UIControlStateNormal];
+        [self.clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"clock_16x14_"] forState:UIControlStateNormal];
     } else {
-        [self.clockBtn setImage:[UIImage imageNamed:@"随机_13x12_"] forState:UIControlStateNormal];
+        [self.clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"随机_13x12_"] forState:UIControlStateNormal];
     }
     self.clockBtn.centerY = self.addNewTodoListField.centerY;
     [self.clockBtn addTarget:self action:@selector(randomTextField:) forControlEvents:UIControlEventTouchUpInside];
@@ -128,11 +128,11 @@
 
 - (void)updateClockBtnAction {
     if (self.addNewTodoListField.text.length > 0) {
-        [self.clockBtn setImage:[UIImage imageNamed:@"clock_16x14_"] forState:UIControlStateNormal];
+        [self.clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"clock_16x14_"] forState:UIControlStateNormal];
         [self.clockBtn removeTarget:self action:@selector(randomTextField:) forControlEvents:UIControlEventTouchUpInside];
         [self.clockBtn addTarget:self action:@selector(setRemindTime:) forControlEvents:UIControlEventTouchUpInside];
     } else {
-        [self.clockBtn setImage:[UIImage imageNamed:@"随机_13x12_"] forState:UIControlStateNormal];
+        [self.clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"随机_13x12_"] forState:UIControlStateNormal];
         [self.clockBtn removeTarget:self action:@selector(setRemindTime:) forControlEvents:UIControlEventTouchUpInside];
         [self.clockBtn addTarget:self action:@selector(randomTextField:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -189,3 +189,4 @@
 }
 
 @end
+#endif

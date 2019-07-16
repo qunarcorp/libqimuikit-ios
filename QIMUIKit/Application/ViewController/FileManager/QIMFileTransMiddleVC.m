@@ -24,7 +24,7 @@
 
 - (void)setupUI {
     
-    UIImageView *transFileImgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"transFile"]];
+    UIImageView *transFileImgView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"transFile"]];
     transFileImgView.width = 150;
     transFileImgView.height = 48;
     transFileImgView.center = CGPointMake(self.view.centerX, self.view.centerY - 120);

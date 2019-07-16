@@ -45,7 +45,7 @@
 - (NSMutableArray *)noticeMsgs {
     if (!_noticeMsgs) {
         _noticeMsgs = [NSMutableArray arrayWithCapacity:3];
-        NSArray *array = [[QIMKit sharedInstance] getWorkNoticeMessagesWihtLimit:20 WithOffset:0];
+        NSArray *array = [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:20 WithOffset:0 eventTypes:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)] readState:0];
         for (NSDictionary *noticeMsgDict in array) {
             QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
             [_noticeMsgs addObject:model];
@@ -62,13 +62,13 @@
     [self.view addSubview:self.messageTableView];
     QIMWorkNoticeMessageModel *noticeMsgModel = [self.noticeMsgs firstObject];
     if (noticeMsgModel) {
-        //设置驼圈消息已读
-        [[QIMKit sharedInstance] updateLocalWorkNoticeMsgReadStateWithTime:noticeMsgModel.createTime];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPBPresenceCategoryNotifyWorkNoticeMessage object:nil];
-        });
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-           [[QIMKit sharedInstance] updateRemoteWorkNoticeMsgReadStateWithTime:noticeMsgModel.createTime];
+            [[QIMKit sharedInstance] updateLocalWorkNoticeMsgReadStateWithTime:noticeMsgModel.createTime];
+            [[QIMKit sharedInstance] updateRemoteWorkNoticeMsgReadStateWithTime:noticeMsgModel.createTime];
+            //设置驼圈消息已读
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPBPresenceCategoryNotifyWorkNoticeMessage object:nil];
+            });
         });
     } else {
         
@@ -80,7 +80,7 @@
 }
 
 - (void)loadMoreNoticeMessages {
-    NSArray *moreNoticeMsgs = [[QIMKit sharedInstance] getWorkNoticeMessagesWihtLimit:10 WithOffset:self.noticeMsgs.count];
+    NSArray *moreNoticeMsgs = [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:20 WithOffset:0 eventTypes:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)] readState:0];
     if (moreNoticeMsgs.count > 0) {
         for (NSDictionary *noticeMsgDict in moreNoticeMsgs) {
             QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:noticeMsgDict];
@@ -108,19 +108,19 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *cellId = [NSString stringWithFormat:@"cellId"];
     QIMWorkNoticeMessageModel *model = [self.noticeMsgs objectAtIndex:indexPath.row];
-    QIMWorkMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+    QIMWorkMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:model.uuid];
     if (!cell) {
-        cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellId];
+        cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:model.uuid];
         [cell setNoticeMsgModel:model];
+        cell.cellType = QIMWorkMomentCellTypeMyMessage;
         [cell setContentModel:[self getContentModelWithMomentUUId:model.postUUID]];
     }
     return cell;
 }
 
 - (QIMWorkMomentContentModel *)getContentModelWithMomentUUId:(NSString *)momentId {
-    NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWihtMomentId:momentId];
+    NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWithMomentId:momentId];
     
     NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
     QIMWorkMomentContentModel *contentModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
@@ -133,6 +133,7 @@
     
     QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
     detailVc.momentId = model.postUUID;
+    QIMVerboseLog(@"model.PostUUID : %@", model);
     [self.navigationController pushViewController:detailVc animated:YES];
 }
 

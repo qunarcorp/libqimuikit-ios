@@ -18,15 +18,16 @@
 
 "login_userNameInputView_placeholder" = "例: san.zhang";
 // Tab bar Title
-"tab_title_chat" = "会话";
+"tab_title_chat" = "消息";
 "tab_title_travel" = "行程";
 "tab_title_contact" = "通讯录";
 "tab_title_discover" = "发现";
+"tab_title_moment" = "驼圈";
 "tab_title_explore" = "探索";
 "tab_title_myself" = "我的";
 
 //Navigation server
-"nav_title_configManager" = "导航服务器管理";
+"nav_title_configManager" = "导航地址列表";
 "nav_title_debug_configManager" = "Debug导航服务器";
 "nav_server_nickName" = "导航服务器名称";
 "nav_server_address" = "导航服务器地址";
@@ -50,6 +51,7 @@
 "textbar_button_share_card" = "分享名片";
 "textbar_button_red_package" = "红包";
 "textbar_button_aa" = "AA收款";
+"textbar_button_encryptchat" = "加密会话";
 "textbar_button_activity" = "发活动";
 "textbar_button_send" = "发送";
 "textbar_button_hold_talk" = "按住说话";
@@ -126,6 +128,7 @@
 //About
 "About_nav_title_QTalk" = "关于QTalk";
 "About_nav_title_QChat" = "关于QChat";
+"About_nav_title_Startalk" = "关于Startalk";
 "About_nav_back" = "返回";
 "About_tab_rate" = "去评分";
 "About_tab_function" = "功能介绍";
@@ -170,7 +173,11 @@
 "user_push" = "Push提醒";
 "user_send_msg" = "发送消息";
 "user_add_friend" = "加为好友";
+"remove_to_blacklist" = "移除黑名单";
+"add_to_blacklist" = "添加到黑名单";
+"Complaint" = "投诉";
 "user_delete_friend" = "删除好友";
+"send_message" = "发送消息";
 "user_camera" = "拍照";
 "user_from_album" = "从相册中选择";
 "user_selected" = "选择";
@@ -193,7 +200,15 @@
 "qrcode_tips_client_nav" = "扫一扫，添加导航服务器";
 "qrcode_@_qrcode" = "%@的二维码";
 
+//WebView Panel
+"webview_share_conversion" = "分享到会话";
+"webview_share_workmoment" = "分享到驼圈";
+"webview_copy_link" = "拷贝链接";
+"webview_refresh" = "刷新";
+"webview_open_safari" = "在Safari中打开";
+
 // Common
+"common_share_workmoment" = "分享到驼圈";
 "common_send_friend" = "发送给朋友";
 "common_back" = "返回";
 "common_close" = "关闭";

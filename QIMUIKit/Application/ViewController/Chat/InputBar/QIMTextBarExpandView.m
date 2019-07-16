@@ -12,9 +12,13 @@
 #import "QIMTextBarExpandView.h"
 #import "UserLocationViewController.h"
 #import "QIMChatVC.h"  
-#import "UIImageView+WebCache.h"
+#import "UIImageView+QIMWebCache.h"
 #import "NSBundle+QIMLibrary.h"
 #import "UIApplication+QIMApplication.h"
+#if __has_include("QIMAutoTracker.h")
+#import "QIMAutoTracker.h"
+#endif
+
 
 static NSMutableDictionary *__trdExtendInfoDic = nil;
 
@@ -43,62 +47,61 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
     if ([[QIMKit sharedInstance] getMsgTextBarButtonInfoList].count) {
         [[QIMKit sharedInstance] removeAllExpandItems];
     }
-//    if ([[QIMKit getLastUserName].lowercaseString isEqualToString:@"appstore"] == NO) {
-        if (__trdExtendInfoDic == nil) {
-            __trdExtendInfoDic = [[NSMutableDictionary alloc] init];
-        }
-        for (NSDictionary *trdEntendInfo in [[QIMKit sharedInstance] trdExtendInfo]) {
-            NSString *trdEntendId = [trdEntendInfo objectForKey:@"trdextendId"];
+    if (__trdExtendInfoDic == nil) {
+        __trdExtendInfoDic = [[NSMutableDictionary alloc] init];
+    }
+//        扩展键盘新设计见wiki : http://wiki.corp.qunar.com/confluence/pages/viewpage.action?pageId=218952957
+    for (NSDictionary *trdEntendInfo in [[QIMKit sharedInstance] trdExtendInfo]) {
+        NSString *trdEntendId = [trdEntendInfo objectForKey:@"trdextendId"];
+        
+        int client = [[trdEntendInfo objectForKey:@"client"] intValue];
+        int support = [[trdEntendInfo objectForKey:@"support"] intValue];
+        int scope = [[trdEntendInfo objectForKey:@"scope"] intValue];
+        BOOL hasQchat = client & 1,hasQtalk = client & 2, hasSingle = support & 1,hasGroup = support & 2, hasVirtual = support & 4, hasConsult = support & 8, hasConsultServer = support & 16, hasPublicNumber = support & 32, hasNoMerchant = scope & 1,hasMerchant = scope & 2;
+        int type = [[trdEntendInfo objectForKey:@"type"] intValue];
+        NSString *title = [trdEntendInfo objectForKey:@"title"];
+        [__trdExtendInfoDic setObject:trdEntendInfo forKey:trdEntendId];
+        if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+            BOOL needShowForMerchant = ((hasNoMerchant &&![[QIMKit sharedInstance] isMerchant])||(hasMerchant &&[[QIMKit sharedInstance] isMerchant]));
+            if (hasSingle && QIMTextBarExpandViewTypeSingle & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
+            }
+            if (hasGroup && QIMTextBarExpandViewTypeGroup & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
+            }
+            if (hasConsult && QIMTextBarExpandViewTypeConsult & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
+            }
             
-            int client = [[trdEntendInfo objectForKey:@"client"] intValue];
-            int support = [[trdEntendInfo objectForKey:@"support"] intValue];
-            int scope = [[trdEntendInfo objectForKey:@"scope"] intValue];
-            BOOL hasQchat = client & 1,hasQtalk = client & 2, hasSingle = support & 1,hasGroup = support & 2, hasVirtual = support & 4, hasConsult = support & 8, hasConsultServer = support & 16, hasPublicNumber = support & 32, hasNoMerchant = scope & 1,hasMerchant = scope & 2;
-            int type = [[trdEntendInfo objectForKey:@"type"] intValue];
-            NSString *title = [trdEntendInfo objectForKey:@"title"];
-            [__trdExtendInfoDic setObject:trdEntendInfo forKey:trdEntendId];
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-                BOOL needShowForMerchant = ((hasNoMerchant &&![[QIMKit sharedInstance] isMerchant])||(hasMerchant &&[[QIMKit sharedInstance] isMerchant]));
-                if (hasSingle && QIMTextBarExpandViewTypeSingle & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
-                if (hasGroup && QIMTextBarExpandViewTypeGroup & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
-                if (hasConsult && QIMTextBarExpandViewTypeConsult & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
-                
-                if (needShowForMerchant && hasConsultServer && QIMTextBarExpandViewTypeConsultServer & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
-                if (hasVirtual && QIMTextBarExpandViewTypeRobot & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
+            if (needShowForMerchant && hasConsultServer && QIMTextBarExpandViewTypeConsultServer & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
             }
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-                if (hasSingle && QIMTextBarExpandViewTypeSingle & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
-                if (hasGroup && QIMTextBarExpandViewTypeGroup & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
-                if (hasConsult && QIMTextBarExpandViewTypeConsult & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
-                if (hasConsultServer && QIMTextBarExpandViewTypeConsultServer & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
-                if (hasVirtual && QIMTextBarExpandViewTypeRobot & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
-                
-                if (hasPublicNumber && QIMTextBarExpandViewTypePublicNumber & self.type) {
-                    [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
-                }
+            if (hasVirtual && QIMTextBarExpandViewTypeRobot & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
             }
         }
-//    }
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+            if (hasSingle && QIMTextBarExpandViewTypeSingle & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
+            }
+            if (hasGroup && QIMTextBarExpandViewTypeGroup & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
+            }
+            if (hasConsult && QIMTextBarExpandViewTypeConsult & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
+            }
+            if (hasConsultServer && QIMTextBarExpandViewTypeConsultServer & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
+            }
+            if (hasVirtual && QIMTextBarExpandViewTypeRobot & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
+            }
+            
+            if (hasPublicNumber && QIMTextBarExpandViewTypePublicNumber & self.type) {
+                [[QIMKit sharedInstance] addMsgTextBarWithTrdInfo:trdEntendInfo];
+            }
+        }
+    }
     if ([[QIMKit sharedInstance] trdExtendInfo].count <= 0) {
         [self defaultItems];
     }
@@ -114,14 +117,15 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
      //快捷回复按钮只有在ConsultServer中展示
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_quickReply" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_quick_reply"] ForItemId:QIMTextBarExpandViewItem_QuickReply];
      }
-     #if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+#if __has_include("QIMWebRTCMeetingClient.h")
+        if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 
          if (self.type & QIMTextBarExpandViewTypeSingle) {
-//             [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_videoCall" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_videoCall"] ForItemId:QIMTextBarExpandViewItem_VideoCall];
+             [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_videoCall" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_videoCall"] ForItemId:QIMTextBarExpandViewItem_VideoCall];
+             [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_encryptchat" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_encryptchat"] ForItemId:QIMTextBarExpandViewItem_Encryptchat];
          }
          if (self.type & QIMTextBarExpandViewTypeGroup) {
-//             [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_videoCall" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_videoCall"] ForItemId:QIMTextBarExpandViewItem_VideoCall];
+             [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_videoCall" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_videoCall"] ForItemId:QIMTextBarExpandViewItem_VideoCall];
          }
     }
      #endif
@@ -137,10 +141,10 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
          }
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_sendProduct" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_send_product"] ForItemId:QIMTextBarExpandViewItem_SendProduct];
      }
-//    [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_red_pack" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_red_package"] ForItemId:QIMTextBarExpandViewItem_RedPack];
+    [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_red_pack" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_red_package"] ForItemId:QIMTextBarExpandViewItem_RedPack];
     
-     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-//         [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aa_collection_icon" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_aa"] ForItemId:QIMTextBarExpandViewItem_AACollection];
+     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+         [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aa_collection_icon" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_aa"] ForItemId:QIMTextBarExpandViewItem_AACollection];
          [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_share_nameplate" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_share_card"] ForItemId:QIMTextBarExpandViewItem_ShareCard];
      }
     [[QIMKit sharedInstance] addMsgTextBarWithImage:@"aio_icons_folder" WithTitle:[NSBundle qim_localizedStringForKey:@"textbar_button_file"] ForItemId:QIMTextBarExpandViewItem_MyFiles];
@@ -176,12 +180,12 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
         UIImageView *locationButton = [[UIImageView alloc] initWithFrame:CGRectMake(page * _mainScrollView.width + (space + kItemWidth) * (i % 4) + space, (i / 4) * (kItemWidth + 10 + 25) + 10, kItemWidth, kItemWidth)];
         NSString *icon = [itemDic objectForKey:@"icon"];
         [locationButton setAccessibilityIdentifier:trId];
-        UIImage *defaultIcon = [UIImage imageNamed:@"textbar_common_icon"];
+        UIImage *defaultIcon = [UIImage qim_imageNamedFromQIMUIKitBundle:@"textbar_common_icon"];
         if (icon.length > 0) {
             [locationButton qim_setImageWithURL:[NSURL URLWithString:[icon stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] placeholderImage:defaultIcon];
         } else {
             NSString *imageName = [itemDic objectForKey:@"ImageName"];
-            [locationButton setImage:[UIImage imageNamed:imageName]];
+            [locationButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:imageName]];
         }
         [locationButton setUserInteractionEnabled:YES];
         [_mainScrollView addSubview:locationButton];
@@ -189,8 +193,8 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
         UILabel * titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(page * _mainScrollView.width + (space + kItemWidth) * (i % 4) + space - 10, locationButton.bottom + 5, kItemWidth + 20, 20)];
         titleLabel.text = [itemDic objectForKey:@"title"];
         titleLabel.textAlignment = NSTextAlignmentCenter;
-        titleLabel.font = [UIFont systemFontOfSize:14];
-        titleLabel.textColor = [UIColor blackColor];
+        titleLabel.font = [UIFont systemFontOfSize:12];
+        titleLabel.textColor = [UIColor qim_colorWithHex:0x666666];
         [titleLabel setUserInteractionEnabled:YES];
         [titleLabel setAccessibilityIdentifier:trId];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(itemBtnHandle:)];
@@ -214,7 +218,12 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
     NSString *sendId = [view accessibilityIdentifier];
     NSDictionary *trdDic = [[QIMKit sharedInstance] getExpandItemsForTrdextendId:sendId];
     NSString *trdId = [trdDic objectForKey:@"trdextendId"];
+    NSString *trdName = [trdDic objectForKey:@"title"];
+
     NSArray *textBarOpenIds = @[QIMTextBarExpandViewItem_Photo, QIMTextBarExpandViewItem_Camera, QIMTextBarExpandViewItem_QuickReply];
+#if __has_include("QIMAutoTracker.h")
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:trdId withDescription:trdName?trdName:trdId];
+#endif
     if ([textBarOpenIds containsObject:trdId] && self.delegate && [self.delegate respondsToSelector:@selector(didClickExpandItemForTrdextendId:)]) {
         //这里由TextBar打开
         [self.delegate didClickExpandItemForTrdextendId:trdId];

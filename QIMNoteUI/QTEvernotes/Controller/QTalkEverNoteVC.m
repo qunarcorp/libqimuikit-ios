@@ -5,7 +5,7 @@
 //  Created by lihuaqi on 2017/9/18.
 //  Copyright © 2017年 lihuaqi. All rights reserved.
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "QTalkEverNoteVC.h"
 #import "QIMNoteModel.h"
 #import <JavaScriptCore/JavaScriptCore.h>
@@ -260,3 +260,4 @@
     // Dispose of any resources that can be recreated.
 }
 @end
+#endif

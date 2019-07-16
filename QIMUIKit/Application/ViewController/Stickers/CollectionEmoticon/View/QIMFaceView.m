@@ -138,7 +138,7 @@ static NSString *cellID = @"cellID";
     self = [super initWithFrame:frame collectionViewLayout:layout];
     if (self) {
         
-        self.backgroundColor = [UIColor qtalkChatBgColor];
+        self.backgroundColor = [UIColor whiteColor];
         self.delegate = self;
         [self registerClass:[QIMFaceViewCell class] forCellWithReuseIdentifier:cellID];
         self.dataSource = self.lluDataSource;

@@ -1,5 +1,6 @@
 
 #import "HeadView.h"
+#import "UIImage+QIMUIKit.h"
 
 @interface HeadView()
 {
@@ -26,9 +27,9 @@
 {
     if (self = [super initWithReuseIdentifier:reuseIdentifier]) {
         UIButton *bgButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [bgButton setBackgroundImage:[UIImage imageNamed:@"buddy_header_bg"] forState:UIControlStateNormal];
-        [bgButton setBackgroundImage:[UIImage imageNamed:@"buddy_header_bg_highlighted"] forState:UIControlStateHighlighted];
-        [bgButton setImage:[UIImage imageNamed:@"buddy_header_arrow"] forState:UIControlStateNormal];
+        [bgButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"buddy_header_bg"] forState:UIControlStateNormal];
+        [bgButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"buddy_header_bg_highlighted"] forState:UIControlStateHighlighted];
+        [bgButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"buddy_header_arrow"] forState:UIControlStateNormal];
         [bgButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         bgButton.imageView.contentMode = UIViewContentModeCenter;
         bgButton.imageView.clipsToBounds = NO;

@@ -84,7 +84,9 @@
 
 - (void)onDoneClick{
     if (_textView.text.length > 0) {
-        [[QIMKit sharedInstance] updateUserSignatureForUser:[[QIMKit sharedInstance] getLastJid] signature:_textView.text];
+        [[QIMKit sharedInstance] updateUserSignature:_textView.text withCallBack:^(BOOL successed) {
+            
+        }];
         [self.navigationController popViewControllerAnimated:YES];
     }else{
         UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您并没有写下任何东西~" delegate:nil cancelButtonTitle:@"俺 know~" otherButtonTitles:nil, nil];

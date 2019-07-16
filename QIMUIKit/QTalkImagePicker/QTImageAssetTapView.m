@@ -25,7 +25,7 @@
     if (self=[super initWithFrame:frame]) {
         //设置勾勾的位置
         
-        checkedIcon = [UIImage imageNamed:@"photo_browser_checxbox_sel"];
+        checkedIcon = [UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_checxbox_sel"];
         selectedColor   = [UIColor colorWithWhite:1 alpha:0.3];
         disabledColor   = [UIColor colorWithWhite:1 alpha:0.9];
         

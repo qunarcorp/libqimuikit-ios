@@ -77,11 +77,11 @@ static NSString *cellId = @"QIMSwitchAccountViewCellId";
     accountItem.contentView.layer.borderColor = [UIColor darkGrayColor].CGColor;
     accountItem.contentView.layer.borderWidth = 0.5f;
     UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 45, 45)];
-//    [iconView setImage:addBtn ? [UIImage imageNamed:@"Card_AddIcon"] : [[QIMKit sharedInstance] getUserHeaderImageByUserId:userFullJid]];
+//    [iconView setImage:addBtn ? [UIImage qim_imageNamedFromQIMUIKitBundle:@"Card_AddIcon"] : [[QIMKit sharedInstance] getUserHeaderImageByUserId:userFullJid]];
     if (!addBtn) {
         [iconView qim_setImageWithJid:userFullJid];
     } else {
-        [iconView setImage:[UIImage imageNamed:@"Card_AddIcon"]];
+        [iconView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Card_AddIcon"]];
     }
     [accountItem.contentView addSubview:iconView];
     iconView.centerX = accountItem.contentView.centerX;

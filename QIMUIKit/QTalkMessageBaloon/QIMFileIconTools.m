@@ -43,14 +43,14 @@
     return FileType_Unknow;
 
 }
-+ (UIImage *)getFileIconWihtExtension:(NSString *)pathExtension{
++ (UIImage *)getFileIconWithExtension:(NSString *)pathExtension{
     switch ([self getFileTypeByFileExtension:pathExtension]) {
         case FileType_Audio:
         {
-            UIImage *image = [UIImage imageNamed:@"chat_files_music"];
+            UIImage *image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_music"];
             UIGraphicsBeginImageContextWithOptions(image.size, YES, image.scale);
             [image drawAtPoint:CGPointMake(0, 0)];
-            [[UIImage imageNamed:@"aio_sm_music_icon_start"] drawInRect:CGRectMake((image.size.width - 35)/2.0, (image.size.height-35)/2.0, 35, 35)];
+            [[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_sm_music_icon_start"] drawInRect:CGRectMake((image.size.width - 35)/2.0, (image.size.height-35)/2.0, 35, 35)];
             image = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
             return image;
@@ -58,53 +58,53 @@
             break;
         case FileType_Video:
         {
-            UIImage *image = [UIImage imageNamed:@"chat_files_video"];
+            UIImage *image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_video"];
             return image;
         }
             break;
         case FileType_Image:
         {
-            return [UIImage imageNamed:@"chat_files_image"];
+            return [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_image"];
         }
             break;
         case FileType_Html:
         {
-            return [UIImage imageNamed:@"chat_files_html"];
+            return [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_html"];
         }
             break;
         case FileType_Txt:
         {
-            return [UIImage imageNamed:@"chat_files_txt"];
+            return [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_txt"];
         }
             break;
         case FileType_Word:
         {
-            return [UIImage imageNamed:@"chat_files_word"];
+            return [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_word"];
         }
             break;
         case FileType_Excel:
         {
-            return [UIImage imageNamed:@"chat_files_excel"];
+            return [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_excel"];
         }
             break;
         case FileType_PPT:
         {
-            return [UIImage imageNamed:@"chat_files_ppt"];
+            return [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_ppt"];
         }
             break;
         case FileType_Pdf:
         {
-            return [UIImage imageNamed:@"chat_files_pdf"];
+            return [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_pdf"];
         }
             break;
         case FileType_Zip:
         {
-            return [UIImage imageNamed:@"chat_files_zip"];
+            return [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_zip"];
         }
             break;
         default:
         {
-            return [UIImage imageNamed:@"chat_files_unknow"];
+            return [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_files_unknow"];
         }
             break;
     }

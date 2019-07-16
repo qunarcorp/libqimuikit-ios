@@ -22,7 +22,7 @@
 
 @implementation QIMAACollectionDescCell
 
-+ (CGFloat)getCellHeightWihtMessage:(Message *)message  chatType:(ChatType)chatType{
++ (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message  chatType:(ChatType)chatType{
     return  30;
 }
 
@@ -34,7 +34,7 @@
         [self.contentView addSubview:_bgView];
         
         _flagView = [[YLImageView alloc] initWithFrame:CGRectZero];
-        _flagView.image = [UIImage imageNamed:@"aa_icon"];
+        _flagView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"aa_icon"];
         [_bgView addSubview:_flagView];
         
         _descLabel = [[UILabel alloc] initWithFrame:CGRectZero];

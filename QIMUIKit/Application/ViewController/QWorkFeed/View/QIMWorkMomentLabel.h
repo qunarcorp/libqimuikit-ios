@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkMomentLabel : QIMAttributedLabel
 
+@property (nonatomic, copy) NSString *originContent;
+
 @end
 
 NS_ASSUME_NONNULL_END

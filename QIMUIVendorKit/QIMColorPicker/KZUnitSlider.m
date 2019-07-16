@@ -7,6 +7,7 @@
 //
 
 #import "KZUnitSlider.h"
+#import "UIImage+QIMUIKit.h"
 
 @interface KZUnitSlider()
 @property (nonatomic, retain) UIImageView *sliderKnobView;
@@ -24,7 +25,7 @@
         // Initialization code
         horizontal = frame.size.width > frame.size.height;
 		
-		UIImageView *knob = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"colorPickerKnob"]];
+		UIImageView *knob = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"colorPickerKnob"]];
 		[self addSubview:knob];		
 		self.sliderKnobView = knob;
 		

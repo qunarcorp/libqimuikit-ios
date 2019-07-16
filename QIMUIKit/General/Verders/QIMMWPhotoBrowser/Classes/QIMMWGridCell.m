@@ -91,7 +91,7 @@
     _gridController = gridController;
     // Set custom selection image if required
     if (_gridController.browser.customImageSelectedSmallIconName) {
-        [_selectedButton setImage:[UIImage imageNamed:_gridController.browser.customImageSelectedSmallIconName] forState:UIControlStateSelected];
+        [_selectedButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:_gridController.browser.customImageSelectedSmallIconName] forState:UIControlStateSelected];
     }
 }
 

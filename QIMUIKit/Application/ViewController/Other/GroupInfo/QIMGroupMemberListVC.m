@@ -9,7 +9,6 @@
 #import "QIMGroupMemberListVC.h"
 #import "QIMGroupMemberCell.h"
 #import "QIMPGroupSelectionView.h"
-#import "QIMGroupNickNameHelper.h"
 #import "QIMFastEntrance.h"
 
 @interface QIMGroupMemberListVC ()<UITableViewDataSource,UITableViewDelegate,SelectionResultDelegate>
@@ -179,7 +178,6 @@
     NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
     NSString *name = (remarkName.length > 0) ? remarkName : [self.items objectAtIndex:indexPath.row][@"name"];
     cell.textLabel.text = (remarkName.length > 0) ? remarkName : name;
-    BOOL isUserOnline  = [[QIMKit sharedInstance] isUserOnline:userId];
 
     [cell.imageView qim_setImageWithJid:userId];
     if ([[[self.items objectAtIndex:indexPath.row] objectForKey:@"affiliation"] isEqualToString:@"owner"]) {
@@ -187,7 +185,6 @@
     }else if ([[[self.items objectAtIndex:indexPath.row] objectForKey:@"affiliation"] isEqualToString:@"admin"]) {
         [cell setMemberIDType:GroupMemberIDTypeAdmin];
     }else {
-        cell.isOnLine = isUserOnline;
         [cell setMemberIDType:GroupMemberIDTypeNone];
     }
     return cell;
@@ -200,12 +197,6 @@
     if (!userId) {
         userId = [self.items objectAtIndex:indexPath.row][@"jid"];
     }
-    /*
-    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByName:[self.items objectAtIndex:indexPath.row][@"name"]];
-    NSString *userId = [userInfo objectForKey:@"XmppId"];
-    if (!userId) {
-        userId = [self.items objectAtIndex:indexPath.row][@"xmppjid"];
-    } */
     dispatch_async(dispatch_get_main_queue(), ^{
         [QIMFastEntrance openUserCardVCByUserId:userId];
     });

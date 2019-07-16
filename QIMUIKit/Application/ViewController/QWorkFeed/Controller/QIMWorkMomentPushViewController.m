@@ -14,6 +14,8 @@
 #import "QIMWorkMomentUserIdentityVC.h"
 #import "UIApplication+QIMApplication.h"
 #import "QTalkTextView.h"
+#import "QIMWorkMomentLinkView.h"
+#import "QIMWorkMomentContentLinkModel.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "QIMCollectionEmotionPanView.h"
 #import "QIMWorkMomentPanelModel.h"
@@ -23,11 +25,20 @@
 #import "QIMMWPhotoBrowser.h"
 #import "QIMPhotoBrowserNavController.h"
 #import "QIMWorkMomentUserIdentityModel.h"
+#import "QIMMessageTextAttachment.h"
 #import "QIMWorkMomentModel.h"
 #import "QIMUUIDTools.h"
 #import "YYModel.h"
 #import "MBProgressHUD.h"
 #import "QIMProgressHUD.h"
+#import "QIMEmotionManager.h"
+#import "QTalkTipsView.h"
+#import "QIMWorkFeedAtNotifyViewController.h"
+#import "QIMATGroupMemberTextAttachment.h"
+#if __has_include("QIMIPadWindowManager.h")
+#import "QIMIPadWindowManager.h"
+#endif
+#import <Toast/Toast.h>
 
 @interface QIMWorkMomentPushUserIdentityCell : UITableViewCell
 
@@ -75,7 +86,11 @@
 
 @property (nonatomic, strong) UITextView *textView;
 
+@property (nonatomic, strong) QIMWorkMomentLinkView *linkView;
+
 @property (nonatomic, strong) QIMCollectionEmotionPanView *photoCollectionView;
+
+@property (nonatomic, strong) UILabel    *atLabel;
 
 @property (nonatomic, strong) UITableView *panelListView;
 
@@ -120,19 +135,19 @@
 
 - (UITextView *)textView {
     if (!_textView) {
-        _textView = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, SCREEN_WIDTH - 30, 150)];
+        _textView = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, [[UIScreen mainScreen] qim_rightWidth] - 30, 150)];
         _textView.backgroundColor = [UIColor whiteColor];
         [_textView setFont:[UIFont systemFontOfSize:17]];
+        _textView.delegate = self;
         [_textView setTextColor:[UIColor qim_colorWithHex:0x333333]];
         [_textView setTintColor:[UIColor qim_colorWithHex:0x333333]];
-        
         UILabel *placeHolderLabel = [[UILabel alloc] init];
         placeHolderLabel.text = @"来吧，尽情发挥吧…";
         placeHolderLabel.numberOfLines = 0;
         placeHolderLabel.textColor = [UIColor qim_colorWithHex:0xBFBFBF];
         [placeHolderLabel sizeToFit];
         [_textView addSubview:placeHolderLabel];
-        // same font
+        // kvc 设置 placeholderLabel
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.3) {
             [_textView setValue:placeHolderLabel forKey:@"_placeholderLabel"];
         }
@@ -140,16 +155,31 @@
     return _textView;
 }
 
+- (QIMWorkMomentLinkView *)linkView {
+    if (!_linkView) {
+        _linkView = [[QIMWorkMomentLinkView alloc] initWithFrame:CGRectMake(14, self.textView.bottom + 10, [[UIScreen mainScreen] qim_rightWidth] - 28, 66)];
+        _linkView.linkModel = [self getLinkModelWithLinkDic:self.shareLinkUrlDic];
+    }
+    return _linkView;
+}
+
+- (QIMWorkMomentContentLinkModel *)getLinkModelWithLinkDic:(NSDictionary *)linkDic {
+    return [QIMWorkMomentContentLinkModel yy_modelWithDictionary:linkDic];
+}
+
 - (QIMCollectionEmotionPanView *)photoCollectionView {
     if (!_photoCollectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-        CGFloat cellHeight = (SCREEN_WIDTH - 75) / 3;
-        CGFloat cellWidth = (SCREEN_WIDTH - 75) / 3;
-        
+        CGFloat cellHeight = ([[UIScreen mainScreen] qim_rightWidth] - 75) / 3;
+        CGFloat cellWidth = ([[UIScreen mainScreen] qim_rightWidth] - 75) / 3;
         layout.itemSize = CGSizeMake(cellWidth, cellHeight);
         layout.sectionInset = UIEdgeInsetsMake(15, 15, 15, 25);
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
-        layout.headerReferenceSize = CGSizeMake(0, 180);
+        if (self.shareLinkUrlDic.count > 0) {
+            layout.headerReferenceSize = CGSizeMake(0, 180 + self.linkView.height + 10);
+        } else {
+            layout.headerReferenceSize = CGSizeMake(0, 180);
+        }
         layout.footerReferenceSize = CGSizeMake(0, 300);
         // 水平间隔
         layout.minimumInteritemSpacing = 15.0f;
@@ -179,9 +209,24 @@
     return _photoCollectionView;
 }
 
+- (UILabel *)atLabel {
+    if (!_atLabel) {
+        _atLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 1, [[UIScreen mainScreen] qim_rightWidth], 51)];
+        _atLabel.text = @"     @ 提醒谁看";
+        _atLabel.textAlignment = NSTextAlignmentLeft;
+        _atLabel.backgroundColor = [UIColor whiteColor];
+        _atLabel.textColor = [UIColor qim_colorWithHex:0x333333];
+        _atLabel.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(atSomeone:)];
+        [_atLabel addGestureRecognizer:tap];
+    }
+    return _atLabel;
+}
+
 - (UITableView *)panelListView {
     if (!_panelListView) {
-        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 500) style:UITableViewStylePlain];
+        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 51, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
+//        _panelListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
         _panelListView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _panelListView.delegate = self;
         _panelListView.dataSource = self;
@@ -201,6 +246,7 @@
 - (NSMutableArray *)workmomentPushPanelModels {
     if (!_workmomentPushPanelModels) {
         _workmomentPushPanelModels = [NSMutableArray arrayWithCapacity:3];
+        
         QIMWorkMomentPanelModel *model1 = [[QIMWorkMomentPanelModel alloc] init];
         model1.icon = @"";
         model1.title = @"发帖身份";
@@ -224,7 +270,9 @@
 - (NSMutableArray *)selectPhotos {
     if (!_selectPhotos) {
         _selectPhotos = [NSMutableArray arrayWithCapacity:1];
-        [_selectPhotos addObject:@"Q_Work_Add"];
+        if (self.shareWorkMoment == NO && self.shareLinkUrlDic.count <= 0) {
+            [_selectPhotos addObject:@"Q_Work_Add"];
+        }
     }
     return _selectPhotos;
 }
@@ -255,6 +303,12 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
+    QIMVerboseLog(@"即将进入发帖页面匿名名称 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName]);
+    QIMVerboseLog(@"即将进入发帖页面匿名状态 : %d", [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]);
+    QIMVerboseLog(@"即将进入发帖页面匿名头像地址 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto]);
     [self.panelListView reloadData];
 }
 
@@ -266,8 +320,12 @@
 
     self.navigationItem.title = @"发布动态";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
-    UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
-    [[self navigationItem] setLeftBarButtonItem:cancelBtn];
+    if (self.shareWorkMoment) {
+        self.navigationController.navigationBar.translucent = NO;
+    } else {
+        UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
+        [[self navigationItem] setLeftBarButtonItem:cancelBtn];
+    }
     UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.pushBtn];
     [[self navigationItem] setRightBarButtonItem:newMomentBtn];
 }
@@ -310,13 +368,84 @@
     [super viewDidDisappear:animated];
 }
 
+- (void)atSomeone:(UITapGestureRecognizer *)tap {
+    QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
+    __weak __typeof(&*self) weakSelf = self;
+    
+    [qNoticeVC onQIMWorkFeedSelectUser:^(NSArray *selectUsers) {
+        NSLog(@"selectUsers : %@", selectUsers);
+        for (NSString *userXmppJid in selectUsers) {
+            if (userXmppJid.length > 0) {
+                NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userXmppJid];
+                if (userInfo.count > 0) {
+                    NSString *name = [userInfo objectForKey:@"Name"];
+                    NSString *jid = [userInfo objectForKey:@"XmppId"];
+                    NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+                    
+                    QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
+                    CGSize size = [memberName qim_sizeWithFontCompatible:self.textView.font];
+                    atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.textView.font} circular:NO];
+                    atTextAttachment.groupMemberName = memberName;
+                    atTextAttachment.groupMemberJid = jid;
+                    
+                    [self.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:self.textView.selectedRange.location];
+                    self.textView.selectedRange = NSMakeRange(MIN(self.textView.selectedRange.location + 1, self.textView.text.length - self.textView.selectedRange.length), self.textView.selectedRange.length);
+                    [self resetTextStyle];
+                    
+                } else {
+                    QIMVerboseLog(@"未选择要艾特的群成员");
+                    weakSelf.textView.selectedRange = NSMakeRange(weakSelf.textView.selectedRange.location + self.textView.selectedRange.length + 1, 0);
+                    [weakSelf resetTextStyle];
+                }
+            }
+        }
+    }];
+    
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+        QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+        qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+        [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
+    } else {
+        [weakSelf.navigationController pushViewController:qNoticeVC animated:YES];
+    }
+}
+
+- (void)resetTextStyle {
+    //After changing text selection, should reset style.
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.firstLineHeadIndent = 0;    /**首行缩进宽度*/
+    if (self.textView.textStorage.length <= 0) {
+        NSDictionary *attributes = @{
+                                     NSFontAttributeName:[UIFont systemFontOfSize:17],
+                                     NSParagraphStyleAttributeName:paragraphStyle
+                                     };
+        self.textView.attributedText = [[NSAttributedString alloc] initWithString:@" " attributes:attributes];
+        self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:attributes];
+    }else{
+        NSRange wholeRange = NSMakeRange(0, self.textView.textStorage.length);
+        [self.textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
+        [self.textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17] range:wholeRange];
+        [self.textView.textStorage removeAttribute:NSParagraphStyleAttributeName range:wholeRange];
+    }
+    [self.textView setFont:[UIFont systemFontOfSize:17]];
+}
+
 - (void)onPhotoButtonClick:(UIButton *)sender{
     dispatch_async(dispatch_get_main_queue(), ^{
        [self.view endEditing:YES];
     });
+    __weak QIMWorkMomentPushViewController *weakSelf = self;
     [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
+        __typeof(self) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
         QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
-        picker.delegate = self;
+        picker.delegate = strongSelf;
         picker.title = @"选取照片";
         picker.customDoneButtonTitle = @"";
         picker.customCancelButtonTitle = @"取消";
@@ -325,7 +454,12 @@
         picker.colsInPortrait = 4;
         picker.colsInLandscape = 5;
         picker.minimumInteritemSpacing = 2.0;
-        [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+            [strongSelf presentViewController:picker animated:YES completion:nil];
+        } else {
+            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+        }
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }
@@ -335,7 +469,26 @@
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
     [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:NO];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.shareWorkMoment) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+//判断内容是否全部为空格  YES 全部为空格
+- (BOOL)isEmpty:(NSString *)str {
+    if (!str) {
+        return true;
+    } else {
+        NSCharacterSet *set = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+        NSString *trimedString = [str stringByTrimmingCharactersInSet:set];
+        if ([trimedString length] == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
+    }
 }
 
 - (void)pushNewMoment:(id)sender {
@@ -343,7 +496,7 @@
     
     BOOL selectPhoto = (self.selectPhotos.count == 1) && ([[self.selectPhotos firstObject] isEqualToString:@"Q_Work_Add"]);
     
-    if (self.textView.text.length <= 0 && selectPhoto)  {
+    if ((self.textView.text.length <= 0 || [self isEmpty:self.textView.text]) && selectPhoto)  {
         UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"请尽情发挥吧..." preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
@@ -355,26 +508,34 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self showProgressHUDWithMessage:@"动态上传中..."];
             NSMutableDictionary *momentDic = [NSMutableDictionary dictionaryWithCapacity:3];
-            [momentDic setObject:self.momentId forKey:@"uuid"];
-            [momentDic setObject:[QIMKit getLastUserName] forKey:@"owner"];
-            [momentDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"ownerHost"];
-            [momentDic setObject:@([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) forKey:@"isAnonymous"];
+            [momentDic setQIMSafeObject:self.momentId forKey:@"uuid"];
+            [momentDic setQIMSafeObject:[QIMKit getLastUserName] forKey:@"owner"];
+            [momentDic setQIMSafeObject:[[QIMKit sharedInstance] getDomain] forKey:@"ownerHost"];
+            [momentDic setQIMSafeObject:@([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) forKey:@"isAnonymous"];
             if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-                [momentDic setObject:@"" forKey:@"AnonymousName"];
-                [momentDic setObject:@"" forKey:@"AnonymousPhoto"];
+                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousName"];
+                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousPhoto"];
             } else {
-                [momentDic setObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName] forKey:@"AnonymousName"];
-                [momentDic setObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto] forKey:@"AnonymousPhoto"];
+                [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName] forKey:@"AnonymousName"];
+                [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto] forKey:@"AnonymousPhoto"];
             }
             
+            NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
+            NSString *finallyContent = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:self.textView.attributedText WithOutAtInfo:&outATInfoArray];
+            
             NSMutableDictionary *momentContentDic = [[NSMutableDictionary alloc] initWithCapacity:3];
-            [momentContentDic setQIMSafeObject:self.textView.text forKey:@"content"];
+            if (self.shareLinkUrlDic.count > 0) {
+                [momentContentDic setQIMSafeObject:@"分享了一条链接!" forKey:@"content"];
+            } else {
+                [momentContentDic setQIMSafeObject:finallyContent forKey:@"content"];
+            }
+            [momentContentDic setQIMSafeObject:[[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:finallyContent] forKey:@"exContent"];
             NSMutableArray *imageList = [[NSMutableArray alloc] init];
             dispatch_group_t group = dispatch_group_create();
             for (id imageData in self.selectPhotos) {
                 if ([imageData isKindOfClass:[NSData class]]) {
                     dispatch_group_enter(group);
-                    NSString *fileUrl = [QIMKit updateLoadFile:imageData WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_Image WihtPathExtension:@"png"];
+                    NSString *fileUrl = [QIMKit updateLoadMomentFile:imageData WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_Image WithPathExtension:@"png"];
                     if (fileUrl.length > 0) {
                         NSDictionary *imageDic = @{@"addTime":@(0), @"data":fileUrl};
                         [imageList addObject:imageDic];
@@ -382,27 +543,111 @@
                     }
                 }
             }
+            
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                 
                 [momentContentDic setQIMSafeObject:imageList forKey:@"imgList"];
+                if (imageList.count > 0) {
+                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeImage) forKey:@"type"];
+                } else if (self.shareLinkUrlDic.count > 0) {
+                    [momentContentDic setQIMSafeObject:self.shareLinkUrlDic forKey:@"linkContent"];
+                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeLink) forKey:@"type"];
+                } else {
+                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeText) forKey:@"type"];
+                }
+//                [momentContentDic setQIMSafeObject:@(0) forKey:@"type"];
                 NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
-                [momentDic setObject:momentContent forKey:@"content"];
+                [momentDic setQIMSafeObject:momentContent forKey:@"content"];
+                [momentDic setQIMSafeObject:outATInfoArray forKey:@"atList"];
+                QIMVerboseLog(@"outATInfoArray: %@", outATInfoArray);
                 QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
+                QIMVerboseLog(@"momentDic: %@", momentDic);
                 QIMVerboseLog(@"imageList : %@", imageList);
-                [[QIMKit sharedInstance] pushNewMomentWithMomentDic:momentDic];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[QIMProgressHUD sharedInstance] closeHUD];
-                });
-                [self goBack:nil];
+                [momentDic setObject:@(7) forKey:@"postType"];
+                [[QIMKit sharedInstance] pushNewMomentWithMomentDic:momentDic withCallBack:^(BOOL successed) {
+                    if (successed) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self hideProgressHUD:YES];
+                        });
+                        [self goBack:nil];
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self hideProgressHUD:YES];
+                            dispatch_after(3, dispatch_get_main_queue(), ^{
+                               [QTalkTipsView showTips:[NSString stringWithFormat:@"发布驼圈失败，请稍后重试"] InView:self.view];
+                            });
+                        });
+                    }
+                }];
             });
         });
     }
 }
 
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    //输入
+    if ([text isEqualToString:@"@"]) {
+        text = @"";
+        QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
+        __weak __typeof(&*self) weakSelf = self;
+        
+        [qNoticeVC onQIMWorkFeedSelectUser:^(NSArray *selectUsers) {
+            NSLog(@"selectUsers : %@", selectUsers);
+            if (selectUsers.count <= 0) {
+                
+                NSAttributedString *attStr = [[NSAttributedString alloc] initWithString:@"@"];
+                [self.textView.textStorage insertAttributedString:attStr atIndex:self.textView.selectedRange.location];
+                self.textView.selectedRange = NSMakeRange(MIN(self.textView.selectedRange.location + 1, self.textView.text.length - self.textView.selectedRange.length), self.textView.selectedRange.length);
+                [self resetTextStyle];
+            } else {
+                for (NSString *userXmppJid in selectUsers) {
+                    if (userXmppJid.length > 0) {
+                        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userXmppJid];
+                        if (userInfo.count > 0) {
+                            NSString *name = [userInfo objectForKey:@"Name"];
+                            NSString *jid = [userInfo objectForKey:@"XmppId"];
+                            NSString *memberName = [NSString stringWithFormat:@"@%@ ", name];
+                            
+                            QIMATGroupMemberTextAttachment *atTextAttachment = [[QIMATGroupMemberTextAttachment alloc] init];
+                            CGSize size = [memberName qim_sizeWithFontCompatible:self.textView.font];
+                            atTextAttachment.image = [UIImage qim_imageWithColor:[UIColor whiteColor] size:CGSizeMake(size.width, self.textView.font.lineHeight) text:memberName textAttributes:@{NSFontAttributeName:self.textView.font} circular:NO];
+                            atTextAttachment.groupMemberName = memberName;
+                            atTextAttachment.groupMemberJid = jid;
+                            
+                            [self.textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:atTextAttachment] atIndex:self.textView.selectedRange.location];
+                            self.textView.selectedRange = NSMakeRange(MIN(self.textView.selectedRange.location + 1, self.textView.text.length - self.textView.selectedRange.length), self.textView.selectedRange.length);
+                            [self resetTextStyle];
+                        } else {
+                            QIMVerboseLog(@"未选择要艾特的群成员");
+                            weakSelf.textView.selectedRange = NSMakeRange(weakSelf.textView.selectedRange.location + self.textView.selectedRange.length + 1, 0);
+                            [weakSelf resetTextStyle];
+                        }
+                    }
+                }
+            }
+        }];
+        
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+            QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+            qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
+        } else {
+            [weakSelf.navigationController pushViewController:qNoticeVC animated:YES];
+        }
+        return NO;
+    }
+    return YES;
+}
+
 #pragma mark - UICollectionViewDelegate & UICollectionViewDatasource
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self.textView resignFirstResponder];
+    if (scrollView != self.textView) {
+        [self.textView resignFirstResponder];
+    }
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -427,7 +672,7 @@
     iconView.layer.masksToBounds = YES;
     if ([photoData isKindOfClass:[NSString class]]) {
         if ([photoData isEqualToString:@"Q_Work_Add"]) {
-            iconView.image = [UIImage imageNamed:@"q_work_add"];
+            iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_add"];
             iconView.backgroundColor = [UIColor whiteColor];
             [cell.contentView addSubview:iconView];
             [cell setCanDelete:NO];
@@ -472,12 +717,19 @@
         UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
         headerView.backgroundColor = [UIColor whiteColor];
         [headerView addSubview:self.textView];
+        if (self.shareLinkUrlDic.count > 0) {
+            [headerView addSubview:self.linkView];
+        }
         return headerView;
     } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
-        UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
-        headerView.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
-        [headerView addSubview:self.panelListView];
-        return headerView;
+        UICollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
+        footerView.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], 1.0f)];
+        lineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD];
+        [footerView addSubview:lineView];
+        [footerView addSubview:self.atLabel];
+        [footerView addSubview:self.panelListView];
+        return footerView;
     } else {
         return nil;
     }
@@ -563,6 +815,10 @@
 }
 
 #pragma mark - QTPHImagePickerControllerDelegate
+
+- (void)assetsPickerControllerDidCancel:(QTPHImagePickerController *)picker {
+    
+}
 
 - (void)assetsPickerController:(QTPHImagePickerController *)picker didFinishPickingAssets:(NSArray *)assets {
     [self sendAssetList:[NSMutableArray arrayWithArray:assets] ForPickerController:picker];

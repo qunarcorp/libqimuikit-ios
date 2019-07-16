@@ -198,7 +198,7 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
 
 #pragma mark - 添加联系人头像属性
     /*添加联系人头像属性*/
-    ABPersonSetImageData(person, (__bridge CFDataRef)(UIImagePNGRepresentation([UIImage imageNamed:@""])),&error);//设置联系人头像
+    ABPersonSetImageData(person, (__bridge CFDataRef)(UIImagePNGRepresentation([UIImage qim_imageNamedFromQIMUIKitBundle:@""])),&error);//设置联系人头像
 
 #pragma mark - 添加联系人电话信息
     /*添加联系人电话信息*/

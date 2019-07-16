@@ -16,7 +16,7 @@
 #import "QIMCollectionFaceManager.h"
 
 #define kTextLabelTop       10
-#define kTextLableLeft      10
+#define kTextLableLeft      12
 #define kTextLableBottom    10
 #define kTextLabelRight     10
 #define kCellHeightCap      10
@@ -45,7 +45,7 @@ static double _global_message_cell_width = 0;
 
 #pragma mark - setter and getter
 
-- (void)setMessage:(Message *)message {
+- (void)setMessage:(QIMMessageModel *)message {
     _message = message;
     _textContainer = [QIMMessageParser textContainerForMessage:message];
 }
@@ -92,12 +92,10 @@ static double _global_message_cell_width = 0;
         _actIndView.hidesWhenStopped = YES;
         [self.contentView addSubview:_actIndView];
         
-        _msgSendFailedImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tips_message_failed"]];
+        _msgSendFailedImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"tips_message_failed"]];
         _msgSendFailedImageView.hidden = YES;
         _msgSendFailedImageView.userInteractionEnabled = YES;
         [self.contentView addSubview:_msgSendFailedImageView];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationFileManagerUpdate:) name:kNotifyFileManagerUpdate object:nil];
         
         UITapGestureRecognizer *doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(doubleTap:)];
         [doubleTapGestureRecognizer setNumberOfTapsRequired:2];
@@ -115,16 +113,16 @@ static double _global_message_cell_width = 0;
 - (void)applicationFileManagerUpdate : (NSNotification *)notify
 {
     NSDictionary * infoDic = notify.object;
-    Message * message = [infoDic objectForKey:@"message"];
+   QIMMessageModel * message = [infoDic objectForKey:@"message"];
     float propress = [[infoDic objectForKey:@"propress"] floatValue];
     NSString * status = [infoDic objectForKey:@"status"];
     if ([message.messageId isEqualToString:self.message.messageId]) {
-        message.propress = (int)MAX((1-propress) * 100, 0);
+//        message.propress = (int)MAX((1-propress) * 100, 0);
         if (propress <= 1) {
             //update进度条
             _propressView.hidden = NO;
             _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (1 - propress));
-            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
+//            [_progressLabel setText:[NSString stringWithFormat:@"%d%%",message.propress]];
         }else{
             if ([status isEqualToString:@"failed"]) {
                 //                UILabel * failedLabel = [[UILabel alloc] initWithFrame:_propressView.frame];
@@ -156,7 +154,7 @@ static double _global_message_cell_width = 0;
 }
 
 - (void)tapHandle:(UITapGestureRecognizer *)tap{
-    if (self.message.messageState == MessageState_Faild) {
+    if (self.message.messageSendState == QIMMessageSendState_Faild) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kXmppStreamReSendMessage object:self.message];
         //        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"重发",@"删除", nil];
         //        [actionSheet showInView:[(UIViewController *)self.delegate view]];
@@ -210,10 +208,12 @@ static double _global_message_cell_width = 0;
             self.textContainer = [QIMMessageParser textContainerForMessage:self.message fromCache:NO];
             for (QIMImageStorage * imageStorage in self.textContainer.textStorages) {
                 
+                
                 if (![imageStorage isKindOfClass:[QIMImageStorage class]]) {
                     
                     return;
                 } else {
+                    
                     NSString *imageUrl = imageStorage.imageURL.absoluteString;
                     QIMVerboseLog(@"收藏表情后的地址为 : %@", imageUrl);
                     if (![imageUrl containsString:@"null"] && imageUrl.length > 0) {
@@ -240,8 +240,8 @@ static double _global_message_cell_width = 0;
     NSString * msgID = [notify.object objectForKey:@"messageId"];
     //消息发送成功，更新消息状态
     if ([[self.message messageId] isEqualToString:msgID]) {
-        if (self.message.messageState < MessageState_Success) {
-            self.message.messageState = MessageState_Success;
+        if (self.message.messageSendState < QIMMessageSendState_Success) {
+            self.message.messageSendState = QIMMessageSendState_Success;
         }
         [self refreshUI];
     }
@@ -301,12 +301,12 @@ static double _global_message_cell_width = 0;
     float moveSpace = 38;
     CGRect rect = _backView.frame;
     if (self.editing) {
-        if (self.message.messageDirection == MessageDirection_Sent) {
+        if (self.message.messageDirection == QIMMessageDirection_Sent) {
             rect.origin.x = rect.origin.x - moveSpace;
             _backView.frame = rect;
         }
     }else{
-        if (self.message.messageDirection == MessageDirection_Sent) {
+        if (self.message.messageDirection == QIMMessageDirection_Sent) {
             rect.origin.x = rect.origin.x + moveSpace;
             _backView.frame = rect;
         }
@@ -331,7 +331,7 @@ static double _global_message_cell_width = 0;
     
     _msgSendFailedImageView.hidden = YES;
     switch (self.message.messageDirection) {
-        case MessageDirection_Received:
+        case QIMMessageDirection_Received:
         {
             CGRect frame = {{kBackViewCap,kCellHeightCap / 2.0},{backWidth,backHeight}};
             [_backView setFrame:frame];
@@ -348,18 +348,17 @@ static double _global_message_cell_width = 0;
             
             
             [_backView setMenuActionTypeList:menuList];
-//            [_textLabel setTextColor:[UIColor qim_leftBallocFontColor]];
             [_backView setImage:[QIMMsgBaloonBaseCell leftBallocImage]];
             
         }
             break;
-        case MessageDirection_Sent:
+        case QIMMessageDirection_Sent:
         {
             CGRect frame = {{self.frameWidth - kBackViewCap - backWidth,kBackViewCap},{backWidth,backHeight}};
             [_backView setFrame:frame];
             NSMutableArray *menuList = [NSMutableArray arrayWithCapacity:4];
-            if (self.message.messageState == MessageState_Success || self.message.messageState == MessageState_didRead || self.message.messageState == MessageState_none) {
-                
+            if (self.message.messageSendState == QIMMessageSendState_Success) {
+
                 if (self.textContainer.textStorages.count > 0 && [self hasTextWithArray:self.textContainer.textStorages]) {
                     
                     [menuList addObject:@(MA_Copy)];
@@ -372,29 +371,25 @@ static double _global_message_cell_width = 0;
             }
             [_backView setMenuActionTypeList:menuList];
 
-//            [_textLabel setTextColor:[UIColor qim_rightBallocFontColor]];
             [_backView setImage:[QIMMsgBaloonBaseCell rightBallcoImage]];
-            //            dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.message.messageState == MessageState_Waiting) {
+            if (self.message.messageSendState == QIMMessageSendState_Waiting) {
                 _actIndView.frame = CGRectMake(_backView.left - 30, _backView.bottom - 35, 30, 30);
                 [_actIndView startAnimating];
-            }else if(self.message.messageState == MessageState_Faild){
+            }else if(self.message.messageSendState == QIMMessageSendState_Faild){
                 _msgSendFailedImageView.frame = CGRectMake(_backView.left - 30, _backView.bottom - 35, 30, 30);
                 _msgSendFailedImageView.hidden = NO;
             }else{
                 [_actIndView stopAnimating];
             }
-            //            });
         }
             break;
         default:
             break;
     }
-    _propressView.frame = CGRectMake(_textLabel.left, _textLabel.top, _textLabel.textContainer.textWidth, _textLabel.height * (self.message.propress / 100.0f));
     float moveSpace = 38;
     CGRect rect = _backView.frame;
     if (self.editing) {
-        if (self.message.messageDirection == MessageDirection_Sent) {
+        if (self.message.messageDirection == QIMMessageDirection_Sent) {
             rect.origin.x = rect.origin.x - moveSpace;
             _backView.frame = rect;
         }
@@ -454,7 +449,7 @@ static double _global_message_cell_width = 0;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    [_textLabel setFrameWithOrign:CGPointMake(kTextLableLeft + (self.message.messageDirection == MessageDirection_Sent ? 0 : 10),10) Width:_textContainer.textWidth];
+    [_textLabel setFrameWithOrign:CGPointMake(kTextLableLeft + (self.message.messageDirection == QIMMessageDirection_Sent ? 0 : 10),10) Width:_textContainer.textWidth];
 }
 
 - (void)dealloc {

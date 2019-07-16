@@ -273,8 +273,8 @@
     
     UIButton * agreeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     agreeBtn.frame = CGRectMake((width - 258) / 2, height + [UIApplication sharedApplication].statusBarFrame.size.height - 30, 18, 18);
-    [agreeBtn setImage:[UIImage imageNamed:@"checkbox_normal"] forState:UIControlStateNormal];
-    [agreeBtn setImage:[UIImage imageNamed:@"checkbox_click"] forState:UIControlStateSelected];
+    [agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_normal"] forState:UIControlStateNormal];
+    [agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_click"] forState:UIControlStateSelected];
     agreeBtn.selected = YES;
     [agreeBtn addTarget:self action:@selector(agreeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:agreeBtn];
@@ -299,9 +299,9 @@
     _settingButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.height - 60, self.view.width, 24)];
     [_settingButton setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
     [_settingButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
-    [_settingButton setTitleColor:[UIColor qtalkTextBlackColor] forState:UIControlStateNormal];
+    [_settingButton setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
     [_settingButton setTitle:@"设置服务地址" forState:UIControlStateNormal];
-    [_settingButton setImage:[UIImage imageNamed:@"iconSetting"] forState:UIControlStateNormal];
+    [_settingButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconSetting"] forState:UIControlStateNormal];
     [_settingButton addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_settingButton];
 }

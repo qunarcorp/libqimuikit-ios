@@ -19,7 +19,7 @@
 @implementation QIMSearchRemindView
 
 - (instancetype)initWithChatId:(NSString *)chatId withRealJid:(NSString *)realjid withChatType:(NSInteger)chatType {
-    if (self = [super initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 160, 100, 160, 36)]) {
+    if (self = [super initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 120, 110, 120, 36)]) {
         self.backgroundColor = [UIColor whiteColor];
         UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:UIRectCornerBottomLeft | UIRectCornerTopLeft cornerRadii:CGSizeMake(18, 18)];
         CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
@@ -27,20 +27,14 @@
         maskLayer.path = maskPath.CGPath;
         self.layer.mask = maskLayer;
         
-        UIView *searchIconBackView = [[UIView alloc] initWithFrame:CGRectMake(5, 5, 26, 26)];
-        searchIconBackView.backgroundColor = [UIColor qim_colorWithHex:0x5CC57F];
-        searchIconBackView.layer.cornerRadius = 13;
-        searchIconBackView.layer.masksToBounds = YES;
-        [self addSubview:searchIconBackView];
+        UIImageView *searchIconView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 12, 12, 12)];
+        searchIconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_chatsearchRemindViewTextFont size:21 color:qim_chatsearchRemindViewIconColor]];
+        [self addSubview:searchIconView];
         
-        UIImageView *searchIconView = [[UIImageView alloc] initWithFrame:CGRectMake(2, 2, 21, 21)];
-        searchIconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f407" size:21 color:[UIColor whiteColor]]];
-        [searchIconBackView addSubview:searchIconView];
-        
-        UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(searchIconBackView.right + 5, 8, 120, 20)];
-        [textLabel setText:@"快速搜到你想找的"];
-        [textLabel setTextColor:[UIColor qim_colorWithHex:0x212121]];
-        [textLabel setFont:[UIFont systemFontOfSize:14]];
+        UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(searchIconView.right + 5, 8, 80, 20)];
+        [textLabel setText:@"搜索聊天记录"];
+        [textLabel setTextColor:qim_chatsearchRemindViewTextColor];
+        [textLabel setFont:[UIFont systemFontOfSize:qim_chatsearchRemindViewTextSize]];
         [self addSubview:textLabel];
     }
     return self;

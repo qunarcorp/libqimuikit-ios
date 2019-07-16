@@ -34,7 +34,7 @@
 
 - (void)initUI {
     
-    self.backgroundColor = [UIColor qtalkChatBgColor];
+    self.backgroundColor = [UIColor whiteColor];
     _faceView = [QIMFaceView FaceViewWithFrame:CGRectMake(0, 0.0f, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds) - FaceSectionBarHeight - FacePageControlHeight) WithShowAll:self.showAll WithPKId:self.packageId];
     [_faceView setScrollsToTop:NO];
     _faceView.faceViewDelegate = self;
@@ -46,8 +46,8 @@
     self.pageControl.size = pagesize;
     self.pageControl.centerY = CGRectGetMaxY(_faceView.frame) + 15;
     self.pageControl.centerX = self.centerX;
-    self.pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-    self.pageControl.currentPageIndicatorTintColor = [UIColor redColor];
+    self.pageControl.pageIndicatorTintColor = [UIColor qim_colorWithHex:0xD8D8D8];
+    self.pageControl.currentPageIndicatorTintColor = [UIColor qim_colorWithHex:0x84AEBF];
     self.pageControl.numberOfPages = pages;
     self.pageControl.currentPage   = 0;
     [self.pageControl addTarget:self action:@selector(pageControlHandle:) forControlEvents:UIControlEventValueChanged];

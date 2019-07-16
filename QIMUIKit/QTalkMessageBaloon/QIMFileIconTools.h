@@ -26,6 +26,6 @@ typedef enum {
 
 + (FileType)getFileTypeByFileExtension:(NSString *)fileExtension;
 
-+ (UIImage *)getFileIconWihtExtension:(NSString *)pathExtension;
++ (UIImage *)getFileIconWithExtension:(NSString *)pathExtension;
 
 @end

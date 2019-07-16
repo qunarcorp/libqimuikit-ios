@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "KZColorPickerHSWheel.h"
+#import "UIImage+QIMUIKit.h"
 
 @interface KZColorPickerHSWheel()
 @property (nonatomic, retain) UIImageView *wheelImageView;
@@ -26,13 +27,13 @@
 	{
         // Initialization code
 		// add the imageView for the color wheel
-		UIImageView *wheel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pickerColorWheel"]];
+		UIImageView *wheel = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"pickerColorWheel"]];
 //		wheel.contentMode = UIViewContentModeTopLeft;
 		wheel.frame = CGRectMake(0, 0, 120, 120);
 		[self addSubview:wheel];
 		self.wheelImageView = wheel;
         
-		UIImageView *wheelKnob = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"colorPickerKnob"]];
+		UIImageView *wheelKnob = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"colorPickerKnob"]];
 		[self addSubview:wheelKnob];
 		self.wheelKnobView = wheelKnob;
 		

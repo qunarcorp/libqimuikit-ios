@@ -450,9 +450,9 @@ typedef enum {
     if (!_isNotSend) {
         
         _myAddressBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_myAddressBtn setImage:[UIImage imageNamed:@"location_my"] forState:UIControlStateNormal];
-        [_myAddressBtn setImage:[UIImage imageNamed:@"location_my_HL"] forState:UIControlStateHighlighted];
-        [_myAddressBtn setImage:[UIImage imageNamed:@"location_my_current"] forState:UIControlStateSelected];
+        [_myAddressBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"location_my"] forState:UIControlStateNormal];
+        [_myAddressBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"location_my_HL"] forState:UIControlStateHighlighted];
+        [_myAddressBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"location_my_current"] forState:UIControlStateSelected];
         [_myAddressBtn addTarget:self action:@selector(currentBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         _myAddressBtn.frame = CGRectMake(self.mapView.width - 70 , self.mapView.height - 70, 50, 50);
         if ([[QIMKit sharedInstance] getIsIpad]) {
@@ -463,9 +463,9 @@ typedef enum {
     } else {
         
         _otherMapBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_otherMapBtn setImage:[UIImage imageNamed:@"locationSharing_navigate_icon_new"] forState:UIControlStateNormal];
-        [_otherMapBtn setImage:[UIImage imageNamed:@"locationSharing_navigate_icon_HL_new"] forState:UIControlStateHighlighted];
-        [_otherMapBtn setImage:[UIImage imageNamed:@"locationSharing_navigate_icon_HL_new"] forState:UIControlStateSelected];
+        [_otherMapBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_navigate_icon_new"] forState:UIControlStateNormal];
+        [_otherMapBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_navigate_icon_HL_new"] forState:UIControlStateHighlighted];
+        [_otherMapBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_navigate_icon_HL_new"] forState:UIControlStateSelected];
         [_otherMapBtn addTarget:self action:@selector(openWithOtherApplication:) forControlEvents:UIControlEventTouchUpInside];
         _otherMapBtn.frame = CGRectMake(self.mapView.width - 70 , self.mapView.height - 70, 50, 50);
         if ([[QIMKit sharedInstance] getIsIpad]) {

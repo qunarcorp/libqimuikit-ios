@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/17.
 //
 //
-
+#if __has_include("QIMNoteManager.h")
 #import "NewPasswordBoxVc.h"
 #import "QIMNoteModel.h"
 #import "AESCrypt.h"
@@ -29,7 +29,6 @@
 @end
 
 @implementation NewPasswordBoxVc
-
 
 - (UITextField *)nameTextField {
     if (!_nameTextField) {
@@ -66,8 +65,8 @@
     if (!_agreeBtn) {
         _agreeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _agreeBtn.frame = CGRectMake(self.nameTextField.left, self.repeatPwdBoxField.bottom + 80, 18, 18);
-        [_agreeBtn setImage:[UIImage imageNamed:@"checkbox_normal"] forState:UIControlStateNormal];
-        [_agreeBtn setImage:[UIImage imageNamed:@"checkbox_click"] forState:UIControlStateSelected];
+        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_normal"] forState:UIControlStateNormal];
+        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_click"] forState:UIControlStateSelected];
         _agreeBtn.selected = NO;
         [_agreeBtn addTarget:self action:@selector(agreeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -203,3 +202,4 @@
 }
 
 @end
+#endif

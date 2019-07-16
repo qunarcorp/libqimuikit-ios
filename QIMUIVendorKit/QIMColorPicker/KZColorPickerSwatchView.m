@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "KZColorPickerSwatchView.h"
+#import "UIImage+QIMUIKit.h"
 
 @interface KZColorPickerSwatchView ()
 @property (nonatomic, strong) CAShapeLayer *touchDownLayer;
@@ -46,7 +47,7 @@ static CGFloat kCheckmarkWidth = 22;
     
     self.checkmarkLayer = [CALayer layer];
     self.checkmarkLayer.hidden = YES;
-    self.checkmarkLayer.contents = (id)[UIImage imageNamed:@"MNColorViewCheckmark"].CGImage;
+    self.checkmarkLayer.contents = (id)[UIImage qim_imageNamedFromQIMUIKitBundle:@"MNColorViewCheckmark"].CGImage;
     self.checkmarkLayer.bounds = CGRectMake(0, 0, kCheckmarkWidth, kCheckmarkWidth);
     [self.layer addSublayer:self.checkmarkLayer];
     
@@ -91,7 +92,7 @@ static CGFloat kCheckmarkWidth = 22;
 {
     if(!_checkerboardColor)
     {
-        self.checkerboardColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"checkerboard"]];
+        self.checkerboardColor = [UIColor colorWithPatternImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkerboard"]];
     }
     
     return _checkerboardColor;

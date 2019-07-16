@@ -31,8 +31,8 @@ static NSMutableDictionary *_groupRadioDic = nil;
         
         self.selected = NO;
         
-        [self setImage:[UIImage imageNamed:@"radio_unchecked"] forState:UIControlStateNormal];
-        [self setImage:[UIImage imageNamed:@"radio_checked"] forState:UIControlStateSelected];
+        [self setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"radio_unchecked"] forState:UIControlStateNormal];
+        [self setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"radio_checked"] forState:UIControlStateSelected];
         [self addTarget:self action:@selector(radioBtnChecked) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;

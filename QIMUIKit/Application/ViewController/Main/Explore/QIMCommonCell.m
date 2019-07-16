@@ -61,7 +61,7 @@
     if (!_notReadFlagView) {
         _notReadFlagView = [[UIImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 30, ([QIMCommonCell getCellHeight] - 12) / 2.0, 10, 12)];
         _notReadFlagView.centerY = self.contentView.centerY;
-        _notReadFlagView.image = [UIImage imageNamed:@"ExploreNewNotify"];
+        _notReadFlagView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"ExploreNewNotify"];
         _notReadFlagView.hidden = YES;
     }
     return _notReadFlagView;

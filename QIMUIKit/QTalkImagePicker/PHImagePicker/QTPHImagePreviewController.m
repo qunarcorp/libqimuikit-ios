@@ -48,8 +48,8 @@
     self.picker.isOriginal = [[QIMKit sharedInstance] pickerPixelOriginal];
     
     _rightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [_rightButton setImage:[UIImage imageNamed:@"photo_browser_header_icon_unchecked"] forState:UIControlStateNormal];
-    [_rightButton setImage:[UIImage imageNamed:@"photo_browser_header_icon_checked"] forState:UIControlStateSelected];
+    [_rightButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_header_icon_unchecked"] forState:UIControlStateNormal];
+    [_rightButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_header_icon_checked"] forState:UIControlStateSelected];
     [_rightButton addTarget:self action:@selector(onRightButtonClick) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:_rightButton];
     [self.navigationItem setRightBarButtonItem:rightItem];
@@ -103,7 +103,7 @@
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.contentSize = CGSizeMake(_scrollView.width * self.photoArray.count, _scrollView.height);
     _scrollView.bounces = NO;
-    _scrollView.backgroundColor = [UIColor spectralColorBlueColor];
+    _scrollView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:_scrollView];
     [self setUpPhotos];
     _lastPageNum = -1;
@@ -225,8 +225,8 @@
     [_photoTypeButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
     [_photoTypeButton setFrame:CGRectMake(_editButton.right + 15, 8, 100, 30)];
     [_photoTypeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-    [_photoTypeButton setImage:[UIImage imageNamed:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
-    [_photoTypeButton setImage:[UIImage imageNamed:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
+    [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
+    [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
     [_photoTypeButton setTitle:self.picker.isOriginal ? @" 原图" : @" 标清" forState:UIControlStateNormal];
     [_photoTypeButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_photoTypeButton setEnabled:NO];
@@ -235,9 +235,9 @@
     
     _sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.width - 90, 8, 80, 30)];
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_sendButton setBackgroundImage:[[UIImage imageNamed:@"common_button_focus_nor"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateNormal];
-    [_sendButton setBackgroundImage:[[UIImage imageNamed:@"common_button_focus_pressed"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateHighlighted];
-    [_sendButton setBackgroundImage:[[UIImage imageNamed:@"common_button_disabled"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateDisabled];
+    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_focus_nor"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateNormal];
+    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_focus_pressed"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateHighlighted];
+    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_disabled"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateDisabled];
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_sendButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
@@ -318,6 +318,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self closeHUD];
                 QIMImageEditViewController * imageEditVC = [[QIMImageEditViewController alloc] initWithImage:result];
+                imageEditVC.fromAlum = YES;
                 imageEditVC.delegate = self;
                 [weakSelf.navigationController pushViewController:imageEditVC animated:YES];
             });

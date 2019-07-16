@@ -17,7 +17,7 @@ static QTalk *__global_qtalk = nil;
 @implementation QTalk
 
 + (void)load {
-    [[QTalk sharedInstance] initConfiguration];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didfinishNSNotification:) name:UIApplicationDidFinishLaunchingNotification object:nil];
 }
 
 + (instancetype)sharedInstance {
@@ -28,7 +28,11 @@ static QTalk *__global_qtalk = nil;
     return __global_qtalk;
 }
 
-- (void)initConfiguration{
++ (void)didfinishNSNotification:(NSNotification *)notify {
+    [[QTalk sharedInstance] initConfiguration];
+}
+
+- (void)initConfiguration {
     //初始化字体集
     [QIMIconFont setFontName:@"QTalk-QChat"];
     
@@ -77,9 +81,6 @@ static QTalk *__global_qtalk = nil;
 //    QIMMessageType_Markdown
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSourceCodeCell" ForMessageType:QIMMessageType_Markdown];
     [[QIMKit sharedInstance] setMsgShowText:@"[Markdown]" ForMessageType:QIMMessageType_Markdown];
-    // burn after read
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMBurnAfterReadMsgCell" ForMessageType:QIMMessageType_BurnAfterRead];
-    [[QIMKit sharedInstance] setMsgShowText:@"[阅后即焚消息]" ForMessageType:QIMMessageType_BurnAfterRead];
     
     // red pack
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRedPackCell" ForMessageType:QIMMessageType_RedPack];
@@ -125,7 +126,7 @@ static QTalk *__global_qtalk = nil;
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSingleChatTimestampCell" ForMessageType:QIMMessageType_Revoke];
     [[QIMKit sharedInstance] setMsgShowText:@"撤回了一条消息" ForMessageType:QIMMessageType_Revoke];
     
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
     //语音聊天
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMWebRTC_MsgType_Audio];
     //视频聊天
@@ -135,7 +136,7 @@ static QTalk *__global_qtalk = nil;
     
     [[QIMKit sharedInstance] setMsgShowText:@"[视频聊天]" ForMessageType:QIMWebRTC_MsgType_Video];
 #endif
-#if defined (QIMWebRTCEnable) && QIMWebRTCEnable == 1
+#if __has_include("QIMWebRTCClient.h")
     //视频会议
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
 
@@ -163,6 +164,10 @@ static QTalk *__global_qtalk = nil;
     //会议室提醒
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMMeetingRemindCell" ForMessageType:QIMMessageTypeMeetingRemind];
     [[QIMKit sharedInstance] setMsgShowText:@"会议室提醒" ForMessageType:QIMMessageTypeMeetingRemind];
+    
+    //驼圈提醒
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMWorkMomentRemindCell" ForMessageType:QIMMessageTypeWorkMomentRemind];
+    [[QIMKit sharedInstance] setMsgShowText:@"驼圈提醒" ForMessageType:QIMMessageTypeWorkMomentRemind];
     
     [[QIMKit sharedInstance] setMsgShowText:@"收到一条消息" ForMessageType:QIMMessageType_GroupNotify];
 }

@@ -66,7 +66,6 @@
     _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _scrollView.maximumZoomScale=2.0;
     _scrollView.minimumZoomScale=0.5;
-//    [_scrollView setBackgroundColor:[UIColor redColor]];
     [_scrollView setDelegate:self];
     [self.view addSubview:_scrollView];
     CGFloat scale = MIN(_scrollView.width / self.sourceImage.size.width, _scrollView.height / self.sourceImage.size.height);
@@ -88,8 +87,8 @@
     [_sdButton setFrame:CGRectMake(80, 10, 60, 20)];
     [_sdButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_sdButton setTitle:@"标清" forState:UIControlStateNormal];
-    [_sdButton setImage:[UIImage imageNamed:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
-    [_sdButton setImage:[UIImage imageNamed:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
+    [_sdButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
+    [_sdButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
     [_sdButton setImageEdgeInsets:UIEdgeInsetsMake(0, -10, 0, 0)];
     [_sdButton addTarget:self action:@selector(onPictureQualityClick:) forControlEvents:UIControlEventTouchUpInside];
     [bottomView addSubview:_sdButton];

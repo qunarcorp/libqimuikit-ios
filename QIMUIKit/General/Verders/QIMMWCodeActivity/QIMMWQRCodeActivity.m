@@ -7,15 +7,14 @@
 //
 
 #import "QIMMWQRCodeActivity.h"
-#import "ZBarReaderController.h"
 #import "QIMWebView.h"
 #import "UIApplication+QIMApplication.h"
 #import "QIMJumpURLHandle.h"
 #import "QIMGroupCardVC.h"
 
-@interface QIMMWQRCodeActivity() <ZBarReaderDelegate>{
-    ZBarSymbol *_symbol;
-}
+@interface QIMMWQRCodeActivity()
+
+@property (nonatomic, copy) NSString *symbolData;
 
 @end
 
@@ -30,31 +29,40 @@
     return _qrCodeActivity;
 }
 
-- (void)decodeImage:(UIImage *)image{
-    
-    ZBarReaderController* read = [ZBarReaderController new];
-    
-    read.readerDelegate = self;
-    
-    CGImageRef cgImageRef = image.CGImage;
-    
-    for(_symbol in [read scanImage:cgImageRef])break;
+- (NSString *)scanQRCodeForImage:(UIImage *)image {
+    CIDetector*detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{ CIDetectorAccuracy : CIDetectorAccuracyHigh }];
+    NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:[image CGImage]]];
+    //判断是否有数据（即是否是二维码）
+    if (features.count >=1) {
+        /**结果对象 */
+        CIQRCodeFeature *feature = [features objectAtIndex:0];
+        NSString *scannedResult = feature.messageString;
+        return scannedResult;
+    } else{
+        return nil;
+    }
 }
 
 - (BOOL)canPerformQRCodeWithImage:(UIImage *)image {
     if ([image isKindOfClass:[UIImage class]]) {
-        [self decodeImage:image];
-        if (_symbol) {
+        NSString *result = [self scanQRCodeForImage:image];
+        if (result.length > 0) {
+            _symbolData = result;
             return YES;
+        } else {
+            _symbolData = nil;
+            return NO;
         }
+    } else {
+        _symbolData = nil;
+        return NO;
     }
-    return NO;
 }
 
 - (void)performActivity {
     
     [self.fromPhotoBrowser dismissViewControllerAnimated:NO completion:^{
-        NSString *str = _symbol.data;
+        NSString *str = _symbolData;
         UINavigationController *rootNav = [[UIApplication sharedApplication] visibleNavigationController];
         if ([str qim_hasPrefixHttpHeader]) {
             QIMWebView *webVC = [[QIMWebView alloc] init];

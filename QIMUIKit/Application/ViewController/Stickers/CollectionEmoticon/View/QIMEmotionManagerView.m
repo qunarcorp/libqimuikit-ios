@@ -27,8 +27,8 @@
         _pageControl.centerX = self.centerX;
         _pageControl.centerY = CGRectGetMaxY(self.frame) - 10;
         _pageControl.currentPage  = 0;
-        _pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-        _pageControl.currentPageIndicatorTintColor = [UIColor redColor];
+        _pageControl.pageIndicatorTintColor = [UIColor qim_colorWithHex:0xD8D8D8];
+        _pageControl.currentPageIndicatorTintColor = [UIColor qim_colorWithHex:0x84AEBF];
         [_pageControl addTarget:self action:@selector(pageControlHandle:) forControlEvents:UIControlEventValueChanged];
     }
     _pageControl.numberOfPages = self.emotionView.totalPageIndex;
@@ -49,6 +49,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self registerNSNotification];
+        self.backgroundColor = [UIColor whiteColor];
         self.packageId = packageId;
         [self addSubview:self.emotionView];
         [self addSubview:self.pageControl];
@@ -81,6 +82,18 @@
 - (void)didSelectNormalEmotion:(NSString *)faceName {
     if (self.delegate && [self.delegate respondsToSelector:@selector(SendTheFaceStr:withPackageId:)]) {
         [self.delegate SendTheFaceStr:faceName withPackageId:self.packageId];
+    }
+}
+
+- (void)didSelectCollectionEmotion:(NSString *)fileUrl {
+    if (fileUrl.length > 0) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(SendTheCollectionFaceStr:)]) {
+            [self.delegate SendTheCollectionFaceStr:fileUrl];
+        }
+    } else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectFaildCollectionFace)]) {
+            [self.delegate didSelectFaildCollectionFace];
+        }
     }
 }
 

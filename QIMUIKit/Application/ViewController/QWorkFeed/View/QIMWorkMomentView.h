@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithFrame:(CGRect)frame withMomentModel:(QIMWorkMomentModel *)model;
 
+@property (nonatomic, strong) QIMWorkMomentModel *momentModel;
+
 @end
 
 NS_ASSUME_NONNULL_END

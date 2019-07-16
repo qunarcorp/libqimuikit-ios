@@ -9,6 +9,6 @@
 
 @interface QIMPreviewMsgVC : UIViewController
 
-@property (nonatomic, strong) Message *message;
+@property (nonatomic, strong)QIMMessageModel *message;
 
 @end

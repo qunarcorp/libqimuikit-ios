@@ -24,6 +24,10 @@
 #import <Toast/Toast.h>
 #import "QIMWorkMomentView.h"
 #import "UIApplication+QIMApplication.h"
+#if __has_include("QIMIPadWindowManager.h")
+    #import "QIMIPadWindowManager.h"
+#endif
+
 
 @interface QIMWorkFeedDetailViewController () <UITableViewDelegate, UITableViewDataSource, QIMWorkCommentTableViewDelegate, QIMWorkCommentInputBarDelegate, UIGestureRecognizerDelegate, MomentCellDelegate, YYKeyboardObserver, MomentViewDelegate>
 
@@ -51,8 +55,29 @@
 
 - (QIMWorkMomentModel *)momentModel {
     if (!_momentModel) {
-        NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWihtMomentId:self.momentId];
-        
+        NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWithMomentId:self.momentId];
+        if (!momentDic.count) {
+            __weak __typeof(self) weakSelf = self;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                __strong __typeof(weakSelf) strongSelf = weakSelf;
+                if (!strongSelf) {
+                    return;
+                }
+                [[QIMKit sharedInstance] getRemoteMomentDetailWithMomentUUId:self.momentId withCallback:^(NSDictionary *momentDic) {
+                    dispatch_async(dispatch_get_main_queue(), ^{                        
+                        _momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
+                        NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
+                        QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
+                        _momentModel.content = conModel;
+                        _momentModel.isFullText = YES;
+                        _momentView.momentModel = _momentModel;
+                        strongSelf.commentListView.commentHeaderView = _momentView;
+                    });
+                }];
+            });
+        } else {
+            
+        }
         _momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
         NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
         QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
@@ -62,25 +87,9 @@
     return _momentModel;
 }
 
-- (QIMWorkMomentCell *)momentCell {
-    if (!_momentCell) {
-        _momentCell = [[QIMWorkMomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"QIMWorkMomentCell"];
-        _momentCell.selectionStyle = UITableViewCellSelectionStyleNone;
-        _momentCell.backgroundColor = [UIColor whiteColor];
-        _momentCell.delegate = self;
-        _momentCell.notShowControl = YES;
-        _momentCell.alwaysFullText = YES;
-        _momentCell.moment = self.momentModel;
-        _momentCell.likeActionHidden = YES;
-        _momentCell.commentActionHidden = YES;
-        _momentCell.height = self.momentModel.rowHeight;
-    }
-    return _momentCell;
-}
-
 - (QIMWorkMomentView *)momentView {
     if (!_momentView) {
-        _momentView = [[QIMWorkMomentView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 20) withMomentModel:self.momentModel];
+        _momentView = [[QIMWorkMomentView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 20) withMomentModel:self.momentModel];
         _momentView.delegate = self;
     }
     return _momentView;
@@ -88,9 +97,13 @@
 
 - (QIMWorkCommentTableView *)commentListView {
     if (!_commentListView) {
-        _commentListView = [[QIMWorkCommentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 55 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+//        if ([[QIMKit sharedInstance] getIsIpad]) {
+//            _commentListView = [[QIMWorkCommentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 55 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - [[QIMDeviceManager sharedInstance] getNAVIGATION_BAR_HEIGHT])];
+//        } else {
+            _commentListView = [[QIMWorkCommentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 55 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+//        }
         _commentListView.backgroundColor = [UIColor whiteColor];
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 300)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 300)];
         view.backgroundColor = [UIColor whiteColor];
         _commentListView.commentHeaderView = self.momentView;
         _commentListView.commentDelegate = self;
@@ -102,6 +115,13 @@
 - (QIMWorkCommentInputBar *)commentInputBar {
     if (!_commentInputBar) {
         _commentInputBar = [[QIMWorkCommentInputBar alloc] initWithFrame:CGRectMake(0, self.commentListView.bottom, self.view.width, 55 + [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+        /*
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+            _commentInputBar = [[QIMWorkCommentInputBar alloc] initWithFrame:CGRectMake(0, self.commentListView.bottom, self.view.width, 55 + [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+        } else {
+            _commentInputBar = [[QIMWorkCommentInputBar alloc] initWithFrame:CGRectMake(0, self.commentListView.bottom, self.view.width, 55 + [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+        }
+         */
         _commentInputBar.delegate = self;
     }
     [_commentInputBar setLikeNum:self.momentModel.likeNum withISLike:self.momentModel.isLike];
@@ -135,16 +155,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"动态详情";
+    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    }
     [[YYKeyboardManager defaultManager] addObserver:self];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadLocalComments) name:kNotifyReloadWorkComment object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadLocalComments) name:kNotifyReloadWorkComment object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadCommentsAfterUpload:) name:kNotifyReloadWorkComment object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMomentCommentNum:) name:kNotifyReloadWorkFeedCommentNum object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(beginControlChildCommentWithComment:) name:@"beginControlChildCommentWithComment" object:nil];
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3cd" size:20 color:[UIColor qim_colorWithHex:0x333333]]] style:UIBarButtonItemStylePlain target:self action:@selector(backBtnClick:)];
 
     [self.view addSubview:self.commentListView];
     [self.view addSubview:self.commentInputBar];
     [self loadComments];
+    
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
 }
 
 - (void)backBtnClick:(id)sender {
@@ -162,10 +193,16 @@
     }
 }
 
+- (void)reloadCommentsAfterUpload:(NSNotification *)notify {
+    NSDictionary *uploadCommentModelDic = notify.object;
+    QIMWorkCommentModel *uploadCommentModel = [self getCommentModelWithDic:uploadCommentModelDic];
+    [self.commentListView reloadUploadCommentWithModel:uploadCommentModel];
+}
+
 - (void)loadLocalComments {
     dispatch_async(dispatch_get_main_queue(), ^{
         __weak typeof(self) weakSelf = self;
-        [[QIMKit sharedInstance] getWorkCommentWithLastCommentRId:0 withMomentId:self.momentId WihtLimit:20 WithOffset:0 withFirstLocalComment:YES WihtComplete:^(NSArray * comments) {
+        [[QIMKit sharedInstance] getWorkCommentWithLastCommentRId:0 withMomentId:self.momentId WithLimit:20 WithOffset:0 withFirstLocalComment:YES WithComplete:^(NSArray * comments) {
             if (comments) {
                 [weakSelf.commentListView.commentModels removeAllObjects];
                 for (NSDictionary *commentDic in comments) {
@@ -182,24 +219,39 @@
 - (void)loadComments {
 
     __weak typeof(self) weakSelf = self;
+    [[QIMKit sharedInstance] getRemoteRecentHotCommentsWithMomentId:self.momentId withHotCommentCallBack:^(NSArray *hotComments) {
+        if ([hotComments isKindOfClass:[NSArray class]]) {
+            [weakSelf.commentListView.hotCommentModels removeAllObjects];
+            NSMutableArray *hotCommentIds = [NSMutableArray arrayWithCapacity:3];
+            for (NSDictionary *commentDic in hotComments) {
+                QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
+                [hotCommentIds addObject:model.commentUUID];
+                [weakSelf.commentListView.hotCommentModels addObject:model];
+            }
+            [[QIMKit sharedInstance] setHotCommentUUIds:hotCommentIds ForMomentId:self.momentId];
+            [weakSelf.commentListView reloadCommentsData];
+        } else {
+            [[QIMKit sharedInstance] setHotCommentUUIds:@[] ForMomentId:self.momentId];
+        }
+    }];
     [[QIMKit sharedInstance] getRemoteRecentNewCommentsWithMomentId:self.momentId withNewCommentCallBack:^(NSArray *comments) {
-        if (comments.count) {
+        if (comments) {
             [weakSelf.commentListView.commentModels removeAllObjects];
             for (NSDictionary *commentDic in comments) {
                 QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
                 [weakSelf.commentListView.commentModels addObject:model];
             }
             [weakSelf.commentListView reloadCommentsData];
-        }
-    }];
-    [[QIMKit sharedInstance] getRemoteRecentHotCommentsWithMomentId:self.momentId withHotCommentCallBack:^(NSArray *hotComments) {
-        if ([hotComments isKindOfClass:[NSArray class]]) {
-            [weakSelf.commentListView.hotCommentModels removeAllObjects];
-            for (NSDictionary *commentDic in hotComments) {
-                QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
-                [weakSelf.commentListView.hotCommentModels addObject:model];
-            }
+        } else {
+            [weakSelf.commentListView.commentModels removeAllObjects];
             [weakSelf.commentListView reloadCommentsData];
+            [weakSelf.commentListView endRefreshingHeader];
+            [weakSelf.commentListView endRefreshingFooterWithNoMoreData];
+            
+            if (weakSelf.commentListView.commentModels.count <= 0) {
+                //没有拉回来热评和普通评论，加载本地
+                [self loadLocalComments];
+            }
         }
     }];
 }
@@ -229,7 +281,7 @@
             self.commentInputBar.frame = CGRectMake(0, kbFrameOriginY - 55, CGRectGetWidth(self.view.frame), 55 + [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]);
             [self.commentInputBar resignFirstInputBar:YES];
             self.maskView.hidden = NO;
-            self.maskView.frame = CGRectMake(0, 0, SCREEN_WIDTH, CGRectGetMinY(self.commentInputBar.frame));
+            self.maskView.frame = CGRectMake(0, 0, self.view.width, CGRectGetMinY(self.commentInputBar.frame));
             [self.view addSubview:self.maskView];
             [self.view bringSubviewToFront:self.maskView];
         }];
@@ -253,6 +305,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [[QIMKit sharedInstance] removeHotCommentUUIdsForMomentId:self.momentId];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -261,58 +314,135 @@
 
 #pragma mark - QIMWorkCommentTableViewDelegate
 
-- (void)beginControlCommentWithComment:(QIMWorkCommentModel *)commentModel withIndexPath:(nonnull NSIndexPath *)indexPath{
-    self.staticCommentModel = commentModel;
-    if ([self.commentInputBar isInputBarFirstResponder] == NO) {
+- (void)beginControlChildCommentWithComment:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        NSDictionary *postDic = @{@"ChildModel": commentModel, @"ParentIndexPath" : self.parentCommentIndexPath};
+        NSDictionary *postDic = notify.object;
         
-        NSString *fromUserId = [NSString stringWithFormat:@"%@@%@", commentModel.fromUser, commentModel.fromHost];
-        if ([fromUserId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-            //自己实名发的评论
-            NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
-            [indexSet addIndex:1];
-            __weak __typeof(self) weakSelf = self;
-            LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
-                                                     cancelButtonTitle:@"取消"
-                                                               clicked:^(LCActionSheet * _Nonnull actionSheet, NSInteger buttonIndex) {
-                                                                   __typeof(self) strongSelf = weakSelf;
-                                                                   if (!strongSelf) {
-                                                                       return;
+        QIMWorkCommentModel *commentModel = [postDic objectForKey:@"ChildModel"];
+        NSIndexPath *indexPath = [postDic objectForKey:@"ParentIndexPath"];
+        self.staticCommentModel = commentModel;
+        if ([self.commentInputBar isInputBarFirstResponder] == NO) {
+            
+            NSString *fromUserId = [NSString stringWithFormat:@"%@@%@", commentModel.fromUser, commentModel.fromHost];
+            if ([fromUserId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
+                //自己实名发的评论
+                NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
+                [indexSet addIndex:1];
+                __weak __typeof(self) weakSelf = self;
+                LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
+                                                         cancelButtonTitle:@"取消"
+                                                                   clicked:^(LCActionSheet * _Nonnull actionSheet, NSInteger buttonIndex) {
+                                                                       __typeof(self) strongSelf = weakSelf;
+                                                                       if (!strongSelf) {
+                                                                           return;
+                                                                       }
+                                                                       NSLog(@"buttonIndex : %d", buttonIndex);
+                                                                       if (buttonIndex == 1) {
+                                                                           //删评论
+                                                                           [[QIMKit sharedInstance] deleteRemoteCommentWithComment:commentModel.commentUUID withPostUUId:commentModel.postUUID withSuperParentUUId:commentModel.superParentUUID withCallback:^(BOOL success, NSInteger superStatus) {
+                                                                               if (success) {
+                                                                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                       if (superStatus == 2) {
+                                                                                           [strongSelf.commentListView removeCommentWithIndexPath:indexPath withIsHotComment:NO withSuperStatus:superStatus];
+                                                                                       }
+                                                                                       [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteChildCommentModel" object:commentModel];
+                                                                                       [strongSelf.commentListView reloadCommentsData];
+                                                                                   });
+                                                                               } else {
+                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"删除评论失败"];
+                                                                               }
+                                                                           }];
+                                                                       } else if (buttonIndex == 2) {
+                                                                           //回复
+                                                                           [strongSelf beginAddCommentWithComment:commentModel];
+                                                                       }
                                                                    }
-                                                                   NSLog(@"buttonIndex : %d", buttonIndex);
-                                                                   if (buttonIndex == 1) {
-                                                                       //删评论
-                                                                       [[QIMKit sharedInstance] deleteRemoteCommentWithComment:commentModel.commentUUID withPostUUId:commentModel.postUUID withCallback:^(BOOL success) {
-                                                                           if (success) {
-                                                                               [strongSelf.commentListView removeCommentWithIndexPath:indexPath];
-                                                                           } else {
-                                                                               [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"删除评论失败"];
-                                                                           }
-                                                                       }];
-                                                                   } else if (buttonIndex == 2) {
-                                                                       //回复
-                                                                       [strongSelf beginAddCommentWithComment:commentModel];
-                                                                   }
-                                                               }
-                                                 otherButtonTitleArray:@[@"删除", @"回复"]];
-            actionSheet.destructiveButtonIndexSet = indexSet;
-            actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
-            [actionSheet show];
-        } else {
-            BOOL isAnonymous = [commentModel isAnonymous];
-            if (isAnonymous) {
-                NSString *anonymousName = [commentModel anonymousName];
-                NSString *placeholderText = [NSString stringWithFormat:@"  回复 %@", anonymousName];
-                [self.commentInputBar beginCommentToUserId:placeholderText];
+                                                     otherButtonTitleArray:@[@"删除", @"回复"]];
+                actionSheet.destructiveButtonIndexSet = indexSet;
+                actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
+                [actionSheet show];
             } else {
-                
-                NSString *userId = [NSString stringWithFormat:@"%@@%@", commentModel.fromUser, commentModel.fromHost];
-                NSString *name = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
-                NSString *placeholderText = [NSString stringWithFormat:@"  回复 %@", name];
-                [self.commentInputBar beginCommentToUserId:placeholderText];
+                BOOL isAnonymous = [commentModel isAnonymous];
+                if (isAnonymous) {
+                    NSString *anonymousName = [commentModel anonymousName];
+                    NSString *placeholderText = [NSString stringWithFormat:@"  回复 %@", anonymousName];
+                    [self.commentInputBar beginCommentToUserId:placeholderText];
+                } else {
+                    
+                    NSString *userId = [NSString stringWithFormat:@"%@@%@", commentModel.fromUser, commentModel.fromHost];
+                    NSString *name = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
+                    NSString *placeholderText = [NSString stringWithFormat:@"  回复 %@", name];
+                    [self.commentInputBar beginCommentToUserId:placeholderText];
+                }
             }
+        } else {
+            [self.view endEditing:YES];
         }
+    });
+}
+
+- (void)beginControlCommentWithComment:(QIMWorkCommentModel *)commentModel withIsHotComment:(BOOL)isHotComment withIndexPath:(NSIndexPath *)indexPath {
+    self.staticCommentModel = commentModel;
+    if (self.staticCommentModel.isDelete == YES) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"该评论已被删除" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alert addAction:okAction];
+        [self presentViewController:alert animated:YES completion:nil];
     } else {
-        [self.view endEditing:YES];
+        if ([self.commentInputBar isInputBarFirstResponder] == NO) {
+            
+            NSString *fromUserId = [NSString stringWithFormat:@"%@@%@", commentModel.fromUser, commentModel.fromHost];
+            if ([fromUserId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
+                //自己实名发的评论
+                NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
+                [indexSet addIndex:1];
+                __weak __typeof(self) weakSelf = self;
+                LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
+                                                         cancelButtonTitle:@"取消"
+                                                                   clicked:^(LCActionSheet * _Nonnull actionSheet, NSInteger buttonIndex) {
+                                                                       __typeof(self) strongSelf = weakSelf;
+                                                                       if (!strongSelf) {
+                                                                           return;
+                                                                       }
+                                                                       NSLog(@"buttonIndex : %d", buttonIndex);
+                                                                       if (buttonIndex == 1) {
+                                                                           //删评论
+                                                                           [[QIMKit sharedInstance] deleteRemoteCommentWithComment:commentModel.commentUUID withPostUUId:commentModel.postUUID withSuperParentUUId:commentModel.superParentUUID withCallback:^(BOOL success, NSInteger superStatus) {
+                                                                               if (success) {
+                                                                                   [strongSelf.commentListView removeCommentWithIndexPath:indexPath withIsHotComment:isHotComment withSuperStatus:superStatus];
+                                                                               } else {
+                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"删除评论失败"];
+                                                                               }
+                                                                           }];
+                                                                       } else if (buttonIndex == 2) {
+                                                                           //回复
+                                                                           [strongSelf beginAddCommentWithComment:commentModel];
+                                                                       }
+                                                                   }
+                                                     otherButtonTitleArray:@[@"删除", @"回复"]];
+                actionSheet.destructiveButtonIndexSet = indexSet;
+                actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
+                [actionSheet show];
+            } else {
+                BOOL isAnonymous = [commentModel isAnonymous];
+                if (isAnonymous) {
+                    NSString *anonymousName = [commentModel anonymousName];
+                    NSString *placeholderText = [NSString stringWithFormat:@"  回复 %@", anonymousName];
+                    [self.commentInputBar beginCommentToUserId:placeholderText];
+                } else {
+                    
+                    NSString *userId = [NSString stringWithFormat:@"%@@%@", commentModel.fromUser, commentModel.fromHost];
+                    NSString *name = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
+                    NSString *placeholderText = [NSString stringWithFormat:@"  回复 %@", name];
+                    [self.commentInputBar beginCommentToUserId:placeholderText];
+                }
+            }
+        } else {
+            [self.view endEditing:YES];
+        }
     }
 }
 
@@ -337,6 +467,7 @@
 
 - (void)loadNewComments {
     //下拉刷新
+    [[QIMKit sharedInstance] setHotCommentUUIds:@[] ForMomentId:self.momentId];
     __weak typeof(self) weakSelf = self;
     [[QIMKit sharedInstance] getRemoteMomentDetailWithMomentUUId:self.momentId withCallback:^(NSDictionary *momentDic) {
         if (momentDic.count > 0) {
@@ -345,7 +476,7 @@
             NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
             QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
             weakSelf.momentModel.content = conModel;
-            weakSelf.momentCell.moment = self.momentModel;
+            weakSelf.momentView.momentModel = self.momentModel;
             weakSelf.commentListView.commentNum = self.momentModel.commentsNum;
             [weakSelf.commentListView reloadCommentsData];
             [weakSelf.commentListView endRefreshingHeader];
@@ -357,7 +488,7 @@
 - (void)loadMoreComments {
     __weak typeof(self) weakSelf = self;
     QIMWorkCommentModel *lastModel = [self.commentListView.commentModels lastObject];
-    [[QIMKit sharedInstance] getWorkCommentWithLastCommentRId:lastModel.rId withMomentId:self.momentId WihtLimit:20 WithOffset:self.commentListView.commentModels.count withFirstLocalComment:NO WihtComplete:^(NSArray * _Nonnull array) {
+    [[QIMKit sharedInstance] getWorkCommentWithLastCommentRId:lastModel.rId withMomentId:self.momentId WithLimit:20 WithOffset:self.commentListView.commentModels.count withFirstLocalComment:NO WithComplete:^(NSArray * _Nonnull array) {
         NSLog(@"loadMoreComments : %@", array);
         if (array.count > 0) {
             for (NSDictionary *commentDic in array) {
@@ -374,7 +505,7 @@
 
 #pragma mark - QIMWorkCommentInputBarDelegate
 
-- (void)didaddCommentWithStr:(NSString *)str {
+- (void)didaddCommentWithStr:(NSString *)str withAtList:(NSArray *)atList {
     if (self.staticCommentModel) {
         
         //评论上一条的评论
@@ -387,22 +518,26 @@
         NSString *toAnonymousPhoto = self.staticCommentModel.anonymousPhoto;
         
         NSMutableDictionary *commentDic = [[NSMutableDictionary alloc] init];
-        [commentDic setObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
-        [commentDic setObject:self.momentId forKey:@"postUUID"];
-        [commentDic setObject:self.staticCommentModel.commentUUID forKey:@"parentCommentUUID"];
-        [commentDic setObject:str forKey:@"content"];
-        [commentDic setObject:[QIMKit getLastUserName] forKey:@"fromUser"];
-        [commentDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
-        [commentDic setObject:self.staticCommentModel.fromUser forKey:@"toUser"];
-        [commentDic setObject:self.staticCommentModel.fromHost forKey:@"toHost"];
-        [commentDic setObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
-        [commentDic setObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
-        [commentDic setObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
-        [commentDic setObject:(isToAnonymous == YES) ? @(1) : @(0) forKey:@"toisAnonymous"];
-        [commentDic setObject:(toAnonymousName.length > 0) ? toAnonymousName : toAnonymousName forKey:@"toAnonymousName"];
-        [commentDic setObject:(toAnonymousPhoto.length > 0) ? toAnonymousPhoto : toAnonymousPhoto forKey:@"toAnonymousPhoto"];
-        [commentDic setObject:self.momentModel.ownerId forKey:@"postOwner"];
-        [commentDic setObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
+        [commentDic setQIMSafeObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
+        [commentDic setQIMSafeObject:self.momentId forKey:@"postUUID"];
+        [commentDic setQIMSafeObject:self.staticCommentModel.commentUUID forKey:@"parentCommentUUID"];
+        [commentDic setQIMSafeObject:(self.staticCommentModel.superParentUUID.length > 0) ? self.staticCommentModel.superParentUUID : self.staticCommentModel.commentUUID forKey:@"superParentUUID"];
+        [commentDic setQIMSafeObject:str forKey:@"content"];
+        [commentDic setQIMSafeObject:[QIMKit getLastUserName] forKey:@"fromUser"];
+        [commentDic setQIMSafeObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
+        [commentDic setQIMSafeObject:self.staticCommentModel.fromUser forKey:@"toUser"];
+        [commentDic setQIMSafeObject:self.staticCommentModel.fromHost forKey:@"toHost"];
+        [commentDic setQIMSafeObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
+        [commentDic setQIMSafeObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
+        [commentDic setQIMSafeObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
+        [commentDic setQIMSafeObject:(isToAnonymous == YES) ? @(1) : @(0) forKey:@"toisAnonymous"];
+        [commentDic setQIMSafeObject:(toAnonymousName.length > 0) ? toAnonymousName : toAnonymousName forKey:@"toAnonymousName"];
+        [commentDic setQIMSafeObject:(toAnonymousPhoto.length > 0) ? toAnonymousPhoto : toAnonymousPhoto forKey:@"toAnonymousPhoto"];
+        [commentDic setQIMSafeObject:self.momentModel.ownerId forKey:@"postOwner"];
+        [commentDic setQIMSafeObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
+        [commentDic setQIMSafeObject:[[QIMKit sharedInstance] getHotCommentUUIdsForMomentId:self.momentId] forKey:@"hotCommentUUID"];
+        [commentDic setQIMSafeObject:atList forKey:@"atList"];
+
         [[QIMKit sharedInstance] uploadCommentWithCommentDic:commentDic];
     } else {
         //评论帖子
@@ -411,22 +546,24 @@
         BOOL isAnonymous = [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
         
         NSMutableDictionary *commentDic = [[NSMutableDictionary alloc] init];
-        [commentDic setObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
-        [commentDic setObject:self.momentId forKey:@"postUUID"];
-        [commentDic setObject:@"" forKey:@"parentCommentUUID"];
-        [commentDic setObject:str forKey:@"content"];
-        [commentDic setObject:[QIMKit getLastUserName] forKey:@"fromUser"];
-        [commentDic setObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
-        [commentDic setObject:@"" forKey:@"toUser"];
-        [commentDic setObject:@"" forKey:@"toHost"];
-        [commentDic setObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
-        [commentDic setObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
-        [commentDic setObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
-        [commentDic setObject:@(0) forKey:@"toisAnonymous"];
-        [commentDic setObject:@"" forKey:@"toAnonymousName"];
-        [commentDic setObject:@"" forKey:@"toAnonymousPhoto"];
-        [commentDic setObject:self.momentModel.ownerId forKey:@"postOwner"];
-        [commentDic setObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
+        [commentDic setQIMSafeObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
+        [commentDic setQIMSafeObject:self.momentId forKey:@"postUUID"];
+        [commentDic setQIMSafeObject:str forKey:@"content"];
+        [commentDic setQIMSafeObject:[QIMKit getLastUserName] forKey:@"fromUser"];
+        [commentDic setQIMSafeObject:[[QIMKit sharedInstance] getDomain] forKey:@"fromHost"];
+        [commentDic setQIMSafeObject:@"" forKey:@"toUser"];
+        [commentDic setQIMSafeObject:@"" forKey:@"toHost"];
+        [commentDic setQIMSafeObject:(isAnonymous == YES) ? @(1) : @(0) forKey:@"isAnonymous"];
+        [commentDic setQIMSafeObject:(anonymousPhoto.length > 0) ? anonymousPhoto : @"" forKey:@"anonymousPhoto"];
+        [commentDic setQIMSafeObject:(anonymousName.length > 0) ? anonymousName : @"" forKey:@"anonymousName"];
+        [commentDic setQIMSafeObject:@(0) forKey:@"toisAnonymous"];
+        [commentDic setQIMSafeObject:@"" forKey:@"toAnonymousName"];
+        [commentDic setQIMSafeObject:@"" forKey:@"toAnonymousPhoto"];
+        [commentDic setQIMSafeObject:self.momentModel.ownerId forKey:@"postOwner"];
+        [commentDic setQIMSafeObject:self.momentModel.ownerHost forKey:@"postOwnerHost"];
+        [commentDic setQIMSafeObject:[[QIMKit sharedInstance] getHotCommentUUIdsForMomentId:self.momentId] forKey:@"hotCommentUUID"];
+        [commentDic setQIMSafeObject:atList forKey:@"atList"];
+
         [[QIMKit sharedInstance] uploadCommentWithCommentDic:commentDic];
     }
     //回复完之后清空staticCommentModel
@@ -445,6 +582,19 @@
     QIMWorkMomentUserIdentityVC *identityVc = [[QIMWorkMomentUserIdentityVC alloc] init];
     identityVc.momentId = self.momentId;
     [self.navigationController pushViewController:identityVc animated:YES];
+}
+
+- (void)didiOpenUserSelectVCWithVC:(UIViewController *)qNoticeVC {
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+        QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+        qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+        [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
+    } else {
+        [self.navigationController pushViewController:qNoticeVC animated:YES];
+    }
 }
 
 // 查看全文/收起
