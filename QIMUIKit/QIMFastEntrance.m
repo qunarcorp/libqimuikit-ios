@@ -62,6 +62,7 @@
 #import "QIMFilePreviewVC.h"
 #import "QIMMWPhotoSectionBrowserVC.h"
 #import "QIMWorkFeedViewController.h"
+#import "QIMWorkFeedSearchViewController.h"
 #import "QIMWorkMomentPushViewController.h"
 #import "QIMWorkFeedMYCirrleViewController.h"
 
@@ -1573,6 +1574,18 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
     });
 #endif
+}
+
++ (void)openWorkMomentSearchVc {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        QIMWorkFeedSearchViewController *searchVC = [[QIMWorkFeedSearchViewController alloc] init];
+        QIMNavController *pushNav = [[QIMNavController alloc] initWithRootViewController:searchVC];
+        [navVC presentViewController:pushNav animated:YES completion:nil];
+    });
 }
 
 + (void)presentWorkMomentPushVCWithLinkDic:(NSDictionary *)linkDic withNavVc:(UINavigationController *)nav {
