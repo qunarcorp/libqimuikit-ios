@@ -102,7 +102,9 @@ static QIMNotificationManager *_notificationManager = nil;
 - (void)submitLog:(NSNotification *)notify {
 #if __has_include("QIMLocalLog.h")
     NSString *conent = notify.object;
-    [[QIMLocalLog sharedInstance] submitFeedBackWithContent:conent withUserInitiative:NO];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+       [[QIMLocalLog sharedInstance] submitFeedBackWithContent:conent withUserInitiative:NO];
+    });
 #endif
 }
 
