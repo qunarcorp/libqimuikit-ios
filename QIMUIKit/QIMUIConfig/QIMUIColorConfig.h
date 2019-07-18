@@ -102,4 +102,8 @@
 //驼圈
 #define qim_nav_addnewmoment_btnColor   [UIColor qim_colorWithHex:0x00CABE]      //新建驼圈按钮Color
 
+#define qim_moment_alum_btnColor                 [UIColor qim_colorWithHex:0x5EBA9E]      //驼圈相册按钮
+#define qim_moment_video_btnColor                  [UIColor qim_colorWithHex:0x7F91FD]       //驼圈视频按钮
+#define qim_moment_at_btnColor                     [UIColor qim_colorWithHex:0xF8C43D]       //驼圈艾特按钮
+
 #endif /* QIMUIColorConfig_h */
