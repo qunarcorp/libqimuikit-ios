@@ -178,16 +178,11 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     NSString *thubmName = [infoDic objectForKey:@"ThumbName"] ? [infoDic objectForKey:@"ThumbName"] : [NSString stringWithFormat:@"%@_thumb.jpg", [[fileName componentsSeparatedByString:@"."] firstObject]];
     NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:thubmName];
     UIImage *image = [UIImage imageWithContentsOfFile:filePath];
-    if (image == nil) {
-        NSString *thumbUrl = [infoDic objectForKey:@"ThumbUrl"];
-        if (![thumbUrl hasPrefix:[QIMKit sharedInstance].qimNav_InnerFileHttpHost]) {
-            thumbUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingPathComponent:thumbUrl];
-        }
-        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:thumbUrl]];
-        [data writeToFile:filePath atomically:YES];
-        image = [UIImage imageWithContentsOfFile:filePath];
+    NSString *thumbUrl = [infoDic objectForKey:@"ThumbUrl"];
+    if (![thumbUrl hasPrefix:[QIMKit sharedInstance].qimNav_InnerFileHttpHost]) {
+        thumbUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingPathComponent:thumbUrl];
     }
-    [_imageView setImage:image];
+    [_imageView qimsd_setImageWithURL:[NSURL URLWithString:thumbUrl]];
     [_infoView setFrame:CGRectMake(0, _imageView.bottom - _infoView.height, _infoView.width, _infoView.height)];
     [_imageView setFrame:CGRectMake((self.message.messageDirection==QIMMessageDirection_Received?kBackViewCap+10:5) - 1, 5, size.width, size.height)];
     float backWidth = size.width + 6 + kBackViewCap + 8;
