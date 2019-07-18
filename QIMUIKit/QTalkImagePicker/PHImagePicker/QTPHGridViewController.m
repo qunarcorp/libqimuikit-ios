@@ -558,7 +558,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
         BOOL notAllowSelectVideo = [[QTPHImagePickerManager sharedInstance] notAllowSelectVideo];
         if (notAllowSelectVideo == YES) {
             //不允许选择视频
-            [QTalkTipsView showTips:[NSString stringWithFormat:@"当前不支持上传视频到驼圈"] InView:self.view];
+            [QTalkTipsView showTips:[NSString stringWithFormat:@"当前不支持上传视频"] InView:self.view];
         } else {
             [self.picker.selectedAssets insertObject:asset atIndex:self.picker.selectedAssets.count];
             int duration = (int)asset.duration;

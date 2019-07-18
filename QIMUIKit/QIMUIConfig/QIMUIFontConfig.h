@@ -59,6 +59,10 @@
 
 #define qim_nav_addnewmoment_font         @"\U0000e40d"       //新建驼圈
 #define qim_nav_mymoment_font             @"\U0000e737"       //我的驼圈
+#define qim_moment_alum                   @"\U0000e89c"       //驼圈相册按钮
+#define qim_moment_video                  @"\U0000e89b"       //驼圈视频按钮
+#define qim_moment_at                     @"\U0000e89a"       //驼圈艾特按钮
+#define qim_moment_useridentify_arrow     @"\U0000e7e0"       //驼圈Arrow
 
 
 #endif /* QIMUIFontConfig_h */
