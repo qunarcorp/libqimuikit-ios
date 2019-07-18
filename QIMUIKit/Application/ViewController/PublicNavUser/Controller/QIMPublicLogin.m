@@ -734,24 +734,72 @@ static const int companyTag = 10001;
             QIMVerboseLog(@"str : %@", str);
             NSString * navAddress;
             NSString * navUrl;
-            if ([str containsString:@"publicnav?c="]) {
-                str = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
-                navUrl = str;
-                navAddress = str;
-                [self onSaveWith:navAddress navUrl:navUrl];
-            } else if ([str containsString:@"confignavigation?configurl="]) {
-                NSString *base64NavUrl = [[str componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
-                str = [base64NavUrl qim_base64DecodedString];
-                navUrl = str;
-                navAddress = str;
-                if ([str containsString:@"publicnav?c="]) {
-                    navAddress = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
+            
+            NSURL * myurl = [NSURL URLWithString:str];
+            NSString * query = [myurl query];
+            NSArray * parameters = [query componentsSeparatedByString:@"&"];
+            if (parameters && parameters.count > 0) {
+                for (NSString * item in parameters) {
+                    NSArray * value = [item componentsSeparatedByString:@"="];
+                    NSString * key = [value objectAtIndex:0];
+                    if ([key isEqualToString:@"c"]) {
+                        navUrl = str;
+                        navAddress = [item stringByReplacingOccurrencesOfString:@"c=" withString:@""];
+                        [self onSaveWith:navAddress navUrl:navUrl];
+                    }
+                    else if([key isEqualToString:@"configurl"]){
+                        NSString * configUrlStr = [[item stringByReplacingOccurrencesOfString:@"configurl=" withString:@""] qim_base64DecodedString];
+                        NSURL *  configUrl = [NSURL URLWithString:configUrlStr];
+                        NSString * configQuery = [configUrl query];
+                        NSArray * parameters = [configQuery componentsSeparatedByString:@"&"];
+                        if (parameters.count > 0 && parameters) {
+                            for (NSString * tempItems in parameters) {
+                                NSArray * tempValue = [tempItems componentsSeparatedByString:@"="];
+                                NSString * tempKey = [tempValue objectAtIndex:0];
+                                if ([key isEqualToString:@"c"]) {
+                                    navUrl = configUrl.absoluteString;
+                                    navAddress = [tempItems stringByReplacingOccurrencesOfString:@"c=" withString:@""];
+                                    [self onSaveWith:navAddress navUrl:navUrl];
+                                }
+                            }
+                        }
+                        else{
+                            navUrl = configUrl.absoluteString;
+                            navAddress =configUrl.absoluteString;
+                            [self requestByURLSessionWithUrl:configUrl.absoluteString];
+                        }
+                    }
                 }
-                [self onSaveWith:navAddress navUrl:navUrl];
-            } else if ([str containsString:@"startalk_nav"]){
+            }
+            else{
                 navUrl = str;
+                navAddress = str;
                 [self requestByURLSessionWithUrl:str];
             }
+            
+//            if ([str containsString:@"publicnav?c="]) {
+//                str = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
+//                navUrl = str;
+//                navAddress = str;
+//                [self onSaveWith:navAddress navUrl:navUrl];
+//            } else if ([str containsString:@"confignavigation?configurl="]) {
+//                NSString *base64NavUrl = [[str componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
+//                str = [base64NavUrl qim_base64DecodedString];
+//                navUrl = str;
+//                navAddress = str;
+//                if ([str containsString:@"publicnav?c="]) {
+//                    navAddress = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
+//                }
+//                [self onSaveWith:navAddress navUrl:navUrl];
+//            } else if ([str containsString:@"startalk_nav"]){
+//                navUrl = str;
+//                [self requestByURLSessionWithUrl:str];
+//            }
+//            else{
+//                navUrl = str;
+//                navAddress = str;
+//                [self requestByURLSessionWithUrl:str];
+//            }
         }
     }];
     vc.isSettingNav = YES;
@@ -790,28 +838,52 @@ static const int companyTag = 10001;
                                               QIMVerboseLog(@"%@",requestLocation);
                                               NSString * navAddress;
                                               NSString * navUrl;
-                                              if ([requestLocation containsString:@"publicnav?c="]) {
-                                                  requestLocation = [[requestLocation componentsSeparatedByString:@"publicnav?c="] lastObject];
-                                                  navUrl = requestLocation;
-                                                  navAddress = requestLocation;
-                                                  [self onSaveWith:navAddress navUrl:navUrl];
-                                              } else if ([requestLocation containsString:@"confignavigation?configurl="]) {
-                                                  NSString *base64NavUrl = [[requestLocation componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
-                                                  requestLocation = [base64NavUrl qim_base64DecodedString];
-                                                  navUrl = requestLocation;
-                                                  navAddress = requestLocation;
-                                                  if ([requestLocation containsString:@"publicnav?c="]) {
-                                                      navAddress = [[requestLocation componentsSeparatedByString:@"publicnav?c="] lastObject];
-                                                  }
-                                                  else if([requestLocation containsString:@"startalk_nav"]){
-                                                      [self requestByURLSessionWithUrl:navUrl];
-                                                      return;
-                                                  }
-                                                  else{
+                                              NSURL * requestLocationUrl = [NSURL URLWithString:requestLocation];
+                                              NSString * queryStr = [requestLocationUrl query];
+                                              NSArray * parameters = [queryStr componentsSeparatedByString:@"&"];
+                                              if (parameters.count>0 && parameters) {
+                                                  for (NSString * item in parameters) {
+                                                      NSArray * value = [item componentsSeparatedByString:@"="];
                                                       
+                                                      NSString * key = [value objectAtIndex:0];
+                                                      if ([key isEqualToString:@"c"]) {
+                                                          navUrl = requestLocationUrl;
+                                                          navAddress = [item stringByReplacingOccurrencesOfString:@"c=" withString:@""];
+                                                          [self onSaveWith:navAddress navUrl:navUrl];
+                                                      }
+                                                      else if([key isEqualToString:@"configurl"]){
+                                                          NSString * configUrlStr = [[item stringByReplacingOccurrencesOfString:@"configurl=" withString:@""] qim_base64DecodedString];
+                                                          NSURL * configUrl = [NSURL URLWithString:configUrlStr];
+                                                          NSString * configQuery = [configUrl query];
+                                                          NSArray * parameters = [configQuery componentsSeparatedByString:@"&"];
+                                                          if (parameters.count > 0 && parameters) {
+                                                              for (NSString * tempItems in parameters) {
+                                                                  NSArray * tempValue = [tempItems componentsSeparatedByString:@"="];
+                                                                  NSString * tempKey = [tempValue objectAtIndex:0];
+                                                                  if ([tempKey isEqualToString:@"c"]) {
+                                                                      navUrl = configUrl.absoluteString;
+                                                                      navAddress = [tempItems stringByReplacingOccurrencesOfString:@"c=" withString:@""];
+                                                                      [self onSaveWith:navAddress navUrl:navUrl];
+                                                                  }
+                                                                  else{
+//                                                                      navUrl = configUrl.absoluteString;
+//                                                                      navAddress =configUrl.absoluteString;
+//                                                                      [self onSaveWith:navAddress navUrl:navUrl];
+                                                                  }
+                                                              }
+                                                          }
+                                                          else if([configUrlStr containsString:@"startalk_nav"]){
+                                                              [self requestByURLSessionWithUrl:configUrlStr];
+                                                              return;
+                                                          }
+                                                          else{
+                                                              navUrl = configUrlStr;
+                                                              [self onSaveWith:navAddress navUrl:navUrl];
+                                                          }
+                                                      }
                                                   }
-                                                  [self onSaveWith:navAddress navUrl:navUrl];
-                                              } else {
+                                              }
+                                              else {
                                                   navUrl = requestLocation;
                                                   [self onSaveWith:navAddress navUrl:navUrl];
                                               }
