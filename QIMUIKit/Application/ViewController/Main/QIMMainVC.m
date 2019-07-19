@@ -27,7 +27,7 @@
 #import "QIMNavBackBtn.h"
 #import "QIMRNDebugConfigVc.h"
 #import "NSBundle+QIMLibrary.h"
-
+#import "QIMVideoMediaPlayerVC.h"
 #if __has_include("RNSchemaParse.h")
 
 #import "QTalkSuggestRNJumpManager.h"
@@ -1193,6 +1193,9 @@ static dispatch_once_t __onceMainToken;
 }
 
 - (void)openMySetting:(id)sender {
+    QIMVideoMediaPlayerVC *playerVc = [[QIMVideoMediaPlayerVC alloc] init];
+    [self.navigationController pushViewController:playerVc animated:YES];
+    return;
 /*
     {
         Bundle = "clock_in.ios";
