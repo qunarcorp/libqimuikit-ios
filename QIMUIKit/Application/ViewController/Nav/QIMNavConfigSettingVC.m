@@ -193,7 +193,8 @@
 //                weakSelf.navUrl = str;
 //                [weakSelf requestByURLSessionWithUrl:str];
 //            }
-            _navAddressTextField.text = str;
+            _navAddressTextField.text = navUrl;
+            _navNickNameTextField.text = navAddress;
             if (!_navNickNameTextField.text.length) {
                 _navNickNameTextField.text = [[str.lastPathComponent componentsSeparatedByString:@"="] lastObject];
             }
