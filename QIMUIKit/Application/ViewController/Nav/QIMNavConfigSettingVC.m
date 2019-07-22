@@ -10,12 +10,12 @@
 #import "QIMZBarViewController.h"
 #import "MBProgressHUD.h"
 
-@interface QIMNavConfigSettingVC()<UIAlertViewDelegate>{
+@interface QIMNavConfigSettingVC()<UIAlertViewDelegate,NSURLSessionTaskDelegate>{
     UILabel *_navNickNameLable;
     UILabel *_navAddressLabel;
     UITextField *_navNickNameTextField;
     UITextField *_navAddressTextField;
-    UIButton *_qrcodeNavBtn;
+//    UIButton *_qrcodeNavBtn;
 }
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *navConfigUrls;
@@ -24,6 +24,7 @@
 @property (nonatomic, copy) NSString *navUrl;
 @property (nonatomic, assign) BOOL edited;
 @property (nonatomic, assign) BOOL added;
+@property (nonatomic, strong) UIButton * scanSettingNavBtn;
 @end
 
 @implementation QIMNavConfigSettingVC
@@ -56,7 +57,18 @@
 }
 
 - (void)setupUI {
-    _navNickNameLable = [[UILabel alloc] initWithFrame:CGRectMake(20, 30, self.view.width - 40, 20)];
+    
+    [self.scanSettingNavBtn setFrame:CGRectMake((SCREEN_WIDTH - 175)/2, 26, 175, 40)];
+    [self.view addSubview:self.scanSettingNavBtn];
+    
+    UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(20, self.scanSettingNavBtn.bottom + 36, SCREEN_WIDTH - 20, 16)];
+    label.text = @"您也可以手动输入导航";
+    label.font = [UIFont systemFontOfSize:14];
+    label.textAlignment = NSTextAlignmentLeft;
+    label.textColor = [UIColor qim_colorWithHex:0xBFBFBF];
+    [self.view addSubview:label];
+    
+    _navNickNameLable = [[UILabel alloc] initWithFrame:CGRectMake(20, label.bottom + 16, self.view.width - 40, 20)];
     [_navNickNameLable setText:@"导航名"];
     [_navNickNameLable setBackgroundColor:[UIColor clearColor]];
     [_navNickNameLable setFont:[UIFont systemFontOfSize:16]];
@@ -105,13 +117,13 @@
     }
     [navAddressTextBgView addSubview:_navAddressTextField];
     
-    _qrcodeNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    _qrcodeNavBtn.frame = CGRectMake(_navAddressTextField.right + 5, 0, 36, 36);
-    _qrcodeNavBtn.layer.masksToBounds = YES;
-    _qrcodeNavBtn.layer.cornerRadius = CGRectGetWidth(_qrcodeNavBtn.frame) / 2.0;
-    [_qrcodeNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
-    [_qrcodeNavBtn addTarget:self action:@selector(scanNav:) forControlEvents:UIControlEventTouchUpInside];
-    [navAddressTextBgView addSubview:_qrcodeNavBtn];
+//    _qrcodeNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    _qrcodeNavBtn.frame = CGRectMake(_navAddressTextField.right + 5, 0, 36, 36);
+//    _qrcodeNavBtn.layer.masksToBounds = YES;
+//    _qrcodeNavBtn.layer.cornerRadius = CGRectGetWidth(_qrcodeNavBtn.frame) / 2.0;
+//    [_qrcodeNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]] forState:UIControlStateNormal];
+//    [_qrcodeNavBtn addTarget:self action:@selector(scanNav:) forControlEvents:UIControlEventTouchUpInside];
+//    [navAddressTextBgView addSubview:_qrcodeNavBtn];
     [self.view addSubview:navAddressTextBgView];
 }
 
@@ -120,16 +132,67 @@
     QIMZBarViewController *vc=[[QIMZBarViewController alloc] initWithBlock:^(NSString *str, BOOL isScceed) {
         if (isScceed) {
             QIMVerboseLog(@"str : %@", str);
-            if ([str containsString:@"publicnav?c="]) {
-                str = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
-                weakSelf.navUrl = str;
-            } else if ([str containsString:@"confignavigation?configurl="]) {
-                NSString *base64NavUrl = [[str componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
-                str = [base64NavUrl qim_base64DecodedString];
-                weakSelf.navUrl = str;
-            } else {
-                weakSelf.navUrl = str;
+            
+            NSString * navAddress;
+            NSString * navUrl;
+            
+            NSURL * myurl = [NSURL URLWithString:str];
+            NSString * query = [myurl query];
+            NSArray * parameters = [query componentsSeparatedByString:@"&"];
+            if (parameters && parameters.count > 0) {
+                for (NSString * item in parameters) {
+                    NSArray * value = [item componentsSeparatedByString:@"="];
+                    NSString * key = [value objectAtIndex:0];
+                    if ([key isEqualToString:@"c"]) {
+                        navUrl = str;
+                        navAddress = [item stringByReplacingOccurrencesOfString:@"c=" withString:@""];
+                        weakSelf.navUrl = str;
+                        _navAddressTextField.text = str;
+                        _navNickNameTextField.text = navAddress;
+                    }
+                    else if([key isEqualToString:@"configurl"]){
+                        NSString * configUrlStr = [[item stringByReplacingOccurrencesOfString:@"configurl=" withString:@""] qim_base64DecodedString];
+                        NSURL *  configUrl = [NSURL URLWithString:configUrlStr];
+                        NSString * configQuery = [configUrl query];
+                        NSArray * parameters = [configQuery componentsSeparatedByString:@"&"];
+                        if (parameters.count > 0 && parameters) {
+                            for (NSString * tempItems in parameters) {
+                                NSArray * tempValue = [tempItems componentsSeparatedByString:@"="];
+                                NSString * tempKey = [tempValue objectAtIndex:0];
+                                if ([key isEqualToString:@"c"]) {
+                                    navUrl = configUrl.absoluteString;
+                                    navAddress = [tempItems stringByReplacingOccurrencesOfString:@"c=" withString:@""];
+                                    weakSelf.navUrl = navUrl;
+                                    _navAddressTextField.text = navUrl;
+                                    _navNickNameTextField.text = navAddress;
+                                }
+                            }
+                        }
+                        else{
+                            navUrl = configUrl.absoluteString;
+                            navAddress =configUrl.absoluteString;
+                            [self requestByURLSessionWithUrl:configUrl.absoluteString];
+                        }
+                    }
+                }
             }
+            else{
+                navUrl = str;
+                navAddress = str;
+                [self requestByURLSessionWithUrl:str];
+            }
+            
+//            if ([str containsString:@"publicnav?c="]) {
+//                str = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
+//                weakSelf.navUrl = str;
+//            } else if ([str containsString:@"confignavigation?configurl="]) {
+//                NSString *base64NavUrl = [[str componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
+//                str = [base64NavUrl qim_base64DecodedString];
+//                weakSelf.navUrl = str;
+//            } else {
+//                weakSelf.navUrl = str;
+//                [weakSelf requestByURLSessionWithUrl:str];
+//            }
             _navAddressTextField.text = str;
             if (!_navNickNameTextField.text.length) {
                 _navNickNameTextField.text = [[str.lastPathComponent componentsSeparatedByString:@"="] lastObject];
@@ -137,6 +200,122 @@
         }
     }];
     [self presentViewController:vc animated:YES completion:nil];
+}
+
+- (void)requestByURLSessionWithUrl:(NSString *)urlStr{
+    NSURL *url = [NSURL URLWithString:urlStr];
+    NSMutableURLRequest *quest = [NSMutableURLRequest requestWithURL:url];
+    quest.HTTPMethod = @"GET";
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    NSURLSession *urlSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue currentQueue]];
+    NSURLSessionDataTask *task = [urlSession dataTaskWithRequest:quest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
+                                  {
+                                      NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
+                                      
+                                      NSLog(@"statusCode: %ld", urlResponse.statusCode);
+                                      NSDictionary * dataSerialDic = [[QIMJSONSerializer sharedInstance] deserializeObject:data error:nil];
+                                      
+                                      if (dataSerialDic && dataSerialDic.count > 0) {
+                                          NSDictionary * baseAddress = [dataSerialDic objectForKey:@"baseaddess"];
+                                          if (baseAddress && baseAddress.count >0) {
+                                              NSString * domain = [baseAddress objectForKey:@"domain"];
+                                              if (domain && domain.length >0) {
+                                                  self.navUrl = urlStr;
+                                                  _navAddressTextField.text = urlStr;
+                                                  _navNickNameTextField.text = domain;
+                                                  return;
+                                              }
+                                          }
+                                      }
+                                      NSLog(@"%@", urlResponse.allHeaderFields);
+                                      if (urlResponse.allHeaderFields.count >0 && urlResponse.allHeaderFields) {
+                                          NSString * requestLocation = [urlResponse.allHeaderFields objectForKey:@"Location"];
+                                          if (requestLocation.length >0 && requestLocation) {
+                                              QIMVerboseLog(@"%@",requestLocation);
+                                              NSString * navAddress;
+                                              NSString * navUrl;
+                                              NSURL * requestLocationUrl = [NSURL URLWithString:requestLocation];
+                                              NSString * queryStr = [requestLocationUrl query];
+                                              NSArray * parameters = [queryStr componentsSeparatedByString:@"&"];
+                                              if (parameters.count>0 && parameters) {
+                                                  for (NSString * item in parameters) {
+                                                      NSArray * value = [item componentsSeparatedByString:@"="];
+                                                      
+                                                      NSString * key = [value objectAtIndex:0];
+                                                      if ([key isEqualToString:@"c"]) {
+                                                          navUrl = requestLocationUrl;
+                                                          navAddress = [item stringByReplacingOccurrencesOfString:@"c=" withString:@""];
+                                                          self.navUrl = navUrl;
+                                                          _navAddressTextField.text = navUrl;
+                                                          _navNickNameTextField.text = navAddress;
+                                                      }
+                                                      else if([key isEqualToString:@"configurl"]){
+                                                          NSString * configUrlStr = [[item stringByReplacingOccurrencesOfString:@"configurl=" withString:@""] qim_base64DecodedString];
+                                                          NSURL * configUrl = [NSURL URLWithString:configUrlStr];
+                                                          NSString * configQuery = [configUrl query];
+                                                          NSArray * parameters = [configQuery componentsSeparatedByString:@"&"];
+                                                          if (parameters.count > 0 && parameters) {
+                                                              for (NSString * tempItems in parameters) {
+                                                                  NSArray * tempValue = [tempItems componentsSeparatedByString:@"="];
+                                                                  NSString * tempKey = [tempValue objectAtIndex:0];
+                                                                  if ([tempKey isEqualToString:@"c"]) {
+                                                                      navUrl = configUrl.absoluteString;
+                                                                      navAddress = [tempItems stringByReplacingOccurrencesOfString:@"c=" withString:@""];
+                                                                      self.navUrl = navUrl;
+                                                                      _navAddressTextField.text = navUrl;
+                                                                      _navNickNameTextField.text = navAddress;
+                                                                  }
+                                                                  else{
+                                                                      //                                                                      navUrl = configUrl.absoluteString;
+                                                                      //                                                                      navAddress =configUrl.absoluteString;
+                                                                      //                                                                      [self onSaveWith:navAddress navUrl:navUrl];
+                                                                  }
+                                                              }
+                                                          }
+                                                          else if([configUrlStr containsString:@"startalk_nav"]){
+                                                              [self requestByURLSessionWithUrl:configUrlStr];
+                                                              return;
+                                                          }
+                                                          else{
+                                                              navUrl = configUrlStr;
+                                                              self.navUrl = navUrl;
+                                                              _navAddressTextField.text = navUrl;
+                                                              _navNickNameTextField.text = navAddress;
+                                                          }
+                                                      }
+                                                  }
+                                              }
+                                              else {
+                                                  navUrl = requestLocation;
+                                                  self.navUrl = navUrl;
+                                                  _navAddressTextField.text = navUrl;
+                                                  _navNickNameTextField.text = navAddress;
+                                              }
+                                          }
+                                          else{
+                                              self.navUrl = urlStr;
+                                              _navAddressTextField.text = urlStr;
+                                              _navNickNameTextField.text = urlStr;
+                                          }
+                                      }
+                                  }];
+    [task resume];
+}
+
+#pragma mark - NSURLSessionTaskDelegate
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest * __nullable))completionHandler
+{
+    NSLog(@"statusCode: %ld", response.statusCode);
+    
+    NSDictionary *headers = response.allHeaderFields;
+    NSString * requestLocation = [headers objectForKey:@"Location"];
+    if (requestLocation.length >0 && requestLocation) {
+        completionHandler(nil);
+    }
+    else{
+        completionHandler(request);
+    }
 }
 
 - (void)setupNav {
@@ -190,4 +369,22 @@
     }
 }
 
+
+- (UIButton *)scanSettingNavBtn{
+    if (!_scanSettingNavBtn) {
+        _scanSettingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _scanSettingNavBtn.backgroundColor = [UIColor qim_colorWithHex:0x00CABE];
+        [_scanSettingNavBtn setTitle:@"扫码配置导航" forState:UIControlStateNormal];
+        [_scanSettingNavBtn setTitleColor:[UIColor qim_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
+        _scanSettingNavBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:4];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateNormal];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateSelected];
+        [_scanSettingNavBtn addTarget:self action:@selector(scanNav:) forControlEvents:UIControlEventTouchUpInside];
+        _scanSettingNavBtn.layer.masksToBounds = YES;
+        _scanSettingNavBtn.layer.cornerRadius = 4;
+        _scanSettingNavBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0 - 7 / 2, 0, 0 + 7 / 2);
+        _scanSettingNavBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0 + 7 / 2, 0, 0 - 7 / 2);
+    }
+    return _scanSettingNavBtn;
+}
 @end
