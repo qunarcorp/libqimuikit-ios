@@ -1059,7 +1059,13 @@ RCT_EXPORT_METHOD(getGroupInfo:(NSString *)groupId :(RCTResponseSenderBlock)call
 RCT_EXPORT_METHOD(saveGroupName:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
     NSString *groupId = [param objectForKey:@"GroupId"];
     NSString *groupName = [param objectForKey:@"GroupName"];
-    [[QIMKit sharedInstance] setMucVcardForGroupId:groupId WithNickName:groupName WithTitle:nil WithDesc:nil WithHeaderSrc:nil withCallBack:^(BOOL successed) {
+    NSString *groupTopic = [param objectForKey:@"GroupTopic"];
+
+    if (groupTopic.length <= 0) {
+        NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
+        groupTopic = [groupCardDic objectForKey:@"Topic"];
+    }
+    [[QIMKit sharedInstance] setMucVcardForGroupId:groupId WithNickName:groupName WithTitle:groupTopic WithDesc:nil WithHeaderSrc:nil withCallBack:^(BOOL successed) {
         callback(@[@{@"ok" : @(successed)}]);
     }];
 }
@@ -1069,6 +1075,10 @@ RCT_EXPORT_METHOD(saveGroupTopic:(NSDictionary *)param :(RCTResponseSenderBlock)
     NSString *groupId = [param objectForKey:@"GroupId"];
     NSString *groupName = [param objectForKey:@"GroupName"];
     NSString *groupTopic = [param objectForKey:@"GroupTopic"];
+    if (groupName.length <= 0) {
+        NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
+        groupName = [groupCardDic objectForKey:@"Name"];
+    }
     [[QIMKit sharedInstance] setMucVcardForGroupId:groupId WithNickName:groupName WithTitle:groupTopic WithDesc:nil WithHeaderSrc:nil withCallBack:^(BOOL successed) {
         callback(@[@{@"ok" : @(successed)}]);
     }];

@@ -159,7 +159,7 @@
                             for (NSString * tempItems in parameters) {
                                 NSArray * tempValue = [tempItems componentsSeparatedByString:@"="];
                                 NSString * tempKey = [tempValue objectAtIndex:0];
-                                if ([key isEqualToString:@"c"]) {
+                                if ([tempKey isEqualToString:@"c"]) {
                                     navUrl = configUrl.absoluteString;
                                     navAddress = [tempItems stringByReplacingOccurrencesOfString:@"c=" withString:@""];
                                     weakSelf.navUrl = navUrl;
@@ -193,7 +193,8 @@
 //                weakSelf.navUrl = str;
 //                [weakSelf requestByURLSessionWithUrl:str];
 //            }
-            _navAddressTextField.text = str;
+            _navAddressTextField.text = navUrl;
+            _navNickNameTextField.text = navAddress;
             if (!_navNickNameTextField.text.length) {
                 _navNickNameTextField.text = [[str.lastPathComponent componentsSeparatedByString:@"="] lastObject];
             }

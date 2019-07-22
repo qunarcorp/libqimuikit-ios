@@ -756,7 +756,7 @@ static const int companyTag = 10001;
                             for (NSString * tempItems in parameters) {
                                 NSArray * tempValue = [tempItems componentsSeparatedByString:@"="];
                                 NSString * tempKey = [tempValue objectAtIndex:0];
-                                if ([key isEqualToString:@"c"]) {
+                                if ([tempKey isEqualToString:@"c"]) {
                                     navUrl = configUrl.absoluteString;
                                     navAddress = [tempItems stringByReplacingOccurrencesOfString:@"c=" withString:@""];
                                     [self onSaveWith:navAddress navUrl:navUrl];

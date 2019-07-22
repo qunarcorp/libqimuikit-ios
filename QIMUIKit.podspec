@@ -181,8 +181,7 @@ Pod::Spec.new do |s|
 
  elsif $beta
   puts 'beta QIMUIKit'
-    s.dependency 'QIMCommon', '> 0.beta'
-    s.dependency 'QIMGeneralModule', '> 0.beta'
+
 else
 
   puts '线上release QIMUIKit'
