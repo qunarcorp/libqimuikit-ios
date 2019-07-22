@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
   s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'DEBUGLOG=1'}
   s.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Private/QIMUIKit/**\" \"${PODS_ROOT}/Headers/Public/**\""}
   $debug = ENV['debug']
+  $beta = ENV['beta']
 
   s.subspec 'PublicUIHeader'  do |ph|
     ph.public_header_files = "QIMUIKit/QIMNotificationManager*.{h}", "QIMUIKit/QIMJumpURLHandle*.{h}", "QIMUIKit/QIMFastEntrance*.{h}", "QIMUIKit/QIMAppWindowManager*.{h}", "QIMUIKit/QIMCommonUIFramework*.*{h}", "QIMUIKit/QIMRemoteNotificationManager*.{h}"
@@ -178,6 +179,10 @@ Pod::Spec.new do |s|
  if $debug
   puts 'debug QIMUIKit'
 
+ elsif $beta
+  puts 'beta QIMUIKit'
+    s.dependency 'QIMCommon', '> 0.beta'
+    s.dependency 'QIMGeneralModule', '> 0.beta'
 else
 
   puts '线上release QIMUIKit'
