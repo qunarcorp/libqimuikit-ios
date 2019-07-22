@@ -432,7 +432,6 @@
 
 - (void)reloadSessionViewFrame {
     _searchBar = nil;
-    _tableView = nil;
     [_tableView setValue:nil forKey:@"reusableTableCells"];
     [self refreshTableView];
 }
