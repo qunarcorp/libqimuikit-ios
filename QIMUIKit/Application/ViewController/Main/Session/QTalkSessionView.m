@@ -470,7 +470,7 @@
             } else {
                 temp = [[QIMKit sharedInstance] getSessionList];
             }
-            QIMVerboseLog(@"从数据库中获取的列表页数据 : %@", temp);
+//            QIMVerboseLog(@"从数据库中获取的列表页数据 : %@", temp);
             NSMutableArray *normalList = [NSMutableArray array];
             BOOL isAddFN = NO;
             long long fnTime = 0;
@@ -537,7 +537,7 @@
                         QIMVerboseLog(@"列表空数据了！");
                     }
                 }];
-                QIMVerboseLog(@"拼接完成的列表页数据 : %@", weakSelf.dataManager.dataSource);
+//                QIMVerboseLog(@"拼接完成的列表页数据 : %@", weakSelf.dataManager.dataSource);
                 [weakSelf lazyReloadTableview];
             });
         }
