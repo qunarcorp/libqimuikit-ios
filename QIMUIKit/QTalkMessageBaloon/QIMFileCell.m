@@ -150,8 +150,8 @@
                     self.message.extendInformation = infoStr;
                     self.message.from = [[QIMKit sharedInstance] getLastJid];
                     self.message.message = self.message.extendInformation;
-                    [[QIMKit sharedInstance] updateMsg:self.message ByJid:[[QIMKit sharedInstance] getLastJid]];
-                    [[QIMKit sharedInstance] sendMessage:self.message ToUserId:[[QIMKit sharedInstance] getLastJid]];
+//                    [[QIMKit sharedInstance] updateMsg:self.message ByJid:[[QIMKit sharedInstance] getLastJid]];
+                    [[QIMKit sharedInstance] sendMessage:self.message ToUserId:self.message.to];
                 }
             }
             [self refreshUI];
