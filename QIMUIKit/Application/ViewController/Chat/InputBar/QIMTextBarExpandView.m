@@ -50,7 +50,6 @@ static NSMutableDictionary *__trdExtendInfoDic = nil;
     if (__trdExtendInfoDic == nil) {
         __trdExtendInfoDic = [[NSMutableDictionary alloc] init];
     }
-//        扩展键盘新设计见wiki : http://wiki.corp.qunar.com/confluence/pages/viewpage.action?pageId=218952957
     for (NSDictionary *trdEntendInfo in [[QIMKit sharedInstance] trdExtendInfo]) {
         NSString *trdEntendId = [trdEntendInfo objectForKey:@"trdextendId"];
         
