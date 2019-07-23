@@ -654,6 +654,7 @@ static NSString *__default_ua = nil;
         [_webView loadRequest:request];
     }
     _webView.mediaPlaybackRequiresUserAction = NO;
+    _webView.allowsInlineMediaPlayback = YES;
     QIMVerboseLog(@"WebView LoadRequest : %@ \n Cookie : %@", _requestUrl, [NSHTTPCookieStorage sharedHTTPCookieStorage].cookies);
     if ([[QIMDeviceManager sharedInstance] isIphoneXSeries] == YES && @available(iOS 11.0, *)) {
         _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
