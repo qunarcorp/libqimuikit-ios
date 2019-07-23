@@ -213,7 +213,7 @@ static dispatch_once_t __onceMainToken;
 
 - (NSString *)navTitle {
     if (!_navTitle) {
-        NSString *title = [QIMKit getQIMProjectTitleName];
+        NSString *title = @"消息";
         _navTitle = title;
     }
     return _navTitle;
@@ -281,7 +281,7 @@ static dispatch_once_t __onceMainToken;
         dispatch_async(dispatch_get_main_queue(), ^{
             [_tabBar setBadgeNumber:appCount ByItemIndex:0];
             if (appCount <= 0) {
-                weakSelf.navTitle = nil;
+                weakSelf.navTitle = @"消息";
                 [weakSelf.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:18], NSForegroundColorAttributeName: [UIColor qim_colorWithHex:0x333333]}];
                 [[QIMNavBackBtn sharedInstance] updateNotReadCount:0];
             } else {
