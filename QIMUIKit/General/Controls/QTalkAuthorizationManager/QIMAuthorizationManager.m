@@ -26,6 +26,12 @@ static NSString* const kAuthorizationLocationOpenURL = @"";
 
 static QIMAuthorizationManager *instance = nil;
 
+@interface QIMAuthorizationManager ()
+
+@property (nonatomic, strong) CLLocationManager *locationManager;
+
+@end
+
 @implementation QIMAuthorizationManager
 + (instancetype)sharedManager {
     static dispatch_once_t onceToken;
@@ -120,11 +126,20 @@ static QIMAuthorizationManager *instance = nil;
     }
 }
 
+- (CLLocationManager *)locationManager {
+    if (!_locationManager) {
+        _locationManager = [[CLLocationManager alloc] init];
+    }
+    return _locationManager;
+}
+
 - (void)requestAuthorizationForLocation {
     CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted ) {
         [self settingAuthorizationsTitle:kAuthorizationLocationPromot Message:kAuthorizationLocationMessage openUrl:kAuthorizationLocationOpenURL];
-    }else {
+    } else if (status == kCLAuthorizationStatusNotDetermined) {
+        [self.locationManager requestWhenInUseAuthorization];
+    } else {
         //QIMVerboseLog(@"允许当前应用开启定位");
         if (self.authorizedBlock) {
             self.authorizedBlock();
