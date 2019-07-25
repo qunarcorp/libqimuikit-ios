@@ -17,8 +17,12 @@
 
 + (NSDictionary *)modelCustomPropertyMapper {
     return @{@"rId": @"id",
-             @"momentId" : @"uuid",
-             @"ownerId":@"owner"
+             @"momentId" : @[@"uuid", @"postUUID"],
+             @"ownerId":@[@"owner", @"userFrom"],
+             @"ownerHost":@[@"ownerHost", @"userFromHost"],
+             @"isAnonymous":@[@"isAnonymous", @"fromIsAnonymous"],
+             @"anonymousName":@[@"anonymousName", @"fromAnonymousName"],
+             @"anonymousPhoto":@[@"anonymousPhoto", @"fromAnonymousPhoto"],
              };
 }
 

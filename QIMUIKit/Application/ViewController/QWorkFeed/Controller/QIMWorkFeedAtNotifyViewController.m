@@ -79,6 +79,7 @@
 }
 
 - (void)initUI {
+    self.view.backgroundColor = [UIColor whiteColor];
     [self initWithNav];
     [self.view addSubview:self.mainTableView];
     [self.mainTableView setTableHeaderView:self.searchBar];
@@ -91,7 +92,6 @@
     
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:self.complateBtn];
     [self.navigationItem setRightBarButtonItem:rightItem];
-
 }
 
 - (void)goBack:(id)sender {

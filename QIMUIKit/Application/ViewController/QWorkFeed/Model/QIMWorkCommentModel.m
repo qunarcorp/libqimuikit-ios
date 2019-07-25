@@ -12,7 +12,9 @@
 
 + (NSDictionary *)modelCustomPropertyMapper {
     return @{@"rId": @"id",
-             @"childComments": @"newChild"
+             @"childComments": @"newChild",
+             @"fromUser":@[@"fromUser", @"userFrom"],
+             @"fromHost":@[@"fromHost", @"userFromHost"],
              };
 }
 
