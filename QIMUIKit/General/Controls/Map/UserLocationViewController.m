@@ -17,6 +17,8 @@ typedef enum {
 #import "QIMLocationCell.h"
 #import <MapKit/MapKit.h>
 #import "QIMAnnotation.h"
+#import "QIMUUIDTools.h"
+#import "QIMSDImageCache.h"
 #import "NSBundle+QIMLibrary.h"
 #import "UserLocationCoordinate2DTransform.h"
 @interface MapAdressInfo : NSObject
@@ -757,6 +759,12 @@ typedef enum {
                 screenshotImage = image;
                 [[QIMKit sharedInstance] setUserObject:UIImagePNGRepresentation(screenshotImage) forKey:@"userLocationScreenshotImage"];
             }
+            NSData *screenshotImageData =  UIImagePNGRepresentation(screenshotImage);
+//            NSString *localScreenImagePath = [UserCachesPath];
+            
+            NSString *localScreenImagePath = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:[NSString stringWithFormat:@"%@.png", [QIMUUIDTools UUID]]];
+
+            [screenshotImageData writeToFile:localScreenImagePath atomically:YES];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     _tipsLabel.text = @"已发送";
                     NSString * address = nil;
@@ -768,7 +776,7 @@ typedef enum {
                     
                     CLLocationCoordinate2D bdCoordinate = [[UserLocationCoordinate2DTransform sharedInstanced] getBaiduFromGaodeForLocationCoordinate:CLLocationCoordinate2DMake(poi.location.latitude, poi.location.longitude)];
                     NSString *message = [NSString stringWithFormat:@"我在这里，点击查看: [obj type=\"url\" value=\"%@\"] (%@)", [NSString stringWithFormat:@"http://api.map.baidu.com/marker?location=%lf,%lf&title=我的位置&content=%@&output=html",bdCoordinate.latitude,bdCoordinate.longitude,address],address];
-                    NSString *info = [NSString stringWithFormat:@"{\"name\":\"%@\",\"adress\":\"%@\",\"latitude\":\"%lf\",\"longitude\":\"%lf\"}",poi.name,address,bdCoordinate.latitude,bdCoordinate.longitude];
+                    NSString *info = [NSString stringWithFormat:@"{\"name\":\"%@\",\"adress\":\"%@\",\"latitude\":\"%lf\",\"longitude\":\"%lf\", \"LocalScreenShotImagePath\":\"%@\"}",poi.name,address,bdCoordinate.latitude,bdCoordinate.longitude, localScreenImagePath];
                     
                     [self.delegate sendMessage:message WithInfo:info ForMsgType:QIMMessageType_LocalShare];
 //                    [self.delegate sendMessage:[NSString stringWithFormat:@"我在这里，点击查看：[obj type=\"url\" value=\"%@\"] (%@)",[NSString stringWithFormat:@"http://api.map.baidu.com/marker?location=%lf,%lf&title=我的位置&content=%@&output=html",bdCoordinate.latitude,bdCoordinate.longitude,address],address] WithInfo:[NSString stringWithFormat:@"{\"name\":\"%@\",\"adress\":\"%@\",\"latitude\":\"%lf\",\"longitude\":\"%lf\"}",poi.name,address,bdCoordinate.latitude,bdCoordinate.longitude] ForMsgType:QIMMessageType_LocalShare];
