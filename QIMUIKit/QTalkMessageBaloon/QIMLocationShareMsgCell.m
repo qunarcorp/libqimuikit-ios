@@ -66,20 +66,6 @@
     if (self.message.extendInformation.length > 0) {
         self.message.message = self.message.extendInformation;
     }
-    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
-    _titleLabel.text = [infoDic objectForKey:@"adress"];
-    
-    UIImage * localImage = [UIImage imageWithData:[[QIMKit sharedInstance] getFileDataFromUrl:infoDic[@"fileUrl"] forCacheType:QIMFileCacheTypeColoction]];
-    if (localImage) {
-        _imageView.image = localImage;
-    }else if ([infoDic[@"fileUrl"] length] > 0){
-        NSString  * imageUrlStr = [NSString stringWithFormat:@"%@/%@",[QIMKit sharedInstance].qimNav_InnerFileHttpHost,infoDic[@"fileUrl"]];
-        [_imageView qimsd_setImageWithURL:[NSURL URLWithString:imageUrlStr] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"] options:0 gifFlag:YES progress:nil completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, NSURL *imageURL) {
-            [[QIMKit sharedInstance] saveFileData:UIImageJPEGRepresentation(image, 1.0) withFileName:nil forCacheType:QIMFileCacheTypeColoction];
-        }];
-    }else{
-        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"];
-    }
     
     float backWidth = 215;
     float backHeight = kQIMLocationShareMsgCellHeight;
@@ -120,7 +106,21 @@
         default:
             break;
     }
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+    _titleLabel.text = [infoDic objectForKey:@"adress"];
     
+    NSString *localPath = [infoDic objectForKey:@"LocalScreenShotImagePath"];
+    BOOL localScreenImageExist = [[NSFileManager defaultManager] fileExistsAtPath:localPath];
+    if (localScreenImageExist == YES) {
+        _imageView.image = [UIImage imageWithContentsOfFile:localPath];
+    } else if ([infoDic[@"fileUrl"] length] > 0){
+        NSString  * imageUrlStr = [NSString stringWithFormat:@"%@/%@",[QIMKit sharedInstance].qimNav_InnerFileHttpHost,infoDic[@"fileUrl"]];
+        [_imageView qimsd_setImageWithURL:[NSURL URLWithString:imageUrlStr] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"] options:0 gifFlag:YES progress:nil completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, NSURL *imageURL) {
+            [[QIMKit sharedInstance] saveFileData:UIImageJPEGRepresentation(image, 1.0) withFileName:nil forCacheType:QIMFileCacheTypeColoction];
+        }];
+    }else{
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"];
+    }
 }
 
 - (void)tapHandle:(UITapGestureRecognizer *)tap
