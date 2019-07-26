@@ -264,7 +264,6 @@
         _childCommentListView.height = 500;
         _childCommentListView.height = [_childCommentListView getWorkChildCommentListViewHeight];
         _commentModel.rowHeight = _childCommentListView.bottom;
-        _childCommentListView.backgroundColor = [UIColor yellowColor];
     } else {
         _childCommentListView.height = 0;
         _childCommentListView.parentCommentIndexPath = self.commentIndexPath;
