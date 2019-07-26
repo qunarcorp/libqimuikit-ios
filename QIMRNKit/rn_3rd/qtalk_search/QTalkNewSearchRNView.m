@@ -73,7 +73,7 @@ static RCTBridge *bridge = nil;
     [initialProps setQIMSafeObject:[[QIMKit sharedInstance] qimNav_New_SearchUrl] forKey:@"searchUrl"];
     [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/avatar/new/e059510ea07afacc424640b2e71af997.jpg" forKey:@"singleDefaultPic"];
     [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/temp/new/9c74475153c716728fc486255f9546f1.png" forKey:@"mucDefaultDic"];
-    [initialProps setQIMSafeObject:@"https://qim.qunar.com" forKey:@"imageHost"];
+    [initialProps setQIMSafeObject:[[QIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"imageHost"];
     [initialProps setQIMSafeObject:[[QIMKit sharedInstance] getLastJid] forKey:@"MyUserId"];
     NSArray *searchKeyHistory = [[QIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:QIMSearchTypeAll withLimit:5];
     [initialProps setQIMSafeObject:searchKeyHistory ? searchKeyHistory : @[] forKey:@"searchKeyHistory"];

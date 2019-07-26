@@ -21,6 +21,7 @@
         self.delegate = self;
         self.dataSource = self;
         self.scrollEnabled = NO;
+        self.estimatedRowHeight = 0;
         CGRect tableHeaderViewFrame = CGRectMake(0, 0, 0, 0.0001f);
         self.tableHeaderView = [[UIView alloc] initWithFrame:tableHeaderViewFrame];
         self.tableFooterView = [UIView new];
@@ -36,7 +37,17 @@
 
 - (CGFloat)getWorkChildCommentListViewHeight {
     [self layoutIfNeeded];
-    return self.contentSize.height;
+    int height = self.contentSize.height;
+    int tempHeight = 0;
+    for (QIMWorkCommentModel *commentModel in self.childCommentList) {
+        int commentHeight = commentModel.rowHeight;
+        tempHeight += commentHeight;
+    }
+    if (tempHeight < height) {
+        return height;
+    } else {
+        return tempHeight;
+    }    
 }
 
 - (NSInteger)numberOfRowsInSection:(NSInteger)section {
