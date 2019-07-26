@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "QIMUIKit"
-  s.version      = "3.0.10211613"
+  s.version      = "4.0.10211613"
   s.summary      = "QIM App UI 9.0+ version"
   s.description  = <<-DESC
                    QIM UI
@@ -185,8 +185,8 @@ Pod::Spec.new do |s|
 else
 
   puts '线上release QIMUIKit'
-  s.dependency 'QIMCommon', '~> 3.0'
-  s.dependency 'QIMGeneralModule', '~> 3.0'
+  s.dependency 'QIMCommon', '~> 4.0'
+  s.dependency 'QIMGeneralModule', '~> 4.0'
 end
 
   s.default_subspec = 'QIMUIKit-FULL'
