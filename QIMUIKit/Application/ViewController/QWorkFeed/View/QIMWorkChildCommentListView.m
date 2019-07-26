@@ -36,7 +36,17 @@
 
 - (CGFloat)getWorkChildCommentListViewHeight {
     [self layoutIfNeeded];
-    return self.contentSize.height;
+    int height = self.contentSize.height;
+    int tempHeight = 0;
+    for (QIMWorkCommentModel *commentModel in self.childCommentList) {
+        int commentHeight = commentModel.rowHeight;
+        tempHeight += commentHeight;
+    }
+    if (tempHeight < height) {
+        return height;
+    } else {
+        return tempHeight;
+    }    
 }
 
 - (NSInteger)numberOfRowsInSection:(NSInteger)section {
