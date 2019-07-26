@@ -21,6 +21,7 @@
         self.delegate = self;
         self.dataSource = self;
         self.scrollEnabled = NO;
+        self.estimatedRowHeight = 0;
         CGRect tableHeaderViewFrame = CGRectMake(0, 0, 0, 0.0001f);
         self.tableHeaderView = [[UIView alloc] initWithFrame:tableHeaderViewFrame];
         self.tableFooterView = [UIView new];
