@@ -233,26 +233,28 @@
         } else {
             [[QIMKit sharedInstance] setHotCommentUUIds:@[] ForMomentId:self.momentId];
         }
-    }];
-    [[QIMKit sharedInstance] getRemoteRecentNewCommentsWithMomentId:self.momentId withNewCommentCallBack:^(NSArray *comments) {
-        if (comments) {
-            [weakSelf.commentListView.commentModels removeAllObjects];
-            for (NSDictionary *commentDic in comments) {
-                QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
-                [weakSelf.commentListView.commentModels addObject:model];
+        
+        //拉完热评之后再拉新评
+        [[QIMKit sharedInstance] getRemoteRecentNewCommentsWithMomentId:self.momentId withNewCommentCallBack:^(NSArray *comments) {
+            if (comments) {
+                [weakSelf.commentListView.commentModels removeAllObjects];
+                for (NSDictionary *commentDic in comments) {
+                    QIMWorkCommentModel *model = [weakSelf getCommentModelWithDic:commentDic];
+                    [weakSelf.commentListView.commentModels addObject:model];
+                }
+                [weakSelf.commentListView reloadCommentsData];
+            } else {
+                [weakSelf.commentListView.commentModels removeAllObjects];
+                [weakSelf.commentListView reloadCommentsData];
+                [weakSelf.commentListView endRefreshingHeader];
+                [weakSelf.commentListView endRefreshingFooterWithNoMoreData];
+                
+                if (weakSelf.commentListView.commentModels.count <= 0) {
+                    //没有拉回来热评和普通评论，加载本地
+                    [self loadLocalComments];
+                }
             }
-            [weakSelf.commentListView reloadCommentsData];
-        } else {
-            [weakSelf.commentListView.commentModels removeAllObjects];
-            [weakSelf.commentListView reloadCommentsData];
-            [weakSelf.commentListView endRefreshingHeader];
-            [weakSelf.commentListView endRefreshingFooterWithNoMoreData];
-            
-            if (weakSelf.commentListView.commentModels.count <= 0) {
-                //没有拉回来热评和普通评论，加载本地
-                [self loadLocalComments];
-            }
-        }
+        }];
     }];
 }
 
