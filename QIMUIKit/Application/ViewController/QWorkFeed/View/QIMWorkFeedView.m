@@ -679,11 +679,4 @@
     [self.rootVC.navigationController pushViewController:msgVc animated:YES];
 }
 
-/*
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    [[QIMSDImageCache sharedImageCache] clearMemory];
-}
-*/
-
 @end

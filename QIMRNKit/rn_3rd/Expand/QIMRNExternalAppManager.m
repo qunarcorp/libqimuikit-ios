@@ -54,7 +54,6 @@ static QIMRNExternalAppManager *_manager = nil;
         [[NSFileManager defaultManager] createDirectoryAtPath:qimrnCachePath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString *bundleMD5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrl] stringByAppendingFormat:@".jsbundle"];
-//    [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:bundleUrl];
     NSString *localBundlePath = [qimrnCachePath stringByAppendingPathComponent: bundleMD5Name];
     //版本号一致 && bundleName一致 && bundle文件存在
     if (localBundlePath && [[NSFileManager defaultManager] fileExistsAtPath:localBundlePath]) {
@@ -102,9 +101,6 @@ static QIMRNExternalAppManager *_manager = nil;
                     [[NSFileManager defaultManager] createDirectoryAtPath:qimrnCachePath withIntermediateDirectories:YES attributes:nil error:nil];
                 }
                 NSString *bundleMD5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrls] stringByAppendingFormat:@".jsbundle"];
-
-//                [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:bundleUrls];
-//                [[QIMKit sharedInstance] getFileNameFromUrl:bundleUrls];
 
                 NSString *localBundlePath = [qimrnCachePath stringByAppendingPathComponent: bundleMD5Name];
                 [bundleData writeToFile:localBundlePath atomically:YES];

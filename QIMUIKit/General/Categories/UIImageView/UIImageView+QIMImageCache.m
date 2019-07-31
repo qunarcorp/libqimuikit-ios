@@ -130,7 +130,8 @@
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self qimsd_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
+//            [self qimsd_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
+            [self qim_setImageWithURL:headerUrl placeholderImage:placeholderImage completed:nil];
         });
     });
 }
@@ -167,20 +168,23 @@
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self qimsd_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
+//            [self qimsd_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
+            [self qim_setImageWithURL:headerUrl placeholderImage:placeholderImage completed:nil];
         });
     });
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url {
-    [self qimsd_setImageWithURL:url placeholderImage:nil options:0 gifFlag:NO progress:nil completed:nil];
+//    [self qimsd_setImageWithURL:url placeholderImage:nil options:0 gifFlag:NO progress:nil completed:nil];
+    [self qim_setImageWithURL:url placeholderImage:nil completed:nil];
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage {
     if (placeholderImage == nil) {
         placeholderImage = [UIImage imageWithData:[QIMKit defaultUserHeaderImage]];
     }
-    [self qimsd_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
+//    [self qimsd_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
+    [self qim_setImageWithURL:url placeholderImage:placeholderImage completed:nil];
 }
 
 
@@ -199,11 +203,19 @@
         default:
             break;
     }
-    [self qimsd_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
+//    [self qimsd_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
+    [self qim_setImageWithURL:url placeholderImage:placeholderImage completed:nil];
 }
 
-- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(QIMSDWebImageCompletionBlock)completedBlock {
-    [self qimsd_setImageWithURL:url placeholderImage:placeholder options:0 gifFlag:NO progress:nil completed:nil];
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDExternalCompletionBlock)completedBlock {
+//    [self qimsd_setImageWithURL:url placeholderImage:placeholder options:0 gifFlag:NO progress:nil completed:nil];
+    [self sd_setImageWithURL:url placeholderImage:placeholder options:SDWebImageDecodeFirstFrameOnly progress:nil completed:completedBlock];
+//    - (void)sd_setImageWithURL:(nullable NSURL *)url placeholderImage:(nullable UIImage *)placeholder options:(SDWebImageOptions)options progress:(nullable SDImageLoaderProgressBlock)progressBlock completed:(nullable SDExternalCompletionBlock)completedBlock {
+
+}
+
+- (void)qimsd_setImageWithURL:(nullable NSURL *)url placeholderImage:(nullable UIImage *)placeholder options:(SDWebImageOptions)options progress:(nullable SDImageLoaderProgressBlock)progressBlock completed:(nullable SDExternalCompletionBlock)completedBlock {
+    [self sd_setImageWithURL:url placeholderImage:placeholder options:options progress:progressBlock completed:completedBlock];
 }
 
 @end

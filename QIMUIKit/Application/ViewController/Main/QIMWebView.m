@@ -18,7 +18,7 @@
 #import "QIMJSONSerializer.h"
 #import "QIMKit+QIMNavConfig.h"
 #import "QIMMWPhoto.h"
-#import "QIMSDWebImageManager.h"
+//#import "QIMSDWebImageManager.h"
 
 static NSString *__default_ua = nil;
 
@@ -1099,6 +1099,29 @@ static NSString *__default_ua = nil;
     }
     // Show activity view controller
     __weak typeof(self) weakSelf = self;
+    [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:urlStr] options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        
+    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+        NSMutableArray *items = [NSMutableArray arrayWithObject:image];
+        weakSelf.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+        
+        // Show loading spinner after a couple of seconds
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            if (weakSelf.activityViewController) {
+                //                    [self showProgressHUDWithMessage:nil];
+            }
+        });
+        
+        // Show
+        typeof(self) __weak weakSelf = weakSelf;
+        [weakSelf.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
+            weakSelf.activityViewController = nil;
+        }];
+        [self presentViewController:self.activityViewController animated:YES completion:nil];
+    }];
+    /*
     [[QIMSDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:urlStr] options:QIMSDWebImageDownloaderLowPriority gifFlag:NO progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         
     } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
@@ -1121,6 +1144,7 @@ static NSString *__default_ua = nil;
         }];
         [self presentViewController:self.activityViewController animated:YES completion:nil];
     }];
+    */
 }
 
 @end

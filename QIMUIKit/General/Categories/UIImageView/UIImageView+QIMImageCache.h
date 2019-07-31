@@ -7,7 +7,8 @@
 //
 
 #import "QIMCommonUIFramework.h"
-#import "UIImageView+QIMWebCache.h"
+//#import "UIImageView+QIMWebCache.h"
+#import "SDWebImage.h"
 
 @interface UIImageView (QIMImageCache)
 
@@ -33,6 +34,8 @@
 
 - (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder;
 
-- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(QIMSDWebImageCompletionBlock)completedBlock;
+- (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDExternalCompletionBlock)completedBlock;
+
+- (void)qimsd_setImageWithURL:(nullable NSURL *)url placeholderImage:(nullable UIImage *)placeholder options:(SDWebImageOptions)options progress:(nullable SDImageLoaderProgressBlock)progressBlock completed:(nullable SDExternalCompletionBlock)completedBlock;
 
 @end
