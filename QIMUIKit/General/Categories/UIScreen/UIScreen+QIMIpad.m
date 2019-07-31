@@ -24,7 +24,12 @@
     
     if ([[QIMKit sharedInstance] getIsIpad]) {
         
+        
+        
         CGFloat leftWidth = [UIScreen mainScreen].bounds.size.width - [self qim_dockWidth] - [self qim_rightWidth];
+        if (leftWidth <= 0) {
+            leftWidth = 375;
+        }
         return leftWidth;
         //iPad
 //        UIView *view = [[[UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers firstObject] view];

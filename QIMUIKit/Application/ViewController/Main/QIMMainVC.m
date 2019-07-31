@@ -154,7 +154,11 @@ static dispatch_once_t __onceMainToken;
     */
     self.reloadCountQueue = dispatch_queue_create("Reload Main Read Count", DISPATCH_QUEUE_SERIAL);
     [self registerNSNotifications];
-
+//    BOOL isPortrait = [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortrait;
+//    if (!isPortrait) {
+//        self.view.width = 375;
+//    }
+    self.view.width = [[QIMWindowManager shareInstance] getPrimaryWidth];
     self.definesPresentationContext = YES;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.view setAutoresizesSubviews:YES];
@@ -1193,9 +1197,6 @@ static dispatch_once_t __onceMainToken;
 }
 
 - (void)openMySetting:(id)sender {
-    QIMVideoMediaPlayerVC *playerVc = [[QIMVideoMediaPlayerVC alloc] init];
-    [self.navigationController pushViewController:playerVc animated:YES];
-    return;
 /*
     {
         Bundle = "clock_in.ios";
@@ -1241,14 +1242,15 @@ static dispatch_once_t __onceMainToken;
 
 #pragma mark - QIMUpdateAlertViewDelegate
 
-- (void)qim_UpdateAlertViewDidClickWithType:(QIMUpgradeType)type withUpdateDic:(NSDictionary *)updateDic {
+- (void)qim_UpdateAlertViewDidClickWithType:(QIMUpgradeType)type withUpdateDic:(QIMUpdateDataModel *)updateModel {
     if (QIMUpgradeNow == type) {
         //
-        NSString *updateUrl = [updateDic objectForKey:@"upgradeUrl"];
+        NSString *updateUrl = updateModel.linkUrl;
         [QIMFastEntrance openWebViewForUrl:updateUrl showNavBar:YES];
     } else {
         //下次再说
-        NSInteger version = [[updateDic objectForKey:@"version"] integerValue];
+        NSInteger version = updateModel.version;
+//        [[updateDic objectForKey:@"version"] integerValue];
         [[QIMKit sharedInstance] setUserObject:@(version) forKey:@"updateAppVersion"];
     }
 }

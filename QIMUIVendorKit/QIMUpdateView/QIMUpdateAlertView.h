@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QIMUpdateDataModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,7 +17,7 @@ typedef enum : NSUInteger {
 
 @protocol QIMUpdateAlertViewDelegate <NSObject>
 
-- (void)qim_UpdateAlertViewDidClickWithType:(QIMUpgradeType)type withUpdateDic:(NSDictionary *)updateDic;
+- (void)qim_UpdateAlertViewDidClickWithType:(QIMUpgradeType)type withUpdateDic:(QIMUpdateDataModel *)updateModel;
 
 @end
 

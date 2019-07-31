@@ -85,6 +85,8 @@
 
 + (void)openWebViewForUrl:(NSString *)url showNavBar:(BOOL)showNavBar;
 
++ (void)openVideoPlayerForUrl:(NSString *)videoUrl LocalOutPath:(NSString *)localOutPath;
+
 + (BOOL)handleOpsasppSchema:(NSDictionary *)reactInfoDic;
 
 + (void)openWebViewForUrl:(NSString *)url showNavBar:(BOOL)showNavBar FromRedPack:(BOOL)fromRedPack;

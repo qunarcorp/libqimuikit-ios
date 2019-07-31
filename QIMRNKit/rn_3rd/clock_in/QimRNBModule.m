@@ -137,7 +137,7 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
 
     NSInteger projectType = ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) ? 0 : 1;
     NSString *ckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
-    NSString *ip = [[QIMKit sharedInstance] getClientIp];
+    NSString *ip = @"0.0.0.0";
     NSString *userId = [QIMKit getLastUserName];
     NSString *httpHost = [[QIMKit sharedInstance] qimNav_Javaurl];
     BOOL WorkFeedEntrance = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
@@ -310,7 +310,7 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
         
         [QIMFastEntrance openRNSearchVC];
     }else if ([nativeName isEqualToString:@"OpenToCManager"]){
-        [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_getManagerAppUrl] showNavBar:YES];
+//        [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_getManagerAppUrl] showNavBar:YES];
     }
     else if ([nativeName isEqualToString:@"PublicNumberChat"]){
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -505,13 +505,15 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
                   WithModule:(NSString *)module
               WithProperties:(NSDictionary *)properties{
     UIViewController *vc = [QimRNBModule getVCWithNavigation:navVC WithHiddenNav:hiddenNav WithBundleName:bundleName WithModule:module WithProperties:properties];
+    /* Mark by iPad
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
 #if __has_include("QIMIPadWindowManager.h")
         [[QIMIPadWindowManager sharedInstance] showDetailViewController:vc];
 #endif
     } else {
+        */
         [navVC pushViewController:vc animated:YES];
-    }
+//    }
 }
 
 + (void)sendQIMRNWillShow {

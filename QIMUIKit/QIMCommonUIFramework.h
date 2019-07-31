@@ -15,6 +15,7 @@
 #import "QIMNavController.h"
 #import "QIMImageManager.h"
 #import "QIMFastEntrance.h"
+#import "QIMWindowManager.h"
 #import "QIMAppWindowManager.h"
 #import "ASIHTTPRequest.h"
 #import "YLImageView.h"

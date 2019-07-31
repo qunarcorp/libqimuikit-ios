@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class QIMWorkMomentLabel;
 @class QIMWorkMomentImageListView;
 @class QIMWorkMomentLinkView;
+@class QIMWorkMomentVideoView;
 @class QIMWorkAttachCommentListView;
 @class QIMWorkMomentTagCollectionView;
 
@@ -62,6 +63,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 //Link
 @property (nonatomic, strong) QIMWorkMomentLinkView *linkView;
+
+//Video
+@property (nonatomic, strong) QIMWorkMomentVideoView *videoView;
 
 //标签collectionView
 @property (nonatomic, strong) QIMWorkMomentTagCollectionView *tagCollectionView;
