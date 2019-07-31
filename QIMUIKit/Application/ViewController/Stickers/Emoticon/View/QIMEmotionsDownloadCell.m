@@ -7,7 +7,7 @@
 //
 
 #import "QIMEmotionsDownloadCell.h"
-#import "UIImageView+QIMWebCache.h"
+//#import "UIImageView+QIMWebCache.h"
 #import "QIMProgressHUD.h"
 #import "QIMEmotionManager.h"
 

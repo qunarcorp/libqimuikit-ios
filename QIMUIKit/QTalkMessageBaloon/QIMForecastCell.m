@@ -9,7 +9,7 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMForecastCell.h"
 #import "QIMJSONSerializer.h"
-#import "UIImageView+QIMWebCache.h"
+//#import "UIImageView+QIMWebCache.h"
 
 @implementation QIMForecastCell {
     UILabel         * _titleLabel;

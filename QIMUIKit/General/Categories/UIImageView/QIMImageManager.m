@@ -7,8 +7,9 @@
 //
 
 #import "QIMImageManager.h"
+#import "SDWebImage.h"
 #import "NSBundle+QIMLibrary.h"
-#import "QIMSDImageCache.h"
+#import "QIMImageCacheManager.h"
 #import "QIMKitPublicHeader.h"
 #import "QIMCommonCategories.h"
 
@@ -24,7 +25,8 @@ static QIMImageManager *__manager = nil;
 }
 
 - (void)initWithQIMImageCacheNamespace:(NSString *)ns {
-    [[QIMSDImageCache sharedImageCache] initWithNamespace:ns];
+//    [[SDImageCachesManager sharedManager] :ns];
+    [[SDImageCache sharedImageCache] initWithNamespace:ns];
 }
 
 - (NSString *)qim_getHeaderCachePathWithJid:(NSString *)jid {
@@ -66,7 +68,7 @@ static QIMImageManager *__manager = nil;
     } else {
         headerUrl = [QIMKit defaultUserHeaderImagePath];
     }
-    NSString *path = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:headerUrl];
+    NSString *path = [[QIMImageCacheManager shareInstance] defaultCachePathForKey:headerUrl];
     if ([[NSFileManager defaultManager] fileExistsAtPath:path] && path.length > 0) {
         return path;
     } else {
@@ -75,7 +77,7 @@ static QIMImageManager *__manager = nil;
 }
 
 - (NSString *)qim_getHeaderCachePathWithHeaderUrl:(NSString *)headerUrl {
-    NSString *path = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:headerUrl];
+    NSString *path = [[QIMImageCacheManager shareInstance] defaultCachePathForKey:headerUrl];
     if ([[NSFileManager defaultManager] fileExistsAtPath:path] && path.length > 0) {
         return path;
     } else {

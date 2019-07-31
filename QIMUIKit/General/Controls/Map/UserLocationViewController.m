@@ -18,7 +18,6 @@ typedef enum {
 #import <MapKit/MapKit.h>
 #import "QIMAnnotation.h"
 #import "QIMUUIDTools.h"
-#import "QIMSDImageCache.h"
 #import "NSBundle+QIMLibrary.h"
 #import "UserLocationCoordinate2DTransform.h"
 @interface MapAdressInfo : NSObject
@@ -759,10 +758,8 @@ typedef enum {
                 screenshotImage = image;
                 [[QIMKit sharedInstance] setUserObject:UIImagePNGRepresentation(screenshotImage) forKey:@"userLocationScreenshotImage"];
             }
-            NSData *screenshotImageData =  UIImagePNGRepresentation(screenshotImage);
-//            NSString *localScreenImagePath = [UserCachesPath];
-            
-            NSString *localScreenImagePath = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:[NSString stringWithFormat:@"%@.png", [QIMUUIDTools UUID]]];
+            NSData *screenshotImageData =  UIImagePNGRepresentation(screenshotImage);            
+            NSString *localScreenImagePath = [[QIMImageCacheManager shareInstance] defaultCachePathForKey:[NSString stringWithFormat:@"%@.png", [QIMUUIDTools UUID]]];
 
             [screenshotImageData writeToFile:localScreenImagePath atomically:YES];
                 dispatch_async(dispatch_get_main_queue(), ^{

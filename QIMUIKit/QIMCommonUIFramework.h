@@ -52,6 +52,7 @@
 
 #import "QIMJSONSerializer.h"
 #import "Masonry.h"
+#import "QIMImageCacheManager.h"
 
 #define FONT_NAME @"FZLTHJW--GB1-0"
 #define FONT_SIZE 18
