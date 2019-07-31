@@ -228,7 +228,7 @@ static NSString *__default_ua = nil;
     [self setToolbarItems:nil animated:YES];
     [self.navigationController setToolbarHidden:YES animated:NO];
     [self setUrl:nil];
-    UIImage *image = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0xDDDDDD] size:CGSizeMake([[UIScreen mainScreen] qim_rightWidth], 0.5)];
+    UIImage *image = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0xDDDDDD] size:CGSizeMake([[QIMWindowManager shareInstance] getDetailWidth], 0.5)];
     [[UINavigationBar appearance] setBackgroundImage:image forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setShadowImage:image];
 }
@@ -638,16 +638,16 @@ static NSString *__default_ua = nil;
                
             }
         }
-        if ([self.url isEqualToString:[[QIMKit sharedInstance] qimNav_getManagerAppUrl]]) {
-            NSMutableDictionary *tcookieProperties = [NSMutableDictionary dictionary];
-            [tcookieProperties setQIMSafeObject:@"confignav" forKey:NSHTTPCookieName];
-            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_NavUrl] forKey:NSHTTPCookieValue];
-            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [tcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
-            [tcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
-            NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:tcookieProperties];
-            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
-        }
+//        if ([self.url isEqualToString:[[QIMKit sharedInstance] qimNav_getManagerAppUrl]]) {
+//            NSMutableDictionary *tcookieProperties = [NSMutableDictionary dictionary];
+//            [tcookieProperties setQIMSafeObject:@"confignav" forKey:NSHTTPCookieName];
+//            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_NavUrl] forKey:NSHTTPCookieValue];
+//            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+//            [tcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+//            [tcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
+//            NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:tcookieProperties];
+//            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
+//        }
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
         [cook setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
         request = [[NSMutableURLRequest alloc] initWithURL:_requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];

@@ -9,6 +9,7 @@
 #import "QIMWorkMomentView.h"
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkMomentLinkView.h"
+#import "QIMWorkMomentVideoView.h"
 #import "QIMWorkMomentLabel.h"
 #import "QIMMarginLabel.h"
 #import "QIMWorkMomentParser.h"
@@ -16,7 +17,7 @@
 
 CGFloat maxFullContentHeight = 0;
 
-@interface QIMWorkMomentView () <QIMAttributedLabelDelegate> {
+@interface QIMWorkMomentView () <QIMAttributedLabelDelegate, QIMWorkMomentLinkViewTapDelegate, QIMWorkMomentVideoViewTapDelegate> {
     CGFloat _rowHeight;
 }
 
@@ -35,6 +36,9 @@ CGFloat maxFullContentHeight = 0;
 
 //Link
 @property (nonatomic, strong) QIMWorkMomentLinkView *linkView;
+
+//Video
+@property (nonatomic, strong) QIMWorkMomentVideoView *videoView;
 
 //正文ContentLabel
 @property (nonatomic, strong) QIMWorkMomentLabel *contentLabel;
@@ -123,6 +127,11 @@ CGFloat maxFullContentHeight = 0;
     _linkView.hidden = YES;
     [self addSubview:_linkView];
     
+    //Video
+    _videoView = [[QIMWorkMomentVideoView alloc] initWithFrame:CGRectZero];
+    _videoView.hidden = YES;
+    [self addSubview:_videoView];
+    
     // 时间视图
     _timeLab = [[UILabel alloc] init];
     _timeLab.textColor = [UIColor qim_colorWithHex:0xADADAD];
@@ -192,6 +201,15 @@ CGFloat maxFullContentHeight = 0;
         }
             break;
         case QIMWorkFeedContentTypeLink: {
+            NSString *exContent = self.moment.content.exContent;
+            if (exContent) {
+                content = exContent;
+            } else {
+                
+            }
+        }
+            break;
+        case QIMWorkFeedContentTypeVideo: {
             NSString *exContent = self.moment.content.exContent;
             if (exContent) {
                 content = exContent;
@@ -271,6 +289,16 @@ CGFloat maxFullContentHeight = 0;
             }
         }
             break;
+        case QIMWorkFeedContentTypeVideo: {
+            if (self.moment.content.videoContent) {
+                _videoView.hidden = NO;
+                _videoView.frame = CGRectMake(self.nameLab.left, bottom + 15, 144, 144);
+                _videoView.delegate = self;
+                _videoView.videoModel = self.moment.content.videoContent;
+                _rowHeight = _videoView.bottom;
+            }
+        }
+            break;
         default: {
             if (self.moment.content.imgList.count > 0) {
                 _imageListView.momentContentModel = self.moment.content;
@@ -330,6 +358,12 @@ CGFloat maxFullContentHeight = 0;
     if (linkModel.linkurl.length > 0) {
         [QIMFastEntrance openWebViewForUrl:linkModel.linkurl showNavBar:linkModel.showbar];
     }
+}
+
+#pragma mark - QIM
+
+- (void)didTapWorkMomentVideo:(QIMWorkMomentContentVideoModel *)videoModel {
+    [QIMFastEntrance openVideoPlayerForUrl:videoModel.FileUrl LocalOutPath:videoModel.LocalVideoOutPath];
 }
 
 @end

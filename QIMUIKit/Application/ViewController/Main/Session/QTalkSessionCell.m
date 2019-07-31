@@ -193,7 +193,7 @@ static NSString *const kTableViewCellContentView = @"UITableViewCellContentView"
 - (UIImageView *)muteNotReadView {
     if (!_muteNotReadView) {
 
-        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 20, self.timeLabel.bottom + 15, 8, 8)];
+        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 20, self.timeLabel.bottom + 15, 8, 8)];
         _muteNotReadView.backgroundColor = [UIColor qim_colorWithHex:0xEB524A];
         _muteNotReadView.layer.cornerRadius = _muteNotReadView.width / 2.0;
         _muteNotReadView.clipsToBounds = YES;
