@@ -759,7 +759,7 @@ typedef enum {
                 [[QIMKit sharedInstance] setUserObject:UIImagePNGRepresentation(screenshotImage) forKey:@"userLocationScreenshotImage"];
             }
             NSData *screenshotImageData =  UIImagePNGRepresentation(screenshotImage);            
-            NSString *localScreenImagePath = [[QIMImageCacheManager shareInstance] defaultCachePathForKey:[NSString stringWithFormat:@"%@.png", [QIMUUIDTools UUID]]];
+            NSString *localScreenImagePath = [[QIMImageManager sharedInstance] defaultCachePathForKey:[NSString stringWithFormat:@"%@.png", [QIMUUIDTools UUID]]];
 
             [screenshotImageData writeToFile:localScreenImagePath atomically:YES];
                 dispatch_async(dispatch_get_main_queue(), ^{

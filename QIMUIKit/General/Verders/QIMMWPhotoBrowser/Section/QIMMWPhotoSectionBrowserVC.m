@@ -602,7 +602,7 @@
 }
 
 - (void)didReceiveMemoryWarning {
-    [[QIMImageCacheManager shareInstance] clearMemory];
+    [[QIMImageManager sharedInstance] clearMemory];
 }
 
 #pragma mark - QIMMWPhotoBrowserDelegate
