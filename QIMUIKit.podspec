@@ -119,7 +119,7 @@ Pod::Spec.new do |s|
     rn.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
     rn.source_files = ['QIMRNKit/rn_3rd/**/*{h,m,c}']
     rn.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Public/QIMRNKit/**\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/../node_modules\" \"$(PODS_ROOT)/../node_modules/react-native/ReactCommon/yoga\""}
-    rn.dependency 'QIMReactNativeLibrary', '~> 3.0'
+    rn.dependency 'QIMReactNativeLibrary', '~> 4.0'
     rn.resource = 'QIMRNKit/QIMRNKit.bundle'
     rn.frameworks = 'UIKit', 'Foundation'
   end
@@ -185,8 +185,8 @@ Pod::Spec.new do |s|
 else
 
   puts '线上release QIMUIKit'
-  s.dependency 'QIMCommon', '~> 3.0'
-  s.dependency 'QIMGeneralModule', '~> 3.0'
+  s.dependency 'QIMCommon', '~> 4.0'
+  s.dependency 'QIMGeneralModule', '~> 4.0'
 end
 
   s.default_subspec = 'QIMUIKit-FULL'
