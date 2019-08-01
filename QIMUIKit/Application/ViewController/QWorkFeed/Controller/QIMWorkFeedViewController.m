@@ -584,7 +584,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    [[QIMImageCacheManager shareInstance] clearMemory];
+    [[QIMImageManager sharedInstance] clearMemory];
 }
 
 @end

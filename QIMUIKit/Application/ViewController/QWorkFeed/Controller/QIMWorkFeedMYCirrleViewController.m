@@ -151,7 +151,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    [[QIMImageCacheManager shareInstance] clearMemory];
+    [[QIMImageManager sharedInstance] clearMemory];
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
