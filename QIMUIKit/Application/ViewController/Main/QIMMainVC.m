@@ -65,6 +65,8 @@
 
 @property(nonatomic, strong) UIButton *searchDemissionBtn;
 
+@property(nonatomic, strong) NSMutableArray *totalTabBarIndexs;
+
 @property(nonatomic, strong) NSMutableArray *totalTabBarArray;
 
 @property(nonatomic, strong) QTalkViewController *currentPreViewVc;
@@ -391,6 +393,15 @@ static dispatch_once_t __onceMainToken;
 }
 
 - (void)updateWorkFeedNotReadCount:(NSNotification *)notify {
+    BOOL oldAuthSign = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
+    BOOL checkAuthSignKey = [[QIMKit sharedInstance] containsObjectForKey:@"kUserWorkFeedEntrance"];
+    if (checkAuthSignKey == NO) {
+        oldAuthSign = YES;
+    }
+    BOOL containMomentView = [self.totalTabBarIndexs containsObject:@"tab_title_moment"];
+    if (!oldAuthSign || !containMomentView) {
+        return;
+    }
     QIMVerboseLog(@"收到驼圈updateWorkFeedNotReadCount通知 : %@", notify);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         BOOL workMoment = [[QIMKit sharedInstance] getLocalWorkMomentNotifyConfig];
@@ -587,13 +598,18 @@ static dispatch_once_t __onceMainToken;
 - (void)initTotalTabBarArray {
     //这里用Id做tabBar的唯一标示，可以防止PM突然让改个顺序，加个tab
     self.totalTabBarArray = [NSMutableArray arrayWithCapacity:4];
+    self.totalTabBarIndexs = [NSMutableArray arrayWithCapacity:4];
+    [self.totalTabBarIndexs addObject:@"tab_title_chat"];
     [self.totalTabBarArray addObject:@{@"title": [NSBundle qim_localizedStringForKey:@"tab_title_chat"], @"normalImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_chat_font size:28 color:qim_tabImageNormalColor]], @"selectImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_chat_font size:28 color:qim_tabImageSelectedColor]]}];
     /*
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString]  isEqualToString:@"appstore"]) {
         [self.totalTabBarArray addObject:@{@"title":[NSBundle qim_localizedStringForKey:@"tab_title_travel"], @"normalImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_travel_font size:28 color:qim_tabImageNormalColor]], @"selectImage":[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_travel_font size:28 color:qim_tabImageSelectedColor]]}];
     }
     */
+    [self.totalTabBarIndexs addObject:@"tab_title_contact"];
     [self.totalTabBarArray addObject:@{@"title": [NSBundle qim_localizedStringForKey:@"tab_title_contact"], @"normalImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_contact_font size:28 color:qim_tabImageNormalColor]], @"selectImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_contact_font size:28 color:qim_tabImageSelectedColor]]}];
+    
+    [self.totalTabBarIndexs addObject:@"tab_title_discover"];
     [self.totalTabBarArray addObject:@{@"title": [NSBundle qim_localizedStringForKey:@"tab_title_discover"], @"normalImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_discover_font size:28 color:qim_tabImageNormalColor]], @"selectImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_discover_font size:28 color:qim_tabImageSelectedColor]]}];
     BOOL oldAuthSign = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
     BOOL checkAuthSignKey = [[QIMKit sharedInstance] containsObjectForKey:@"kUserWorkFeedEntrance"];
@@ -602,8 +618,11 @@ static dispatch_once_t __onceMainToken;
     }
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"appstore"] && oldAuthSign == YES) {
 
+        [self.totalTabBarIndexs addObject:@"tab_title_moment"];
         [self.totalTabBarArray addObject:@{@"title": [NSBundle qim_localizedStringForKey:@"tab_title_moment"], @"normalImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageNormalColor]], @"selectImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageSelectedColor]]}];
     }
+    
+    [self.totalTabBarIndexs addObject:@"tab_title_myself"];
     [self.totalTabBarArray addObject:@{@"title": [NSBundle qim_localizedStringForKey:@"tab_title_myself"], @"normalImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_myself_font size:28 color:qim_tabImageNormalColor]], @"selectImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_myself_font size:28 color:qim_tabImageSelectedColor]]}];
     _tabBar = [[QIMCustomTabBar alloc] initWithItemCount:self.totalTabBarArray.count WithFrame:CGRectMake(0, _rootView.height - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT] - 3.5, _rootView.width, kTabBarHeight)];
     [_tabBar setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
