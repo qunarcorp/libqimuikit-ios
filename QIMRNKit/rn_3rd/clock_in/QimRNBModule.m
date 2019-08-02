@@ -156,8 +156,13 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
         isEasyTrip = [[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"] ? NO : YES;
         notNeedShowCamelNotify = [[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"] ? NO : YES;
     }
-    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState": @([[QIMKit sharedInstance] isMerchant]), @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(WorkFeedEntrance), @"isShowGroupQRCode":@(YES), @"isShowLocalQuickSearch":@(YES), @"isShowRedPackage":@(isShowRedPackage), @"isEasyTrip":@(isEasyTrip), @"isiOSIpad":@([[QIMKit sharedInstance] getIsIpad]), @"ScreenWidth":@([[UIScreen mainScreen] qim_rightWidth]), @"notNeedShowEmailInfo":@(notNeedShowEmailInfo), @"notNeedShowMobileInfo":@(notNeedShowMobileInfo), @"notNeedShowLeaderInfo":@(notNeedShowLeaderInfo), @"notNeedShowCamelNotify":@(notNeedShowCamelNotify),
-        @"isToCManager":@(isToCManager)}];
+    BOOL oldAuthSign = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
+    BOOL checkAuthSignKey = [[QIMKit sharedInstance] containsObjectForKey:@"kUserWorkFeedEntrance"];
+    if (checkAuthSignKey == NO) {
+        oldAuthSign = YES;
+    }
+    NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain], @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost], @"showServiceState": @([[QIMKit sharedInstance] isMerchant]), @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost], @"isShowWorkWorld":@(oldAuthSign), @"isShowGroupQRCode":@(YES), @"isShowLocalQuickSearch":@(YES), @"isShowRedPackage":@(isShowRedPackage), @"isEasyTrip":@(isEasyTrip), @"isiOSIpad":@([[QIMKit sharedInstance] getIsIpad]), @"ScreenWidth":@([[UIScreen mainScreen] qim_rightWidth]), @"notNeedShowEmailInfo":@(notNeedShowEmailInfo), @"notNeedShowMobileInfo":@(notNeedShowMobileInfo), @"notNeedShowLeaderInfo":@(notNeedShowLeaderInfo), @"notNeedShowCamelNotify":@(notNeedShowCamelNotify),
+                             @"isToCManager":@(isToCManager)}];
     QIMVerboseLog(@"AppConfig : %@", appConfig);
     success(appConfig);
 }
@@ -610,7 +615,7 @@ RCT_EXPORT_METHOD(getUserInfoByUserCard:(NSString *)userId :(RCTResponseSenderBl
     }
     NSDictionary *properties = [QimRNBModule qimrn_getUserInfoByUserId:userId];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[QIMKit sharedInstance] updateUserCard:userId withCache:YES];
+        [[QIMKit sharedInstance] updateUserCard:userId withCache:NO];
     });
     callback(@[@{@"UserInfo" : properties ? properties : @{}}]);
 }
