@@ -158,13 +158,13 @@
             height = self.size.height / 2.0f;
         }
         _imageView = [[YLImageView alloc] init];
-        [_imageView qimsd_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        [_imageView qim_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
 //            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
 //            NSLog(@"下载图片进度 : %ld", progress);
         } completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             
 //        }];
-//        [_imageView qimsd_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+//        [_imageView qim_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
 ////            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
 ////            NSLog(@"下载图片进度 : %ld", progress);
 //        } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {

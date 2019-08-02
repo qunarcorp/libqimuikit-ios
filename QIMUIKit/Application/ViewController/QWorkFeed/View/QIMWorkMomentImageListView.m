@@ -158,7 +158,7 @@
 
 - (void)downLoadImageWithModel:(NSString *)imageUrl withFitRect:(CGRect)frame withTotalCount:(NSInteger)totalCount {
     
-    [self qimsd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] options:SDWebImageDecodeFirstFrameOnly progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    [self qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] options:SDWebImageDecodeFirstFrameOnly progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         __block CGRect fitRect = frame;
         dispatch_async(dispatch_get_main_queue(), ^{
             if (image && totalCount != 1) {
