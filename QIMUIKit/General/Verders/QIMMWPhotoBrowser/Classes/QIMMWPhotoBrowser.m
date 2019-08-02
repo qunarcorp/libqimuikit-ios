@@ -1781,7 +1781,13 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                     NSString *localPhotoPath = [[QIMImageManager sharedInstance] defaultCachePathForKey:photo.photoURL.absoluteString];
                     NSData *imageData = [NSData dataWithContentsOfFile:localPhotoPath];
                     if (imageData.length > 0) {
-                        [self saveImageWithPhotoData:imageData];
+                        NSInteger format = [[QIMImageManager sharedInstance] qim_imageFormatForImageData:imageData];
+                        if (format == 4) {
+                            NSData *imageConvertData = UIImagePNGRepresentation([photo underlyingImage]);
+                            [self saveImageWithPhotoData:imageConvertData];
+                        } else {
+                            [self saveImageWithPhotoData:imageData];
+                        }
                     }
                 }
             }

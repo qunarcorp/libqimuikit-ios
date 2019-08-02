@@ -44,6 +44,7 @@ Pod::Spec.new do |s|
   s.subspec 'QIMGeneralUI' do |generalUI|
     generalUI.public_header_files = "QIMUIKit/General/**/*.{h}"
     generalUI.source_files = "QIMUIKit/General/**/*.{h,m,c,mm}"
+    generalUI.exclude_files = "QIMUIKit/General/Verders/SDWebImageWebPCoder/Classes/**/*{h,m}", "QIMUIKit/General/Verders/QIMMWPhotoBrowser/**/*{h,m}"
     generalUI.dependency 'QIMUIKit/PublicUIHeader'
     generalUI.dependency 'QIMUIKit/QIMAppUIConfig'
   end
@@ -94,6 +95,18 @@ Pod::Spec.new do |s|
       photoBrowser.dependency 'QIMUIKit/PublicUIHeader'
       photoBrowser.resource = ['QIMUIKit/General/Verders/QIMMWPhotoBrowser/Assets']
   end
+  
+  s.subspec 'SDWebImageWebPCoder' do |sdwebp|
+    # sdwebp.module_map = 'QIMUIKit/General/Verders/SDWebImageWebPCoder/Module/SDWebImageWebPCoder.modulemap'
+    
+    sdwebp.source_files = ['QIMUIKit/General/Verders/SDWebImageWebPCoder/Classes/**/*{h,m}']
+    sdwebp.xcconfig = {
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SD_WEBP=1',
+      'USER_HEADER_SEARCH_PATHS' => '$(inherited) $(SRCROOT)/libwebp/src'
+    }
+    sdwebp.dependency 'SDWebImage/Core', '~> 5.0'
+
+  end
 
   s.subspec 'QIMUIVendorKit' do |vendorkit|
     vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMUpdateView/**/*{h,m}']
@@ -115,18 +128,16 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'QIMRN' do |rn|
-    puts '.......QIMRN源码........'
     rn.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMRNEnable=1', "HEADER_SEARCH_PATHS" => "$(PROJECT_DIR)/node_modules/react-native"}
     rn.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
     rn.source_files = ['QIMRNKit/rn_3rd/**/*{h,m,c}']
     rn.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Public/QIMRNKit/**\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/../node_modules\" \"$(PODS_ROOT)/../node_modules/react-native/ReactCommon/yoga\""}
-    rn.dependency 'QIMReactNativeLibrary', '~> 3.0'
+    rn.dependency 'QIMReactNativeLibrary', '~> 4.0'
     rn.resource = 'QIMRNKit/QIMRNKit.bundle'
     rn.frameworks = 'UIKit', 'Foundation'
   end
   
   s.subspec 'QIMUIKit-NORN' do |norn|
-    puts '.......引用QIMUIKit-NORN源码........'
 #    norn.resource = ['QIMUIKit/QIMUIKitResources/片段/*', 'QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib', 'QIMUIKit/QIMUIKitResources/Audio/*', 'QIMUIKit/QIMUIKitResources/Certificate/*', 'QIMUIKit/QIMUIKitResources/Fonts/*', 'QIMUIKit/QIMUIKitResources/Stickers/*', 'QIMUIKit/QIMUIKitResources/QIMI18N.bundle', 'QIMUIKit/QIMUIKitResources/QIMUIKit.bundle']
     norn.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle", "QIMUIKit/QIMUIKitResources/QIMUIKit.bundle"
     norn.dependency 'QIMUIKit/PublicUIHeader'
@@ -138,12 +149,12 @@ Pod::Spec.new do |s|
     norn.dependency 'QIMUIKit/QIMCells'
     norn.dependency 'QIMUIKit/ImagePicker'
     norn.dependency 'QIMUIKit/QIMMWPhotoBrowser'
+    norn.dependency 'QIMUIKit/SDWebImageWebPCoder'
     norn.dependency 'QIMUIKit/QIMUIVendorKit'
     norn.dependency 'QIMUIKit/QIMNote'
   end
   
   s.subspec 'QIMUIKit-FULL' do |full|
-    puts '.......引用QIMUIKit-FULL源码........'
 #    full.resource = ['QIMUIKit/QIMUIKitResources/片段/*', 'QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib', 'QIMUIKit/QIMUIKitResources/Audio/*', 'QIMUIKit/QIMUIKitResources/Certificate/*', 'QIMUIKit/QIMUIKitResources/Fonts/*', 'QIMUIKit/QIMUIKitResources/Stickers/*', 'QIMUIKit/QIMUIKitResources/QIMI18N.bundle', 'QIMRNKit/QIMRNKit.bundle', 'QIMUIKit/QIMUIKitResources/QIMUIKit.bundle']
     full.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle", "QIMRNKit/QIMRNKit.bundle", "QIMUIKit/QIMUIKitResources/QIMUIKit.bundle"
     full.dependency 'QIMUIKit/PublicUIHeader'
@@ -155,6 +166,7 @@ Pod::Spec.new do |s|
     full.dependency 'QIMUIKit/QIMCells'
     full.dependency 'QIMUIKit/ImagePicker'
     full.dependency 'QIMUIKit/QIMMWPhotoBrowser'
+    full.dependency 'QIMUIKit/SDWebImageWebPCoder'
     full.dependency 'QIMUIKit/QIMUIVendorKit'
     full.dependency 'QIMUIKit/QIMNote'
     full.dependency 'QIMUIKit/QIMRN'
@@ -176,19 +188,14 @@ Pod::Spec.new do |s|
   s.dependency 'MMMarkdown'
   s.dependency 'Toast' 
   s.dependency 'YYKeyboardManager'
-
- if $debug
-  puts 'debug QIMUIKit'
-
- elsif $beta
-  puts 'beta QIMUIKit'
-
-else
-
-  puts '线上release QIMUIKit'
-  s.dependency 'QIMCommon', '~> 3.0'
-  s.dependency 'QIMGeneralModule', '~> 3.0'
-end
+  
+  if $debug
+    puts 'debug QIMUIKit'
+  else
+    puts '线上release QIMUIKit'
+    s.dependency 'QIMCommon', '~> 4.0'
+    s.dependency 'QIMGeneralModule', '~> 4.0'
+  end
 
   s.default_subspec = 'QIMUIKit-FULL'
   s.frameworks = 'UIKit','MessageUI', 'Foundation', 'JavaScriptCore', 'AVFoundation', 'OpenGLES', 'MobileCoreServices', 'AssetsLibrary', 'QuartzCore', 'CoreMotion', 'CoreText'
