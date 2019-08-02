@@ -1076,7 +1076,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     NSString *currentPKId = [[QIMEmotionManager sharedInstance] currentPackageId];
     if (_emotionSegScrollView == nil) {
         
-//        [self.emotionPanel addSubview:self.addEmotionsBtn];
+        [self.emotionPanel addSubview:self.addEmotionsBtn];
         
         [self.emotionPanel addSubview:self.emotionSegScrollView];
     }
@@ -1241,7 +1241,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     NSInteger emotionsNum = [[QIMEmotionManager sharedInstance] getEmotionPackageIdList].count + 1;
     if (!_emotionSegScrollView) {
         
-        _emotionSegScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, self.expandPanel.height - 38.5, self.width - 100, 38.5)];
+        _emotionSegScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(38.5, self.expandPanel.height - 38.5, self.width - 100, 38.5)];
         _emotionSegScrollView.contentSize = CGSizeMake(38.5 * emotionsNum, 38.5);
         _emotionSegScrollView.showsHorizontalScrollIndicator = NO;
         _emotionSegScrollView.backgroundColor = [UIColor whiteColor];
