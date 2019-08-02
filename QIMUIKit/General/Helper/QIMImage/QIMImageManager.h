@@ -29,6 +29,8 @@
 
 - (UIImage *)getUserHeaderImageByUserId:(NSString *)jid;
 
+- (NSInteger)qim_imageFormatForImageData:(nullable NSData *)data;
+
 - (void)loadImageWithURL:(NSURL *)url options:(SDWebImageOptions)options progress:(SDImageLoaderProgressBlock)progressBlock completed:(SDInternalCompletionBlock)completedBlock;
 
 - (void)clearMemory;

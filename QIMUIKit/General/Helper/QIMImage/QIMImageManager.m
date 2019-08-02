@@ -91,14 +91,12 @@ static QIMImageManager *__manager = nil;
     return [UIImage imageWithData:[NSData dataWithContentsOfFile:[self qim_getHeaderCachePathWithJid:jid]]];
 }
 
+- (NSInteger)qim_imageFormatForImageData:(nullable NSData *)data {
+    return [NSData sd_imageFormatForImageData:data];
+}
+
 - (void)loadImageWithURL:(NSURL *)url options:(SDWebImageOptions)options progress:(SDImageLoaderProgressBlock)progressBlock completed:(SDInternalCompletionBlock)completedBlock {
-
-//- (void)loadImage {
     [[SDWebImageManager sharedManager] loadImageWithURL:url options:options progress:progressBlock completed:completedBlock];
-//downloadImageWithURL:[NSURL URLWithString:urlStr] options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-//
-//} completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
-
 }
 
 - (void)clearMemory {
