@@ -90,7 +90,7 @@ Pod::Spec.new do |s|
       # 3.7.2 contains bugs downloading local files
       # https://github.com/rs/SDWebImage/issues/1109
       photoBrowser.dependency 'SDWebImage', '~> 5.0'
-      photoBrowser.dependency 'SDWebImageWebPCoder'
+#      photoBrowser.dependency 'SDWebImageWebPCoder'
       photoBrowser.dependency 'QIMUIKit/PublicUIHeader'
       photoBrowser.resource = ['QIMUIKit/General/Verders/QIMMWPhotoBrowser/Assets']
   end
