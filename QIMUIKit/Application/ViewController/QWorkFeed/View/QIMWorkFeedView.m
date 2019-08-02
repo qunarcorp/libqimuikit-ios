@@ -363,6 +363,7 @@
                     self.noDataView.hidden = NO;
                 }
             }
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyNotReadWorkCountChange object:@{@"newWorkMoment": @(0)}];
         }];
     });
 }
