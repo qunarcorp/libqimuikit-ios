@@ -128,7 +128,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (void)launchMainControllerWithWindow:(UIWindow *)window {
     QIMVerboseLog(@"开始加载主界面");
     CFAbsoluteTime startTime = [[QIMWatchDog sharedInstance] startTime];
-    if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
+    if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
 #if __has_include("QIMIPadWindowManager.h")
         IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
         [window setRootViewController:ipadVc];
@@ -187,7 +187,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 + (void)showMainVc {
     if ([QIMMainVC checkMainVC] == NO || [QIMMainVC getMainVCReShow] == YES) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            if ([[QIMKit sharedInstance] getIsIpad] == YES && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
 #if __has_include("QIMIPadWindowManager.h")
                 IPAD_QIMMainSplitVC *mainVC = [[IPAD_QIMMainSplitVC alloc] init];
                 [[QIMIPadWindowManager sharedInstance] setiPadRootVc:mainVC];
