@@ -9,11 +9,10 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMForecastCell.h"
 #import "QIMJSONSerializer.h"
-//#import "UIImageView+QIMWebCache.h"
 
 @implementation QIMForecastCell {
     UILabel         * _titleLabel;
-    YLImageView     * _imageView;
+    UIImageView     * _imageView;
     UILabel         * _descLabel;
 }
 
@@ -43,7 +42,7 @@
 //        [self initBackViewAndHeaderName];
         [self.backView setMenuActionTypeList:@[]];
         
-        _imageView = [[YLImageView alloc] initWithFrame:CGRectZero];
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         [_imageView.layer setCornerRadius:5];
         [_imageView setClipsToBounds:YES];
         [self.backView addSubview:_imageView];

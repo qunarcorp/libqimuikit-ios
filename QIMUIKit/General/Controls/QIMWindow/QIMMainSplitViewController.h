@@ -19,6 +19,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithMaster:(UINavigationController *)masterNav detail:(UINavigationController *)detailNav;
 
+- (void)showMasterViewController:(UIViewController *)vc;
+
+- (void)showDetailViewController:(UIViewController *)vc;
+
 @end
 
 NS_ASSUME_NONNULL_END

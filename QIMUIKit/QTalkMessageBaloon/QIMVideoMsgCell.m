@@ -177,7 +177,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *thubmName = [infoDic objectForKey:@"ThumbName"] ? [infoDic objectForKey:@"ThumbName"] : [NSString stringWithFormat:@"%@_thumb.jpg", [[fileName componentsSeparatedByString:@"."] firstObject]];
     NSString *thumbUrl = [infoDic objectForKey:@"ThumbUrl"];
-    if (![thumbUrl hasPrefix:[QIMKit sharedInstance].qimNav_InnerFileHttpHost]) {
+    if (![thumbUrl qim_hasPrefixHttpHeader]) {
         thumbUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingPathComponent:thumbUrl];
     }
     [_imageView qim_setImageWithURL:[NSURL URLWithString:thumbUrl]];

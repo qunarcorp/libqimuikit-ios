@@ -6,7 +6,7 @@
 //
 
 #import "QIMCollectionChatViewController.h"
-#import "QTalkSessionCell.h"
+#import "QTalkNewSessionTableViewCell.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMChatVC.h"
 #import "QIMGroupChatVC.h"
@@ -172,9 +172,9 @@
     NSArray *bindSessionList = [self.collectionChatDict objectForKey:bindId];
     NSDictionary *infoDic = [bindSessionList objectAtIndex:indexPath.row];
     NSString *name = [infoDic objectForKey:@"Name"];
-    QTalkSessionCell *cell = [tableView dequeueReusableCellWithIdentifier:name];
+    QTalkNewSessionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:name];
     if (!cell) {
-        cell = [[QTalkSessionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:name];
+        cell = [[QTalkNewSessionTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:name];
     } else {
 
     }
@@ -252,7 +252,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return [QTalkSessionCell getCellHeight];
+    return [QTalkNewSessionTableViewCell getCellHeight];
 }
 
 - (void)swicthAccount:(id)sender {

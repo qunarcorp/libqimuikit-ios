@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (UINavigationController *)getDetailRootNav;
 
+- (void)showDetailVC:(UIViewController *)viewController;
+
 @end
 
 NS_ASSUME_NONNULL_END

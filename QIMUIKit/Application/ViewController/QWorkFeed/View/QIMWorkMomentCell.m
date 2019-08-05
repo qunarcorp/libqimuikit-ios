@@ -480,7 +480,6 @@
                 _videoView.frame = CGRectMake(self.nameLab.left, bottom + 15, 144, 144);
                 _videoView.delegate = self;
                 _videoView.videoModel = self.moment.content.videoContent;
-//                _linkView.linkModel = self.moment.content.linkContent;
                 _rowHeight = _videoView.bottom;
             }
         }

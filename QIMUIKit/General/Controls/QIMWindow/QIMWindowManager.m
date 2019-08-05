@@ -63,4 +63,13 @@ static QIMWindowManager *_windowManager = nil;
     return self.mainSplitVC.detailVC;
 }
 
+- (void)showDetailVC:(UIViewController *)viewController {
+    if ([[UIApplication sharedApplication] statusBarOrientation] != UIInterfaceOrientationPortrait) {
+        [self.mainSplitVC showDetailViewController:viewController];
+    } else {
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
+        [self.mainSplitVC showDetailViewController:nav];
+    }
+}
+
 @end

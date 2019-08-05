@@ -10,8 +10,6 @@
 #import "QIMImageCache.h"
 #import "YLImageView.h"
 #import "YLGIFImage.h"
-//#import "NSData+QIMImageContentType.h"
-//#import "UIImage+QIMGIF.h"
 
 @interface QIMImageStorage () {
     YLImageView * _imageView;
