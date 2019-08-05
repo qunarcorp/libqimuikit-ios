@@ -16,7 +16,7 @@
 @implementation QIMMainSplitViewController
 
 - (BOOL)isPortrait {
-    return [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortrait;
+    return UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]);
 }
 
 - (instancetype)initWithMaster:(UINavigationController *)masterNav detail:(UINavigationController *)detailNav {
@@ -31,9 +31,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if (self.detailVC.viewControllers.count == 0) {
+        UIViewController *placeVC = [[self.placeholderViewControllerClass alloc] init];
+        self.detailVC.viewControllers = @[placeVC];
+    }
+    self.viewControllers = @[self.masterVC, self.detailVC];
+    
     self.delegate = self;
     self.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
-    self.viewControllers = @[self.masterVC, self.detailVC];
+
     maxMasterWidth = MIN(UIScreen.mainScreen.bounds.size.width, UIScreen.mainScreen.bounds.size.height);
     
     if ([self isPortrait]) {
@@ -41,7 +47,6 @@
     } else {
         [self toLandscapeWidth];
     }
-    // Do any additional setup after loading the view.
 }
 
 - (void)toPortraitWidth {
@@ -71,6 +76,7 @@
         if (flag == YES) {
             UIViewController *placeVC = [[self.placeholderViewControllerClass alloc] init];
             self.detailVC.viewControllers = @[placeVC];
+            self.masterVC.viewControllers = submutableVCs;
         }
         [self toPortraitWidth];
         
@@ -96,7 +102,20 @@
 }
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController showDetailViewController:(UIViewController *)vc sender:(id)sender {
+    if ([self isPortrait]) {
+        [self.masterVC showViewController:vc sender:nil];
+    } else {
+        self.detailVC.viewControllers = @[vc];
+    }
     return YES;
+}
+
+- (void)showMasterViewController:(UIViewController *)vc {
+    [self.masterVC showDetailViewController:vc sender:nil];
+}
+
+- (void)showDetailViewController:(UIViewController *)vc {
+    [self.masterVC showDetailViewController:vc sender:nil];
 }
 
 @end

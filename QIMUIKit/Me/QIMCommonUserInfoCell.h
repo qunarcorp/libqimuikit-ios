@@ -10,7 +10,7 @@
 
 @interface QIMCommonUserInfoCell : UITableViewCell
 
-@property (nonatomic, strong) YLImageView *avatarImage;       //用户头像
+@property (nonatomic, strong) UIImageView *avatarImage;       //用户头像
 
 @property (nonatomic, strong) UILabel *nickNameLabel;         //昵称
 

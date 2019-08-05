@@ -669,7 +669,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    if (![[QIMKit sharedInstance] getIsIpad] && [[UIApplication sharedApplication] statusBarOrientation] != UIInterfaceOrientationPortrait) {
+    if ([[QIMKit sharedInstance] getIsIpad]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.navigationController.navigationBar.translucent = NO;
     }
@@ -1223,6 +1223,8 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
     [self.view endEditing:YES];
+    [self.navigationController popViewControllerAnimated:YES];
+    /* Mark by iPad
     if ([[QIMKit sharedInstance] getIsIpad] == NO) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
@@ -1230,6 +1232,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
 #endif
     }
+     */
 }
 
 - (void)didReceiveMemoryWarning {
@@ -1338,12 +1341,14 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                 nav.modalPresentationStyle = UIModalPresentationCurrentContext;
-#if __has_include("QIMIPadWindowManager.h")
-                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
-#endif
-            } else {
-                [self presentViewController:nav animated:YES completion:nil];
             }
+            //Mark by iPad
+//#if __has_include("QIMIPadWindowManager.h")
+//                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
+//#endif
+//            } else {
+                [self presentViewController:nav animated:YES completion:nil];
+//            }
         } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
             
             QIMOrganizationalVC *listVc = [[QIMOrganizationalVC alloc] init];
@@ -1399,12 +1404,14 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                 userLct.delegate = self;
                 if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                     userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
-#if __has_include("QIMIPadWindowManager.h")
-                    [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
-#endif
-                } else {
-                    [self.navigationController presentViewController:userLct animated:YES completion:nil];
                 }
+                //Mark by iPad
+//#if __has_include("QIMIPadWindowManager.h")
+//                    [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+//#endif
+//                } else {
+                    [self.navigationController presentViewController:userLct animated:YES completion:nil];
+//                }
             };
             [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
         } else if ([trId isEqualToString:QIMTextBarExpandViewItem_TouPiao]) {

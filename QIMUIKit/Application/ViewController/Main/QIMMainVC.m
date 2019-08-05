@@ -154,10 +154,6 @@ static dispatch_once_t __onceMainToken;
     */
     self.reloadCountQueue = dispatch_queue_create("Reload Main Read Count", DISPATCH_QUEUE_SERIAL);
     [self registerNSNotifications];
-//    BOOL isPortrait = [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortrait;
-//    if (!isPortrait) {
-//        self.view.width = 375;
-//    }
     self.view.width = [[QIMWindowManager shareInstance] getPrimaryWidth];
     self.definesPresentationContext = YES;
     self.edgesForExtendedLayout = UIRectEdgeNone;
@@ -605,7 +601,7 @@ static dispatch_once_t __onceMainToken;
     if (checkAuthSignKey == NO) {
         oldAuthSign = YES;
     }
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"appstore"] && oldAuthSign == YES) {
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"appstore"] && oldAuthSign == YES && [[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"]) {
 
         [self.totalTabBarArray addObject:@{@"title": [NSBundle qim_localizedStringForKey:@"tab_title_moment"], @"normalImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageNormalColor]], @"selectImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageSelectedColor]]}];
     }

@@ -17,9 +17,9 @@
 
 @implementation QIMCommonUserInfoCell
 
-- (YLImageView *)avatarImage {
+- (UIImageView *)avatarImage {
     if (!_avatarImage) {
-        _avatarImage = [[YLImageView alloc] initWithFrame:CGRectMake(19, 16, 50, 50)];
+        _avatarImage = [[UIImageView alloc] initWithFrame:CGRectMake(19, 16, 50, 50)];
         _avatarImage.layer.cornerRadius = 25;
         _avatarImage.layer.masksToBounds = YES;
         _avatarImage.contentMode = UIViewContentModeScaleAspectFit;

@@ -6,7 +6,6 @@
 //
 
 #import "QIMEmotionTip.h"
-//#import "UIImage+QIMGIF.h"
 #import "QIMCollectionFaceManager.h"
 #import "QIMEmotionManager.h"
 
@@ -173,7 +172,7 @@ typedef NS_ENUM(NSInteger, QTalkTipPositionType) {
             point = [_cell convertPoint:CGPointMake(CGRectGetWidth(_cell.frame) * 0.55, 0) toView:superView];
             frame.origin.x = point.x + SIDE_BAR_WIDTH + MIDDLE_BAR_WIDTH /2 - TOTAL_BAR_SIZE;
             
-        }else {
+        } else {
             type = kQTalkTipPositionTypeMiddle;
             frame.origin.x = _x;
         }
@@ -184,16 +183,25 @@ typedef NS_ENUM(NSInteger, QTalkTipPositionType) {
         
         if ([cell isKindOfClass:[QIMFaceViewCell class]]) {
             QIMFaceViewCell *normalEmotionCell = (QIMFaceViewCell *)cell;
-            NSData *gifData = [[QIMEmotionManager sharedInstance] getEmotionThumbIconDataWithImageStr:normalEmotionCell.emojiPath];
+            [self.gifImageView qim_setImageWithURL:[NSURL fileURLWithPath:normalEmotionCell.emojiPath] placeholderImage:nil];
             //Mark by SD
+//            NSData *gifData = [[QIMEmotionManager sharedInstance] getEmotionThumbIconDataWithImageStr:normalEmotionCell.emojiPath];
 //            self.gifImageView.image = [UIImage qimsd_animatedGIFWithData:gifData];
         } else if ([cell isKindOfClass:[QIMCollectionViewCell class]]) {
             QIMCollectionViewCell *collectionCell = (QIMCollectionViewCell *)cell;
-            NSData *imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getCollectionFaceEmojiLocalPathWithIndex:collectionCell.tag - 1]];
-            if (!imageData.length) {
-                imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getSmallEmojiLocalPathWithIndex:collectionCell.tag - 1]];
+            
+            NSString *emojiUrl = [[QIMCollectionFaceManager sharedInstance] getCollectionFaceHttpUrlWithIndex:collectionCell.tag - 1];
+            if (![emojiUrl qim_hasPrefixHttpHeader]) {
+                emojiUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], emojiUrl];
             }
+            [self.gifImageView qim_setImageWithURL:[NSURL URLWithString:emojiUrl] placeholderImage:nil];
+
             //Mark by SD
+//            NSData *imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getCollectionFaceEmojiLocalPathWithIndex:collectionCell.tag - 1]];
+//            if (!imageData.length) {
+//                imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getSmallEmojiLocalPathWithIndex:collectionCell.tag - 1]];
+//            }
+            
 //            self.gifImageView.image = [UIImage qimsd_animatedGIFWithData:imageData];
         }
     }

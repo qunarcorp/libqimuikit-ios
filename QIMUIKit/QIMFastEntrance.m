@@ -201,7 +201,7 @@ static QIMFastEntrance *_sharedInstance = nil;
                 detailVc.view.backgroundColor = [UIColor greenColor];
                 UINavigationController *detailNav = [[UINavigationController alloc] initWithRootViewController:detailVc];
                 QIMMainSplitViewController *mainSPVC = [[QIMMainSplitViewController alloc] initWithMaster:navVC detail:detailNav];
-                mainSPVC.placeholderViewControllerClass = [UIViewController class];
+                mainSPVC.placeholderViewControllerClass = NSClassFromString(@"QIMEmptyViewController");
                 [[QIMWindowManager shareInstance] setMainSplitVC:mainSPVC];
                 [[[UIApplication sharedApplication] keyWindow] setRootViewController:mainSPVC];
             } else {

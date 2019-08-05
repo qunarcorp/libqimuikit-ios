@@ -7,11 +7,10 @@
 //
 
 #import "QIMAddSomeCell.h"
-#import "YLImageView.h"
 
 @implementation QIMAddSomeCell{
 
-    YLImageView *_headerImageView;
+    UIImageView *_headerImageView;
     UILabel *_titleLabel;
     UILabel *_descLabel;
     UIView  *_lineView;
@@ -29,7 +28,7 @@
         [self setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         
         CGFloat headerWidth = [QIMAddSomeCell getCellHeight] - 10 * 2;
-        _headerImageView = [[YLImageView alloc] initWithFrame:CGRectMake(10, 10, headerWidth, headerWidth)];
+        _headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, headerWidth, headerWidth)];
         [_headerImageView setClipsToBounds:YES];
         [_headerImageView.layer setCornerRadius:headerWidth / 2.0];
         [self.contentView addSubview:_headerImageView];

@@ -34,7 +34,7 @@
         
         @try {
             // check package md5
-            NSString* md5 =[QIMKit getFileDataMD5WithFileData: [request responseData]];
+            NSString* md5 =[QIMKit getFileMD5WithPath: [request responseData]];
             if(![md5 isEqualToString:md5]){
                 // QIMVerboseLog(@"md5 check error");
                 errorMsg = @"md5 check error";
@@ -86,7 +86,7 @@
         
         @try {
             // TODO check patch md5
-            NSString* md5 =[QIMKit getFileDataMD5WithFileData: [request responseData]];
+            NSString* md5 =[QIMKit getFileMD5WithPath: [request responseData]];
             if(![patchMd5 isEqualToString:md5]){
                 // QIMVerboseLog(@"md5 check error");
                 errorMsg = @"md5 check error";

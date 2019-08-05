@@ -8,7 +8,6 @@
 
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkMomentPicture.h"
-#import "YLImageView.h"
 #import "NSData+ImageContentType.h"
 
 // 图片间距

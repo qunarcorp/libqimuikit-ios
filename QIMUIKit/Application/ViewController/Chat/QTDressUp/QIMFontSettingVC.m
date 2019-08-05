@@ -14,7 +14,7 @@
 //#import "TextCellCaChe.h"
 #import "QIMUUIDTools.h"
 #import "QIMSliderView.h"
-#import "QTalkSessionCell.h"
+#import "QTalkNewSessionTableViewCell.h"
 #import "QIMMessageParser.h"
 #import "QIMTextContainer.h"
 #import "QIMMessageCellCache.h"
@@ -337,7 +337,7 @@
         QIMTextContainer *textContaner = [QIMMessageParser textContainerForMessage:message];
         return [textContaner getHeightWithFramesetter:nil width:textContaner.textWidth] + (message.messageDirection == QIMMessageDirection_Sent ? 30 : 60);
     }else if (tableView == _sessionTableView){
-        return [QTalkSessionCell getCellHeight];
+        return [QTalkNewSessionTableViewCell getCellHeight];
     }
     return 0;
 }
@@ -359,9 +359,9 @@
         NSMutableDictionary * dict  =  [_sessionDatasource objectAtIndex:indexPath.row];
         NSString *chatId = [dict objectForKey:@"XmppId"];
         NSString *cellIdentifier = [NSString stringWithFormat:@"Cell ChatId(%@)", chatId];
-        QTalkSessionCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        QTalkNewSessionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         if (cell == nil) {
-            cell = [[QTalkSessionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+            cell = [[QTalkNewSessionTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         }
         cell.firstRefresh = YES;
         cell.infoDic = dict;

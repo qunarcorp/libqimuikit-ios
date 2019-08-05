@@ -25,7 +25,8 @@
 - (UIImageView *)thubImgView {
     if (!_thubImgView) {
         _thubImgView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        _thubImgView.backgroundColor = [UIColor yellowColor];
+        _thubImgView.backgroundColor = [UIColor whiteColor];
+        _thubImgView.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _thubImgView;
 }
@@ -52,7 +53,6 @@
 - (void)setVideoModel:(QIMWorkMomentContentVideoModel *)videoModel {
     _videoModel = videoModel;
     [self.thubImgView qim_setImageWithURL:[NSURL URLWithString:videoModel.ThumbUrl] placeholderImage:nil];
-    
 }
 
 #pragma mark - initUI
@@ -71,13 +71,13 @@
         make.centerY.mas_equalTo(self.thubImgView.mas_centerY);
     }];
     
-    [self addSubview:self.videoDurationLabel];
-    [self.videoDurationLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(self.thubImgView.mas_right).mas_offset(-20);
-        make.width.mas_equalTo(60);
-        make.height.mas_equalTo(20);
-        make.bottom.mas_equalTo(self.thubImgView.mas_bottom).mas_offset(-20);
-    }];
+//    [self addSubview:self.videoDurationLabel];
+//    [self.videoDurationLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.right.mas_equalTo(self.thubImgView.mas_right).mas_offset(-20);
+//        make.width.mas_equalTo(60);
+//        make.height.mas_equalTo(20);
+//        make.bottom.mas_equalTo(self.thubImgView.mas_bottom).mas_offset(-20);
+//    }];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapWorkMomentVideo)];
     [self addGestureRecognizer:tap];
