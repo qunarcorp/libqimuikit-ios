@@ -119,7 +119,7 @@ static RCTBridge *bridge = nil;
 
 - (NSURL *)getJSCodeLocation {
     // For production use, this `NSURL` could instead point to a pre-bundled file on disk:
-    //
+//    return [NSURL URLWithString:@"http://ip:8081/index.ios.bundle?platform=ios&dev=true"];
     NSString *appDebugOpsSearchRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkSearchRNDebugUrl"];
     if (appDebugOpsSearchRNDebugUrlStr.length > 0) {
         NSURL *appDebugOpsSearchRNDebugUrl = [NSURL URLWithString:appDebugOpsSearchRNDebugUrlStr];
@@ -154,7 +154,7 @@ static RCTBridge *bridge = nil;
  *
  */
 + (NSString *)getAssetBundleName {
-    return @"rn-qtalk-search.ios.jsbundle_v3";
+    return @"rn-qtalk-search.ios.jsbundle_v4";
 }
 
 /*

@@ -187,7 +187,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 + (void)showMainVc {
     if ([QIMMainVC checkMainVC] == NO || [QIMMainVC getMainVCReShow] == YES) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([[QIMKit sharedInstance] getIsIpad] == YES && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
 #if __has_include("QIMIPadWindowManager.h")
                 IPAD_QIMMainSplitVC *mainVC = [[IPAD_QIMMainSplitVC alloc] init];
                 [[QIMIPadWindowManager sharedInstance] setiPadRootVc:mainVC];
