@@ -135,17 +135,22 @@
                 if (![urlStr containsString:@"imgtype"]) {
                     urlStr = [urlStr stringByAppendingString:@"&imgtype=thumb"];
                 }
-            }
-            else
-            {
+                if (![urlStr containsString:@"webp="]) {
+                    urlStr = [urlStr stringByAppendingString:@"&webp=true"];
+                }
+            } else {
                 if (![urlStr containsString:@"platform"]) {
                     urlStr = [urlStr stringByAppendingString:@"&platform=touch"];
                 }
                 if (![urlStr containsString:@"imgtype"]) {
                     urlStr = [urlStr stringByAppendingString:@"&imgtype=thumb"];
                 }
+                if (![urlStr containsString:@"webp="]) {
+                    urlStr = [urlStr stringByAppendingString:@"&webp=true"];
+                }
             }
         }
+        
         NSURL * smallPicUrl = [NSURL URLWithString:urlStr];
         
         BOOL isGif = [[[smallPicUrl pathExtension] lowercaseString] isEqualToString:@"gif"];

@@ -22,7 +22,7 @@
 #import "QIMMessageHelperVC.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMWebView.h"
-#import "QIMVideoPlayer.h"
+#import "QIMNewMoivePlayerVC.h"
 #import "QIMPublicNumberCardVC.h"
 #import "QIMUserProfileViewController.h"
 #import "QIMWindowManager.h"
@@ -745,17 +745,39 @@ static QIMFastEntrance *_sharedInstance = nil;
     });
 }
 
-+ (void)openVideoPlayerForUrl:(NSString *)videoUrl LocalOutPath:(NSString *)localOutPath {
++ (void)openVideoPlayerForUrl:(NSString *)videoUrl LocalOutPath:(NSString *)localOutPath CoverImageUrl:(NSString *)coverImageUrl {
     dispatch_async(dispatch_get_main_queue(), ^{
-        QIMVideoPlayer *videoPlayer = [[QIMVideoPlayer alloc] init];
-        [videoPlayer setLocalVideoPath:localOutPath];
-        [videoPlayer setRemoteVideoUrl:videoUrl];
+        QIMNewMoivePlayerVC *videoPlayer = [[QIMNewMoivePlayerVC alloc] init];
+//        videoPlayer.videoUrl = videoUrl;
+        
+//        [videoPlayer setLocalVideoPath:localOutPath];
+//        [videoPlayer setRemoteVideoUrl:videoUrl];
+//        [videoPlayer setRemoteVideoCoverImagePath:coverImageUrl];
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         [navVC pushViewController:videoPlayer animated:YES];
     });
+}
+
++ (void)openVideoPlayerForVideoModel:(QIMVideoModel *)videoModel {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMNewMoivePlayerVC *videoPlayer = [[QIMNewMoivePlayerVC alloc] init];
+        videoPlayer.videoModel = videoModel;
+//        videoPlayer.videoInfoDic = videoInfo;
+        //        videoPlayer.videoUrl = videoUrl;
+        
+//        [videoPlayer setLocalVideoPath:localOutPath];
+//        [videoPlayer setRemoteVideoUrl:videoUrl];
+//        [videoPlayer setRemoteVideoCoverImagePath:coverImageUrl];
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        [navVC pushViewController:videoPlayer animated:YES];
+    });
+
 }
 
 + (BOOL)handleOpsasppSchema:(NSDictionary *)reactInfoDic {
@@ -1608,6 +1630,15 @@ static QIMFastEntrance *_sharedInstance = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
         QIMWorkMomentPushViewController *pushVc = [[QIMWorkMomentPushViewController alloc] init];
         pushVc.shareLinkUrlDic = linkDic;
+        QIMNavController *pushNav = [[QIMNavController alloc] initWithRootViewController:pushVc];
+        [nav presentViewController:pushNav animated:YES completion:nil];
+    });
+}
+
++ (void)presentWorkMomentPushVCWithVideoDic:(NSDictionary *)videoDic withNavVc:(UINavigationController *)nav {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMWorkMomentPushViewController *pushVc = [[QIMWorkMomentPushViewController alloc] init];
+        pushVc.shareVideoDic = videoDic;
         QIMNavController *pushNav = [[QIMNavController alloc] initWithRootViewController:pushVc];
         [nav presentViewController:pushNav animated:YES completion:nil];
     });

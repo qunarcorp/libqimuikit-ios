@@ -11,6 +11,7 @@
 #import "SDImageCache.h"
 #import "QIMKitPublicHeader.h"
 #import "QIMCommonCategories.h"
+#import "SDImageWebPCoder.h"
 
 @implementation QIMImageManager
 
@@ -19,6 +20,8 @@ static QIMImageManager *__manager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         __manager = [[QIMImageManager alloc] init];
+        SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
+        [[SDImageCodersManager sharedManager] addCoder:webPCoder];
     });
     return __manager;
 }

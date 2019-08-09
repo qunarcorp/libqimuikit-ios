@@ -11,6 +11,8 @@
 #import "QIMMenuImageView.h"
 #import "QIMVideoPlayerVC.h"
 #import "QIMJSONSerializer.h"
+#import "QIMVideoModel.h"
+#import "YYModel.h"
 #import <MediaPlayer/MediaPlayer.h>
 
 static NSMutableDictionary *__uploading_progress_dic = nil;
@@ -128,6 +130,8 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
             self.message.message = self.message.extendInformation;
         }
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+        QIMVideoModel *videoModel = [QIMVideoModel yy_modelWithDictionary:infoDic];
+        /*
         NSString *fileName = [infoDic objectForKey:@"FileName"];
         NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
         NSInteger videoWidth = [[infoDic objectForKey:@"Width"] integerValue];;
@@ -136,6 +140,12 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         if (![fileUrl qim_hasPrefixHttpHeader]) {
             fileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
         }
+        */
+//        [QIMFastEntrance openVideoPlayerForVideoInfoDic:(NSDictionary *)]
+//        [QIMFastEntrance openVideoPlayerForUrl:fileUrl LocalOutPath:nil CoverImageUrl:nil];
+        [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
+        
+        /*
         NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:fileName?fileName:@""];
         QIMVideoPlayerVC *videoPlayVC = [[QIMVideoPlayerVC alloc] init];
         [videoPlayVC setVideoPath:filePath];
@@ -143,6 +153,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         [videoPlayVC setVideoWidth:videoWidth];
         [videoPlayVC setVideoHeight:videoHeight];
         [self.owerViewController.navigationController pushViewController:videoPlayVC animated:YES];
+         */
     }
 }
 

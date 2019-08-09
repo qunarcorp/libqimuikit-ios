@@ -15,11 +15,37 @@
 #import "QIMWorkMessageCell.h"
 #import "YYModel.h"
 
+@interface QIMWorkFeedSearchField : UITextField
+@end
+
+@implementation QIMWorkFeedSearchField
+
+- (CGRect)leftViewRectForBounds:(CGRect)bounds {
+    CGRect iconRect = [super leftViewRectForBounds:bounds];
+    iconRect.origin.x += 13; //像右边偏15
+    return iconRect;
+}
+
+//UITextField 文字与输入框的距离
+- (CGRect)textRectForBounds:(CGRect)bounds{
+    
+    return CGRectInset(bounds, 35, 0);
+    
+}
+
+//控制文本的位置
+- (CGRect)editingRectForBounds:(CGRect)bounds{
+    
+    return CGRectInset(bounds, 35, 0);
+}
+
+@end
+
 @interface QIMWorkFeedSearchViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 @property (nonatomic, strong) UIView *searchBgView;
 
-@property (nonatomic, strong) UITextField *textField;
+@property (nonatomic, strong) QIMWorkFeedSearchField *textField;
 
 @property (nonatomic, strong) UITableView *mainTableView;
 
@@ -39,7 +65,7 @@
 - (UITableView *)mainTableView {
     if (!_mainTableView) {
         _mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.searchBgView.bottom, self.view.width, self.view.height) style:UITableViewStyleGrouped];
-        _mainTableView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
+        _mainTableView.backgroundColor = [UIColor whiteColor];
         _mainTableView.delegate = self;
         _mainTableView.dataSource = self;
         _mainTableView.estimatedRowHeight = 0;
@@ -58,7 +84,7 @@
 }
 
 - (void)initNav {
-    UIView *searchBgView = [[UIView alloc] initWithFrame:CGRectMake(0, [[QIMDeviceManager sharedInstance] getNAVIGATION_BAR_HEIGHT], self.view.width, 40)];
+    UIView *searchBgView = [[UIView alloc] initWithFrame:CGRectMake(0, [[QIMDeviceManager sharedInstance] getSTATUS_BAR_HEIGHT], self.view.width, 40)];
     searchBgView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:searchBgView];
     self.searchBgView = searchBgView;
@@ -77,13 +103,15 @@
         make.top.mas_offset(12);
     }];
     
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectZero];
+    QIMWorkFeedSearchField *textField = [[QIMWorkFeedSearchField alloc] initWithFrame:CGRectZero];
     textField.placeholder = @"搜索";
     textField.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
     textField.layer.cornerRadius = 4.0f;
     textField.layer.masksToBounds = YES;
     textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    textField.returnKeyType = UIReturnKeySearch;
     [searchBgView addSubview:textField];
+
     self.textField = textField;
     self.textField.delegate = self;
     [textField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -92,9 +120,10 @@
         make.left.mas_offset(15);
         make.right.mas_equalTo(cancelBtn.mas_left).mas_offset(-15);
     }];
-    UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 14, 14)];
+    UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 14, 14)];
     iconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:30 color:[UIColor qim_colorWithHex:0xBFBFBF]]];
     textField.leftView = iconView;
+    textField.leftViewMode = UITextFieldViewModeAlways;
 }
 
 - (void)cancelSearch:(id)sender {
@@ -179,6 +208,11 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *dic = [self.searchDataList objectAtIndex:indexPath.row];
     NSLog(@"count : %ld", self.searchDataList.count);
@@ -187,7 +221,7 @@
         //帖子
         QIMWorkMomentModel *model = [self getMomentModelWithDic:dic];
         if (model.rowHeight <= 0) {
-            return MAXFLOAT;
+            return 115;
         } else {
             return model.rowHeight;
         }
@@ -203,17 +237,24 @@
     [self.searchDataList removeAllObjects];
     NSMutableString * searchText = [NSMutableString stringWithString:textField.text];
     [searchText replaceCharactersInRange:range withString:string];
-    if (textField.text.length + string.length - range.length >= 2) {
-        __weak __typeof(self) weakSelf = self;
-        [[QIMKit sharedInstance] searchMomentWithKey:[searchText lowercaseString] withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
-            __typeof(self) strongSelf = weakSelf;
-            if (!strongSelf) {
-                return;
-            }
-            [strongSelf.searchDataList addObjectsFromArray:result];
-            [strongSelf.mainTableView reloadData];
-            NSLog(@"result : %@", result);
-        }];
+    
+    UITextRange *selectedRange = textField.markedTextRange;
+    UITextPosition *position = [textField positionFromPosition:selectedRange.start offset:0];
+    if (position) {
+        
+    } else {
+        if (textField.text.length + string.length - range.length >= 2) {
+            __weak __typeof(self) weakSelf = self;
+            [[QIMKit sharedInstance] searchMomentWithKey:[searchText lowercaseString] withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
+                __typeof(self) strongSelf = weakSelf;
+                if (!strongSelf) {
+                    return;
+                }
+                [strongSelf.searchDataList addObjectsFromArray:result];
+                [strongSelf.mainTableView reloadData];
+                NSLog(@"result : %@", result);
+            }];
+        }
     }
     return YES;
 }
@@ -241,6 +282,7 @@
         }
         [strongSelf.searchDataList addObjectsFromArray:result];
         [strongSelf.mainTableView reloadData];
+        [strongSelf.view endEditing:YES];
         NSLog(@"result : %@", result);
     }];
     return YES;

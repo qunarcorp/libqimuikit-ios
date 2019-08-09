@@ -36,12 +36,10 @@
 #import "QIMWorkFeedAtNotifyViewController.h"
 #import "QIMATGroupMemberTextAttachment.h"
 #import "YYKeyboardManager.h"
-#import "QIMVideoPlayerVC.h"
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
 #import <Toast/Toast.h>
-#import "QIMVideoPlayer.h"
 
 static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
 
@@ -482,22 +480,38 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
     
     if (self.workFeedContentType == QIMWorkFeedContentTypeVideo) {
         //不能再选择图片，不展示➕
-        
+//        [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:((self.workFeedContentType == QIMWorkFeedContentTypeVideo) || (self.workFeedContentType == QIMWorkFeedContentTypeImage))];
+        [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:NO];
+        [[QTPHImagePickerManager sharedInstance] setMixedSelection:NO];
+
     } else {
         if (self.selectPhotos.count >= 9) {
             //新增图片之后>=9，移除➕
             [self.selectPhotos removeObject:@"Q_Work_Add"];
-        } else {
-            //新增图片之后<9，新增➕
+//            [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:((self.workFeedContentType == QIMWorkFeedContentTypeVideo) || (self.workFeedContentType == QIMWorkFeedContentTypeImage))];
+            [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:NO];
+            [[QTPHImagePickerManager sharedInstance] setMixedSelection:NO];
+        } else if (self.selectPhotos.count >= 1) {
+            //新增图片之后<9, >=1，新增➕
             
             NSInteger maxCount = 9 - self.selectPhotos.count;
             [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:maxCount];
-            //        [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:YES];
+            [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:NO];
             [self.selectPhotos addObject:@"Q_Work_Add"];
+        } else {
+            //新增图片之后<0，移除➕
+            [self.selectPhotos removeObject:@"Q_Work_Add"];
+
+            [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:9];
+            [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
+            [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
         }
     }
-    if (self.selectPhotos.count <= 0 && (self.workFeedContentType == QIMWorkFeedContentTypeImage || self.workFeedContentType == QIMWorkFeedContentTypeVideo) && self.workFeedContentType == QIMWorkFeedContentTypeLink) {
+    if (self.selectPhotos.count <= 0 && (self.workFeedContentType == QIMWorkFeedContentTypeImage || self.workFeedContentType == QIMWorkFeedContentTypeVideo || self.workFeedContentType == QIMWorkFeedContentTypeLink)) {
         self.workFeedContentType == QIMWorkFeedContentTypeText;
+//        [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:((self.workFeedContentType == QIMWorkFeedContentTypeVideo) || (self.workFeedContentType == QIMWorkFeedContentTypeImage))];
+        [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
+        [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
     }
     dispatch_async(dispatch_get_main_queue(), ^{
        [self.photoCollectionView reloadData];
@@ -562,6 +576,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
     _progressHUD.hidden = YES;
     [[YYKeyboardManager defaultManager] addObserver:self];
     [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:9];
+    [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
+    [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
 //    [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:YES];
     self.navigationController.navigationBar.barTintColor = [UIColor qim_colorWithHex:0xF7F7F7];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
@@ -569,6 +585,12 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
     [self setupUI];
     self.momentId = [NSString stringWithFormat:@"0-%@", [QIMUUIDTools UUID]];
     [self.textView becomeFirstResponder];
+    if (self.shareVideoDic.count > 0) {
+        [self.selectPhotos removeObject:@"Q_Work_Add"];
+        [self.selectPhotos addObject:self.shareVideoDic];
+        self.workFeedContentType = QIMWorkFeedContentTypeVideo;
+        [self updateSelectPhotos];
+    }
 }
 
 - (void)keyboardChangedWithTransition:(YYKeyboardTransition)transition {
@@ -700,6 +722,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
 //    [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:NO];
+    [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
+    [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
     if (self.shareWorkMoment) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
@@ -724,6 +748,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
 
 - (void)pushNewMoment:(id)sender {
     QIMVerboseLog(@"发布了一条新动态");
+    [self.view endEditing:YES];
     if (self.textView.text.length > QIMWORKMOMENTLIMITNUM) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -731,7 +756,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
         });
         return;
     }
-    BOOL emptyContent = (((self.selectPhotos.count <= 0) || (self.textView.text.length <= 0) || ([self isEmpty:self.textView.text] == YES)) && (self.workFeedContentType == QIMWorkFeedContentTypeText));
+    BOOL emptyContent = (((self.selectPhotos.count <= 0) && ((self.textView.text.length <= 0) || ([self isEmpty:self.textView.text] == YES))) && (self.workFeedContentType == QIMWorkFeedContentTypeText));
     
     if (emptyContent == YES) {
         UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"请尽情发挥吧..." preferredStyle:UIAlertControllerStyleAlert];
@@ -761,6 +786,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
             NSString *finallyContent = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:self.textView.attributedText WithOutAtInfo:&outATInfoArray];
             
             NSMutableDictionary *momentContentDic = [[NSMutableDictionary alloc] initWithCapacity:3];
+            __block BOOL uploadSuccessed = YES;
             if (self.shareLinkUrlDic.count > 0) {
                 [momentContentDic setQIMSafeObject:@"分享了一条链接!" forKey:@"content"];
             } else {
@@ -796,48 +822,82 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
                 } else if (mediaType == QIMWorkMomentMediaTypeVideo) {
                     //视频
                     
-                    //            NSDictionary *videoDic = @{@"MediaType":@(1), @"VideoDic": @{@"videoOutPath" : videoOutPath, @"fileSizeStr":fileSizeStr, @"videoDuration":@(videoDuration), @"thumbImage":thumbImage}};
-                    
-                    NSDictionary *videoDic = [mediaDic objectForKey:@"VideoDic"];
-                    NSString *videoOutPath = [videoDic objectForKey:@"videoOutPath"];
-                    NSData *videoData = [NSData dataWithContentsOfFile:videoOutPath];
-                    if ([videoData isKindOfClass:[NSData class]]) {
+//                    NSDictionary *videoDic = @{@"MediaType":@(1), @"VideoDic": @{@"LocalVideoOutPath" : LocalVideoOutPath, @"fileSizeStr":fileSizeStr, @"videoDuration":@(videoDuration), @"thumbImage":thumbImage}};
+                    BOOL videoReady = [[mediaDic objectForKey:@"videoReady"] boolValue];
+                    if (videoReady == YES) {
                         dispatch_group_enter(group);
-                        NSDictionary *videoRemoteDic = [QIMKit uploadVideo:videoData];
-                        if (videoRemoteDic.count > 0) {
-                            
-                            NSString *firstThumbUrl = [videoRemoteDic objectForKey:@"firstThumbUrl"];
-                            NSString *ThumbName = [videoRemoteDic objectForKey:@"firstThumb"];
-                            NSString *videoUrl = [videoRemoteDic objectForKey:@"transUrl"];
-
-                            NSDictionary *transFileInfo = [videoRemoteDic objectForKey:@"transFileInfo"];
-                            NSString *videoName = [transFileInfo objectForKey:@"videoName"];
-                            NSString *videoSize = [transFileInfo objectForKey:@"videoSize"];
-                            NSString *height = [transFileInfo objectForKey:@"height"];
-                            NSString *width = [transFileInfo objectForKey:@"width"];
-                            
-                            NSNumber *Duration = [transFileInfo objectForKey:@"duration"];
-                            NSMutableDictionary *videoContentDic = [NSMutableDictionary dictionaryWithCapacity:1];
-                            
-                            /*
-                             {\"Duration\":\"11050\",\"FileName\":\"20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.mp4\",\"FileSize\":\"739546\",\"FileUrl\":\"http://osd.corp.qunar.com/vs_cricle_camel_vs_cricle_camel/20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.mp4\",\"Height\":\"1920\",\"ThumbName\":\"20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.png\",\"ThumbUrl\":\"http://osd.corp.qunar.com/vs_cricle_camel_vs_cricle_camel/20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.png\",\"Width\":\"1080\"}
-                             */
-                            [videoPreDic setQIMSafeObject:Duration forKey:@"Duration"];
-                            [videoPreDic setQIMSafeObject:videoName forKey:@"FileName"];
-                            [videoPreDic setQIMSafeObject:videoSize forKey:@"FileSize"];
-                            [videoPreDic setQIMSafeObject:videoUrl forKey:@"FileUrl"];
-                            [videoPreDic setQIMSafeObject:height forKey:@"Height"];
-                            [videoPreDic setQIMSafeObject:ThumbName forKey:@"ThumbName"];
-                            [videoPreDic setQIMSafeObject:firstThumbUrl forKey:@"ThumbUrl"];
-                            [videoPreDic setQIMSafeObject:width forKey:@"Width"];
-                            [videoPreDic setQIMSafeObject:videoOutPath forKey:@"LocalVideoOutPath"];
-                            dispatch_group_leave(group);
+                        NSDictionary *videoDic = [mediaDic objectForKey:@"VideoDic"];
+                        NSString *firstThumbUrl = [videoDic objectForKey:@"ThumbUrl"];
+                        NSString *ThumbName = [videoDic objectForKey:@"ThumbName"];
+                        NSString *videoUrl = [videoDic objectForKey:@"FileUrl"];
+                        NSString *videoName = [videoDic objectForKey:@"FileName"];
+                        NSString *videoSize = [videoDic objectForKey:@"FileSize"];
+                        NSString *height = [videoDic objectForKey:@"Height"];
+                        NSString *width = [videoDic objectForKey:@"Width"];
+                        NSNumber *Duration = [videoDic objectForKey:@"Duration"];
+                        NSNumber *newVideo = [videoDic objectForKey:@"newVideo"];
+                        NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
+                        
+                        
+                        [videoPreDic setQIMSafeObject:Duration forKey:@"Duration"];
+                        [videoPreDic setQIMSafeObject:videoName forKey:@"FileName"];
+                        [videoPreDic setQIMSafeObject:videoSize forKey:@"FileSize"];
+                        [videoPreDic setQIMSafeObject:videoUrl forKey:@"FileUrl"];
+                        [videoPreDic setQIMSafeObject:height forKey:@"Height"];
+                        [videoPreDic setQIMSafeObject:ThumbName forKey:@"ThumbName"];
+                        [videoPreDic setQIMSafeObject:firstThumbUrl forKey:@"ThumbUrl"];
+                        [videoPreDic setQIMSafeObject:width forKey:@"Width"];
+                        [videoPreDic setQIMSafeObject:LocalVideoOutPath forKey:@"LocalVideoOutPath"];
+                        [videoPreDic setQIMSafeObject:newVideo forKey:@"newVideo"];
+                        dispatch_group_leave(group);
+                    } else {
+                        NSDictionary *videoDic = [mediaDic objectForKey:@"VideoDic"];
+                        NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
+                        NSData *videoData = [NSData dataWithContentsOfFile:LocalVideoOutPath];
+                        if ([videoData isKindOfClass:[NSData class]]) {
+                            dispatch_group_enter(group);
+                            __block NSDictionary *videoRemoteDic = nil;
+                            [QIMKit uploadVideoPath:LocalVideoOutPath withCallBack:^(NSDictionary *videoDic) {
+                                NSLog(@"videoDic : %@", videoDic);
+                                videoRemoteDic = videoDic;
+                                if (videoRemoteDic.count > 0) {
+                                    
+                                    NSString *firstThumbUrl = [videoRemoteDic objectForKey:@"firstThumbUrl"];
+                                    NSString *ThumbName = [videoRemoteDic objectForKey:@"firstThumb"];
+                                    NSString *videoUrl = [videoRemoteDic objectForKey:@"transUrl"];
+                                    
+                                    NSDictionary *transFileInfo = [videoRemoteDic objectForKey:@"transFileInfo"];
+                                    NSString *videoName = [transFileInfo objectForKey:@"videoName"];
+                                    NSString *videoSize = [transFileInfo objectForKey:@"videoSize"];
+                                    NSString *height = [transFileInfo objectForKey:@"height"];
+                                    NSString *width = [transFileInfo objectForKey:@"width"];
+                                    
+                                    NSNumber *Duration = [transFileInfo objectForKey:@"duration"];
+                                    NSMutableDictionary *videoContentDic = [NSMutableDictionary dictionaryWithCapacity:1];
+                                    
+                                    /*
+                                     {\"Duration\":\"11050\",\"FileName\":\"20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.mp4\",\"FileSize\":\"739546\",\"FileUrl\":\"http://osd.corp.qunar.com/vs_cricle_camel_vs_cricle_camel/20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.mp4\",\"Height\":\"1920\",\"ThumbName\":\"20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.png\",\"ThumbUrl\":\"http://osd.corp.qunar.com/vs_cricle_camel_vs_cricle_camel/20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.png\",\"Width\":\"1080\"}
+                                     */
+                                    [videoPreDic setQIMSafeObject:Duration forKey:@"Duration"];
+                                    [videoPreDic setQIMSafeObject:videoName forKey:@"FileName"];
+                                    [videoPreDic setQIMSafeObject:videoSize forKey:@"FileSize"];
+                                    [videoPreDic setQIMSafeObject:videoUrl forKey:@"FileUrl"];
+                                    [videoPreDic setQIMSafeObject:height forKey:@"Height"];
+                                    [videoPreDic setQIMSafeObject:ThumbName forKey:@"ThumbName"];
+                                    [videoPreDic setQIMSafeObject:firstThumbUrl forKey:@"ThumbUrl"];
+                                    [videoPreDic setQIMSafeObject:width forKey:@"Width"];
+                                    [videoPreDic setQIMSafeObject:LocalVideoOutPath forKey:@"LocalVideoOutPath"];
+                                    [videoPreDic setQIMSafeObject:@(YES) forKey:@"newVideo"];
+                                    dispatch_group_leave(group);
+                                } else {
+                                    dispatch_group_leave(group);
+                                }
+                            }];
                         } else {
                             dispatch_group_leave(group);
                         }
-                    } else {
-                        dispatch_group_leave(group);
                     }
+    
                 } else {
                     
                 }
@@ -853,52 +913,60 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
                     
                     [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeImage) forKey:@"type"];
 
-                } else if (self.workFeedContentType == QIMWorkFeedContentTypeLink && self.shareLinkUrlDic.count > 0) {
-                    
-                    [momentContentDic setQIMSafeObject:self.shareLinkUrlDic forKey:@"linkContent"];
-                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeLink) forKey:@"type"];
-                } else if (self.workFeedContentType == QIMWorkFeedContentTypeVideo && videoPreDic.count > 0) {
-                    
-                    [momentContentDic setQIMSafeObject:videoPreDic forKey:@"videoContent"];
-                    [momentContentDic setQIMSafeObject:@"分享了一条视频!" forKey:@"content"];
-                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeVideo) forKey:@"type"];
+                } else if (self.workFeedContentType == QIMWorkFeedContentTypeLink) {
+                    if (self.shareLinkUrlDic.count) {
+                        [momentContentDic setQIMSafeObject:self.shareLinkUrlDic forKey:@"linkContent"];
+                        [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeLink) forKey:@"type"];
+                    } else {
+                        QIMVerboseLog(@"发布链接失败");
+                        uploadSuccessed = NO;
+                    }
+                } else if (self.workFeedContentType == QIMWorkFeedContentTypeVideo) {
+                    if (videoPreDic.count > 0) {
+                        [momentContentDic setQIMSafeObject:videoPreDic forKey:@"videoContent"];
+                        [momentContentDic setQIMSafeObject:@"分享了一条视频!" forKey:@"content"];
+                        [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeVideo) forKey:@"type"];
+                    } else {
+                        QIMVerboseLog(@"发布视频失败");
+                        uploadSuccessed = NO;
+                    }
                 } else {
                     [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeText) forKey:@"type"];
 
                 }
-                /*
-                if (imageList.count > 0) {
-                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeImage) forKey:@"type"];
-                } else if (self.shareLinkUrlDic.count > 0) {
-                    [momentContentDic setQIMSafeObject:self.shareLinkUrlDic forKey:@"linkContent"];
-                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeLink) forKey:@"type"];
+                if (NO == uploadSuccessed) {
+                    //上传附件失败
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self hideProgressHUD:YES];
+                        dispatch_after(3, dispatch_get_main_queue(), ^{
+                            [QTalkTipsView showTips:[NSString stringWithFormat:@"上传驼圈失败，请稍后重试"] InView:self.view];
+                        });
+                    });
                 } else {
-                    [momentContentDic setQIMSafeObject:@(QIMWorkFeedContentTypeText) forKey:@"type"];
-                }
-                */
-                NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
-                [momentDic setQIMSafeObject:momentContent forKey:@"content"];
-                [momentDic setQIMSafeObject:outATInfoArray forKey:@"atList"];
-                QIMVerboseLog(@"outATInfoArray: %@", outATInfoArray);
-                QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
-                QIMVerboseLog(@"momentDic: %@", momentDic);
-                QIMVerboseLog(@"imageList : %@", imageList);
-                [momentDic setObject:@(7) forKey:@"postType"];
-                [[QIMKit sharedInstance] pushNewMomentWithMomentDic:momentDic withCallBack:^(BOOL successed) {
-                    if (successed) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self hideProgressHUD:YES];
-                        });
-                        [self goBack:nil];
-                    } else {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self hideProgressHUD:YES];
-                            dispatch_after(3, dispatch_get_main_queue(), ^{
-                               [QTalkTipsView showTips:[NSString stringWithFormat:@"发布驼圈失败，请稍后重试"] InView:self.view];
+                    NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
+                    [momentDic setQIMSafeObject:momentContent forKey:@"content"];
+                    [momentDic setQIMSafeObject:outATInfoArray forKey:@"atList"];
+                    QIMVerboseLog(@"outATInfoArray: %@", outATInfoArray);
+                    QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
+                    QIMVerboseLog(@"momentDic: %@", momentDic);
+                    QIMVerboseLog(@"imageList : %@", imageList);
+                    [momentDic setObject:@(7) forKey:@"postType"];
+                    [[QIMKit sharedInstance] pushNewMomentWithMomentDic:momentDic withCallBack:^(BOOL successed) {
+                        if (successed) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self hideProgressHUD:YES];
                             });
-                        });
-                    }
-                }];
+                            [self goBack:nil];
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self hideProgressHUD:YES];
+                                dispatch_after(3, dispatch_get_main_queue(), ^{
+                                    [QTalkTipsView showTips:[NSString stringWithFormat:@"发布驼圈失败，请稍后重试"] InView:self.view];
+                                });
+                            });
+                        }
+                    }];
+                }
             });
         });
     }
@@ -1041,11 +1109,21 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
         } else if (mediaType == QIMWorkMomentMediaTypeVideo) {
             //视频
             
-//            NSDictionary *videoDic = @{@"MediaType":@(1), @"VideoDic": @{@"videoOutPath" : videoOutPath, @"fileSizeStr":fileSizeStr, @"videoDuration":@(videoDuration), @"thumbImage":thumbImage}};
-
-            NSDictionary *videoDic = [mediaDic objectForKey:@"VideoDic"];
-            UIImage *thumbImage = [videoDic objectForKey:@"thumbImage"];
-            iconView.image = thumbImage;
+//            NSDictionary *videoDic = @{@"MediaType":@(1), @"VideoDic": @{@"LocalVideoOutPath" : LocalVideoOutPath, @"fileSizeStr":fileSizeStr, @"videoDuration":@(videoDuration), @"thumbImage":thumbImage}};
+            BOOL videoReady = [[mediaDic objectForKey:@"videoReady"] boolValue];
+            if (videoReady == YES) {
+                NSDictionary *videoDic = [mediaDic objectForKey:@"VideoDic"];
+                NSString *firstThumbUrl = [videoDic objectForKey:@"ThumbUrl"];
+                [iconView qim_setImageWithURL:[NSURL URLWithString:firstThumbUrl]];
+            } else {
+                NSDictionary *videoDic = [mediaDic objectForKey:@"VideoDic"];
+                UIImage *thumbImage = [videoDic objectForKey:@"thumbImage"];
+                if (thumbImage) {
+                    iconView.image = thumbImage;
+                } else {
+                    iconView.backgroundColor = [UIColor redColor];
+                }
+            }
             [cell.contentView addSubview:iconView];
             [cell setMediaType:QIMWorkMomentMediaTypeVideo];
             [cell setCanDelete:YES];
@@ -1086,16 +1164,23 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
             nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
             [self presentViewController:nc animated:YES completion:nil];
         } else if (mediaType == QIMWorkMomentMediaTypeVideo) {
-            //            NSDictionary *videoDic = @{@"MediaType":@(1), @"VideoDic": @{@"videoOutPath" : videoOutPath, @"fileSizeStr":fileSizeStr, @"videoDuration":@(videoDuration), @"thumbImage":thumbImage}};
-            
+            //            NSDictionary *videoDic = @{@"MediaType":@(1), @"VideoDic": @{@"LocalVideoOutPath" : LocalVideoOutPath, @"fileSizeStr":fileSizeStr, @"videoDuration":@(videoDuration), @"thumbImage":thumbImage}};
+            BOOL videoReady = [[mediaDic objectForKey:@"videoReady"] boolValue];
             NSDictionary *videoDic = [mediaDic objectForKey:@"VideoDic"];
-            UIImage *thumbImage = [videoDic objectForKey:@"thumbImage"];
-            NSString *videoOutPath = [videoDic objectForKey:@"videoOutPath"];
-            QIMVideoPlayer *videoPlayer = [[QIMVideoPlayer alloc] init];
-            [videoPlayer setLocalVideoPath:videoOutPath];
-//            QIMVideoPlayerVC *videoPlayVC = [[QIMVideoPlayerVC alloc] init];
-//            [videoPlayVC setVideoPath:videoOutPath];
-            [self.navigationController pushViewController:videoPlayer animated:YES];
+            if (videoReady == YES) {
+                
+                NSString *fileUrl = [videoDic objectForKey:@"FileUrl"];
+                NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
+                NSString *thumbUrl = [videoDic objectForKey:@"ThumbUrl"];
+                
+                [QIMFastEntrance openVideoPlayerForUrl:fileUrl LocalOutPath:LocalVideoOutPath CoverImageUrl:thumbUrl];
+            } else {
+                
+                UIImage *thumbImage = [videoDic objectForKey:@"thumbImage"];
+                NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
+                
+                [QIMFastEntrance openVideoPlayerForUrl:nil LocalOutPath:LocalVideoOutPath CoverImageUrl:nil];
+            }
         } else {
             
         }
@@ -1308,13 +1393,13 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
                  CGImageRef image = [gen copyCGImageAtTime:time actualTime:&actualTime error:&error];
                  UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
                  CGImageRelease(image);
-                 NSString *videoOutPath = videoResultPath;
+                 NSString *LocalVideoOutPath = videoResultPath;
                  UIImage *thumbImage = thumb;
                  
-                 NSDictionary *videoDic = @{@"MediaType":@(QIMWorkMomentMediaTypeVideo), @"VideoDic": @{@"videoOutPath" : videoOutPath, @"fileSizeStr":fileSizeStr, @"videoDuration":@(videoDuration), @"thumbImage":thumbImage}};
+                 NSDictionary *videoDic = @{@"MediaType":@(QIMWorkMomentMediaTypeVideo), @"VideoDic": @{@"LocalVideoOutPath" : LocalVideoOutPath, @"fileSizeStr":fileSizeStr, @"videoDuration":@(videoDuration), @"thumbImage":thumbImage}};
                  [self.selectPhotos removeObject:@"Q_Work_Add"];
                  [self.selectPhotos addObject:videoDic];
-                 self.currentSelectMediaType = QIMWorkMomentMediaTypeVideo;
+                 self.workFeedContentType = QIMWorkFeedContentTypeVideo;
                  [self updateSelectPhotos];
                  [self hideProgressHUD:YES];
              }];
@@ -1374,15 +1459,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
         }
     } else if (mediaType == QIMWorkMomentMediaTypeVideo) {
         
-//        NSDictionary *videoDic = @{@"MediaType":@(1), @"VideoDic": @{@"videoOutPath" : videoOutPath, @"fileSizeStr":fileSizeStr, @"videoDuration":@(videoDuration), @"thumbImage":thumbImage}};
-        NSDictionary *videoDic = [mediaDic objectForKey:@"VideoDic"];
-        NSString *videoOutPath = [videoDic objectForKey:@"videoOutPath"];
-        UIImage *thumbImage = [videoDic objectForKey:@"thumbImage"];
-        QIMMWPhoto *video = [[QIMMWPhoto alloc] initWithImage:thumbImage];
-        video.videoURL = [NSURL fileURLWithPath:videoOutPath];
-        
-        return video;
-        
+#warning 暂不支持使用QIMMWPhotoBrowser查看视频
+        return nil;
     } else {
         
     }
@@ -1410,6 +1488,10 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
     [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
+    
+    [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:9];
+    [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
+    [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
 }
 
 #pragma mark - QIMWorkMomentPushUserIdentityViewDelegate

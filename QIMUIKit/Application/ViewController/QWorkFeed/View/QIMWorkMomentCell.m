@@ -402,7 +402,6 @@
             
         }
     }
-    self.contentLabel.originContent = moment.content.content;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, [[QIMWindowManager shareInstance] getPrimaryWidth] - self.nameLab.left - 20, textContainer.textHeight);
         _contentLabel.textContainer = textContainer;
@@ -447,6 +446,7 @@
             } else {
                 
             }
+            self.contentLabel.originContent = self.moment.content.content;
         }
             break;
         case QIMWorkFeedContentTypeImage: {
@@ -462,6 +462,7 @@
             } else {
                 
             }
+            self.contentLabel.originContent = self.moment.content.content;
         }
             break;
         case QIMWorkFeedContentTypeLink: {
@@ -472,6 +473,7 @@
                 _linkView.linkModel = self.moment.content.linkContent;
                 _rowHeight = _linkView.bottom;
             }
+            self.contentLabel.originContent = self.moment.content.exContent;
         }
             break;
         case QIMWorkFeedContentTypeVideo: {
@@ -482,6 +484,7 @@
                 _videoView.videoModel = self.moment.content.videoContent;
                 _rowHeight = _videoView.bottom;
             }
+            self.contentLabel.originContent = self.moment.content.exContent;
         }
             break;
         default: {
@@ -497,6 +500,7 @@
             } else {
                 
             }
+            self.contentLabel.originContent = self.moment.content.content;
         }
             break;
     }
@@ -707,9 +711,10 @@
 
 #pragma mark - QIMWorkMomentVideoViewTapDelegate
 
-- (void)didTapWorkMomentVideo:(QIMWorkMomentContentVideoModel *)videoModel {
+- (void)didTapWorkMomentVideo:(QIMVideoModel *)videoModel {
     if (videoModel) {
-        [QIMFastEntrance openVideoPlayerForUrl:videoModel.FileUrl LocalOutPath:videoModel.LocalVideoOutPath];
+        [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
+//        [QIMFastEntrance openVideoPlayerForUrl:videoModel.FileUrl LocalOutPath:videoModel.LocalVideoOutPath CoverImageUrl:videoModel.ThumbUrl];
     }
 }
 

@@ -2506,7 +2506,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                 }
             }];
             [self sendAssetList:assetList ForPickerController:picker];
-        }else if (asset.mediaType == PHAssetMediaTypeVideo){
+        } else if (asset.mediaType == PHAssetMediaTypeVideo) {
             int videoDuration = (int)(asset.duration);
             [imageManager requestAVAssetForVideo:asset
                                          options:nil
@@ -2530,7 +2530,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                  CGImageRelease(image);
                  NSString *videoOutPath = videoResultPath;
                  UIImage *thumbImage = thumb;
-                 //
                  dispatch_async(dispatch_get_main_queue(), ^{
                      [self.delegate sendVideoPath:videoOutPath WithThumbImage:thumbImage WithFileSizeStr:fileSizeStr WithVideoDuration:videoDuration];
                  });

@@ -6,19 +6,19 @@
 //
 
 #import "QIMCommonUIFramework.h"
-@class QIMWorkMomentContentVideoModel;
+@class QIMVideoModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol QIMWorkMomentVideoViewTapDelegate <NSObject>
 
-- (void)didTapWorkMomentVideo:(QIMWorkMomentContentVideoModel *)videoModel;
+- (void)didTapWorkMomentVideo:(QIMVideoModel *)videoModel;
 
 @end
 
 @interface QIMWorkMomentVideoView : UIView
 
-@property (nonatomic, strong) QIMWorkMomentContentVideoModel *videoModel;
+@property (nonatomic, strong) QIMVideoModel *videoModel;
 
 @property (nonatomic, weak) id <QIMWorkMomentVideoViewTapDelegate> delegate;
 

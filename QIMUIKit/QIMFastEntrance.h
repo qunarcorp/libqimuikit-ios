@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "QIMKitPublicHeader.h"
+@class QIMVideoModel;
 
 @interface QIMFastEntrance : NSObject
 
@@ -85,7 +86,9 @@
 
 + (void)openWebViewForUrl:(NSString *)url showNavBar:(BOOL)showNavBar;
 
-+ (void)openVideoPlayerForUrl:(NSString *)videoUrl LocalOutPath:(NSString *)localOutPath;
++ (void)openVideoPlayerForUrl:(NSString *)videoUrl LocalOutPath:(NSString *)localOutPath CoverImageUrl:(NSString *)coverImageUrl;
+
++ (void)openVideoPlayerForVideoModel:(QIMVideoModel *)videoModel;
 
 + (BOOL)handleOpsasppSchema:(NSDictionary *)reactInfoDic;
 
@@ -173,6 +176,8 @@
 + (void)openWorkMomentSearchVc;
 
 + (void)presentWorkMomentPushVCWithLinkDic:(NSDictionary *)linkDic withNavVc:(UINavigationController *)nav;
+
++ (void)presentWorkMomentPushVCWithVideoDic:(NSDictionary *)videoDic withNavVc:(UINavigationController *)nav;
 
 + (void)openWorkMomentDetailWithPOSTUUId:(NSString *)postUUId;
 
