@@ -6,7 +6,7 @@
 //
 
 #import "QIMWorkMomentVideoView.h"
-#import "QIMWorkMomentContentVideoModel.h"
+#import "QIMVideoModel.h"
 
 @interface QIMWorkMomentVideoView ()
 
@@ -50,9 +50,9 @@
     return _videoDurationLabel;
 }
 
-- (void)setVideoModel:(QIMWorkMomentContentVideoModel *)videoModel {
+- (void)setVideoModel:(QIMVideoModel *)videoModel {
     _videoModel = videoModel;
-    [self.thubImgView qim_setImageWithURL:[NSURL URLWithString:videoModel.ThumbUrl] placeholderImage:nil];
+    [self.thubImgView qim_setImageWithURL:[NSURL URLWithString:videoModel.ThumbUrl] placeholderImage:[UIImage new]];
 }
 
 #pragma mark - initUI

@@ -110,6 +110,9 @@
         if (![imageUrl containsString:@"imgtype"]) {
             imageUrl = [imageUrl stringByAppendingString:@"&imgtype=thumb"];
         }
+        if (![imageUrl containsString:@"webp="]) {
+            imageUrl = [imageUrl stringByAppendingString:@"&webp=true"];
+        }
         [imageView downLoadImageWithModel:imageUrl withFitRect:frame withTotalCount:count];
     }
     self.width = [[UIScreen mainScreen] qim_rightWidth] - 60 - 20;
@@ -156,7 +159,13 @@
 }
 
 - (void)downLoadImageWithModel:(NSString *)imageUrl withFitRect:(CGRect)frame withTotalCount:(NSInteger)totalCount {
-    
+    /*
+    [self qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] options:SDWebImageDecodeFirstFrameOnly progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        
+    } completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        
+    }];
+    */
     [self qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] options:SDWebImageDecodeFirstFrameOnly progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         __block CGRect fitRect = frame;
         dispatch_async(dispatch_get_main_queue(), ^{

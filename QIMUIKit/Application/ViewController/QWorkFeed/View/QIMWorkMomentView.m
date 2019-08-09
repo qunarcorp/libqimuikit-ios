@@ -234,7 +234,6 @@ CGFloat maxFullContentHeight = 0;
     CGFloat textH = textContainer.textHeight;
     self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, [[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20, textContainer.textHeight);
     _contentLabel.textContainer = textContainer;
-    self.contentLabel.originContent = self.moment.content.content;
 
     bottom = _contentLabel.bottom + 8;
 
@@ -262,6 +261,7 @@ CGFloat maxFullContentHeight = 0;
             } else {
                 
             }
+            self.contentLabel.originContent = self.moment.content.content;
         }
             break;
         case QIMWorkFeedContentTypeImage: {
@@ -277,6 +277,7 @@ CGFloat maxFullContentHeight = 0;
             } else {
                 
             }
+            self.contentLabel.originContent = self.moment.content.content;
         }
             break;
         case QIMWorkFeedContentTypeLink: {
@@ -287,6 +288,7 @@ CGFloat maxFullContentHeight = 0;
                 _linkView.linkModel = self.moment.content.linkContent;
                 _rowHeight = _linkView.bottom;
             }
+            self.contentLabel.originContent = self.moment.content.exContent;
         }
             break;
         case QIMWorkFeedContentTypeVideo: {
@@ -297,6 +299,7 @@ CGFloat maxFullContentHeight = 0;
                 _videoView.videoModel = self.moment.content.videoContent;
                 _rowHeight = _videoView.bottom;
             }
+            self.contentLabel.originContent = self.moment.content.exContent;
         }
             break;
         default: {
@@ -312,6 +315,7 @@ CGFloat maxFullContentHeight = 0;
             } else {
                 
             }
+            self.contentLabel.originContent = self.moment.content.content;
         }
             break;
     }
@@ -362,8 +366,11 @@ CGFloat maxFullContentHeight = 0;
 
 #pragma mark - QIM
 
-- (void)didTapWorkMomentVideo:(QIMWorkMomentContentVideoModel *)videoModel {
-    [QIMFastEntrance openVideoPlayerForUrl:videoModel.FileUrl LocalOutPath:videoModel.LocalVideoOutPath];
+- (void)didTapWorkMomentVideo:(QIMVideoModel *)videoModel {
+    if (videoModel) {
+        [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
+    }
+//    [QIMFastEntrance openVideoPlayerForUrl:videoModel.FileUrl LocalOutPath:videoModel.LocalVideoOutPath CoverImageUrl:videoModel.ThumbUrl];
 }
 
 @end

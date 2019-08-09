@@ -9,7 +9,7 @@
 #import "QIMCommonUIFramework.h"
 #import "QIMWorkMomentPicture.h"
 #import "QIMWorkMomentContentLinkModel.h"
-#import "QIMWorkMomentContentVideoModel.h"
+#import "QIMVideoModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSArray <QIMWorkMomentPicture *> *imgList;
 
-@property (nonatomic, strong) QIMWorkMomentContentVideoModel *videoContent;
+@property (nonatomic, strong) QIMVideoModel *videoContent;
 
 @property (nonatomic, strong) QIMWorkMomentContentLinkModel *linkContent;
 

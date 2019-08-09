@@ -120,13 +120,18 @@
             if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
                 headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
             }
-        }
-        else{
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"webp="]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&webp=true"];
+            }
+        } else {
             if (headerUrl.length > 0 && ![headerUrl containsString:@"platform"]) {
                 headerUrl = [headerUrl stringByAppendingString:@"&platform=touch"];
             }
             if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
                 headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"webp="]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&webp=true"];
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -165,6 +170,28 @@
                 }
             } else {
                 
+            }
+        }
+        if (headerUrl.length > 0 && ![headerUrl containsString:@"?"]) {
+            headerUrl = [headerUrl stringByAppendingString:@"?"];
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"platform"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"platform=touch"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"webp="]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&webp=true"];
+            }
+        } else {
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"platform"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"imgtype"]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&imgtype=thumb"];
+            }
+            if (headerUrl.length > 0 && ![headerUrl containsString:@"webp="]) {
+                headerUrl = [headerUrl stringByAppendingString:@"&webp=true"];
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{

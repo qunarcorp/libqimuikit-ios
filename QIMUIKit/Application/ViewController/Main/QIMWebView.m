@@ -18,7 +18,6 @@
 #import "QIMJSONSerializer.h"
 #import "QIMKit+QIMNavConfig.h"
 #import "QIMMWPhoto.h"
-//#import "QIMSDWebImageManager.h"
 
 static NSString *__default_ua = nil;
 

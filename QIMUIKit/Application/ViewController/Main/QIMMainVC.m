@@ -27,7 +27,6 @@
 #import "QIMNavBackBtn.h"
 #import "QIMRNDebugConfigVc.h"
 #import "NSBundle+QIMLibrary.h"
-#import "QIMVideoMediaPlayerVC.h"
 #if __has_include("RNSchemaParse.h")
 
 #import "QTalkSuggestRNJumpManager.h"
@@ -1128,11 +1127,9 @@ static dispatch_once_t __onceMainToken;
 - (UIButton *)searchMomentBtn {
     if (!_searchMomentBtn) {
         _searchMomentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _searchMomentBtn.frame = CGRectMake(0, 0, 28, 28);
-//        iconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:30 color:[UIColor qim_colorWithHex:0xBFBFBF]]];
-
-        [_searchMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:28 color:[UIColor qim_colorWithHex:0xBFBFBF]]] forState:UIControlStateNormal];
-        [_searchMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:28 color:[UIColor qim_colorWithHex:0xBFBFBF]]] forState:UIControlStateSelected];
+        _searchMomentBtn.frame = CGRectMake(0, 0, 21, 21);
+        [_searchMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:21 color:[UIColor qim_colorWithHex:0x666666]]] forState:UIControlStateNormal];
+        [_searchMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:21 color:[UIColor qim_colorWithHex:0x666666]]] forState:UIControlStateSelected];
         [_searchMomentBtn addTarget:self action:@selector(searchMoment:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _searchMomentBtn;

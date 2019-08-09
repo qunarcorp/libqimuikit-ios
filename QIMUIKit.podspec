@@ -44,7 +44,7 @@ Pod::Spec.new do |s|
   s.subspec 'QIMGeneralUI' do |generalUI|
     generalUI.public_header_files = "QIMUIKit/General/**/*.{h}"
     generalUI.source_files = "QIMUIKit/General/**/*.{h,m,c,mm}"
-    generalUI.exclude_files = "QIMUIKit/General/Verders/SDWebImageWebPCoder/Classes/**/*{h,m}", "QIMUIKit/General/Verders/QIMMWPhotoBrowser/**/*{h,m}"
+    generalUI.exclude_files = "QIMUIKit/General/Verders/SDWebImageWebPCoder/Classes/**/*{h,m}", "QIMUIKit/General/Verders/QIMMWPhotoBrowser/**/*{h,m}", "QIMUIKit/General/Verders/QIMVideo/**/*{h,m}", "QIMUIKit/General/Verders/QIMSuperPlayer/**/*{h,m}"
     generalUI.dependency 'QIMUIKit/PublicUIHeader'
     generalUI.dependency 'QIMUIKit/QIMAppUIConfig'
   end
@@ -97,7 +97,6 @@ Pod::Spec.new do |s|
   end
   
   s.subspec 'SDWebImageWebPCoder' do |sdwebp|
-    # sdwebp.module_map = 'QIMUIKit/General/Verders/SDWebImageWebPCoder/Module/SDWebImageWebPCoder.modulemap'
     
     sdwebp.source_files = ['QIMUIKit/General/Verders/SDWebImageWebPCoder/Classes/**/*{h,m}']
     sdwebp.xcconfig = {
@@ -107,7 +106,37 @@ Pod::Spec.new do |s|
     sdwebp.dependency 'SDWebImage/Core', '~> 5.0'
 
   end
-
+  
+  s.subspec 'QIMSuperPlayer' do |player|
+    
+    player.requires_arc = true
+    
+    player.dependency 'AFNetworking'
+    player.dependency 'SDWebImage'
+    player.dependency 'Masonry'
+    player.dependency 'MMLayout'
+    
+    player.ios.framework    = ['SystemConfiguration','CoreTelephony', 'VideoToolbox', 'CoreGraphics', 'AVFoundation', 'Accelerate']
+    player.ios.library = 'z', 'resolv', 'iconv', 'stdc++', 'c++', 'sqlite3'
+    
+    player.source_files = 'QIMUIKit/General/Verders/QIMSuperPlayer/SuperPlayer/**/*.{h,m}'
+    player.private_header_files = 'QIMUIKit/General/Verders/QIMSuperPlayer/SuperPlayer/Utils/TXBitrateItemHelper.h', 'QIMUIKit/General/Verders/SuperPlayer/Views/SuperPlayerView+Private.h'
+    player.resource = 'QIMUIKit/General/Verders/QIMSuperPlayer/SuperPlayer/Resource/*'
+    player.vendored_framework = "QIMUIKit/General/Verders/QIMSuperPlayer/Frameworks/TXLiteAVSDK_Player.framework"
+    
+    player.frameworks = ["SystemConfiguration", "CoreTelephony", "VideoToolbox", "CoreGraphics", "AVFoundation", "Accelerate"]
+    
+    player.libraries = [
+    "z",
+    "resolv",
+    "iconv",
+    "stdc++",
+    "c++",
+    "sqlite3"
+    ]
+    
+  end
+  
   s.subspec 'QIMUIVendorKit' do |vendorkit|
     vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMUpdateView/**/*{h,m}']
 #    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMImagePickerController/**/*{h,m}']
@@ -150,8 +179,10 @@ Pod::Spec.new do |s|
     norn.dependency 'QIMUIKit/ImagePicker'
     norn.dependency 'QIMUIKit/QIMMWPhotoBrowser'
     norn.dependency 'QIMUIKit/SDWebImageWebPCoder'
+    norn.dependency 'QIMUIKit/QIMSuperPlayer'
     norn.dependency 'QIMUIKit/QIMUIVendorKit'
     norn.dependency 'QIMUIKit/QIMNote'
+    norn.dependency 'QIMUIKit/QIMVideo'
   end
   
   s.subspec 'QIMUIKit-FULL' do |full|
@@ -167,9 +198,11 @@ Pod::Spec.new do |s|
     full.dependency 'QIMUIKit/ImagePicker'
     full.dependency 'QIMUIKit/QIMMWPhotoBrowser'
     full.dependency 'QIMUIKit/SDWebImageWebPCoder'
+    full.dependency 'QIMUIKit/QIMSuperPlayer'
     full.dependency 'QIMUIKit/QIMUIVendorKit'
     full.dependency 'QIMUIKit/QIMNote'
     full.dependency 'QIMUIKit/QIMRN'
+    full.dependency 'QIMUIKit/QIMVideo'
   end
   
   s.dependency 'MJRefresh'
@@ -188,7 +221,8 @@ Pod::Spec.new do |s|
   s.dependency 'MMMarkdown'
   s.dependency 'Toast' 
   s.dependency 'YYKeyboardManager'
-  
+#  s.dependency 'SuperPlayer'
+
   if $debug
     puts 'debug QIMUIKit'
   else
