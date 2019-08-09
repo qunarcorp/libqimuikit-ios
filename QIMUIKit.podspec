@@ -44,7 +44,7 @@ Pod::Spec.new do |s|
   s.subspec 'QIMGeneralUI' do |generalUI|
     generalUI.public_header_files = "QIMUIKit/General/**/*.{h}"
     generalUI.source_files = "QIMUIKit/General/**/*.{h,m,c,mm}"
-    generalUI.exclude_files = "QIMUIKit/General/Verders/SDWebImageWebPCoder/Classes/**/*{h,m}", "QIMUIKit/General/Verders/QIMMWPhotoBrowser/**/*{h,m}", "QIMUIKit/General/Verders/QIMVideo/**/*{h,m}", "QIMUIKit/General/Verders/QIMSuperPlayer/**/*{h,m}"
+    generalUI.exclude_files = "QIMUIKit/General/Verders/SDWebImageWebPCoder/Classes/**/*{h,m}", "QIMUIKit/General/Verders/QIMMWPhotoBrowser/**/*{h,m}", "QIMUIKit/General/Verders/QIMSuperPlayer/**/*{h,m}"
     generalUI.dependency 'QIMUIKit/PublicUIHeader'
     generalUI.dependency 'QIMUIKit/QIMAppUIConfig'
   end
@@ -182,7 +182,6 @@ Pod::Spec.new do |s|
     norn.dependency 'QIMUIKit/QIMSuperPlayer'
     norn.dependency 'QIMUIKit/QIMUIVendorKit'
     norn.dependency 'QIMUIKit/QIMNote'
-    norn.dependency 'QIMUIKit/QIMVideo'
   end
   
   s.subspec 'QIMUIKit-FULL' do |full|
@@ -202,7 +201,6 @@ Pod::Spec.new do |s|
     full.dependency 'QIMUIKit/QIMUIVendorKit'
     full.dependency 'QIMUIKit/QIMNote'
     full.dependency 'QIMUIKit/QIMRN'
-    full.dependency 'QIMUIKit/QIMVideo'
   end
   
   s.dependency 'MJRefresh'
