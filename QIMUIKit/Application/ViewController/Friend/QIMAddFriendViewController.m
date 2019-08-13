@@ -91,10 +91,9 @@
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onHeaderViewClick)];
         [headerView addGestureRecognizer:tap];
         
-        UIImageView *headerImageView = [[YLImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
+        UIImageView *headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
         [headerImageView setClipsToBounds:YES];
         [headerImageView.layer setCornerRadius:20];
-//        [headerImageView setImage:[[QIMKit sharedInstance] getUserHeaderImageByUserId:jid]];
         [headerImageView qim_setImageWithJid:jid];
         [headerView addSubview:headerImageView];
         
@@ -116,7 +115,7 @@
         [descInfoLabel setText:descInfo];
         [headerView addSubview:descInfoLabel];
         
-        YLImageView *arrowImageView = [[YLImageView alloc] initWithFrame:CGRectMake(contentView.width - 23, 20, 13, 20)];
+        UIImageView *arrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(contentView.width - 23, 20, 13, 20)];
         [arrowImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"arrow_right"]];
         [headerView addSubview:arrowImageView];
         

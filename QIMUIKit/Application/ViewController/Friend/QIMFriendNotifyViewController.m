@@ -69,7 +69,7 @@
 - (void)initWithTableView{
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height) style:UITableViewStylePlain];
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        _tableView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]);
+        _tableView.frame = CGRectMake(0, 0, [[QIMWindowManager shareInstance] getDetailWidth], [[UIScreen mainScreen] height]);
     }
     [_tableView setBackgroundColor:[UIColor qtalkTableDefaultColor]];
     [_tableView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];

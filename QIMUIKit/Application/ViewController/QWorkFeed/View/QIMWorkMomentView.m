@@ -9,6 +9,7 @@
 #import "QIMWorkMomentView.h"
 #import "QIMWorkMomentImageListView.h"
 #import "QIMWorkMomentLinkView.h"
+#import "QIMWorkMomentVideoView.h"
 #import "QIMWorkMomentLabel.h"
 #import "QIMMarginLabel.h"
 #import "QIMWorkMomentParser.h"
@@ -16,7 +17,7 @@
 
 CGFloat maxFullContentHeight = 0;
 
-@interface QIMWorkMomentView () <QIMAttributedLabelDelegate> {
+@interface QIMWorkMomentView () <QIMAttributedLabelDelegate, QIMWorkMomentLinkViewTapDelegate, QIMWorkMomentVideoViewTapDelegate> {
     CGFloat _rowHeight;
 }
 
@@ -35,6 +36,9 @@ CGFloat maxFullContentHeight = 0;
 
 //Link
 @property (nonatomic, strong) QIMWorkMomentLinkView *linkView;
+
+//Video
+@property (nonatomic, strong) QIMWorkMomentVideoView *videoView;
 
 //正文ContentLabel
 @property (nonatomic, strong) QIMWorkMomentLabel *contentLabel;
@@ -123,6 +127,11 @@ CGFloat maxFullContentHeight = 0;
     _linkView.hidden = YES;
     [self addSubview:_linkView];
     
+    //Video
+    _videoView = [[QIMWorkMomentVideoView alloc] initWithFrame:CGRectZero];
+    _videoView.hidden = YES;
+    [self addSubview:_videoView];
+    
     // 时间视图
     _timeLab = [[UILabel alloc] init];
     _timeLab.textColor = [UIColor qim_colorWithHex:0xADADAD];
@@ -200,6 +209,15 @@ CGFloat maxFullContentHeight = 0;
             }
         }
             break;
+        case QIMWorkFeedContentTypeVideo: {
+            NSString *exContent = self.moment.content.exContent;
+            if (exContent) {
+                content = exContent;
+            } else {
+                
+            }
+        }
+            break;
         default: {
             content = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:self.moment.content.content];
         }
@@ -216,7 +234,6 @@ CGFloat maxFullContentHeight = 0;
     CGFloat textH = textContainer.textHeight;
     self.contentLabel.frame = CGRectMake(self.nameLab.left, bottom + 3, [[UIScreen mainScreen] qim_rightWidth] - self.nameLab.left - 20, textContainer.textHeight);
     _contentLabel.textContainer = textContainer;
-    self.contentLabel.originContent = self.moment.content.content;
 
     bottom = _contentLabel.bottom + 8;
 
@@ -244,6 +261,7 @@ CGFloat maxFullContentHeight = 0;
             } else {
                 
             }
+            self.contentLabel.originContent = self.moment.content.content;
         }
             break;
         case QIMWorkFeedContentTypeImage: {
@@ -259,6 +277,7 @@ CGFloat maxFullContentHeight = 0;
             } else {
                 
             }
+            self.contentLabel.originContent = self.moment.content.content;
         }
             break;
         case QIMWorkFeedContentTypeLink: {
@@ -269,6 +288,18 @@ CGFloat maxFullContentHeight = 0;
                 _linkView.linkModel = self.moment.content.linkContent;
                 _rowHeight = _linkView.bottom;
             }
+            self.contentLabel.originContent = self.moment.content.exContent;
+        }
+            break;
+        case QIMWorkFeedContentTypeVideo: {
+            if (self.moment.content.videoContent) {
+                _videoView.hidden = NO;
+                _videoView.frame = CGRectMake(self.nameLab.left, bottom + 15, 144, 144);
+                _videoView.delegate = self;
+                _videoView.videoModel = self.moment.content.videoContent;
+                _rowHeight = _videoView.bottom;
+            }
+            self.contentLabel.originContent = self.moment.content.exContent;
         }
             break;
         default: {
@@ -284,6 +315,7 @@ CGFloat maxFullContentHeight = 0;
             } else {
                 
             }
+            self.contentLabel.originContent = self.moment.content.content;
         }
             break;
     }
@@ -330,6 +362,15 @@ CGFloat maxFullContentHeight = 0;
     if (linkModel.linkurl.length > 0) {
         [QIMFastEntrance openWebViewForUrl:linkModel.linkurl showNavBar:linkModel.showbar];
     }
+}
+
+#pragma mark - QIM
+
+- (void)didTapWorkMomentVideo:(QIMVideoModel *)videoModel {
+    if (videoModel) {
+        [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
+    }
+//    [QIMFastEntrance openVideoPlayerForUrl:videoModel.FileUrl LocalOutPath:videoModel.LocalVideoOutPath CoverImageUrl:videoModel.ThumbUrl];
 }
 
 @end

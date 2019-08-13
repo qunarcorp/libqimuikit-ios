@@ -15,7 +15,7 @@
 #define kMinTextHeight      30
 
 #import "QIMMsgBaloonBaseCell.h"
-#import "UIImageView+QIMWebCache.h"
+//#import "UIImageView+QIMWebCache.h"
 #import "QIMEncryptChatCell.h"
 #if __has_include("QIMNoteManager.h")
     #import "QIMEncryptChat.h"

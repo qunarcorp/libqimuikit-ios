@@ -111,7 +111,6 @@
 
 - (void)setNoticeMsgModel:(QIMWorkNoticeMessageModel *)noticeMsgModel {
     _noticeMsgModel = noticeMsgModel;
-    NSLog(@"noticeMsgModel : %@", noticeMsgModel);
     
     NSString *userFrom = noticeMsgModel.userFrom;
     NSString *userFromHost = noticeMsgModel.userFromHost;
@@ -194,7 +193,7 @@
             self.contentLabel.text = noticeMsgModel.content;
         }
     }
-    self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, SCREEN_WIDTH - 56 - 6 - self.headerImageView.right - 6, 30);
+    self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, SCREEN_WIDTH - 56 - 6 - self.headerImageView.right - 22, 56);
     if (noticeMsgModel.eventType == QIMWorkFeedNotifyTypePOSTAt && self.cellType == QIMWorkMomentCellTypeMyMessage) {
         self.contentLabel.text = @"Hi~你被Cue到啦，快来看一下吧～";
     }

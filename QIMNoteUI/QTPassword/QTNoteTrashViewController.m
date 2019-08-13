@@ -89,7 +89,7 @@
     if (!_bottomView) {
         _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 44, SCREEN_WIDTH, 44)];
         if ([[QIMKit sharedInstance] getIsIpad]) {
-            _bottomView.frame = CGRectMake(0, [[UIScreen mainScreen] height] - 44, [[UIScreen mainScreen] width], 44);
+            _bottomView.frame = CGRectMake(0, [[UIScreen mainScreen] height] - 44, [[QIMWindowManager shareInstance] getPrimaryWidth], 44);
         }
         _bottomView.backgroundColor = [UIColor whiteColor];
         [self.view addSubview:_bottomView];

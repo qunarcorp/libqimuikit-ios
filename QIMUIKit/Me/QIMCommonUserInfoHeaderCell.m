@@ -13,9 +13,9 @@
 
 @implementation QIMCommonUserInfoHeaderCell
 
-- (YLImageView *)avatarImage {
+- (UIImageView *)avatarImage {
     if (!_avatarImage) {
-        _avatarImage = [[YLImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 80, 16, 50, 50)];
+        _avatarImage = [[UIImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 80, 16, 50, 50)];
         _avatarImage.layer.masksToBounds = YES;
         _avatarImage.layer.cornerRadius = 25;
     }

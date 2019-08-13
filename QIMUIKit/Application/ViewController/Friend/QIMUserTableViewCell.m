@@ -11,7 +11,7 @@
 
 @interface QIMUserTableViewCell ()
 
-@property (nonatomic, strong) YLImageView *headerView;
+@property (nonatomic, strong) UIImageView *headerView;
 
 @property (nonatomic, strong) UILabel *nameLabel;
 
@@ -45,9 +45,9 @@
     }
 }
 
-- (YLImageView *)headerView {
+- (UIImageView *)headerView {
     if (!_headerView) {
-        _headerView = [[YLImageView alloc] initWithFrame:CGRectMake(kQTalkUserCellHeaderLeftMargin, kQTalkUserCellHeaderTopMargin, kQTalkUserCellHeaderWidth, kQTalkUserCellHeaderHeight)];
+        _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(kQTalkUserCellHeaderLeftMargin, kQTalkUserCellHeaderTopMargin, kQTalkUserCellHeaderWidth, kQTalkUserCellHeaderHeight)];
         _headerView.layer.cornerRadius = kQTalkUserCellHeaderWidth / 2.0f;
         _headerView.layer.masksToBounds = YES;
     }
@@ -96,7 +96,6 @@
 - (void)refreshHeader {
     
     NSString *jid = [self.userInfoDic objectForKey:@"XmppId"];
-//    [self.headerView setImage:[[QIMKit sharedInstance] getUserHeaderImageByUserId:jid]];
     [self.headerView qim_setImageWithJid:jid];
 }
 

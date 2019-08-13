@@ -137,7 +137,7 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
 
     NSInteger projectType = ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) ? 0 : 1;
     NSString *ckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
-    NSString *ip = [[QIMKit sharedInstance] getClientIp];
+    NSString *ip = @"0.0.0.0";
     NSString *userId = [QIMKit getLastUserName];
     NSString *httpHost = [[QIMKit sharedInstance] qimNav_Javaurl];
     BOOL WorkFeedEntrance = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
@@ -198,7 +198,6 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
             NSString *bundleUrl = [params objectForKey:@"BundleUrls"];
             if (bundleUrl.length > 0) {
                 NSString *bundleMd5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrl] stringByAppendingFormat:@".jsbundle"];
-//                [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:bundleUrl];
                 BOOL check = [[QIMRNExternalAppManager sharedInstance] checkQIMRNExternalAppWithBundleUrl:bundleUrl];
                 if (check) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -315,7 +314,7 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
         
         [QIMFastEntrance openRNSearchVC];
     }else if ([nativeName isEqualToString:@"OpenToCManager"]){
-        [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_getManagerAppUrl] showNavBar:YES];
+//        [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_getManagerAppUrl] showNavBar:YES];
     }
     else if ([nativeName isEqualToString:@"PublicNumberChat"]){
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -510,13 +509,15 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
                   WithModule:(NSString *)module
               WithProperties:(NSDictionary *)properties{
     UIViewController *vc = [QimRNBModule getVCWithNavigation:navVC WithHiddenNav:hiddenNav WithBundleName:bundleName WithModule:module WithProperties:properties];
+    /* Mark by iPad
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
 #if __has_include("QIMIPadWindowManager.h")
         [[QIMIPadWindowManager sharedInstance] showDetailViewController:vc];
 #endif
     } else {
+        */
         [navVC pushViewController:vc animated:YES];
-    }
+//    }
 }
 
 + (void)sendQIMRNWillShow {
@@ -1642,6 +1643,22 @@ RCT_EXPORT_METHOD(setServiceState:(NSDictionary *)param :(RCTResponseSenderBlock
         BOOL success = [[QIMKit sharedInstance] updateSeatSeStatusWithShopId:sid WithStatus:st];
         callback(@[@{@"result" : @(success)}]);
     }
+}
+
+RCT_EXPORT_METHOD(getAlertVoiceType:(RCTResponseSenderBlock)callback) {
+    NSString *soundName = [[QIMKit sharedInstance] getClientNotificationSoundName];
+    callback(@[@{@"state" : [soundName isEqualToString:@"default"] ? @(YES) : @(NO)}]);
+}
+
+RCT_EXPORT_METHOD(changeConfigAlertStatus:(BOOL)state :(RCTResponseSenderBlock)callback) {
+    NSString *soundName = nil;
+    if (state == YES) {
+        soundName = @"default";
+    } else {
+        soundName = @"msg.wav";
+    }
+    BOOL success = [[QIMKit sharedInstance] setClientNotificationSound:soundName];
+    callback(@[@{@"ok" : @(success)}]);
 }
 
 //获取App版本信息

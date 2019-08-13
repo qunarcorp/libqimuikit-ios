@@ -7,13 +7,12 @@
 //
 
 #import "QIMCommonUIFramework.h"
-#import "YLImageView.h"
 #import "QIMEmotionView.h"
 #import "QIMEmotionTipDelegate.h"
 
 @interface QIMFaceViewCell : UICollectionViewCell <QIMEmotionTipDelegate>
 
-@property (nonatomic, strong) YLImageView *emojiView;
+@property (nonatomic, strong) UIImageView *emojiView;
 
 @property (nonatomic, assign) QTalkEmotionType emotionType;
 

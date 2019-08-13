@@ -11,6 +11,8 @@
 #import "QIMMenuImageView.h"
 #import "QIMVideoPlayerVC.h"
 #import "QIMJSONSerializer.h"
+#import "QIMVideoModel.h"
+#import "YYModel.h"
 #import <MediaPlayer/MediaPlayer.h>
 
 static NSMutableDictionary *__uploading_progress_dic = nil;
@@ -128,6 +130,8 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
             self.message.message = self.message.extendInformation;
         }
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+        QIMVideoModel *videoModel = [QIMVideoModel yy_modelWithDictionary:infoDic];
+        /*
         NSString *fileName = [infoDic objectForKey:@"FileName"];
         NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
         NSInteger videoWidth = [[infoDic objectForKey:@"Width"] integerValue];;
@@ -136,6 +140,12 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         if (![fileUrl qim_hasPrefixHttpHeader]) {
             fileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
         }
+        */
+//        [QIMFastEntrance openVideoPlayerForVideoInfoDic:(NSDictionary *)]
+//        [QIMFastEntrance openVideoPlayerForUrl:fileUrl LocalOutPath:nil CoverImageUrl:nil];
+        [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
+        
+        /*
         NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:fileName?fileName:@""];
         QIMVideoPlayerVC *videoPlayVC = [[QIMVideoPlayerVC alloc] init];
         [videoPlayVC setVideoPath:filePath];
@@ -143,6 +153,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         [videoPlayVC setVideoWidth:videoWidth];
         [videoPlayVC setVideoHeight:videoHeight];
         [self.owerViewController.navigationController pushViewController:videoPlayVC animated:YES];
+         */
     }
 }
 
@@ -176,13 +187,11 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     }
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *thubmName = [infoDic objectForKey:@"ThumbName"] ? [infoDic objectForKey:@"ThumbName"] : [NSString stringWithFormat:@"%@_thumb.jpg", [[fileName componentsSeparatedByString:@"."] firstObject]];
-    NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:thubmName];
-    UIImage *image = [UIImage imageWithContentsOfFile:filePath];
     NSString *thumbUrl = [infoDic objectForKey:@"ThumbUrl"];
-    if (![thumbUrl hasPrefix:[QIMKit sharedInstance].qimNav_InnerFileHttpHost]) {
+    if (![thumbUrl qim_hasPrefixHttpHeader]) {
         thumbUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingPathComponent:thumbUrl];
     }
-    [_imageView qimsd_setImageWithURL:[NSURL URLWithString:thumbUrl]];
+    [_imageView qim_setImageWithURL:[NSURL URLWithString:thumbUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
     [_infoView setFrame:CGRectMake(0, _imageView.bottom - _infoView.height, _infoView.width, _infoView.height)];
     [_imageView setFrame:CGRectMake((self.message.messageDirection==QIMMessageDirection_Received?kBackViewCap+10:5) - 1, 5, size.width, size.height)];
     float backWidth = size.width + 6 + kBackViewCap + 8;

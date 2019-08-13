@@ -27,7 +27,6 @@
 #import "QIMNavBackBtn.h"
 #import "QIMRNDebugConfigVc.h"
 #import "NSBundle+QIMLibrary.h"
-
 #if __has_include("RNSchemaParse.h")
 
 #import "QTalkSuggestRNJumpManager.h"
@@ -78,6 +77,7 @@
 
 @property(nonatomic, strong) UIButton *scanBtn;
 
+@property(nonatomic, strong) UIButton *searchMomentBtn;
 @property(nonatomic, strong) UIButton *momentBtn;
 
 @property(nonatomic, strong) UIButton *settingBtn;
@@ -155,7 +155,7 @@ static dispatch_once_t __onceMainToken;
     */
     self.reloadCountQueue = dispatch_queue_create("Reload Main Read Count", DISPATCH_QUEUE_SERIAL);
     [self registerNSNotifications];
-
+    self.view.width = [[QIMWindowManager shareInstance] getPrimaryWidth];
     self.definesPresentationContext = YES;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.view setAutoresizesSubviews:YES];
@@ -616,7 +616,7 @@ static dispatch_once_t __onceMainToken;
     if (checkAuthSignKey == NO) {
         oldAuthSign = YES;
     }
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"appstore"] && oldAuthSign == YES) {
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk && ![[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"appstore"] && oldAuthSign == YES && [[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"]) {
 
         [self.totalTabBarIndexs addObject:@"tab_title_moment"];
         [self.totalTabBarArray addObject:@{@"title": [NSBundle qim_localizedStringForKey:@"tab_title_moment"], @"normalImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageNormalColor]], @"selectImage": [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_tab_title_camel_font size:28 color:qim_tabImageSelectedColor]]}];
@@ -1090,8 +1090,9 @@ static dispatch_once_t __onceMainToken;
 
 
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]];
-        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.momentBtn];
-        [self.navigationItem setRightBarButtonItem:rightBarItem];
+        UIBarButtonItem *searchMomentItem = [[UIBarButtonItem alloc] initWithCustomView:self.searchMomentBtn];
+        UIBarButtonItem *myMomentItem = [[UIBarButtonItem alloc] initWithCustomView:self.momentBtn];
+        [self.navigationItem setRightBarButtonItems:@[myMomentItem, searchMomentItem]];
 
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
 
@@ -1142,6 +1143,17 @@ static dispatch_once_t __onceMainToken;
     return _scanBtn;
 }
 
+- (UIButton *)searchMomentBtn {
+    if (!_searchMomentBtn) {
+        _searchMomentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _searchMomentBtn.frame = CGRectMake(0, 0, 21, 21);
+        [_searchMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:21 color:[UIColor qim_colorWithHex:0x666666]]] forState:UIControlStateNormal];
+        [_searchMomentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e752" size:21 color:[UIColor qim_colorWithHex:0x666666]]] forState:UIControlStateSelected];
+        [_searchMomentBtn addTarget:self action:@selector(searchMoment:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _searchMomentBtn;
+}
+
 - (UIButton *)momentBtn {
     if (!_momentBtn) {
         _momentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -1182,6 +1194,10 @@ static dispatch_once_t __onceMainToken;
 #if __has_include("QIMAutoTracker.h")
     [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"add a contact" withDescription:@"添加联系人"];
 #endif
+}
+
+- (void)searchMoment:(id)sender {
+    [QIMFastEntrance openWorkMomentSearchVc];
 }
 
 //我的驼圈儿navbar入口
@@ -1238,14 +1254,15 @@ static dispatch_once_t __onceMainToken;
 
 #pragma mark - QIMUpdateAlertViewDelegate
 
-- (void)qim_UpdateAlertViewDidClickWithType:(QIMUpgradeType)type withUpdateDic:(NSDictionary *)updateDic {
+- (void)qim_UpdateAlertViewDidClickWithType:(QIMUpgradeType)type withUpdateDic:(QIMUpdateDataModel *)updateModel {
     if (QIMUpgradeNow == type) {
         //
-        NSString *updateUrl = [updateDic objectForKey:@"upgradeUrl"];
+        NSString *updateUrl = updateModel.linkUrl;
         [QIMFastEntrance openWebViewForUrl:updateUrl showNavBar:YES];
     } else {
         //下次再说
-        NSInteger version = [[updateDic objectForKey:@"version"] integerValue];
+        NSInteger version = updateModel.version;
+//        [[updateDic objectForKey:@"version"] integerValue];
         [[QIMKit sharedInstance] setUserObject:@(version) forKey:@"updateAppVersion"];
     }
 }

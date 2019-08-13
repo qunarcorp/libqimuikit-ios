@@ -30,7 +30,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        self.view.width = [[UIScreen mainScreen] qim_rightWidth];
+        self.view.width = [[QIMWindowManager shareInstance] getDetailWidth];
     }
 
     self.navigationItem.title = [NSBundle qim_localizedStringForKey:@"explore_tab_my_file"];
