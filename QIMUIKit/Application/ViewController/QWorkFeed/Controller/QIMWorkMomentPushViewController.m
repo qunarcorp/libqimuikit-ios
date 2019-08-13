@@ -53,6 +53,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
 
 @property (nonatomic, weak) id <QIMWorkMomentPushUserIdentityViewDelegate> delegate;
 
+@property (nonatomic, copy) NSString *momentId;
+
 @property (nonatomic, strong) UIImageView *iconView;    //用户头像
 
 @property (nonatomic, strong) UILabel *userIdentityLabel;   //用户匿名/实名身份
@@ -62,6 +64,19 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
 @implementation QIMWorkMomentPushUserIdentityView
 
 - (void)updatePushUserIdentityView {
+    
+    QIMWorkMomentUserIdentityModel *userModel = [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] userIdentityModel];
+    BOOL isAnonymous = userModel.isAnonymous;
+    if (isAnonymous == NO) {
+        [self.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
+        self.userIdentityLabel.text = @"实名发布";
+    } else {
+        NSString *anonymousPhoto = userModel.anonymousPhoto;
+        [self.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
+        self.userIdentityLabel.text = @"匿名发布";
+    }
+    
+    /* Mark by 匿名
     if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
         [self.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
         self.userIdentityLabel.text = @"实名发布";
@@ -69,7 +84,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
         NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
         [self.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
         self.userIdentityLabel.text = @"匿名发布";
-    }
+    } */
 }
 
 - (void)openUserIdentity {
@@ -87,7 +102,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
         self.layer.masksToBounds = YES;
         
         self.iconView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        self.iconView.backgroundColor = [UIColor yellowColor];
+        self.iconView.backgroundColor = [UIColor whiteColor];
         [self.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
         [self addSubview:self.iconView];
         [self.iconView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -284,6 +299,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
         _identiView = [[QIMWorkMomentPushUserIdentityView alloc] initWithFrame:CGRectZero];
         _identiView.delegate = self;
     }
+    _identiView.momentId = self.momentId;
     return _identiView;
 }
 
@@ -525,9 +541,11 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
     }
+    /* Mark by 匿名
     QIMVerboseLog(@"即将进入发帖页面匿名名称 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName]);
     QIMVerboseLog(@"即将进入发帖页面匿名状态 : %d", [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]);
     QIMVerboseLog(@"即将进入发帖页面匿名头像地址 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto]);
+    */
 //    [self.panelListView reloadData];
     
     [self.identiView updatePushUserIdentityView];
@@ -718,9 +736,11 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
 }
 
 - (void)goBack:(id)sender {
+    /* Mark by 匿名
     [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
+     */
 //    [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:NO];
     [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
     [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
@@ -773,6 +793,22 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
             [momentDic setQIMSafeObject:self.momentId forKey:@"uuid"];
             [momentDic setQIMSafeObject:[QIMKit getLastUserName] forKey:@"owner"];
             [momentDic setQIMSafeObject:[[QIMKit sharedInstance] getDomain] forKey:@"ownerHost"];
+            
+            QIMWorkMomentUserIdentityModel *userModel = [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] userIdentityModel];
+            BOOL isAnonymous = userModel.isAnonymous;
+            NSString *anonymousName = userModel.anonymousName;
+            NSString *anonymousPhoto = userModel.anonymousPhoto;
+            
+            [momentDic setQIMSafeObject:@(isAnonymous) forKey:@"isAnonymous"];
+            if (isAnonymous == NO) {
+                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousName"];
+                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousPhoto"];
+            } else {
+                [momentDic setQIMSafeObject:anonymousName forKey:@"AnonymousName"];
+                [momentDic setQIMSafeObject:anonymousPhoto forKey:@"AnonymousPhoto"];
+            }
+            
+            /* Mark by 匿名
             [momentDic setQIMSafeObject:@([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) forKey:@"isAnonymous"];
             if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
                 [momentDic setQIMSafeObject:@"" forKey:@"AnonymousName"];
@@ -781,6 +817,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
                 [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName] forKey:@"AnonymousName"];
                 [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto] forKey:@"AnonymousPhoto"];
             }
+             */
             
             NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
             NSString *finallyContent = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:self.textView.attributedText WithOutAtInfo:&outATInfoArray];
@@ -1250,6 +1287,22 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
     QIMWorkMomentPanelModel *model = [self.workmomentPushPanelModels objectAtIndex:indexPath.row];
     cell.textLab.text = model.title;
     cell.iconView.contentMode = UIViewContentModeScaleAspectFill;
+    cell.detailTextLabel.font = [UIFont systemFontOfSize:15];
+    cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
+    
+    QIMWorkMomentUserIdentityModel *userModel = [QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId];
+    BOOL isAnonymous = userModel.isAnonymous;
+    NSString *anonymousPhoto = userModel.anonymousPhoto;
+    
+    if (isAnonymous == NO) {
+        [cell.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
+        cell.detailTextLabel.text = @"实名发布";
+    } else {
+        [cell.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
+        cell.detailTextLabel.text = @"匿名发布";
+    }
+    
+    /* Mark by 匿名
     if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
         [cell.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
     } else {
@@ -1263,6 +1316,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
     } else {
         cell.detailTextLabel.text = @"匿名发布";
     }
+     */
     return cell;
 }
 
@@ -1485,10 +1539,11 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
 
 - (void)dealloc {
     [[YYKeyboardManager defaultManager] removeObserver:self];
+    /* Mark by 匿名
     [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
     [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
-    
+    */
     [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:9];
     [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
     [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];

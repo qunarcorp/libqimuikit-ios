@@ -26,7 +26,7 @@
     if (!_thubImgView) {
         _thubImgView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _thubImgView.backgroundColor = [UIColor whiteColor];
-        _thubImgView.contentMode = UIViewContentModeScaleAspectFit;
+//        _thubImgView.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _thubImgView;
 }
@@ -52,7 +52,7 @@
 
 - (void)setVideoModel:(QIMVideoModel *)videoModel {
     _videoModel = videoModel;
-    [self.thubImgView qim_setImageWithURL:[NSURL URLWithString:videoModel.ThumbUrl] placeholderImage:[UIImage new]];
+    [self.thubImgView qim_setImageWithURL:[NSURL URLWithString:videoModel.ThumbUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
 }
 
 #pragma mark - initUI

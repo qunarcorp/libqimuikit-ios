@@ -96,7 +96,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL isFullText;
 
-@property (nonatomic, assign) BOOL notShowControl;
+@property (nonatomic, assign) BOOL notShowControl;              //不展示操作按钮
+
+@property (nonatomic, assign) BOOL notShowAttachCommentList;    //不展示评论列表
+
+@property (nonatomic, assign) BOOL isSearch;                    //是否为搜索
 
 @end
 

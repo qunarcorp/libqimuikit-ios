@@ -13,8 +13,9 @@
 #import "QIMWorkCommentModel.h"
 #import "QIMWorkCommentCell.h"
 #import "QIMWorkMessageCell.h"
+#import "QIMWorkFeedDetailViewController.h"
 #import "YYModel.h"
-
+static const NSInteger searchMinCharacterCount = 2;
 @interface QIMWorkFeedSearchField : UITextField
 @end
 
@@ -41,9 +42,17 @@
 
 @end
 
-@interface QIMWorkFeedSearchViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
+@interface QIMWorkFeedSearchViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, MomentCellDelegate>
 
 @property (nonatomic, strong) UIView *searchBgView;
+
+@property (nonatomic, strong) UIView *searchPlaceHolderView;
+
+@property (nonatomic, strong) UILabel *searchPlaceHolderLabel;
+
+@property (nonatomic, strong) UIView *searchEmptyView;
+
+@property (nonatomic, strong) UILabel *searchEmptyLabel;
 
 @property (nonatomic, strong) QIMWorkFeedSearchField *textField;
 
@@ -62,9 +71,60 @@
     return _searchDataList;
 }
 
+- (UIView *)searchPlaceHolderView {
+    if (!_searchPlaceHolderView) {
+        _searchPlaceHolderView = [[UIView alloc] initWithFrame:CGRectZero];
+        _searchPlaceHolderView.backgroundColor = [UIColor whiteColor];
+    }
+    return _searchPlaceHolderView;
+}
+
+- (UILabel *)searchPlaceHolderLabel {
+    if (!_searchPlaceHolderLabel) {
+        _searchPlaceHolderLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        NSString *placeHolderStr = @"支持“姓名”或“关键词”搜索";
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:placeHolderStr];
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        // 设置文字居中
+        paragraphStyle.alignment = NSTextAlignmentCenter;
+        [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [placeHolderStr length])];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor qim_colorWithHex:0x999999] range:NSMakeRange(0, [placeHolderStr length])];
+        [attributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:15] range:NSMakeRange(0, [placeHolderStr length])];
+
+        _searchPlaceHolderLabel.attributedText = attributedString;
+    }
+    return _searchPlaceHolderLabel;
+}
+
+- (UIView *)searchEmptyView {
+    if (!_searchEmptyView) {
+        _searchEmptyView = [[UIView alloc] initWithFrame:CGRectZero];
+        _searchEmptyView.backgroundColor = [UIColor whiteColor];
+    }
+    return _searchEmptyView;
+}
+
+- (UILabel *)searchEmptyLabel {
+    if (!_searchEmptyLabel) {
+        _searchEmptyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        NSString *placeHolderStr = @"暂无搜索结果";
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:placeHolderStr];
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        // 设置文字居中
+        paragraphStyle.alignment = NSTextAlignmentCenter;
+        [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [placeHolderStr length])];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor qim_colorWithHex:0x999999] range:NSMakeRange(0, [placeHolderStr length])];
+        [attributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:15] range:NSMakeRange(0, [placeHolderStr length])];
+        
+        _searchEmptyLabel.attributedText = attributedString;
+    }
+    return _searchEmptyLabel;
+}
+
+
 - (UITableView *)mainTableView {
     if (!_mainTableView) {
-        _mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.searchBgView.bottom, self.view.width, self.view.height) style:UITableViewStyleGrouped];
+        _mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.searchBgView.bottom + 5, self.view.width, self.view.height) style:UITableViewStyleGrouped];
         _mainTableView.backgroundColor = [UIColor whiteColor];
         _mainTableView.delegate = self;
         _mainTableView.dataSource = self;
@@ -106,6 +166,7 @@
     QIMWorkFeedSearchField *textField = [[QIMWorkFeedSearchField alloc] initWithFrame:CGRectZero];
     textField.placeholder = @"搜索";
     textField.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
+    textField.font = [UIFont systemFontOfSize:17];
     textField.layer.cornerRadius = 4.0f;
     textField.layer.masksToBounds = YES;
     textField.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -133,7 +194,10 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
+}
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 }
 
 - (void)viewDidLoad {
@@ -142,7 +206,50 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self initNav];
     [self.view addSubview:self.mainTableView];
+    [self updateSearchPlaceHolderViewWithHidden:self.textField.text.length];
     // Do any additional setup after loading the view.
+}
+
+- (void)updateSearchPlaceHolderViewWithHidden:(BOOL)hidden {
+    if (!_searchPlaceHolderView) {
+        [self.view addSubview:self.searchPlaceHolderView];
+        [self.searchPlaceHolderView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.searchBgView.mas_bottom).mas_offset(130);
+            make.left.mas_offset(80);
+            make.right.mas_offset(-80);
+            make.height.mas_equalTo(50);
+        }];
+        
+        [self.searchPlaceHolderView addSubview:self.searchPlaceHolderLabel];
+        [self.searchPlaceHolderLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.mas_offset(0);
+            make.top.bottom.mas_offset(0);
+        }];
+    }
+    if (hidden == NO) {
+        [self.searchDataList removeAllObjects];
+        [self.mainTableView reloadData];
+    }
+    [self.searchPlaceHolderView setHidden:hidden];
+}
+
+- (void)updateSearchEmptyViewWithHidden:(BOOL)hidden {
+    if (!_searchEmptyView) {
+        [self.view addSubview:self.searchEmptyView];
+        [self.searchEmptyView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.searchBgView.mas_bottom).mas_offset(130);
+            make.left.mas_offset(80);
+            make.right.mas_offset(-80);
+            make.height.mas_equalTo(50);
+        }];
+        
+        [self.searchEmptyView addSubview:self.searchEmptyLabel];
+        [self.searchEmptyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.mas_offset(0);
+            make.top.bottom.mas_offset(0);
+        }];
+    }
+    [self.searchEmptyView setHidden:hidden];
 }
 
 #pragma mark - ss
@@ -164,7 +271,6 @@
 
 - (QIMWorkNoticeMessageModel *)getNoticeMessageModelWithDict:(NSDictionary *)modelDict {
     QIMWorkNoticeMessageModel *model = [QIMWorkNoticeMessageModel yy_modelWithDictionary:modelDict];
-    NSLog(@"QIMWorkNoticeMessageModel *model : %@", model);
     return model;
 }
 
@@ -178,57 +284,89 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSDictionary *dic = [self.searchDataList objectAtIndex:indexPath.row];
-    NSInteger eventType = [[dic objectForKey:@"eventType"] integerValue];
-    if (eventType == 3) {
-        //帖子
-        QIMWorkMomentModel *model = [self getMomentModelWithDic:dic];
-        NSString *identifier = model.momentId;
+    id model = [self.searchDataList objectAtIndex:indexPath.row];
+    if ([model isKindOfClass:[QIMWorkMomentModel class]]) {
+        QIMWorkMomentModel *momentModel = (QIMWorkMomentModel *)model;
+        NSString *identifier = [NSString stringWithFormat:@"search-%@", momentModel.momentId];
         QIMWorkMomentCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
         if (cell == nil) {
             cell = [[QIMWorkMomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor whiteColor];
         }
-//        cell.delegate = self;
-        cell.moment = model;
+        cell.notShowControl = YES;
+        cell.notShowAttachCommentList = YES;
+        cell.isSearch = YES;
+        cell.delegate = self;
+        cell.moment = momentModel;
         cell.tag = indexPath.row;
         return cell;
-    } else {
+    } else if ([model isKindOfClass:[QIMWorkNoticeMessageModel class]]) {
         //评论
-        QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:dic];
-        QIMWorkMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:model.uuid];
+        QIMWorkNoticeMessageModel *msgModel = (QIMWorkNoticeMessageModel *)model;
+        QIMWorkMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:msgModel.uuid];
+        NSString *identifier = [NSString stringWithFormat:@"search-%@", msgModel.uuid];
         if (!cell) {
-            cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:model.uuid];
-            [cell setNoticeMsgModel:model];
+            cell = [[QIMWorkMessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
+            [cell setNoticeMsgModel:msgModel];
             cell.cellType = QIMWorkMomentCellTypeMyMessage;
-//            [cell setContentModel:[self getContentModelWithMomentUUId:model.postUUID]];
+            [cell setContentModel:[self getContentModelWithMomentUUId:msgModel.postUUID]];
         }
         return cell;
+    } else {
+        UITableViewCell *cell = [UITableViewCell new];
+        return cell;
     }
+}
+
+- (QIMWorkMomentContentModel *)getContentModelWithMomentUUId:(NSString *)momentId {
+    NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWithMomentId:momentId];
+    
+    NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
+    QIMWorkMomentContentModel *contentModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
+    return contentModel;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    
+    id model = [self.searchDataList objectAtIndex:indexPath.row];
+    if ([model isKindOfClass:[QIMWorkMomentModel class]]) {
+        QIMWorkMomentCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        [self didAddComment:cell];
+    } else if ([model isKindOfClass:[QIMWorkNoticeMessageModel class]]) {
+        QIMWorkNoticeMessageModel *msgModel = (QIMWorkNoticeMessageModel *)model;
+        
+        QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
+        detailVc.momentId = msgModel.postUUID;
+        [self.navigationController pushViewController:detailVc animated:YES];
+    } else {
+        
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *dic = [self.searchDataList objectAtIndex:indexPath.row];
-    NSLog(@"count : %ld", self.searchDataList.count);
-    NSInteger eventType = [[dic objectForKey:@"eventType"] integerValue];
-    if (eventType == 3) {
-        //帖子
-        QIMWorkMomentModel *model = [self getMomentModelWithDic:dic];
-        if (model.rowHeight <= 0) {
+    id model = [self.searchDataList objectAtIndex:indexPath.row];
+    if ([model isKindOfClass:[QIMWorkMomentModel class]]) {
+        QIMWorkMomentModel *momentModel = (QIMWorkMomentModel *)model;
+        if (momentModel.rowHeight <= 0) {
+            return 135;
+        } else {
+            return momentModel.rowHeight;
+        }
+    } else if ([model isKindOfClass:[QIMWorkNoticeMessageModel class]]) {
+        QIMWorkNoticeMessageModel *msgModel = (QIMWorkNoticeMessageModel *)model;
+        if (msgModel.rowHeight <= 0) {
             return 115;
         } else {
-            return model.rowHeight;
+            return msgModel.rowHeight;
         }
     } else {
-        //评论或者艾特
-        return 115;
+        return 0;
     }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 0.000001f;
 }
 
 #pragma mark - UITextFieldDelegate
@@ -237,21 +375,23 @@
     [self.searchDataList removeAllObjects];
     NSMutableString * searchText = [NSMutableString stringWithString:textField.text];
     [searchText replaceCharactersInRange:range withString:string];
-    
+    [self updateSearchPlaceHolderViewWithHidden:searchText.length];
+    [self updateSearchEmptyViewWithHidden:YES];
     UITextRange *selectedRange = textField.markedTextRange;
     UITextPosition *position = [textField positionFromPosition:selectedRange.start offset:0];
     if (position) {
         
     } else {
-        if (textField.text.length + string.length - range.length >= 2) {
+        if (textField.text.length + string.length - range.length >= searchMinCharacterCount) {
             __weak __typeof(self) weakSelf = self;
-            [[QIMKit sharedInstance] searchMomentWithKey:[searchText lowercaseString] withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
+            [[QIMKit sharedInstance] searchMomentWithKey:searchText withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
                 __typeof(self) strongSelf = weakSelf;
                 if (!strongSelf) {
                     return;
                 }
-                [strongSelf.searchDataList addObjectsFromArray:result];
+                [strongSelf addModelWithResultList:result];
                 [strongSelf.mainTableView reloadData];
+                [strongSelf updateSearchEmptyViewWithHidden:result.count];
                 NSLog(@"result : %@", result);
             }];
         }
@@ -268,24 +408,91 @@
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
     
+    [self updateSearchPlaceHolderViewWithHidden:NO];
+    [self updateSearchEmptyViewWithHidden:YES];
     return YES;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self.searchDataList removeAllObjects];
     __weak __typeof(self) weakSelf = self;
-    [[QIMKit sharedInstance] searchMomentWithKey:[textField.text lowercaseString]  withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
+    [[QIMKit sharedInstance] searchMomentWithKey:textField.text withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
         NSLog(@"result2 : %@", result);
         __typeof(self) strongSelf = weakSelf;
         if (!strongSelf) {
             return;
         }
-        [strongSelf.searchDataList addObjectsFromArray:result];
+        [self addModelWithResultList:result];
         [strongSelf.mainTableView reloadData];
+        [strongSelf updateSearchEmptyViewWithHidden:result.count];
         [strongSelf.view endEditing:YES];
-        NSLog(@"result : %@", result);
     }];
     return YES;
+}
+
+- (void)addModelWithResultList:(NSArray *)result {
+    [self.searchDataList removeAllObjects];
+    if (![result isKindOfClass:[NSArray class]]) {
+        return;
+    }
+    for (NSDictionary *resultDic in result) {
+        if ([resultDic isKindOfClass:[NSDictionary class]]) {
+            NSInteger eventType = [[resultDic objectForKey:@"eventType"] integerValue];
+            if (eventType == 3) {
+                QIMWorkMomentModel *model = [self getMomentModelWithDic:resultDic];
+                [self.searchDataList addObject:model];
+            } else  {
+                QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:resultDic];
+                [self.searchDataList addObject:model];
+            }
+        }
+    }
+}
+
+#pragma mark - MomentCellDelegate
+
+- (void)didClickSmallImage:(QIMWorkMomentModel *)model WithCurrentTag:(NSInteger)tag {
+    //初始化图片浏览控件
+    NSMutableArray *imageList = [NSMutableArray arrayWithCapacity:3];
+    for (QIMWorkMomentPicture *picture in imageList) {
+        NSString *imageUrl = picture.imageUrl;
+        if (imageUrl.length > 0) {
+            [imageList addObject:imageUrl];
+        }
+    }
+    
+    [[QIMFastEntrance sharedInstance] browseBigHeader:@{@"imageUrlList": imageList}];
+}
+
+- (void)didOpenWorkMomentDetailVc:(NSNotification *)notify {
+    NSString *momentId = notify.object;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
+        detailVc.momentId = momentId;;
+        [self.navigationController pushViewController:detailVc animated:YES];
+    });
+}
+
+// 评论
+- (void)didAddComment:(QIMWorkMomentCell *)cell {
+    QIMWorkFeedDetailViewController *detailVc = [[QIMWorkFeedDetailViewController alloc] init];
+    detailVc.momentId = cell.moment.momentId;
+    [self.navigationController pushViewController:detailVc animated:YES];
+}
+
+// 查看全文/收起
+- (void)didSelectFullText:(QIMWorkMomentCell *)cell withFullText:(BOOL)isFullText {
+    if (isFullText == YES) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cell.tag inSection:0];
+        [self.mainTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    } else {
+        //收起
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cell.tag inSection:0];
+            [self.mainTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+        });
+    }
 }
 
 @end

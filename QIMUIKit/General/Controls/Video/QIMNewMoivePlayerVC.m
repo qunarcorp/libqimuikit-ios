@@ -23,7 +23,7 @@
 @implementation QIMNewMoivePlayerVC
 
 - (NSString *)playUrl {
-    return @"http://l-im1.vc.beta.cn0.qunar.com:9090/file/v2/download/temp/new/64f1382a454b5be2738c98b11d13b249?file=file/64f1382a454b5be2738c98b11d13b249&FileName=file/64f1382a454b5be2738c98b11d13b249&name=64f1382a454b5be2738c98b11d13b249.mp4";
+//    return @"http://l-im1.vc.beta.cn0.qunar.com:9090/file/v2/download/temp/new/64f1382a454b5be2738c98b11d13b249?file=file/64f1382a454b5be2738c98b11d13b249&FileName=file/64f1382a454b5be2738c98b11d13b249&name=64f1382a454b5be2738c98b11d13b249.mp4";
     if (self.videoModel.LocalVideoOutPath > 0) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:self.videoModel.LocalVideoOutPath]) {
             return self.videoModel.LocalVideoOutPath;
@@ -86,7 +86,7 @@
     [self.view addSubview:self.playerContainer];
     
     UILongPressGestureRecognizer * longGes = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longGesHandle:)];
-    [self.view addGestureRecognizer:longGes];
+//    [self.view addGestureRecognizer:longGes];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -117,7 +117,6 @@
 
 - (void)longGesHandle:(UILongPressGestureRecognizer *)longGes{
     switch (longGes.state) {
-//        case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateBegan: {
             [self actionButtonPressed];
             
