@@ -199,7 +199,9 @@ static NSString *totalDurationStr = nil;
 
     [self initUI];
     _showActivityWhenLoading = YES;
-    self.videoPath = [self getVideoRealSavePathWithFileUrl:self.videoUrl];
+    if (self.videoUrl.length > 0) {
+        self.videoPath = [self getVideoRealSavePathWithFileUrl:self.videoUrl];
+    }
     NSURL *videoPlayUrl = [NSURL URLWithString:self.videoUrl];
     [QIMVideoPlayerManager sharedInstance].delegate = self;
     [[QIMVideoPlayerManager sharedInstance] playVideoFromUrl:videoPlayUrl
@@ -353,6 +355,7 @@ static NSString *totalDurationStr = nil;
         [[QIMVideoPlayerManager sharedInstance] updateMovieScrubberControl];
     }
 }
+
 - (void)playStatusChange:(AVPlayerPlayState)state{
     switch (state) {
         case AVPlayerPlayStatePreparing:

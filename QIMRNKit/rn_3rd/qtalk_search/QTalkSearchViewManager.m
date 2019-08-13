@@ -20,12 +20,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+    if (![[QIMKit sharedInstance] getIsIpad] && [[UIApplication sharedApplication] statusBarOrientation] != UIInterfaceOrientationPortrait) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goBack) name:kNotify_RN_QTALK_SEARCH_GO_BACK object:nil];
     NSNumber *forceOldSearch = [[QIMKit sharedInstance] userObjectForKey:@"forceOldSearch"];
-    if ([forceOldSearch boolValue] == YES || [QIMKit getQIMProjectType] != QIMProjectTypeQTalk || [[QIMKit sharedInstance] getIsIpad] == YES) {
+    //Mark by iPad
+    if ([forceOldSearch boolValue] == YES/* || [[QIMKit sharedInstance] getIsIpad] == YES */) {
         QTalkSearchRNView *reactView = [[QTalkSearchRNView alloc] initWithFrame:self.view.bounds];
         [reactView setOwnerVC:self];
         
@@ -39,6 +40,11 @@
         
         [self.view addSubview:newReactView];
     }
+    QTalkNewSearchRNView *newReactView = [[QTalkNewSearchRNView alloc] initWithFrame:self.view.bounds];
+    [newReactView setOwnerVC:self];
+    [newReactView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
+    
+    [self.view addSubview:newReactView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -63,14 +69,15 @@
 }
 
 - (void)goBack {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    if ([[QIMKit sharedInstance] getIsIpad]) {
-        [self.navigationController popViewControllerAnimated:YES];
-    } else {
+    //Mark by iPad
+//    if ([[QIMKit sharedInstance] getIsIpad]) {
+//        [self.navigationController popViewControllerAnimated:YES];
+//    } else {
         self.navigationController.delegate = self;
         [self dismissViewControllerAnimated:YES completion:nil];
-    }
+//    }
 }
 
 - (id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {

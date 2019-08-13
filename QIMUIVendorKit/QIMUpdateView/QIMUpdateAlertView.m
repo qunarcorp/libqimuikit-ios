@@ -11,6 +11,7 @@
 #import "QIMUIColorConfig.h"
 #import "View+MASAdditions.h"
 #import "NSString+QIMUtility.h"
+#import "YYModel.h"
 
 #define key_Window [UIApplication sharedApplication].keyWindow
 #define key_QIMSelectItem_Title @"key_QIMSelectItem_Title"
@@ -27,15 +28,17 @@
 
 @interface QIMUpdateAlertView ()
 
-@property(nonatomic, assign) QIMUpgradeType upgradeType;    //更新状态
+@property(nonatomic, strong) QIMUpdateDataModel *updateModel;
 
-@property(nonatomic, copy) NSString *updateUrl;     //更新地址
-
-@property(nonatomic, strong) NSDictionary *updateDic;   //更新Dic
+//@property(nonatomic, assign) QIMUpgradeType upgradeType;    //更新状态
+//
+//@property(nonatomic, copy) NSString *updateUrl;     //更新地址
+//
+//@property(nonatomic, strong) NSDictionary *updateDic;   //更新Dic
 
 @property(nonatomic, copy) NSString *title;
 
-@property(nonatomic, copy) NSString *message;
+//@property(nonatomic, copy) NSString *message;
 
 @property(nonatomic, strong) UIImageView *iconView;     //图标
 
@@ -134,11 +137,16 @@
 - (void)showUpdateAlertViewWithUpdateDic:(NSDictionary *)updateDic {
 
     NSString *updateTitle = @"新版本更新";
-    NSString *updateMessage = [updateDic objectForKey:@"copywriting"];
-    self.upgradeType = [[updateDic objectForKey:@"upgradeStatus"] integerValue];
-    self.updateDic = updateDic;
+    QIMUpdateDataModel *updateModel = [QIMUpdateDataModel yy_modelWithDictionary:updateDic];
+    self.updateModel = updateModel;
+    if (self.updateModel.isUpdated == NO) {
+        return;
+    }
+//    NSString *updateMessage = [updateDic objectForKey:@"message"];
+//    self.upgradeType = [[updateDic objectForKey:@"isUpdated"] integerValue];
+//    self.updateDic = updateDic;
     self.title = updateTitle;
-    self.message = updateMessage;
+//    self.message = updateMessage;
     self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.35];
     [[[UIApplication sharedApplication] keyWindow] addSubview:self];
 
@@ -173,8 +181,8 @@
 
     //messageLabel
     CGFloat normalMessageWidth = self.alertView.frame.size.width - kAlertView_content_offsetX * 2 - 56;
-    CGSize rectMessageSize = [self.message qim_sizeWithFontCompatible:self.messageLabel.font constrainedToSize:CGSizeMake(normalMessageWidth, MAXFLOAT) lineBreakMode:NSLineBreakByTruncatingTail];
-    self.messageLabel.text = self.message;
+    CGSize rectMessageSize = [self.updateModel.message qim_sizeWithFontCompatible:self.messageLabel.font constrainedToSize:CGSizeMake(normalMessageWidth, MAXFLOAT) lineBreakMode:NSLineBreakByTruncatingTail];
+    self.messageLabel.text = self.updateModel.message;
     [self.alertView addSubview:self.messageLabel];
     [self.messageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_offset(14);
@@ -184,35 +192,37 @@
         make.centerX.mas_equalTo(self.alertView.mas_centerX);
     }];
 
-    if (self.upgradeType == QIMUpgradeAfter) {
-        //下次再说按钮
-        [self.alertView addSubview:self.nextButton];
-        [self.nextButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(105);
-            make.height.mas_equalTo(42);
-            make.left.mas_offset(20);
-            make.top.mas_equalTo(self.messageLabel.mas_bottom).mas_offset(26);
-        }];
-        
-        //立即更新按钮
-        [self.alertView addSubview:self.updateButton];
-        [self.updateButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(105);
-            make.height.mas_equalTo(42);
-            make.right.mas_equalTo(-20);
-            make.top.mas_equalTo(self.messageLabel.mas_bottom).mas_offset(26);
-        }];
-    } else {
-        //立即更新按钮
-        [self.alertView addSubview:self.updateButton];
-        [self.updateButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(210);
-            make.height.mas_equalTo(42);
-            make.right.mas_equalTo(-28);
-            make.top.mas_equalTo(self.messageLabel.mas_bottom).mas_offset(26);
-        }];
+    if (self.updateModel.isUpdated == YES) {
+        if (self.updateModel.forceUpdate == NO) {
+            //下次再说按钮
+            [self.alertView addSubview:self.nextButton];
+            [self.nextButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.width.mas_equalTo(105);
+                make.height.mas_equalTo(42);
+                make.left.mas_offset(20);
+                make.top.mas_equalTo(self.messageLabel.mas_bottom).mas_offset(26);
+            }];
+            
+            //立即更新按钮
+            [self.alertView addSubview:self.updateButton];
+            [self.updateButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.width.mas_equalTo(105);
+                make.height.mas_equalTo(42);
+                make.right.mas_equalTo(-20);
+                make.top.mas_equalTo(self.messageLabel.mas_bottom).mas_offset(26);
+            }];
+        } else {
+            //立即更新按钮
+            [self.alertView addSubview:self.updateButton];
+            [self.updateButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.width.mas_equalTo(210);
+                make.height.mas_equalTo(42);
+                make.right.mas_equalTo(-28);
+                make.top.mas_equalTo(self.messageLabel.mas_bottom).mas_offset(26);
+                make.centerX.mas_equalTo(self.messageLabel.mas_centerX);
+            }];
+        }
     }
-
 
     [self.alertView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(Screen_QIM_Width - kAlertView_offsetX * 2);
@@ -240,7 +250,7 @@
 - (void)nextUpdate:(id)sender {
     //下次再说
     if (self.upgradeDelegate && [self.upgradeDelegate respondsToSelector:@selector(qim_UpdateAlertViewDidClickWithType:withUpdateDic:)]) {
-        [self.upgradeDelegate qim_UpdateAlertViewDidClickWithType:QIMUpgradeAfter withUpdateDic:self.updateDic];
+        [self.upgradeDelegate qim_UpdateAlertViewDidClickWithType:QIMUpgradeAfter withUpdateDic:self.updateModel];
     }
     [self dismiss];
 }
@@ -248,7 +258,7 @@
 - (void)gotoUpdate:(id)sender {
     //现在去更新
     if (self.upgradeDelegate && [self.upgradeDelegate respondsToSelector:@selector(qim_UpdateAlertViewDidClickWithType:withUpdateDic:)]) {
-        [self.upgradeDelegate qim_UpdateAlertViewDidClickWithType:QIMUpgradeNow withUpdateDic:self.updateDic];
+        [self.upgradeDelegate qim_UpdateAlertViewDidClickWithType:QIMUpgradeNow withUpdateDic:self.updateModel];
     }
     [self dismiss];
 }

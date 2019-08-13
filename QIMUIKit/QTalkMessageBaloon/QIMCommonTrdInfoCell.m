@@ -7,14 +7,14 @@
 //
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMCommonTrdInfoCell.h"
-#import "UIImageView+QIMWebCache.h"
+//#import "UIImageView+QIMWebCache.h"
 #import "QIMJSONSerializer.h"
 
 #define kCommonTrdInfoCellWidth   [UIScreen mainScreen].qim_rightWidth  * 3.2 / 5
 
 @implementation QIMCommonTrdInfoCell{
     UILabel         * _titleLabel;
-    YLImageView     * _imageView;
+    UIImageView     * _imageView;
     UILabel         * _descLabel;
 }
 
@@ -49,7 +49,7 @@
         self.frameWidth = [UIScreen mainScreen].bounds.size.width;
         [self.backView setMenuActionTypeList:@[]];
         
-        _imageView = [[YLImageView alloc] initWithFrame:CGRectZero];
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         [_imageView.layer setCornerRadius:5];
         [_imageView setClipsToBounds:YES];
         [self.backView addSubview:_imageView];

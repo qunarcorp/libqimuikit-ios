@@ -17,7 +17,7 @@
 #import "QIMJSONSerializer.h"
 #import "QIMShareLocationChatCell.h"
 #import "UserLocationViewController.h"
-#import "UIImageView+QIMWebCache.h"
+//#import "UIImageView+QIMWebCache.h"
 #import "UIApplication+QIMApplication.h"
 
 @interface QIMShareLocationChatCell()<QIMMenuImageViewDelegate>

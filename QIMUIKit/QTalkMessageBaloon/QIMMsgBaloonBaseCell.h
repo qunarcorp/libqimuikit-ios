@@ -8,7 +8,6 @@
 
 #import "QIMCommonUIFramework.h" 
 #import "QIMMenuImageView.h"
-#import "YLImageView.h"
 #import "QIMCommonEnum.h"
 
 #define ATSomeOneNotifacation @"ATSomeOneNotifacation"

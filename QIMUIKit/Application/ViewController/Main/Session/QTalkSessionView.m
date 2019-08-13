@@ -15,7 +15,6 @@
 #import "QIMIconInfo.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMFriendNotifyViewController.h"
-#import "QTalkSessionCell.h"
 #import "QIMWebView.h"
 #import <CoreText/CoreText.h>
 #import "QIMCollectionChatViewController.h"
@@ -36,7 +35,7 @@
 #import "QtalkSessionModel.h"
 
 
-#define cellReuseID @"QtalkSessionCellIdentifier"
+#define cellReuseID @"QtalkNewSessionCellIdentifier"
 
 #if __has_include("QIMIPadWindowManager.h")
 
@@ -183,9 +182,6 @@
         }
 
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, ([self.rootViewController isKindOfClass:[QIMMainVC class]] ? self.searchBar.height : 0) + appendHeight)];
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            headerView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_leftWidth], self.searchBar.height + appendHeight);
-        }
         UIView *logoView = [[UIView alloc] initWithFrame:CGRectMake(0, -self.tableView.height, self.tableView.width, self.tableView.height)];
         [logoView setBackgroundColor:[UIColor qim_colorWithHex:0xEEEEEE alpha:1]];
         [headerView addSubview:logoView];
@@ -656,14 +652,14 @@
             }
             NSLog(@"跳转的RootVc3 ：%@ ", rootNav);
             NSLog(@"跳转的PushVc : %@", pushVc);
-            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-#if __has_include("QIMIPadWindowManager.h")
-                [[QIMIPadWindowManager sharedInstance] showDetailViewController:pushVc];
-#endif
-            } else {
+//            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+//#if __has_include("QIMIPadWindowManager.h")
+//                [[QIMIPadWindowManager sharedInstance] showDetailViewController:pushVc];
+//#endif
+//            } else {
                 pushVc.hidesBottomBarWhenPushed = YES;
                 [rootNav pushViewController:pushVc animated:YES];
-            }
+//            }
         }
     }
 }

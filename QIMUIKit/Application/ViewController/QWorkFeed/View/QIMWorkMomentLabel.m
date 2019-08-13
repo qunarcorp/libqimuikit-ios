@@ -19,10 +19,11 @@
 }
 
 - (void)longPress:(UILongPressGestureRecognizer *)tag {
-    
-    if ([tag state] == UIGestureRecognizerStateBegan) {
-        [self becomeFirstResponder];
-        [self showCopyMenu];
+    if (self.originContent.length > 0) {
+        if ([tag state] == UIGestureRecognizerStateBegan) {
+            [self becomeFirstResponder];
+            [self showCopyMenu];
+        }
     }
 }
 

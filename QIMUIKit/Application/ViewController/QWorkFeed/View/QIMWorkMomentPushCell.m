@@ -12,6 +12,8 @@
 
 @property (nonatomic, strong) UIButton *deleteBtn;
 
+@property (nonatomic, strong) UIButton *playButton;
+
 @end
 
 @implementation QIMWorkMomentPushCell
@@ -28,12 +30,35 @@
     return _deleteBtn;
 }
 
+- (UIButton *)playButton {
+    if (!_playButton) {
+        _playButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _playButton.frame = CGRectMake(0, 0, 36, 36);
+        _playButton.layer.cornerRadius = 18.0f;
+        _playButton.layer.masksToBounds = YES;
+        [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"q_work_video_play"] forState:UIControlStateNormal];
+//        [_playButton setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e33c" size:18 color:[UIColor qim_colorWithHex:0x000000 alpha:0.5]]] forState:UIControlStateNormal];
+        [_playButton addTarget:self action:@selector(playVideo:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _playButton;
+}
+
 - (void)setCanDelete:(BOOL)canDelete {
     if (canDelete == NO) {
         self.deleteBtn.hidden = YES;
     } else {
         self.deleteBtn.hidden = NO;
         [self.contentView addSubview:self.deleteBtn];
+    }
+}
+
+- (void)setMediaType:(QIMWorkMomentMediaType)mediaType {
+    if (mediaType == QIMWorkMomentMediaTypeVideo) {
+        self.playButton.hidden = NO;
+        [self.contentView addSubview:self.playButton];
+        self.playButton.center = self.contentView.center;
+    } else {
+        _playButton.hidden = YES;
     }
 }
 
@@ -53,6 +78,12 @@
 - (void)removePhoto:(id)sender {
     if (self.dDelegate && [self.dDelegate respondsToSelector:@selector(removeSelectPhoto:)]) {
         [self.dDelegate removeSelectPhoto:self];
+    }
+}
+
+- (void)playVideo:(id)sender {
+    if (self.dDelegate && [self.dDelegate respondsToSelector:@selector(playSelectVideo:)]) {
+        [self.dDelegate playSelectVideo:self];
     }
 }
 

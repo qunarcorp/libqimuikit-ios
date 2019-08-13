@@ -7,7 +7,6 @@
 //
 
 #import "QIMGroupMembersCell.h"
-#import "YLImageView.h"
 #import "QIMCommonFont.h"
 #import "NSBundle+QIMLibrary.h"
 

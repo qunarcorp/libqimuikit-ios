@@ -11,6 +11,6 @@
 
 @property (nonatomic, strong) UILabel *descLabel;;
 
-@property (nonatomic, strong) YLImageView *avatarImage;
+@property (nonatomic, strong) UIImageView *avatarImage;
 
 @end

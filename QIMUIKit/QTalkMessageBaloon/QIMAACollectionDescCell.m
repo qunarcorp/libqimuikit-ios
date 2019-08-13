@@ -8,12 +8,11 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMAACollectionDescCell.h"
 #import "QIMUserInfoUtil.h"
-#import "YLImageView.h"
 #import "QIMJSONSerializer.h"
 
 @interface QIMAACollectionDescCell ()
 {
-    YLImageView             * _flagView;
+    UIImageView             * _flagView;
     UILabel                 * _descLabel;
     UIView                  * _bgView;
 }
@@ -33,7 +32,7 @@
         _bgView.layer.cornerRadius = 3;
         [self.contentView addSubview:_bgView];
         
-        _flagView = [[YLImageView alloc] initWithFrame:CGRectZero];
+        _flagView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _flagView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"aa_icon"];
         [_bgView addSubview:_flagView];
         

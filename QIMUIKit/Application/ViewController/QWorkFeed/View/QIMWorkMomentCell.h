@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class QIMWorkMomentLabel;
 @class QIMWorkMomentImageListView;
 @class QIMWorkMomentLinkView;
+@class QIMWorkMomentVideoView;
 @class QIMWorkAttachCommentListView;
 @class QIMWorkMomentTagCollectionView;
 
@@ -63,6 +64,9 @@ NS_ASSUME_NONNULL_BEGIN
 //Link
 @property (nonatomic, strong) QIMWorkMomentLinkView *linkView;
 
+//Video
+@property (nonatomic, strong) QIMWorkMomentVideoView *videoView;
+
 //标签collectionView
 @property (nonatomic, strong) QIMWorkMomentTagCollectionView *tagCollectionView;
 
@@ -92,7 +96,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL isFullText;
 
-@property (nonatomic, assign) BOOL notShowControl;
+@property (nonatomic, assign) BOOL notShowControl;              //不展示操作按钮
+
+@property (nonatomic, assign) BOOL notShowAttachCommentList;    //不展示评论列表
+
+@property (nonatomic, assign) BOOL isSearch;                    //是否为搜索
 
 @end
 

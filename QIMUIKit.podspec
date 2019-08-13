@@ -44,6 +44,7 @@ Pod::Spec.new do |s|
   s.subspec 'QIMGeneralUI' do |generalUI|
     generalUI.public_header_files = "QIMUIKit/General/**/*.{h}"
     generalUI.source_files = "QIMUIKit/General/**/*.{h,m,c,mm}"
+    generalUI.exclude_files = "QIMUIKit/General/Verders/SDWebImageWebPCoder/Classes/**/*{h,m}", "QIMUIKit/General/Verders/QIMMWPhotoBrowser/**/*{h,m}", "QIMUIKit/General/Verders/QIMSuperPlayer/**/*{h,m}"
     generalUI.dependency 'QIMUIKit/PublicUIHeader'
     generalUI.dependency 'QIMUIKit/QIMAppUIConfig'
   end
@@ -81,17 +82,59 @@ Pod::Spec.new do |s|
       photoBrowser.frameworks = 'ImageIO', 'QuartzCore', 'AssetsLibrary', 'MediaPlayer'
       photoBrowser.weak_frameworks = 'Photos'
       
-      photoBrowser.dependency 'MBProgressHUD', '~> 0.9'
-      photoBrowser.dependency 'DACircularProgress', '~> 2.3'
+      photoBrowser.dependency 'MBProgressHUD'
+      photoBrowser.dependency 'DACircularProgress'
       photoBrowser.dependency 'QIMUIKit/PublicUIHeader'
       photoBrowser.dependency 'QIMUIKit/QIMAppUIConfig'
       
       # SDWebImage
       # 3.7.2 contains bugs downloading local files
       # https://github.com/rs/SDWebImage/issues/1109
-#      photoBrowser.dependency 'SDWebImage', '~> 3.7', '!= 3.7.2'
+      photoBrowser.dependency 'SDWebImage', '~> 5.0'
+#      photoBrowser.dependency 'SDWebImageWebPCoder'
       photoBrowser.dependency 'QIMUIKit/PublicUIHeader'
       photoBrowser.resource = ['QIMUIKit/General/Verders/QIMMWPhotoBrowser/Assets']
+  end
+
+  s.subspec 'SDWebImageWebPCoder' do |sdwebp|
+
+    sdwebp.source_files = ['QIMUIKit/General/Verders/SDWebImageWebPCoder/Classes/**/*{h,m}']
+    sdwebp.xcconfig = {
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SD_WEBP=1',
+      'USER_HEADER_SEARCH_PATHS' => '$(inherited) $(SRCROOT)/libwebp/src'
+    }
+    sdwebp.dependency 'SDWebImage/Core', '~> 5.0'
+
+  end
+
+  s.subspec 'QIMSuperPlayer' do |player|
+
+    player.requires_arc = true
+
+    player.dependency 'AFNetworking'
+    player.dependency 'SDWebImage'
+    player.dependency 'Masonry'
+    player.dependency 'MMLayout'
+
+    player.ios.framework    = ['SystemConfiguration','CoreTelephony', 'VideoToolbox', 'CoreGraphics', 'AVFoundation', 'Accelerate']
+    player.ios.library = 'z', 'resolv', 'iconv', 'stdc++', 'c++', 'sqlite3'
+
+    player.source_files = 'QIMUIKit/General/Verders/QIMSuperPlayer/SuperPlayer/**/*.{h,m}'
+    player.private_header_files = 'QIMUIKit/General/Verders/QIMSuperPlayer/SuperPlayer/Utils/TXBitrateItemHelper.h', 'QIMUIKit/General/Verders/SuperPlayer/Views/SuperPlayerView+Private.h'
+    player.resource = 'QIMUIKit/General/Verders/QIMSuperPlayer/SuperPlayer/Resource/*'
+    player.vendored_framework = "QIMUIKit/General/Verders/QIMSuperPlayer/Frameworks/TXLiteAVSDK_Player.framework"
+
+    player.frameworks = ["SystemConfiguration", "CoreTelephony", "VideoToolbox", "CoreGraphics", "AVFoundation", "Accelerate"]
+
+    player.libraries = [
+    "z",
+    "resolv",
+    "iconv",
+    "stdc++",
+    "c++",
+    "sqlite3"
+    ]
+
   end
 
   s.subspec 'QIMUIVendorKit' do |vendorkit|
@@ -114,7 +157,6 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'QIMRN' do |rn|
-    puts '.......QIMRN源码........'
     rn.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMRNEnable=1', "HEADER_SEARCH_PATHS" => "$(PROJECT_DIR)/node_modules/react-native"}
     rn.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
     rn.source_files = ['QIMRNKit/rn_3rd/**/*{h,m,c}']
@@ -129,7 +171,6 @@ Pod::Spec.new do |s|
   end
   
   s.subspec 'QIMUIKit-NORN' do |norn|
-    puts '.......引用QIMUIKit-NORN源码........'
 #    norn.resource = ['QIMUIKit/QIMUIKitResources/片段/*', 'QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib', 'QIMUIKit/QIMUIKitResources/Audio/*', 'QIMUIKit/QIMUIKitResources/Certificate/*', 'QIMUIKit/QIMUIKitResources/Fonts/*', 'QIMUIKit/QIMUIKitResources/Stickers/*', 'QIMUIKit/QIMUIKitResources/QIMI18N.bundle', 'QIMUIKit/QIMUIKitResources/QIMUIKit.bundle']
     norn.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle", "QIMUIKit/QIMUIKitResources/QIMUIKit.bundle"
     norn.dependency 'QIMUIKit/PublicUIHeader'
@@ -141,12 +182,13 @@ Pod::Spec.new do |s|
     norn.dependency 'QIMUIKit/QIMCells'
     norn.dependency 'QIMUIKit/ImagePicker'
     norn.dependency 'QIMUIKit/QIMMWPhotoBrowser'
+    norn.dependency 'QIMUIKit/SDWebImageWebPCoder'
+    norn.dependency 'QIMUIKit/QIMSuperPlayer'
     norn.dependency 'QIMUIKit/QIMUIVendorKit'
     norn.dependency 'QIMUIKit/QIMNote'
   end
   
   s.subspec 'QIMUIKit-FULL' do |full|
-    puts '.......引用QIMUIKit-FULL源码........'
 #    full.resource = ['QIMUIKit/QIMUIKitResources/片段/*', 'QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib', 'QIMUIKit/QIMUIKitResources/Audio/*', 'QIMUIKit/QIMUIKitResources/Certificate/*', 'QIMUIKit/QIMUIKitResources/Fonts/*', 'QIMUIKit/QIMUIKitResources/Stickers/*', 'QIMUIKit/QIMUIKitResources/QIMI18N.bundle', 'QIMRNKit/QIMRNKit.bundle', 'QIMUIKit/QIMUIKitResources/QIMUIKit.bundle']
     full.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle", "QIMRNKit/QIMRNKit.bundle", "QIMUIKit/QIMUIKitResources/QIMUIKit.bundle"
     full.dependency 'QIMUIKit/PublicUIHeader'
@@ -158,6 +200,8 @@ Pod::Spec.new do |s|
     full.dependency 'QIMUIKit/QIMCells'
     full.dependency 'QIMUIKit/ImagePicker'
     full.dependency 'QIMUIKit/QIMMWPhotoBrowser'
+    full.dependency 'QIMUIKit/SDWebImageWebPCoder'
+    full.dependency 'QIMUIKit/QIMSuperPlayer'
     full.dependency 'QIMUIKit/QIMUIVendorKit'
     full.dependency 'QIMUIKit/QIMNote'
     full.dependency 'QIMUIKit/QIMRN'
@@ -179,19 +223,15 @@ Pod::Spec.new do |s|
   s.dependency 'MMMarkdown'
   s.dependency 'Toast' 
   s.dependency 'YYKeyboardManager'
+#  s.dependency 'SuperPlayer'
 
- if $debug
-  puts 'debug QIMUIKit'
-
- elsif $beta
-  puts 'beta QIMUIKit'
-
- else
-
-  puts '线上release QIMUIKit'
-  s.dependency 'QIMCommon', '~> 4.0'
-  s.dependency 'QIMGeneralModule', '~> 4.0'
- end
+  if $debug
+    puts 'debug QIMUIKit'
+  else
+    puts '线上release QIMUIKit'
+    s.dependency 'QIMCommon', '~> 4.0'
+    s.dependency 'QIMGeneralModule', '~> 4.0'
+  end
 
   s.default_subspec = 'QIMUIKit-FULL'
   s.frameworks = 'UIKit','MessageUI', 'Foundation', 'JavaScriptCore', 'AVFoundation', 'OpenGLES', 'MobileCoreServices', 'AssetsLibrary', 'QuartzCore', 'CoreMotion', 'CoreText'
