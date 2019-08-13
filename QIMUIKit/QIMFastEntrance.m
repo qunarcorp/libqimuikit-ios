@@ -84,6 +84,8 @@
 
 @property(nonatomic, copy) NSString *browerImageUrl;
 
+@property(nonatomic, strong) NSArray *browerImageUrlList;
+
 @end
 
 @implementation QIMFastEntrance
@@ -1457,8 +1459,11 @@ static QIMFastEntrance *_sharedInstance = nil;
 
     self.browerImageUserId = [param objectForKey:@"UserId"];
     NSString *imageUrl = [param objectForKey:@"imageUrl"];
+    NSArray *imageUrlList = [param objectForKey:@"imageUrlList"];
     if (imageUrl.length > 0) {
         self.browerImageUrl = imageUrl;
+    } else if (imageUrlList.count > 0) {
+        self.browerImageUrlList = imageUrlList;
     } else {
         //1.根据UserId读取名片信息，取出RemoteUrl，直接加载用户头像大图
         NSString *headerUrl = [[QIMKit sharedInstance] getUserHeaderSrcByUserId:self.browerImageUserId];
@@ -1498,11 +1503,20 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (id <QIMMWPhoto>)photoBrowser:(QIMMWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
 
 #pragma mark - 查看大图
-    if (![self.browerImageUrl qim_hasPrefixHttpHeader]) {
-        self.browerImageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], self.browerImageUrl];
+    if (self.browerImageUrlList.count > 0) {
+        NSString *imageUrl = [self.browerImageUrlList objectAtIndex:index];
+        if (![imageUrl qim_hasPrefixHttpHeader]) {
+            imageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrl];
+        }
+        NSURL *url = [NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
+    } else {
+        if (![self.browerImageUrl qim_hasPrefixHttpHeader]) {
+            self.browerImageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], self.browerImageUrl];
+        }
+        QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithURL:[NSURL URLWithString:self.browerImageUrl]];
+        return photo;
     }
-    QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithURL:[NSURL URLWithString:self.browerImageUrl]];
-    return photo;
 }
 
 - (void)photoBrowserDidFinishModalPresentation:(QIMMWPhotoBrowser *)photoBrowser {

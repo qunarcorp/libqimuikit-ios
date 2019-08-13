@@ -91,6 +91,9 @@
 }
 
 - (void)updateMomentAttachCommentList:(NSNotification *)notify {
+    if (self.notShowAttachCommentList == YES) {
+        return;
+    }
     dispatch_async(dispatch_get_main_queue(), ^{
         NSDictionary *data = notify.object;
         NSString *postId = [data objectForKey:@"postId"];
@@ -383,6 +386,9 @@
         msg.message = [NSString stringWithFormat:@"%@%@", str, content];
     }
     msg.messageId = moment.momentId;
+    if (self.isSearch) {
+        msg.messageId = [NSString stringWithFormat:@"search-%@", moment.momentId];
+    }
     
     QIMTextContainer *textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:YES withCellWidth:[[QIMWindowManager shareInstance] getPrimaryWidth] - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:MaxNumberOfLines];
     
@@ -428,7 +434,11 @@
     _timeLab.text = [timeDate qim_timeIntervalDescription];
     _timeLab.frame = CGRectMake(self.contentLabel.left, _rowHeight + 15, 60, 12);
     _timeLab.centerY = _commentBtn.centerY;
-    [self updateAttachCommentList];
+    if (self.notShowAttachCommentList == NO) {
+        [self updateAttachCommentList];
+    } else {
+        _moment.rowHeight = _commentBtn.bottom + 18;
+    }
 }
 
 - (void)refreshContentUIWithType:(QIMWorkFeedContentType)type withBottom:(CGFloat)bottom {

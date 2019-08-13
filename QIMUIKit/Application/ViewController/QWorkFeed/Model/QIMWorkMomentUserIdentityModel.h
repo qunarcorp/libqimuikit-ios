@@ -30,15 +30,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)sharedInstance;
 
-@property (nonatomic, assign) BOOL isAnonymous;         //是否匿名发布
++ (instancetype)sharedInstanceWithPOSTUUID:(NSString *)postuuid;
 
-@property (nonatomic, assign) NSInteger anonymousId;      //匿名Id
+@property (nonatomic, strong) QIMWorkMomentUserIdentityModel *userIdentityModel; //用户身份Model
 
-@property (nonatomic, copy) NSString *anonymousName;    //匿名名称
-
-@property (nonatomic, copy) NSString *anonymousPhoto;   //匿名头像
-
-@property (nonatomic, assign) BOOL replaceable;         //匿名头像换一换
+//@property (nonatomic, assign) BOOL isAnonymous;         //是否匿名发布
+//
+//@property (nonatomic, assign) NSInteger anonymousId;      //匿名Id
+//
+//@property (nonatomic, copy) NSString *anonymousName;    //匿名名称
+//
+//@property (nonatomic, copy) NSString *anonymousPhoto;   //匿名头像
+//
+//@property (nonatomic, assign) BOOL replaceable;         //匿名头像换一换
 
 @end
 

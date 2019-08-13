@@ -1640,6 +1640,22 @@ RCT_EXPORT_METHOD(setServiceState:(NSDictionary *)param :(RCTResponseSenderBlock
     }
 }
 
+RCT_EXPORT_METHOD(getAlertVoiceType:(RCTResponseSenderBlock)callback) {
+    NSString *soundName = [[QIMKit sharedInstance] getClientNotificationSoundName];
+    callback(@[@{@"state" : [soundName isEqualToString:@"default"] ? @(YES) : @(NO)}]);
+}
+
+RCT_EXPORT_METHOD(changeConfigAlertStatus:(BOOL)state :(RCTResponseSenderBlock)callback) {
+    NSString *soundName = nil;
+    if (state == YES) {
+        soundName = @"default";
+    } else {
+        soundName = @"msg.wav";
+    }
+    BOOL success = [[QIMKit sharedInstance] setClientNotificationSound:soundName];
+    callback(@[@{@"ok" : @(success)}]);
+}
+
 //获取App版本信息
 RCT_EXPORT_METHOD(getAppVersion:(RCTResponseSenderBlock)callback) {
     NSString *appVersion = [NSString stringWithFormat:@"%@", [[QIMKit sharedInstance] AppVersion]];

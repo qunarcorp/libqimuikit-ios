@@ -55,7 +55,8 @@
         _headerImageView.layer.masksToBounds = YES;
         _headerImageView.layer.borderColor = [UIColor qim_colorWithHex:0xDFDFDF].CGColor;
         _headerImageView.layer.borderWidth = 1.0f;
-        [_headerImageView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
+//        [self reloadUserIdentifier];
+//        [_headerImageView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
         _headerImageView.userInteractionEnabled = YES;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openUserIdentifierVC:)];
         [_headerImageView addGestureRecognizer:tap];
@@ -185,7 +186,30 @@
     }
 }
 
+- (void)setMomentId:(NSString *)momentId {
+    _momentId = momentId;
+    [self reloadUserIdentifier];
+}
+
 - (void)reloadUserIdentifier {
+    QIMWorkMomentUserIdentityModel *userModel  = [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] userIdentityModel];
+    BOOL isAnonymous = userModel.isAnonymous;
+
+    if (isAnonymous == NO) {
+        [_headerImageView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
+    } else {
+        NSString *anonymousName = userModel.anonymousName;
+        NSString *anonymousPhoto = userModel.anonymousPhoto;
+        if (![anonymousPhoto qim_hasPrefixHttpHeader]) {
+            anonymousPhoto = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], anonymousPhoto];
+        } else {
+            
+        }
+        [_headerImageView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
+    }
+    
+    /*
+     Mark by 匿名
     if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
         [self.headerImageView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
     } else {
@@ -198,6 +222,7 @@
         }
         [self.headerImageView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
     }
+    */
 }
 
 - (void)beginCommentToUserId:(NSString *)userId {

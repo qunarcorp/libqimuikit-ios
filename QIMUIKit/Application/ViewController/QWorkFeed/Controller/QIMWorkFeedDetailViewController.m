@@ -211,6 +211,10 @@
                 }
                 [weakSelf.commentListView reloadCommentsData];
                 [weakSelf.commentListView scrollCommentModelToTopIndex];
+                if (comments.count < 20) {
+                    [weakSelf.commentListView endRefreshingHeader];
+                    [weakSelf.commentListView endRefreshingFooterWithNoMoreData];
+                }
             }
         }];
     });
@@ -242,6 +246,10 @@
                 [weakSelf.commentListView.commentModels addObject:model];
             }
             [weakSelf.commentListView reloadCommentsData];
+            if (comments.count < 20) {
+                [weakSelf.commentListView endRefreshingHeader];
+                [weakSelf.commentListView endRefreshingFooterWithNoMoreData];
+            }
         } else {
             [weakSelf.commentListView.commentModels removeAllObjects];
             [weakSelf.commentListView reloadCommentsData];
@@ -509,9 +517,20 @@
     if (self.staticCommentModel) {
         
         //评论上一条的评论
-        NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
-        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-        BOOL isAnonymous = [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
+        QIMWorkMomentUserIdentityModel *lastUserModel = [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] userIdentityModel];
+        
+        
+        NSString *anonymousName = lastUserModel.anonymousName;
+//        [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
+        NSString *anonymousPhoto = lastUserModel.anonymousPhoto;
+//        [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
+        BOOL isAnonymous = lastUserModel.isAnonymous;
+//        [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
+
+        //Mark by 匿名
+//        NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
+//        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
+//        BOOL isAnonymous = [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
         
         BOOL isToAnonymous = self.staticCommentModel.isAnonymous;
         NSString *toAnonymousName = self.staticCommentModel.anonymousName;
@@ -541,9 +560,18 @@
         [[QIMKit sharedInstance] uploadCommentWithCommentDic:commentDic];
     } else {
         //评论帖子
-        NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
-        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-        BOOL isAnonymous = [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
+        QIMWorkMomentUserIdentityModel *lastUserModel = [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] userIdentityModel];
+        
+        NSString *anonymousName = lastUserModel.anonymousName;
+//        [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
+        NSString *anonymousPhoto = lastUserModel.anonymousPhoto;
+//        [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
+        BOOL isAnonymous = lastUserModel.isAnonymous;
+//        [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
+//Mark by 匿名
+//        NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
+//        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
+//        BOOL isAnonymous = [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
         
         NSMutableDictionary *commentDic = [[NSMutableDictionary alloc] init];
         [commentDic setQIMSafeObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
@@ -571,9 +599,9 @@
 }
 
 - (void)dealloc {
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
+//    [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
+//    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
+//    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
     [[YYKeyboardManager defaultManager] removeObserver:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
