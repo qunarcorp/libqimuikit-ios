@@ -911,23 +911,23 @@
 }
 
 
-- (void)keyboardWillShow:(NSNotification*)notification{
-    CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//- (void)keyboardWillShow:(NSNotification*)notification{
+//    CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//
+//    [UIView animateWithDuration:0.5 animations:^{
+//        float movHeight = keyboardRect.size.height - (self.view.height - _loginBgView.bottom);
+//        movHeight = MAX(0, movHeight);
+//        self.view.frame = CGRectMake(0, -movHeight, self.view.width, self.view.height);
+//    }];
     
-    [UIView animateWithDuration:0.5 animations:^{
-        float movHeight = keyboardRect.size.height - (self.view.height - _loginBgView.bottom);
-        movHeight = MAX(0, movHeight);
-        self.view.frame = CGRectMake(0, -movHeight, self.view.width, self.view.height);
-    }];
-    
-}
+//}
 
-- (void)keyboardWillHide:(NSNotification*)notification{
-    [UIView animateWithDuration:0.5 animations:^{
-        self.view.frame = CGRectMake(0, 0, self.view.width, self.view.height);
-    }];
+//- (void)keyboardWillHide:(NSNotification*)notification{
+//    [UIView animateWithDuration:0.5 animations:^{
+//        self.view.frame = CGRectMake(0, 0, self.view.width, self.view.height);
+//    }];
     
-}
+//}
 
 #pragma mark - UITextFieldDelegate
 
