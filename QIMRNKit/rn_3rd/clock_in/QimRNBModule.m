@@ -166,39 +166,6 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
     }
     NSArray *appConfig = @[@{@"projectType" : @(projectType), @"isQtalk" : @(!projectType), @"ckey" : ckey,@"clientIp" : ip,@"userId" : userId,@"domain" : [[QIMKit sharedInstance] qimNav_Domain]?[[QIMKit sharedInstance] qimNav_Domain]:@"", @"httpHost" : httpHost, @"RNAboutView" : @(0), @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]), @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]), @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]), @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]), @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]), @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]), @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]), @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]), @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]), @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost]?[[QIMKit sharedInstance] qimNav_QCHost]:@"", @"showServiceState": @([[QIMKit sharedInstance] isMerchant]), @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost]?[[QIMKit sharedInstance] qimNav_InnerFileHttpHost]:@"", @"isShowWorkWorld":@(oldAuthSign), @"isShowGroupQRCode":@(YES), @"isShowLocalQuickSearch":@(YES), @"isShowRedPackage":@(isShowRedPackage), @"isEasyTrip":@(isEasyTrip), @"isiOSIpad":@([[QIMKit sharedInstance] getIsIpad]), @"ScreenWidth":@([[UIScreen mainScreen] qim_rightWidth]), @"notNeedShowEmailInfo":@(notNeedShowEmailInfo), @"notNeedShowMobileInfo":@(notNeedShowMobileInfo), @"notNeedShowLeaderInfo":@(notNeedShowLeaderInfo), @"notNeedShowCamelNotify":@(notNeedShowCamelNotify),
                              @"isToCManager":@(isToCManager)}];
-    NSArray *appConfig = @[@{@"projectType" : @(projectType),
-                             @"isQtalk" : @(!projectType),
-                             @"ckey" : ckey,
-                             @"clientIp" : ip,
-                             @"userId" : userId,
-                             @"domain" : [[QIMKit sharedInstance] qimNav_Domain],
-                             @"httpHost" : httpHost,
-                             @"RNAboutView" : @(0),
-                             @"RNMineView": @([[QIMKit sharedInstance] qimNav_RNMineView]),
-                             @"RNGroupCardView": @([[QIMKit sharedInstance] qimNav_RNGroupCardView]),
-                             @"RNContactView": @([[QIMKit sharedInstance] qimNav_RNContactView]),
-                             @"RNSettingView" : @([[QIMKit sharedInstance] qimNav_RNSettingView]),
-                             @"RNUserCardView" : @([[QIMKit sharedInstance] qimNav_RNUserCardView]),
-                             @"RNGroupListView": @([[QIMKit sharedInstance] qimNav_RNGroupListView]),
-                             @"RNPublicNumberListView" : @([[QIMKit sharedInstance] qimNav_RNPublicNumberListView]),
-                             @"showOrganizational" : @([[QIMKit sharedInstance] qimNav_ShowOrganizational]),
-                             @"showOA" : @([[QIMKit sharedInstance] qimNav_ShowOA]),
-                             @"qcAdminHost": [[QIMKit sharedInstance] qimNav_QCHost],
-                             @"showServiceState": @([[QIMKit sharedInstance] isMerchant]),
-                             @"fileUrl":[[QIMKit sharedInstance] qimNav_InnerFileHttpHost],
-                             @"isShowWorkWorld":@(WorkFeedEntrance),
-                             @"isShowGroupQRCode":@(YES),
-                             @"isShowLocalQuickSearch":@(YES),
-                             @"isShowRedPackage":@(isShowRedPackage),
-                             @"isEasyTrip":@(isEasyTrip),
-                             @"isiOSIpad":@([[QIMKit sharedInstance] getIsIpad]),
-                             @"ScreenWidth":@([[UIScreen mainScreen] qim_rightWidth]),
-                             @"notNeedShowEmailInfo":@(notNeedShowEmailInfo),
-                             @"notNeedShowMobileInfo":@(notNeedShowMobileInfo),
-                             @"notNeedShowLeaderInfo":@(notNeedShowLeaderInfo),
-                             @"notNeedShowCamelNotify":@(notNeedShowCamelNotify),
-                             @"isToCManager":@(isToCManager)}];
-
     QIMVerboseLog(@"AppConfig : %@", appConfig);
     success(appConfig);
 }
