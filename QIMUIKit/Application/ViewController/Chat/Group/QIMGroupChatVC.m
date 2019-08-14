@@ -1888,7 +1888,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
             NSString *fileName = [infoDic objectForKey:@"FileName"];
             NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
-            fileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
+            if (![fileUrl qim_hasPrefixHttpHeader] && fileUrl.length > 0) {
+                fileUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileUrl];
+            }
             NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:fileName ? fileName : @""];
             vc = [[QIMVideoPlayerVC alloc] init];
             [(QIMVideoPlayerVC *) vc setVideoPath:filePath];

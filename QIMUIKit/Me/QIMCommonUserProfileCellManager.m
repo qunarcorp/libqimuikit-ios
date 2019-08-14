@@ -269,7 +269,7 @@
             [cell setAccessibilityIdentifier:@"MyQrcode"];
             cell.accessoryType_LL = UITableViewCellAccessoryDisclosureIndicator;
             cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"myself_tab_qrcode"];
-            cell.detailTextLabel.font = [UIFont fontWithName:@"QTalk-QChat" size:24];
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:24];
             cell.detailTextLabel.text = @"\U0000f10d";
             cell.textLabel.font = [UIFont fontWithName:FONT_NAME size:[[QIMCommonFont sharedInstance] currentFontSize] - 4];
             cell.textLabel.textColor = [UIColor qtalkTextBlackColor];
