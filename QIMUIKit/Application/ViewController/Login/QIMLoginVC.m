@@ -95,8 +95,8 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:nil];
     tap.delegate = self;
@@ -698,8 +698,13 @@
         enabled = NO;
     }
     [self commitBtn].userInteractionEnabled = enabled;
-//    [self commitBtn].layer.borderColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0].CGColor;
-//    [self commitBtn].textColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0] : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0];
+    
+    if (enabled == YES) {
+        _commitBtn.backgroundColor = [UIColor colorWithRGBHex:0x00CABE];
+    }
+    else{
+         _commitBtn.backgroundColor = [UIColor qim_colorWithHex:0xABE9E5];
+    }
 }
 
 - (void)commitTapHandle:(UITapGestureRecognizer *)sender {
@@ -934,7 +939,6 @@
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     if (textField == _validCodeInputView) {
         if (_userNameInputView.text.length > 0) {
-            
         }else{
             [self takeFocusOfView:_userNameSepline];
             return NO;
@@ -954,6 +958,7 @@
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == _validCodeInputView) {
         if (self.loginType == QTLoginTypePwd && textField.text.length - range.length + string.length >= 1) {
+            
             [self setLoginBtnEnabled:YES];
         } else if (textField.text.length - range.length + string.length == 6) {
             [self setLoginBtnEnabled:YES];
@@ -976,6 +981,7 @@
     }else if (textField == _validCodeInputView) {
         [self setLoginBtnEnabled:NO];
     }
+    _commitBtn.backgroundColor = [UIColor qim_colorWithHex:0xABE9E5];
     return YES;
 }
 
