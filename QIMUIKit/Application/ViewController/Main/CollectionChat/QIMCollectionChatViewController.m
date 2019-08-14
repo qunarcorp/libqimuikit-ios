@@ -120,8 +120,10 @@
     NSDictionary *collectionAccountDic = [self.collectionAccountList objectAtIndex:section];
     NSString *bindId = [collectionAccountDic objectForKey:@"BindId"];
     NSString *bindName = [collectionAccountDic objectForKey:@"BindName"];
-    NSString *bindHeaderSrc = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost],[collectionAccountDic objectForKey:@"HeaderSrc"]];
-//    NSData *iconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:bindHeaderSrc]];
+    NSString *bindHeaderSrc = [collectionAccountDic objectForKey:@"HeaderSrc"];
+    if (![bindHeaderSrc qim_hasPrefixHttpHeader] && bindHeaderSrc.length > 0) {
+        bindHeaderSrc = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], bindHeaderSrc];
+    }
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 50.0f)];
     UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 36, 36)];
     headerView.layer.cornerRadius = 18;

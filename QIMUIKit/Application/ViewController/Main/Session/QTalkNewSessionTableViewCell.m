@@ -835,12 +835,12 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 [attStr appendAttributedString:attStr1];
             } else if ([type isEqualToString:@"faild"]) {
                 
-                UIFont *font = [UIFont fontWithName:@"QTalk-QChat" size:15];
+                UIFont *font = [UIFont systemFontOfSize:15];
                 NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor redColor]}];
                 NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:@"\U0000f0fc " attributes:attributed];
                 [attStr appendAttributedString:attStr1];
             } else if ([type isEqualToString:@"waiting"]) {
-                UIFont *font = [UIFont fontWithName:@"QTalk-QChat" size:15];
+                UIFont *font = [UIFont systemFontOfSize:15];
                 NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor lightGrayColor]}];
                 NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:@"\U0000e3d9 " attributes:attributed];
                 [attStr appendAttributedString:attStr1];
@@ -850,7 +850,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 
                 lastStr = [[msg substringFromIndex:(match.range.location + match.range.length)] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
                 if ([lastStr length] > 0) {
-                    UIFont *font = [UIFont fontWithName:@"QTalk-QChat" size:15];
+                    UIFont *font = [UIFont systemFontOfSize:15];
                     NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999]}];
                     [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:lastStr attributes:attributed]];
                 }
