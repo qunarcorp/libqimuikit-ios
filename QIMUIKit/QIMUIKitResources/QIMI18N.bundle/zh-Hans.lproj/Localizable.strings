@@ -230,7 +230,7 @@
 "common_open_in_safari" = "在Safari中打开";
 "common_add" = "添加";
 "common_black_list" = "黑名单";
-"common_input_username" = "请输入用户名";
+"common_input_username" = "用户名";
 "common_today" = "今天";
 "common_yesterday" = "昨天";
 "common_not_download" = "未下载";
@@ -258,9 +258,9 @@
 "login_get_code" = "获取";
 "login_code" = "验证码";
 "Login_name" = "用户名";
-"login_agree" = "我已阅读并同意";
-"login_privacy_policy" = "使用条款和隐私政策";
-"login_input_code" = "请输入验证码";
+"login_agree" = "同意";
+"login_privacy_policy" = "《使用条款和隐私政策》";
+"login_input_code" = "验证码";
 "login_waiting" = "请您耐心等待, 登录中...";
 "login_get_code_tips" = "验证码获取成功，请输入手机短信接收到的验证码进行登录。"; 
 "relogin_checkNetWork" = "   加载登录页面失败， \n 请确保您已经开启Wi-Fi或移动数据，并点击确认按钮重新加载页面";
