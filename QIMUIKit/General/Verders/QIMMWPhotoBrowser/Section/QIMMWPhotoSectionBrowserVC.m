@@ -716,7 +716,9 @@
                 if (imageData.length > 0) {
                     [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                         PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-                        [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:imageData options:options];
+                        PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+                        request.creationDate = [NSDate date];
+                        [request addResourceWithType:PHAssetResourceTypePhoto data:imageData options:options];
                     } completionHandler:^(BOOL success, NSError * _Nullable error) {
                         QIMVerboseLog(@"是否保存成功：%d",success);
                         dispatch_group_leave(group);
@@ -733,7 +735,9 @@
                     if (fileData.length > 0) {
                         [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                             PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-                            [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:fileData options:options];
+                            PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+                            request.creationDate = [NSDate date];
+                            [request addResourceWithType:PHAssetResourceTypePhoto data:fileData options:options];
                         } completionHandler:^(BOOL success, NSError * _Nullable error) {
                             QIMVerboseLog(@"是否保存成功：%d",success);
                             dispatch_group_leave(group);
@@ -752,7 +756,9 @@
                 if (fileData.length > 0) {
                     [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                         PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-                        [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:fileData options:options];
+                        PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+                        request.creationDate = [NSDate date];
+                        [request addResourceWithType:PHAssetResourceTypePhoto data:fileData options:options];
                     } completionHandler:^(BOOL success, NSError * _Nullable error) {
                         QIMVerboseLog(@"是否保存成功：%d",success);
                         dispatch_group_leave(group);
