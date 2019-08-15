@@ -36,12 +36,13 @@
 #import "QIMWorkFeedAtNotifyViewController.h"
 #import "QIMATGroupMemberTextAttachment.h"
 #import "YYKeyboardManager.h"
+#import "QIMVideoModel.h"
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
 #import <Toast/Toast.h>
 
-static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
+static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
 @protocol QIMWorkMomentPushUserIdentityViewDelegate <NSObject>
 
@@ -1210,13 +1211,21 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 50;
                 NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
                 NSString *thumbUrl = [videoDic objectForKey:@"ThumbUrl"];
                 
-                [QIMFastEntrance openVideoPlayerForUrl:fileUrl LocalOutPath:LocalVideoOutPath CoverImageUrl:thumbUrl];
+                QIMVideoModel *videoModel = [[QIMVideoModel alloc] init];
+                videoModel.LocalVideoOutPath = LocalVideoOutPath;
+                videoModel.ThumbUrl = thumbUrl;
+                videoModel.FileUrl = fileUrl;
+                [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
+                
+//                [QIMFastEntrance openVideoPlayerForUrl:fileUrl LocalOutPath:LocalVideoOutPath CoverImageUrl:thumbUrl];
             } else {
                 
                 UIImage *thumbImage = [videoDic objectForKey:@"thumbImage"];
                 NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
-                
-                [QIMFastEntrance openVideoPlayerForUrl:nil LocalOutPath:LocalVideoOutPath CoverImageUrl:nil];
+                QIMVideoModel *videoModel = [[QIMVideoModel alloc] init];
+                videoModel.LocalVideoOutPath = LocalVideoOutPath;
+                videoModel.LocalThubmImage = thumbImage;
+                [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
             }
         } else {
             

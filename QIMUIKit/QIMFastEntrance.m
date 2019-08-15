@@ -1257,7 +1257,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)signOutWithNoPush {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        [[QIMKit sharedInstance] sendNoPush];
+//        [[QIMKit sharedInstance] sendNoPush];
         [[QIMKit sharedInstance] clearcache];
         [[QIMKit sharedInstance] clearDataBase];
         [[QIMKit sharedInstance] clearLogginUser];
@@ -1310,7 +1310,6 @@ static QIMFastEntrance *_sharedInstance = nil;
         BOOL result = [[QIMKit sharedInstance] sendPushTokenWithMyToken:nil WithDeleteFlag:YES];
         [[QIMProgressHUD sharedInstance] closeHUD];
         if (result) {
-            [[QIMKit sharedInstance] sendNoPush];
             [[QIMKit sharedInstance] clearcache];
             [[QIMKit sharedInstance] clearDataBase];
             [[QIMKit sharedInstance] clearLogginUser];
@@ -1358,7 +1357,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"退出登录失败，请重试" preferredStyle:UIAlertControllerStyleAlert];
                 UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_Nonnull action) {
-
+                    
                 }];
                 UIAlertAction *quitAction = [UIAlertAction actionWithTitle:@"强制退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
                     [QIMFastEntrance signOutWithNoPush];
@@ -1460,6 +1459,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     self.browerImageUserId = [param objectForKey:@"UserId"];
     NSString *imageUrl = [param objectForKey:@"imageUrl"];
     NSArray *imageUrlList = [param objectForKey:@"imageUrlList"];
+    NSInteger currentIndex = [[param objectForKey:@"CurrentIndex"] integerValue];
     if (imageUrl.length > 0) {
         self.browerImageUrl = imageUrl;
     } else if (imageUrlList.count > 0) {
@@ -1476,7 +1476,11 @@ static QIMFastEntrance *_sharedInstance = nil;
     browser.displayActionButton = YES;
     browser.zoomPhotosToFill = YES;
     browser.enableSwipeToDismiss = NO;
-    [browser setCurrentPhotoIndex:0];
+    if (currentIndex > 0) {
+        [browser setCurrentPhotoIndex:currentIndex];
+    } else {
+        [browser setCurrentPhotoIndex:0];
+    }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
     browser.wantsFullScreenLayout = YES;
@@ -1497,7 +1501,11 @@ static QIMFastEntrance *_sharedInstance = nil;
 #pragma mark - MWPhotoBrowserDelegate
 
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(QIMMWPhotoBrowser *)photoBrowser {
-    return 1;
+    if (self.browerImageUrlList.count > 0) {
+        return self.browerImageUrlList.count;
+    } else {
+        return 1;
+    }
 }
 
 - (id <QIMMWPhoto>)photoBrowser:(QIMMWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
@@ -1508,11 +1516,43 @@ static QIMFastEntrance *_sharedInstance = nil;
         if (![imageUrl qim_hasPrefixHttpHeader]) {
             imageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrl];
         }
+        if (![imageUrl containsString:@"?"]) {
+            imageUrl = [imageUrl stringByAppendingString:@"?"];
+            if (![imageUrl containsString:@"platform"]) {
+                imageUrl = [imageUrl stringByAppendingString:@"platform=touch"];
+            }
+            if (![imageUrl containsString:@"webp="]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&webp=true"];
+            }
+        } else {
+            if (![imageUrl containsString:@"platform"]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (![imageUrl containsString:@"webp="]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&webp=true"];
+            }
+        }
         NSURL *url = [NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
     } else {
         if (![self.browerImageUrl qim_hasPrefixHttpHeader]) {
             self.browerImageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], self.browerImageUrl];
+        }
+        if (![self.browerImageUrl containsString:@"?"]) {
+            self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"?"];
+            if (![self.browerImageUrl containsString:@"platform"]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"platform=touch"];
+            }
+            if (![self.browerImageUrl containsString:@"webp="]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&webp=true"];
+            }
+        } else {
+            if (![self.browerImageUrl containsString:@"platform"]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (![self.browerImageUrl containsString:@"webp="]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&webp=true"];
+            }
         }
         QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithURL:[NSURL URLWithString:self.browerImageUrl]];
         return photo;
@@ -1523,6 +1563,9 @@ static QIMFastEntrance *_sharedInstance = nil;
     //界面消失
     [photoBrowser dismissViewControllerAnimated:YES completion:^{
         //tableView 回滚到上次浏览的位置
+        self.browerImageUrl = nil;
+        self.browerImageUrlList = nil;
+        self.browerImageUserId = nil;
     }];
 }
 

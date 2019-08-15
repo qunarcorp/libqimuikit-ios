@@ -317,7 +317,7 @@
     [self.view addSubview:loadView];
     
     AVAssetExportSession *exportSession = nil;
-    NSString *resultQuality = AVAssetExportPresetMediumQuality;
+    NSString *resultQuality = AVAssetExportPresetHighestQuality;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_8_0
     exportSession = [[AVAssetExportSession alloc] initWithAsset:self.videoAsset presetName:resultQuality];
 #else

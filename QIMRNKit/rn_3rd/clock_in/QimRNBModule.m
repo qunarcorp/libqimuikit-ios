@@ -1765,7 +1765,7 @@ RCT_EXPORT_METHOD(openSwitchAccount) {
             NSString *pwd = [accountDict objectForKey:@"LoginToken"];
             NSDictionary *navDict = [accountDict objectForKey:@"NavDict"];
             if (userId && pwd) {
-                [[QIMKit sharedInstance] sendNoPush];
+//                [[QIMKit sharedInstance] sendNoPush];
                 [[QIMKit sharedInstance] clearcache];
                 [[QIMKit sharedInstance] clearLogginUser];
                 [[QIMKit sharedInstance] quitLogin];

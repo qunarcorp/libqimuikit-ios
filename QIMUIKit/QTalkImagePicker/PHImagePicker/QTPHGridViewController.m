@@ -607,7 +607,20 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     }
     
     QTPHGridViewCell *cell = (QTPHGridViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    
+    __block BOOL canChoose = NO;
+    [[PHImageManager defaultManager] requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+        float imageSize = imageData.length; //convert to MB
+        imageSize = imageSize/(1024*1024.0);
+        
+        if (imageSize >= 30) {
+            //判断图片大于30M，提示，取消选择状态
+            [QTalkTipsView showTips:[NSString stringWithFormat:@"不支持选择大于30M的照片"] InView:self.view];
+            if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldSelectAsset:)]) {
+                [self.picker.delegate assetsPickerController:self.picker shouldDeselectAsset:asset];
+            }
+            [collectionView deselectItemAtIndexPath:indexPath animated:NO];
+        }
+    }];
     if (!cell.isEnabled) {
         return NO;
     } else if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldSelectAsset:)]) {
