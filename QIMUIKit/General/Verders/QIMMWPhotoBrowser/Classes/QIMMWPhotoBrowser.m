@@ -1872,7 +1872,9 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
         if ([UIDevice currentDevice].systemVersion.floatValue >= 9.0f) {
             [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                 PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-                [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:photoData options:options];
+                PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+                request.creationDate = [NSDate date];
+                [request addResourceWithType:PHAssetResourceTypePhoto data:photoData options:options];
             } completionHandler:^(BOOL success, NSError * _Nullable error) {
                 QIMVerboseLog(@"是否保存成功：%d",success);
                 if (success) {

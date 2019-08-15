@@ -36,7 +36,7 @@
 #import "QIMNavConfigSettingVC.h"
 #import "QIMNavConfigManagerVC.h"
 #import "QIMRemoteNotificationManager.h"
-#import <MBProgressHUD/MBProgressHUD.h>
+#import "MBProgressHUD.h"
 
 
 @interface QIMLoginVC () <UITextFieldDelegate,UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource> {
@@ -691,8 +691,8 @@
 
 - (void)setValidCodeBtnEnabled:(BOOL)enabled {
     _getValidCodeBtn.userInteractionEnabled = enabled;
-//    _getValidCodeBtn.layer.borderColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0].CGColor;
-//    _getValidCodeBtn.textColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0] : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0];
+    _getValidCodeBtn.layer.borderColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0].CGColor;
+    _getValidCodeBtn.textColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0] : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0];
 }
 
 - (void)setLoginBtnEnabled:(BOOL)enabled {
