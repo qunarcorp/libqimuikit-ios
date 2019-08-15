@@ -1058,17 +1058,17 @@ static dispatch_once_t __onceMainToken;
     NSString *tabBarId = [tabBarDict objectForKey:@"title"];
 
     if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_chat"]]) {
-
+        [self.navigationItem setRightBarButtonItems:nil];
         if (self.appNetWorkTitle) {
             [self.navigationItem setTitle:self.appNetWorkTitle];
         } else {
             [self.navigationItem setTitle:self.navTitle];
         }
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_travel"]]) {
-
+        [self.navigationItem setRightBarButtonItems:nil];
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_travel"]];
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_contact"]]) {
-
+        [self.navigationItem setRightBarButtonItems:nil];
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_contact"]];
         /*
         if ([QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
@@ -1077,7 +1077,7 @@ static dispatch_once_t __onceMainToken;
         }
         */
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]]) {
-
+        [self.navigationItem setRightBarButtonItems:nil];
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_discover"]];
         if ([QIMKit getQIMProjectType] != QIMProjectTypeStartalk) {
             UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.scanBtn];
@@ -1088,14 +1088,16 @@ static dispatch_once_t __onceMainToken;
 
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]]) {
 
-
+        [self.navigationItem setRightBarButtonItems:nil];
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_moment"]];
         UIBarButtonItem *searchMomentItem = [[UIBarButtonItem alloc] initWithCustomView:self.searchMomentBtn];
         UIBarButtonItem *myMomentItem = [[UIBarButtonItem alloc] initWithCustomView:self.momentBtn];
-        [self.navigationItem setRightBarButtonItems:@[myMomentItem, searchMomentItem]];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        space.width = 16;
+        [self.navigationItem setRightBarButtonItems:@[myMomentItem, space, searchMomentItem]];
 
     } else if ([tabBarId isEqualToString:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]]) {
-
+        [self.navigationItem setRightBarButtonItems:nil];
         [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"tab_title_myself"]];
         UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.settingBtn];
         [self.navigationItem setRightBarButtonItem:rightBarItem];

@@ -15,6 +15,9 @@
 #import "QIMWorkMessageCell.h"
 #import "QIMWorkFeedDetailViewController.h"
 #import "YYModel.h"
+#import "MBProgressHUD.h"
+#import "MJRefreshAutoNormalFooter.h"
+
 static const NSInteger searchMinCharacterCount = 2;
 @interface QIMWorkFeedSearchField : UITextField
 @end
@@ -50,6 +53,10 @@ static const NSInteger searchMinCharacterCount = 2;
 
 @property (nonatomic, strong) UILabel *searchPlaceHolderLabel;
 
+@property (nonatomic, strong) UIView *searchIngView;
+
+@property (nonatomic, strong) UILabel *searchIngLabel;
+
 @property (nonatomic, strong) UIView *searchEmptyView;
 
 @property (nonatomic, strong) UILabel *searchEmptyLabel;
@@ -59,6 +66,8 @@ static const NSInteger searchMinCharacterCount = 2;
 @property (nonatomic, strong) UITableView *mainTableView;
 
 @property (nonatomic, strong) NSMutableArray *searchDataList;
+
+@property (nonatomic, strong) MBProgressHUD *progressHUD;
 
 @end
 
@@ -96,6 +105,14 @@ static const NSInteger searchMinCharacterCount = 2;
     return _searchPlaceHolderLabel;
 }
 
+- (UIView *)searchIngView {
+    if (!_searchIngView) {
+        _searchIngView = [[UIView alloc] initWithFrame:CGRectZero];
+        _searchIngView.backgroundColor = [UIColor clearColor];
+    }
+    return _searchIngView;
+}
+
 - (UIView *)searchEmptyView {
     if (!_searchEmptyView) {
         _searchEmptyView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -121,7 +138,6 @@ static const NSInteger searchMinCharacterCount = 2;
     return _searchEmptyLabel;
 }
 
-
 - (UITableView *)mainTableView {
     if (!_mainTableView) {
         _mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.searchBgView.bottom + 5, self.view.width, self.view.height) style:UITableViewStyleGrouped];
@@ -135,10 +151,11 @@ static const NSInteger searchMinCharacterCount = 2;
         _mainTableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);           //top left bottom right 左右边距相同
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         _mainTableView.separatorColor = [UIColor qim_colorWithHex:0xdddddd];
+//        _mainTableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
         
-//        _mainTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(reloadRemoteRecenteMoments)];
-//        _mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreMoment)];
-//        _mainTableView.mj_footer.automaticallyHidden = YES;
+        _mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(searchMore)];
+        _mainTableView.mj_footer.automaticallyHidden = YES;
+        _mainTableView.mj_footer.hidden = YES;
     }
     return _mainTableView;
 }
@@ -210,6 +227,10 @@ static const NSInteger searchMinCharacterCount = 2;
     // Do any additional setup after loading the view.
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self.view endEditing:YES]; //实现该方法是需要注意view需要是继承UIControl而来的
+}
+
 - (void)updateSearchPlaceHolderViewWithHidden:(BOOL)hidden {
     if (!_searchPlaceHolderView) {
         [self.view addSubview:self.searchPlaceHolderView];
@@ -231,6 +252,46 @@ static const NSInteger searchMinCharacterCount = 2;
         [self.mainTableView reloadData];
     }
     [self.searchPlaceHolderView setHidden:hidden];
+}
+
+- (void)updateSearchingViewWithHidden:(BOOL)hidden {
+    if (!_searchIngView) {
+        [self.view addSubview:self.searchIngView];
+        [self.searchIngView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.searchBgView.mas_bottom).mas_offset(130);
+            make.left.mas_offset(10);
+            make.right.mas_offset(-10);
+            make.height.mas_equalTo(100);
+        }];
+    }
+    [self.searchIngView setHidden:hidden];
+}
+
+- (MBProgressHUD *)progressHUD {
+    [self updateSearchingViewWithHidden:NO];
+    if (!_progressHUD) {
+        _progressHUD = [[MBProgressHUD alloc] initWithView:self.searchIngView];
+        _progressHUD.minSize = CGSizeMake(120, 120);
+        _progressHUD.minShowTime = 1;
+        [self.searchIngView addSubview:_progressHUD];
+    }
+    return _progressHUD;
+}
+
+- (void)showProgressHUDWithMessage:(NSString *)message {
+    self.progressHUD.hidden = NO;
+    self.progressHUD.labelText = message;
+    self.progressHUD.mode = MBProgressHUDModeIndeterminate;
+    [self.progressHUD show:YES];
+    self.navigationController.navigationBar.userInteractionEnabled = NO;
+}
+
+- (void)hideProgressHUD:(BOOL)animated {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.progressHUD hide:animated];
+        [self updateSearchingViewWithHidden:YES];
+        self.navigationController.navigationBar.userInteractionEnabled = YES;
+    });
 }
 
 - (void)updateSearchEmptyViewWithHidden:(BOOL)hidden {
@@ -371,6 +432,11 @@ static const NSInteger searchMinCharacterCount = 2;
 
 #pragma mark - UITextFieldDelegate
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
+    [self.view endEditing:YES];
+}
+
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     [self.searchDataList removeAllObjects];
     NSMutableString * searchText = [NSMutableString stringWithString:textField.text];
@@ -384,15 +450,14 @@ static const NSInteger searchMinCharacterCount = 2;
     } else {
         if (textField.text.length + string.length - range.length >= searchMinCharacterCount) {
             __weak __typeof(self) weakSelf = self;
+            [self showProgressHUDWithMessage:@"搜索中..."];
             [[QIMKit sharedInstance] searchMomentWithKey:searchText withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
                 __typeof(self) strongSelf = weakSelf;
                 if (!strongSelf) {
                     return;
                 }
-                [strongSelf addModelWithResultList:result];
-                [strongSelf.mainTableView reloadData];
-                [strongSelf updateSearchEmptyViewWithHidden:result.count];
-                NSLog(@"result : %@", result);
+                [strongSelf hideProgressHUD:YES];
+                [strongSelf addModelWithResultList:result withReWrite:YES];
             }];
         }
     }
@@ -414,24 +479,45 @@ static const NSInteger searchMinCharacterCount = 2;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (textField.text.length < 2) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请至少输入两个字符开始搜索" delegate:self cancelButtonTitle:nil otherButtonTitles:@"好的", nil];
+        [alertView show];
+        return NO;
+    }
     [self.searchDataList removeAllObjects];
     __weak __typeof(self) weakSelf = self;
+    [self showProgressHUDWithMessage:@"搜索中..."];
     [[QIMKit sharedInstance] searchMomentWithKey:textField.text withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
-        NSLog(@"result2 : %@", result);
         __typeof(self) strongSelf = weakSelf;
         if (!strongSelf) {
             return;
         }
-        [self addModelWithResultList:result];
-        [strongSelf.mainTableView reloadData];
-        [strongSelf updateSearchEmptyViewWithHidden:result.count];
-        [strongSelf.view endEditing:YES];
+        [strongSelf hideProgressHUD:YES];
+        [strongSelf addModelWithResultList:result withReWrite:YES];
     }];
     return YES;
 }
 
-- (void)addModelWithResultList:(NSArray *)result {
-    [self.searchDataList removeAllObjects];
+- (void)searchMore {
+    __weak __typeof(self) weakSelf = self;
+    [[QIMKit sharedInstance] searchMomentWithKey:self.textField.text withSearchTime:0 withStartNum:self.searchDataList.count withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
+        __typeof(self) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
+        [self addModelWithResultList:result withReWrite:NO];
+        if (result.count <= 0) {
+            [_mainTableView.mj_footer endRefreshingWithNoMoreData];
+        } else {
+            [_mainTableView.mj_footer endRefreshing];
+        }
+    }];
+}
+
+- (void)addModelWithResultList:(NSArray *)result withReWrite:(BOOL)rewrite{
+    if (rewrite == YES) {
+        [self.searchDataList removeAllObjects];
+    }
     if (![result isKindOfClass:[NSArray class]]) {
         return;
     }
@@ -447,21 +533,31 @@ static const NSInteger searchMinCharacterCount = 2;
             }
         }
     }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.mainTableView reloadData];
+        [self updateSearchEmptyViewWithHidden:result.count];
+        if (result.count >= 20) {
+            _mainTableView.mj_footer.hidden = NO;
+        } else {
+            _mainTableView.mj_footer.hidden = YES;
+        }
+    });
 }
 
 #pragma mark - MomentCellDelegate
 
 - (void)didClickSmallImage:(QIMWorkMomentModel *)model WithCurrentTag:(NSInteger)tag {
     //初始化图片浏览控件
-    NSMutableArray *imageList = [NSMutableArray arrayWithCapacity:3];
+    NSMutableArray *mutablImageList = [NSMutableArray arrayWithCapacity:3];
+    NSArray *imageList = model.content.imgList;
     for (QIMWorkMomentPicture *picture in imageList) {
         NSString *imageUrl = picture.imageUrl;
         if (imageUrl.length > 0) {
-            [imageList addObject:imageUrl];
+            [mutablImageList addObject:imageUrl];
         }
     }
     
-    [[QIMFastEntrance sharedInstance] browseBigHeader:@{@"imageUrlList": imageList}];
+    [[QIMFastEntrance sharedInstance] browseBigHeader:@{@"imageUrlList": mutablImageList, @"CurrentIndex":@(tag)}];
 }
 
 - (void)didOpenWorkMomentDetailVc:(NSNotification *)notify {

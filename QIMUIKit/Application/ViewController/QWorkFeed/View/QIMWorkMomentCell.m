@@ -427,6 +427,18 @@
     }
     
     [self refreshContentUIWithType:contentType withBottom:bottom];
+    
+    if (self.isSearch == YES) {
+        NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWithMomentId:self.moment.momentId];
+        
+        QIMWorkMomentModel *momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];
+        NSDictionary *contentModelDic = [[QIMJSONSerializer sharedInstance] deserializeObject:[momentDic objectForKey:@"content"] error:nil];
+        QIMWorkMomentContentModel *conModel = [QIMWorkMomentContentModel yy_modelWithDictionary:contentModelDic];
+        momentModel.content = conModel;
+        _moment.isLike = momentModel.isLike;
+        _moment.likeNum = momentModel.likeNum;
+        _moment.commentsNum = momentModel.commentsNum;
+    }
     [self updateLikeUI];
     [self updateCommentUI];
     
@@ -538,11 +550,13 @@
 }
 
 - (void)updateLikeUI {
+
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         _likeBtn.frame = CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 15 - 70, _rowHeight + 15, 70, 27);
     } else {
         _likeBtn.frame = CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 15 - 70, _rowHeight + 15, 70, 27);
     }
+    
     NSInteger likeNum = self.moment.likeNum;
     if (self.moment.isLike) {
         _likeBtn.selected = YES;

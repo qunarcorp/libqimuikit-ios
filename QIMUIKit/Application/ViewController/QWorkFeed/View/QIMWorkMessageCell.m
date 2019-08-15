@@ -42,11 +42,11 @@
 
 - (void)setupUI {
     // 头像视图
-    _headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 36, 36)];
+    _headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 43, 43)];
     _headerImageView.contentMode = UIViewContentModeScaleAspectFill;
     _headerImageView.userInteractionEnabled = YES;
     _headerImageView.layer.masksToBounds = YES;
-    _headerImageView.layer.cornerRadius = 20.0f;
+    _headerImageView.layer.cornerRadius = _headerImageView.width / 2.0f;
     _headerImageView.backgroundColor = [UIColor qim_colorWithHex:0xFFFFFF];
     _headerImageView.layer.borderColor = [UIColor qim_colorWithHex:0xDFDFDF].CGColor;
     _headerImageView.layer.borderWidth = 0.5f;
@@ -65,7 +65,10 @@
     _organLabel.font = [UIFont systemFontOfSize:11];
     _organLabel.textColor = [UIColor qim_colorWithHex:0x999999];
     _organLabel.textAlignment = NSTextAlignmentCenter;
-    _organLabel.adjustsFontSizeToFitWidth = YES;
+    _organLabel.layer.cornerRadius = 2.0f;
+    _organLabel.layer.masksToBounds = YES;
+    [_organLabel sizeToFit];
+    _organLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:_organLabel];
     
     // 正文视图
@@ -156,7 +159,8 @@
             self.nameLabel.text = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
             self.nameLabel.centerY = self.headerImageView.centerY;
             [self.nameLabel sizeToFit];
-
+            
+            self.organLabel.frame = CGRectMake(self.nameLabel.right + 8, 0, 66, 20);
             NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
             NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
             NSString *lastDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
@@ -164,7 +168,7 @@
                 self.organLabel.text = [NSString stringWithFormat:@"%@", lastDp];
                 [self.organLabel sizeToFit];
                 [self.organLabel sizeThatFits:CGSizeMake(self.organLabel.width, self.organLabel.height)];
-                self.organLabel.frame = CGRectMake(self.nameLabel.right + 8, 0, 66, 20);
+                self.organLabel.height = 20;
                 self.organLabel.centerY = self.headerImageView.centerY;
             } else {
                 self.organLabel.hidden = YES;
@@ -199,7 +203,7 @@
     }
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:(noticeMsgModel.createTime/1000)];
     self.timeLabel.text = [timeDate qim_timeIntervalDescription];
-    self.timeLabel.frame = CGRectMake(self.headerImageView.right + 6, self.contentLabel.bottom + 6, 100, 20);
+    self.timeLabel.frame = CGRectMake(self.headerImageView.right + 13, self.contentLabel.bottom + 6, 100, 20);
     _noticeMsgModel.rowHeight = self.timeLabel.bottom + 15;
 }
 

@@ -12,6 +12,7 @@
 #import "QIMWorkFeedAtNotifyViewController.h"
 #import "QIMATGroupMemberTextAttachment.h"
 #import "QIMMessageTextAttachment.h"
+#import "QTalkTipsView.h"
 
 @interface QIMWorkCommentInputBar () <UITextViewDelegate>
 
@@ -226,7 +227,7 @@
 }
 
 - (void)beginCommentToUserId:(NSString *)userId {
-    self.placeholderLabel.text = [NSString stringWithFormat:@"%@", userId];
+    self.placeholderLabel.text = [NSString stringWithFormat:@"%@（200字以内）", userId];
     [self.commentTextView becomeFirstResponder];
 }
 
@@ -353,6 +354,11 @@
 }
 
 - (void)sendComment {
+    if (self.commentTextView.text.length > 200) {
+        [QTalkTipsView showTips:[NSString stringWithFormat:@"评论不可以超过200个字哦～"] InView:[[[[UIApplication sharedApplication] keyWindow] rootViewController] view]];
+        return;
+    }
+    
     if (self.commentTextView.text.length > 0 && ![self isEmpty:self.commentTextView.attributedText.string]) {
         NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
         NSString *finallyContent = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:self.commentTextView.attributedText WithOutAtInfo:&outATInfoArray];

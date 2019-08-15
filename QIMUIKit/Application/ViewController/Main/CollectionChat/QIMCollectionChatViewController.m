@@ -269,7 +269,7 @@
             NSString *pwd = [accountDic objectForKey:@"LoginToken"];
             NSDictionary *navDict = [accountDic objectForKey:@"NavDict"];
             if (userId && pwd) {
-                [[QIMKit sharedInstance] sendNoPush];
+//                [[QIMKit sharedInstance] sendNoPush];
                 [[QIMKit sharedInstance] clearcache];
                 [[QIMKit sharedInstance] clearLogginUser];
                 [[QIMKit sharedInstance] quitLogin];
