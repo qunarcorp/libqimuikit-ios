@@ -36,6 +36,8 @@
 #import "QIMNavConfigSettingVC.h"
 #import "QIMNavConfigManagerVC.h"
 #import "QIMRemoteNotificationManager.h"
+#import <MBProgressHUD/MBProgressHUD.h>
+
 
 @interface QIMLoginVC () <UITextFieldDelegate,UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource> {
     UIView          * _loginBgView;
@@ -379,7 +381,7 @@
         _getValidCodeBtn.backgroundColor = [UIColor clearColor];
 //        _getValidCodeBtn.layer.borderColor = [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor;
 //        _getValidCodeBtn.layer.borderWidth = 0.5;
-        _getValidCodeBtn.textColor = [UIColor qim_colorWithHex:0x00CABE];
+        _getValidCodeBtn.textColor = [UIColor colorWithRGBHex:0xBFBFBF];
         _getValidCodeBtn.textAlignment = NSTextAlignmentRight;
         _getValidCodeBtn.font = [UIFont boldSystemFontOfSize:kNomalFontSize];
         _getValidCodeBtn.text = kValidCodeDisplayString;
@@ -689,8 +691,8 @@
 
 - (void)setValidCodeBtnEnabled:(BOOL)enabled {
     _getValidCodeBtn.userInteractionEnabled = enabled;
-    _getValidCodeBtn.layer.borderColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0].CGColor;
-    _getValidCodeBtn.textColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0] : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0];
+//    _getValidCodeBtn.layer.borderColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0].CGColor;
+//    _getValidCodeBtn.textColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0] : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0];
 }
 
 - (void)setLoginBtnEnabled:(BOOL)enabled {
@@ -720,8 +722,13 @@
         return;
     }
     
-    [self startLoginAnimation];
-    
+    if (_agreeBtn.selected == NO) {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"请查看并同意\n《使用条款和隐私政策》" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }
+//    [self startLoginAnimation];
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     NSString *userName = [[_userNameInputView text] lowercaseString];
     userName = [userName stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSString *validCode = _validCodeInputView.text;
@@ -758,7 +765,8 @@
                                                                           cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_got_it"]
                                                                           otherButtonTitles:nil];
                                 [alertView show];
-                                [weakSelf stopLoginAnimation];
+//                                [weakSelf stopLoginAnimation];
+                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                             } else {
                                 [weakSelf showNetWorkUnableAlert];
                             }
@@ -872,6 +880,10 @@
         [self setLoginBtnEnabled:sender.selected];
     } else if (_userNameInputView.text.length && _validCodeInputView.text.length == 6) {
         [self setLoginBtnEnabled:sender.selected];
+    }
+    if (sender.selected == NO) {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"亲，请查看并同意\n《使用条款和隐私政策》\n才可以登录哟～" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
     }
 }
 
