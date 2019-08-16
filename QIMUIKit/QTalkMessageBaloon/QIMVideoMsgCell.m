@@ -130,30 +130,38 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
             self.message.message = self.message.extendInformation;
         }
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
-        QIMVideoModel *videoModel = [QIMVideoModel yy_modelWithDictionary:infoDic];
-        /*
-        NSString *fileName = [infoDic objectForKey:@"FileName"];
-        NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
-        NSInteger videoWidth = [[infoDic objectForKey:@"Width"] integerValue];;
-        NSInteger videoHeight = [[infoDic objectForKey:@"Height"] integerValue];;
-        
-        if (![fileUrl qim_hasPrefixHttpHeader]) {
-            fileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
+        BOOL newVideo = [[infoDic objectForKey:@"newVideo"] boolValue];
+        if (newVideo == YES) {
+            
+            //新版视频
+            QIMVideoModel *videoModel = [QIMVideoModel yy_modelWithDictionary:infoDic];
+            [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
+        } else {
+            
+            //老版本视频
+            QIMVideoPlayerVC *videoPlayVC = [[QIMVideoPlayerVC alloc] init];
+            [videoPlayVC setVideoMessageModel:self.message];
+            [self.owerViewController.navigationController pushViewController:videoPlayVC animated:YES];
+
+            /*
+            NSString *fileName = [infoDic objectForKey:@"FileName"];
+            NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
+            NSInteger videoWidth = [[infoDic objectForKey:@"Width"] integerValue];;
+            NSInteger videoHeight = [[infoDic objectForKey:@"Height"] integerValue];;
+            
+            if (![fileUrl qim_hasPrefixHttpHeader]) {
+                fileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
+            }
+            
+            NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:fileName?fileName:@""];
+            QIMVideoPlayerVC *videoPlayVC = [[QIMVideoPlayerVC alloc] init];
+            [videoPlayVC setVideoPath:filePath];
+            [videoPlayVC setVideoUrl:fileUrl];
+            [videoPlayVC setVideoWidth:videoWidth];
+            [videoPlayVC setVideoHeight:videoHeight];
+            [self.owerViewController.navigationController pushViewController:videoPlayVC animated:YES];
+             */
         }
-        */
-//        [QIMFastEntrance openVideoPlayerForVideoInfoDic:(NSDictionary *)]
-//        [QIMFastEntrance openVideoPlayerForUrl:fileUrl LocalOutPath:nil CoverImageUrl:nil];
-        [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
-        
-        /*
-        NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:fileName?fileName:@""];
-        QIMVideoPlayerVC *videoPlayVC = [[QIMVideoPlayerVC alloc] init];
-        [videoPlayVC setVideoPath:filePath];
-        [videoPlayVC setVideoUrl:fileUrl];
-        [videoPlayVC setVideoWidth:videoWidth];
-        [videoPlayVC setVideoHeight:videoHeight];
-        [self.owerViewController.navigationController pushViewController:videoPlayVC animated:YES];
-         */
     }
 }
 
@@ -178,7 +186,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     
     CGSize size = CGSizeMake(150, [QIMVideoMsgCell getCellHeightWithMessage:self.message chatType:1] - 40);
     
-    [_sizeLabel setText:[infoDic objectForKey:@"FileSize"]];
+    [_sizeLabel setText:[NSString stringWithFormat:@"%ld", [infoDic objectForKey:@"FileSize"]]];
     [_durationLabel setText:[NSString stringWithFormat:@"%@s",[infoDic objectForKey:@"Duration"]]];
     if (self.message.messageDirection == QIMMessageDirection_Received) {
         [_imageView setFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 5, size.width, size.height)];

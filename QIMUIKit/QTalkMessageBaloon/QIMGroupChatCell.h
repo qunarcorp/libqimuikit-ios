@@ -17,8 +17,6 @@
 
 - (void)processEvent:(int) event withMessage:(id) message;
 
-- (void)browserMessage:(QIMMessageModel *)message;
-
 - (NSUInteger)getColorHex:(NSString *)text;
 
 @end

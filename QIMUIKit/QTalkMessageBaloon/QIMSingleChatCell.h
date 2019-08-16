@@ -13,7 +13,6 @@
 @protocol QIMSingleChatCellDelegate <NSObject>
 @required
 - (void)processEvent:(int)event withMessage:(id) message;
-- (void)browserMessage:(QIMMessageModel *)message;
 @end
 
 @interface QIMSingleChatCell : UITableViewCell

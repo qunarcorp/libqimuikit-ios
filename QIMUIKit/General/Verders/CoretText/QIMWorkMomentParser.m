@@ -450,11 +450,6 @@
             newMsg.message = msgStr;
             newMsg.extendInformation = parseStr;
         }
-        case QIMMessageType_BurnAfterRead:
-        {
-            newMsg.message = @"此为阅后即焚消息，该终端不支持阅后即焚~~";
-            newMsg.extendInformation = parseStr;
-        }
             break;
         default:
             break;

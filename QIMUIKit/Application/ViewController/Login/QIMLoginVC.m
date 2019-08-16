@@ -128,7 +128,8 @@
     _userNameInputView.text = lastUserName;
     _validCodeInputView.text = @"......";
     [self resetAutoUIFrame];
-    [self startLoginAnimation];
+//    [self startLoginAnimation];
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
     if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -904,6 +905,7 @@
 
 - (void)loginNotify:(NSNotification *)notify{
     dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         if ([notify.object boolValue]) {
             [self stopLoginAnimation];
             [self stopWritingLogo];

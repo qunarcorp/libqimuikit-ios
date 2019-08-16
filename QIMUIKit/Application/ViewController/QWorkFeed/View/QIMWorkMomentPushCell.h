@@ -12,11 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class QIMWorkMomentPushCell;
 
-typedef enum : NSUInteger {
-    QIMWorkMomentMediaTypeImage = 0,
-    QIMWorkMomentMediaTypeVideo = 1,
-} QIMWorkMomentMediaType;
-
 @protocol QIMWorkMomentPushCellDeleteDelegate <NSObject>
 
 - (void)removeSelectPhoto:(QIMWorkMomentPushCell *)cell;

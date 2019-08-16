@@ -101,9 +101,7 @@
 }
 
 - (void)doubleTap:(UITapGestureRecognizer *)tap{
-    if ([self.delegate respondsToSelector:@selector(browserMessage:)]) {
-        [self.delegate browserMessage:self.message];
-    }
+
 }
 
 - (void)userHeaderImgUpdate:(NSNotification *)notify {
