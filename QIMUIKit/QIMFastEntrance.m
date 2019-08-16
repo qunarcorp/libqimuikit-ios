@@ -86,6 +86,8 @@
 
 @property(nonatomic, strong) NSArray *browerImageUrlList;
 
+@property(nonatomic, strong) NSArray *browerMWPhotoList;
+
 @end
 
 @implementation QIMFastEntrance
@@ -1462,11 +1464,14 @@ static QIMFastEntrance *_sharedInstance = nil;
     self.browerImageUserId = [param objectForKey:@"UserId"];
     NSString *imageUrl = [param objectForKey:@"imageUrl"];
     NSArray *imageUrlList = [param objectForKey:@"imageUrlList"];
+    NSArray *mwPhotoList = [param objectForKey:@"MWPhotoList"];
     NSInteger currentIndex = [[param objectForKey:@"CurrentIndex"] integerValue];
     if (imageUrl.length > 0) {
         self.browerImageUrl = imageUrl;
     } else if (imageUrlList.count > 0) {
         self.browerImageUrlList = imageUrlList;
+    } else if (mwPhotoList.count > 0) {
+        self.browerMWPhotoList = mwPhotoList;
     } else {
         //1.根据UserId读取名片信息，取出RemoteUrl，直接加载用户头像大图
         NSString *headerUrl = [[QIMKit sharedInstance] getUserHeaderSrcByUserId:self.browerImageUserId];
@@ -1479,6 +1484,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     browser.displayActionButton = YES;
     browser.zoomPhotosToFill = YES;
     browser.enableSwipeToDismiss = NO;
+    browser.autoPlayOnAppear = YES;
     if (currentIndex > 0) {
         [browser setCurrentPhotoIndex:currentIndex];
     } else {
@@ -1505,8 +1511,13 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(QIMMWPhotoBrowser *)photoBrowser {
     if (self.browerImageUrlList.count > 0) {
+        
         return self.browerImageUrlList.count;
+    } else if (self.browerMWPhotoList.count > 0) {
+        
+        return self.browerMWPhotoList.count;
     } else {
+        
         return 1;
     }
 }
@@ -1543,6 +1554,9 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         NSURL *url = [NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
+    } else if (self.browerMWPhotoList.count > 0) {
+        QIMMWPhoto *mwphoto = [self.browerMWPhotoList objectAtIndex:index];
+        return mwphoto;
     } else {
         if (![self.browerImageUrl qim_hasPrefixHttpHeader]) {
             self.browerImageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], self.browerImageUrl];
@@ -1580,6 +1594,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         //tableView 回滚到上次浏览的位置
         self.browerImageUrl = nil;
         self.browerImageUrlList = nil;
+        self.browerMWPhotoList = nil;
         self.browerImageUserId = nil;
     }];
 }

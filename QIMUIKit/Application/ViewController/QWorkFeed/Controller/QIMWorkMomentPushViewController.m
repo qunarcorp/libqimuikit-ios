@@ -327,7 +327,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
 //        make.width.mas_equalTo(topView.mas_width);
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(0.5);
         make.bottom.mas_equalTo(topView.mas_bottom).mas_offset(-1);
     }];
     
