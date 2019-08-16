@@ -128,11 +128,12 @@
     _userNameInputView.text = lastUserName;
     _validCodeInputView.text = @"......";
     [self resetAutoUIFrame];
-    [self startLoginAnimation];
-    
+//    [self startLoginAnimation];
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
+            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
     } else {
         NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
@@ -140,10 +141,12 @@
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
                 [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
+                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
             });
         } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
+                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
             });
         }
     }
@@ -542,16 +545,13 @@
 }
 
 - (void)setValidCodeBtnUIWaiting:(BOOL)isWaiting {
-    [UIView animateWithDuration:0.5 animations:^{
-        if (isWaiting) {
-            [self getValidCodeBtn].frame = CGRectMake([self validCodeSepline].right - kValidCodeBtnWaitingWidth, [self validCodeSepline].top - kInputViewHeight + 0.5, kValidCodeBtnWaitingWidth, kInputViewHeight);
-            [self validCodeInputView].frame = CGRectMake([self validCodeSepline].left, [self validCodeSepline].top - kInputViewHeight, [self validCodeSepline].width - [self getValidCodeBtn].width, kInputViewHeight);
-        }else{
-            [self getValidCodeBtn].frame = CGRectMake([self validCodeSepline].right - kValidCodeBtnNomalWidth, [self validCodeSepline].top - kInputViewHeight + 0.5, kValidCodeBtnNomalWidth, kInputViewHeight);
-            [self validCodeInputView].frame = CGRectMake([self validCodeSepline].left, [self validCodeSepline].top - kInputViewHeight, [self validCodeSepline].width - [self getValidCodeBtn].width, kInputViewHeight);
-        }
-    } completion:^(BOOL finished) {
-    }];
+    if (isWaiting) {
+        [self getValidCodeBtn].frame = CGRectMake([self validCodeSepline].right - kValidCodeBtnWaitingWidth, [self validCodeSepline].top - kInputViewHeight + 0.5, kValidCodeBtnWaitingWidth, kInputViewHeight);
+        [self validCodeInputView].frame = CGRectMake([self validCodeSepline].left, [self validCodeSepline].top - kInputViewHeight, [self validCodeSepline].width - [self getValidCodeBtn].width, kInputViewHeight);
+    }else{
+        [self getValidCodeBtn].frame = CGRectMake([self validCodeSepline].right - kValidCodeBtnNomalWidth, [self validCodeSepline].top - kInputViewHeight + 0.5, kValidCodeBtnNomalWidth, kInputViewHeight);
+        [self validCodeInputView].frame = CGRectMake([self validCodeSepline].left, [self validCodeSepline].top - kInputViewHeight, [self validCodeSepline].width - [self getValidCodeBtn].width, kInputViewHeight);
+    }
 }
 
 - (void)initWritingAnimations{
