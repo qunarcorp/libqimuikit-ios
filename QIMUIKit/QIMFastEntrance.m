@@ -121,6 +121,8 @@ static QIMFastEntrance *_sharedInstance = nil;
     }
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         self.rootNav = [[QIMWindowManager shareInstance] getMasterRootNav];
+    } else {
+        
     }
     return self.rootNav;
 }
@@ -878,13 +880,14 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
 #else
         */
-        [navVC.view.layer addAnimation:animation forKey:@"animation"];
+//        [navVC.view.layer addAnimation:animation forKey:@"animation"];
         UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
-        [navVC.view.layer addAnimation:animation forKey:nil];
-        navVC.delegate = self;
-        [navVC presentViewController:reactVC animated:YES completion:nil];
-        [navVC setNavigationBarHidden:YES animated:YES];
-        navVC.delegate = nil;
+        QIMNavController *reactNav = [[QIMNavController alloc] initWithRootViewController:reactVC];
+//        [navVC.view.layer addAnimation:animation forKey:nil];
+//        navVC.delegate = self;
+        [navVC presentViewController:reactNav animated:YES completion:nil];
+//        [navVC setNavigationBarHidden:YES animated:NO];
+//        navVC.delegate = nil;
 //#endif
     });
 #endif
@@ -1619,7 +1622,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"Search", @"properties": @{@"Screen": @"LocalSearch", @"xmppid": xmppId, @"realjid": realJid, @"chatType": @(chatType)}};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"Search", @"properties": @{@"Screen": @"LocalSearch", @"xmppid": xmppId, @"realjid": realJid?realJid:xmppId, @"chatType": @(chatType)}};
             [RunC performSelector:sel withObject:param];
         }
 #endif
