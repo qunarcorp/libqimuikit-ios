@@ -1521,12 +1521,18 @@ static QIMFastEntrance *_sharedInstance = nil;
             if (![imageUrl containsString:@"platform"]) {
                 imageUrl = [imageUrl stringByAppendingString:@"platform=touch"];
             }
+            if (![imageUrl containsString:@"imgtype"]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&imgtype=origin"];
+            }
             if (![imageUrl containsString:@"webp="]) {
                 imageUrl = [imageUrl stringByAppendingString:@"&webp=true"];
             }
         } else {
             if (![imageUrl containsString:@"platform"]) {
                 imageUrl = [imageUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (![imageUrl containsString:@"imgtype"]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&imgtype=origin"];
             }
             if (![imageUrl containsString:@"webp="]) {
                 imageUrl = [imageUrl stringByAppendingString:@"&webp=true"];
@@ -1543,12 +1549,18 @@ static QIMFastEntrance *_sharedInstance = nil;
             if (![self.browerImageUrl containsString:@"platform"]) {
                 self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"platform=touch"];
             }
+            if (![self.browerImageUrl containsString:@"imgtype"]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&imgtype=origin"];
+            }
             if (![self.browerImageUrl containsString:@"webp="]) {
                 self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&webp=true"];
             }
         } else {
             if (![self.browerImageUrl containsString:@"platform"]) {
                 self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (![self.browerImageUrl containsString:@"imgtype"]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&imgtype=origin"];
             }
             if (![self.browerImageUrl containsString:@"webp="]) {
                 self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&webp=true"];

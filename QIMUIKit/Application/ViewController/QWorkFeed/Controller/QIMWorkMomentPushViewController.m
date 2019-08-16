@@ -1155,11 +1155,19 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                 [iconView qim_setImageWithURL:[NSURL URLWithString:firstThumbUrl]];
             } else {
                 NSDictionary *videoDic = [mediaDic objectForKey:@"VideoDic"];
-                UIImage *thumbImage = [videoDic objectForKey:@"thumbImage"];
-                if (thumbImage) {
-                    iconView.image = thumbImage;
+                NSString *firstThumbUrl = [videoDic objectForKey:@"ThumbUrl"];
+                if (firstThumbUrl.length > 0) {
+                    if (![firstThumbUrl qim_hasPrefixHttpHeader]) {
+                        firstThumbUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], firstThumbUrl];
+                    }
+                    [iconView qim_setImageWithURL:[NSURL URLWithString:firstThumbUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
                 } else {
-                    iconView.backgroundColor = [UIColor redColor];
+                    UIImage *thumbImage = [videoDic objectForKey:@"thumbImage"];
+                    if (thumbImage) {
+                        iconView.image = thumbImage;
+                    } else {
+                        iconView.backgroundColor = [UIColor redColor];
+                    }
                 }
             }
             [cell.contentView addSubview:iconView];

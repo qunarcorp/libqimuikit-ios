@@ -13,6 +13,10 @@
 #import "QIMVideoPlayerManager.h"
 #import "QIMVideoCachePathTool.h"
 #import "QIMIconInfo.h"
+#import "LCActionSheet.h"
+#import "YYModel.h"
+#import "QIMVideoModel.h"
+#import "QIMContactSelectionViewController.h"
 
 #define RGBCOLOR_HEX(hexColor) [UIColor colorWithRed: (((hexColor >> 16) & 0xFF))/255.0f         \
 green: (((hexColor >> 8) & 0xFF))/255.0f          \
@@ -95,7 +99,6 @@ static NSString *totalDurationStr = nil;
 - (UIImageView *)thubmImageView {
     if (!_thubmImageView) {
         _thubmImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
-//        _thubmImageView setImage:[NSData dataWithContentsOfURL:self.]
     }
     return _thubmImageView;
 }
@@ -177,11 +180,12 @@ static NSString *totalDurationStr = nil;
 
 - (void)initNav {
     [self.view addSubview:self.backBtn];
-    [self.view addSubview:self.saveVideoBtn];
+//    [self.view addSubview:self.saveVideoBtn];
 }
 
 - (void)initUI {
     [self.navigationItem setTitle:@"小视频"];
+    self.view.backgroundColor = [UIColor blackColor];
     [self.view addSubview:self.contentView];
     [self.view addSubview:self.playView];
     [self.view addSubview:self.loadingView];
@@ -192,11 +196,37 @@ static NSString *totalDurationStr = nil;
     [self.playButtonView addSubview:self.progressSlider];
     [self.playButtonView addSubview:self.progressLabel];
     [self initNav];
+    UILongPressGestureRecognizer * longGes = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longGesHandle:)];
+    [self.view addGestureRecognizer:longGes];
+}
+
+- (void)parseVideoMessage {
+    
+    if (self.videoMessageModel.extendInformation.length > 0) {
+        self.videoMessageModel.message = self.videoMessageModel.extendInformation;
+    }
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.videoMessageModel.message error:nil];
+    
+    NSString *fileName = [infoDic objectForKey:@"FileName"];
+    NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
+    NSInteger videoWidth = [[infoDic objectForKey:@"Width"] integerValue];;
+    NSInteger videoHeight = [[infoDic objectForKey:@"Height"] integerValue];
+    
+    if (![fileUrl qim_hasPrefixHttpHeader]) {
+        fileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
+    }
+    
+    NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:fileName?fileName:@""];
+    
+    self.videoPath = filePath;
+    self.videoUrl = fileUrl;
+    self.videoWidth = videoWidth;
+    self.videoHeight = videoHeight;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    [self parseVideoMessage];
     [self initUI];
     _showActivityWhenLoading = YES;
     if (self.videoUrl.length > 0) {
@@ -331,7 +361,6 @@ static NSString *totalDurationStr = nil;
 }
 
 - (void)initPlayerPlayback{
-    //    double interval = .1f;
     
     CMTime playerDuration = [[QIMVideoPlayerManager sharedInstance] playerItemDuration];
     if (CMTIME_IS_INVALID(playerDuration))
@@ -341,9 +370,9 @@ static NSString *totalDurationStr = nil;
     double duration = CMTimeGetSeconds(playerDuration);
     if (isfinite(duration))
     {
-        //        CGFloat width = CGRectGetWidth([_slider bounds]);
-        //        interval = 0.5f * duration / width;
-        
+//        CGFloat width = CGRectGetWidth([_slider bounds]);
+//        interval = 0.5f * duration / width;
+
         double hoursElapsed = floor(duration / (60.0*60));
         double minutesElapsed = fmod(duration / 60, 60);
         double secondsElapsed = fmod(duration, 60.0);
@@ -421,6 +450,106 @@ static NSString *totalDurationStr = nil;
         default:
             break;
     }
+}
+
+- (void)longGesHandle:(UILongPressGestureRecognizer *)longGes{
+    switch (longGes.state) {
+        case UIGestureRecognizerStateBegan: {
+            [self actionButtonPressed];
+            
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)actionButtonPressed {
+    NSArray *buttonTitles = @[@"发送给朋友", @"分享到驼圈", @"保存视频"];
+    __weak __typeof(self) weakSelf = self;
+    LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
+                                             cancelButtonTitle:@"取消"
+                                                       clicked:^(LCActionSheet * _Nonnull actionSheet, NSInteger buttonIndex) {
+                                                           __typeof(self) strongSelf = weakSelf;
+                                                           if (!strongSelf) {
+                                                               return;
+                                                           }
+                                                           if (buttonIndex == 1) {
+                                                               QIMVerboseLog(@"发送给朋友");
+                                                               [strongSelf shareVideoToFriends];
+                                                           }
+                                                           if (buttonIndex == 2) {
+                                                               QIMVerboseLog(@"分享视频到驼圈");
+                                                               [strongSelf shareVideoToWorkMoment];
+                                                           }
+                                                           if (buttonIndex == 3) {
+                                                               QIMVerboseLog(@"保存视频");
+                                                               [strongSelf saveBtnHandle:nil];
+                                                           }
+                                                       }
+                                         otherButtonTitleArray:buttonTitles];
+    [actionSheet show];
+}
+
+#pragma mark - 分享给朋友
+
+- (void)shareVideoToFriends {
+    
+    QIMMessageModel *msg = self.videoMessageModel;
+    QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
+    controller.ExternalForward = YES;
+    QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
+    [controller setMessage:msg];
+    [[self navigationController] presentViewController:nav animated:YES completion:^{
+        
+    }];
+}
+
+#pragma mark - 分享驼圈
+- (void)shareVideoToWorkMoment {
+    
+    if (self.videoMessageModel.extendInformation.length > 0) {
+        self.videoMessageModel.message = self.videoMessageModel.extendInformation;
+    }
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.videoMessageModel.message error:nil];
+    NSString *Duration = [infoDic objectForKey:@"Duration"];
+    NSString *FileName = [infoDic objectForKey:@"FileName"];
+    NSString *FileSize = [infoDic objectForKey:@"FileSize"];
+    NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
+    
+    NSInteger videoWidth = [[infoDic objectForKey:@"Width"] integerValue];;
+    NSInteger videoHeight = [[infoDic objectForKey:@"Height"] integerValue];
+    NSString *ThumbUrl = [infoDic objectForKey:@"ThumbUrl"];
+    
+    QIMVideoModel *videoModel = [[QIMVideoModel alloc] init];
+    videoModel.Duration = Duration;
+    videoModel.FileName = FileName;
+    videoModel.FileSize = FileSize;
+    videoModel.FileUrl = fileUrl;
+    videoModel.Height = [NSString stringWithFormat:@"%ld", videoHeight];
+    videoModel.ThumbUrl = ThumbUrl;
+    videoModel.Width = [NSString stringWithFormat:@"%ld", videoWidth];
+    videoModel.newVideo = NO;
+    videoModel.LocalVideoOutPath = self.videoPath;
+    /*
+    @property (nonatomic, copy) NSString *Duration;
+    @property (nonatomic, copy) NSString *FileName;
+    @property (nonatomic, copy) NSString *FileSize;
+    @property (nonatomic, copy) NSString *FileUrl;
+    @property (nonatomic, copy) NSString *Height;
+    @property (nonatomic, copy) NSString *ThumbName;
+    @property (nonatomic, copy) NSString *ThumbUrl;
+    @property (nonatomic, copy) NSString *Width;
+    @property (nonatomic, assign) BOOL newVideo;
+    @property (nonatomic, copy) NSString *LocalVideoOutPath;
+    @property (nonatomic, strong) UIImage *LocalThubmImage;
+    */
+    
+    NSDictionary *videoModelDic = [videoModel yy_modelToJSONObject];
+    NSDictionary *videoDic = @{@"MediaType":@(QIMWorkMomentMediaTypeVideo), @"VideoDic": videoModelDic, @"videoReady": @(NO)};
+    
+    QIMVerboseLog(@"分享视频到驼圈 : %@", videoModelDic);
+    [QIMFastEntrance presentWorkMomentPushVCWithVideoDic:videoDic withNavVc:self.navigationController];
 }
 
 #pragma mark - UI事件

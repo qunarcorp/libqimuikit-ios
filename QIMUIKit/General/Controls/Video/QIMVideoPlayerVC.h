@@ -9,6 +9,9 @@
 #import "QIMCommonUIFramework.h"
 
 @interface QIMVideoPlayerVC : QTalkViewController
+
+@property (nonatomic, strong) QIMMessageModel *videoMessageModel;
+
 @property (nonatomic, strong) NSString *videoPath;
 @property (nonatomic, strong) NSString *videoUrl;
 @property (nonatomic, assign) NSInteger videoWidth;

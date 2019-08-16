@@ -11,6 +11,9 @@
 #import "QIMIconFont.h"
 #import "QIMImageManager.h"
 #import "QIMEmotionManager.h"
+#if __has_include("QIMNoteManager.h")
+#import "QIMNoteManager.h"
+#endif
 
 static QTalk *__global_qtalk = nil;
 
@@ -43,6 +46,11 @@ static QTalk *__global_qtalk = nil;
     [QIMEmotionManager sharedInstance];
     // 初始化管理类
     [QIMKit sharedInstance];
+#if __has_include("QIMNoteManager.h")
+    //初始化QIMNote
+    [QIMNoteManager sharedInstance];
+#endif
+    
     // 注册支持的消息类型
     // 文本消息
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMDefalutMessageCell" ForMessageType:QIMMessageType_Text];

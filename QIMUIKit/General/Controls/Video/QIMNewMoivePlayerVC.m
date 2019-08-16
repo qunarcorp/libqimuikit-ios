@@ -12,6 +12,7 @@
 #import "LCActionSheet.h"
 #import "QIMNewVideoCacheManager.h"
 #import "YYModel.h"
+#import "QIMContactSelectionViewController.h"
 
 @interface QIMNewMoivePlayerVC () <SuperPlayerDelegate>
 @property UIView *playerContainer;
@@ -62,17 +63,6 @@
     } else {
         [_playerView.coverImageView qim_setImageWithURL:[NSURL URLWithString:self.videoModel.ThumbUrl]];
     }
-    /*
-    if (self.localVideoCoverImagePath.length > 0) {
-        if ([[NSFileManager defaultManager] fileExistsAtPath:self.localVideoCoverImagePath]) {
-            [_playerView.coverImageView qim_setImageWithURL:[NSURL fileURLWithPath:self.localVideoCoverImagePath]];
-        } else {
-            [_playerView.coverImageView qim_setImageWithURL:[NSURL URLWithString:self.remoteVideoCoverImagePath]];
-        }
-    } else {
-        [_playerView.coverImageView qim_setImageWithURL:[NSURL URLWithString:self.remoteVideoCoverImagePath]];
-    }
-    */
     // 设置父View
     _playerView.disableGesture = YES;
     
@@ -86,7 +76,7 @@
     [self.view addSubview:self.playerContainer];
     
     UILongPressGestureRecognizer * longGes = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longGesHandle:)];
-//    [self.view addGestureRecognizer:longGes];
+    [self.view addGestureRecognizer:longGes];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -132,11 +122,13 @@
         self.videoModel.FileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", self.videoModel.FileUrl];
     }
     NSString *cachePath = [[QIMNewVideoCacheManager sharedInstance] getVideoCachePathWithUrl:self.videoModel.FileUrl];
+    
     if ([[NSFileManager defaultManager] fileExistsAtPath:self.videoModel.LocalVideoOutPath]) {
         cachePath = self.videoModel.LocalVideoOutPath;
     } else {
         
     }
+    
     BOOL canSave = NO;
     NSArray *buttonTitles = @[];
     if ([[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
@@ -150,8 +142,9 @@
             buttonTitles = @[@"发送给朋友", @"分享到驼圈"];
         }
     } else {
-        buttonTitles = @[@"保存视频"];
+        buttonTitles = @[@"分享到驼圈", @"保存视频"];
     }
+    
     __weak __typeof(self) weakSelf = self;
     LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
                                              cancelButtonTitle:@"取消"
@@ -162,6 +155,7 @@
                                                            }
                                                            if (buttonIndex == 1) {
                                                                QIMVerboseLog(@"发送给朋友");
+                                                               [strongSelf shareVideoToFriends];
                                                            }
                                                            if (buttonIndex == 2) {
                                                                QIMVerboseLog(@"分享视频到驼圈");
@@ -174,6 +168,27 @@
                                                        }
                                          otherButtonTitleArray:buttonTitles];
     [actionSheet show];
+}
+
+#pragma mark - 分享给朋友
+- (void)shareVideoToFriends {
+    NSDictionary *videoModelDic = [self.videoModel yy_modelToJSONObject];
+    NSString *message = [[QIMJSONSerializer sharedInstance] serializeObject:videoModelDic];
+    
+    QIMMessageModel *msg = [[QIMMessageModel alloc] init];
+    msg.message = message;
+    msg.extendInformation = message;
+    msg.messageType = QIMMessageType_SmallVideo;
+    
+    NSLog(@"videoModelDic : %@", videoModelDic);
+
+    QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
+    controller.ExternalForward = YES;
+    QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
+    [controller setMessage:msg];
+    [[self navigationController] presentViewController:nav animated:YES completion:^{
+        
+    }];
 }
 
 #pragma mark - 分享驼圈
