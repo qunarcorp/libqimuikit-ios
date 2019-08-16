@@ -448,6 +448,11 @@ static const NSInteger searchMinCharacterCount = 2;
     if (position) {
         
     } else {
+        if (textField.text.length + string.length - range.length <= 0) {
+            [self addModelWithResultList:nil withReWrite:YES];
+            [self updateSearchPlaceHolderViewWithHidden:NO];
+            return YES;
+        }
         if (textField.text.length + string.length - range.length >= searchMinCharacterCount) {
             __weak __typeof(self) weakSelf = self;
             [self showProgressHUDWithMessage:@"搜索中..."];
@@ -464,17 +469,11 @@ static const NSInteger searchMinCharacterCount = 2;
     return YES;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-    //去掉姓名两端空格
-    if (textField == self.textField) {
-        textField.text = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    }
-}
-
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
     
     [self updateSearchPlaceHolderViewWithHidden:NO];
     [self updateSearchEmptyViewWithHidden:YES];
+    _mainTableView.mj_footer.hidden = YES;
     return YES;
 }
 
@@ -517,6 +516,14 @@ static const NSInteger searchMinCharacterCount = 2;
 - (void)addModelWithResultList:(NSArray *)result withReWrite:(BOOL)rewrite{
     if (rewrite == YES) {
         [self.searchDataList removeAllObjects];
+    }
+    if (result == nil) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.mainTableView reloadData];
+            [self updateSearchEmptyViewWithHidden:YES];
+            _mainTableView.mj_footer.hidden = YES;
+        });
+        return;
     }
     if (![result isKindOfClass:[NSArray class]]) {
         return;
