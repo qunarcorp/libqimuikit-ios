@@ -389,7 +389,6 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
         if (_startOnGrid) {
             [self showGrid:NO];
         }
-        _viewHasAppearedInitially = YES;
     }
     
     // If rotation occured while we're presenting a modal

@@ -137,15 +137,23 @@
         });
     } else {
         NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-        if ([lastUserName length] > 0 && [token length] > 0 && self.loginType == QTLoginTypeSms) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
-                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
-            });
+        if ([lastUserName isEqualToString:@"appstore"]) {
+            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
+        } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
+            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
         } else {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
-            });
+            if ([lastUserName length] > 0 && [token length] > 0 && self.loginType == QTLoginTypeSms) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
+                    [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
+                });
+            } else {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
+                });
+            }
         }
     }
 }
