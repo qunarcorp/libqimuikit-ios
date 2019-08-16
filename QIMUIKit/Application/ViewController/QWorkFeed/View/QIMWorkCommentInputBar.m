@@ -99,7 +99,7 @@
 - (UILabel *)placeholderLabel {
     if (!_placeholderLabel) {
         _placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(38, 8, 90, 21)];
-        _placeholderLabel.text = @"  快来说几句…";
+        _placeholderLabel.text = @"  快来说几句…(200字以内)";
         _placeholderLabel.numberOfLines = 0;
         _placeholderLabel.font = [UIFont systemFontOfSize:15];
         _placeholderLabel.textColor = [UIColor qim_colorWithHex:0x999999];
@@ -144,7 +144,7 @@
         self.likeBtn.hidden = NO;
         self.commentTextView.frame = CGRectMake(self.headerImageView.right + 6, 10, CGRectGetWidth(self.frame) - self.headerImageView.right - 6 - 16 - self.likeBtn.width - 15, 36);
         [self sendSubviewToBack:self.sendBtn];
-        self.placeholderLabel.text = @"  快来说几句…";
+        self.placeholderLabel.text = @"  快来说几句…(200字以内)";
     }
 }
 

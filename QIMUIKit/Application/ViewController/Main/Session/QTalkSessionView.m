@@ -64,7 +64,7 @@
 
 #endif
 
-@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMNewSessionScrollDelegate, UIViewControllerPreviewingDelegate, SelectIndexPathDelegate, QIMSearchBarDelegate>
+@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMNewSessionScrollDelegate, UIViewControllerPreviewingDelegate, QIMSearchBarDelegate>
 
 @property(nonatomic, strong) QTalkSessionDataManager *dataManager;
 
@@ -88,15 +88,15 @@
 
 @property(nonatomic, strong) UIView *otherPlatformView;     //其他平台已登录条
 
-@property(nonatomic, strong) QIMArrowTableView *arrowPopView;
+//@property(nonatomic, strong) QIMArrowTableView *arrowPopView;
 
 @property(nonatomic, strong) NSMutableArray *appendHeaderViews;
 
 @property(nonatomic, strong) QIMMainVC *rootViewController;
 
-@property(nonatomic, strong) NSArray *moreActionArray;  //右上角更多列表
+//@property(nonatomic, strong) NSArray *moreActionArray;  //右上角更多列表
 
-@property(nonatomic, strong) UIButton *moreBtn;     //更多按钮
+//@property(nonatomic, strong) UIButton *moreBtn;     //更多按钮
 
 @end
 
@@ -230,6 +230,7 @@
     return _tableView;
 }
 
+/*
 - (QIMArrowTableView *)arrowPopView {
 
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -251,26 +252,6 @@
     NSArray *moreActionImages = nil;
     self.moreActionArray = @[@"扫一扫", @"未读消息", @"创建群组", @"一键已读"];
     moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_scan_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_notread_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_gototalk_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_clearnotread_font size:28 color:qim_rightArrowImageColor]]];
-    /*
-    if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-        if (qCloudHost.length > 0 && wikiHost.length > 0) {
-            self.moreActionArray = @[@"扫一扫", @"创建群组", @"一键已读", @"随记", @"Wiki"];
-            moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e23f" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1b7" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e455" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
-        } else {
-            if (wikiHost.length > 0) {
-                self.moreActionArray       = @[ @"扫一扫", @"创建群组", @"一键已读", @"Wiki"];
-                moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e23f" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e455" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
-            } else {
-                self.moreActionArray       = @[ @"扫一扫", @"创建群组", @"一键已读"];
-                moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e23f" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
-            }
-        }
-    } else {
-        self.moreActionArray       = @[@"扫一扫", @"创建群组"];
-        moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]],[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f4" size:20 color:[UIColor colorWithRed:97/255.0 green:97/255.0 blue:97/255.0 alpha:1/1.0]]]];
-    }
-    */
-    //    e23f
     point = CGPointMake(rect3.origin.x + rect3.size.width / 2, rect3.origin.y + rect3.size.height / 2);
     _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:135 Height:50 * self.moreActionArray.count + 10 Type:Type_UpRight Color:[UIColor whiteColor]];
     _arrowPopView.dataArray = self.moreActionArray;
@@ -293,6 +274,7 @@
     }
     return _moreBtn;
 }
+*/
 
 - (QIMSearchBar *)searchBar {
     if (!_searchBar) {
@@ -302,6 +284,7 @@
     return _searchBar;
 }
 
+/*
 - (void)doMoreAction:(id)sender {
     UIButton *button = (UIButton *) sender;
     button.selected = ~button.selected;
@@ -311,6 +294,7 @@
         [self.arrowPopView dismiss];
     }
 }
+*/
 
 - (void)initUI {
 
@@ -547,37 +531,13 @@
     [QIMFastEntrance openWebViewWithHtmlStr:htmlString showNavBar:YES];
 }
 
-- (void)oneKeyRead {
-
-    NSUInteger count = [[QIMKit sharedInstance] getAppNotReaderCount];
-    if (count) {
-
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"接下来会清空所有未读消息状态,以及「@all」消息提醒，是否继续？" delegate:self cancelButtonTitle:@"继续" otherButtonTitles:@"取消", nil];
-        alertView.tag = kClearAllNotReadMsg;
-        [alertView show];
-    } else {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前无未读消息" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        alertView.tag = kClearAllNotReadMsg;
-        [alertView show];
-    }
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-
-    if (alertView.tag == kClearAllNotReadMsg) {
-        if (buttonIndex == 0) {
-            [[QIMKit sharedInstance] clearAllNoRead];
-        }
-    }
-}
-
 - (void)setHidden:(BOOL)hidden {
 
     [super setHidden:hidden];
     if (hidden == NO) {
 
-        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.moreBtn];
-        [self.rootViewController.navigationItem setRightBarButtonItem:rightBarItem];
+//        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.moreBtn];
+//        [self.rootViewController.navigationItem setRightBarButtonItem:rightBarItem];
         /* 修复每次展示SessionView时候，tableview自动滚动置顶
         if (self.dataManager.dataSource.count> 0) {
             [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
@@ -1001,43 +961,6 @@
             }
         }
     });
-}
-
-- (void)selectIndexPathRow:(NSInteger)index {
-    QIMVerboseLog(@"右上角快捷入口%s , %ld", __func__, index);
-    NSString *moreActionId = [self.moreActionArray objectAtIndex:index];
-    if ([moreActionId isEqualToString:@"扫一扫"]) {
-        [QIMFastEntrance openQRCodeVC];
-#if __has_include("QIMAutoTracker.h")
-        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"RichScan" withDescription:@"扫一扫"];
-#endif
-    } else if ([moreActionId isEqualToString:@"创建群组"]) {
-        [QIMFastEntrance openQIMGroupListVC];
-#if __has_include("QIMAutoTracker.h")
-        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"StarToTalk" withDescription:@"创建群组"];
-#endif
-    } else if ([moreActionId isEqualToString:@"一键已读"]) {
-        [self oneKeyRead];
-#if __has_include("QIMAutoTracker.h")
-        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"A key has been read" withDescription:@"一键已读"];
-#endif
-    } else if ([moreActionId isEqualToString:@"随记"]) {
-        [QIMFastEntrance openQTalkNotesVC];
-#if __has_include("QIMAutoTracker.h")
-        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"note" withDescription:@"随记"];
-#endif
-    } else if ([moreActionId isEqualToString:@"Wiki"]) {
-        if ([[QIMKit sharedInstance] qimNav_WikiUrl].length > 0) {
-            [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_WikiUrl] showNavBar:YES];
-#if __has_include("QIMAutoTracker.h")
-            [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"note" withDescription:@"wiki"];
-#endif
-        }
-    } else if ([moreActionId isEqualToString:@"未读消息"]) {
-        [QIMFastEntrance openNotReadMessageVC];
-    } else {
-
-    }
 }
 
 #if __has_include("QIMNotifyManager.h")

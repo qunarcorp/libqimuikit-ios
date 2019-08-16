@@ -428,7 +428,7 @@
     
     [self refreshContentUIWithType:contentType withBottom:bottom];
     
-    if (self.isSearch == YES) {
+    if (self.isSearch == YES && _moment.likeNum <= 0) {
         NSDictionary *momentDic = [[QIMKit sharedInstance] getWorkMomentWithMomentId:self.moment.momentId];
         
         QIMWorkMomentModel *momentModel = [QIMWorkMomentModel yy_modelWithDictionary:momentDic];

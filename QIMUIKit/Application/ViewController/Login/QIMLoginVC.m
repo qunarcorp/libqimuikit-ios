@@ -264,12 +264,14 @@
     if (_userNameInputView == nil) {
         
         if (self.loginUsers.count > 0) {
-            _userNameInputView = [[UITextField alloc] initWithFrame:CGRectMake([self userNameSepline].left, [self userNameSepline].top - kInputViewHeight, [self userNameSepline].width - 40, kInputViewHeight)];
+            _userNameInputView = [[UITextField alloc] initWithFrame:CGRectMake([self userNameSepline].left, [self userNameSepline].top - kInputViewHeight, [self userNameSepline].width, kInputViewHeight)];
+            /*
             _userNameDropBtn = [UIButton buttonWithType:UIButtonTypeCustom];
             _userNameDropBtn.frame = CGRectMake(_userNameInputView.right + 10, _userNameInputView.top, kInputViewHeight-5, kInputViewHeight);
             [_userNameDropBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowdown_nor"] forState:UIControlStateNormal];
             [_userNameDropBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowup_nor"] forState:UIControlStateSelected];
             [_userNameDropBtn addTarget:self action:@selector(dropLoginUserTableView:) forControlEvents:UIControlEventTouchUpInside];
+             */
         } else {
             _userNameInputView = [[UITextField alloc] initWithFrame:CGRectMake([self userNameSepline].left, [self userNameSepline].top - kInputViewHeight, [self userNameSepline].width, kInputViewHeight)];
         }
@@ -282,7 +284,7 @@
         _userNameInputView.clearButtonMode = UITextFieldViewModeWhileEditing;
         _userNameInputView.returnKeyType = UIReturnKeyNext;
         [_loginBgView addSubview:_userNameInputView];
-        [_loginBgView addSubview:_userNameDropBtn];
+//        [_loginBgView addSubview:_userNameDropBtn];
     }
     return _userNameInputView;
 }
