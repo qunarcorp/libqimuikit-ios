@@ -203,7 +203,7 @@
     }
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:(noticeMsgModel.createTime/1000)];
     self.timeLabel.text = [timeDate qim_timeIntervalDescription];
-    self.timeLabel.frame = CGRectMake(self.headerImageView.right + 13, self.contentLabel.bottom + 6, 100, 20);
+    self.timeLabel.frame = CGRectMake(self.nameLabel.left, self.contentLabel.bottom + 6, 100, 20);
     _noticeMsgModel.rowHeight = self.timeLabel.bottom + 15;
 }
 

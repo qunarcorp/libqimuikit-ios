@@ -133,29 +133,24 @@
     if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
-            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
     } else {
         NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
         if ([lastUserName isEqualToString:@"appstore"]) {
             [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
-            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
             [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
-            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         } else {
             if ([lastUserName length] > 0 && [token length] > 0 && self.loginType == QTLoginTypeSms) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
                     [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
-                    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                 });
             } else {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
-                    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                 });
             }
         }
@@ -776,7 +771,6 @@
                                                                           otherButtonTitles:nil];
                                 [alertView show];
 //                                [weakSelf stopLoginAnimation];
-                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                             } else {
                                 [weakSelf showNetWorkUnableAlert];
                             }
