@@ -10,7 +10,7 @@
 #define kLoginViewBGColorHex    0xffffff
 #define kPlaceholderColorHex    0xb0b0b0
 #define kSepLineColorHex        0xdddddd
-#define kHighlightedColorHex    0x11cd6e
+#define kHighlightedColorHex    0x00CABE
 #define kNomalInputColorHex    0x3d3d3d
 
 #define kLoginViewSpaceToSide   ([UIScreen mainScreen].bounds.size.width / 16)
