@@ -68,7 +68,7 @@ static const NSInteger labelTag = 29314;
     self.lineView.centerX = label.centerX;
     
     UIView *grayLineView = [[UIView alloc]initWithFrame:CGRectMake(0, self.height - 0.5, [UIScreen mainScreen].qim_rightWidth, 0.35)];
-    grayLineView.backgroundColor = [UIColor colorWithRGBHex:0xDDDDDD];
+    grayLineView.backgroundColor = [UIColor qim_colorWithHex:0xDDDDDD alpha:0.7];
     [self addSubview:grayLineView];
 }
 

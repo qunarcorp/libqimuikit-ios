@@ -224,6 +224,7 @@ static const NSInteger searchMinCharacterCount = 2;
     [self initNav];
     [self.view addSubview:self.mainTableView];
     [self updateSearchPlaceHolderViewWithHidden:self.textField.text.length];
+    [self.textField becomeFirstResponder];
     // Do any additional setup after loading the view.
 }
 
