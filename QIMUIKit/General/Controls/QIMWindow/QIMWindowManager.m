@@ -23,8 +23,46 @@ static QIMWindowManager *_windowManager = nil;
     return _windowManager;
 }
 
+- (CGFloat)qim_dockWidth{
+    //mark by oldipad
+    if ([UIScreen mainScreen].bounds.size.width * 0.06 < 80) {
+        return 80;
+    }
+    return [UIScreen mainScreen].bounds.size.width * 0.06;
+}
+
+- (CGFloat)qim_rightWidth {
+    //mark by oldipad
+#if __has_include("QIMIPadWindowManager.h")
+    if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        //iPad
+        UIView *view = [[[UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers lastObject] view];
+        return CGRectGetWidth(view.frame);
+    } else {
+        return [UIScreen mainScreen].bounds.size.width;
+    }
+#else
+    return [UIScreen mainScreen].bounds.size.width;
+#endif
+}
+
 - (CGFloat)getPrimaryWidth {
-    if ([[QIMKit sharedInstance] getIsIpad] && [[UIApplication sharedApplication] statusBarOrientation] != UIInterfaceOrientationPortrait) {
+    //mark by oldipad
+#if __has_include("QIMIPadWindowManager.h")
+    
+    if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        
+        CGFloat leftWidth = [UIScreen mainScreen].bounds.size.width - [self qim_dockWidth] - [self qim_rightWidth];
+        return leftWidth;
+    } else {
+        return [UIScreen mainScreen].bounds.size.width;
+    }
+#else
+    return [UIScreen mainScreen].bounds.size.width;
+#endif
+    
+    //mark by newipad
+    if ([[QIMKit sharedInstance] getIsIpad] && UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
         return self.mainSplitVC.primaryColumnWidth;
     } else {
         return [UIScreen mainScreen].bounds.size.width;
@@ -36,7 +74,11 @@ static QIMWindowManager *_windowManager = nil;
 }
 
 - (CGFloat)getDetailWidth {
-    if ([[QIMKit sharedInstance] getIsIpad] && [[UIApplication sharedApplication] statusBarOrientation] != UIInterfaceOrientationPortrait) {
+    //mark by oldipad
+    return [self qim_rightWidth];
+    
+    //mark by newipad
+    if ([[QIMKit sharedInstance] getIsIpad] && UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
         return [UIScreen mainScreen].bounds.size.width - self.mainSplitVC.primaryColumnWidth;
     } else {
         return [UIScreen mainScreen].bounds.size.width;
@@ -64,7 +106,7 @@ static QIMWindowManager *_windowManager = nil;
 }
 
 - (void)showDetailVC:(UIViewController *)viewController {
-    if ([[UIApplication sharedApplication] statusBarOrientation] != UIInterfaceOrientationPortrait) {
+    if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
         [self.mainSplitVC showDetailViewController:viewController];
     } else {
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];

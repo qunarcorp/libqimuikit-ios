@@ -262,6 +262,7 @@ static QIMTextBar *__robotTextBar = nil;
 static QIMTextBar *__consultTextBar = nil;
 static QIMTextBar *__consultServerTextBar = nil;
 static QIMTextBar *__publicNumberTextBar = nil;
+static QIMTextBar *__textbar = nil;
 
 static dispatch_once_t __norMalTextBarOnceToken;
 static dispatch_once_t __singleTextBarOnceToken;
@@ -289,6 +290,11 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 }
 
 + (instancetype)sharedIMTextBarWithBounds:(CGRect)bounds WithExpandViewType:(QIMTextBarExpandViewType)expandType {
+    CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
+    __textBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
+    __textBar.expandViewType = expandType;
+    [__textBar.expandPanel addItems];
+    return __textBar;
     switch (expandType) {
         case QIMTextBarExpandViewTypeRobot: {
             dispatch_once(&__robotTextBarOnceToken, ^{
@@ -976,21 +982,29 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     [weakSelf resetTextStyle];
                 }
             }];
-            //Mark by iPad
-//            if ([[QIMKit sharedInstance] getIsIpad]) {
-//                qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
-//                QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
-//                qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
-//#if __has_include("QIMIPadWindowManager.h")
-//                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
-//#endif
-//            } else {
+            //Mark by oldiPad
+            if ([[QIMKit sharedInstance] getIsIpad]) {
+                qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
                 QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+                qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
+            } else {
+                QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+                if ([[QIMKit sharedInstance] getIsIpad]) {
+                    qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+                }
+                [(UIViewController *)weakSelf.delegate presentViewController:qtalNav animated:YES completion:nil];
+            }
+        
+            /* mark by newipad
+            QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
             if ([[QIMKit sharedInstance] getIsIpad]) {
                 qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
             }
-                [(UIViewController *)weakSelf.delegate presentViewController:qtalNav animated:YES completion:nil];
-//            }
+            [(UIViewController *)weakSelf.delegate presentViewController:qtalNav animated:YES completion:nil];
+            */
         }
     }
 }
@@ -1832,18 +1846,26 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         picker.colsInPortrait = 4;
         picker.colsInLandscape = 5;
         picker.minimumInteritemSpacing = 2.0;
-        //Mark by iPad
-//        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-//            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
-//#if __has_include("QIMIPadWindowManager.h")
-//            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
-//#endif
-//        } else {
+        //Mark by oldiPad
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             picker.modalPresentationStyle = UIModalPresentationCurrentContext;
-        }
+#if __has_include("QIMIPadWindowManager.h")
+            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
+#endif
+        } else {
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+            }
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
-//        }
+        }
+    
+        /* mark by newipad
+         
+         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+         picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+         }
+         [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+         */
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }

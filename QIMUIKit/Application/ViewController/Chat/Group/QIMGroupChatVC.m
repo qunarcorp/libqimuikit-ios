@@ -1217,8 +1217,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
     [self.view endEditing:YES];
-    [self.navigationController popViewControllerAnimated:YES];
-    /* Mark by iPad
+    // Mark by OldiPad
     if ([[QIMKit sharedInstance] getIsIpad] == NO) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
@@ -1226,7 +1225,8 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
 #endif
     }
-     */
+    //Mark by newipad
+//    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -1321,16 +1321,20 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             fileManagerVC.messageSaveType = ChatType_GroupChat;
             
             QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
+            //mark by oldipad
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                 nav.modalPresentationStyle = UIModalPresentationCurrentContext;
-            }
-            //Mark by iPad
-//#if __has_include("QIMIPadWindowManager.h")
-//                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
-//#endif
-//            } else {
+#if __has_include("QIMIPadWindowManager.h")
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:nav animated:YES completion:nil];
+#endif
+            } else {
                 [self presentViewController:nav animated:YES completion:nil];
-//            }
+            }
+        
+            /* mark by newipad
+             [self presentViewController:nav animated:YES completion:nil];
+             */
+            
         } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
             
             QIMOrganizationalVC *listVc = [[QIMOrganizationalVC alloc] init];
@@ -1384,16 +1388,18 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
                 UserLocationViewController *userLct = [[UserLocationViewController alloc] init];
                 userLct.delegate = self;
+                //mark by oldipad
                 if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                     userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
-                }
-                //Mark by iPad
-//#if __has_include("QIMIPadWindowManager.h")
-//                    [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
-//#endif
-//                } else {
+#if __has_include("QIMIPadWindowManager.h")
+                    [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:userLct animated:YES completion:nil];
+#endif
+                } else {
                     [self.navigationController presentViewController:userLct animated:YES completion:nil];
-//                }
+                }
+                /* mark by newipad
+                [self.navigationController presentViewController:userLct animated:YES completion:nil];
+                 */
             };
             [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
         } else if ([trId isEqualToString:QIMTextBarExpandViewItem_TouPiao]) {
