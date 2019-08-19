@@ -22,8 +22,10 @@
 #import "QIMMessageHelperVC.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMWebView.h"
+#import "QIMNewMoivePlayerVC.h"
 #import "QIMPublicNumberCardVC.h"
 #import "QIMUserProfileViewController.h"
+#import "QIMWindowManager.h"
 
 #if __has_include("QIMNoteManager.h")
 
@@ -49,12 +51,14 @@
 
 #if __has_include("QIMIPadWindowManager.h")
 
-#import "IPAD_RemoteLoginVC.h"
+//#import "IPAD_RemoteLoginVC.h"
 #import "IPAD_NAVViewController.h"
 #import "QIMIPadWindowManager.h"
 
 #endif
+//#import "QIMMainSplitVC.h"
 
+#import "QIMMainSplitViewController.h"
 #import "QIMWatchDog.h"
 #import "QIMUUIDTools.h"
 #import "QIMPublicRedefineHeader.h"
@@ -62,6 +66,7 @@
 #import "QIMFilePreviewVC.h"
 #import "QIMMWPhotoSectionBrowserVC.h"
 #import "QIMWorkFeedViewController.h"
+#import "QIMWorkFeedSearchViewController.h"
 #import "QIMWorkMomentPushViewController.h"
 #import "QIMWorkFeedMYCirrleViewController.h"
 
@@ -78,6 +83,10 @@
 @property(nonatomic, copy) NSString *browerImageUserId;
 
 @property(nonatomic, copy) NSString *browerImageUrl;
+
+@property(nonatomic, strong) NSArray *browerImageUrlList;
+
+@property(nonatomic, strong) NSArray *browerMWPhotoList;
 
 @end
 
@@ -112,6 +121,17 @@ static QIMFastEntrance *_sharedInstance = nil;
             self.rootNav = [[self getQIMFastEntranceRootVc] navigationController];
         }
     }
+    /*
+     //Mark by newIpad
+    if ([[QIMKit sharedInstance] getIsIpad] == YES && UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]) == NO) {
+        self.rootNav = [[QIMWindowManager shareInstance] getDetailRootNav];
+    } else if ([[QIMKit sharedInstance] getIsIpad] == YES && UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]) == YES) {
+        self.rootNav = [[QIMWindowManager shareInstance] getMasterRootNav];
+    } else {
+        
+    }
+    */
+    //Mark by oldIpad
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
 #if __has_include("QIMIPadWindowManager.h")
         self.rootNav = [[QIMIPadWindowManager sharedInstance] getDetailNav];
@@ -128,44 +148,37 @@ static QIMFastEntrance *_sharedInstance = nil;
 - (void)launchMainControllerWithWindow:(UIWindow *)window {
     QIMVerboseLog(@"开始加载主界面");
     CFAbsoluteTime startTime = [[QIMWatchDog sharedInstance] startTime];
-    if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-#if __has_include("QIMIPadWindowManager.h")
-        IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
-        [window setRootViewController:ipadVc];
-#endif
-    } else {
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-            if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
-                QIMLoginViewController *loginVc = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVc];
-                [window setRootViewController:nav];
-            } else {
-                QIMWebLoginVC *loginVc = [[QIMWebLoginVC alloc] init];
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVc];
-                [window setRootViewController:nav];
-            }
-            return;
+    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+        if ([[QIMKit sharedInstance] qimNav_Debug] == 1) {
+            QIMLoginViewController *loginVc = [[QIMLoginViewController alloc] initWithNibName:@"QIMLoginViewController" bundle:nil];
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVc];
+            [window setRootViewController:nav];
         } else {
-            NSString *userFullJid = [[QIMKit sharedInstance] getLastJid];
-            NSString *userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-            if (userFullJid && userToken && ![[QIMKit sharedInstance] getIsIpad]) {
-
-                QIMMainVC *mainVc = [QIMMainVC sharedInstanceWithSkipLogin:YES];
-                QIMNavController *navController = [[QIMNavController alloc] initWithRootViewController:mainVc];
-                [window setRootViewController:navController];
+            QIMWebLoginVC *loginVc = [[QIMWebLoginVC alloc] init];
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVc];
+            [window setRootViewController:nav];
+        }
+        return;
+    } else {
+        NSString *userFullJid = [[QIMKit sharedInstance] getLastJid];
+        NSString *userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+        if (userFullJid && userToken && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+            [QIMMainVC setMainVCReShow:YES];
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+            [window setRootViewController:nav];
+        } else {
+            if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                [QIMMainVC setMainVCReShow:YES];
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                [window setRootViewController:nav];
             } else {
-                if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
-                    QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
-                    [QIMMainVC setMainVCReShow:YES];
-                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-                    [window setRootViewController:nav];
-                } else {
-                    QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
-                    [QIMMainVC setMainVCReShow:YES];
-                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-                    [window setRootViewController:nav];
+                QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                [QIMMainVC setMainVCReShow:YES];
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                [window setRootViewController:nav];
 
-                }
             }
         }
     }
@@ -188,6 +201,20 @@ static QIMFastEntrance *_sharedInstance = nil;
     if ([QIMMainVC checkMainVC] == NO || [QIMMainVC getMainVCReShow] == YES) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                /* mark by newipad
+                QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:NO];
+                QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
+                UIViewController *detailVc = [[UIViewController alloc] init];
+                detailVc.title = @"Detail";
+                detailVc.view.backgroundColor = [UIColor greenColor];
+                UINavigationController *detailNav = [[UINavigationController alloc] initWithRootViewController:detailVc];
+                QIMMainSplitViewController *mainSPVC = [[QIMMainSplitViewController alloc] initWithMaster:navVC detail:detailNav];
+                mainSPVC.placeholderViewControllerClass = NSClassFromString(@"QIMEmptyViewController");
+                [[QIMWindowManager shareInstance] setMainSplitVC:mainSPVC];
+                [[[UIApplication sharedApplication] keyWindow] setRootViewController:mainSPVC];
+                */
+                
+                //mark by oldIpad
 #if __has_include("QIMIPadWindowManager.h")
                 IPAD_QIMMainSplitVC *mainVC = [[IPAD_QIMMainSplitVC alloc] init];
                 [[QIMIPadWindowManager sharedInstance] setiPadRootVc:mainVC];
@@ -268,9 +295,6 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         //打开用户名片页
         //导航返回的RNUserCardView 为YES时，默认打开RN 名片页
-//        if ([[QIMKit sharedInstance] getIsIpad]) {
-//            
-//        } else {
 #if __has_include("QimRNBModule.h")
 
         if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
@@ -288,7 +312,6 @@ static QIMFastEntrance *_sharedInstance = nil;
 #if __has_include("QimRNBModule.h")
         }
 #endif
-//        }
     });
 }
 
@@ -334,13 +357,6 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         //打开用户名片页
         //导航返回的RNUserCardView 为YES时，默认打开RN 名片页
-//        if ([[QIMKit sharedInstance] getIsIpad]) {
-//            Class RunC = NSClassFromString(@"QIMIPadWindowManager");
-//            SEL sel = NSSelectorFromString(@"openSingleChatByJid:");
-//            if ([RunC respondsToSelector:sel]) {
-//                [RunC performSelector:sel withObject:userId];
-//            }
-//        } else {
 #if __has_include("QimRNBModule.h")
 
         if ([[QIMKit sharedInstance] qimNav_RNUserCardView]) {
@@ -358,7 +374,6 @@ static QIMFastEntrance *_sharedInstance = nil;
 #if __has_include("QimRNBModule.h")
         }
 #endif
-//        }
     });
 }
 
@@ -566,6 +581,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         chatVC.hidesBottomBarWhenPushed = YES;
+        //Mark By oldiPad
         if ([[QIMKit sharedInstance] getIsIpad]) {
 #if __has_include("QIMIPadWindowManager.h")
             [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatVC];
@@ -573,6 +589,10 @@ static QIMFastEntrance *_sharedInstance = nil;
         } else {
             [navVC pushViewController:chatVC animated:YES];
         }
+        
+        /* mark by newipad
+        [navVC pushViewController:chatVC animated:YES];
+         */
     });
 }
 
@@ -585,6 +605,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         chatVC.hidesBottomBarWhenPushed = YES;
+        //mark by oldipad
         if ([[QIMKit sharedInstance] getIsIpad]) {
 #if __has_include("QIMIPadWindowManager.h")
             [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatVC];
@@ -592,28 +613,24 @@ static QIMFastEntrance *_sharedInstance = nil;
         } else {
             [navVC pushViewController:chatVC animated:YES];
         }
+        //mark by newipad
+//        [navVC pushViewController:chatVC animated:YES];
     });
 }
 
 - (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId withFastTime:(long long)fastTime withRemoteSearch:(BOOL)flag {
-//    NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
-//    NSString *groupName = [groupCard objectForKey:@"Name"];
     QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
     [chatGroupVC setChatType:ChatType_GroupChat];
     [chatGroupVC setChatId:groupId];
     [chatGroupVC setFastMsgTimeStamp:fastTime];
     [chatGroupVC setNetWorkSearch:flag];
-//    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
     return chatGroupVC;
 }
 
 - (UIViewController *)getGroupChatVCByGroupId:(NSString *)groupId {
-    //    NSDictionary *groupCard = [[QIMKit sharedInstance] getGroupCardByGroupId:groupId];
-    //    NSString *groupName = [groupCard objectForKey:@"Name"];
     QIMGroupChatVC *chatGroupVC = [[QIMGroupChatVC alloc] init];
     [chatGroupVC setChatType:ChatType_GroupChat];
     [chatGroupVC setChatId:groupId];
-    //    [chatGroupVC setTitle:(groupName.length > 0) ? groupName : groupId];
     return chatGroupVC;
 }
 
@@ -635,7 +652,16 @@ static QIMFastEntrance *_sharedInstance = nil;
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
-        [navVC pushViewController:chatGroupVC animated:YES];
+        //mark by oldipad
+        if ([[QIMKit sharedInstance] getIsIpad]) {
+#if __has_include("QIMIPadWindowManager.h")
+            [[QIMIPadWindowManager sharedInstance] showDetailViewController:chatGroupVC];
+#endif
+        } else {
+            [navVC pushViewController:chatGroupVC animated:YES];
+        }
+        //mark by newipad
+//        [navVC pushViewController:chatGroupVC animated:YES];
     });
 }
 
@@ -745,6 +771,41 @@ static QIMFastEntrance *_sharedInstance = nil;
     });
 }
 
++ (void)openVideoPlayerForUrl:(NSString *)videoUrl LocalOutPath:(NSString *)localOutPath CoverImageUrl:(NSString *)coverImageUrl {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMNewMoivePlayerVC *videoPlayer = [[QIMNewMoivePlayerVC alloc] init];
+//        videoPlayer.videoUrl = videoUrl;
+
+//        [videoPlayer setLocalVideoPath:localOutPath];
+//        [videoPlayer setRemoteVideoUrl:videoUrl];
+//        [videoPlayer setRemoteVideoCoverImagePath:coverImageUrl];
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        [navVC pushViewController:videoPlayer animated:YES];
+    });
+}
+
++ (void)openVideoPlayerForVideoModel:(QIMVideoModel *)videoModel {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMNewMoivePlayerVC *videoPlayer = [[QIMNewMoivePlayerVC alloc] init];
+        videoPlayer.videoModel = videoModel;
+//        videoPlayer.videoInfoDic = videoInfo;
+        //        videoPlayer.videoUrl = videoUrl;
+
+//        [videoPlayer setLocalVideoPath:localOutPath];
+//        [videoPlayer setRemoteVideoUrl:videoUrl];
+//        [videoPlayer setRemoteVideoCoverImagePath:coverImageUrl];
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        [navVC pushViewController:videoPlayer animated:YES];
+    });
+
+}
+
 + (BOOL)handleOpsasppSchema:(NSDictionary *)reactInfoDic {
 #if __has_include("RNSchemaParse.h")
     BOOL canParse = NO;
@@ -808,6 +869,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)openRNSearchVC {
+    //mark by oldipad
 #if __has_include("QTalkSearchViewManager.h")
     dispatch_async(dispatch_get_main_queue(), ^{
         CATransition *animation = [CATransition animation];
@@ -828,28 +890,44 @@ static QIMFastEntrance *_sharedInstance = nil;
             [rootNav.view.layer addAnimation:animation forKey:nil];
             [rootNav pushViewController:reactVC animated:YES];
         } else {
-//            [navVC.view.layer addAnimation:animation forKey:@"animation"];
             UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
             UINavigationController *reactNav = [[UINavigationController alloc] initWithRootViewController:reactVC];
-//            [navVC.view.layer addAnimation:animation forKey:nil];
-//            navVC.delegate = self;
-//            [navVC pushViewController:reactVC animated:YES];
             [navVC presentViewController:reactNav animated:NO completion:nil];
-//            [navVC setNavigationBarHidden:YES animated:YES];
-//            navVC.delegate = nil;
         }
 #else
         [navVC.view.layer addAnimation:animation forKey:@"animation"];
         UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
         [navVC.view.layer addAnimation:animation forKey:nil];
         navVC.delegate = self;
-//        [navVC pushViewController:reactVC animated:YES];
         [navVC presentViewController:reactVC animated:YES completion:nil];
         [navVC setNavigationBarHidden:YES animated:YES];
         navVC.delegate = nil;
 #endif
     });
 #endif
+    return;
+    /* mark by newipad
+#if __has_include("QTalkSearchViewManager.h")
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CATransition *animation = [CATransition animation];
+        animation.duration = 0.1f;   //时间间隔
+        animation.fillMode = kCAFillModeForwards;
+        animation.type = @"rippleEffect";
+        //动画效果
+        animation.subtype = kCATransitionFromTop;   //动画方向
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+            navVC = [[QIMWindowManager shareInstance] getMasterRootNav];
+        }
+        UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
+        QIMNavController *reactNav = [[QIMNavController alloc] initWithRootViewController:reactVC];
+        [navVC presentViewController:reactNav animated:YES completion:nil];
+    });
+#endif
+    */
 }
 
 - (UIViewController *)getUserFriendsVC {
@@ -1219,7 +1297,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
 + (void)signOutWithNoPush {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        [[QIMKit sharedInstance] sendNoPush];
+//        [[QIMKit sharedInstance] sendNoPush];
         [[QIMKit sharedInstance] clearcache];
         [[QIMKit sharedInstance] clearDataBase];
         [[QIMKit sharedInstance] clearLogginUser];
@@ -1230,8 +1308,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 #if __has_include("QIMIPadWindowManager.h")
-                IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
-                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
+//                IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
+//                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
 #endif
             } else {
                 if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
@@ -1272,7 +1350,6 @@ static QIMFastEntrance *_sharedInstance = nil;
         BOOL result = [[QIMKit sharedInstance] sendPushTokenWithMyToken:nil WithDeleteFlag:YES];
         [[QIMProgressHUD sharedInstance] closeHUD];
         if (result) {
-            [[QIMKit sharedInstance] sendNoPush];
             [[QIMKit sharedInstance] clearcache];
             [[QIMKit sharedInstance] clearDataBase];
             [[QIMKit sharedInstance] clearLogginUser];
@@ -1283,8 +1360,8 @@ static QIMFastEntrance *_sharedInstance = nil;
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 #if __has_include("QIMIPadWindowManager.h")
-                    IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
-                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
+//                    IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
+//                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
 #endif
                 } else {
                     if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
@@ -1320,7 +1397,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"退出登录失败，请重试" preferredStyle:UIAlertControllerStyleAlert];
                 UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_Nonnull action) {
-
+                    
                 }];
                 UIAlertAction *quitAction = [UIAlertAction actionWithTitle:@"强制退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
                     [QIMFastEntrance signOutWithNoPush];
@@ -1341,8 +1418,8 @@ static QIMFastEntrance *_sharedInstance = nil;
 #if __has_include("QIMIPadWindowManager.h")
             [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
             [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
-            IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
-            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
+//            IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
+//            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
 #endif
         } else {
             if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
@@ -1404,6 +1481,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         if (!self.rootVc) {
             self.rootVc = [[UIApplication sharedApplication] visibleViewController];
         }
+        //Mark by oldiPad
         if ([[QIMKit sharedInstance] getIsIpad]) {
 #if __has_include("QIMIPadWindowManager.h")
             [[QIMIPadWindowManager sharedInstance] showDetailViewController:fileMiddleVc];
@@ -1411,6 +1489,9 @@ static QIMFastEntrance *_sharedInstance = nil;
         } else {
             [self.rootVc presentViewController:fileMiddleNav animated:YES completion:nil];
         }
+        /* mark by newipad
+        [self.rootVc presentViewController:fileMiddleNav animated:YES completion:nil];
+         */
     });
 }
 
@@ -1418,8 +1499,15 @@ static QIMFastEntrance *_sharedInstance = nil;
 
     self.browerImageUserId = [param objectForKey:@"UserId"];
     NSString *imageUrl = [param objectForKey:@"imageUrl"];
+    NSArray *imageUrlList = [param objectForKey:@"imageUrlList"];
+    NSArray *mwPhotoList = [param objectForKey:@"MWPhotoList"];
+    NSInteger currentIndex = [[param objectForKey:@"CurrentIndex"] integerValue];
     if (imageUrl.length > 0) {
         self.browerImageUrl = imageUrl;
+    } else if (imageUrlList.count > 0) {
+        self.browerImageUrlList = imageUrlList;
+    } else if (mwPhotoList.count > 0) {
+        self.browerMWPhotoList = mwPhotoList;
     } else {
         //1.根据UserId读取名片信息，取出RemoteUrl，直接加载用户头像大图
         NSString *headerUrl = [[QIMKit sharedInstance] getUserHeaderSrcByUserId:self.browerImageUserId];
@@ -1432,7 +1520,12 @@ static QIMFastEntrance *_sharedInstance = nil;
     browser.displayActionButton = YES;
     browser.zoomPhotosToFill = YES;
     browser.enableSwipeToDismiss = NO;
-    [browser setCurrentPhotoIndex:0];
+    browser.autoPlayOnAppear = YES;
+    if (currentIndex > 0) {
+        [browser setCurrentPhotoIndex:currentIndex];
+    } else {
+        [browser setCurrentPhotoIndex:0];
+    }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
     browser.wantsFullScreenLayout = YES;
@@ -1453,23 +1546,92 @@ static QIMFastEntrance *_sharedInstance = nil;
 #pragma mark - MWPhotoBrowserDelegate
 
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(QIMMWPhotoBrowser *)photoBrowser {
-    return 1;
+    if (self.browerImageUrlList.count > 0) {
+        
+        return self.browerImageUrlList.count;
+    } else if (self.browerMWPhotoList.count > 0) {
+        
+        return self.browerMWPhotoList.count;
+    } else {
+        
+        return 1;
+    }
 }
 
 - (id <QIMMWPhoto>)photoBrowser:(QIMMWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
 
 #pragma mark - 查看大图
-    if (![self.browerImageUrl qim_hasPrefixHttpHeader]) {
-        self.browerImageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], self.browerImageUrl];
+    if (self.browerImageUrlList.count > 0) {
+        NSString *imageUrl = [self.browerImageUrlList objectAtIndex:index];
+        if (![imageUrl qim_hasPrefixHttpHeader]) {
+            imageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrl];
+        }
+        if (![imageUrl containsString:@"?"]) {
+            imageUrl = [imageUrl stringByAppendingString:@"?"];
+            if (![imageUrl containsString:@"platform"]) {
+                imageUrl = [imageUrl stringByAppendingString:@"platform=touch"];
+            }
+            if (![imageUrl containsString:@"imgtype"]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&imgtype=origin"];
+            }
+            if (![imageUrl containsString:@"webp="]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&webp=true"];
+            }
+        } else {
+            if (![imageUrl containsString:@"platform"]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (![imageUrl containsString:@"imgtype"]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&imgtype=origin"];
+            }
+            if (![imageUrl containsString:@"webp="]) {
+                imageUrl = [imageUrl stringByAppendingString:@"&webp=true"];
+            }
+        }
+        NSURL *url = [NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
+    } else if (self.browerMWPhotoList.count > 0) {
+        QIMMWPhoto *mwphoto = [self.browerMWPhotoList objectAtIndex:index];
+        return mwphoto;
+    } else {
+        if (![self.browerImageUrl qim_hasPrefixHttpHeader]) {
+            self.browerImageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], self.browerImageUrl];
+        }
+        if (![self.browerImageUrl containsString:@"?"]) {
+            self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"?"];
+            if (![self.browerImageUrl containsString:@"platform"]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"platform=touch"];
+            }
+            if (![self.browerImageUrl containsString:@"imgtype"]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&imgtype=origin"];
+            }
+            if (![self.browerImageUrl containsString:@"webp="]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&webp=true"];
+            }
+        } else {
+            if (![self.browerImageUrl containsString:@"platform"]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&platform=touch"];
+            }
+            if (![self.browerImageUrl containsString:@"imgtype"]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&imgtype=origin"];
+            }
+            if (![self.browerImageUrl containsString:@"webp="]) {
+                self.browerImageUrl = [self.browerImageUrl stringByAppendingString:@"&webp=true"];
+            }
+        }
+        QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithURL:[NSURL URLWithString:self.browerImageUrl]];
+        return photo;
     }
-    QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithURL:[NSURL URLWithString:self.browerImageUrl]];
-    return photo;
 }
 
 - (void)photoBrowserDidFinishModalPresentation:(QIMMWPhotoBrowser *)photoBrowser {
     //界面消失
     [photoBrowser dismissViewControllerAnimated:YES completion:^{
         //tableView 回滚到上次浏览的位置
+        self.browerImageUrl = nil;
+        self.browerImageUrlList = nil;
+        self.browerMWPhotoList = nil;
+        self.browerImageUserId = nil;
     }];
 }
 
@@ -1511,7 +1673,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"Search", @"properties": @{@"Screen": @"LocalSearch", @"xmppid": xmppId, @"realjid": realJid, @"chatType": @(chatType)}};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"Search", @"properties": @{@"Screen": @"LocalSearch", @"xmppid": xmppId, @"realjid": realJid?realJid:xmppId, @"chatType": @(chatType)}};
             [RunC performSelector:sel withObject:param];
         }
 #endif
@@ -1575,10 +1737,31 @@ static QIMFastEntrance *_sharedInstance = nil;
 #endif
 }
 
++ (void)openWorkMomentSearchVc {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+        QIMWorkFeedSearchViewController *searchVC = [[QIMWorkFeedSearchViewController alloc] init];
+        QIMNavController *pushNav = [[QIMNavController alloc] initWithRootViewController:searchVC];
+        [navVC presentViewController:pushNav animated:YES completion:nil];
+    });
+}
+
 + (void)presentWorkMomentPushVCWithLinkDic:(NSDictionary *)linkDic withNavVc:(UINavigationController *)nav {
     dispatch_async(dispatch_get_main_queue(), ^{
         QIMWorkMomentPushViewController *pushVc = [[QIMWorkMomentPushViewController alloc] init];
         pushVc.shareLinkUrlDic = linkDic;
+        QIMNavController *pushNav = [[QIMNavController alloc] initWithRootViewController:pushVc];
+        [nav presentViewController:pushNav animated:YES completion:nil];
+    });
+}
+
++ (void)presentWorkMomentPushVCWithVideoDic:(NSDictionary *)videoDic withNavVc:(UINavigationController *)nav {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        QIMWorkMomentPushViewController *pushVc = [[QIMWorkMomentPushViewController alloc] init];
+        pushVc.shareVideoDic = videoDic;
         QIMNavController *pushNav = [[QIMNavController alloc] initWithRootViewController:pushVc];
         [nav presentViewController:pushNav animated:YES completion:nil];
     });

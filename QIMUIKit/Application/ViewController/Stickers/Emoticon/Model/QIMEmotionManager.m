@@ -736,7 +736,8 @@
 
 - (void)getAndCheckEmotionsInfoFromHttp {
 
-    NSString *destUrl = [NSString stringWithFormat:@"%@/s/qtalk/get_emotions.php?p=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], [QIMKit getQIMProjectType] == QIMProjectTypeQChat ? @"qchat" : @"qtalk"];
+    NSString *destUrl = [NSString stringWithFormat:@"%@/file/v1/emo/d/e/config?p=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], [QIMKit getQIMProjectType] == QIMProjectTypeQChat ? @"qchat" : @"qtalk"];
+
     NSURL *requestUrl = [[NSURL alloc] initWithString:destUrl];
     QIMHTTPRequest *request = [[QIMHTTPRequest alloc] initWithURL:requestUrl];
     [QIMHTTPClient sendRequest:request complete:^(QIMHTTPResponse *response) {
@@ -759,7 +760,8 @@
                 [_httpEmotions addObjectsFromArray:result];
             }
         }
-    }                  failure:^(NSError *error) {
+    }
+    failure:^(NSError *error) {
 
     }];
 }

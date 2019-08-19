@@ -15,6 +15,7 @@
 #import "QIMNavController.h"
 #import "QIMImageManager.h"
 #import "QIMFastEntrance.h"
+#import "QIMWindowManager.h"
 #import "QIMAppWindowManager.h"
 #import "ASIHTTPRequest.h"
 #import "YLImageView.h"
@@ -51,7 +52,6 @@
 
 #import "QIMJSONSerializer.h"
 #import "Masonry.h"
-
 #define FONT_NAME @"FZLTHJW--GB1-0"
 #define FONT_SIZE 18
 

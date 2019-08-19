@@ -15,8 +15,6 @@
 #import "QIMMessageRefreshHeader.h"
 #import "QIMWorkMomentNotifyView.h"
 #import "QIMWorkFeedMessageViewController.h"
-#import "QIMMWPhotoBrowser.h"
-#import "QIMPhotoBrowserNavController.h"
 #import "LCActionSheet.h"
 #import "QIMMessageCellCache.h"
 #import <YYModel/YYModel.h>
@@ -477,61 +475,21 @@
 }
 
 - (void)didClickSmallImage:(QIMWorkMomentModel *)model WithCurrentTag:(NSInteger)tag {
+        
     //初始化图片浏览控件
     if (model) {
         self.currentModel = model;
     }
-    QIMMWPhotoBrowser *browser = [[QIMMWPhotoBrowser alloc] initWithDelegate:self];
-    browser.displayActionButton = NO;
-    browser.zoomPhotosToFill = YES;
-    browser.enableSwipeToDismiss = NO;
-    [browser setCurrentPhotoIndex:tag];
-    
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
-    browser.wantsFullScreenLayout = YES;
-#endif
-    
-    //初始化navigation
-    QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:browser];
-    nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    self.notNeedReloadMomentView = YES;
-    [self presentViewController:nc animated:YES completion:nil];
-}
-
-#pragma mark - QIMMWPhotoBrowserDelegate
-
-- (NSUInteger)numberOfPhotosInPhotoBrowser:(QIMMWPhotoBrowser *)photoBrowser {
-
-    return self.currentModel.content.imgList.count;
-}
-
-- (id <QIMMWPhoto>)photoBrowser:(QIMMWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
-    
-    if (index > self.currentModel.content.imgList.count) {
-        return nil;
+    NSMutableArray *mutablImageList = [NSMutableArray arrayWithCapacity:3];
+    NSArray *imageList = model.content.imgList;
+    for (QIMWorkMomentPicture *picture in imageList) {
+        NSString *imageUrl = picture.imageUrl;
+        if (imageUrl.length > 0) {
+            [mutablImageList addObject:imageUrl];
+        }
     }
-    QIMWorkMomentPicture *picture = [self.currentModel.content.imgList objectAtIndex:index];
-    NSString *imageUrl = picture.imageUrl;
-    if (![imageUrl qim_hasPrefixHttpHeader] && imageUrl.length > 0) {
-        imageUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrl];
-    } else {
-        
-    }
-    if (imageUrl.length > 0) {
-        NSURL *url = [NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
-    } else {
-        return nil;
-    }
-}
-
-- (void)photoBrowserDidFinishModalPresentation:(QIMMWPhotoBrowser *)photoBrowser {
-    //界面消失
-    [photoBrowser dismissViewControllerAnimated:YES completion:^{
-        //tableView 回滚到上次浏览的位置
-        self.currentModel = nil;
-        self.notNeedReloadMomentView = YES;
-    }];
+    
+    [[QIMFastEntrance sharedInstance] browseBigHeader:@{@"imageUrlList": mutablImageList, @"CurrentIndex":@(tag)}];
 }
 
 - (void)didOpenWorkMomentDetailVc:(NSNotification *)notify {
@@ -584,7 +542,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    [[QIMSDImageCache sharedImageCache] clearMemory];
+    [[QIMImageManager sharedInstance] clearMemory];
 }
 
 @end

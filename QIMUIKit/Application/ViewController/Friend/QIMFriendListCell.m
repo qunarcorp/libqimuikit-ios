@@ -15,7 +15,7 @@
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *descInfo;
 
-@property (nonatomic, strong) YLImageView *headerView;
+@property (nonatomic, strong) UIImageView *headerView;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *descInfoLabel;
 @property (nonatomic, strong) UIView *lineView;
@@ -30,9 +30,9 @@
     return [[QIMCommonFont sharedInstance] currentFontSize] + size.height + 30;
 }
 
-- (YLImageView *)headerView {
+- (UIImageView *)headerView {
     if (!_headerView) {
-        _headerView = [[YLImageView alloc] initWithFrame:CGRectMake(10, 10, 50, 50)];
+        _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 50, 50)];
     }
     return _headerView;
 }

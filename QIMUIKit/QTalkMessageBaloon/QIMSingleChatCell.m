@@ -140,9 +140,6 @@ static double _global_message_cell_width = 0;
 }
 
 - (void)doubleTap:(UITapGestureRecognizer *)tap{
-    if ([self.delegate respondsToSelector:@selector(browserMessage:)]) {
-        [self.delegate browserMessage:self.message];
-    }
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{

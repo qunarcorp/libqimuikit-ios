@@ -15,7 +15,7 @@
 
 @interface QIMGroupMemberManagerCell()
 {
-    YLImageView             * _headImageView;
+    UIImageView             * _headImageView;
     UILabel                 * _identityLabel;//管理员等。。
     UILabel                 * _nickNameLabel;
     UILabel                 * _flagLabel;//我
@@ -35,7 +35,7 @@
         self.backgroundColor = [UIColor whiteColor];
         self.contentView.backgroundColor = [UIColor whiteColor];
         
-        _headImageView = [[YLImageView alloc] initWithFrame:CGRectZero];
+        _headImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _headImageView.layer.cornerRadius = kHeadImageWidth / 2;
         _headImageView.clipsToBounds = YES;
         _headImageView.contentMode = UIViewContentModeScaleAspectFit;

@@ -137,7 +137,7 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
 
     NSInteger projectType = ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) ? 0 : 1;
     NSString *ckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
-    NSString *ip = [[QIMKit sharedInstance] getClientIp];
+    NSString *ip = @"0.0.0.0";
     NSString *userId = [QIMKit getLastUserName];
     NSString *httpHost = [[QIMKit sharedInstance] qimNav_Javaurl];
     BOOL WorkFeedEntrance = [[[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"] boolValue];
@@ -147,7 +147,10 @@ RCT_EXPORT_METHOD(appConfig:(RCTResponseSenderBlock)success) {
     BOOL notNeedShowLeaderInfo = ([[QIMKit sharedInstance] qimNav_LeaderUrl].length > 0) ? NO : YES;
     BOOL notNeedShowMobileInfo = ([[QIMKit sharedInstance] qimNav_Mobileurl].length > 0) ? NO : YES;
     BOOL notNeedShowCamelNotify = NO;
-    BOOL isToCManager = [[[QIMKit sharedInstance] userObjectForKey:@"isToCManager"] boolValue];
+    BOOL isToCManager = NO;
+    if([[QIMKit sharedInstance] userObjectForKey:@"isToCManager"]){
+        isToCManager = [[[QIMKit sharedInstance] userObjectForKey:@"isToCManager"] boolValue];
+    }
     if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
         isShowRedPackage = NO;
         isEasyTrip = YES;
@@ -198,7 +201,6 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
             NSString *bundleUrl = [params objectForKey:@"BundleUrls"];
             if (bundleUrl.length > 0) {
                 NSString *bundleMd5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrl] stringByAppendingFormat:@".jsbundle"];
-//                [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:bundleUrl];
                 BOOL check = [[QIMRNExternalAppManager sharedInstance] checkQIMRNExternalAppWithBundleUrl:bundleUrl];
                 if (check) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -510,6 +512,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
                   WithModule:(NSString *)module
               WithProperties:(NSDictionary *)properties{
     UIViewController *vc = [QimRNBModule getVCWithNavigation:navVC WithHiddenNav:hiddenNav WithBundleName:bundleName WithModule:module WithProperties:properties];
+    //Mark by oldiPad
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
 #if __has_include("QIMIPadWindowManager.h")
         [[QIMIPadWindowManager sharedInstance] showDetailViewController:vc];
@@ -517,6 +520,9 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
     } else {
         [navVC pushViewController:vc animated:YES];
     }
+    /* mark by newipad
+    [navVC pushViewController:vc animated:YES];
+    */
 }
 
 + (void)sendQIMRNWillShow {
@@ -1644,6 +1650,22 @@ RCT_EXPORT_METHOD(setServiceState:(NSDictionary *)param :(RCTResponseSenderBlock
     }
 }
 
+RCT_EXPORT_METHOD(getAlertVoiceType:(RCTResponseSenderBlock)callback) {
+    NSString *soundName = [[QIMKit sharedInstance] getClientNotificationSoundName];
+    callback(@[@{@"state" : [soundName isEqualToString:@"default"] ? @(YES) : @(NO)}]);
+}
+
+RCT_EXPORT_METHOD(changeConfigAlertStatus:(BOOL)state :(RCTResponseSenderBlock)callback) {
+    NSString *soundName = nil;
+    if (state == YES) {
+        soundName = @"default";
+    } else {
+        soundName = @"msg.wav";
+    }
+    BOOL success = [[QIMKit sharedInstance] setClientNotificationSound:soundName];
+    callback(@[@{@"ok" : @(success)}]);
+}
+
 //获取App版本信息
 RCT_EXPORT_METHOD(getAppVersion:(RCTResponseSenderBlock)callback) {
     NSString *appVersion = [NSString stringWithFormat:@"%@", [[QIMKit sharedInstance] AppVersion]];
@@ -1745,7 +1767,7 @@ RCT_EXPORT_METHOD(openSwitchAccount) {
             NSString *pwd = [accountDict objectForKey:@"LoginToken"];
             NSDictionary *navDict = [accountDict objectForKey:@"NavDict"];
             if (userId && pwd) {
-                [[QIMKit sharedInstance] sendNoPush];
+//                [[QIMKit sharedInstance] sendNoPush];
                 [[QIMKit sharedInstance] clearcache];
                 [[QIMKit sharedInstance] clearLogginUser];
                 [[QIMKit sharedInstance] quitLogin];

@@ -12,6 +12,7 @@
 #import "QIMWorkFeedAtNotifyViewController.h"
 #import "QIMATGroupMemberTextAttachment.h"
 #import "QIMMessageTextAttachment.h"
+#import "QTalkTipsView.h"
 
 @interface QIMWorkCommentInputBar () <UITextViewDelegate>
 
@@ -55,7 +56,8 @@
         _headerImageView.layer.masksToBounds = YES;
         _headerImageView.layer.borderColor = [UIColor qim_colorWithHex:0xDFDFDF].CGColor;
         _headerImageView.layer.borderWidth = 1.0f;
-        [_headerImageView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
+//        [self reloadUserIdentifier];
+//        [_headerImageView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
         _headerImageView.userInteractionEnabled = YES;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openUserIdentifierVC:)];
         [_headerImageView addGestureRecognizer:tap];
@@ -97,7 +99,7 @@
 - (UILabel *)placeholderLabel {
     if (!_placeholderLabel) {
         _placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(38, 8, 90, 21)];
-        _placeholderLabel.text = @"  快来说几句…";
+        _placeholderLabel.text = @"  快来说几句…(200字以内)";
         _placeholderLabel.numberOfLines = 0;
         _placeholderLabel.font = [UIFont systemFontOfSize:15];
         _placeholderLabel.textColor = [UIColor qim_colorWithHex:0x999999];
@@ -142,7 +144,7 @@
         self.likeBtn.hidden = NO;
         self.commentTextView.frame = CGRectMake(self.headerImageView.right + 6, 10, CGRectGetWidth(self.frame) - self.headerImageView.right - 6 - 16 - self.likeBtn.width - 15, 36);
         [self sendSubviewToBack:self.sendBtn];
-        self.placeholderLabel.text = @"  快来说几句…";
+        self.placeholderLabel.text = @"  快来说几句…(200字以内)";
     }
 }
 
@@ -185,7 +187,30 @@
     }
 }
 
+- (void)setMomentId:(NSString *)momentId {
+    _momentId = momentId;
+    [self reloadUserIdentifier];
+}
+
 - (void)reloadUserIdentifier {
+    QIMWorkMomentUserIdentityModel *userModel  = [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] userIdentityModel];
+    BOOL isAnonymous = userModel.isAnonymous;
+
+    if (isAnonymous == NO) {
+        [_headerImageView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
+    } else {
+        NSString *anonymousName = userModel.anonymousName;
+        NSString *anonymousPhoto = userModel.anonymousPhoto;
+        if (![anonymousPhoto qim_hasPrefixHttpHeader]) {
+            anonymousPhoto = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], anonymousPhoto];
+        } else {
+            
+        }
+        [_headerImageView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
+    }
+    
+    /*
+     Mark by 匿名
     if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
         [self.headerImageView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
     } else {
@@ -198,10 +223,11 @@
         }
         [self.headerImageView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
     }
+    */
 }
 
 - (void)beginCommentToUserId:(NSString *)userId {
-    self.placeholderLabel.text = [NSString stringWithFormat:@"%@", userId];
+    self.placeholderLabel.text = [NSString stringWithFormat:@"%@（200字以内）", userId];
     [self.commentTextView becomeFirstResponder];
 }
 
@@ -328,6 +354,11 @@
 }
 
 - (void)sendComment {
+    if (self.commentTextView.text.length > 200) {
+        [QTalkTipsView showTips:[NSString stringWithFormat:@"评论不可以超过200个字哦～"] InView:[[[[UIApplication sharedApplication] keyWindow] rootViewController] view]];
+        return;
+    }
+    
     if (self.commentTextView.text.length > 0 && ![self isEmpty:self.commentTextView.attributedText.string]) {
         NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
         NSString *finallyContent = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:self.commentTextView.attributedText WithOutAtInfo:&outATInfoArray];

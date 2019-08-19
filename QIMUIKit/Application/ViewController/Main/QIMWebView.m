@@ -18,7 +18,6 @@
 #import "QIMJSONSerializer.h"
 #import "QIMKit+QIMNavConfig.h"
 #import "QIMMWPhoto.h"
-#import "QIMSDWebImageManager.h"
 
 static NSString *__default_ua = nil;
 
@@ -228,7 +227,7 @@ static NSString *__default_ua = nil;
     [self setToolbarItems:nil animated:YES];
     [self.navigationController setToolbarHidden:YES animated:NO];
     [self setUrl:nil];
-    UIImage *image = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0xDDDDDD] size:CGSizeMake([[UIScreen mainScreen] qim_rightWidth], 0.5)];
+    UIImage *image = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0xDDDDDD] size:CGSizeMake([[QIMWindowManager shareInstance] getDetailWidth], 0.5)];
     [[UINavigationBar appearance] setBackgroundImage:image forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setShadowImage:image];
 }
@@ -353,6 +352,10 @@ static NSString *__default_ua = nil;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.translucent = NO;
+    //Mark by oldiPad
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        self.view.frame = CGRectMake(0, 0, [[QIMWindowManager shareInstance] getDetailWidth], self.view.height);
+    }
     [[UINavigationBar appearance] setBackgroundImage:nil forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setShadowImage:nil];
     if (![[QIMKit sharedInstance] getIsIpad] && self.fromRegPackage == NO) {
@@ -382,9 +385,6 @@ static NSString *__default_ua = nil;
     [self.navigationController.navigationBar addSubview:_progressProxyView];
     _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
     _webView.delegate = _progressProxy;
-    if ([[QIMKit sharedInstance] getIsIpad]) {
-        _webView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], self.view.height);
-    }
     if (self.needAuth) {
         if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:@" qunartalk-ios-client"];
@@ -638,16 +638,16 @@ static NSString *__default_ua = nil;
                
             }
         }
-        if ([self.url isEqualToString:[[QIMKit sharedInstance] qimNav_getManagerAppUrl]]) {
-            NSMutableDictionary *tcookieProperties = [NSMutableDictionary dictionary];
-            [tcookieProperties setQIMSafeObject:@"confignav" forKey:NSHTTPCookieName];
-            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_NavUrl] forKey:NSHTTPCookieValue];
-            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-            [tcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
-            [tcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
-            NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:tcookieProperties];
-            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
-        }
+//        if ([self.url isEqualToString:[[QIMKit sharedInstance] qimNav_getManagerAppUrl]]) {
+//            NSMutableDictionary *tcookieProperties = [NSMutableDictionary dictionary];
+//            [tcookieProperties setQIMSafeObject:@"confignav" forKey:NSHTTPCookieName];
+//            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_NavUrl] forKey:NSHTTPCookieValue];
+//            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+//            [tcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+//            [tcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
+//            NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:tcookieProperties];
+//            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
+//        }
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
         [cook setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
         request = [[NSMutableURLRequest alloc] initWithURL:_requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
@@ -1099,6 +1099,53 @@ static NSString *__default_ua = nil;
     }
     // Show activity view controller
     __weak typeof(self) weakSelf = self;
+    [[QIMImageManager sharedInstance] loadImageWithURL:[NSURL URLWithString:urlStr] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        
+    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+        NSMutableArray *items = [NSMutableArray arrayWithObject:image];
+        weakSelf.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+        
+        // Show loading spinner after a couple of seconds
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            if (weakSelf.activityViewController) {
+                //                    [self showProgressHUDWithMessage:nil];
+            }
+        });
+        
+        // Show
+        typeof(self) __weak weakSelf = weakSelf;
+        [weakSelf.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
+            weakSelf.activityViewController = nil;
+        }];
+        [self presentViewController:self.activityViewController animated:YES completion:nil];
+    }];
+    /*
+    [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:urlStr] options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        
+    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+        NSMutableArray *items = [NSMutableArray arrayWithObject:image];
+        weakSelf.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+        
+        // Show loading spinner after a couple of seconds
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            if (weakSelf.activityViewController) {
+                //                    [self showProgressHUDWithMessage:nil];
+            }
+        });
+        
+        // Show
+        typeof(self) __weak weakSelf = weakSelf;
+        [weakSelf.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
+            weakSelf.activityViewController = nil;
+        }];
+        [self presentViewController:self.activityViewController animated:YES completion:nil];
+    }];
+    */
+    /*
     [[QIMSDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:urlStr] options:QIMSDWebImageDownloaderLowPriority gifFlag:NO progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         
     } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
@@ -1121,6 +1168,7 @@ static NSString *__default_ua = nil;
         }];
         [self presentViewController:self.activityViewController animated:YES completion:nil];
     }];
+    */
 }
 
 @end

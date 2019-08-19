@@ -18,7 +18,7 @@
 #import "QIMJSONSerializer.h"
 #import "QIMLocationShareMsgCell.h"
 #import "UserLocationViewController.h"
-#import "UIImageView+QIMWebCache.h"
+//#import "UIImageView+QIMWebCache.h"
 #import "ShapedImageView.h"
 
 @interface QIMLocationShareMsgCell()<QIMMenuImageViewDelegate>
@@ -114,8 +114,12 @@
     if (localScreenImageExist == YES) {
         _imageView.image = [UIImage imageWithContentsOfFile:localPath];
     } else if ([infoDic[@"fileUrl"] length] > 0){
-        NSString  * imageUrlStr = [NSString stringWithFormat:@"%@/%@",[QIMKit sharedInstance].qimNav_InnerFileHttpHost,infoDic[@"fileUrl"]];
-        [_imageView qimsd_setImageWithURL:[NSURL URLWithString:imageUrlStr] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"] options:0 gifFlag:YES progress:nil completed:^(UIImage *image, NSError *error, QIMSDImageCacheType cacheType, NSURL *imageURL) {
+        
+        NSString *imageUrlStr = infoDic[@"fileUrl"];
+        if (![imageUrlStr qim_hasPrefixHttpHeader] && imageUrlStr.length > 0) {
+            imageUrlStr = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrlStr];
+        }
+        [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrlStr] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"] options:SDWebImageDecodeFirstFrameOnly progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             [[QIMKit sharedInstance] saveFileData:UIImageJPEGRepresentation(image, 1.0) withFileName:nil forCacheType:QIMFileCacheTypeColoction];
         }];
     }else{

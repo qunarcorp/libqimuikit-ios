@@ -16,11 +16,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)removeSelectPhoto:(QIMWorkMomentPushCell *)cell;
 
+- (void)playSelectVideo:(QIMWorkMomentPushCell *)cell;
+
 @end
 
 @interface QIMWorkMomentPushCell : UICollectionViewCell
 
 @property (nonatomic, weak) id <QIMWorkMomentPushCellDeleteDelegate> dDelegate;
+
+@property (nonatomic, assign) QIMWorkMomentMediaType mediaType;
 
 @property (nonatomic, assign) BOOL canDelete;
 

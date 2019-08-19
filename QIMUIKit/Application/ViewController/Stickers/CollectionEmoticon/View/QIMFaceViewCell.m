@@ -17,11 +17,11 @@ static CGPoint tipPoint;
 
 @implementation QIMFaceViewCell
 
-- (YLImageView *)emojiView {
+- (UIImageView *)emojiView {
     
     if (!_emojiView) {
         
-        _emojiView = [[YLImageView alloc] initWithFrame:self.bounds];
+        _emojiView = [[UIImageView alloc] initWithFrame:self.bounds];
         _emojiView.width = (self.contentView.width * 2) / 3.0f;
         _emojiView.height = (self.contentView.height * 2) / 3.0f;
         _emojiView.center = self.contentView.center;

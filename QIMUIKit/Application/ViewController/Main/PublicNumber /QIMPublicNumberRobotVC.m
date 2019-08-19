@@ -381,11 +381,8 @@
     
     _actionList = [[_publicNumberCard objectForKey:@"PublicNumberInfo"] objectForKey:@"actionlist"];
     _photos = [[NSMutableDictionary alloc] init];
-    [[QIMKit sharedInstance] setUserObject:@"OFF" forKey:@"burnAfterReadingStatus"];
     [[QIMKit sharedInstance] setCurrentSessionUserId:self.robotJId];
 
-    
-    
     _cellSizeDic = [[NSMutableDictionary alloc] init];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(expandViewItemHandleNotificationHandle:) name:kExpandViewItemHandleNotification object:nil];
@@ -905,8 +902,6 @@
         //将armData文件上传，获取到相应的url
         NSString *httpUrl = [QIMKit updateLoadVoiceFile:amrData WithFilePath:filePath];
         [self sendVoiceUrl:httpUrl WithDuration:[Seconds intValue] WithSmallData:amrData WithFileName:fileName AndFilePath:filePath];
-    }else if (message.messageType == QIMMessageType_BurnAfterRead) {
-        //        [self sendMessage:message.message WithInfo:message.extendInformation ForMsgType:QIMMessageType_BurnAfterRead];
     } else if (message.messageType == QIMMessageType_Text){
         if ([self isImageMessage:message.message]) {
             
@@ -946,13 +941,7 @@
     
     _resendMsg = notify.object;
     
-    UIAlertView * alertView = nil;
-    
-    if (_resendMsg.messageType == QIMMessageType_BurnAfterRead) {
-        alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"删除", nil];
-    }else{
-        alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"删除",@"重发", nil];
-    }
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"删除",@"重发", nil];
     
     alertView.tag = kReSendMsgAlertViewTag;
     alertView.delegate = self;
@@ -1905,52 +1894,6 @@ static CGPoint tableOffsetPoint;
         }else{
         }
     }else{
-    }
-}
-
-
-- (void)browserMessage:(QIMMessageModel *)message {
-    
-    UIViewController * vc = nil;
-    if(message.messageType == QIMMessageType_BurnAfterRead){
-        
-        NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
-        message.messageType = (QIMMessageType)[[infoDic objectForKey:@"msgType"] integerValue];
-        if (message.messageType == QIMMessageType_SmallVideo) {
-            NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
-            NSString *fileName = [infoDic objectForKey:@"FileName"];
-            NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
-            fileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
-            NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:fileName?fileName:@""];
-            vc = [[QIMVideoPlayerVC alloc] init];
-            [(QIMVideoPlayerVC *)vc setVideoPath:filePath];
-            [(QIMVideoPlayerVC *)vc setVideoUrl:fileUrl];
-        } else {
-            if (message.messageType == QIMMessageType_Image) {
-                message.message = [infoDic objectForKey:@"descStr"];
-            } else {
-                message.message = [infoDic objectForKey:@"message"];
-            }
-            vc = [[QIMMessageBrowserVC alloc] init];
-//            [(QIMMessageBrowserVC *)vc setTextCache:cache];
-            [(QIMMessageBrowserVC *)vc setMessage:message];
-            if (message.messageType == QIMMessageType_Voice) {
-                [(QIMMessageBrowserVC *)vc setParentVC:self];
-            }
-        }
-        QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:vc];
-        [nc setNavigationBarHidden:YES];
-        nc.modalTransitionStyle    = UIModalTransitionStyleCrossDissolve;
-        [self presentViewController:nc animated:YES completion:nil];
-    } else if(message.messageType == QIMMessageType_Text || message.messageType == QIMMessageType_Image || message.messageType == QIMMessageType_ImageNew){
-        /*
-        vc = [[QIMPreviewMsgVC alloc] init];
-        [(QIMPreviewMsgVC *)vc setMessage:message];
-        QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:vc];
-        [nc setNavigationBarHidden:YES];
-        nc.modalTransitionStyle    = UIModalTransitionStyleCrossDissolve;
-        [self presentViewController:nc animated:YES completion:nil];
-        */
     }
 }
 

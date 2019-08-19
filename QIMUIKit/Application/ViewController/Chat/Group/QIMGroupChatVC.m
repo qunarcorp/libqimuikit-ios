@@ -469,7 +469,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)initUI {
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+        [self.view setFrame:CGRectMake(0, 0, [[QIMWindowManager shareInstance] getDetailWidth], [[UIScreen mainScreen] height])];
     }
     self.view.backgroundColor = qim_chatBgColor;
   
@@ -641,7 +641,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     }
     [self setupNav];
     [self initNotifications];
-    [[QIMKit sharedInstance] setUserObject:@"OFF" forKey:@"burnAfterReadingStatus"];
     _playVoiceManager = [QIMPlayVoiceManager defaultPlayVoiceManager];
     _playVoiceManager.playVoiceManagerDelegate = self;
     _playVoiceManager.chatId = self.chatId;
@@ -669,12 +668,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    if (![[QIMKit sharedInstance] getIsIpad]) {
+//    if ([[QIMKit sharedInstance] getIsIpad]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.navigationController.navigationBar.translucent = NO;
-    }
+//    }
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+        [self.view setFrame:CGRectMake(0, 0, [[QIMWindowManager shareInstance] getDetailWidth], [[UIScreen mainScreen] height])];
     }
     [[QIMKit sharedInstance] setCurrentSessionUserId:self.chatId];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
@@ -767,11 +766,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                                                      name:kEndShareLocation
                                                    object:nil];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(BurnAfterReadMsgDestructionNotificationHandle:)
-                                                     name:kBurnAfterReadMsgDestruction
-                                                   object:nil];
-        
         //消息被撤回
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(revokeMsgNotificationHandle:)
@@ -857,7 +851,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)reloadIPadViewFrame:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.preferredContentSize = CGSizeMake([[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]);
+        self.preferredContentSize = CGSizeMake([[QIMWindowManager shareInstance] getDetailWidth], [[UIScreen mainScreen] height]);
         [self reloadFrame];
     });
 }
@@ -1223,6 +1217,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)leftBarBtnClicked:(UITapGestureRecognizer *)tap {
     [self.view endEditing:YES];
+    // Mark by OldiPad
     if ([[QIMKit sharedInstance] getIsIpad] == NO) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
@@ -1230,6 +1225,8 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [[QIMIPadWindowManager sharedInstance] showOriginLaunchDetailVC];
 #endif
     }
+    //Mark by newipad
+//    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -1309,19 +1306,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 - (void)expandViewItemHandleNotificationHandle:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *trId = notify.object;
-        if ([trId isEqualToString:QIMTextBarExpandViewItem_BurnAfterReading]) {
-            NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
-            BOOL isOn = NO;
-            if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
-                
-                [[QIMKit sharedInstance] setUserObject:@"OFF" forKey:@"burnAfterReadingStatus"];
-            } else {
-                
-                [[QIMKit sharedInstance] setUserObject:@"ON" forKey:@"burnAfterReadingStatus"];
-                isOn = YES;
-            }
-            [self.textBar updateFilrStatus:isOn];
-        } else if ([trId isEqualToString:QIMTextBarExpandViewItem_VideoCall]) {
+        if ([trId isEqualToString:QIMTextBarExpandViewItem_VideoCall]) {
 #if __has_include("QIMWebRTCMeetingClient.h")
             [[QIMWebRTCMeetingClient sharedInstance] setGroupId:self.chatId];
             NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
@@ -1336,6 +1321,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             fileManagerVC.messageSaveType = ChatType_GroupChat;
             
             QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:fileManagerVC];
+            //mark by oldipad
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                 nav.modalPresentationStyle = UIModalPresentationCurrentContext;
 #if __has_include("QIMIPadWindowManager.h")
@@ -1344,6 +1330,11 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             } else {
                 [self presentViewController:nav animated:YES completion:nil];
             }
+        
+            /* mark by newipad
+             [self presentViewController:nav animated:YES completion:nil];
+             */
+            
         } else if ([trId isEqualToString:QIMTextBarExpandViewItem_ShareCard]) {
             
             QIMOrganizationalVC *listVc = [[QIMOrganizationalVC alloc] init];
@@ -1397,6 +1388,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
             [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
                 UserLocationViewController *userLct = [[UserLocationViewController alloc] init];
                 userLct.delegate = self;
+                //mark by oldipad
                 if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                     userLct.modalPresentationStyle = UIModalPresentationCurrentContext;
 #if __has_include("QIMIPadWindowManager.h")
@@ -1405,6 +1397,9 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
                 } else {
                     [self.navigationController presentViewController:userLct animated:YES completion:nil];
                 }
+                /* mark by newipad
+                [self.navigationController presentViewController:userLct animated:YES completion:nil];
+                 */
             };
             [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeLocation];
         } else if ([trId isEqualToString:QIMTextBarExpandViewItem_TouPiao]) {
@@ -1524,8 +1519,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         //将armData文件上传，获取到相应的url
         NSString *httpUrl = [QIMKit updateLoadVoiceFile:amrData WithFilePath:filePath];
         [self sendVoiceUrl:httpUrl WithDuration:[Seconds intValue] WithSmallData:amrData WithFileName:fileName AndFilePath:filePath];
-    } else if (message.messageType == QIMMessageType_BurnAfterRead) {
-        //        [self sendMessage:message.message WithInfo:message.extendInformation ForMsgType:QIMMessageType_BurnAfterRead];
     } else if (message.messageType == QIMMessageType_Text) {
         if ([self isImageMessage:message.message]) {
             
@@ -1562,41 +1555,12 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)msgReSendNotificationHandle:(NSNotification *)notify {
     _resendMsg = notify.object;
-    UIAlertView *alertView = nil;
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"删除", @"重发", nil];
     
-    if (_resendMsg.messageType == QIMMessageType_BurnAfterRead) {
-        alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"删除", nil];
-    } else {
-        alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"删除", @"重发", nil];
-    }
     alertView.tag = kReSendMsgAlertViewTag;
     alertView.delegate = self;
     [alertView show];
     return;
-}
-
-- (void)BurnAfterReadMsgDestructionNotificationHandle:(NSNotification *)notify {
-    /*Mark by DB
-   QIMMessageModel *message = notify.object;
-    message.messageSendState = MessageState_didDestroyed;
-    message.messageType = QIMMessageType_BurnAfterRead;
-    [[QIMKit sharedInstance] updateMsg:message ByJid:self.chatId];
-    
-    for (QIMMessageModel *msg in self.messageManager.dataSource) {
-        
-        if ([msg.messageId isEqualToString:message.messageId]) {
-            
-            [self.messageManager.dataSource replaceObjectAtIndex:[self.messageManager.dataSource indexOfObject:msg]
-                                                      withObject:message];
-            NSIndexPath *thisIndexPath = [NSIndexPath indexPathForRow:[self.messageManager.dataSource indexOfObject:msg] inSection:0];
-            BOOL isVisable = [[self.tableView indexPathsForVisibleRows] containsObject:thisIndexPath];
-            if (isVisable) {
-                [self.tableView reloadRowsAtIndexPaths:@[thisIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-            }
-            break;
-        }
-    }
-    */
 }
 
 - (void)revokeMsgNotificationHandle:(NSNotification *)notify {
@@ -1871,54 +1835,8 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     return colorHex;
 }
 
-- (void)browserMessage:(QIMMessageModel *)message {
-    
-    UIViewController *vc = nil;
-    if (message.messageType == QIMMessageType_BurnAfterRead) {
-        NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
-        message.messageType = (QIMMessageType) [[infoDic objectForKey:@"msgType"] integerValue];
-        if (message.messageType == QIMMessageType_SmallVideo) {
-            NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message.message error:nil];
-            NSString *fileName = [infoDic objectForKey:@"FileName"];
-            NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
-            fileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
-            NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:fileName ? fileName : @""];
-            vc = [[QIMVideoPlayerVC alloc] init];
-            [(QIMVideoPlayerVC *) vc setVideoPath:filePath];
-            [(QIMVideoPlayerVC *) vc setVideoUrl:fileUrl];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kBurnAfterReadMsgDestruction object:message];
-            QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:vc];
-            [nc setNavigationBarHidden:YES];
-            nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-            [self presentViewController:nc animated:YES completion:nil];
-        } else {
-            if (message.messageType == QIMMessageType_Image) {
-                message.message = [infoDic objectForKey:@"descStr"];
-            } else {
-                message.message = [infoDic objectForKey:@"message"];
-            }
-            vc = [[QIMMessageBrowserVC alloc] init];
-//            [(QIMMessageBrowserVC *) vc setTextCache:cache];
-            [(QIMMessageBrowserVC *) vc setMessage:message];
-            QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:vc];
-            [nc setNavigationBarHidden:YES];
-            nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-            [self presentViewController:nc animated:YES completion:nil];
-        }
-    } else if (message.messageType == QIMMessageType_Text || message.messageType == QIMMessageType_Image || message.message == QIMMessageType_ImageNew) {
-        /*
-        vc = [[QIMPreviewMsgVC alloc] init];
-        [(QIMPreviewMsgVC *) vc setMessage:message];
-        QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:vc];
-        [nc setNavigationBarHidden:YES];
-        nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-        [self presentViewController:nc animated:YES completion:nil];
-        */
-    }
-}
-
 - (void)processEvent:(int)event withMessage:(id)message {
-   QIMMessageModel *eventMsg = (QIMMessageModel *)message;
+    QIMMessageModel *eventMsg = (QIMMessageModel *)message;
     if (self.tableView.editing) {
         [self cancelForwardHandle:nil];
     }
@@ -2132,6 +2050,15 @@ static CGPoint tableOffsetPoint;
         return photo;
     } else {
         
+        if (![imageHttpUrl containsString:@"platform"]) {
+            imageHttpUrl = [imageHttpUrl stringByAppendingString:@"&platform=touch"];
+        }
+        if (![imageHttpUrl containsString:@"imgtype"]) {
+            imageHttpUrl = [imageHttpUrl stringByAppendingString:@"&imgtype=origin"];
+        }
+        if (![imageHttpUrl containsString:@"webp="]) {
+            imageHttpUrl = [imageHttpUrl stringByAppendingString:@"&webp=true"];
+        }
         NSURL *url = [NSURL URLWithString:[imageHttpUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         
         return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
@@ -2543,45 +2470,21 @@ static CGPoint tableOffsetPoint;
                 self.textBar.isRefer = NO;
                 self.textBar.referMsg = nil;
             }
-            NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
-            if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
                 
-                NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
-                [dicInfo setObject:@(QIMMessageType_ImageNew) forKey:@"msgType"];
-                [dicInfo setObject:normalEmotionExtendInfoStr forKey:@"descStr"];
-                [dicInfo setObject:text forKey:@"message"];
-                NSString *extendInformation = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
-                msg = [[QIMKit sharedInstance] createMessageWithMsg:@"此为阅后即焚消息，该终端不支持阅后即焚~~"
-                                                              extenddInfo:extendInformation
-                                                                   userId:self.chatId
-                                                                 userType:ChatType_GroupChat
-                                                                  msgType:QIMMessageType_BurnAfterRead];
-                
-                [self.messageManager.dataSource addObject:msg];
-                [self updateGroupUsersHeadImgForMsgs:@[msg]];
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-                [self.tableView endUpdates];
-                [self scrollToBottomWithCheck:YES];
-                [self addImageToImageList];
-                msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
-            } else {
-                
-                msg = [[QIMKit sharedInstance] createMessageWithMsg:text
-                                                              extenddInfo:normalEmotionExtendInfoStr
-                                                                   userId:self.chatId
-                                                                 userType:ChatType_GroupChat
-                                                                  msgType:QIMMessageType_ImageNew];
-                
-                [self.messageManager.dataSource addObject:msg];
-                [self updateGroupUsersHeadImgForMsgs:@[msg]];
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-                [self.tableView endUpdates];
-                [self scrollToBottomWithCheck:YES];
-                [self addImageToImageList];
-                msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
-            }
+            msg = [[QIMKit sharedInstance] createMessageWithMsg:text
+                                                          extenddInfo:normalEmotionExtendInfoStr
+                                                               userId:self.chatId
+                                                             userType:ChatType_GroupChat
+                                                              msgType:QIMMessageType_ImageNew];
+            
+            [self.messageManager.dataSource addObject:msg];
+            [self updateGroupUsersHeadImgForMsgs:@[msg]];
+            [self.tableView beginUpdates];
+            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+            [self.tableView endUpdates];
+            [self scrollToBottomWithCheck:YES];
+            [self addImageToImageList];
+            msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
         }
     }
 }
@@ -2616,46 +2519,21 @@ static CGPoint tableOffsetPoint;
         if (outATInfoArray) {
             backInfo = [[QIMJSONSerializer sharedInstance] serializeObject:outATInfoArray];
         }
-        NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
-        if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
             
-            NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
-            [dicInfo setObject:@(QIMMessageType_Text) forKey:@"msgType"];
-            [dicInfo setObject:text forKey:@"descStr"];
-            [dicInfo setObject:text forKey:@"message"];
-            NSString *extendInformation = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
-            msg = [[QIMKit sharedInstance] createMessageWithMsg:@"此为阅后即焚消息，该终端不支持阅后即焚~~"
-                                                          extenddInfo:extendInformation
-                                                               userId:self.chatId
-                                                             userType:ChatType_GroupChat
-                                                              msgType:QIMMessageType_BurnAfterRead
-                                                             backinfo:backInfo];
-            
-            [self.messageManager.dataSource addObject:msg];
-            [self updateGroupUsersHeadImgForMsgs:@[msg]];
-            [_tableView beginUpdates];
-            [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-            [_tableView endUpdates];
-            [self scrollToBottomWithCheck:YES];
-            [self addImageToImageList];
-            msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
-        } else {
-            
-            msg = [[QIMKit sharedInstance] createMessageWithMsg:text
-                                                          extenddInfo:nil
-                                                               userId:self.chatId
-                                                             userType:ChatType_GroupChat
-                                                              msgType:QIMMessageType_Text
-                                                             backinfo:backInfo];
-            [self.messageManager.dataSource addObject:msg];
-            [self updateGroupUsersHeadImgForMsgs:@[msg]];
-            [_tableView beginUpdates];
-            [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-            [_tableView endUpdates];
-            [self scrollToBottomWithCheck:YES];
-            [self addImageToImageList];
-            msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
-        }
+        msg = [[QIMKit sharedInstance] createMessageWithMsg:text
+                                                      extenddInfo:nil
+                                                           userId:self.chatId
+                                                         userType:ChatType_GroupChat
+                                                          msgType:QIMMessageType_Text
+                                                         backinfo:backInfo];
+        [self.messageManager.dataSource addObject:msg];
+        [self updateGroupUsersHeadImgForMsgs:@[msg]];
+        [_tableView beginUpdates];
+        [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+        [_tableView endUpdates];
+        [self scrollToBottomWithCheck:YES];
+        [self addImageToImageList];
+        msg = [[QIMKit sharedInstance] sendMessage:msg ToUserId:self.chatId];
     }
 }
 
@@ -2680,6 +2558,7 @@ static CGPoint tableOffsetPoint;
 
 - (void)sendVideoPath:(NSString *)videoPath WithThumbImage:(UIImage *)thumbImage WithFileSizeStr:(NSString *)fileSizeStr WithVideoDuration:(float)duration forMsgId:(NSString *)mId {
     
+    BOOL VideoConfigUseAble = [[[QIMKit sharedInstance] userObjectForKey:@"VideoConfigUseAble"] boolValue];
     [self.view setFrame:_rootViewFrame];
     NSString *msgId = mId.length ? mId : [QIMUUIDTools UUID];
     CGSize size = thumbImage.size;
@@ -2717,23 +2596,7 @@ static CGPoint tableOffsetPoint;
     [msg setMessageSendState:QIMMessageSendState_Waiting];
     [msg setMessage:msgContent];
     
-    NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
-    if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
-        
-        NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
-        [dicInfo setQIMSafeObject:@(QIMMessageType_SmallVideo) forKey:@"msgType"];
-        [dicInfo setQIMSafeObject:msg.message forKey:@"descStr"];
-        [dicInfo setQIMSafeObject:msg.message forKey:@"message"];
-        NSString *extendInformation = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
-        msg.extendInformation = extendInformation;
-        msg.message = @"此为阅后即焚消息，该终端不支持阅后即焚~"@"~";
-        msg.messageType = QIMMessageType_BurnAfterRead;
-    }
     [[QIMKit sharedInstance] saveMsg:msg ByJid:self.chatId];
-    if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
-        
-        [[QIMKit sharedInstance] updateMessageWithExtendInfo:msg.extendInformation ForMsgId:msg.messageId];
-    }
     
     [self.messageManager.dataSource addObject:msg];
     [self updateGroupUsersHeadImgForMsgs:@[msg]];
@@ -3010,52 +2873,23 @@ static CGPoint tableOffsetPoint;
     UIImage *image = [YLGIFImage imageWithData:imageData];
     CGFloat width = CGImageGetWidth(image.CGImage);
     CGFloat height = CGImageGetHeight(image.CGImage);
-    __block QIMMessageModel *msg = nil;
-    NSString *burnAfterReadingStatus = [[QIMKit sharedInstance] userObjectForKey:@"burnAfterReadingStatus"];
-    if (burnAfterReadingStatus && [burnAfterReadingStatus isEqualToString:@"ON"]) {
-        
-        msg = [[QIMKit sharedInstance] createMessageWithMsg:@"此为阅后即焚消息，该终端不支持阅后即焚~~" extenddInfo:nil userId:self.chatId userType:ChatType_GroupChat msgType:QIMMessageType_BurnAfterRead forMsgId:_resendMsg.messageId];
-        NSString *fileName = [[QIMKit sharedInstance] uploadFileForData:imageData forMessage:msg withJid:self.chatId isFile:NO];
-        NSString *fileUrl = @"";
-        if ([fileName qim_hasPrefixHttpHeader]) {
-            fileUrl = fileName;
-        } else {
-            fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
-        }
-        NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
-        [imageData writeToFile:sdimageFileKey atomically:YES];
-        NSString *msgText = nil;
-        if ([fileName qim_hasPrefixHttpHeader]) {
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
-        } else {
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"?LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
-        }
-        NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
-        [dicInfo setObject:@(QIMMessageType_Text) forKey:@"msgType"];
-        [dicInfo setObject:msgText forKey:@"descStr"];
-        [dicInfo setObject:msgText forKey:@"message"];
-        NSString *extendInformation = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
-        msg.extendInformation = extendInformation;
-        
+    QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"" extenddInfo:nil userId:self.chatId userType:ChatType_GroupChat msgType:QIMMessageType_Text];
+    NSString *fileName = [[QIMKit sharedInstance] uploadFileForData:imageData forMessage:msg withJid:self.chatId isFile:NO];
+    NSString *fileUrl = @"";
+    if ([fileName qim_hasPrefixHttpHeader]) {
+        fileUrl = fileName;
     } else {
-        msg = [[QIMKit sharedInstance] createMessageWithMsg:@"" extenddInfo:nil userId:self.chatId userType:ChatType_GroupChat msgType:QIMMessageType_Text];
-        NSString *fileName = [[QIMKit sharedInstance] uploadFileForData:imageData forMessage:msg withJid:self.chatId isFile:NO];
-        NSString *fileUrl = @"";
-        if ([fileName qim_hasPrefixHttpHeader]) {
-            fileUrl = fileName;
-        } else {
-            fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
-        }
-        NSString *sdimageFileKey = [[QIMSDImageCache sharedImageCache] defaultCachePathForKey:fileUrl];
-        [imageData writeToFile:sdimageFileKey atomically:YES];
-        NSString *msgText = nil;
-        if ([fileName qim_hasPrefixHttpHeader]) {
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
-        } else {
-            msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
-        }
-        msg.message = msgText;
+        fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
     }
+    NSString *sdimageFileKey = [[QIMImageManager sharedInstance] defaultCachePathForKey:fileUrl];
+    [imageData writeToFile:sdimageFileKey atomically:YES];
+    NSString *msgText = nil;
+    if ([fileName qim_hasPrefixHttpHeader]) {
+        msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
+    } else {
+        msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
+    }
+    msg.message = msgText;
     [[QIMKit sharedInstance] updateMsg:msg ByJid:self.chatId];
     
     

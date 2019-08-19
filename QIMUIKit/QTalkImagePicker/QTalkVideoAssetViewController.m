@@ -317,7 +317,7 @@
     [self.view addSubview:loadView];
     
     AVAssetExportSession *exportSession = nil;
-    NSString *resultQuality = AVAssetExportPresetMediumQuality;
+    NSString *resultQuality = AVAssetExportPresetHighestQuality;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_8_0
     exportSession = [[AVAssetExportSession alloc] initWithAsset:self.videoAsset presetName:resultQuality];
 #else
@@ -329,58 +329,72 @@
 #endif
     NSDateFormatter *formater = [[NSDateFormatter alloc] init];//用时间给文件全名，以免重复，在测试的时候其实可以判断文件是否存在若存在，则删除，重新生成文件即可
     [formater setDateFormat:@"yyyyMMddHHmmss"];
-    NSString *videoResultPath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingFormat:@"/video_%@.mp4", [formater stringFromDate:[NSDate date]]];
-    exportSession.outputURL = [NSURL fileURLWithPath:videoResultPath];
-    exportSession.outputFileType = AVFileTypeMPEG4;
-    [exportSession exportAsynchronouslyWithCompletionHandler:^(void)
-     {
-         dispatch_async(dispatch_get_main_queue(), ^{
-             [loadView removeFromSuperview];
-             switch ((int)exportSession.status) {
-                 case AVAssetExportSessionStatusUnknown:
-                     QIMVerboseLog(@"AVAssetExportSessionStatusUnknown");
-                     break;
-                 case AVAssetExportSessionStatusWaiting:
-                     QIMVerboseLog(@"AVAssetExportSessionStatusWaiting");
-                     break;
-                 case AVAssetExportSessionStatusExporting:
-                     QIMVerboseLog(@"AVAssetExportSessionStatusExporting");
-                     break;
-                 case AVAssetExportSessionStatusCompleted:
-                 {
-                     AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:videoResultPath] options:nil];
-                     AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:avAsset];
-                     gen.appliesPreferredTrackTransform = YES;
-                     CMTime time = CMTimeMakeWithSeconds(0.0, 600);
-                     NSError *error = nil;
-                     CMTime actualTime;
-                     CGImageRef image = [gen copyCGImageAtTime:time actualTime:&actualTime error:&error];
-                     UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
-                     CGImageRelease(image);
-                     
-                     NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
-                     QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
-                     [alertView setVideoOutPath:videoResultPath];
-                     [alertView setThumbImage:thumb];
-                     [alertView setFileSizeStr:fileSizeStr];
+    NSString *videoResultPath = nil;
+    if ([self.videoAsset isKindOfClass:[AVURLAsset class]]) {
+        AVURLAsset *videoAsset = (AVURLAsset *)self.videoAsset;
+        videoResultPath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingFormat:@"/video_%@.mp4", [[videoAsset.URL.lastPathComponent componentsSeparatedByString:@"."] firstObject]];
+    } else {
+        videoResultPath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingFormat:@"/video_%@.mp4", [formater stringFromDate:[NSDate date]]];
+    }
+    if ([[NSFileManager defaultManager] fileExistsAtPath:videoResultPath]) {
+        [self exportVideoSuccessWithOutPath:videoResultPath];
+    } else {
+        exportSession.outputURL = [NSURL fileURLWithPath:videoResultPath];
+        exportSession.outputFileType = AVFileTypeMPEG4;
+        [exportSession exportAsynchronouslyWithCompletionHandler:^(void)
+         {
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 [loadView removeFromSuperview];
+                 switch ((int)exportSession.status) {
+                     case AVAssetExportSessionStatusUnknown:
+                         QIMVerboseLog(@"AVAssetExportSessionStatusUnknown");
+                         break;
+                     case AVAssetExportSessionStatusWaiting:
+                         QIMVerboseLog(@"AVAssetExportSessionStatusWaiting");
+                         break;
+                     case AVAssetExportSessionStatusExporting:
+                         QIMVerboseLog(@"AVAssetExportSessionStatusExporting");
+                         break;
+                     case AVAssetExportSessionStatusCompleted:
+                     {
+                         [self exportVideoSuccessWithOutPath:videoResultPath];
+                     }
+                         break;
+                     case AVAssetExportSessionStatusFailed:{
+                         QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩失败{%@}",exportSession.error] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                         [alertView show];
+                     }
+                         break;
+                 }
+             });
+             
+         }];
+    }
+}
+
+- (void)exportVideoSuccessWithOutPath:(NSString *)videoResultPath {
+    AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:videoResultPath] options:nil];
+    AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:avAsset];
+    gen.appliesPreferredTrackTransform = YES;
+    CMTime time = CMTimeMakeWithSeconds(0.0, 600);
+    NSError *error = nil;
+    CMTime actualTime;
+    CGImageRef image = [gen copyCGImageAtTime:time actualTime:&actualTime error:&error];
+    UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
+    CGImageRelease(image);
+    
+    NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+    QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
+    [alertView setVideoOutPath:videoResultPath];
+    [alertView setThumbImage:thumb];
+    [alertView setFileSizeStr:fileSizeStr];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_8_0
-                     [alertView setVideoDuration:self.videoDuration];
-                     self.picker.videoPath = videoResultPath;
+    [alertView setVideoDuration:self.videoDuration];
+    self.picker.videoPath = videoResultPath;
 #else
-                     [alertView setVideoDuration:videoLength];
+    [alertView setVideoDuration:videoLength];
 #endif
-                     [alertView show];
-                 }
-                     break;
-                 case AVAssetExportSessionStatusFailed:{
-                     QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩失败{%@}",exportSession.error] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-                     [alertView show];
-                 }
-                     break;
-             }
-         });
-         
-     }];
+    [alertView show];
 }
 
 - (void)setPlayButtonImage:(BOOL)flag{

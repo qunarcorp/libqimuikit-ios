@@ -7,14 +7,13 @@
 //
 
 #import "QIMCollectionViewCell.h"
-#import "YLImageView.h"
 #import "QIMEmotionTip.h"
 #import "QIMCollectionFaceManager.h"
 #import "UIImage+QIMUIKit.h"
 
 @interface QIMCollectionViewCell ()
 
-@property (nonatomic, strong) YLImageView *emojiView;
+@property (nonatomic, strong) UIImageView *emojiView;
 
 @property (nonatomic, assign) BOOL refresh;
 
@@ -22,11 +21,11 @@
 
 @implementation QIMCollectionViewCell
 
-- (YLImageView *)emojiView {
+- (UIImageView *)emojiView {
     
     if (!_emojiView) {
         
-        _emojiView = [[YLImageView alloc] initWithFrame:self.bounds];
+        _emojiView = [[UIImageView alloc] initWithFrame:self.bounds];
         _emojiView.userInteractionEnabled = YES;
     }
     return _emojiView;
@@ -62,11 +61,18 @@
         } else {
             
             self.emojiView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_ogactivity_default"];
+            NSString *emojiUrl = [[QIMCollectionFaceManager sharedInstance] getCollectionFaceHttpUrlWithIndex:self.tag - 1];
+            if (![emojiUrl qim_hasPrefixHttpHeader]) {
+                emojiUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], emojiUrl];
+            }
+            [self.emojiView qim_setImageWithURL:[NSURL URLWithString:emojiUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_ogactivity_default"] options:SDWebImageDecodeFirstFrameOnly progress:nil completed:nil];
+            /*
             [[QIMCollectionFaceManager sharedInstance] showSmallImage:^(UIImage *downLoadImage) {
 
                 weakSelf.emojiView.image = downLoadImage;
 
               } withIndex:self.tag - 1];
+            */
         }
     } else {
         self.emojiView.image = [UIImage new];
@@ -76,14 +82,12 @@
 }
 
 - (void)didMoveIn {
-//    QIMVerboseLog(@"%s", __func__);
     if (self.tag != 0 && self.tag != -1) {
         [[QTalkGifEmojiTip sharedTip] showTipOnCell:self];
     }
 }
 
 - (void)didMoveOut {
-//    QIMVerboseLog(@"%s", __func__);
     if (self.tag != 0 && self.tag != -1) {
         [[QTalkGifEmojiTip sharedTip] showTipOnCell:nil];
     }
