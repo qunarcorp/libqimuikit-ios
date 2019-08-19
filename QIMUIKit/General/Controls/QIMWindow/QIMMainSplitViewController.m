@@ -62,7 +62,7 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
+
     NSArray *subVCs = self.masterVC.viewControllers;
     NSMutableArray *submutableVCs = [[NSMutableArray alloc] initWithArray:subVCs];
     if (![self isPortrait]) {

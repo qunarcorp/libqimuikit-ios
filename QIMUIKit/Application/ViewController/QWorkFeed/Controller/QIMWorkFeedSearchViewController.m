@@ -464,6 +464,8 @@ static const NSInteger searchMinCharacterCount = 2;
                 [strongSelf hideProgressHUD:YES];
                 [strongSelf addModelWithResultList:result withReWrite:YES];
             }];
+        } else {
+            [self addModelWithResultList:nil withReWrite:YES];
         }
     }
     return YES;
@@ -504,12 +506,12 @@ static const NSInteger searchMinCharacterCount = 2;
         if (!strongSelf) {
             return;
         }
-        [self addModelWithResultList:result withReWrite:NO];
         if (result.count <= 0) {
             [_mainTableView.mj_footer endRefreshingWithNoMoreData];
         } else {
             [_mainTableView.mj_footer endRefreshing];
         }
+        [self addModelWithResultList:result withReWrite:NO];
     }];
 }
 
@@ -518,10 +520,12 @@ static const NSInteger searchMinCharacterCount = 2;
         [self.searchDataList removeAllObjects];
     }
     if (result == nil) {
+        [self.searchDataList removeAllObjects];
         dispatch_async(dispatch_get_main_queue(), ^{
+            self.mainTableView.hidden = YES;
+            self.mainTableView.mj_footer.hidden = YES;
             [self.mainTableView reloadData];
             [self updateSearchEmptyViewWithHidden:YES];
-            _mainTableView.mj_footer.hidden = YES;
         });
         return;
     }
@@ -534,20 +538,21 @@ static const NSInteger searchMinCharacterCount = 2;
             if (eventType == 3) {
                 QIMWorkMomentModel *model = [self getMomentModelWithDic:resultDic];
                 [self.searchDataList addObject:model];
-            } else  {
+            } else {
                 QIMWorkNoticeMessageModel *model = [self getNoticeMessageModelWithDict:resultDic];
                 [self.searchDataList addObject:model];
             }
         }
     }
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (result.count >= 20) {
+            self.mainTableView.mj_footer.hidden = NO;
+        } else {
+            self.mainTableView.mj_footer.hidden = YES;
+        }
+        self.mainTableView.hidden = NO;
         [self.mainTableView reloadData];
         [self updateSearchEmptyViewWithHidden:result.count];
-        if (result.count >= 20) {
-            _mainTableView.mj_footer.hidden = NO;
-        } else {
-            _mainTableView.mj_footer.hidden = YES;
-        }
     });
 }
 

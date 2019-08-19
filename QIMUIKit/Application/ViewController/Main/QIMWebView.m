@@ -352,6 +352,10 @@ static NSString *__default_ua = nil;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.translucent = NO;
+    //Mark by oldiPad
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        self.view.frame = CGRectMake(0, 0, [[QIMWindowManager shareInstance] getDetailWidth], self.view.height);
+    }
     [[UINavigationBar appearance] setBackgroundImage:nil forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setShadowImage:nil];
     if (![[QIMKit sharedInstance] getIsIpad] && self.fromRegPackage == NO) {
@@ -381,10 +385,6 @@ static NSString *__default_ua = nil;
     [self.navigationController.navigationBar addSubview:_progressProxyView];
     _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
     _webView.delegate = _progressProxy;
-    //Mark by iPad
-    if ([[QIMKit sharedInstance] getIsIpad]) {
-        _webView.frame = CGRectMake(0, 0, [[QIMWindowManager shareInstance] getDetailWidth], self.view.height);
-    }
     if (self.needAuth) {
         if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
             NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:@" qunartalk-ios-client"];

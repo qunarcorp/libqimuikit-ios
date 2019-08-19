@@ -88,15 +88,9 @@
 
 @property(nonatomic, strong) UIView *otherPlatformView;     //其他平台已登录条
 
-//@property(nonatomic, strong) QIMArrowTableView *arrowPopView;
-
 @property(nonatomic, strong) NSMutableArray *appendHeaderViews;
 
 @property(nonatomic, strong) QIMMainVC *rootViewController;
-
-//@property(nonatomic, strong) NSArray *moreActionArray;  //右上角更多列表
-
-//@property(nonatomic, strong) UIButton *moreBtn;     //更多按钮
 
 @end
 
@@ -181,15 +175,16 @@
             appendHeight += appendView.height;
         }
 
-        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, ([self.rootViewController isKindOfClass:[QIMMainVC class]] ? self.searchBar.height : 0) + appendHeight)];
-        UIView *logoView = [[UIView alloc] initWithFrame:CGRectMake(0, -self.tableView.height, self.tableView.width, self.tableView.height)];
-        [logoView setBackgroundColor:[UIColor qim_colorWithHex:0xEEEEEE alpha:1]];
-        [headerView addSubview:logoView];
-        if ([self.rootViewController isKindOfClass:[QIMMainVC class]] && [[QIMKit sharedInstance] getIsIpad] == NO) {
-            [headerView addSubview:self.searchBar];
-        } else {
-            [headerView addSubview:self.searchBar];
-        }
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, self.searchBar.height + appendHeight)];
+//        UIView *logoView = [[UIView alloc] initWithFrame:CGRectMake(0, -self.tableView.height, self.tableView.width, self.tableView.height)];
+//        [logoView setBackgroundColor:[UIColor qim_colorWithHex:0xEEEEEE alpha:1]];
+//        [headerView addSubview:logoView];
+//        if ([self.rootViewController isKindOfClass:[QIMMainVC class]] && [[QIMKit sharedInstance] getIsIpad] == NO) {
+//            [headerView addSubview:self.searchBar];
+//        } else {
+//            [headerView addSubview:self.searchBar];
+//        }
+        [headerView addSubview:self.searchBar];
         for (UIView *appendView in self.appendHeaderViews) {
             UIView *lastView = headerView.subviews.lastObject;
             CGRect appendViewFrame = CGRectMake(appendView.origin.x, lastView.bottom, appendView.width, appendView.height);
@@ -230,52 +225,6 @@
     return _tableView;
 }
 
-/*
-- (QIMArrowTableView *)arrowPopView {
-
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(self.width - 20 - 28, -30, 28, 28);
-    button.backgroundColor = [UIColor clearColor];
-    [self addSubview:button];
-    CGRect rect1 = [button convertRect:button.frame fromView:self];
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-    CGRect rect2 = [button convertRect:rect1 toView:window];         //获取button在window的位置
-
-    CGRect rect3 = CGRectInset(rect2, -0.5 * 8, -0.5 * 8);
-
-    CGPoint point;
-    //获取控件相对于window的   中心点坐标
-
-    NSString *qCloudHost = [[QIMKit sharedInstance] qimNav_QCloudHost];
-    NSString *wikiHost = [[QIMKit sharedInstance] qimNav_WikiUrl];
-    self.moreActionArray = [[NSMutableArray alloc] initWithCapacity:3];
-    NSArray *moreActionImages = nil;
-    self.moreActionArray = @[@"扫一扫", @"未读消息", @"创建群组", @"一键已读"];
-    moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_scan_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_notread_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_gototalk_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_clearnotread_font size:28 color:qim_rightArrowImageColor]]];
-    point = CGPointMake(rect3.origin.x + rect3.size.width / 2, rect3.origin.y + rect3.size.height / 2);
-    _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:135 Height:50 * self.moreActionArray.count + 10 Type:Type_UpRight Color:[UIColor whiteColor]];
-    _arrowPopView.dataArray = self.moreActionArray;
-    _arrowPopView.backView.layer.cornerRadius = 5.0f;
-    _arrowPopView.images = moreActionImages;
-    _arrowPopView.row_height = 50;
-    _arrowPopView.delegate = self;
-    _arrowPopView.titleTextColor = qim_rightArrowTitleColor;
-    return _arrowPopView;
-}
-
-- (UIButton *)moreBtn {
-    if (!_moreBtn) {
-        UIButton *moreActionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        moreActionBtn.frame = CGRectMake(0, 0, 28, 28);
-        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_rightMoreBtn_font size:28 color:qim_rightMoreBtnColor]] forState:UIControlStateNormal];
-        [moreActionBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_rightMoreBtn_font size:28 color:qim_rightMoreBtnColor]] forState:UIControlStateSelected];
-        [moreActionBtn addTarget:self action:@selector(doMoreAction:) forControlEvents:UIControlEventTouchUpInside];
-        _moreBtn = moreActionBtn;
-    }
-    return _moreBtn;
-}
-*/
-
 - (QIMSearchBar *)searchBar {
     if (!_searchBar) {
         _searchBar = [[QIMSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.width, 56)];
@@ -283,18 +232,6 @@
     }
     return _searchBar;
 }
-
-/*
-- (void)doMoreAction:(id)sender {
-    UIButton *button = (UIButton *) sender;
-    button.selected = ~button.selected;
-    if (button.selected) {
-        [self.arrowPopView popView];
-    } else {
-        [self.arrowPopView dismiss];
-    }
-}
-*/
 
 - (void)initUI {
 
@@ -531,23 +468,6 @@
     [QIMFastEntrance openWebViewWithHtmlStr:htmlString showNavBar:YES];
 }
 
-- (void)setHidden:(BOOL)hidden {
-
-    [super setHidden:hidden];
-    if (hidden == NO) {
-
-//        UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.moreBtn];
-//        [self.rootViewController.navigationItem setRightBarButtonItem:rightBarItem];
-        /* 修复每次展示SessionView时候，tableview自动滚动置顶
-        if (self.dataManager.dataSource.count> 0) {
-            [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-        }
-        */
-    } else {
-        [self.rootViewController.navigationItem setRightBarButtonItem:nil];
-    }
-}
-
 #pragma mark - life ctyle
 
 - (void)layoutSubviews {
@@ -612,14 +532,14 @@
             }
             NSLog(@"跳转的RootVc3 ：%@ ", rootNav);
             NSLog(@"跳转的PushVc : %@", pushVc);
-//            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-//#if __has_include("QIMIPadWindowManager.h")
-//                [[QIMIPadWindowManager sharedInstance] showDetailViewController:pushVc];
-//#endif
-//            } else {
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+#if __has_include("QIMIPadWindowManager.h")
+                [[QIMIPadWindowManager sharedInstance] showDetailViewController:pushVc];
+#endif
+            } else {
                 pushVc.hidesBottomBarWhenPushed = YES;
                 [rootNav pushViewController:pushVc animated:YES];
-//            }
+            }
         }
     }
 }

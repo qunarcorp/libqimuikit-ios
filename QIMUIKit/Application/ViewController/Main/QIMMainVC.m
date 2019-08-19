@@ -162,7 +162,7 @@ static dispatch_once_t __onceMainToken;
     */
     self.reloadCountQueue = dispatch_queue_create("Reload Main Read Count", DISPATCH_QUEUE_SERIAL);
     [self registerNSNotifications];
-    self.view.width = [[QIMWindowManager shareInstance] getPrimaryWidth];
+//    self.view.width = [[QIMWindowManager shareInstance] getPrimaryWidth];
     self.definesPresentationContext = YES;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.view setAutoresizesSubviews:YES];

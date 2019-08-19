@@ -512,15 +512,17 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
                   WithModule:(NSString *)module
               WithProperties:(NSDictionary *)properties{
     UIViewController *vc = [QimRNBModule getVCWithNavigation:navVC WithHiddenNav:hiddenNav WithBundleName:bundleName WithModule:module WithProperties:properties];
-    /* Mark by iPad
+    //Mark by oldiPad
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
 #if __has_include("QIMIPadWindowManager.h")
         [[QIMIPadWindowManager sharedInstance] showDetailViewController:vc];
 #endif
     } else {
-        */
         [navVC pushViewController:vc animated:YES];
-//    }
+    }
+    /* mark by newipad
+    [navVC pushViewController:vc animated:YES];
+    */
 }
 
 + (void)sendQIMRNWillShow {
