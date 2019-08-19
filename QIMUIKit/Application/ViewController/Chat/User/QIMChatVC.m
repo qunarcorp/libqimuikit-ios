@@ -657,28 +657,6 @@
 
 - (void)setupSystemChatNav {
     [self.navigationItem setTitle:self.title];
-    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    headerView.layer.cornerRadius  = 2.0;
-    headerView.layer.masksToBounds = YES;
-    headerView.clipsToBounds       = YES;
-    headerView.backgroundColor     = [UIColor clearColor];
-    UIImage *headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        if ([self.chatId hasPrefix:@"rbt-notice"]) {
-            headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt_notice"];
-        } else if ([self.chatId hasPrefix:@"rbt-qiangdan"] || [self.chatId hasPrefix:@"rbt-zhongbao"]) {
-            headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-qiangdan"];
-        } else {
-            headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
-        }
-    } else {
-        headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
-    }
-    [headerView setImage:headImage];
-    
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:headerView];
-    
-    [self.navigationItem setRightBarButtonItem:rightItem];
 }
 
 - (void)initUI {
