@@ -61,6 +61,20 @@
     _imageView.image = image;
 }
 
+- (void)setImageUrl:(NSString *)imageUrl {
+    if (_imageView == nil) {
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [self addSubview:_imageView];
+    }
+    if (_isAdd) {
+        [self setImageSize:CGSizeMake(self.width / 3, self.width)];
+    }else{
+        _imageView.frame = CGRectMake(kImageViewCap, kImageViewCap, self.width - kImageViewCap * 2, self.height - kImageViewCap * 2);
+    }
+    [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:nil options:SDWebImageFromLoaderOnly progress:nil completed:nil];
+}
+
 - (void)setViewSelected:(BOOL)selected{
     [self setUpMaskViews];
     if (selected) {
@@ -128,17 +142,25 @@
         
         //添加按钮
         itemImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"EmotionEditorAdd"];
+        [itemView setImage:itemImage];
     } else {
         
         [itemView setIsAdd:NO];
+        NSString *emojiUrl = [[QIMCollectionFaceManager sharedInstance] getCollectionFaceHttpUrlWithIndex:self.tag];
+        if (![emojiUrl qim_hasPrefixHttpHeader]) {
+            emojiUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], emojiUrl];
+        }
+        [itemView setImageUrl:emojiUrl];
+        /*
+         Mark by SD
         [[QIMCollectionFaceManager sharedInstance] showSmallImage:^(UIImage *image) {
             
             itemImage = image;
         } withIndex:self.tag];
+        */
     }
     
     [itemView setViewSelected:NO];
-    [itemView setImage:itemImage];
     
     if ([item isEqualToString:kImageFacePageViewAddFlagName]){
         [itemView setImageSize:CGSizeMake(itemWidth / 3, itemWidth / 3)];

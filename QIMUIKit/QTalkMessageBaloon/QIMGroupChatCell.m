@@ -8,13 +8,9 @@
 
 #import "QIMGroupChatCell.h"
 #import <QuartzCore/QuartzCore.h>
-
-//#import "NSAttributedString+Attributes.h"
 #import "QIMMenuImageView.h"
-
 #import "QIMAttributedLabel.h"
 #import "QIMMessageParser.h"
-#import "YLImageView.h"
 
 #define kTextLabelTop       10
 #define kTextLableLeft      12
@@ -105,9 +101,7 @@
 }
 
 - (void)doubleTap:(UITapGestureRecognizer *)tap{
-    if ([self.delegate respondsToSelector:@selector(browserMessage:)]) {
-        [self.delegate browserMessage:self.message];
-    }
+
 }
 
 - (void)userHeaderImgUpdate:(NSNotification *)notify {

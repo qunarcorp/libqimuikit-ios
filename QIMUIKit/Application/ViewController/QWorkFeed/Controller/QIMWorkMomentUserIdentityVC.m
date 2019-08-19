@@ -18,6 +18,8 @@
 
 @property (nonatomic, strong) UIButton *saveBtn;
 
+@property (nonatomic, strong) QIMWorkMomentUserIdentityModel *lastUserModel;
+
 @end
 
 @implementation QIMWorkMomentUserIdentityVC
@@ -68,6 +70,13 @@
     return _saveBtn;
 }
 
+- (QIMWorkMomentUserIdentityModel *)lastUserModel {
+    if (!_lastUserModel) {
+        _lastUserModel = [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] userIdentityModel];
+    }
+    return _lastUserModel;
+}
+
 #pragma mark - life ctyle
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -89,11 +98,21 @@
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
     [self.view addSubview:self.userIdentityListView];
     __weak __typeof(self) weakSelf = self;
-    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == YES) {
+    
+    BOOL isAnonymous = self.lastUserModel.isAnonymous;
+    
+//    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == YES) {
+    if (isAnonymous == YES) {
+        NSString *anonymousName = self.lastUserModel.anonymousName;
+        NSString *anonymousPhoto = self.lastUserModel.anonymousPhoto;
+        NSInteger anonymousId = self.lastUserModel.anonymousId;
+        BOOL anonymousReplaceable = self.lastUserModel.replaceable;
+        /* Mark by 匿名
         NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
         NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
         NSInteger anonymousId = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousId];
         BOOL anonymousReplaceable = [[QIMWorkMomentUserIdentityManager sharedInstance] replaceable];
+        */
         QIMWorkMomentUserIdentityModel *model = [[QIMWorkMomentUserIdentityModel alloc] init];
         model.isAnonymous = YES;
         model.anonymousId = anonymousId;
@@ -178,14 +197,19 @@
         cell.delegate = self;
     }
     QIMWorkMomentUserIdentityModel *userIdentityModel = [self.userIdentityList objectAtIndex:indexPath.row];
-    NSLog(@"[[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] : %ld", [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO);
+    
+    BOOL isAnonymous = self.lastUserModel.isAnonymous;
+    
     if (userIdentityModel.isAnonymous == NO) {
         cell.textLabel.text = @"实名发布";
+        [cell setUserIdentitySelected:!isAnonymous];
+        /* Mark by 匿名
         if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) {
             [cell setUserIdentitySelected:NO];
         } else {
             [cell setUserIdentitySelected:YES];
         }
+        */
     } else {
         if (userIdentityModel.mockAnonymous == YES) {
             cell.textLabel.text = @"匿名发布";
@@ -198,12 +222,16 @@
             cell.detailTextLabel.text = [NSString stringWithFormat:@"花名：%@", userIdentityModel.anonymousName];
             cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
             cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
+            [cell setUserIdentitySelected:isAnonymous];
+            [cell setUserIdentityReplaceable:userIdentityModel.replaceable];
+            /*Mark by 匿名
             if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) {
                 [cell setUserIdentitySelected:YES];
             } else {
                 [cell setUserIdentitySelected:NO];
             }
             [cell setUserIdentityReplaceable:userIdentityModel.replaceable];
+             */
         }
     }
     return cell;
@@ -229,6 +257,8 @@
         [alertVc addAction:okAction];
         [self presentViewController:alertVc animated:YES completion:nil];
     } else {
+        [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] setUserIdentityModel:userIdentityModel];
+        /* Mark by 匿名
         if (userIdentityModel.isAnonymous == NO) {
             [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
             [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
@@ -241,7 +271,7 @@
             [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:userIdentityModel.anonymousName];
             [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:userIdentityModel.anonymousPhoto];
             [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:userIdentityModel.replaceable];
-        }
+        } */
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:@"kReloadUserIdentifier" object:nil];
         });
@@ -274,6 +304,15 @@
 }
 
 - (void)didselectUserIdentity:(id)sender {
+    
+    BOOL isAnonymous = self.lastUserModel.isAnonymous;
+    if (isAnonymous == YES) {
+        QIMWorkMomentUserIdentityModel *userIdentityModel = [self.userIdentityList lastObject];
+        [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] setUserIdentityModel:userIdentityModel];
+    } else {
+        [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] setUserIdentityModel:nil];
+    }
+    /* Mark by 匿名
     if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == YES) {
         QIMWorkMomentUserIdentityModel *userIdentityModel = [self.userIdentityList lastObject];
         [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:YES];
@@ -287,6 +326,7 @@
         [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
         [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:NO];
     }
+    */
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"kReloadUserIdentifier" object:nil];
     });

@@ -7,7 +7,7 @@
 
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMC2BGrabSingleCell.h"
-#import "UIImageView+QIMWebCache.h"
+//#import "UIImageView+QIMWebCache.h"
 #import "QIMWebView.h"
 #import "QIMJSONSerializer.h"
 //#import "NSAttributedString+Attributes.h"

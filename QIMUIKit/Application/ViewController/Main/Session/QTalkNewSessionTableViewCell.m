@@ -171,7 +171,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (UIImageView *)muteNotReadView {
     if (!_muteNotReadView) {
         
-        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 20, self.timeLabel.bottom + 15, 8, 8)];
+        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 20, self.timeLabel.bottom + 15, 8, 8)];
         _muteNotReadView.backgroundColor = [UIColor qim_colorWithHex:0xEB524A];
         _muteNotReadView.layer.cornerRadius  = _muteNotReadView.width / 2.0;
         _muteNotReadView.clipsToBounds = YES;
@@ -196,7 +196,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_nameLabel) {
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 17, [[UIScreen mainScreen] qim_leftWidth] - 145, qim_sessionViewNameLabelSize)];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 17, [[QIMWindowManager shareInstance] getPrimaryWidth] - 145, qim_sessionViewNameLabelSize)];
         _nameLabel.font = [UIFont boldSystemFontOfSize:qim_sessionViewNameLabelSize];
         _nameLabel.textColor = qim_sessionCellNameTextColor;
         _nameLabel.backgroundColor = [UIColor clearColor];
@@ -222,7 +222,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_timeLabel) {
         
-        _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 85, self.nameLabel.bottom - 16, 75, 12)];
+        _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 85, self.nameLabel.bottom - 16, 75, 12)];
         _timeLabel.font = [UIFont systemFontOfSize:qim_sessionViewTimeLabelSize];
         _timeLabel.textColor = qim_sessionCellTimeTextColor;
         _timeLabel.backgroundColor = [UIColor clearColor];
@@ -236,7 +236,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_muteView) {
         
-        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, self.timeLabel.bottom + 15, 15, 15)];
+        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 40, self.timeLabel.bottom + 15, 15, 15)];
         _muteView.layer.cornerRadius = _muteView.width / 2.0;
         _muteView.clipsToBounds = YES;
         _muteView.backgroundColor = self.backgroundColor;
@@ -548,12 +548,12 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (self.isReminded == YES && countStr.length > 0) {//接收不提醒
         self.muteView.hidden = NO;
         [self refeshContent];
-        self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 40, self.timeLabel.bottom + 15, 15, 15);
+        self.muteView.frame = CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 40, self.timeLabel.bottom + 15, 15, 15);
         self.muteView.centerY = self.contentLabel.centerY;
     } else if (self.isReminded == YES && countStr.length <= 0) {//接收不提醒
         self.muteView.hidden = NO;
         [self refeshContent];
-        self.muteView.frame = CGRectMake([[UIScreen mainScreen] qim_leftWidth] - 25, self.timeLabel.bottom + 15, 15, 15);
+        self.muteView.frame = CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 25, self.timeLabel.bottom + 15, 15, 15);
         self.muteView.centerY = self.contentLabel.centerY;
     } else {
         self.muteView.hidden = YES;
@@ -835,12 +835,12 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 [attStr appendAttributedString:attStr1];
             } else if ([type isEqualToString:@"faild"]) {
                 
-                UIFont *font = [UIFont fontWithName:@"QTalk-QChat" size:15];
+                UIFont *font = [UIFont systemFontOfSize:15];
                 NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor redColor]}];
                 NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:@"\U0000f0fc " attributes:attributed];
                 [attStr appendAttributedString:attStr1];
             } else if ([type isEqualToString:@"waiting"]) {
-                UIFont *font = [UIFont fontWithName:@"QTalk-QChat" size:15];
+                UIFont *font = [UIFont systemFontOfSize:15];
                 NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor lightGrayColor]}];
                 NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:@"\U0000e3d9 " attributes:attributed];
                 [attStr appendAttributedString:attStr1];
@@ -850,7 +850,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 
                 lastStr = [[msg substringFromIndex:(match.range.location + match.range.length)] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
                 if ([lastStr length] > 0) {
-                    UIFont *font = [UIFont fontWithName:@"QTalk-QChat" size:15];
+                    UIFont *font = [UIFont systemFontOfSize:15];
                     NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999]}];
                     [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:lastStr attributes:attributed]];
                 }

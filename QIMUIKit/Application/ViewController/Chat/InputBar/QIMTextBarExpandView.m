@@ -12,7 +12,6 @@
 #import "QIMTextBarExpandView.h"
 #import "UserLocationViewController.h"
 #import "QIMChatVC.h"  
-#import "UIImageView+QIMWebCache.h"
 #import "NSBundle+QIMLibrary.h"
 #import "UIApplication+QIMApplication.h"
 #if __has_include("QIMAutoTracker.h")

@@ -134,7 +134,7 @@
             QIMVerboseLog(@"str : %@", str);
             
             NSString * navAddress;
-            NSString * navUrl;
+            NSString * navUrl = str;
             
             NSURL * myurl = [NSURL URLWithString:str];
             NSString * query = [myurl query];
@@ -149,8 +149,7 @@
                         weakSelf.navUrl = str;
                         _navAddressTextField.text = str;
                         _navNickNameTextField.text = navAddress;
-                    }
-                    else if([key isEqualToString:@"configurl"]){
+                    } else if([key isEqualToString:@"configurl"]){
                         NSString * configUrlStr = [[item stringByReplacingOccurrencesOfString:@"configurl=" withString:@""] qim_base64DecodedString];
                         NSURL *  configUrl = [NSURL URLWithString:configUrlStr];
                         NSString * configQuery = [configUrl query];
@@ -167,16 +166,14 @@
                                     _navNickNameTextField.text = navAddress;
                                 }
                             }
-                        }
-                        else{
+                        } else{
                             navUrl = configUrl.absoluteString;
                             navAddress =configUrl.absoluteString;
                             [self requestByURLSessionWithUrl:configUrl.absoluteString];
                         }
                     }
                 }
-            }
-            else{
+            } else{
                 navUrl = str;
                 navAddress = str;
                 [self requestByURLSessionWithUrl:str];

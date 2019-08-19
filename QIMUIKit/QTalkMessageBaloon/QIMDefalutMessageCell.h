@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong)QIMMessageModel *message;
 
-@property (nonatomic, strong) YLImageView *HeaderView;  //用户头像
+@property (nonatomic, strong) UIImageView *HeaderView;  //用户头像
 
 @property (nonatomic, strong) UILabel *nameLabel; //用户昵称
 

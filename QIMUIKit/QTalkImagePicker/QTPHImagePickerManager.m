@@ -16,6 +16,8 @@ static QTPHImagePickerManager *__imagePickerManager = nil;
     dispatch_once(&onceToken, ^{
         __imagePickerManager = [[QTPHImagePickerManager alloc] init];
         __imagePickerManager.maximumNumberOfSelection = 9;
+        __imagePickerManager.mixedSelection = YES;
+        __imagePickerManager.canContinueSelectionVideo = YES;
     });
     return __imagePickerManager;
 }

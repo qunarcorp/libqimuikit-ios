@@ -12,7 +12,7 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMActivityCell.h"
 #import "QIMJSONSerializer.h"
-#import "UIImageView+QIMWebCache.h"
+//#import "UIImageView+QIMWebCache.h"
 
 @interface QIMActivityCell(){
     UILabel         * _titleLabel;          //活动标题

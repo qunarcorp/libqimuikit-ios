@@ -29,7 +29,7 @@
 
 + (CGFloat)selfViewWidth{
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        return [[UIScreen mainScreen] qim_rightWidth];
+        return [[QIMWindowManager shareInstance] getDetailWidth];
     }else{
         return [UIScreen mainScreen].bounds.size.width;
     }

@@ -139,7 +139,11 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     QIMWorkNoticeMessageModel *model = [self.noticeMsgs objectAtIndex:indexPath.row];
-    return 115;
+    if (model.rowHeight < 115) {
+        return 115;
+    } else {
+        return model.rowHeight;
+    }
 }
 
 @end

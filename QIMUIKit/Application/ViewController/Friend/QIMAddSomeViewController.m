@@ -221,7 +221,7 @@
             UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 60)];
             headerView.backgroundColor = [UIColor whiteColor];
             
-            YLImageView * addFrientIcon = [[YLImageView alloc] initWithFrame:CGRectMake(15, 15, 30, 30)];
+            UIImageView * addFrientIcon = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 30, 30)];
             addFrientIcon.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"findPeople"];
             [headerView addSubview:addFrientIcon];
             
@@ -268,7 +268,7 @@
             UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 60)];
             headerView.backgroundColor = [UIColor whiteColor];
             
-            YLImageView * addFrientIcon = [[YLImageView alloc] initWithFrame:CGRectMake(15, 15, 30, 30)];
+            UIImageView * addFrientIcon = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 30, 30)];
             addFrientIcon.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"findPeople"];
             [headerView addSubview:addFrientIcon];
             

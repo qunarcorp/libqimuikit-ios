@@ -548,29 +548,47 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
-    
-    if (self.picker.selectedAssets.count && [(PHAsset *)self.picker.selectedAssets.firstObject mediaType] != asset.mediaType) {
+    BOOL mixedSelection = [[QTPHImagePickerManager sharedInstance] mixedSelection];
+    if ((self.picker.selectedAssets.count && [(PHAsset *)self.picker.selectedAssets.firstObject mediaType] != asset.mediaType) || mixedSelection == NO) {
         [QTalkTipsView showTips:@"不能同时选择照片和视频" InView:self.view];
         return NO;
     }
     
     if (asset.mediaType == PHAssetMediaTypeVideo) {
+        
+        BOOL canContinueSelectionVideo = [[QTPHImagePickerManager sharedInstance] canContinueSelectionVideo];
+        if (NO == canContinueSelectionVideo) {
+            //不允许选择视频
+            [QTalkTipsView showTips:[NSString stringWithFormat:@"不支持继续上传视频"] InView:self.view];
+            return NO;
+        }
+        
         BOOL notAllowSelectVideo = [[QTPHImagePickerManager sharedInstance] notAllowSelectVideo];
         if (notAllowSelectVideo == YES) {
             //不允许选择视频
-            [QTalkTipsView showTips:[NSString stringWithFormat:@"当前不支持上传视频到驼圈"] InView:self.view];
+            [QTalkTipsView showTips:[NSString stringWithFormat:@"当前不支持上传视频"] InView:self.view];
         } else {
-            [self.picker.selectedAssets insertObject:asset atIndex:self.picker.selectedAssets.count];
             int duration = (int)asset.duration;
-            [_imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    QTalkVideoAssetViewController *vc = [[QTalkVideoAssetViewController alloc]  init];
-                    [vc setVideoAsset:asset];
-                    vc.picker = self.picker;
-                    vc.videoDuration = duration;
-                    [self.navigationController pushViewController:vc animated:YES];
-                });
-            }];
+            [[QIMKit sharedInstance] removeUserObjectForKey:@"videoTimeLen"];
+            NSInteger configDuration = [[[QIMKit sharedInstance] userObjectForKey:@"videoTimeLen"] integerValue];
+            if (configDuration <= 0) {
+                //视频默认15s时长限制
+                configDuration = 15 * 1000;
+            }
+            if (duration * 1000 > configDuration) {
+                [QTalkTipsView showTips:[NSString stringWithFormat:@"不支持上传超过%lds的视频", configDuration / 1000] InView:self.view];
+            } else {
+                [self.picker.selectedAssets insertObject:asset atIndex:self.picker.selectedAssets.count];
+                [_imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        QTalkVideoAssetViewController *vc = [[QTalkVideoAssetViewController alloc]  init];
+                        [vc setVideoAsset:asset];
+                        vc.picker = self.picker;
+                        vc.videoDuration = duration;
+                        [self.navigationController pushViewController:vc animated:YES];
+                    });
+                }];
+            }
         }
         return NO;
     }
@@ -589,7 +607,20 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     }
     
     QTPHGridViewCell *cell = (QTPHGridViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    
+    __block BOOL canChoose = NO;
+    [[PHImageManager defaultManager] requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+        float imageSize = imageData.length; //convert to MB
+        imageSize = imageSize/(1024*1024.0);
+        
+        if (imageSize >= 30) {
+            //判断图片大于30M，提示，取消选择状态
+            [QTalkTipsView showTips:[NSString stringWithFormat:@"不支持选择大于30M的照片"] InView:self.view];
+            if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldSelectAsset:)]) {
+                [self.picker.delegate assetsPickerController:self.picker shouldDeselectAsset:asset];
+            }
+            [collectionView deselectItemAtIndexPath:indexPath animated:NO];
+        }
+    }];
     if (!cell.isEnabled) {
         return NO;
     } else if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldSelectAsset:)]) {

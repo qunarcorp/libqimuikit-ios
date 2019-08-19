@@ -262,6 +262,7 @@ static QIMTextBar *__robotTextBar = nil;
 static QIMTextBar *__consultTextBar = nil;
 static QIMTextBar *__consultServerTextBar = nil;
 static QIMTextBar *__publicNumberTextBar = nil;
+static QIMTextBar *__textbar = nil;
 
 static dispatch_once_t __norMalTextBarOnceToken;
 static dispatch_once_t __singleTextBarOnceToken;
@@ -289,6 +290,11 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 }
 
 + (instancetype)sharedIMTextBarWithBounds:(CGRect)bounds WithExpandViewType:(QIMTextBarExpandViewType)expandType {
+    CGRect frame = CGRectMake(0, bounds.size.height - kQIMChatToolBarHeight - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], CGRectGetWidth(bounds), kChatKeyBoardHeight);
+    __textBar = [[QIMTextBar alloc] initWithFrame:frame WithExpandViewType:expandType];
+    __textBar.expandViewType = expandType;
+    [__textBar.expandPanel addItems];
+    return __textBar;
     switch (expandType) {
         case QIMTextBarExpandViewTypeRobot: {
             dispatch_once(&__robotTextBarOnceToken, ^{
@@ -975,7 +981,8 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     weakSelf.chatToolBar.textView.selectedRange = NSMakeRange(weakSelf.chatToolBar.textView.selectedRange.location + weakSelf.chatToolBar.textView.selectedRange.length + 1, 0);
                     [weakSelf resetTextStyle];
                 }
-            }];            
+            }];
+            //Mark by oldiPad
             if ([[QIMKit sharedInstance] getIsIpad]) {
                 qNoticeVC.modalPresentationStyle = UIModalPresentationCurrentContext;
                 QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
@@ -985,8 +992,19 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 #endif
             } else {
                 QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+                if ([[QIMKit sharedInstance] getIsIpad]) {
+                    qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+                }
                 [(UIViewController *)weakSelf.delegate presentViewController:qtalNav animated:YES completion:nil];
             }
+        
+            /* mark by newipad
+            QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:qNoticeVC];
+            if ([[QIMKit sharedInstance] getIsIpad]) {
+                qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+            }
+            [(UIViewController *)weakSelf.delegate presentViewController:qtalNav animated:YES completion:nil];
+            */
         }
     }
 }
@@ -1828,14 +1846,26 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         picker.colsInPortrait = 4;
         picker.colsInLandscape = 5;
         picker.minimumInteritemSpacing = 2.0;
+        //Mark by oldiPad
         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
             picker.modalPresentationStyle = UIModalPresentationCurrentContext;
 #if __has_include("QIMIPadWindowManager.h")
             [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
 #endif
         } else {
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+            }
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
         }
+    
+        /* mark by newipad
+         
+         if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+         picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+         }
+         [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+         */
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }
@@ -2498,7 +2528,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                 }
             }];
             [self sendAssetList:assetList ForPickerController:picker];
-        }else if (asset.mediaType == PHAssetMediaTypeVideo){
+        } else if (asset.mediaType == PHAssetMediaTypeVideo) {
             int videoDuration = (int)(asset.duration);
             [imageManager requestAVAssetForVideo:asset
                                          options:nil
@@ -2522,7 +2552,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                  CGImageRelease(image);
                  NSString *videoOutPath = videoResultPath;
                  UIImage *thumbImage = thumb;
-                 //
                  dispatch_async(dispatch_get_main_queue(), ^{
                      [self.delegate sendVideoPath:videoOutPath WithThumbImage:thumbImage WithFileSizeStr:fileSizeStr WithVideoDuration:videoDuration];
                  });

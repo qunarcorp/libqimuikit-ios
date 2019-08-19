@@ -31,8 +31,8 @@
 
 + (CGFloat)redPackCellWidth{
     if ([[QIMKit sharedInstance] getIsIpad]) {
-        return ([[UIScreen mainScreen] qim_rightWidth] * 2 / 5);
-    }else{
+        return ([[QIMWindowManager shareInstance] getDetailWidth] * 2 / 5);
+    } else{
         return kQIMRedPackCellWidth;
     }
 }

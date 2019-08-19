@@ -10,7 +10,7 @@
 
 #import "CameraViewController.h"
 #import "QIMImageUtil.h"
-#import "UIImage+QIMMultiFormat.h"
+//#import "UIImage+QIMMultiFormat.h"
 #import "UIImage+QIMUIKit.h"
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);

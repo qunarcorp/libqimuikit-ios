@@ -154,11 +154,6 @@
     }
 }
 
-//注册
--(void)registerUser:(id)sender {
-    [[QIMKit sharedInstance] registerWithUserName:self.usernameTextField.text.lowercaseString WithPassWord:self.passwordTextField.text];
-}
-
 - (void)loginNotify:(NSNotification *)notify{
     dispatch_async(dispatch_get_main_queue(), ^{
         [_loadingView stopAnimation];

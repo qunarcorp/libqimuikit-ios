@@ -10,7 +10,7 @@
 #define kLoginViewBGColorHex    0xffffff
 #define kPlaceholderColorHex    0xb0b0b0
 #define kSepLineColorHex        0xdddddd
-#define kHighlightedColorHex    0x11cd6e
+#define kHighlightedColorHex    0x00CABE
 #define kNomalInputColorHex    0x3d3d3d
 
 #define kLoginViewSpaceToSide   ([UIScreen mainScreen].bounds.size.width / 16)
@@ -19,9 +19,9 @@
 #define kInputViewSpaceToSide   30
 #define kPlaceholderHeight      25
 #define kInputViewHeight        30
-#define kValidCodeBtnNomalWidth      80
+#define kValidCodeBtnNomalWidth      120
 #define kValidCodeBtnWaitingWidth      50
-#define kValidCodeDisplayString      @"验证码"
+#define kValidCodeDisplayString      @"获取验证码"
 #define kValidCodeSendingString      @"发送中..."
 
 #define kPlaceholderFontSize   14
@@ -36,6 +36,8 @@
 #import "QIMNavConfigSettingVC.h"
 #import "QIMNavConfigManagerVC.h"
 #import "QIMRemoteNotificationManager.h"
+#import "MBProgressHUD.h"
+
 
 @interface QIMLoginVC () <UITextFieldDelegate,UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource> {
     UIView          * _loginBgView;
@@ -92,11 +94,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self loadLoginType];
-    self.view.backgroundColor = [UIColor qim_colorWithHex:kSelfViewBGColorHex alpha:1.0];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginNotify:) name:kNotificationLoginState object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:nil];
     tap.delegate = self;
@@ -126,23 +128,31 @@
     _userNameInputView.text = lastUserName;
     _validCodeInputView.text = @"......";
     [self resetAutoUIFrame];
-    [self startLoginAnimation];
-    
+//    [self startLoginAnimation];
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
         });
     } else {
         NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-        if ([lastUserName length] > 0 && [token length] > 0 && self.loginType == QTLoginTypeSms) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
-                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
-            });
+        if ([lastUserName isEqualToString:@"appstore"]) {
+            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
+        } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
+            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
         } else {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
-            });
+            if ([lastUserName length] > 0 && [token length] > 0 && self.loginType == QTLoginTypeSms) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
+                    [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
+                });
+            } else {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
+                });
+            }
         }
     }
 }
@@ -194,21 +204,19 @@
     
     [self setLoginBtnEnabled:NO];
     
-    [self initWritingAnimations];
+//    [self initWritingAnimations];
     
     [self agreeBtn];
     [self settingBtn];
     
-    [self loginBgView].frame = CGRectMake(kLoginViewSpaceToSide, kLoginViewSpaceToTop, self.view.width - kLoginViewSpaceToSide * 2, [self agreeBtn].bottom + 30);
+
 }
 
 
 - (UIView *)loginBgView {
     if (_loginBgView == nil) {
-        _loginBgView = [[UIView alloc] initWithFrame:CGRectMake(kLoginViewSpaceToSide, kLoginViewSpaceToTop, self.view.width - kLoginViewSpaceToSide * 2, kLoginViewHeight)];
-        _loginBgView.backgroundColor = [UIColor qim_colorWithHex:kLoginViewBGColorHex alpha:1.0];
-        _loginBgView.clipsToBounds = YES;
-        _loginBgView.layer.cornerRadius = 5;
+        _loginBgView = [[UIView alloc] initWithFrame:CGRectMake(0 , 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _loginBgView.backgroundColor = [UIColor qim_colorWithHex:0xFFFFFF alpha:1.0];
         [self.view addSubview:_loginBgView];
     }
     return _loginBgView;
@@ -216,20 +224,16 @@
 
 - (UIView *)signView {
     if (_signView == nil) {
-        _signView = [[UIView alloc] initWithFrame:CGRectMake(0, 30, [self loginBgView].width, 40)];
-        _signView.backgroundColor = [UIColor clearColor];
+        _signView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH , 200)];
+        _signView.backgroundColor = [UIColor whiteColor];
+
         [[self loginBgView] addSubview:_signView];
         
-        UIView * tipView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 3, _signView.height)];
-        tipView.backgroundColor = [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0];
-        [_signView addSubview:tipView];
         
-        UILabel * tipLabel = [[UILabel alloc] initWithFrame:CGRectMake(tipView.right + kInputViewSpaceToSide - 5, 0, _signView.width - tipView.right - 50, _signView.height)];
-        tipLabel.backgroundColor = [UIColor clearColor];
-        tipLabel.textColor = [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0];
-        tipLabel.font = [UIFont boldSystemFontOfSize:21];
-        tipLabel.text = @"登  录";//@"LOGIN";
-        [_signView addSubview:tipLabel];
+        UIImageView * iConImg = [[UIImageView alloc]initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"loginPageLogo"]];
+        [iConImg setFrame:CGRectMake((SCREEN_WIDTH - iConImg.image.size.width)/2, 101, iConImg.image.size.width, iConImg.image.size.height)];
+        
+        [_signView addSubview:iConImg];
     }
     return _signView;
 }
@@ -250,7 +254,7 @@
         _userNamePlaceholder.backgroundColor = [UIColor clearColor];
         _userNamePlaceholder.textColor = [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0];
         _userNamePlaceholder.font = [UIFont systemFontOfSize:kNomalFontSize];
-        _userNamePlaceholder.text = @"请输入用户名";
+        _userNamePlaceholder.text = @"用户名";
         [_loginBgView addSubview:_userNamePlaceholder];
     }
     return _userNamePlaceholder;
@@ -260,12 +264,14 @@
     if (_userNameInputView == nil) {
         
         if (self.loginUsers.count > 0) {
-            _userNameInputView = [[UITextField alloc] initWithFrame:CGRectMake([self userNameSepline].left, [self userNameSepline].top - kInputViewHeight, [self userNameSepline].width - 40, kInputViewHeight)];
+            _userNameInputView = [[UITextField alloc] initWithFrame:CGRectMake([self userNameSepline].left, [self userNameSepline].top - kInputViewHeight, [self userNameSepline].width, kInputViewHeight)];
+            /*
             _userNameDropBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-            _userNameDropBtn.frame = CGRectMake(_userNameInputView.right + 10, _userNameInputView.top, kInputViewHeight, kInputViewHeight);
-            [_userNameDropBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowup_nor"] forState:UIControlStateNormal];
-            [_userNameDropBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowdown_nor"] forState:UIControlStateSelected];
+            _userNameDropBtn.frame = CGRectMake(_userNameInputView.right + 10, _userNameInputView.top, kInputViewHeight-5, kInputViewHeight);
+            [_userNameDropBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowdown_nor"] forState:UIControlStateNormal];
+            [_userNameDropBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowup_nor"] forState:UIControlStateSelected];
             [_userNameDropBtn addTarget:self action:@selector(dropLoginUserTableView:) forControlEvents:UIControlEventTouchUpInside];
+             */
         } else {
             _userNameInputView = [[UITextField alloc] initWithFrame:CGRectMake([self userNameSepline].left, [self userNameSepline].top - kInputViewHeight, [self userNameSepline].width, kInputViewHeight)];
         }
@@ -278,7 +284,7 @@
         _userNameInputView.clearButtonMode = UITextFieldViewModeWhileEditing;
         _userNameInputView.returnKeyType = UIReturnKeyNext;
         [_loginBgView addSubview:_userNameInputView];
-        [_loginBgView addSubview:_userNameDropBtn];
+//        [_loginBgView addSubview:_userNameDropBtn];
     }
     return _userNameInputView;
 }
@@ -321,9 +327,9 @@
         [_loginBgView addSubview:_validCodePlaceholder];
     }
     if (self.loginType == QTLoginTypePwd) {
-        _validCodePlaceholder.text = @"请输入密码";
+        _validCodePlaceholder.text = @"密码";
     } else {
-        _validCodePlaceholder.text = @"请输入验证码";
+        _validCodePlaceholder.text = @"验证码";
     }
     return _validCodePlaceholder;
 }
@@ -355,16 +361,14 @@
 
 - (UILabel *)commitBtn {
     if (_commitBtn == nil) {
-        _commitBtn = [[UILabel alloc] initWithFrame:CGRectMake([self validCodeSepline].left + 20, [self validCodeSepline].bottom + 40, [self validCodeSepline].width - 40, 40)];
-        _commitBtn.backgroundColor = [UIColor clearColor];
-        _commitBtn.layer.borderColor = [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor;
-        _commitBtn.layer.borderWidth = 1;
-        _commitBtn.layer.cornerRadius = 3;
+        _commitBtn = [[UILabel alloc] initWithFrame:CGRectMake(40, [self validCodeSepline].bottom + 50, SCREEN_WIDTH - 80, 48)];
+        _commitBtn.backgroundColor = [UIColor qim_colorWithHex:0xABE9E5];
+        _commitBtn.layer.cornerRadius = 24;
         _commitBtn.clipsToBounds = YES;
-        _commitBtn.textColor = [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0];
+        _commitBtn.textColor = [UIColor qim_colorWithHex:0xFFFFFF];
         _commitBtn.textAlignment = NSTextAlignmentCenter;
         _commitBtn.font = [UIFont boldSystemFontOfSize:17];
-        _commitBtn.text = @"登  录";
+        _commitBtn.text = @"登录";
         [_loginBgView addSubview:_commitBtn];
         
         UITapGestureRecognizer * commitTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(commitTapHandle:)];
@@ -385,10 +389,10 @@
     if (_getValidCodeBtn == nil) {
         _getValidCodeBtn = [[UILabel alloc] initWithFrame:CGRectMake([self validCodeSepline].right - kValidCodeBtnNomalWidth, [self validCodeSepline].top - kInputViewHeight + 0.5, kValidCodeBtnNomalWidth, kInputViewHeight)];
         _getValidCodeBtn.backgroundColor = [UIColor clearColor];
-        _getValidCodeBtn.layer.borderColor = [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor;
-        _getValidCodeBtn.layer.borderWidth = 0.5;
-        _getValidCodeBtn.textColor = [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0];
-        _getValidCodeBtn.textAlignment = NSTextAlignmentCenter;
+//        _getValidCodeBtn.layer.borderColor = [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor;
+//        _getValidCodeBtn.layer.borderWidth = 0.5;
+        _getValidCodeBtn.textColor = [UIColor colorWithRGBHex:0xBFBFBF];
+        _getValidCodeBtn.textAlignment = NSTextAlignmentRight;
         _getValidCodeBtn.font = [UIFont boldSystemFontOfSize:kNomalFontSize];
         _getValidCodeBtn.text = kValidCodeDisplayString;
         
@@ -421,25 +425,26 @@
 - (UIButton *)agreeBtn {
     if (_agreeBtn == nil) {
         _agreeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _agreeBtn.frame = CGRectMake(([self loginBgView].width - 258) / 2, [self commitBtn].bottom + 30, 18, 18);
-        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_normal"] forState:UIControlStateNormal];
-        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_click"] forState:UIControlStateSelected];
+        _agreeBtn.frame = CGRectMake(([self loginBgView].width - 180) / 2, [self commitBtn].bottom + 30, 18, 18);
+        [_agreeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e337" size:17 color:[UIColor qim_colorWithHex:0xE4E4E4]]] forState:UIControlStateNormal];
+        [_agreeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e337" size:17 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateSelected];
         _agreeBtn.selected = YES;
         [_agreeBtn addTarget:self action:@selector(agreeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [[self loginBgView] addSubview:_agreeBtn];
         
-        UILabel * agreeLabel = [[UILabel  alloc] initWithFrame:CGRectMake(_agreeBtn.right + 5, _agreeBtn.top, 100, _agreeBtn.height)];
+        UILabel * agreeLabel = [[UILabel  alloc] initWithFrame:CGRectMake(_agreeBtn.right + 5, _agreeBtn.top, 30, _agreeBtn.height)];
         agreeLabel.backgroundColor = [UIColor clearColor];
         agreeLabel.text = [NSBundle qim_localizedStringForKey:@"login_agree"];
-        agreeLabel.textColor = [UIColor spectralColorGrayBlueColor];
+        agreeLabel.textColor = [UIColor qim_colorWithHex:0x999999];
         agreeLabel.font = [UIFont systemFontOfSize:14];
         [[self loginBgView] addSubview:agreeLabel];
         
         UIButton * agreementBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        agreementBtn.frame = CGRectMake(agreeLabel.right, _agreeBtn.top, 130, _agreeBtn.height);
+        agreementBtn.frame = CGRectMake(agreeLabel.right, _agreeBtn.top, 160, _agreeBtn.height);
         [agreementBtn setTitle:[NSBundle qim_localizedStringForKey:@"login_privacy_policy"] forState:UIControlStateNormal];
         [agreementBtn.titleLabel setFont:agreeLabel.font];
-        [agreementBtn setTitleColor:[UIColor spectralColorBlueColor] forState:UIControlStateNormal];
+        [agreementBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
+        [agreementBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateHighlighted];
         [agreementBtn addTarget:self action:@selector(agreementBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [[self loginBgView] addSubview:agreementBtn];
     }
@@ -449,10 +454,10 @@
 - (UIButton *)settingBtn {
     if (_settingBtn == nil) {
         
-        _settingBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.height - 44, self.view.width, 24)];
+        _settingBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.height - 65 , self.view.width, 24)];
         [_settingBtn setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
         [_settingBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [_settingBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
+        [_settingBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         [_settingBtn setTitle:@"设置服务地址" forState:UIControlStateNormal];
         [_settingBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconSetting"] forState:UIControlStateNormal];
         [_settingBtn addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -547,16 +552,13 @@
 }
 
 - (void)setValidCodeBtnUIWaiting:(BOOL)isWaiting {
-    [UIView animateWithDuration:0.5 animations:^{
-        if (isWaiting) {
-            [self getValidCodeBtn].frame = CGRectMake([self validCodeSepline].right - kValidCodeBtnWaitingWidth, [self validCodeSepline].top - kInputViewHeight + 0.5, kValidCodeBtnWaitingWidth, kInputViewHeight);
-            [self validCodeInputView].frame = CGRectMake([self validCodeSepline].left, [self validCodeSepline].top - kInputViewHeight, [self validCodeSepline].width - [self getValidCodeBtn].width, kInputViewHeight);
-        }else{
-            [self getValidCodeBtn].frame = CGRectMake([self validCodeSepline].right - kValidCodeBtnNomalWidth, [self validCodeSepline].top - kInputViewHeight + 0.5, kValidCodeBtnNomalWidth, kInputViewHeight);
-            [self validCodeInputView].frame = CGRectMake([self validCodeSepline].left, [self validCodeSepline].top - kInputViewHeight, [self validCodeSepline].width - [self getValidCodeBtn].width, kInputViewHeight);
-        }
-    } completion:^(BOOL finished) {
-    }];
+    if (isWaiting) {
+        [self getValidCodeBtn].frame = CGRectMake([self validCodeSepline].right - kValidCodeBtnWaitingWidth, [self validCodeSepline].top - kInputViewHeight + 0.5, kValidCodeBtnWaitingWidth, kInputViewHeight);
+        [self validCodeInputView].frame = CGRectMake([self validCodeSepline].left, [self validCodeSepline].top - kInputViewHeight, [self validCodeSepline].width - [self getValidCodeBtn].width, kInputViewHeight);
+    }else{
+        [self getValidCodeBtn].frame = CGRectMake([self validCodeSepline].right - kValidCodeBtnNomalWidth, [self validCodeSepline].top - kInputViewHeight + 0.5, kValidCodeBtnNomalWidth, kInputViewHeight);
+        [self validCodeInputView].frame = CGRectMake([self validCodeSepline].left, [self validCodeSepline].top - kInputViewHeight, [self validCodeSepline].width - [self getValidCodeBtn].width, kInputViewHeight);
+    }
 }
 
 - (void)initWritingAnimations{
@@ -705,8 +707,13 @@
         enabled = NO;
     }
     [self commitBtn].userInteractionEnabled = enabled;
-    [self commitBtn].layer.borderColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0].CGColor : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0].CGColor;
-    [self commitBtn].textColor = enabled ? [UIColor qim_colorWithHex:kHighlightedColorHex alpha:1.0] : [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0];
+    
+    if (enabled == YES) {
+        _commitBtn.backgroundColor = [UIColor colorWithRGBHex:0x00CABE];
+    }
+    else{
+         _commitBtn.backgroundColor = [UIColor qim_colorWithHex:0xABE9E5];
+    }
 }
 
 - (void)commitTapHandle:(UITapGestureRecognizer *)sender {
@@ -722,8 +729,13 @@
         return;
     }
     
-    [self startLoginAnimation];
-    
+    if (_agreeBtn.selected == NO) {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"请查看并同意\n《使用条款和隐私政策》" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }
+//    [self startLoginAnimation];
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     NSString *userName = [[_userNameInputView text] lowercaseString];
     userName = [userName stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSString *validCode = _validCodeInputView.text;
@@ -760,7 +772,7 @@
                                                                           cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_got_it"]
                                                                           otherButtonTitles:nil];
                                 [alertView show];
-                                [weakSelf stopLoginAnimation];
+//                                [weakSelf stopLoginAnimation];
                             } else {
                                 [weakSelf showNetWorkUnableAlert];
                             }
@@ -875,6 +887,10 @@
     } else if (_userNameInputView.text.length && _validCodeInputView.text.length == 6) {
         [self setLoginBtnEnabled:sender.selected];
     }
+    if (sender.selected == NO) {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"亲，请查看并同意\n《使用条款和隐私政策》\n才可以登录哟～" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }
 }
 
 - (void)agreementBtnHandle:(UIButton *)sender
@@ -894,6 +910,7 @@
 
 - (void)loginNotify:(NSNotification *)notify{
     dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         if ([notify.object boolValue]) {
             [self stopLoginAnimation];
             [self stopWritingLogo];
@@ -918,30 +935,29 @@
 }
 
 
-- (void)keyboardWillShow:(NSNotification*)notification{
-    CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//- (void)keyboardWillShow:(NSNotification*)notification{
+//    CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//
+//    [UIView animateWithDuration:0.5 animations:^{
+//        float movHeight = keyboardRect.size.height - (self.view.height - _loginBgView.bottom);
+//        movHeight = MAX(0, movHeight);
+//        self.view.frame = CGRectMake(0, -movHeight, self.view.width, self.view.height);
+//    }];
     
-    [UIView animateWithDuration:0.5 animations:^{
-        float movHeight = keyboardRect.size.height - (self.view.height - _loginBgView.bottom);
-        movHeight = MAX(0, movHeight);
-        self.view.frame = CGRectMake(0, -movHeight, self.view.width, self.view.height);
-    }];
-    
-}
+//}
 
-- (void)keyboardWillHide:(NSNotification*)notification{
-    [UIView animateWithDuration:0.5 animations:^{
-        self.view.frame = CGRectMake(0, 0, self.view.width, self.view.height);
-    }];
+//- (void)keyboardWillHide:(NSNotification*)notification{
+//    [UIView animateWithDuration:0.5 animations:^{
+//        self.view.frame = CGRectMake(0, 0, self.view.width, self.view.height);
+//    }];
     
-}
+//}
 
 #pragma mark - UITextFieldDelegate
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     if (textField == _validCodeInputView) {
         if (_userNameInputView.text.length > 0) {
-            
         }else{
             [self takeFocusOfView:_userNameSepline];
             return NO;
@@ -961,6 +977,7 @@
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == _validCodeInputView) {
         if (self.loginType == QTLoginTypePwd && textField.text.length - range.length + string.length >= 1) {
+            
             [self setLoginBtnEnabled:YES];
         } else if (textField.text.length - range.length + string.length == 6) {
             [self setLoginBtnEnabled:YES];
@@ -983,6 +1000,7 @@
     }else if (textField == _validCodeInputView) {
         [self setLoginBtnEnabled:NO];
     }
+    _commitBtn.backgroundColor = [UIColor qim_colorWithHex:0xABE9E5];
     return YES;
 }
 

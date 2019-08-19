@@ -22,6 +22,9 @@
 
 @property (nonatomic, strong) NSMutableArray *sectionPhotos;
 
+@property (nonatomic, strong) NSMutableArray *dimensionalPhotos;    //二维数组拆一维
+@property (nonatomic, strong) NSMutableArray *dimensionalPhotoIndexPaths;    //二维数组拆一维
+
 @property (nonatomic, strong) NSMutableDictionary *photoIdentifierDic;
 
 @property (nonatomic, strong) UIButton *chooseBtn;
@@ -60,6 +63,20 @@
         _sectionPhotos = [NSMutableArray arrayWithCapacity:3];
     }
     return _sectionPhotos;
+}
+
+- (NSMutableArray *)dimensionalPhotos {
+    if (!_dimensionalPhotos) {
+        _dimensionalPhotos = [NSMutableArray arrayWithCapacity:3];
+    }
+    return _dimensionalPhotos;
+}
+
+- (NSMutableArray *)dimensionalPhotoIndexPaths {
+    if (!_dimensionalPhotoIndexPaths) {
+        _dimensionalPhotoIndexPaths = [NSMutableArray arrayWithCapacity:3];
+    }
+    return _dimensionalPhotoIndexPaths;
 }
 
 - (NSMutableDictionary *)photoIdentifierDic {
@@ -356,20 +373,18 @@
         NSLog(@"localMedia : %@", localMedia);
     }
     self.sectionPhotos = [self splitLocalMediasWithLocalMsg:localMedia];
-    NSLog(@"self.sectionPhotos : %@", self.sectionPhotos);
+    for (NSInteger i = 0; i < self.sectionPhotos.count; i++) {
+        NSDictionary *photosDic = [self.sectionPhotos objectAtIndex:i];
+        NSArray *photos = [photosDic objectForKey:@"data"];
+        for (NSInteger j = 0; j < photos.count; j++) {
+            QIMMWPhoto *photo = [photos objectAtIndex:j];
+            [self.dimensionalPhotoIndexPaths addObject:[NSIndexPath indexPathForRow:j inSection:i]];
+            [self.dimensionalPhotos addObject:photo];
+        }
+    }
 }
 
 #pragma mark - life ctyle
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-}
 
 - (void)setupNav {
     self.title = @"图片与视频";
@@ -387,7 +402,7 @@
     [self setupNav];
     [self loadLocalMedia];
     [self setupUI];
-    [self scrollBottom];
+//    [self scrollBottom];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -444,140 +459,24 @@
         [cell setVideoDuration:videoDuration];
         [cell setReloaded:YES];
     }
+    cell.backgroundColor = [UIColor yellowColor];
     return cell;
 }
 
-- (NSInteger)getCurrentPhotoIndexWithIndexPath:(NSIndexPath *)indexPath {
-    NSInteger index = 0;
-    for (NSInteger i = 0; i < indexPath.section; i++) {
-        NSDictionary *dataDic = [self.sectionPhotos objectAtIndex:i];
-        NSArray *sectionArray = [dataDic objectForKey:@"data"];
-        index += sectionArray.count;
-    }
-    index += indexPath.row;
-    return index;
-}
-
-- (NSUInteger)getTotalPhotoCount {
-    NSInteger index = 0;
-    for (NSInteger i = 0; i < self.sectionPhotos.count; i++) {
-        NSDictionary *dataDic = [self.sectionPhotos objectAtIndex:i];
-        NSArray *sectionArray = [dataDic objectForKey:@"data"];
-//        NSArray *sectionArray = [self.sectionPhotos objectAtIndex:i];
-        index += sectionArray.count;
-    }
-    return index;
-}
-
-- (NSIndexPath *)getNextIndexPathWithOffset:(NSInteger)offset {
-
-    if (offset == 0) {
-        return self.currentPhotoIndexPath;
-    }
-    NSInteger currentSectionOffset = self.currentPhotoIndexPath.row;
-    NSInteger m = offset;
-    NSInteger temp = offset;
-    NSInteger section = self.currentPhotoIndexPath.section;
-    NSDictionary *dataDic = [self.sectionPhotos objectAtIndex:section];
-    NSArray *sectionArray = [dataDic objectForKey:@"data"];
-    NSInteger photoOfSectionCounts = [sectionArray count];
-    NSInteger n = offset;
-    BOOL moveToRight = YES;
-    if (temp <= 0 && (photoOfSectionCounts - currentSectionOffset) != 0)  {
-        n = abs(temp) / (photoOfSectionCounts - currentSectionOffset);
-    } else {
-        n = abs(temp) / (currentSectionOffset);
-    }
-    if (n != 0) {
-        if (temp < 0) {
-            temp = temp + (photoOfSectionCounts - currentSectionOffset);
-            section ++;
-            moveToRight = YES;
-        } else {
-            temp = currentSectionOffset - temp;
-            section --;
-            moveToRight = NO;
-        }
-        while (m != 0 && temp != 0) {
-            NSDictionary *dataDic = [self.sectionPhotos objectAtIndex:section];
-            NSArray *sectionArray = [dataDic objectForKey:@"data"];
-            NSInteger sectionCounts = [sectionArray count];
-            if (section < 0 || section >= [self.sectionPhotos count]) {
-                break;
-            }
-            m = temp / sectionCounts;
-//            n = temp % sectionCounts;
-            if (m != 0) {
-                if (temp <= 0) {
-                    temp = temp + sectionCounts;
-                    section ++;
-                } else {
-                    temp = temp - sectionCounts;
-                    section --;
-                }
-            }
-        }
-    } else {
-        if (temp <= 0) {
-            temp = currentSectionOffset - (temp);
-        } else {
-            temp = currentSectionOffset - temp;
+- (NSInteger)getDidSelectItemIndexWithIndexPath:(NSIndexPath *)indexPath {
+    for (NSInteger i = 0; i < self.dimensionalPhotoIndexPaths.count; i++) {
+        NSIndexPath *photoIndexPath = [self.dimensionalPhotoIndexPaths objectAtIndex:i];
+        if(photoIndexPath.row == indexPath.row && photoIndexPath.section == indexPath.section) {
+            return i;
         }
     }
-    if (temp == 0) {
-        if (moveToRight) {
-            NSInteger section = self.currentPhotoIndexPath.section;
-            NSDictionary *dataDic = [self.sectionPhotos objectAtIndex:section-1];
-            NSArray *sectionArray = [dataDic objectForKey:@"data"];
-            NSInteger sectionCounts = [sectionArray count];
-            return [NSIndexPath indexPathForRow:sectionCounts - 1 inSection:section-1];
-        } else {
-            
-            NSDictionary *dataDic = [self.sectionPhotos objectAtIndex:section-1];
-            NSArray *sectionArray = [dataDic objectForKey:@"data"];
-            NSInteger sectionCounts = [sectionArray count];
-            return [NSIndexPath indexPathForRow:sectionCounts - 1 inSection:section];
-        }
-    }
-
-    if (section < 0) {
-        section = 0;
-    } else if (section > [self.sectionPhotos count]) {
-        section = [self.sectionPhotos count] - 1;
-    }
-    NSLog(@"a[%d][%d]", section, abs(temp-1));
-    return [NSIndexPath indexPathForRow:(abs(temp-1)) inSection:section];
+    return 0;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    self.currentPhotoIndexPath = indexPath;
-    NSInteger photoIndex = [self getCurrentPhotoIndexWithIndexPath:indexPath];
-    //初始化图片浏览控件
-    self.collectionViewOffsetPoint = collectionView.contentOffset;
     
-    NSDictionary *dataDic = [self.sectionPhotos objectAtIndex:indexPath.section];
-    NSArray *dataArray = [dataDic objectForKey:@"data"];
-    
-    QIMMWPhoto *photo = [dataArray objectAtIndex:indexPath.row];
-    if (!self.fixedImageArray) {
-        self.fixedImageArray = [NSMutableArray arrayWithCapacity:1];
-    }
-    [self.fixedImageArray addObject:photo];
-    QIMMWPhotoBrowser *browser = [[QIMMWPhotoBrowser alloc] initWithDelegate:self];
-    browser.displayActionButton = NO;
-    browser.zoomPhotosToFill = YES;
-    browser.enableSwipeToDismiss = NO;
-    browser.autoPlayOnAppear = YES;
-    [browser setCurrentPhotoIndex:0];
-    
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
-    browser.wantsFullScreenLayout = YES;
-#endif
-    
-    //初始化navigation
-    QIMPhotoBrowserNavController *nc = [[QIMPhotoBrowserNavController alloc] initWithRootViewController:browser];
-    nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self presentViewController:nc animated:YES completion:nil];
+    NSInteger tag = [self getDidSelectItemIndexWithIndexPath:indexPath];
+    [[QIMFastEntrance sharedInstance] browseBigHeader:@{@"MWPhotoList": self.dimensionalPhotos, @"CurrentIndex":@(tag)}];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -602,53 +501,7 @@
 }
 
 - (void)didReceiveMemoryWarning {
-    [[QIMSDImageCache sharedImageCache] clearMemory];
-}
-
-#pragma mark - QIMMWPhotoBrowserDelegate
-
-- (NSUInteger)numberOfPhotosInPhotoBrowser:(QIMMWPhotoBrowser *)photoBrowser {
-    if (self.fixedImageArray.count > 0) {
-        return self.fixedImageArray.count;
-    }
-    return [self getTotalPhotoCount];
-}
-
-- (id <QIMMWPhoto>)photoBrowser:(QIMMWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
-    
-    if (self.fixedImageArray.count > 0) {
-        QIMMWPhoto *photo = [self.fixedImageArray objectAtIndex:0];
-        return photo;
-    }
-    NSInteger preIndex = [self getCurrentPhotoIndexWithIndexPath:self.currentPhotoIndexPath];
-    NSInteger offset = preIndex - index;
-    NSIndexPath *nextCurrentIndexPath = [self getNextIndexPathWithOffset:offset];
-    
-    NSInteger section = nextCurrentIndexPath.section;
-    NSDictionary *dataDic = [self.sectionPhotos objectAtIndex:section];
-    NSArray *sectionArray = [dataDic objectForKey:@"data"];
-    QIMMWPhoto *photo = [sectionArray objectAtIndex:nextCurrentIndexPath.row];
-    return photo;
-}
-
-- (void)photoBrowser:(QIMMWPhotoBrowser *)photoBrowser currentDisplayPhotoAtIndex:(NSUInteger)index {
-    /*
-    QIMVerboseLog(@"self.currentPhotoIndexPath : %@", self.currentPhotoIndexPath);
-    NSInteger preIndex = [self getCurrentPhotoIndexWithIndexPath:self.currentPhotoIndexPath];
-    NSInteger offset = preIndex - index;
-    NSIndexPath *nextCurrentIndexPath = [self getNextIndexPathWithOffset:offset];
-    QIMVerboseLog(@"nextCurrentIndexPath : %@", nextCurrentIndexPath);
-    self.currentPhotoIndexPath = nextCurrentIndexPath;
-     */
-}
-
-- (void)photoBrowserDidFinishModalPresentation:(QIMMWPhotoBrowser *)photoBrowser {
-    //界面消失
-    [photoBrowser dismissViewControllerAnimated:YES completion:^{
-        // _photoCollectionView 回滚到上次浏览的位置
-        [_photoCollectionView setContentOffset:_collectionViewOffsetPoint animated:YES];
-        [self.fixedImageArray removeAllObjects];
-    }];
+    [[QIMImageManager sharedInstance] clearMemory];
 }
 
 - (void)chooseMedia:(id)sender {
@@ -716,7 +569,9 @@
                 if (imageData.length > 0) {
                     [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                         PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-                        [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:imageData options:options];
+                        PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+                        request.creationDate = [NSDate date];
+                        [request addResourceWithType:PHAssetResourceTypePhoto data:imageData options:options];
                     } completionHandler:^(BOOL success, NSError * _Nullable error) {
                         QIMVerboseLog(@"是否保存成功：%d",success);
                         dispatch_group_leave(group);
@@ -733,7 +588,9 @@
                     if (fileData.length > 0) {
                         [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                             PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-                            [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:fileData options:options];
+                            PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+                            request.creationDate = [NSDate date];
+                            [request addResourceWithType:PHAssetResourceTypePhoto data:fileData options:options];
                         } completionHandler:^(BOOL success, NSError * _Nullable error) {
                             QIMVerboseLog(@"是否保存成功：%d",success);
                             dispatch_group_leave(group);
@@ -752,7 +609,9 @@
                 if (fileData.length > 0) {
                     [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                         PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-                        [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:fileData options:options];
+                        PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+                        request.creationDate = [NSDate date];
+                        [request addResourceWithType:PHAssetResourceTypePhoto data:fileData options:options];
                     } completionHandler:^(BOOL success, NSError * _Nullable error) {
                         QIMVerboseLog(@"是否保存成功：%d",success);
                         dispatch_group_leave(group);

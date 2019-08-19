@@ -11,7 +11,6 @@
 #import "QIMFileIconTools.h"
 #import "QIMFilePreviewVC.h"
 #import "QIMJSONSerializer.h"
-#import "QIMVideoPlayerVC.h"
 #import "UILabel+VerticalAlign.h"
 #import "NSBundle+QIMLibrary.h"
 #import "ASIProgressDelegate.h"

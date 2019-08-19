@@ -6,7 +6,7 @@
 //
 
 #import "QIMCollectionChatViewController.h"
-#import "QTalkSessionCell.h"
+#import "QTalkNewSessionTableViewCell.h"
 #import "QIMPublicNumberVC.h"
 #import "QIMChatVC.h"
 #import "QIMGroupChatVC.h"
@@ -120,8 +120,10 @@
     NSDictionary *collectionAccountDic = [self.collectionAccountList objectAtIndex:section];
     NSString *bindId = [collectionAccountDic objectForKey:@"BindId"];
     NSString *bindName = [collectionAccountDic objectForKey:@"BindName"];
-    NSString *bindHeaderSrc = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost],[collectionAccountDic objectForKey:@"HeaderSrc"]];
-//    NSData *iconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:bindHeaderSrc]];
+    NSString *bindHeaderSrc = [collectionAccountDic objectForKey:@"HeaderSrc"];
+    if (![bindHeaderSrc qim_hasPrefixHttpHeader] && bindHeaderSrc.length > 0) {
+        bindHeaderSrc = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], bindHeaderSrc];
+    }
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 50.0f)];
     UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 36, 36)];
     headerView.layer.cornerRadius = 18;
@@ -172,9 +174,9 @@
     NSArray *bindSessionList = [self.collectionChatDict objectForKey:bindId];
     NSDictionary *infoDic = [bindSessionList objectAtIndex:indexPath.row];
     NSString *name = [infoDic objectForKey:@"Name"];
-    QTalkSessionCell *cell = [tableView dequeueReusableCellWithIdentifier:name];
+    QTalkNewSessionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:name];
     if (!cell) {
-        cell = [[QTalkSessionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:name];
+        cell = [[QTalkNewSessionTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:name];
     } else {
 
     }
@@ -252,7 +254,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return [QTalkSessionCell getCellHeight];
+    return [QTalkNewSessionTableViewCell getCellHeight];
 }
 
 - (void)swicthAccount:(id)sender {
@@ -267,7 +269,7 @@
             NSString *pwd = [accountDic objectForKey:@"LoginToken"];
             NSDictionary *navDict = [accountDic objectForKey:@"NavDict"];
             if (userId && pwd) {
-                [[QIMKit sharedInstance] sendNoPush];
+//                [[QIMKit sharedInstance] sendNoPush];
                 [[QIMKit sharedInstance] clearcache];
                 [[QIMKit sharedInstance] clearLogginUser];
                 [[QIMKit sharedInstance] quitLogin];
