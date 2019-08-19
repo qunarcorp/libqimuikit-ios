@@ -82,7 +82,7 @@ Pod::Spec.new do |s|
       photoBrowser.frameworks = 'ImageIO', 'QuartzCore', 'AssetsLibrary', 'MediaPlayer'
       photoBrowser.weak_frameworks = 'Photos'
       
-      photoBrowser.dependency 'MBProgressHUD'
+      photoBrowser.dependency 'MBProgressHUD', '~> 0.9.2'
       photoBrowser.dependency 'DACircularProgress'
       photoBrowser.dependency 'QIMUIKit/PublicUIHeader'
       photoBrowser.dependency 'QIMUIKit/QIMAppUIConfig'
