@@ -819,10 +819,10 @@
     
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    if (![[QIMKit sharedInstance] getIsIpad] && [[UIApplication sharedApplication] statusBarOrientation] != UIInterfaceOrientationPortrait) {
+//    if (![[QIMKit sharedInstance] getIsIpad] && [[UIApplication sharedApplication] statusBarOrientation] != UIInterfaceOrientationPortrait) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.navigationController.navigationBar.translucent = NO;
-    }
+//    }
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     if (self.chatType != ChatType_CollectionChat) {
         [self.view addSubview:self.textBar];

@@ -668,10 +668,10 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+//    if ([[QIMKit sharedInstance] getIsIpad]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.navigationController.navigationBar.translucent = NO;
-    }
+//    }
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[QIMWindowManager shareInstance] getDetailWidth], [[UIScreen mainScreen] height])];
     }
