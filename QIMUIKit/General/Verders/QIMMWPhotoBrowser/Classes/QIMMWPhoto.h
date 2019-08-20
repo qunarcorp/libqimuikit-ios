@@ -25,13 +25,13 @@
 @property (nonatomic, strong) NSDictionary *extendInfo;
 @property (nonatomic, strong) id photoMsg;
 
-+ (QIMMWPhoto *)photoWithImage:(UIImage *)image;
++ (QIMMWPhoto *)photoWithImage:(QIMImage *)image;
 + (QIMMWPhoto *)photoWithURL:(NSURL *)url;
 + (QIMMWPhoto *)photoWithAsset:(PHAsset *)asset targetSize:(CGSize)targetSize;
 + (QIMMWPhoto *)videoWithURL:(NSURL *)url; // Initialise video with no poster image
 
 - (id)init;
-- (id)initWithImage:(UIImage *)image;
+- (id)initWithImage:(QIMImage *)image;
 - (id)initWithURL:(NSURL *)url;
 - (id)initWithAsset:(PHAsset *)asset targetSize:(CGSize)targetSize;
 - (id)initWithVideoURL:(NSURL *)url;
