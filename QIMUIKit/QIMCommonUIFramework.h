@@ -31,6 +31,8 @@
 #import "UINavigationController+FDFullscreenPopGesture.h"
 #import "QIMIconFont.h"
 #import "QIMIconInfo.h"
+#import "QIMImageView.h"
+#import "QIMImage.h"
 #import "QIMDeviceManager.h"
 
 #if __has_include("QIMNoteManager.h")

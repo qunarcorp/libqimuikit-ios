@@ -10,11 +10,11 @@
 #import "QIMMenuImageView.h"
 #import "QIMJSONSerializer.h"
 
-#define kTitleFont ([UIFont boldSystemFontOfSize:18])
-#define kIntroduceFont ([UIFont systemFontOfSize:14])
+#define kTitleFont ([UIFont boldSystemFontOfSize:15])
+#define kIntroduceFont ([UIFont systemFontOfSize:13])
 #define kCellCap        10
 #define kBackgroundCap  15
-#define kContentCap     12
+#define kContentCap     20
 #define kScreenWidth ([UIScreen mainScreen].bounds.size.width) 
 
 static double _screen_width = 0;
@@ -68,10 +68,10 @@ static double _screen_width = 0;
         NSString *subTitle = [[subDic objectForKey:@"sub_title"] stringByAppendingString:@":"];
         NSString *subContent = [subDic objectForKey:@"sub_content"];
         CGSize subTitleSize = [subTitle sizeWithFont:kIntroduceFont constrainedToSize:CGSizeMake(INT32_MAX, 20) lineBreakMode:NSLineBreakByCharWrapping];
-        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, height, subTitleSize.width, subTitleSize.height)];
+        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(kContentCap, height, subTitleSize.width, subTitleSize.height)];
         [subTitleLabel setBackgroundColor:[UIColor clearColor]];
         [subTitleLabel setFont:kIntroduceFont];
-        [subTitleLabel setTextColor:[UIColor qtalkTextLightColor]];
+        [subTitleLabel setTextColor:[UIColor qim_colorWithHex:0x888888]];
         [subTitleLabel setTextAlignment:NSTextAlignmentLeft];
         [subTitleLabel setNumberOfLines:0];
         [subTitleLabel setText:subTitle];
@@ -80,7 +80,7 @@ static double _screen_width = 0;
         UILabel *subContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(subTitleLabel.right, height, subContentSize.width, subContentSize.height)];
         [subContentLabel setBackgroundColor:[UIColor clearColor]];
         [subContentLabel setFont:kIntroduceFont];
-        [subContentLabel setTextColor:[UIColor qtalkTextLightColor]];
+        [subContentLabel setTextColor:[UIColor qim_colorWithHex:0x888888]];
         [subContentLabel setTextAlignment:NSTextAlignmentLeft];
         [subContentLabel setNumberOfLines:0];
         [subContentLabel setLineBreakMode:NSLineBreakByTruncatingTail];
@@ -127,7 +127,7 @@ static double _screen_width = 0;
     startY += [PNOrderMsgContentView getContentViewHeight:contentList];
     startY += 10;
     startY += 1;
-    startY += 50;
+    startY += 36;
     
     return startY + kCellCap;
 }
@@ -143,10 +143,10 @@ static double _screen_width = 0;
         _bgView = [[QIMMenuImageView alloc] initWithFrame:CGRectZero];
         [_bgView setUserInteractionEnabled:YES];
         [_bgView setBackgroundColor:[UIColor whiteColor]];
-        [_bgView.layer setCornerRadius:5];
-        [_bgView.layer setMasksToBounds:YES];
-        [_bgView.layer setBorderColor:[UIColor qtalkSplitLineColor].CGColor];
-        [_bgView.layer setBorderWidth:0.5];
+//        [_bgView.layer setCornerRadius:5];
+//        [_bgView.layer setMasksToBounds:YES];
+        [_bgView.layer setBorderColor:[UIColor qim_colorWithHex:0xE1E1E1].CGColor];
+        [_bgView.layer setBorderWidth:1.0f];
         [self.contentView addSubview:_bgView];
         
         _linkUrlButton = [[PNOrderMsgButton alloc] initWithFrame:CGRectZero];
@@ -157,7 +157,7 @@ static double _screen_width = 0;
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         [_titleLabel setBackgroundColor:[UIColor clearColor]];
         [_titleLabel setFont:kTitleFont];
-        [_titleLabel setTextColor:[UIColor qtalkTextBlackColor]];
+        [_titleLabel setTextColor:[UIColor qim_colorWithHex:0x333333]];
         [_titleLabel setTextAlignment:NSTextAlignmentLeft];
         [_titleLabel setNumberOfLines:0];
         [_bgView addSubview:_titleLabel];
@@ -165,7 +165,7 @@ static double _screen_width = 0;
         _orderLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         [_orderLabel setBackgroundColor:[UIColor clearColor]];
         [_orderLabel setFont:kIntroduceFont];
-        [_orderLabel setTextColor:[UIColor qtalkTextLightColor]];
+        [_orderLabel setTextColor:[UIColor qim_colorWithHex:0x888888]];
         [_orderLabel setTextAlignment:NSTextAlignmentLeft];
         [_orderLabel setNumberOfLines:0];
         [_bgView addSubview:_orderLabel];
@@ -174,13 +174,13 @@ static double _screen_width = 0;
         [_bgView addSubview:_pnContentView];
         
         _lineView = [[UIView alloc] initWithFrame:CGRectZero];
-        [_lineView setBackgroundColor:[UIColor qtalkSplitLineColor]];
+        [_lineView setBackgroundColor:[UIColor qim_colorWithHex:0XEAEAEA]];
         [_bgView addSubview:_lineView];
         
         _promptLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         [_promptLabel setBackgroundColor:[UIColor clearColor]];
         [_promptLabel setFont:[UIFont systemFontOfSize:12]];
-        [_promptLabel setTextColor:[UIColor redColor]];
+        [_promptLabel setTextColor:[UIColor qim_colorWithHex:0xEB524A]];
         [_promptLabel setTextAlignment:NSTextAlignmentLeft];
         [_promptLabel setText:@"现在去处理"];
         [_bgView addSubview:_promptLabel];
@@ -188,7 +188,7 @@ static double _screen_width = 0;
         _operationLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         [_operationLabel setBackgroundColor:[UIColor clearColor]];
         [_operationLabel setFont:[UIFont systemFontOfSize:12]];
-        [_operationLabel setTextColor:[UIColor blueColor]];
+        [_operationLabel setTextColor:[UIColor qim_colorWithHex:0x00CABE]];
         [_operationLabel setTextAlignment:NSTextAlignmentRight];
         [_operationLabel setText:@"现在去处理"];
         [_bgView addSubview:_operationLabel];
@@ -217,8 +217,10 @@ static double _screen_width = 0;
     NSDictionary *dic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     if (self.message.messageReadState & QIMMessageRemoteReadStateDidOperated != QIMMessageRemoteReadStateDidOperated) {
         [_operationLabel setText:@"现在去处理"];
+        [_operationLabel setTextColor:[UIColor qim_colorWithHex:0x00CABE]];
     } else {
         [_operationLabel setText:@"已处理"];
+        [_operationLabel setTextColor:[UIColor qim_colorWithHex:0x999999]];
     }
     NSString *title = [dic objectForKey:@"title"];
     NSArray *contentList = [dic objectForKey:@"content"];
@@ -233,7 +235,7 @@ static double _screen_width = 0;
     CGFloat startY = kContentCap;
     CGSize titleSize = [title sizeWithFont:kTitleFont constrainedToSize:CGSizeMake(_screen_width - kBackgroundCap * 2 - kContentCap * 2, INT_MAX) lineBreakMode:NSLineBreakByCharWrapping];
     [_titleLabel setText:title];
-    [_titleLabel setFrame:CGRectMake(kContentCap, startY, titleSize.width, titleSize.height)];
+    [_titleLabel setFrame:CGRectMake(kContentCap, 12, titleSize.width, titleSize.height)];
     startY += titleSize.height + 5;
     
     [_orderLabel setText:[NSString stringWithFormat:@"订单号:%@",orderId]];
@@ -246,10 +248,10 @@ static double _screen_width = 0;
     startY += 10;
     [_lineView setFrame:CGRectMake(0, startY, _bgView.width, 1)];
     startY += 1;
-    [_promptLabel setFrame:CGRectMake(10, startY+5,_bgView.width-10, 20)];
+    [_promptLabel setFrame:CGRectMake(kContentCap, startY+8,_bgView.width-kContentCap * 2, 20)];
     [_promptLabel setText:prompt];
-    [_operationLabel setFrame:CGRectMake(_bgView.width - 10 - 200, startY+20, 200, 20)];
-    startY += 50;
+    [_operationLabel setFrame:CGRectMake(_bgView.width - 15 - 200, startY+8, 200, 20)];
+    startY += 36;
     
     [_bgView setHeight:startY];
     [_linkUrlButton setOperationUrl:linkUrl];

@@ -10,11 +10,11 @@
 #import "QIMJSONSerializer.h"
 #import "QIMMenuImageView.h"
 
-#define kTitleFont ([UIFont boldSystemFontOfSize:18])
-#define kIntroduceFont ([UIFont systemFontOfSize:14])
+#define kTitleFont ([UIFont boldSystemFontOfSize:15])
+#define kIntroduceFont ([UIFont systemFontOfSize:13])
 #define kCellCap        10
 #define kBackgroundCap  15
-#define kContentCap     12
+#define kContentCap     20
 #define kScreenWidth ([UIScreen mainScreen].bounds.size.width)
 #define kImageHeight 180
 
@@ -70,7 +70,7 @@ static double _screen_width = 0;
     if ([introduce isKindOfClass:[NSString class]] == NO) {
         introduce = @"UnKnow";
     }
-    CGSize introduceSize = [introduce sizeWithFont:kIntroduceFont constrainedToSize:CGSizeMake(_screen_width - kBackgroundCap * 2 - kContentCap * 2, 40) lineBreakMode:NSLineBreakByCharWrapping];
+    CGSize introduceSize = [introduce sizeWithFont:kIntroduceFont constrainedToSize:CGSizeMake(_screen_width - kBackgroundCap * 2 - kContentCap * 2, 76) lineBreakMode:NSLineBreakByCharWrapping];
     startY += introduceSize.height;
     startY += 10;
     startY += 1;
@@ -83,10 +83,10 @@ static double _screen_width = 0;
     if (!_bgView) {
         _bgView = [[QIMMenuImageView alloc] initWithFrame:CGRectMake(kBackgroundCap, kCellCap, self.cellWidth - kBackgroundCap * 2, 0)];
         [_bgView setUserInteractionEnabled:YES];
-        [_bgView setBackgroundColor:[UIColor whiteColor]];
-        [_bgView.layer setCornerRadius:5];
-        [_bgView.layer setMasksToBounds:YES];
-        [_bgView.layer setBorderColor:[UIColor qtalkSplitLineColor].CGColor];
+        [_bgView setBackgroundColor:[UIColor qim_colorWithHex:0xFEFEFE]];
+//        [_bgView.layer setCornerRadius:5];
+//        [_bgView.layer setMasksToBounds:YES];
+        [_bgView.layer setBorderColor:[UIColor qim_colorWithHex:0xE1E1E1].CGColor];
         [_bgView.layer setBorderWidth:0.5];
         //有背景图片则不画自定义颜色背景，否则画自定义颜色背景
         [_bgView setImage:[[UIImage alloc] init]];
@@ -108,7 +108,7 @@ static double _screen_width = 0;
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         [_titleLabel setBackgroundColor:[UIColor clearColor]];
         [_titleLabel setFont:kTitleFont];
-        [_titleLabel setTextColor:[UIColor qtalkTextBlackColor]];
+        [_titleLabel setTextColor:[UIColor qim_colorWithHex:0x333333]];
         [_titleLabel setTextAlignment:NSTextAlignmentLeft];
         [_titleLabel setNumberOfLines:0];
     }
@@ -120,7 +120,7 @@ static double _screen_width = 0;
         _introduceLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         [_introduceLabel setBackgroundColor:[UIColor clearColor]];
         [_introduceLabel setFont:kIntroduceFont];
-        [_introduceLabel setTextColor:[UIColor qtalkTextLightColor]];
+        [_introduceLabel setTextColor:[UIColor qim_colorWithHex:0x888888]];
         [_introduceLabel setTextAlignment:NSTextAlignmentLeft];
         [_introduceLabel setNumberOfLines:0];
     }
@@ -130,7 +130,7 @@ static double _screen_width = 0;
 - (UIView *)lineView {
     if (!_lineView) {
         _lineView = [[UIView alloc] initWithFrame:CGRectZero];
-        [_lineView setBackgroundColor:[UIColor qtalkSplitLineColor]];
+        [_lineView setBackgroundColor:[UIColor qim_colorWithHex:0xEAEAEA]];
     }
     return _lineView;
 }
@@ -138,11 +138,10 @@ static double _screen_width = 0;
 - (UILabel *)readedAllLabel {
     if (!_readedAllLabel) {
         _readedAllLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        [_readedAllLabel setBackgroundColor:[UIColor clearColor]];
         [_readedAllLabel setFont:[UIFont systemFontOfSize:12]];
-        [_readedAllLabel setTextColor:[UIColor qtalkTextBlackColor]];
-        [_readedAllLabel setTextAlignment:NSTextAlignmentLeft];
-        [_readedAllLabel setText:@"查看全文"];
+        [_readedAllLabel setTextColor:[UIColor qim_colorWithHex:0x00CABE]];
+        [_readedAllLabel setTextAlignment:NSTextAlignmentRight];
+        [_readedAllLabel setText:@"点击查看更多"];
     }
     return _readedAllLabel;
 }
@@ -167,7 +166,7 @@ static double _screen_width = 0;
         [self.bgView addSubview:self.introduceLabel];
         [self.bgView addSubview:self.lineView];
         [self.bgView addSubview:self.readedAllLabel];
-        [self.bgView addSubview:self.arrowImageView];
+//        [self.bgView addSubview:self.arrowImageView];
         
     }
     return self;
@@ -195,14 +194,14 @@ static double _screen_width = 0;
     if ([introduce isKindOfClass:[NSString class]] == NO) {
         introduce = @"UnKnow";
     }
-    CGSize introduceSize = [introduce sizeWithFont:kIntroduceFont constrainedToSize:CGSizeMake(self.cellWidth - kBackgroundCap * 2 - kContentCap * 2, 40) lineBreakMode:NSLineBreakByCharWrapping];
+    CGSize introduceSize = [introduce sizeWithFont:kIntroduceFont constrainedToSize:CGSizeMake(self.cellWidth - kBackgroundCap * 2 - kContentCap * 2, 76) lineBreakMode:NSLineBreakByCharWrapping];
     [self.introduceLabel setText:introduce];
     [self.introduceLabel setFrame:CGRectMake(kContentCap, startY, introduceSize.width, introduceSize.height)];
     startY += introduceSize.height;
     startY += 10;
     [self.lineView setFrame:CGRectMake(0, startY, self.bgView.width, 1)];
     startY += 1;
-    [self.readedAllLabel setFrame:CGRectMake(10, startY+5, 200, 20)];
+    [self.readedAllLabel setFrame:CGRectMake(self.bgView.width - 200 - 15, startY+5, 200, 20)];
     [self.arrowImageView setFrame:CGRectMake(self.bgView.width-18, startY + 8.5, 8, 13)];
     startY += 30;
     

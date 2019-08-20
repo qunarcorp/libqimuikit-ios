@@ -249,7 +249,11 @@ static UIImage *__rightBallocImage = nil;
                 self.nameLabel.hidden = YES;
             } else if (self.chatType == ChatType_SingleChat) {
                 self.nameLabel.hidden = YES;
-            } else {
+            } else if (self.chatType == ChatType_Consult) {
+                self.nameLabel.hidden = YES;
+            } else if (self.chatType == ChatType_ConsultServer) {
+                self.nameLabel.hidden = YES;
+            }  else {
             }
         }
             break;
@@ -451,9 +455,9 @@ static UIImage *__rightBallocImage = nil;
     switch (self.message.messageDirection) {
         case QIMMessageDirection_Received: {
             CGRect frame = {{kBackViewCap + AVATAR_WIDTH,kCellHeightCap / 2.0 + _nameLabel.bottom},{backWidth,backHeight}};
-            if (self.chatType != ChatType_PublicNumber && self.chatType != ChatType_System && self.chatType != ChatType_SingleChat) {
+            if (self.chatType != ChatType_PublicNumber && self.chatType != ChatType_System && self.chatType != ChatType_SingleChat && self.chatType != ChatType_Consult) {
                 frame = CGRectMake(kBackViewCap + AVATAR_WIDTH, kCellHeightCap / 2.0 + _nameLabel.bottom, backWidth, backHeight);
-            } else if (self.chatType == ChatType_SingleChat) {
+            } else if (self.chatType == ChatType_SingleChat || self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
                 frame = CGRectMake(kBackViewCap + AVATAR_WIDTH, kCellHeightCap / 2.0, backWidth, backHeight);
             } else {
                 frame = CGRectMake(kBackViewCap, kCellHeightCap / 2.0, backWidth, backHeight);
@@ -488,10 +492,16 @@ static UIImage *__rightBallocImage = nil;
 #pragma mark - action
 
 - (void)onHeaderViewClick:(UITapGestureRecognizer *)tapGesture {
-    if (self.message.from.length > 0 && self.chatType != ChatType_CollectionChat) {
+    if (self.message.from.length > 0 && self.chatType != ChatType_CollectionChat && self.chatType != ChatType_Consult) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [QIMFastEntrance openUserCardVCByUserId:self.message.from];
         });
+    } else if (self.message.xmppId.length > 0 && self.chatType == ChatType_Consult && self.message.messageDirection == QIMMessageDirection_Received) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [QIMFastEntrance openUserCardVCByUserId:self.message.xmppId];
+        });
+    } else {
+        
     }
 }
 
@@ -614,7 +624,15 @@ static UIImage *__rightBallocImage = nil;
                 collectionUserUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], collectionUserUrl];
             }
             [self.HeadView qim_setImageWithURL:collectionUserUrl placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
+        } else if (self.chatType == ChatType_Consult) {
+            NSLog(@"22222");
+            if (self.message.messageDirection == QIMMessageDirection_Sent) {
+                [self.HeadView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid] WithChatType:ChatType_SingleChat];
+            } else {
+                [self.HeadView qim_setImageWithJid:self.message.xmppId];
+            }
         } else {
+            NSLog(@"122");
             if (self.message.messageDirection == QIMMessageDirection_Sent) {
                 [self.HeadView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid] WithChatType:ChatType_SingleChat];
             } else {
