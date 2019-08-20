@@ -735,7 +735,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
     }
 }
 
-- (UIImage *)imageForPhoto:(id<QIMMWPhoto>)photo {
+- (QIMImage *)imageForPhoto:(id<QIMMWPhoto>)photo {
 	if (photo) {
 		// Get image or obtain in background
 		if ([photo underlyingImage]) {

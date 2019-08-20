@@ -11,7 +11,7 @@
 
 @protocol QIMMWTapDetectingImageViewDelegate;
 
-@interface QIMMWTapDetectingImageView : QIMImageView {}
+@interface QIMMWTapDetectingImageView : QIMImageView
 
 @property (nonatomic, weak) id <QIMMWTapDetectingImageViewDelegate> tapDelegate;
 

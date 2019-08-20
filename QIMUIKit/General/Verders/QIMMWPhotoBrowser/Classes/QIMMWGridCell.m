@@ -16,7 +16,7 @@
 
 @interface QIMMWGridCell () {
     
-    UIImageView *_imageView;
+    QIMImageView *_imageView;
     UIImageView *_videoIndicator;
     UIImageView *_loadingError;
 	DACircularProgressView *_loadingIndicator;
@@ -35,7 +35,7 @@
         self.backgroundColor = [UIColor colorWithWhite:0.12 alpha:1];
         
         // Image
-        _imageView = [UIImageView new];
+        _imageView = [QIMImageView new];
         _imageView.frame = self.bounds;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         _imageView.clipsToBounds = YES;
