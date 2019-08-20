@@ -21,7 +21,7 @@
         
 }
 
-@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) QIMImage *image;
 @property (nonatomic, strong) PHAsset *asset;
 @property (nonatomic) CGSize assetTargetSize;
 
@@ -35,7 +35,7 @@
 
 #pragma mark - Class Methods
 
-+ (QIMMWPhoto *)photoWithImage:(UIImage *)image {
++ (QIMMWPhoto *)photoWithImage:(QIMImage *)image {
 	return [[QIMMWPhoto alloc] initWithImage:image];
 }
 
@@ -61,7 +61,7 @@
     return self;
 }
 
-- (id)initWithImage:(UIImage *)image {
+- (id)initWithImage:(QIMImage *)image {
     if ((self = [super init])) {
         self.image = image;
         [self setup];
@@ -138,7 +138,7 @@
 
 #pragma mark - QIMMWPhoto Protocol Methods
 
-- (UIImage *)underlyingImage {
+- (QIMImage *)underlyingImage {
     return _underlyingImage;
 }
 
@@ -222,35 +222,12 @@
                 QIMMWLog(@"SDWebImage failed to download image: %@", error);
             }
             _webImageOperation = nil;
-            self.underlyingImage = [[QIMImage alloc] initWithData:data];
+            self.underlyingImage = (QIMImage *)image;
+//            [[QIMImage alloc] initWithData:data];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self imageLoadingComplete];
             });
         }];
-        /*
-        _webImageOperation = [manager downloadImageWithURL:url
-                                                   options:0
-                                                   gifFlag:YES
-                                                  progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-                                                      if (expectedSize > 0) {
-                                                          float progress = receivedSize / (float)expectedSize;
-                                                          NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                                [NSNumber numberWithFloat:progress], @"progress",
-                                                                                self, @"photo", nil];
-                                                          [[NSNotificationCenter defaultCenter] postNotificationName:QIMMWPHOTO_PROGRESS_NOTIFICATION object:dict];
-                                                      }
-                                                  }
-                                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                                     if (error) {
-                                                         QIMMWLog(@"SDWebImage failed to download image: %@", error);
-                                                     }
-                                                     _webImageOperation = nil;
-                                                     self.underlyingImage = image;
-                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                         [self imageLoadingComplete];
-                                                     });
-                                                 }];
-        */
     } @catch (NSException *e) {
         QIMMWLog(@"Photo from web: %@", e);
         _webImageOperation = nil;
@@ -263,7 +240,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         @autoreleasepool {
             @try {
-                self.underlyingImage = [UIImage imageWithContentsOfFile:url.path];
+                self.underlyingImage = [QIMImage imageWithContentsOfFile:url.path];
                 if (!_underlyingImage) {
                     QIMMWLog(@"Error loading photo from path: %@", url.path);
                 }
@@ -285,7 +262,7 @@
                                    ALAssetRepresentation *rep = [asset defaultRepresentation];
                                    CGImageRef iref = [rep fullScreenImage];
                                    if (iref) {
-                                       self.underlyingImage = [UIImage imageWithCGImage:iref];
+                                       self.underlyingImage = [QIMImage imageWithCGImage:iref];
                                    }
                                    [self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
                                }
