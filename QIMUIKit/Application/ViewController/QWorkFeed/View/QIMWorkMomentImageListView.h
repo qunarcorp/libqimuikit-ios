@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 //### 单个小图显示视图
-@interface QIMWorkMomentImageView : UIImageView
+@interface QIMWorkMomentImageView : QIMImageView
 
 - (void)downLoadImageWithModel:(NSString *)imageUrl withFitRect:(CGRect)frame withTotalCount:(NSInteger)totalCount;
 

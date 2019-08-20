@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QIMImageView.h"
 
 @protocol QIMMWTapDetectingImageViewDelegate;
 
-@interface QIMMWTapDetectingImageView : UIImageView {}
+@interface QIMMWTapDetectingImageView : QIMImageView {}
 
 @property (nonatomic, weak) id <QIMMWTapDetectingImageViewDelegate> tapDelegate;
 

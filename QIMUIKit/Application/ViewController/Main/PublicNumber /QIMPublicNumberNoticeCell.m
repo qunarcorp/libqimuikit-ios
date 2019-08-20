@@ -14,7 +14,7 @@
 #define kIntroduceFont ([UIFont systemFontOfSize:13])
 #define kCellCap        10
 #define kBackgroundCap  15
-#define kContentCap     12
+#define kContentCap     20
 #define kScreenWidth ([UIScreen mainScreen].bounds.size.width)
 #define kImageHeight 180
 

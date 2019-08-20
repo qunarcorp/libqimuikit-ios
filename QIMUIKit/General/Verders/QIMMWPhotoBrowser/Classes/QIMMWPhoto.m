@@ -222,7 +222,7 @@
                 QIMMWLog(@"SDWebImage failed to download image: %@", error);
             }
             _webImageOperation = nil;
-            self.underlyingImage = image;
+            self.underlyingImage = [[QIMImage alloc] initWithData:data];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self imageLoadingComplete];
             });
