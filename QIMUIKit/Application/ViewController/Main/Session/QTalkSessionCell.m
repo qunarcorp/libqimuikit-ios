@@ -738,8 +738,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             break;
             case QIMMessageType_Revoke: {
                 content = [[QIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
-                if (self.msgDirection == MessageDirection_Received && self.nickName.length > 0 && ![self.msgFrom isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-                    content = [NSString stringWithFormat:@"\"%@\"%@", self.nickName, content];
+                if (![self.msgFrom isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
+                    content = [NSString stringWithFormat:@"\"%@\"%@", (self.nickName.length > 0) ? self.nickName : [[self.msgFrom componentsSeparatedByString:@"@"] firstObject], content];
                 } else {
                     content = [NSString stringWithFormat:@"你%@", content];
                 }
