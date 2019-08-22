@@ -574,9 +574,8 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
                 //视频默认15s时长限制
                 configDuration = 15 * 1000;
             }
-            BOOL videoConfigUseAble = [[[QIMKit sharedInstance] userObjectForKey:@"VideoConfigUseAble"] boolValue];
 
-            if (duration * 1000 > configDuration && videoConfigUseAble == YES) {
+            if (duration * 1000 > configDuration) {
                 [QTalkTipsView showTips:[NSString stringWithFormat:@"不支持上传超过%lds的视频", configDuration / 1000] InView:self.view];
             } else {
                 [self.picker.selectedAssets insertObject:asset atIndex:self.picker.selectedAssets.count];
