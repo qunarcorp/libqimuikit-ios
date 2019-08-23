@@ -1404,7 +1404,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                     if (downloadFinined && imageData) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self.selectPhotos removeObject:@"Q_Work_Add"];
-                            NSDictionary *imageDic = @{@"MediaType":@(QIMWorkMomentMediaTypeImage), @"imageDic": @{@"imageData" : imageDic}};
+                            NSDictionary *imageDic = @{@"MediaType":@(QIMWorkMomentMediaTypeImage), @"imageDic": @{@"imageData" : imageData}};
                             [self.selectPhotos addObject:imageDic];
                             [self updateSelectPhotos];
                             [self hideProgressHUD:YES];
