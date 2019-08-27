@@ -78,7 +78,6 @@
 #import "QIMAttributedLabel.h"
 #import "QIMExtensibleProductCell.h"
 #import "QIMMessageCellCache.h"
-#import "YLGIFImage.h"
 #import "QIMExportMsgManager.h"
 #import "QIMContactSelectVC.h"
 #import "QIMContactManager.h"
@@ -2428,7 +2427,7 @@ static CGPoint tableOffsetPoint;
             BOOL isFileExist = [[QIMKit sharedInstance] isFileExistForUrl:faceStr width:0 height:0 forCacheType:QIMFileCacheTypeColoction];
             if (isFileExist) {
                 NSData *imgData = [[QIMKit sharedInstance] getFileDataFromUrl:faceStr forCacheType:QIMFileCacheTypeColoction];
-                CGSize size = [[QIMKit sharedInstance] getFitSizeForImgSize:[YLGIFImage imageWithData:imgData].size];
+                CGSize size = [[QIMKit sharedInstance] getFitSizeForImgSize:[QIMImage imageWithData:imgData].size];
                 msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, size.width, size.height];
             } else {
                 msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, 0, 0];
@@ -2870,7 +2869,7 @@ static CGPoint tableOffsetPoint;
 }
 
 - (NSString *)getStringFromAttributedString:(NSData *)imageData {
-    UIImage *image = [YLGIFImage imageWithData:imageData];
+    UIImage *image = [QIMImage imageWithData:imageData];
     CGFloat width = CGImageGetWidth(image.CGImage);
     CGFloat height = CGImageGetHeight(image.CGImage);
     QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:@"" extenddInfo:nil userId:self.chatId userType:ChatType_GroupChat msgType:QIMMessageType_Text];

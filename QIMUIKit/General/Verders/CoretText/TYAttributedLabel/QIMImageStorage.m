@@ -8,8 +8,6 @@
 
 #import "QIMImageStorage.h"
 #import "QIMImageCache.h"
-#import "YLImageView.h"
-#import "YLGIFImage.h"
 #import "QIMImageView.h"
 
 @interface QIMImageStorage () {
@@ -74,9 +72,9 @@
         return;
     }
     _rect = rect;
-    __block YLGIFImage *image = nil;
+    __block QIMImage *image = nil;
     NSData *placeHoldImageData = [NSData dataWithContentsOfFile:_placeholdImageName];
-    image = placeHoldImageData.length ? [YLGIFImage imageWithData:placeHoldImageData scale:1.0] : nil;
+    image = placeHoldImageData.length ? [QIMImage imageWithData:placeHoldImageData scale:1.0] : nil;
     [_imageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
     _isNeedUpdateFrame = YES;
     if (_image) {
@@ -101,7 +99,7 @@
         }
     } else if (_imageName){
         // 图片网址
-        image = (YLGIFImage *)[UIImage qim_imageNamedFromQIMUIKitBundle:_imageName];
+        image = (QIMImage *)[QIMImage qim_imageNamedFromQIMUIKitBundle:_imageName];
         if (_cacheImageOnMemory) {
             _image = image;
         }

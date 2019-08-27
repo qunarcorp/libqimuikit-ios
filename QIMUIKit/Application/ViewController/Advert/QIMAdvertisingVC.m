@@ -7,8 +7,6 @@
 //
 
 #import "QIMAdvertisingVC.h"
-#import "YLImageView.h"
-#import "YLGIFImage.h"
 #import "QIMWebView.h"
 #import "QIMAdvertItem.h"
 #import "QIMTapGestureRecognizer.h"
@@ -23,7 +21,7 @@
     UIScrollView *_scrollView;
     UIPageControl *_pageControl;
 //    UIWebView *_webView;
-    YLImageView *_adImageView;
+    QIMImageView *_adImageView;
     UIButton *_loadingButton;
     int _currentLoadingTime;
     QIMAdvertItem *_currentAdvertItem;
@@ -187,12 +185,12 @@
                 break;
             case AdvertType_Image:
             {
-                _adImageView = [[YLImageView alloc] initWithFrame:CGRectMake(index * _scrollView.width, 0, _scrollView.width, _scrollView.height)];
+                _adImageView = [[QIMImageView alloc] initWithFrame:CGRectMake(index * _scrollView.width, 0, _scrollView.width, _scrollView.height)];
                 NSString *imgUrl = [adItem adImgUrl];
                 NSString *filePath = [[QIMKit sharedInstance] qimNav_getAdvertImageFilePath];
                 NSString *advertFileName = [[QIMKit sharedInstance] getFileNameFromUrl:imgUrl];
                 filePath = [filePath stringByAppendingPathComponent:advertFileName];
-                _adImageView.image = [YLGIFImage imageWithContentsOfFile:filePath];
+                _adImageView.image = [QIMImage imageWithContentsOfFile:filePath];
                 [_scrollView addSubview:_adImageView];
                 if (adItem.adLinkUrl) {
                     QIMTapGestureRecognizer *tap = [[QIMTapGestureRecognizer alloc] initWithTarget:self action:@selector(onOpenWebView:)];
@@ -225,12 +223,12 @@
                     break;
                 case AdvertType_Image:
                 {
-                    _adImageView = [[YLImageView alloc] initWithFrame:CGRectMake(0, 0, _scrollView.width, _scrollView.height)];
+                    _adImageView = [[QIMImageView alloc] initWithFrame:CGRectMake(0, 0, _scrollView.width, _scrollView.height)];
                     NSString *imgUrl = [lastItem adImgUrl];
                     NSString *filePath = [[QIMKit sharedInstance] qimNav_getAdvertImageFilePath];
                     NSString *advertFileName = [[QIMKit sharedInstance] getFileNameFromUrl:imgUrl];
                     filePath = [filePath stringByAppendingPathComponent:advertFileName];
-                    _adImageView.image = [YLGIFImage imageWithContentsOfFile:filePath];
+                    _adImageView.image = [QIMImage imageWithContentsOfFile:filePath];
                     [_scrollView addSubview:_adImageView];
                     if (lastItem.adLinkUrl) {
                         QIMTapGestureRecognizer *tap = [[QIMTapGestureRecognizer alloc] initWithTarget:self action:@selector(onOpenWebView:)];
@@ -262,12 +260,12 @@
                     break;
                 case AdvertType_Image:
                 {
-                    _adImageView = [[YLImageView alloc] initWithFrame:CGRectMake(count * _scrollView.width, 0, _scrollView.width, _scrollView.height)];
+                    _adImageView = [[QIMImageView alloc] initWithFrame:CGRectMake(count * _scrollView.width, 0, _scrollView.width, _scrollView.height)];
                     NSString *imgUrl = [firstItem adImgUrl];
                     NSString *filePath = [[QIMKit sharedInstance] qimNav_getAdvertImageFilePath];
                     NSString *advertFileName = [[QIMKit sharedInstance] getFileNameFromUrl:imgUrl];
                     filePath = [filePath stringByAppendingPathComponent:advertFileName];
-                    _adImageView.image = [YLGIFImage imageWithContentsOfFile:filePath];
+                    _adImageView.image = [QIMImage imageWithContentsOfFile:filePath];
                     [_scrollView addSubview:_adImageView];
                     if (firstItem.adLinkUrl) {
                         QIMTapGestureRecognizer *tap = [[QIMTapGestureRecognizer alloc] initWithTarget:self action:@selector(onOpenWebView:)];
@@ -348,12 +346,12 @@
                 break;
             case AdvertType_Image:
             {
-                _adImageView = [[YLImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
+                _adImageView = [[QIMImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
                 NSString *imgUrl = [_currentAdvertItem adImgUrl];
                 NSString *filePath = [[QIMKit sharedInstance] qimNav_getAdvertImageFilePath];
                 NSString *advertFileName = [[QIMKit sharedInstance] getFileNameFromUrl:imgUrl];
                 filePath = [filePath stringByAppendingPathComponent:advertFileName];
-                _adImageView.image = [YLGIFImage imageWithContentsOfFile:filePath];
+                _adImageView.image = [QIMImage imageWithContentsOfFile:filePath];
                 [self.view addSubview:_adImageView];
                 if (_currentAdvertItem.adLinkUrl) {
                     QIMTapGestureRecognizer *tap = [[QIMTapGestureRecognizer alloc] initWithTarget:self action:@selector(onLoadUrl:)];

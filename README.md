@@ -68,7 +68,6 @@ pod 'QIMUIKit'
     * SCLAlertView-Objective-C
     * Masonry
     * MJRefresh
-    * YLGIFImage
     * SwipeTableView
     * LCActionSheet
     * MDHTMLLabel
