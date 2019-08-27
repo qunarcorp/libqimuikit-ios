@@ -94,7 +94,6 @@
     #import "QIMNotifyManager.h"
 #endif
 
-#import "YLGIFImage.h"
 #import "QIMExportMsgManager.h"
 #import "QIMContactManager.h"
 
@@ -2533,7 +2532,7 @@
             BOOL isFileExist = [[QIMKit sharedInstance] isFileExistForUrl:faceStr width:0 height:0 forCacheType:QIMFileCacheTypeColoction];
             if (isFileExist) {
                 NSData *imgData = [[QIMKit sharedInstance] getFileDataFromUrl:faceStr forCacheType:QIMFileCacheTypeColoction];
-                CGSize size = [[QIMKit sharedInstance] getFitSizeForImgSize:[YLGIFImage imageWithData:imgData].size];
+                CGSize size = [[QIMKit sharedInstance] getFitSizeForImgSize:[QIMImage imageWithData:imgData].size];
                 msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, size.width, size.height];
             } else {
                 msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, 0, 0];
@@ -3052,7 +3051,6 @@ static CGPoint tableOffsetPoint;
         QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithImage:[UIImage qim_animatedImageWithAnimatedGIFData:imageData]];
         photo.photoData = imageData;
         return photo;
-//        return [[QIMMWPhoto alloc] initWithImage:[YLGIFImage imageWithData:imageData]];
     } else {
         if (![imageHttpUrl containsString:@"platform"]) {
             imageHttpUrl = [imageHttpUrl stringByAppendingString:@"&platform=touch"];
@@ -3374,7 +3372,7 @@ static CGPoint tableOffsetPoint;
 
 - (NSString *)getStringFromAttributedString:(NSData *)imageData {
     
-    UIImage *image = [YLGIFImage imageWithData:imageData];
+    UIImage *image = [QIMImage imageWithData:imageData];
     CGFloat width = CGImageGetWidth(image.CGImage);
     CGFloat height = CGImageGetHeight(image.CGImage);
     QIMMessageModel *msg = nil;

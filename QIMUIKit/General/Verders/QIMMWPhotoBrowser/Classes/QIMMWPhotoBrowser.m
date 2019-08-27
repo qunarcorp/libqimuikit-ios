@@ -1731,7 +1731,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 }
                 NSString *sdimageFileKey = [[QIMImageManager sharedInstance] defaultCachePathForKey:fileUrl];
                 [photo.photoData writeToFile:sdimageFileKey atomically:YES];
-                UIImage *image = [YLGIFImage imageWithData:photo.photoData];
+                UIImage *image = [QIMImage imageWithData:photo.photoData];
                 CGFloat width = CGImageGetWidth(image.CGImage);
                 CGFloat height = CGImageGetHeight(image.CGImage);
                 NSString *msgText = nil;
