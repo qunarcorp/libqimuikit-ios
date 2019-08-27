@@ -130,8 +130,8 @@
                             bgScrollView.showsHorizontalScrollIndicator = NO;
                             bgScrollView.showsVerticalScrollIndicator = NO;
                             
-                            YLImageView * imageView = [[YLImageView alloc] initWithFrame:bgScrollView.bounds];
-                            YLGIFImage *result = [YLGIFImage imageWithData:imageData];
+                            QIMImageView * imageView = [[QIMImageView alloc] initWithFrame:bgScrollView.bounds];
+                            QIMImage *result = [QIMImage imageWithData:imageData];
                             imageView.image = result;
                             imageView.tag = kImageViewTag;
                             imageView.backgroundColor = [UIColor whiteColor];

@@ -1492,9 +1492,15 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 #if kHasVoice
     _voiceOperator = nil;
 #endif
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self removeObserver:self forKeyPath:@"self.chatToolBar.frame"];
+    @try {
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [self removeObserver:self forKeyPath:@"self.chatToolBar.frame" context:nil];
+        [self removeObserver:self forKeyPath:@"self.maskView.frame" context:nil];
+    } @catch (NSException *exception) {
+        NSLog(@"多次删除了 : %@", exception);
+    } @finally {
+        
+    }
     [_voiceView stopPlayVoice];
     _voiceView.delegate = nil;
     _voiceView = nil;
