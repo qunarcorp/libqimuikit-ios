@@ -869,17 +869,18 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         NSString *ThumbName = [videoDic objectForKey:@"ThumbName"];
                         NSString *videoUrl = [videoDic objectForKey:@"FileUrl"];
                         NSString *videoName = [videoDic objectForKey:@"FileName"];
-                        NSString *videoSize = [videoDic objectForKey:@"FileSize"];
+                        long long videoSize = [[videoDic objectForKey:@"FileSize"] longLongValue];
                         NSString *height = [videoDic objectForKey:@"Height"];
                         NSString *width = [videoDic objectForKey:@"Width"];
                         NSNumber *Duration = [videoDic objectForKey:@"Duration"];
                         NSNumber *newVideo = [videoDic objectForKey:@"newVideo"];
                         NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
                         
-                        
-                        [videoPreDic setQIMSafeObject:Duration forKey:@"Duration"];
+                        NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:videoSize];
+
+                        [videoPreDic setQIMSafeObject:@([Duration integerValue] / 1000) forKey:@"Duration"];
                         [videoPreDic setQIMSafeObject:videoName forKey:@"FileName"];
-                        [videoPreDic setQIMSafeObject:videoSize forKey:@"FileSize"];
+                        [videoPreDic setQIMSafeObject:fileSizeStr forKey:@"FileSize"];
                         [videoPreDic setQIMSafeObject:videoUrl forKey:@"FileUrl"];
                         [videoPreDic setQIMSafeObject:height forKey:@"Height"];
                         [videoPreDic setQIMSafeObject:ThumbName forKey:@"ThumbName"];
