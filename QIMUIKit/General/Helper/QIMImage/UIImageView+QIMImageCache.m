@@ -136,7 +136,6 @@
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [self qim_setImageWithURL:headerUrl placeholderImage:placeholderImage completed:nil];
-//            [self qim_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
         });
     });
 }
@@ -196,14 +195,12 @@
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [self qim_setImageWithURL:headerUrl placeholderImage:placeholderImage completed:nil];
-//            [self qim_setImageWithURL:headerUrl placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
         });
     });
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url {
     [self qim_setImageWithURL:url placeholderImage:nil completed:nil];
-//    [self qim_setImageWithURL:url placeholderImage:nil options:0 gifFlag:NO progress:nil completed:nil];
 }
 
 - (void)qim_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage {
@@ -211,7 +208,6 @@
         placeholderImage = [UIImage imageWithData:[QIMKit defaultUserHeaderImage]];
     }
     [self qim_setImageWithURL:url placeholderImage:placeholderImage completed:nil];
-//    [self qim_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
 }
 
 
@@ -230,7 +226,6 @@
         default:
             break;
     }
-//    [self qim_setImageWithURL:url placeholderImage:placeholderImage options:0 gifFlag:NO progress:nil completed:nil];
     [self qim_setImageWithURL:url placeholderImage:placeholderImage completed:nil];
 }
 

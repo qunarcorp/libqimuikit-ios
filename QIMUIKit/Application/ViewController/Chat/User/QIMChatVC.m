@@ -718,13 +718,13 @@
         }
         self.title = userName;
     } else if (self.chatType == ChatType_Consult) {
-        NSDictionary *virtualDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.virtualJid];
-        NSString *virtualName = [virtualDic objectForKey:@"Name"];
-        if (virtualName.length <= 0) {
-            virtualName = [self.virtualJid componentsSeparatedByString:@"@"].firstObject;
+        NSDictionary *consultUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.virtualJid];
+        NSString *userName = [consultUserInfo objectForKey:@"Name"];
+        if (userName.length <= 0) {
+            userName = [self.virtualJid componentsSeparatedByString:@"@"].firstObject;
         }
-        if (virtualName) {
-            self.title = virtualName;
+        if (userName) {
+            self.title = userName;
         }
     } else if (self.chatType == ChatType_CollectionChat) {
         NSDictionary *collectionUserInfo = [[QIMKit sharedInstance] getCollectionUserInfoByUserId:self.chatId];
@@ -757,8 +757,8 @@
         descLabel.font = [UIFont systemFontOfSize:11];
         descLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         if (self.chatType == ChatType_ConsultServer) {
-            NSDictionary *virtualDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.virtualJid];
-            NSString *virtualName = [virtualDic objectForKey:@"Name"];
+            NSDictionary *consultUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.virtualJid];
+            NSString *virtualName = [consultUserInfo objectForKey:@"Name"];
             if (virtualName.length <= 0) {
                 virtualName = [self.virtualJid componentsSeparatedByString:@"@"].firstObject;
             }
