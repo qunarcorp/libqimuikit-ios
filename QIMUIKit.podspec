@@ -208,7 +208,7 @@ Pod::Spec.new do |s|
   end
   
   s.dependency 'MJRefresh'
-  s.dependency 'YLGIFImage'
+#  s.dependency 'YLGIFImage'
   s.dependency 'SwipeTableView'
   s.dependency 'LCActionSheet'
   s.dependency 'MDHTMLLabel'

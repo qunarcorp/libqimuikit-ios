@@ -18,8 +18,6 @@
 #import "QIMWindowManager.h"
 #import "QIMAppWindowManager.h"
 #import "ASIHTTPRequest.h"
-#import "YLImageView.h"
-#import "YLGIFImage.h"
 
 #import "UIImageView+QIMImageCache.h"
 #import "UIImage+QIMUIKit.h"

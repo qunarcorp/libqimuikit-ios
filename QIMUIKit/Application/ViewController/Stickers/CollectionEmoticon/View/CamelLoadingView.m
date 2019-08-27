@@ -7,7 +7,6 @@
 //
 
 #import "CamelLoadingView.h"
-#import "YLGIFImage.h"
 #import "UIImage+QIMUIKit.h"
 
 @interface CamelLoadingView ()

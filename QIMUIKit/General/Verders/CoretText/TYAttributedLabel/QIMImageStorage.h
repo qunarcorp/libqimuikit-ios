@@ -24,7 +24,7 @@ typedef enum {
 
 @interface QIMImageStorage : QIMDrawStorage <QIMViewStorageProtocol>
 
-@property (nonatomic, strong) YLGIFImage   *image;
+@property (nonatomic, strong) QIMImage   *image;
 
 @property (nonatomic, strong) NSString  *imageName;
 
