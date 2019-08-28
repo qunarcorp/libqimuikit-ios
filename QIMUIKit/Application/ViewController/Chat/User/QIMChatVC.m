@@ -2454,7 +2454,9 @@
     [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
     [_tableView endUpdates];
     [self scrollToBottomWithCheck:YES];
-    [[QIMKit sharedInstance] uploadFileForPath:videoPath forMessage:msg withJid:self.chatId isFile:YES];
+    //Mark by NewVideo
+    [[QIMKit sharedInstance] uploadVideoPath:videoPath forMessage:msg];
+//    [[QIMKit sharedInstance] uploadFileForPath:videoPath forMessage:msg withJid:self.chatId isFile:YES];
 }
 
 - (void)sendMessage:(NSString *)message WithInfo:(NSString *)info ForMsgType:(int)msgType {

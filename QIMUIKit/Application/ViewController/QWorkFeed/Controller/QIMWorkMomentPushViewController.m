@@ -876,7 +876,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         NSNumber *newVideo = [videoDic objectForKey:@"newVideo"];
                         NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
                         
-                        NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:videoSize];
+                        NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:videoSize];
 
                         [videoPreDic setQIMSafeObject:@([Duration integerValue] / 1000) forKey:@"Duration"];
                         [videoPreDic setQIMSafeObject:videoName forKey:@"FileName"];
@@ -896,7 +896,11 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         if ([videoData isKindOfClass:[NSData class]]) {
                             dispatch_group_enter(group);
                             __block NSDictionary *videoRemoteDic = nil;
-                            [QIMKit uploadVideoPath:LocalVideoOutPath withCallBack:^(NSDictionary *videoDic) {
+                            //Mark by NewVideo
+                            [[QIMKit sharedInstance] uploadVideo:LocalVideoOutPath videoDic:videoDic withCallBack:^(NSDictionary *videoDic, BOOL needTrans) {
+                                
+//                            }
+//                            [QIMKit uploadVideoPath:LocalVideoOutPath withCallBack:^(NSDictionary *videoDic) {
                                 NSLog(@"videoDic : %@", videoDic);
                                 videoRemoteDic = videoDic;
                                 if (videoRemoteDic.count > 0) {
@@ -926,7 +930,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                                     [videoPreDic setQIMSafeObject:firstThumbUrl forKey:@"ThumbUrl"];
                                     [videoPreDic setQIMSafeObject:width forKey:@"Width"];
                                     [videoPreDic setQIMSafeObject:LocalVideoOutPath forKey:@"LocalVideoOutPath"];
-                                    [videoPreDic setQIMSafeObject:@(YES) forKey:@"newVideo"];
+                                    [videoPreDic setQIMSafeObject:@(needTrans) forKey:@"newVideo"];
                                     dispatch_group_leave(group);
                                 } else {
                                     dispatch_group_leave(group);
@@ -1456,7 +1460,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                      NSString * key = [info objectForKey:@"PHImageFileSandboxExtensionTokenKey"];
                      videoResultPath = [[key componentsSeparatedByString:@";"] lastObject];
                  }
-                 NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+                 NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
                  AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:asset];
                  gen.appliesPreferredTrackTransform = YES;
                  CMTime time = CMTimeMakeWithSeconds(0.0, 600);

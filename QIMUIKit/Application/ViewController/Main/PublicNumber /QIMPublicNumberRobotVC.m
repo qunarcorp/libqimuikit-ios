@@ -1140,7 +1140,9 @@
     [_tableView reloadData];
     [self scrollToBottomWithCheck:YES];
     
-    [[QIMKit sharedInstance] uploadFileForPath:videoPath forMessage:msg withJid:self.robotJId isFile:YES];
+    //Mark by NewVideo
+    [[QIMKit sharedInstance] uploadVideoPath:videoPath forMessage:msg];
+//    [[QIMKit sharedInstance] uploadFileForPath:videoPath forMessage:msg withJid:self.robotJId isFile:YES];
 }
 
 - (void)sendMessage:(NSString *)message WithInfo:(NSString *)info ForMsgType:(int)msgType{

@@ -383,7 +383,7 @@
     UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
     CGImageRelease(image);
     
-    NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+    NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
     QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
     [alertView setVideoOutPath:videoResultPath];
     [alertView setThumbImage:thumb];

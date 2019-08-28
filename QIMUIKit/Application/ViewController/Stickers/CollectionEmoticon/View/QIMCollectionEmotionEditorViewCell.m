@@ -151,13 +151,6 @@
             emojiUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], emojiUrl];
         }
         [itemView setImageUrl:emojiUrl];
-        /*
-         Mark by SD
-        [[QIMCollectionFaceManager sharedInstance] showSmallImage:^(UIImage *image) {
-            
-            itemImage = image;
-        } withIndex:self.tag];
-        */
     }
     
     [itemView setViewSelected:NO];
@@ -179,7 +172,7 @@
     return self;
 }
 
-- (void)itemTapHandle:(UITapGestureRecognizer *)tap{
+- (void)itemTapHandle:(UITapGestureRecognizer *)tap {
     
     QIMEmotionEditorImageView * view = (QIMEmotionEditorImageView *)tap.view;
     if (self.canSelect) {

@@ -66,13 +66,6 @@
                 emojiUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], emojiUrl];
             }
             [self.emojiView qim_setImageWithURL:[NSURL URLWithString:emojiUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"aio_ogactivity_default"] options:SDWebImageDecodeFirstFrameOnly progress:nil completed:nil];
-            /*
-            [[QIMCollectionFaceManager sharedInstance] showSmallImage:^(UIImage *downLoadImage) {
-
-                weakSelf.emojiView.image = downLoadImage;
-
-              } withIndex:self.tag - 1];
-            */
         }
     } else {
         self.emojiView.image = [UIImage new];

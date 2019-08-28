@@ -7,7 +7,6 @@
 //
 
 #import "QIMPNRichTextCell.h"
-#import "LvtuAutoImageView.h"
 #import "QIMMenuImageView.h"
 #import "QIMWebView.h"
 #import "QIMJSONSerializer.h"
@@ -36,7 +35,7 @@
     PNRichTextButton *_linkUrlButton;
     UILabel *_titleLabel;
     UILabel *_dateLabel;
-    LvtuAutoImageView *_imageView;
+    QIMImageView *_imageView;
     UILabel *_introduceLabel;
     UIView *_lineView;
     UILabel *_readedAllLabel;
@@ -103,7 +102,7 @@
         [_dateLabel setTextAlignment:NSTextAlignmentLeft];
         [_bgView addSubview:_dateLabel];
         
-        _imageView = [[LvtuAutoImageView alloc] initWithFrame:CGRectZero];
+        _imageView = [[QIMImageView alloc] initWithFrame:CGRectZero];
         [_imageView setContentMode:UIViewContentModeScaleAspectFill];
         [_imageView setBackgroundColor:[UIColor grayColor]];
         [_imageView setClipsToBounds:YES];
@@ -163,7 +162,7 @@
     [_dateLabel setFrame:CGRectMake(kContentCap, startY, 120, 12)];
     startY += 12; // 时间
     startY += 8; 
-    [_imageView setImageURL:imageUrl];
+    [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl]];
     [_imageView setFrame:CGRectMake(kContentCap, startY, _bgView.width-kContentCap*2, kImageHeight)];
     startY += kImageHeight;
     startY += 10;

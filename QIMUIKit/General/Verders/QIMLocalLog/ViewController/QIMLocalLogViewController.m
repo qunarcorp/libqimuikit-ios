@@ -264,7 +264,7 @@
             NSString *httpUrl = [QIMKit updateLoadFile:data WithMsgId:msgId WithMsgType:QIMMessageType_File WithPathExtension:filePath.pathExtension];
             NSDictionary * attributes = [logFileDict objectForKey:@"logFileAttribute"];
             NSNumber *theFileSize = [attributes objectForKey:NSFileSize];
-            NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:theFileSize.longLongValue];
+            NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:theFileSize.longLongValue];
             NSString *httpfileName = [filePath lastPathComponent];
             if (attributes && theFileSize && data && httpUrl && httpfileName && fileSizeStr) {
                 NSString *messageStr = [[QIMJSONSerializer sharedInstance] serializeObject:@{@"HttpUrl":httpUrl, @"FileName":httpfileName, @"FileSize":fileSizeStr, @"FileLength":theFileSize}];
