@@ -11,10 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMVideoModel : NSObject
 
-/*
- {\"Duration\":\"20650\",\"FileName\":\"20190730165753995_vr15Vy_Screenrecording_20190328_1526_trans_V.mp4\",\"FileSize\":\"1484013\",\"FileUrl\":\"http://osd.corp.qunar.com/vs_cricle_camel_vs_cricle_camel/20190730165753995_vr15Vy_Screenrecording_20190328_1526_trans_V.mp4\",\"Height\":\"1352\",\"ThumbName\":\"20190730165753995_vr15Vy_Screenrecording_20190328_1526_trans_V.png\",\"ThumbUrl\":\"http://osd.corp.qunar.com/vs_cricle_camel_vs_cricle_camel/20190730165753995_vr15Vy_Screenrecording_20190328_1526_trans_V.png\",\"Width\":\"640\"}
- */
-
 @property (nonatomic, copy) NSString *Duration;
 @property (nonatomic, copy) NSString *FileName;
 @property (nonatomic, copy) NSString *FileSize;
