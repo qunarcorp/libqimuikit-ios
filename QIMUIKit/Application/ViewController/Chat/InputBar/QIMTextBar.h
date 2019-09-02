@@ -41,7 +41,8 @@ typedef enum {
 - (void)sendCollectionFaceStr:(NSString *)faceStr;
 - (void)clickFaildCollectionFace;
 @optional
-- (void)sendImageUrl:(NSString *)imageUrl;
+
+- (void)qim_textbarSendImageWithImagePath:(NSString *)imagePath;
 - (void)sendImageData:(NSData *)imageData;
 - (void)sendVoiceUrl:(NSString *)voiceUrl WithDuration:(int)duration WithSmallData:(NSData *)amrData WithFileName:(NSString *)filename AndFilePath:(NSString *)filepath;
 - (void)setKeyBoardHeight:(CGFloat)height WithScrollToBottom:(BOOL)flag;

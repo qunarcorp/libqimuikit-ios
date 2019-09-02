@@ -19,8 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (QIMTextContainer *)textContainerForMessage:(QIMMessageModel *)message fromCache:(BOOL)fromCache withCellWidth:(CGFloat)cellWidth withFontSize:(CGFloat)fontSize withFontColor:(UIColor *)textColor withNumberOfLines:(NSInteger)numberOfLines;
 
 + (NSArray *)storagesFromMessage:(QIMMessageModel *)message;
-
-+ (QIMMessageModel *)reductionMessageForMessage:(QIMMessageModel *)message;
             
 - (void)parseForXMLString:(NSString *)xmlStr complete:(void (^)(NSDictionary * info))complete;
 

@@ -71,10 +71,11 @@ static QTalk *__global_qtalk = nil;
     // Topic
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMGroupTopicCell" ForMessageType:QIMMessageType_Topic];
     [[QIMKit sharedInstance] setMsgShowText:@"[群公告]" ForMessageType:QIMMessageType_Topic];
-    // Location Share 
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMLocationShareMsgCell" ForMessageType:QIMMessageType_LocalShare];
     // card Share
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMCardShareMsgCell" ForMessageType:QIMMessageType_CardShare];
+    
+    // Location Share
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMLocationShareMsgCell" ForMessageType:QIMMessageType_LocalShare];
     [[QIMKit sharedInstance] setMsgShowText:@"[位置分享]" ForMessageType:QIMMessageType_LocalShare];
     
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMShareLocationChatCell" ForMessageType:QIMMessageType_shareLocation];

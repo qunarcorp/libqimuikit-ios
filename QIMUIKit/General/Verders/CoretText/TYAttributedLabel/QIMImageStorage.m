@@ -122,10 +122,13 @@
         }
     } else if (_imageURL){
         // 图片数据
-        NSString * urlStr = _imageURL.absoluteString;
+        NSString *urlStr = _imageURL.absoluteString;
+        NSURL * smallPicUrl = nil;
         if ([urlStr containsString:@"LocalFileName"]) {
-            
+            urlStr = [[urlStr componentsSeparatedByString:@"LocalFileName="] lastObject];
+            smallPicUrl = [NSURL fileURLWithPath:urlStr];
         } else {
+            smallPicUrl = [NSURL URLWithString:urlStr];
             if (![urlStr containsString:@"?"]) {
                 urlStr = [urlStr stringByAppendingString:@"?"];
                 if (![urlStr containsString:@"platform"]) {
@@ -149,8 +152,6 @@
                 }
             }
         }
-        
-        NSURL * smallPicUrl = [NSURL URLWithString:urlStr];
         
         BOOL isGif = [[[smallPicUrl pathExtension] lowercaseString] isEqualToString:@"gif"];
         CGFloat width = self.size.width;

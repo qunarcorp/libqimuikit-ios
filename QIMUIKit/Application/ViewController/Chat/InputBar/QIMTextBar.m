@@ -1732,7 +1732,11 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 - (void)imagePickerBrowserDidFinish:(QIMUIImagePickerBrowserVC *)pickerBrowser {
     UIImage* editedImage = pickerBrowser.sourceImage;
     NSData *imageData = UIImageJPEGRepresentation(editedImage, 0.8);
-    [self.delegate sendImageData:imageData];
+    //mark by newFile
+    NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+    [self.delegate qim_textbarSendImageWithImagePath:imagePath];
+
+//    [self.delegate sendImageData:imageData];
     _isScrollToBottom = YES;
     //    [self needFirstResponder:NO];
     [pickerBrowser dismissViewControllerAnimated:NO completion:nil];
@@ -1831,17 +1835,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 - (void)onPhotoButtonClick:(UIButton *)sender{
     [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
-        /*
-        QIMImagePickerController *pickerVc = [[QIMImagePickerController alloc] initWithMaxImagesCount:9 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            pickerVc.modalPresentationStyle = UIModalPresentationCurrentContext;
-#if __has_include("QIMIPadWindowManager.h")
-            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:pickerVc animated:YES completion:nil];
-#endif
-        } else {
-            [[[UIApplication sharedApplication] visibleViewController] presentViewController:pickerVc animated:YES completion:nil];
-        }
-        */
         QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
         picker.delegate = self;
         picker.title = @"选取照片";
@@ -2215,18 +2208,24 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         [QIMPathManage deleteFileAtPath:filePath];
         NSString *amrFilePath = [QIMPathManage getPathToSaveWithSaveData:amrData ToFileName:fileName ofType:@"amr"];
         //将armData文件上传，获取到相应的url
-        NSString *httpUrl = [QIMKit updateLoadVoiceFile:amrData WithFilePath:amrFilePath];
+//        NSString *httpUrl = [QIMKit updateLoadVoiceFile:amrData WithFilePath:amrFilePath];
         if (_recordingStatus == VoiceChatRecordingStatusAudition) {
             if (!_voiceInfoDic) {
                 _voiceInfoDic = [NSMutableDictionary dictionaryWithCapacity:1];
             }
+            
+    
+            [_voiceInfoDic setQIMSafeObject:amrFilePath forKey:@"amrFilePath"];
+            [_voiceInfoDic setQIMSafeObject:@(timeCount + 1) forKey:@"Duration"];
+            /*
             [_voiceInfoDic setQIMSafeObject:httpUrl forKey:@"httpUrl"];
             [_voiceInfoDic setQIMSafeObject:@(timeCount + 1) forKey:@"timeCount"];
             [_voiceInfoDic setQIMSafeObject:amrData forKey:@"amrData"];
             [_voiceInfoDic setQIMSafeObject:fileName forKey:@"fileName"];
             [_voiceInfoDic setQIMSafeObject:amrFilePath forKey:@"amrFilePath"];
+             */
         }else{
-            [self.delegate sendVoiceUrl:httpUrl WithDuration:timeCount + 1 WithSmallData:amrData WithFileName:fileName AndFilePath:amrFilePath];
+            [self.delegate sendVoiceUrl:nil WithDuration:timeCount + 1 WithSmallData:amrData WithFileName:fileName AndFilePath:amrFilePath];
         }
     } else {
         if (timeCount < 1.0) {
@@ -2433,19 +2432,24 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 -(void)qtImagePickerController:(QTImagePickerController *)picker didFinishPickingAssets:(NSArray *)assets ToOriginal:(BOOL)flag
 {
     for (ALAsset * asset in assets) {
-        NSData * imageData = nil;
+        NSData *imageData = nil;
         if (flag) {
             uint8_t *buffer = (uint8_t *)malloc(asset.defaultRepresentation.size);
             NSInteger length = [asset.defaultRepresentation getBytes:buffer fromOffset:0 length:asset.defaultRepresentation.size error:nil];
             imageData = [NSData dataWithBytes:buffer length:length];
-            UIImage * image = [QIMImageUtil fixOrientation:[UIImage imageWithData:imageData]];
+//            UIImage * image = [QIMImageUtil fixOrientation:[UIImage imageWithData:imageData]];
+            UIImage *image = [UIImage imageWithData:imageData];
             imageData = UIImageJPEGRepresentation(image, 1.0);
-        }else{
+        } else {
             UIImage * image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage                                         scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
-            image = [QIMImageUtil fixOrientation:image];
+//            image = [QIMImageUtil fixOrientation:image];
             imageData = UIImageJPEGRepresentation(image, 0.5);
         }
-        [self.delegate sendImageData:imageData];
+        
+        //mark by newFile
+        NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+        [self.delegate qim_textbarSendImageWithImagePath:imagePath];
+//        [self.delegate sendImageData:imageData];
     }
     _isScrollToBottom = YES;
     [self needFirstResponder:NO];
@@ -2454,8 +2458,12 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 -(void)qtImagePickerController:(QTImagePickerController *)picker didFinishPickingImage:(UIImage *)image
 {
-    NSData * imageData = UIImageJPEGRepresentation(image, 0.9);
-    [self.delegate sendImageData:imageData];
+    NSData * imageData = UIImageJPEGRepresentation(image, 1.0);
+    //mark by newFile
+    NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+    [self.delegate qim_textbarSendImageWithImagePath:imagePath];
+
+//    [self.delegate sendImageData:imageData];
     _isScrollToBottom = YES;
     [self needFirstResponder:NO];
     [picker dismissViewControllerAnimated:NO completion:nil];
@@ -2512,7 +2520,10 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
                     if (downloadFinined && imageData) {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.delegate sendImageData:imageData];
+                            //mark by newFile
+                            NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+                            [self.delegate qim_textbarSendImageWithImagePath:imagePath];
+//                            [self.delegate sendImageData:imageData];
                             _isScrollToBottom = YES;
                             [self closeHUD];
                         });
@@ -2521,12 +2532,18 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
                     if (downloadFinined) {
                         dispatch_async(dispatch_get_main_queue(), ^{
+                            /*
                             UIImage * imageFix = [QIMImageUtil fixOrientation:[UIImage imageWithData:imageData]];
                             if ((imageFix.size.width > 512 || imageFix.size.height > 512) && (!picker.isOriginal)) {
                                 CGFloat height = (imageFix.size.height / imageFix.size.width) * 512;
                                 imageFix = [imageFix qim_imageByScalingAndCroppingForSize:CGSizeMake(512, height)];
                             }
-                            [self.delegate sendImageData:UIImageJPEGRepresentation(imageFix, 0.8)];
+                            */
+                            //mark by newFile
+                            NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+                            [self.delegate qim_textbarSendImageWithImagePath:imagePath];
+
+//                            [self.delegate sendImageData:UIImageJPEGRepresentation(imageFix, 0.8)];
                             _isScrollToBottom = YES;
                             [self closeHUD];
                         });
@@ -2582,8 +2599,11 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 -(void)assetsPickerController:(QTPHImagePickerController *)picker didFinishEditWithImage:(UIImage *)image
 {
-    NSData * imageData = UIImageJPEGRepresentation(image, 1.0);
-    [self.delegate sendImageData:imageData];
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+    [self.delegate qim_textbarSendImageWithImagePath:imagePath];
+    //mark by newfile
+//    [self.delegate sendImageData:imageData];
     _isScrollToBottom = YES;
     [self needFirstResponder:NO];
     [picker dismissViewControllerAnimated:NO completion:nil];

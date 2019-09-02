@@ -124,7 +124,7 @@
 
 #pragma mark - ui
 
--(void)setMessage:(QIMMessageModel *)message{
+-(void)setMessage:(QIMMessageModel *)message {
     [super setMessage:message];
     
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];

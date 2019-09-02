@@ -1208,15 +1208,6 @@
 - (void)emptyText:(NSString *)text{
 }
 
-- (void)sendImageUrl:(NSString *)imageUrl {
-    
-    [[self view] setFrame:_rootViewFrame];
-    
-    if ([imageUrl length] > 0) {
-     
-    }
-}
-
 - (void)sendImageData:(NSData *)imageData{
     if (imageData) {
         [self getStringFromAttributedString:imageData];
