@@ -223,6 +223,7 @@ Pod::Spec.new do |s|
   s.dependency 'MMMarkdown'
   s.dependency 'Toast' 
   s.dependency 'YYKeyboardManager'
+  s.dependency 'RTLabel'
 #  s.dependency 'SuperPlayer'
 
   if $debug

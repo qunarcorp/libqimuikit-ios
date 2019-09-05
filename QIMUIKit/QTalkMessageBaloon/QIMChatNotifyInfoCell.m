@@ -16,14 +16,17 @@
 #import "QIMMessageCellCache.h"
 #import "QIMTextContainer.h"
 #import "MDHTMLLabel.h"
+#import "RTLabel.h"
+
 
 #define kCellWidth                 IS_Ipad ? ([UIScreen mainScreen].qim_rightWidth  * 240 / 320) : ([UIScreen mainScreen].bounds.size.width * 4/5)
 
 static double _global_message_cell_width = 0;
 
-@interface QIMChatNotifyInfoCell() <MDHTMLLabelDelegate>
+@interface QIMChatNotifyInfoCell() <RTLabelDelegate>
 
-@property (nonatomic, strong) MDHTMLLabel   *htmlLabel;
+@property (nonatomic, strong) RTLabel * htmlLabel;
+//@property (nonatomic, strong) MDHTMLLabel   *htmlLabel;
 
 @property (nonatomic, strong) UIImageView *bgImageView;
 
@@ -37,10 +40,9 @@ static double _global_message_cell_width = 0;
     label.width = kCellWidth * 4/5;
     label.numberOfLines = 0;
     label.font = [UIFont systemFontOfSize:12];
-    [label sizeToFit];
+//    [label sizeToFit];
     return label.height + 20;
     //去特么的第三方，算的高度是错的
-    return [MDHTMLLabel sizeThatFitsHTMLString:message.message withFont:[UIFont systemFontOfSize:12] constraints:CGSizeZero limitedToNumberOfLines:0] + 20;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -61,10 +63,6 @@ static double _global_message_cell_width = 0;
         [self.bgImageView setUserInteractionEnabled:YES];
         [self.contentView addSubview:self.bgImageView];
         
-        self.htmlLabel = [[MDHTMLLabel alloc] init];
-        self.htmlLabel.backgroundColor = [UIColor clearColor];
-        [self.bgImageView addSubview:self.htmlLabel];
-        
     }
     return self;
 }
@@ -74,30 +72,35 @@ static double _global_message_cell_width = 0;
 }
 
 - (void)refreshUI {
+    if (self.htmlLabel) {
+        [self.htmlLabel removeFromSuperview];
+        self.htmlLabel.delegate = nil;
+        self.htmlLabel = nil;
+    }
+    self.htmlLabel = [[RTLabel alloc] initWithFrame:CGRectMake(0, 0, kCellWidth, 20)];
+    self.htmlLabel.backgroundColor = [UIColor clearColor];
+    [self.bgImageView addSubview:self.htmlLabel];
+    
     self.nameLabel.hidden = YES;
     self.HeadView.hidden = YES;
     
     self.htmlLabel.delegate = self;
-    self.htmlLabel.numberOfLines = 0;
+//    self.htmlLabel.numberOfLines = 0;
     self.htmlLabel.font = [UIFont systemFontOfSize:14];
     self.htmlLabel.textAlignment = NSTextAlignmentCenter;
     self.htmlLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.htmlLabel.adjustsFontSizeToFitWidth = YES;
+//    self.htmlLabel.adjustsFontSizeToFitWidth = YES;
     
-    self.htmlLabel.linkAttributes = @{NSForegroundColorAttributeName: [UIColor blueColor],
-                                                NSFontAttributeName: [UIFont systemFontOfSize:14],
-                                    NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
-    
-    self.htmlLabel.activeLinkAttributes = @{NSForegroundColorAttributeName: [UIColor redColor],
-                                       NSFontAttributeName: [UIFont systemFontOfSize:14],
-                                       NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
+    self.htmlLabel.linkAttributes = @{@"color":@"#0000FF"};
+//
+    self.htmlLabel.selectedLinkAttributes = @{@"color":@"#0000FF"};
     if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        self.htmlLabel.htmlText = self.message.message;
+        [self.htmlLabel setText:self.message.message];
     } else {
-        self.htmlLabel.text = self.message.message;
+        [self.htmlLabel setText:self.message.message];
     }
-    CGFloat height = [MDHTMLLabel sizeThatFitsHTMLString:self.message.message withFont:[UIFont systemFontOfSize:12] constraints:CGSizeZero limitedToNumberOfLines:0];
-    CGSize titleSize = [self.htmlLabel sizeThatFits:CGSizeMake(kCellWidth, height)];
+//    CGFloat height = [MDHTMLLabel sizeThatFitsHTMLString:self.message.message withFont:[UIFont systemFontOfSize:12] constraints:CGSizeZero limitedToNumberOfLines:0];
+    CGSize titleSize = [self.htmlLabel optimumSize];
     CGFloat titleWidth = titleSize.width;
     CGFloat titleHeight = titleSize.height;
     
@@ -117,10 +120,20 @@ static double _global_message_cell_width = 0;
                                                                              metrics:metrics
                                                                                views:views]];
 }
+-(float) widthForString:(NSString *)value fontSize:(float)fontSize andHeight:(float)height{CGSize sizeToFit = [value sizeWithFont:[UIFont systemFontOfSize:fontSize] constrainedToSize:CGSizeMake(CGFLOAT_MAX, height) lineBreakMode:NSLineBreakByWordWrapping];//此处的换行类型（lineBreakMode）可根据自己的实际情况进行设置returnsizeToFit.width;}
+}
 
-- (void)HTMLLabel:(MDHTMLLabel *)label didSelectLinkWithURL:(NSURL *)URL {
-    QIMVerboseLog(@"Did select link with URL: %@", URL.absoluteString);
-    [QIMFastEntrance openWebViewForUrl:URL.absoluteString showNavBar:YES];
+-(float) heightForString:(NSString *)value fontSize:(float)fontSize andWidth:(float)width{CGSize sizeToFit = [value sizeWithFont:[UIFont systemFontOfSize:fontSize] constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByCharWrapping];//此处的换行类型（lineBreakMode）可根据自己的实际情况进行设置returnsizeToFit.height;}
+    
+}
+
+//- (void)HTMLLabel:(MDHTMLLabel *)label didSelectLinkWithURL:(NSURL *)URL {
+//    QIMVerboseLog(@"Did select link with URL: %@", URL.absoluteString);
+//    [QIMFastEntrance openWebViewForUrl:URL.absoluteString showNavBar:YES];
+//}
+- (void)rtLabel:(id)rtLabel didSelectLinkWithURL:(NSURL*)url{
+    QIMVerboseLog(@"Did select link with URL: %@", url.absoluteString);
+    [QIMFastEntrance openWebViewForUrl:url.absoluteString showNavBar:YES];
 }
 
 - (void)layoutSubviews {
