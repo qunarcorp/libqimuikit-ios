@@ -203,21 +203,12 @@
     for (NSDictionary * infoDic in _selectedUsers) {
         BOOL isGroup = [infoDic[@"isGroup"] boolValue];
         NSString * jid = infoDic[@"userId"];
-        /*
-        UIImage * headImage = nil;
-        if (isGroup) {
-            headImage = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:jid];
-        }else{
-            headImage = [[QIMKit sharedInstance] getUserHeaderImageByUserId:jid];
-        }
-        */
         UIImageView * heaerImgView = [[UIImageView alloc] initWithFrame:CGRectMake(i * 35 + 5, 10, 30, 30)];
         if (isGroup) {
             [heaerImgView qim_setImageWithJid:jid WithChatType:ChatType_GroupChat];
         } else {
             [heaerImgView qim_setImageWithJid:jid];
         }
-//        heaerImgView.image = headImage;
         heaerImgView.tag = kSelectUserImgTagFrom + i;
         heaerImgView.layer.cornerRadius = 0.5;
         heaerImgView.clipsToBounds = YES;

@@ -600,6 +600,16 @@ static NSString *__default_ua = nil;
                 [dcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
                 NSHTTPCookie *dcookie = [NSHTTPCookie cookieWithProperties:dcookieProperties];
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:dcookie];
+                
+                NSMutableDictionary *qckeyCookieProperties = [NSMutableDictionary dictionary];
+                NSString *qckey = [[QIMKit sharedInstance] thirdpartKeywithValue];
+                [qckeyCookieProperties setQIMSafeObject:qckey forKey:NSHTTPCookieValue];
+                [qckeyCookieProperties setQIMSafeObject:@"q_ckey" forKey:NSHTTPCookieName];
+                [qckeyCookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+                [qckeyCookieProperties setValue:@"/" forKey:NSHTTPCookiePath];
+                [qckeyCookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
+                NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:qckeyCookieProperties];
+                [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
             } else {
                 
                 //QTalk 默认q_ckey

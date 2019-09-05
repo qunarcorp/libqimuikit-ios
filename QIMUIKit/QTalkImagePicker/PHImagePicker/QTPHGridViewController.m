@@ -569,12 +569,13 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
             [QTalkTipsView showTips:[NSString stringWithFormat:@"当前不支持上传视频"] InView:self.view];
         } else {
             int duration = (int)asset.duration;
-            [[QIMKit sharedInstance] removeUserObjectForKey:@"videoTimeLen"];
-            NSInteger configDuration = [[[QIMKit sharedInstance] userObjectForKey:@"videoTimeLen"] integerValue];
+
+            NSInteger configDuration = [[[QIMKit sharedInstance] userObjectForKey:@"videoMaxTimeLen"] integerValue];
             if (configDuration <= 0) {
                 //视频默认15s时长限制
                 configDuration = 15 * 1000;
             }
+
             if (duration * 1000 > configDuration) {
                 [QTalkTipsView showTips:[NSString stringWithFormat:@"不支持上传超过%lds的视频", configDuration / 1000] InView:self.view];
             } else {

@@ -8,11 +8,10 @@
 
 #import "QIMImageStorage.h"
 #import "QIMImageCache.h"
-#import "YLImageView.h"
-#import "YLGIFImage.h"
+#import "QIMImageView.h"
 
 @interface QIMImageStorage () {
-    YLImageView * _imageView;
+    QIMImageView * _imageView;
     CGRect        _rect;
 }
 @property (nonatomic, weak) UIView *ownerView;
@@ -73,9 +72,9 @@
         return;
     }
     _rect = rect;
-    __block YLGIFImage *image = nil;
+    __block QIMImage *image = nil;
     NSData *placeHoldImageData = [NSData dataWithContentsOfFile:_placeholdImageName];
-    image = placeHoldImageData.length ? [YLGIFImage imageWithData:placeHoldImageData scale:1.0] : nil;
+    image = placeHoldImageData.length ? [QIMImage imageWithData:placeHoldImageData scale:1.0] : nil;
     [_imageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
     _isNeedUpdateFrame = YES;
     if (_image) {
@@ -92,7 +91,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (image) {
                     [_imageView removeFromSuperview];
-                    _imageView = [[YLImageView alloc] initWithFrame:fitRect];
+                    _imageView = [[QIMImageView alloc] initWithFrame:fitRect];
                     _imageView.image = image;
                     [self.ownerView addSubview:_imageView];
                 }
@@ -100,7 +99,7 @@
         }
     } else if (_imageName){
         // 图片网址
-        image = (YLGIFImage *)[UIImage qim_imageNamedFromQIMUIKitBundle:_imageName];
+        image = (QIMImage *)[QIMImage qim_imageNamedFromQIMUIKitBundle:_imageName];
         if (_cacheImageOnMemory) {
             _image = image;
         }
@@ -115,7 +114,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (image) {
                     [_imageView removeFromSuperview];
-                    _imageView = [[YLImageView alloc] initWithFrame:fitRect];
+                    _imageView = [[QIMImageView alloc] initWithFrame:fitRect];
                     _imageView.image = image;
                     [self.ownerView addSubview:_imageView];
                 }
@@ -160,7 +159,7 @@
             width = self.size.width / 2.0f;
             height = self.size.height / 2.0f;
         }
-        _imageView = [[YLImageView alloc] init];
+        _imageView = [[QIMImageView alloc] init];
         [_imageView qim_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
 //            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
 //            NSLog(@"下载图片进度 : %ld", progress);
@@ -178,7 +177,7 @@
 
                 if (image) {
                     [_imageView removeFromSuperview];
-                    _imageView = [[YLImageView alloc] initWithFrame:fitRect];
+                    _imageView = [[QIMImageView alloc] initWithFrame:fitRect];
                     if ([smallPicUrl.absoluteString containsString:@".gif"]) {
                         _imageView.image = image;
                         [self.ownerView addSubview:_imageView];
@@ -217,7 +216,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             if (image) {
                 [_imageView removeFromSuperview];
-                _imageView = [[YLImageView alloc] initWithFrame:fitRect];
+                _imageView = [[QIMImageView alloc] initWithFrame:fitRect];
                 _imageView.image = image;
                 [self.ownerView addSubview:_imageView];
             }
@@ -226,7 +225,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             if (image) {
                 [_imageView removeFromSuperview];
-                _imageView = [[YLImageView alloc] initWithFrame:fitRect];
+                _imageView = [[QIMImageView alloc] initWithFrame:fitRect];
                 UIImage *imageTemp = image;
                 CGSize imageTempSize = imageTemp.size;
                 CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;

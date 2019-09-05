@@ -18,8 +18,6 @@
 #import "QIMWindowManager.h"
 #import "QIMAppWindowManager.h"
 #import "ASIHTTPRequest.h"
-#import "YLImageView.h"
-#import "YLGIFImage.h"
 
 #import "UIImageView+QIMImageCache.h"
 #import "UIImage+QIMUIKit.h"
@@ -31,6 +29,8 @@
 #import "UINavigationController+FDFullscreenPopGesture.h"
 #import "QIMIconFont.h"
 #import "QIMIconInfo.h"
+#import "QIMImageView.h"
+#import "QIMImage.h"
 #import "QIMDeviceManager.h"
 
 #if __has_include("QIMNoteManager.h")
