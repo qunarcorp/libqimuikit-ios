@@ -219,12 +219,12 @@
                 break;
             case PublicNumberMsgType_Notice: {
                 
-                return [QIMPublicNumberNoticeCell getCellHeightByContent:message.message];
+                return [QIMPublicNumberNoticeCell getCellHeightByContent:message.message] + 15;
             }
                 break;
             case PublicNumberMsgType_OrderNotify: {
                 
-                return [QIMPublicNumberOrderMsgCell getCellHeightByContent:message.message];
+                return [QIMPublicNumberOrderMsgCell getCellHeightByContent:message.message] + 15;
             }
                 break;
             case MessageType_C2BGrabSingle: {

@@ -96,7 +96,6 @@
     #import "QIMNotifyManager.h"
 #endif
 
-#import "YLGIFImage.h"
 #import "QIMExportMsgManager.h"
 #import "QIMContactManager.h"
 
@@ -659,28 +658,6 @@
 
 - (void)setupSystemChatNav {
     [self.navigationItem setTitle:self.title];
-    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    headerView.layer.cornerRadius  = 2.0;
-    headerView.layer.masksToBounds = YES;
-    headerView.clipsToBounds       = YES;
-    headerView.backgroundColor     = [UIColor clearColor];
-    UIImage *headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-        if ([self.chatId hasPrefix:@"rbt-notice"]) {
-            headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt_notice"];
-        } else if ([self.chatId hasPrefix:@"rbt-qiangdan"] || [self.chatId hasPrefix:@"rbt-zhongbao"]) {
-            headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rbt-qiangdan"];
-        } else {
-            headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
-        }
-    } else {
-        headImage = [UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_speaker_h39"];
-    }
-    [headerView setImage:headImage];
-    
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:headerView];
-    
-    [self.navigationItem setRightBarButtonItem:rightItem];
 }
 
 - (void)initUI {
@@ -743,13 +720,13 @@
         }
         self.title = userName;
     } else if (self.chatType == ChatType_Consult) {
-        NSDictionary *virtualDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.virtualJid];
-        NSString *virtualName = [virtualDic objectForKey:@"Name"];
-        if (virtualName.length <= 0) {
-            virtualName = [self.virtualJid componentsSeparatedByString:@"@"].firstObject;
+        NSDictionary *consultUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.virtualJid];
+        NSString *userName = [consultUserInfo objectForKey:@"Name"];
+        if (userName.length <= 0) {
+            userName = [self.virtualJid componentsSeparatedByString:@"@"].firstObject;
         }
-        if (virtualName) {
-            self.title = virtualName;
+        if (userName) {
+            self.title = userName;
         }
     } else if (self.chatType == ChatType_CollectionChat) {
         NSDictionary *collectionUserInfo = [[QIMKit sharedInstance] getCollectionUserInfoByUserId:self.chatId];
@@ -782,8 +759,8 @@
         descLabel.font = [UIFont systemFontOfSize:11];
         descLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         if (self.chatType == ChatType_ConsultServer) {
-            NSDictionary *virtualDic = [[QIMKit sharedInstance] getUserInfoByUserId:self.virtualJid];
-            NSString *virtualName = [virtualDic objectForKey:@"Name"];
+            NSDictionary *consultUserInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.virtualJid];
+            NSString *virtualName = [consultUserInfo objectForKey:@"Name"];
             if (virtualName.length <= 0) {
                 virtualName = [self.virtualJid componentsSeparatedByString:@"@"].firstObject;
             }
@@ -821,10 +798,10 @@
     
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-//    if (![[QIMKit sharedInstance] getIsIpad] && [[UIApplication sharedApplication] statusBarOrientation] != UIInterfaceOrientationPortrait) {
+    if (![[QIMKit sharedInstance] getIsIpad]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.navigationController.navigationBar.translucent = NO;
-//    }
+    }
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     if (self.chatType != ChatType_CollectionChat) {
         [self.view addSubview:self.textBar];
@@ -2578,7 +2555,7 @@
             BOOL isFileExist = [[QIMKit sharedInstance] isFileExistForUrl:faceStr width:0 height:0 forCacheType:QIMFileCacheTypeColoction];
             if (isFileExist) {
                 NSData *imgData = [[QIMKit sharedInstance] getFileDataFromUrl:faceStr forCacheType:QIMFileCacheTypeColoction];
-                CGSize size = [[QIMKit sharedInstance] getFitSizeForImgSize:[YLGIFImage imageWithData:imgData].size];
+                CGSize size = [[QIMKit sharedInstance] getFitSizeForImgSize:[QIMImage imageWithData:imgData].size];
                 msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, size.width, size.height];
             } else {
                 msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", faceStr, 0, 0];
@@ -3097,7 +3074,6 @@ static CGPoint tableOffsetPoint;
         QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithImage:[UIImage qim_animatedImageWithAnimatedGIFData:imageData]];
         photo.photoData = imageData;
         return photo;
-//        return [[QIMMWPhoto alloc] initWithImage:[YLGIFImage imageWithData:imageData]];
     } else {
         if (![imageHttpUrl containsString:@"platform"]) {
             imageHttpUrl = [imageHttpUrl stringByAppendingString:@"&platform=touch"];
@@ -3419,7 +3395,7 @@ static CGPoint tableOffsetPoint;
 
 - (NSString *)getStringFromAttributedString:(NSData *)imageData {
     
-    UIImage *image = [YLGIFImage imageWithData:imageData];
+    UIImage *image = [QIMImage imageWithData:imageData];
     CGFloat width = CGImageGetWidth(image.CGImage);
     CGFloat height = CGImageGetHeight(image.CGImage);
     QIMMessageModel *msg = nil;

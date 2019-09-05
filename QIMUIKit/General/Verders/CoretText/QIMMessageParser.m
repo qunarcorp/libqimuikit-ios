@@ -16,7 +16,6 @@
 #import "QIMMessageCellCache.h"
 #import "QIMPhoneNumberTextStorage.h"
 #import <objc/runtime.h>
-#import "YLGIFImage.h"
 #import "QIMEmotionManager.h"
 #import "QIMCommonFont.h"
 
@@ -225,16 +224,16 @@ typedef void (^QCParseCompleteBlock)(NSDictionary *info);
             if ((imageName == nil) && ([imageName length] == 0)) {
                 hasEmotion = NO;
             }
-            YLGIFImage *emotionImage = nil;
+            QIMImage *emotionImage = nil;
             CGSize emotionImageSize = CGSizeZero;
             if ([imageName length] > 0) {
                 NSData *imageData = [NSData dataWithContentsOfFile:imageName];
-                emotionImage = [YLGIFImage imageWithData:imageData scale:0.5];
+                emotionImage = [QIMImage imageWithData:imageData scale:0.5];
                 emotionImageSize = CGSizeMake(emotionImage.size.width / 2.0f, emotionImage.size.height / 2.0f);
             }
             if (!emotionImage) {
                 NSData *imageData = [[QIMEmotionManager sharedInstance] getEmotionThumbIconDataWithImageStr:imageName];
-                emotionImage = [YLGIFImage imageWithData:imageData scale:0.5];
+                emotionImage = [QIMImage imageWithData:imageData scale:0.5];
                 emotionImageSize = CGSizeMake(48, 48);
             }
             if (!emotionImage) {

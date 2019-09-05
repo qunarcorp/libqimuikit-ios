@@ -869,17 +869,18 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         NSString *ThumbName = [videoDic objectForKey:@"ThumbName"];
                         NSString *videoUrl = [videoDic objectForKey:@"FileUrl"];
                         NSString *videoName = [videoDic objectForKey:@"FileName"];
-                        NSString *videoSize = [videoDic objectForKey:@"FileSize"];
+                        long long videoSize = [[videoDic objectForKey:@"FileSize"] longLongValue];
                         NSString *height = [videoDic objectForKey:@"Height"];
                         NSString *width = [videoDic objectForKey:@"Width"];
                         NSNumber *Duration = [videoDic objectForKey:@"Duration"];
                         NSNumber *newVideo = [videoDic objectForKey:@"newVideo"];
                         NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
                         
-                        
-                        [videoPreDic setQIMSafeObject:Duration forKey:@"Duration"];
+                        NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:videoSize];
+
+                        [videoPreDic setQIMSafeObject:@([Duration integerValue] / 1000) forKey:@"Duration"];
                         [videoPreDic setQIMSafeObject:videoName forKey:@"FileName"];
-                        [videoPreDic setQIMSafeObject:videoSize forKey:@"FileSize"];
+                        [videoPreDic setQIMSafeObject:fileSizeStr forKey:@"FileSize"];
                         [videoPreDic setQIMSafeObject:videoUrl forKey:@"FileUrl"];
                         [videoPreDic setQIMSafeObject:height forKey:@"Height"];
                         [videoPreDic setQIMSafeObject:ThumbName forKey:@"ThumbName"];
@@ -913,9 +914,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                                     NSNumber *Duration = [transFileInfo objectForKey:@"duration"];
                                     NSMutableDictionary *videoContentDic = [NSMutableDictionary dictionaryWithCapacity:1];
                                     
-                                    /*
-                                     {\"Duration\":\"11050\",\"FileName\":\"20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.mp4\",\"FileSize\":\"739546\",\"FileUrl\":\"http://osd.corp.qunar.com/vs_cricle_camel_vs_cricle_camel/20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.mp4\",\"Height\":\"1920\",\"ThumbName\":\"20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.png\",\"ThumbUrl\":\"http://osd.corp.qunar.com/vs_cricle_camel_vs_cricle_camel/20190730165813439_SbEIV4_Screenrecorder-2018-12-12-19-_trans_F.png\",\"Width\":\"1080\"}
-                                     */
                                     [videoPreDic setQIMSafeObject:Duration forKey:@"Duration"];
                                     [videoPreDic setQIMSafeObject:videoName forKey:@"FileName"];
                                     [videoPreDic setQIMSafeObject:videoSize forKey:@"FileSize"];
@@ -1404,7 +1402,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                     if (downloadFinined && imageData) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self.selectPhotos removeObject:@"Q_Work_Add"];
-                            NSDictionary *imageDic = @{@"MediaType":@(QIMWorkMomentMediaTypeImage), @"imageDic": @{@"imageData" : imageDic}};
+                            NSDictionary *imageDic = @{@"MediaType":@(QIMWorkMomentMediaTypeImage), @"imageDic": @{@"imageData" : imageData}};
                             [self.selectPhotos addObject:imageDic];
                             [self updateSelectPhotos];
                             [self hideProgressHUD:YES];

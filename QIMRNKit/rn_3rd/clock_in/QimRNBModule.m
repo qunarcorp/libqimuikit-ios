@@ -1450,7 +1450,8 @@ RCT_EXPORT_METHOD(getGroupList:(RCTResponseSenderBlock)callback) {
     for (NSDictionary *groupInfo in tempList) {
         NSMutableDictionary *groupDic = [NSMutableDictionary dictionaryWithDictionary:groupInfo];
         NSString *groupId = [groupDic objectForKey:@"GroupId"];
-        NSString *headerUri = [[QIMKit sharedInstance] getGroupImagePathFromLocalByGroupId:groupId];
+        NSString *groupHeaderUrl = [groupDic objectForKey:@"HeaderSrc"];
+        NSString *headerUri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithHeaderUrl:groupHeaderUrl];
         [groupDic setObject:headerUri forKey:@"HeaderUri"];
         [groupList addObject:groupDic];
     }
@@ -1490,7 +1491,8 @@ RCT_EXPORT_METHOD(searchGroupListWithKey:(NSString *)searchText :(RCTResponseSen
             [[groupInfo objectForKey:keyName] rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound ) {
             NSMutableDictionary *groupDic = [NSMutableDictionary dictionaryWithDictionary:groupInfo];
             NSString *groupId = [groupDic objectForKey:@"GroupId"];
-            NSString *headerUri = [[QIMKit sharedInstance] getGroupImagePathFromLocalByGroupId:groupId];
+            NSString *groupHeaderUrl = [groupDic objectForKey:@"HeaderSrc"];
+            NSString *headerUri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithHeaderUrl:groupHeaderUrl];
             [groupDic setObject:headerUri ? headerUri : @"" forKey:@"HeaderUri"];
             [groupList addObject:groupDic];
         }

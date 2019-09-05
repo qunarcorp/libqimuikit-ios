@@ -10,7 +10,6 @@
 #import "NSBundle+QIMLibrary.h"
 #import "QIMCollectionFaceManager.h"
 #import "QIMJSONSerializer.h"
-#import "YLGIFImage.h"
 
 @interface QIMCollectionFaceManager ()
 {
@@ -93,7 +92,7 @@
     BOOL exist = [[NSFileManager defaultManager] fileExistsAtPath:imageNamePath];
     if (exist) {
         
-        callback([YLGIFImage imageWithContentsOfFile:imageNamePath]);
+        callback([QIMImage imageWithContentsOfFile:imageNamePath]);
     } else {
         if (!imageName) {
             callback([UIImage qim_imageNamedFromQIMUIKitBundle:@"NetworkErrorHint"]);
