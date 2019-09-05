@@ -123,7 +123,11 @@
 #if defined (QIMNotifyEnable) && QIMNotifyEnable == 1
 
 @interface QIMChatVC () <QIMNotifyManagerDelegate>
-
+{
+    UIBarButtonItem *rightItem;
+    UIBarButtonItem * backBarBtn;
+    UIBarButtonItem *spaceItem;
+}
 @end
 
 #endif
@@ -131,7 +135,11 @@
 #if defined (QIMNoteEnable) && QIMNoteEnable == 1
 
 @interface QIMChatVC () <QIMEncryptChatReloadViewDelegate>
-
+{
+    UIBarButtonItem *rightItem;
+    UIBarButtonItem * backBarBtn;
+    UIBarButtonItem *spaceItem;
+}
 @end
 
 #endif
@@ -430,21 +438,25 @@
 - (UIView *)getForwardNavView {
     if (_forwardNavTitleView == nil) {
         _forwardNavTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, self.navigationController.navigationBar.bounds.size.height)];
-        _forwardNavTitleView.backgroundColor = [UIColor qtalkTableDefaultColor];
+        _forwardNavTitleView.backgroundColor =[UIColor clearColor];//[UIColor qtalkTableDefaultColor];
         UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
-        [cancelBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
+       // [UIColor qtalkIconSelectColor]
+        [cancelBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [cancelBtn addTarget:self action:@selector(cancelForwardHandle:) forControlEvents:UIControlEventTouchUpInside];
         cancelBtn.frame = CGRectMake(20, 0, 50, _forwardNavTitleView.height);
         [_forwardNavTitleView addSubview:cancelBtn];
     }
+    self.navigationItem.leftBarButtonItems = @[];
+    self.navigationItem.rightBarButtonItem = nil;
+    [self.navigationItem setHidesBackButton:YES];
     return _forwardNavTitleView;
 }
 
 - (UIView *)getMaskRightTitleView {
     if (_maskRightTitleView == nil) {
         _maskRightTitleView = [[UIView alloc] initWithFrame:CGRectMake(self.navigationController.navigationBar.bounds.size.width - 130, 0, 130, self.navigationController.navigationBar.bounds.size.height)];
-        _maskRightTitleView.backgroundColor = [UIColor qtalkTableDefaultColor];
+        _maskRightTitleView.backgroundColor = [UIColor clearColor];//[UIColor qtalkTableDefaultColor];
     }
     return _maskRightTitleView;
 }
@@ -499,8 +511,8 @@
 - (void)setBackBtn {
     QIMNavBackBtn *backBtn = [QIMNavBackBtn sharedInstance];
     [backBtn addTarget:self action:@selector(leftBarBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem * backBarBtn = [[UIBarButtonItem alloc]initWithCustomView:backBtn];
-    UIBarButtonItem * spaceItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    backBarBtn = [[UIBarButtonItem alloc]initWithCustomView:backBtn];
+    spaceItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     //将宽度设为负值
     spaceItem.width = -15;
     //将两个BarButtonItem都返回给N
@@ -582,7 +594,6 @@
 }
 
 - (void)cancelForwardHandle:(id)sender {
-    
     _tableView.editing = NO;
     [_forwardNavTitleView removeFromSuperview];
     [_maskRightTitleView removeFromSuperview];
@@ -590,6 +601,9 @@
     [self.textBar setUserInteractionEnabled:YES];
     [self.messageManager.forwardSelectedMsgs removeAllObjects];
     self.fd_interactivePopDisabled = NO;
+     self.navigationItem.leftBarButtonItems = @[spaceItem,backBarBtn];
+    [self.navigationItem setRightBarButtonItem:rightItem];
+     [self.navigationItem setHidesBackButton:NO];
 }
 
 
@@ -640,7 +654,7 @@
  
     }
     if (self.chatType != ChatType_CollectionChat) {
-        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:rightItemView];
+        rightItem = [[UIBarButtonItem alloc] initWithCustomView:rightItemView];
         [self.navigationItem setRightBarButtonItem:rightItem];
     }
     
@@ -3049,6 +3063,9 @@
         [self.navigationController.navigationBar addSubview:[self getMaskRightTitleView]];
         [self.view addSubview:self.forwardBtn];
         self.fd_interactivePopDisabled = YES;
+        if([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+            self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+        }
     } else if (event == MA_Refer) {
         //引用消息
         self.textBar.isRefer = YES;
