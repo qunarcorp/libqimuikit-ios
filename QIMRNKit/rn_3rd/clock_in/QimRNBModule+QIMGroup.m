@@ -21,8 +21,18 @@
         NSString *userJid = [member objectForKey:@"jid"];
         NSString *affiliation = [member objectForKey:@"affiliation"];
         NSString *name = [member objectForKey:@"name"];
-        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:member];
         NSString *uri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:jid];
+        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userJid];
+        NSString *userName = [userInfo objectForKey:@"Name"];
+        if (userName.length > 0) {
+            name = userName;
+        }
+        NSString *userHeaderUrl = [userInfo objectForKey:@"HeaderSrc"];
+        if (userHeaderUrl.length > 0) {
+            uri = userHeaderUrl;
+        }
+        
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:member];
         [dic setQIMSafeObject:affiliation forKey:@"affiliation"];
         [dic setQIMSafeObject:uri forKey:@"headerUri"];
         [dic setQIMSafeObject:groupId forKey:@"jid"];
