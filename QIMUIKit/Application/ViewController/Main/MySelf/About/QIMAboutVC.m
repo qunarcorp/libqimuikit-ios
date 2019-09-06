@@ -19,7 +19,6 @@
 #import "QIMDataController.h"
 #if __has_include("QIMLocalLog.h")
 
-#import "QIMLocalLogViewController.h"
 #import "QIMLocalLog.h"
 #endif
 
@@ -405,7 +404,7 @@
 
 - (NSString *)dataFileSize {
     long long totalSize = [[QIMDataController getInstance] sizeOfDBPath];
-    NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
+    NSString *str = [QIMStringTransformTools qim_CapacityTransformStrWithSize:totalSize];
     return str;
 }
 

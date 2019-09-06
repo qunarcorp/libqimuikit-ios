@@ -20,6 +20,7 @@
 #endif
 
 @interface QTVideoAlertView : UIAlertView
+@property (nonatomic, assign) BOOL transFile;
 @property (nonatomic, copy) NSString *videoOutPath;
 @property (nonatomic, copy) NSString *fileSizeStr;
 @property (nonatomic, assign) float  videoDuration;
@@ -317,16 +318,8 @@
     [self.view addSubview:loadView];
     
     AVAssetExportSession *exportSession = nil;
-    NSString *resultQuality = AVAssetExportPresetHighestQuality;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_8_0
+    NSString *resultQuality = AVAssetExportPresetMediumQuality;
     exportSession = [[AVAssetExportSession alloc] initWithAsset:self.videoAsset presetName:resultQuality];
-#else
-    NSURL *sourceURL = [self.videoAsset valueForProperty:ALAssetPropertyAssetURL];
-    float videoLength = [[self.videoAsset valueForProperty:ALAssetPropertyDuration] floatValue];//self.videoAsset.defaultRepresentation.size;
-    AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:sourceURL options:nil];
-    exportSession = [[AVAssetExportSession alloc] initWithAsset:avAsset presetName:resultQuality];
-    
-#endif
     NSDateFormatter *formater = [[NSDateFormatter alloc] init];//用时间给文件全名，以免重复，在测试的时候其实可以判断文件是否存在若存在，则删除，重新生成文件即可
     [formater setDateFormat:@"yyyyMMddHHmmss"];
     NSString *videoResultPath = nil;
@@ -383,18 +376,28 @@
     UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
     CGImageRelease(image);
     
-    NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
-    QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
-    [alertView setVideoOutPath:videoResultPath];
-    [alertView setThumbImage:thumb];
-    [alertView setFileSizeStr:fileSizeStr];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_8_0
-    [alertView setVideoDuration:self.videoDuration];
-    self.picker.videoPath = videoResultPath;
-#else
-    [alertView setVideoDuration:videoLength];
-#endif
-    [alertView show];
+    NSInteger videoMaxTimeLen = [[[QIMKit sharedInstance] userObjectForKey:@"videoMaxTimeLen"] integerValue];
+    if (self.videoDuration * 1000 > videoMaxTimeLen) {
+        
+        NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+        QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"视频超过了%lds, 即将以文件形式发送吗？",videoMaxTimeLen / 1000] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alertView setVideoOutPath:videoResultPath];
+        [alertView setThumbImage:thumb];
+        [alertView setFileSizeStr:fileSizeStr];
+        [alertView setTransFile:YES];
+        [alertView setVideoDuration:self.videoDuration];
+        self.picker.videoPath = videoResultPath;
+        [alertView show];
+    } else {
+        NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+        QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
+        [alertView setVideoOutPath:videoResultPath];
+        [alertView setThumbImage:thumb];
+        [alertView setFileSizeStr:fileSizeStr];
+        [alertView setVideoDuration:self.videoDuration];
+        self.picker.videoPath = videoResultPath;
+        [alertView show];
+    }
 }
 
 - (void)setPlayButtonImage:(BOOL)flag{
@@ -409,32 +412,20 @@
 
 #pragma mark - alert delegate
 - (void)alertView:(QTVideoAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_8_0
-    if (buttonIndex) {
-        if (buttonIndex == 2) {
-            UISaveVideoAtPathToSavedPhotosAlbum(alertView.videoOutPath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
-        }
-        [self.picker finishPickingAssets:nil];
-    }
-    return;
-#endif
-    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    [dic setObject:alertView.videoOutPath forKey:@"VideoOutPath"];
-    [dic setObject:alertView.thumbImage forKey:@"ThumbImage"];
-    [dic setObject:alertView.fileSizeStr forKey:@"FileSizeStr"];
-    [dic setObject:@(floorf(alertView.videoDuration)) forKey:@"VideoDuration"];
-    QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
-    if (buttonIndex == 1) {
-        if ([picker.imageDelegate respondsToSelector:@selector(qtImagePickerController:didFinishPickingVideo:)]) {
-            [picker.imageDelegate qtImagePickerController:picker didFinishPickingVideo:dic];
-        }
-    } else if (buttonIndex == 2) {
-        UISaveVideoAtPathToSavedPhotosAlbum(alertView.videoOutPath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
-        if ([picker.imageDelegate respondsToSelector:@selector(qtImagePickerController:didFinishPickingVideo:)]) {
-            [picker.imageDelegate qtImagePickerController:picker didFinishPickingVideo:dic];
+    if (alertView.transFile == YES) {
+        NSString *videoPath = alertView.videoOutPath;
+        NSString *videoName = alertView.videoOutPath.lastPathComponent;
+        NSData *videoData = [NSData dataWithContentsOfFile:videoPath];
+        [[QIMKit sharedInstance] qim_saveLocalFileData:videoData withFileName:videoName];
+        [self.picker finishPickingVideoFile:videoName];
+    } else {
+        if (buttonIndex) {
+            if (buttonIndex == 2) {
+                UISaveVideoAtPathToSavedPhotosAlbum(alertView.videoOutPath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
+            }
+            [self.picker finishPickingAssets:nil];
         }
     }
-    QIMVerboseLog(@"出去了...");
 }
 // 视频保存回调
 

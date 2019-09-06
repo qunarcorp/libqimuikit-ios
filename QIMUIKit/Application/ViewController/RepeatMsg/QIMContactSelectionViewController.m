@@ -523,11 +523,6 @@
     [[QIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
     NSDictionary *infoDic = [[QIMKit sharedInstance] getGroupCardByGroupId:jid];
     QIMGroupChatVC *chatGroupVC = [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:jid];
-    /*
-    QIMGroupChatVC * chatGroupVC  =  [[QIMGroupChatVC alloc] init];
-    [chatGroupVC setTitle:[infoDic objectForKey:@"Name"]];
-    [chatGroupVC setChatId:jid];
-     */
     _selectInfoDic = @{@"userId":jid,@"isGroup":@(YES)};
     if (self.ExternalForward) {
         NSDictionary * msgExtendInfo =[[QIMJSONSerializer sharedInstance]deserializeObject:self.message.extendInformation error:nil];

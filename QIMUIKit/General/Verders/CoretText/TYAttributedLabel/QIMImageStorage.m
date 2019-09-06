@@ -9,6 +9,8 @@
 #import "QIMImageStorage.h"
 #import "QIMImageCache.h"
 #import "QIMImageView.h"
+#import "MBProgressHUD.h"
+#import "DACircularProgressView.h"
 
 @interface QIMImageStorage () {
     QIMImageView * _imageView;
@@ -18,6 +20,9 @@
 @property (nonatomic, strong) UIView *propressView;
 @property (nonatomic, strong) UILabel *progressLabel;
 @property (nonatomic, assign) BOOL isNeedUpdateFrame;
+@property (nonatomic, strong) MBRoundProgressView *pv;
+@property (nonatomic, strong) DACircularProgressView *loadingIndicator;
+
 @end
 
 @implementation QIMImageStorage
@@ -26,10 +31,15 @@
     
     if (self = [super init]) {
         _cacheImageOnMemory = NO;
-        NSString *placeholdImagePath = [[NSBundle mainBundle] pathForResource:@"PhotoDownload@2x" ofType:@"png"];
-        _placeholdImageName = placeholdImagePath;
     }
     return self;
+}
+
+- (MBRoundProgressView *)pv {
+    if (!_pv) {
+        _pv = [[MBRoundProgressView alloc] init];
+    }
+    return _pv;
 }
 
 - (UIView *)propressView {
@@ -72,9 +82,7 @@
         return;
     }
     _rect = rect;
-    __block QIMImage *image = nil;
-    NSData *placeHoldImageData = [NSData dataWithContentsOfFile:_placeholdImageName];
-    image = placeHoldImageData.length ? [QIMImage imageWithData:placeHoldImageData scale:1.0] : nil;
+    __block QIMImage *image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"];
     [_imageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
     _isNeedUpdateFrame = YES;
     if (_image) {
@@ -126,6 +134,7 @@
         NSURL * smallPicUrl = nil;
         if ([urlStr containsString:@"LocalFileName"]) {
             urlStr = [[urlStr componentsSeparatedByString:@"LocalFileName="] lastObject];
+            urlStr = [[QIMImageManager sharedInstance] defaultCachePathForKey:urlStr];
             smallPicUrl = [NSURL fileURLWithPath:urlStr];
         } else {
             smallPicUrl = [NSURL URLWithString:urlStr];
@@ -153,7 +162,6 @@
             }
         }
         
-        BOOL isGif = [[[smallPicUrl pathExtension] lowercaseString] isEqualToString:@"gif"];
         CGFloat width = self.size.width;
         CGFloat height = self.size.height;
         if (self.size.width >= ([UIScreen mainScreen].bounds.size.width / 2.0f) || self.size.height >= ([UIScreen mainScreen].bounds.size.height / 2.0f)) {
@@ -161,20 +169,24 @@
             height = self.size.height / 2.0f;
         }
         _imageView = [[QIMImageView alloc] init];
-        [_imageView qim_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-//            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
-//            NSLog(@"下载图片进度 : %ld", progress);
+        [_imageView qim_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] options:SDWebImageProgressiveLoad progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+            NSLog(@"receivedSize : %ld / expectedSize : %ld", receivedSize , expectedSize);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                // Loading indicator
+                _loadingIndicator = [[DACircularProgressView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+                _loadingIndicator.thicknessRatio = 0.1;
+                _loadingIndicator.progressTintColor = [UIColor whiteColor];
+                _loadingIndicator.trackTintColor = [UIColor grayColor];
+                _loadingIndicator.roundedCorners = NO;
+                _loadingIndicator.progress = (CGFloat)((CGFloat)receivedSize / (CGFloat)expectedSize);
+                [self.ownerView addSubview:_loadingIndicator];
+            });
         } completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            
-//        }];
-//        [_imageView qim_setImageWithURL:smallPicUrl placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadfailedSmall"] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-////            NSString *progress = [NSString stringWithFormat:@"%lld%%", receivedSize / expectedSize];
-////            NSLog(@"下载图片进度 : %ld", progress);
-//        } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            CGRect fitRect = rect;//[self rectFitOriginSize:image.size byRect:rect];
+            CGRect fitRect = rect;
             //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
             fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
-            dispatch_async(dispatch_get_main_queue(), ^{//            [self.progressLabel setText:progress];
+            dispatch_async(dispatch_get_main_queue(), ^{
 
                 if (image) {
                     [_imageView removeFromSuperview];
@@ -203,47 +215,6 @@
             });
             return;
         }];
-    }
-}
-
-- (void)renderImageViewWithImageData:(NSData *)imageData withImage:(UIImage *)image withRect:(CGRect)rect {
-    CGRect fitRect = rect;//[self rectFitOriginSize:image.size byRect:rect];
-    //坐标系变换，函数绘制图片，但坐标系统原点在左上角，y方向向下的（坐标系A），但在Quartz中坐标系原点在左下角，y方向向上的(坐标系B)。图片绘制也是颠倒的。要达到预想的效果必须变换坐标系。
-    fitRect.origin.y = self.ownerView.height - fitRect.size.height - fitRect.origin.y;
-    //Mark by SD
-//    NSString *imageExt = [NSData sd_contentTypeForImageData:imageData];
-    NSString *imageExt = @"";
-    if ([imageExt isEqualToString:@"image/gif"]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (image) {
-                [_imageView removeFromSuperview];
-                _imageView = [[QIMImageView alloc] initWithFrame:fitRect];
-                _imageView.image = image;
-                [self.ownerView addSubview:_imageView];
-            }
-        });
-    } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (image) {
-                [_imageView removeFromSuperview];
-                _imageView = [[QIMImageView alloc] initWithFrame:fitRect];
-                UIImage *imageTemp = image;
-                CGSize imageTempSize = imageTemp.size;
-                CGFloat rectRatio = fitRect.size.width * 1.0 / fitRect.size.height;
-                CGFloat imageRatio = imageTempSize.width * 1.0 / imageTempSize.height;
-                if (imageRatio > rectRatio) {
-                    CGFloat scale = fitRect.size.width / fitRect.size.height;
-                    CGFloat imageWidth = imageTempSize.height * scale;
-                    imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(imageTemp.size.width / 2.0 - imageWidth/2.0 ,0, imageWidth, image.size.height))];
-                } else {
-                    CGFloat scale = fitRect.size.height / fitRect.size.width;
-                    CGFloat imageHeight = scale * imageTemp.size.width;
-                    imageTemp = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([image CGImage],CGRectMake(0, imageTemp.size.height / 2.0 - imageHeight / 2.0, image.size.width, imageHeight))];
-                }
-                _imageView.image = imageTemp;
-                [self.ownerView addSubview:_imageView];
-            }
-        });
     }
 }
 

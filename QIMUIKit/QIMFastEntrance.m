@@ -50,8 +50,6 @@
 #import "QIMWorkFeedDetailViewController.h"
 
 #if __has_include("QIMIPadWindowManager.h")
-
-//#import "IPAD_RemoteLoginVC.h"
 #import "IPAD_NAVViewController.h"
 #import "QIMIPadWindowManager.h"
 

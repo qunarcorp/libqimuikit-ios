@@ -68,45 +68,6 @@
     return image;
 }
 
-- (void)chatVC:(QIMChatVC *)vc{
-    //Comment by lilulucas.li 10.18
-//    [vc willSendImageData:UIImageJPEGRepresentation([self convertViewToImage:_backView], 0.8)];
-}
-
-- (void)groupChatVC:(QIMGroupChatVC *)vc{
-    [vc sendImageData:UIImageJPEGRepresentation([self convertViewToImage:_backView], 0.8)];
-}
-
-- (void)contactSelectionViewController:(QIMContactSelectionViewController *)contactVC chatVC:(QIMChatVC *)vc{
-    //Comment by lilulucas.li 10.18
-//    [vc willSendImageData:UIImageJPEGRepresentation([self convertViewToImage:_backView], 0.8)];
-}
-
-- (void)contactSelectionViewController:(QIMContactSelectionViewController *)contactVC groupChatVC:(QIMGroupChatVC *)vc{ 
-    [vc sendImageData:UIImageJPEGRepresentation([self convertViewToImage:_backView], 0.8)];
-}
-
-- (void)performActivity{
-    QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
-    QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
-    [controller setDelegate:self];
-    [[self navigationController] presentViewController:nav animated:YES completion:^{
-    }];
-}
-
-- (void)onMoreClick{
-    NSMutableArray *items = [NSMutableArray arrayWithObject:[self convertViewToImage:_backView]];
-    QCActivityToFriend *toFriend = [[QCActivityToFriend alloc] init];
-    [toFriend setDelegate:self];
-    self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:@[toFriend]];
-    [self.activityViewController setExcludedActivityTypes:@[UIActivityTypeMail]];
-    typeof(self) __weak weakSelf = self;
-    [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
-        weakSelf.activityViewController = nil;
-    }];
-    [self presentViewController:self.activityViewController animated:YES completion:nil];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -124,8 +85,8 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xf1f1f1 alpha:1];
     
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
-    [self.navigationItem setRightBarButtonItem:rightItem];
+//    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"barbuttonicon_more"] style:UIBarButtonItemStylePlain target:self action:@selector(onMoreClick)];
+//    [self.navigationItem setRightBarButtonItem:rightItem];
     
     _backView = [[UIView alloc]initWithFrame:CGRectMake(40, (self.view.height-self.view.frame.size.width - 20)/2.0, self.view.frame.size.width - 80, self.view.frame.size.width - 20)];
     _backView.backgroundColor = [UIColor qim_colorWithHex:0xeaeaea alpha:1];
@@ -162,7 +123,7 @@
         {
             [infoLabel setText:[NSBundle qim_localizedStringForKey:@"qrcode_tips_group"]];
             nameLabel.text = self.name;
-            icon.image = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.jid];
+            [icon qim_setImageWithURL:[[QIMKit sharedInstance] getGroupBigHeaderImageUrlWithGroupId:self.jid]];
             QRCodeImageView.image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"qtalk://group?id=%@",self.jid] imageSize:QRCodeImageView.bounds.size.width];
             [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"group_qr_code"]];
         }
@@ -208,17 +169,8 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 - (void)goBack
 {
-//    [VCController popVCAnimated:YES];
+    
 }
 @end

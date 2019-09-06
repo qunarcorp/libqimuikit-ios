@@ -162,7 +162,8 @@
             }else {
                 isSingleImageStorage = YES;
                 QIMImageStorage *imageStorage = (QIMImageStorage *)storage;
-                _imageMd5 = [[QIMKit sharedInstance] getFileNameFromUrl:[imageStorage.imageURL absoluteString] width:0 height:0];
+                //mark by newfile
+//                _imageMd5 = [[QIMKit sharedInstance] getFileNameFromUrl:[imageStorage.imageURL absoluteString] width:0 height:0];
             }
         }else if([storage isMemberOfClass:[QIMLinkTextStorage class]]){
             isSingleImageStorage = NO;

@@ -9,7 +9,7 @@
 #import "QIMChatBGImageSelectController.h"
 #import "QIMChatBGImagePickerController.h"
 #import "QIMImageUtil.h"
-#import "QIMDataController.h"
+#import "QIMChatBgManager.h"
 #import "QIMCommonFont.h"
 #import "QIMDefaultChatBGImageSelectController.h"
 #import "NSBundle+QIMLibrary.h"
@@ -299,7 +299,7 @@
     }else{
         if (_useForAllUser) {
             for (NSString * key in chatBGImageDic.allKeys) {
-                [[QIMDataController getInstance] deleteResourceWithFileName:key];
+                [[QIMChatBgManager sharedInstance] deleteChatBgImageWithFileName:key];
             }
             [chatBGImageDic removeAllObjects];
         }
@@ -307,9 +307,10 @@
     [chatBGImageDic setObject:[NSString stringWithFormat:@"chatBGImageFor_%@",_useForAllUser? @"Common" : self.userID] forKey:[NSString stringWithFormat:@"chatBGImageFor_%@",_useForAllUser? @"Common" : self.userID]]; 
     [[QIMKit sharedInstance] setUserObject:chatBGImageDic forKey:@"chatBGImageDic"];
     if (image) {
-        [[QIMDataController getInstance] saveResourceWithFileName:[NSString stringWithFormat:@"chatBGImageFor_%@",_useForAllUser? @"Common" : self.userID] data:UIImageJPEGRepresentation(image, 1.0)];
-    } else { 
-        [[QIMDataController getInstance] deleteResourceWithFileName:[NSString stringWithFormat:@"chatBGImageFor_%@",_useForAllUser? @"Common" : self.userID]];
+        
+        [[QIMChatBgManager sharedInstance] saveChatBgImageWithFileName:[NSString stringWithFormat:@"chatBGImageFor_%@",_useForAllUser? @"Common" : self.userID] imageData:UIImageJPEGRepresentation(image, 1.0)];
+    } else {
+        [[QIMChatBgManager sharedInstance] deleteChatBgImageWithFileName:[NSString stringWithFormat:@"chatBGImageFor_%@",_useForAllUser? @"Common" : self.userID]];
     }
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(ChatBGImageDidSelected:)]) {

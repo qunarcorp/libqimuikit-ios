@@ -112,7 +112,7 @@
     return [[QIMFastEntrance sharedInstance] getQRCodeWithQRId:qrId withType:qrcodeType];
 }
 
-- (UIViewController *)getContactSelectionVC:(Message *)msg withExternalForward:(BOOL)externalForward {
+- (UIViewController *)getContactSelectionVC:(QIMMessageModel *)msg withExternalForward:(BOOL)externalForward {
     return [[QIMFastEntrance sharedInstance] getContactSelectionVC:msg withExternalForward:externalForward];
 }
 

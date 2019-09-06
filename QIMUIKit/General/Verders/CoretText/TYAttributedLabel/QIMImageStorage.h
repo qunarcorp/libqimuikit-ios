@@ -30,8 +30,6 @@ typedef enum {
 
 @property (nonatomic, strong) NSURL     *imageURL;
 
-@property (nonatomic, strong) NSString  *placeholdImageName;
-
 @property (nonatomic, assign) QCImageAlignment imageAlignment; // default center
 
 @property (nonatomic, assign) QIMImageStorageType storageType; // default center

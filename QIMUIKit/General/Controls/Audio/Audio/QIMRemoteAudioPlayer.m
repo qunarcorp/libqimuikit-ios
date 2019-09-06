@@ -8,7 +8,7 @@
 
 #import "QIMRemoteAudioPlayer.h"
 #import "IMAmrFileCodec.h"
-#import "QIMPathManage.h"
+#import "QIMVoicePathManage.h"
 
 @interface QIMRemoteAudioPlayer ()<ASIProgressDelegate>
 {
@@ -85,13 +85,13 @@
     [self prepareAmrData:armData playAfterReady:YES];
 }
 
-//用于QTalk的语音播放。因为使用QIMPathManage类来管理音频文件的存放路径，所以播放音频时将文件名和网络url传输过来。
+//用于QTalk的语音播放。因为使用QIMVoicePathManage类来管理音频文件的存放路径，所以播放音频时将文件名和网络url传输过来。
 //判断文件名所对应的文件是否已经存在。若存在，则直接播放；否则从网络上下载再播放，并将下载下来的文件保存下来。
 - (void)prepareForFileName:(NSString *)fileName andVoiceUrl:(NSString *)voiceUrl playAfterReady:(BOOL)playAfterReady
 {
     _fileName = [fileName copy];
-    NSString *voicePath = [QIMPathManage getPathByFileName:_fileName ofType:@"amr"];
-    if ([QIMPathManage fileExistsAtPath:voicePath]) {
+    NSString *voicePath = [QIMVoicePathManage getPathByFileName:_fileName ofType:@"amr"];
+    if ([QIMVoicePathManage fileExistsAtPath:voicePath]) {
         [self prepareForFilePath:voicePath playAfterReady:playAfterReady];
     } else {
         [self prepareForVoiceURL:voiceUrl playAfterReady:playAfterReady];
@@ -232,7 +232,7 @@
     [_delegate remoteAudioPlayerReady:self];
     NSData *amrData = [request responseData];
     //保存数据到本地
-    [QIMPathManage getPathToSaveWithSaveData:amrData ToFileName:_fileName ofType:@"amr"];
+    [QIMVoicePathManage getPathToSaveWithSaveData:amrData ToFileName:_fileName ofType:@"amr"];
     [self prepareAmrData:amrData playAfterReady:YES];
     
 }

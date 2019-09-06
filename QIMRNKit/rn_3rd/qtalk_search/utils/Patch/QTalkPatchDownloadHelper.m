@@ -34,7 +34,7 @@
         
         @try {
             // check package md5
-            NSString* md5 =[QIMKit getFileDataMD5WithFileData: [request responseData]];
+            NSString *md5 = [[request responseData] qim_md5String];
             if(![md5 isEqualToString:md5]){
                 // QIMVerboseLog(@"md5 check error");
                 errorMsg = @"md5 check error";
@@ -86,7 +86,7 @@
         
         @try {
             // TODO check patch md5
-            NSString* md5 =[QIMKit getFileDataMD5WithFileData: [request responseData]];
+            NSString *md5 = [[request responseData] qim_md5String];
             if(![patchMd5 isEqualToString:md5]){
                 // QIMVerboseLog(@"md5 check error");
                 errorMsg = @"md5 check error";
@@ -111,8 +111,8 @@
                 
                 // check full md5 with after patch md5
                 
-                
-                NSString* md5 =[QIMKit getFileMD5WithPath: destPath];
+                NSData *destData = [NSData dataWithContentsOfFile:destPath];
+                NSString *md5 = [destData qim_md5String];
                 if([fullMd5 isEqualToString:md5]){
                     // rename jsbundle filename
                     NSString *filePath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];

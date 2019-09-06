@@ -88,7 +88,6 @@
         
         isUpdate = YES;
         [self.collectionFaceList addObject:httpUrl];
-//        [[QIMKit sharedInstance] downloadImage:httpUrl width:CollectionFaceWidth height:CollectionFaceHeight forCacheType:QIMFileCacheTypeColoction];
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionUpdateHandleSuccessNotification object:nil];
         });
@@ -109,7 +108,7 @@
 
 - (void)updateCollectionEmojiWithEmojiUrl:(NSString *)emojiUrl {
     dispatch_block_t block = ^{
-        NSString *emojiMd5 = [[QIMKit sharedInstance] md5fromUrl:emojiUrl];
+        NSString *emojiMd5 = [[QIMKit sharedInstance] qim_specialMd5fromUrl:emojiUrl];
         [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKCollectionCacheKey WithSubKey:emojiMd5 WithConfigValue:emojiUrl WithDel:NO];
     };
     
@@ -120,14 +119,6 @@
 }
 
 - (void)delCollectionFaceArr:(NSArray *)delArr {
-    for (id item in delArr) {
-        NSString * httpUrl = nil;
-        if ([item isKindOfClass:[NSString class]]) {
-            httpUrl = item;
-            NSString *imageName = [[QIMKit sharedInstance] getFileNameFromUrl:httpUrl];
-            [self delCollectionFaceImageWithFileName:imageName];
-        }
-    }
     
     dispatch_block_t block = ^{
         [_collectionFaceList removeObjectsInArray:delArr];
@@ -144,12 +135,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:kCollectionEmotionUpdateHandleNotification object:nil];
     });
-}
-
-- (void)delCollectionFaceImageWithFileName:(NSString *)fileName {
-    
-    NSString *filePath = [[QIMKit sharedInstance] getFilePathForFileName:fileName forCacheType:QIMFileCacheTypeColoction];
-    [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
 }
 
 - (void)delCollectionItemsNotInRoamingItems:(NSArray *)items {
@@ -223,7 +208,7 @@
                 continue;
             } else {
                 NSString *configKey = @"kCollectionCacheKey";
-                NSString *configSubKey = [[QIMKit sharedInstance] md5fromUrl:httpUrl];
+                NSString *configSubKey = [[QIMKit sharedInstance] qim_specialMd5fromUrl:httpUrl];
                 NSMutableDictionary *newDic = [NSMutableDictionary dictionaryWithCapacity:3];
                 [newDic setQIMSafeObject:configKey forKey:@"key"];
                 [newDic setQIMSafeObject:configSubKey forKey:@"subkey"];
@@ -253,7 +238,7 @@
                 continue;
             } else {
                 NSString *configKey = @"kCollectionCacheKey";
-                NSString *configSubKey = [[QIMKit sharedInstance] md5fromUrl:httpUrl];
+                NSString *configSubKey = [[QIMKit sharedInstance] qim_specialMd5fromUrl:httpUrl];
                 NSMutableDictionary *newDic = [NSMutableDictionary dictionaryWithCapacity:3];
                 [newDic setQIMSafeObject:configKey forKey:@"key"];
                 [newDic setQIMSafeObject:configSubKey forKey:@"subkey"];
@@ -328,24 +313,6 @@
             block();
         else
             dispatch_sync(_collectFaceQueue, block);
-    }
-    for (NSDictionary *item in _collectionFaceList) {
-        
-        NSString *httpUrl = item[@"httpUrl"];
-        NSData *data = [[QIMKit sharedInstance] getFileDataFromUrl:httpUrl forCacheType:QIMFileCacheTypeColoction];
-        
-        dispatch_block_t uploadblock = ^{
-            
-            NSString *jid = [[QIMKit sharedInstance] getLastJid];
-            [[QIMKit sharedInstance] uploadFileForData:data forMessage:nil withJid:jid isFile:0];
-
-        };
-        
-        if (dispatch_get_specific(_collectFaceQueueTag)) {
-            uploadblock();
-        }
-        else
-            dispatch_sync(_collectFaceQueue, uploadblock);
     }
 }
 

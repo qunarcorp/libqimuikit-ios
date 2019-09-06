@@ -104,13 +104,6 @@
                 width = [widthStr floatValue];
                 height = [heightStr floatValue];
             }
-            /*
-             if (width == 0 || height == 0) {
-             UIImage * image = [YLGIFImage imageWithData:[[QIMKit sharedInstance] getFileDataFromUrl:httpUrl forCacheType:QIMFileCacheTypeColoction]];
-             width = image.size.width;
-             height = image.size.height;
-             }
-             */
             if (height > SCREEN_HEIGHT * 3 && height / width >= 5) {
                 width = 50;
                 height = 100;

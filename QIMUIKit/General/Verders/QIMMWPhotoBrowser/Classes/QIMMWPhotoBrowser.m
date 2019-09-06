@@ -1722,7 +1722,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                     
                 }];
             } else {
-                NSString *fileName = [QIMKit updateLoadFile:photo.photoData WithMsgId:nil WithMsgType:QIMMessageType_ImageNew WithPathExtension:nil];
+                NSString *fileName = [[QIMKit sharedInstance] qim_syncUploadImage:photo.photoData];
                 NSString *fileUrl = @"";
                 if ([fileName qim_hasPrefixHttpHeader]) {
                     fileUrl = fileName;

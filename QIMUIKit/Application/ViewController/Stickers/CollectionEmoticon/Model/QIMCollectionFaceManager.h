@@ -29,8 +29,6 @@
 
 - (void) delCollectionFaceArr:(NSArray *)delAr;
 
-- (void)delCollectionFaceImageWithFileName:(NSString *)fileName;
-
 - (void)resetCollectionItems:(NSArray *)items WithUpdate:(BOOL)updateFlag;
 
 - (void)updateConfig;

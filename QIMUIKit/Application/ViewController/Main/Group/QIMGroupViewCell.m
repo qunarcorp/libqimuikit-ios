@@ -101,8 +101,7 @@
     _nameLabel.frame = CGRectMake(_headerView.right + 10, 0, [UIScreen mainScreen].bounds.size.width - _headerView.right - 10 - 10, [self.class getCellHeightForGroupName:self.userName]);
     _nameLabel.font = [UIFont fontWithName:FONT_NAME size:[[QIMCommonFont sharedInstance] currentFontSize]];
     [_nameLabel setText:(self.userName.length > 0) ? self.userName : [[self.groupID componentsSeparatedByString:@"@"] firstObject]];
-    UIImage * headImage = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.groupID];
-    [_headerView setImage:headImage];
+    [_headerView qim_setImageWithURL:[[QIMKit sharedInstance] getGroupBigHeaderImageUrlWithGroupId:self.groupID]];
 }
 
 - (void)drawRect:(CGRect)rect

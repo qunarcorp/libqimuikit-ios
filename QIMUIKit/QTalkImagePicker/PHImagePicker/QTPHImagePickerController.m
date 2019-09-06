@@ -240,6 +240,11 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)finishPickingVideoFile:(NSString *)fileName {
+    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingVideoFile:)]) {
+        [self.delegate assetsPickerController:self didFinishPickingVideoFile:fileName];
+    }
+}
 
 - (void)finishPickingAssets:(id)sender
 {

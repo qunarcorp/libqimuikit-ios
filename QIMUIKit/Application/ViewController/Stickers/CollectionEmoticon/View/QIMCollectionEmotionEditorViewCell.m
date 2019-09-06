@@ -72,7 +72,7 @@
     }else{
         _imageView.frame = CGRectMake(kImageViewCap, kImageViewCap, self.width - kImageViewCap * 2, self.height - kImageViewCap * 2);
     }
-    [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:nil options:SDWebImageFromLoaderOnly progress:nil completed:nil];
+    [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] options:SDWebImageFromLoaderOnly progress:nil completed:nil];
 }
 
 - (void)setViewSelected:(BOOL)selected{
