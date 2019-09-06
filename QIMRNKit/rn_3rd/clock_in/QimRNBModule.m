@@ -847,6 +847,20 @@ RCT_EXPORT_METHOD(selectMemberFromGroup:(NSDictionary *)param :(RCTResponseSende
         if (headerUri.length <= 0) {
             headerUri = [QIMKit defaultUserHeaderImagePath];
         }
+        
+        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
+        NSString *userName = [userInfo objectForKey:@"Name"];
+        if (userName.length > 0) {
+            name = userName;
+        }
+        NSString *userHeaderUrl = [userInfo objectForKey:@"HeaderSrc"];
+        if (userHeaderUrl.length > 0) {
+            if (![userHeaderUrl qim_hasPrefixHttpHeader]) {
+                userHeaderUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], userHeaderUrl];
+            }
+            headerUri = userHeaderUrl;
+        }
+        
         [dic setQIMSafeObject:xmppId forKey:@"xmppId"];
         [dic setQIMSafeObject:name forKey:@"name"];
         [dic setQIMSafeObject:headerUri forKey:@"headerUri"];
@@ -871,6 +885,20 @@ RCT_EXPORT_METHOD(selectGroupMemberForKick:(NSDictionary *)param :(RCTResponseSe
         if (headerUri.length <= 0) {
             headerUri = [QIMKit defaultUserHeaderImagePath];
         }
+        
+        NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
+        NSString *userName = [userInfo objectForKey:@"Name"];
+        if (userName.length > 0) {
+            name = userName;
+        }
+        NSString *userHeaderUrl = [userInfo objectForKey:@"HeaderSrc"];
+        if (userHeaderUrl.length > 0) {
+            if (![userHeaderUrl qim_hasPrefixHttpHeader]) {
+                userHeaderUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], userHeaderUrl];
+            }
+            headerUri = userHeaderUrl;
+        }
+        
         [dic setQIMSafeObject:xmppId forKey:@"xmppId"];
         [dic setQIMSafeObject:name forKey:@"name"];
         [dic setQIMSafeObject:headerUri forKey:@"headerUri"];

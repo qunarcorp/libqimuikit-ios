@@ -29,6 +29,9 @@
         }
         NSString *userHeaderUrl = [userInfo objectForKey:@"HeaderSrc"];
         if (userHeaderUrl.length > 0) {
+            if (![userHeaderUrl qim_hasPrefixHttpHeader]) {
+                userHeaderUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], userHeaderUrl];
+            }
             uri = userHeaderUrl;
         }
         
