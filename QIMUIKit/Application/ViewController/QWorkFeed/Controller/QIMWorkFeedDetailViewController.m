@@ -19,7 +19,7 @@
 #import <YYModel/YYModel.h>
 #import "LCActionSheet.h"
 #import "YYKeyboardManager.h"
-#import <Toast/Toast.h>
+#import "UIView+Toast.h"
 #import "QIMWorkMomentView.h"
 #import "UIApplication+QIMApplication.h"
 #if __has_include("QIMIPadWindowManager.h")

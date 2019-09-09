@@ -51,7 +51,7 @@
 #import "QIMSwitchAccountView.h"
 #import "SCLAlertView.h"
 #import "NSDate+Extension.h"
-#import "Toast.h"
+#import "UIView+Toast.h"
 #import "QIMPublicRedefineHeader.h"
 #import "QIMAddIndexViewController.h"
 #import "QIMUserCacheManager.h"

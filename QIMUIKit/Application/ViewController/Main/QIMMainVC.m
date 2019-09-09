@@ -7,6 +7,7 @@
 //
 
 #import "QIMMainVC.h"
+//#import <Flutter/Flutter.h>
 #import "QIMUUIDTools.h"
 #import "UIApplication+QIMApplication.h"
 #import "QIMCustomTabBar.h"
@@ -39,7 +40,7 @@
 
 #endif
 
-#import "Toast.h"
+#import "UIView+Toast.h"
 #import "QIMUpdateAlertView.h"
 
 #define kTabBarHeight   49
@@ -1372,7 +1373,44 @@ static dispatch_once_t __onceMainToken;
 }
 
 - (void)oneKeyRead {
-    
+    /*
+    Class RunC = NSClassFromString(@"FlutterViewController");
+    SEL sel = NSSelectorFromString(@"new");
+    id old = [RunC performSelector:sel withObject:nil];
+    SEL sel2 = NSSelectorFromString(@"setInitialRoute:");
+    if ([old respondsToSelector:sel2]) {
+        NSDictionary *dic = @{
+                              @"DescInfo":@"/QUNAR/基础研发部/短信及Push",
+                              @"ExtendedFlag":@"",
+                              @"GroupId":@"",
+                              @"HeaderSrc":@"https://qim.qunar.com/file/v2/download/avatar/new/99ae30fe52c58254be484496.png",
+                              @"IncrementVersion":@"",
+                              @"Introduce":@"",
+                              @"LastUpdateTime":@"4152",
+                              @"Name":@"胡滨hubin",
+                              @"SearchIndex":@"hubinhubin|hbhubin",
+                              @"Topic":@"",
+                              @"UserId":@"hubin.hu",
+                              @"UserInfo":@"",
+                              @"XmppId":@"hin.hu@ejabhost1",
+                              @"collectionBind": @0,
+                              @"collectionUnReadCount": @0,
+                              @"id": @0,
+                              @"isInGroup": @(NO),
+                              @"mark":@"",
+                              @"mood":@"11222",
+                              @"root": @(NO)
+                              };
+        NSError *parseError = nil;
+        
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:&parseError];
+        
+        NSString *str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        [old performSelector:sel2 withObject:str];
+    }
+    [self presentViewController:old animated:YES completion:nil];
+    return;
+    */
     NSUInteger count = [[QIMKit sharedInstance] getAppNotReaderCount];
     if (count) {
         UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"接下来会清空所有未读消息状态,以及「@all」消息提醒，是否继续？" preferredStyle:UIAlertControllerStyleAlert];
