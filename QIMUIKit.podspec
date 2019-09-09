@@ -170,6 +170,12 @@ Pod::Spec.new do |s|
      end
   end
   
+  s.subspec 'QIMFlutter' do |flutter|
+    
+    flutter.dependency 'QIMFlutterFramework'
+    
+  end
+  
   s.subspec 'QIMUIKit-NORN' do |norn|
 #    norn.resource = ['QIMUIKit/QIMUIKitResources/片段/*', 'QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib', 'QIMUIKit/QIMUIKitResources/Audio/*', 'QIMUIKit/QIMUIKitResources/Certificate/*', 'QIMUIKit/QIMUIKitResources/Fonts/*', 'QIMUIKit/QIMUIKitResources/Stickers/*', 'QIMUIKit/QIMUIKitResources/QIMI18N.bundle', 'QIMUIKit/QIMUIKitResources/QIMUIKit.bundle']
     norn.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle", "QIMUIKit/QIMUIKitResources/QIMUIKit.bundle"
@@ -205,6 +211,7 @@ Pod::Spec.new do |s|
     full.dependency 'QIMUIKit/QIMUIVendorKit'
     full.dependency 'QIMUIKit/QIMNote'
     full.dependency 'QIMUIKit/QIMRN'
+#    full.dependency 'QIMUIKit/QIMFlutter'
   end
   
   s.dependency 'MJRefresh'
