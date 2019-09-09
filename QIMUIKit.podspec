@@ -228,7 +228,7 @@ Pod::Spec.new do |s|
   s.dependency 'AMap3DMap'
   s.dependency 'SCLAlertView-Objective-C'
   s.dependency 'MMMarkdown'
-  s.dependency 'Toast' 
+#  s.dependency 'Toast' 
   s.dependency 'YYKeyboardManager'
 #  s.dependency 'SuperPlayer'
 

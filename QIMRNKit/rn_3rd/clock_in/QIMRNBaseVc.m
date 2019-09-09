@@ -15,8 +15,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTEventDispatcher.h>
-#import "Toast.h"
-
+#import "UIView+Toast.h"
 #import "QIMChatVC.h"
 #import "QIMPhotoBrowserNavController.h"
 
