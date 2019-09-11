@@ -2305,6 +2305,9 @@
 - (BOOL)shouldScrollToBottomForNewMessage {
 //    CGFloat _h = self.tableView.contentSize.height - self.tableView.contentOffset.y - (CGRectGetHeight(self.tableView.frame) - self.tableView.contentInset.bottom);
     
+    if ((self.messageManager.dataSource.count - self.currentMsgIndexs) == self.messageManager.dataSource.count) {
+        return YES;
+    }
     return (self.messageManager.dataSource.count - self.currentMsgIndexs) <= 3;
 }
 

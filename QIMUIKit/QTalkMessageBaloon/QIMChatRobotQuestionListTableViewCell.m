@@ -44,7 +44,7 @@
 #define kActionsBtnTagFrom 1000
 #define kHintTextFontSize   16
 #define kSpaceToSide    15
-#define kHintCelMaxWidth    235//([UIScreen mainScreen].bounds.size.width - kSpaceToSide * 2)
+#define kHintCelMaxWidth    250//([UIScreen mainScreen].bounds.size.width - kSpaceToSide * 2)
 #define kMessageIsUnfold  @"kMessageIsUnfold"
 
 
@@ -90,8 +90,9 @@
         NSString * content = [infoDic objectForKey:@"content"];
         if (content.length) {
             QIMTextContainer *textContainer = [QIMMessageParser textContainerForMessageCtnt:content withId:msg.messageId direction:msg.messageDirection];
+            textContainer.textAlignment = kCTTextAlignmentLeft;
             textContainer.font = [UIFont systemFontOfSize:kHintTextFontSize];
-            cellHeight += [textContainer getHeightWithFramesetter:nil width:kHintCelMaxWidth-28] + 10;
+            cellHeight += [textContainer getHeightWithFramesetter:nil width:kHintCelMaxWidth-28-14] + 10;
             cellWidth = textContainer.textWidth + (kIMChatContentLeft + kIMChatContentRight);
             cellHeight += 10;
         }
@@ -125,7 +126,10 @@
             if (items && items.count > 0) {
                 cellHeight += 15;
                 if (items.count > initSize) {
-                    cellHeight += 35;
+                    cellHeight += 45;
+                }
+                else{
+                    cellHeight += 25;
                 }
                 NSUInteger index = 0;
                 //                for (NSDictionary * item in items) {
@@ -210,12 +214,13 @@
         
         //        self.backView = nil;
         _bgView = [[UIView alloc] initWithFrame:CGRectZero];
-        _bgView.backgroundColor = [UIColor whiteColor];
+        _bgView.backgroundColor = [UIColor clearColor];
         //        _bgView.layer.borderColor = [UIColor grayColor];
         //        _bgView.layer.bo
         [self.backView addSubview:_bgView];
         
         _textLabel = [[QIMAttributedLabel alloc] init];
+//        _textLabel.characterSpacing
         _textLabel.backgroundColor = [UIColor whiteColor];
         [_bgView addSubview:_textLabel];
         
@@ -289,7 +294,7 @@
         }
     }
     _textContainer = [QIMMessageParser textContainerForMessageCtnt:infoDic[@"content"] withId:self.message.messageId direction:self.message.messageDirection];
-    
+    _textContainer.textAlignment = kCTTextAlignmentLeft;
 }
 
 //- (QIMTextContainer *)getTextContainer{
@@ -302,6 +307,7 @@
     CGFloat screenW = [UIScreen mainScreen].bounds.size.width;
     _textLabel.delegate = self.delegate;
     _textLabel.textContainer = _textContainer;
+//    [_textLabel clearOwnerView];
     if (_textContainer) {
         
         [_textLabel setFrameWithOrign:CGPointMake((QIMMessageDirection_Received == self.message.messageDirection) ? 14 :14,15) Width:kHintCelMaxWidth-14-14];
@@ -346,7 +352,7 @@
             iconView.backgroundColor = [UIColor clearColor];
             [headerView addSubview:iconView];
         }
-        UIView * view = [[UIView alloc]initWithFrame:CGRectMake(0, headerView.bottom - 1, headerView.width, 1)];
+        UIView * view = [[UIView alloc]initWithFrame:CGRectMake(-1, headerView.bottom - 1, maxWidth + 8, 1)];
         view.backgroundColor = [UIColor qim_colorWithHex:0xEAEAEA];
         [headerView addSubview:view];
         originY += (headerView.height + space);
@@ -480,7 +486,7 @@
             //            backWidth = self.contentView.width - 2 * kQCIMMsgCellBoxMargin;
         }
         originY += 3;
-        _listBGView.frame = CGRectMake(0, 0, maxWidth, originY - 2.5);
+        _listBGView.frame = CGRectMake(-0.5, 0, maxWidth + 8, originY - 2.5);
         _listBGView.backgroundColor = [UIColor whiteColor];
         
         //        if (_textContainer) {
@@ -497,7 +503,7 @@
     self.separateLine.hidden = YES;
     if (bottom_tips && bottom_tips.length > 0) {
         self.separateLine.hidden = NO;
-        [self.separateLine setFrame:CGRectMake(0,originY + 5, maxWidth, 1)];
+        [self.separateLine setFrame:CGRectMake(-0.5,originY + 5, maxWidth+7, 1)];
         
         self.bottom_tipsLabel.text = bottom_tips;
         self.bottom_tipsLabel.hidden = NO;
@@ -539,12 +545,13 @@
             
             NSString * is_worked = [def objectForKey:self.message.messageId];
             if (is_worked.integerValue == 0) {
-                self.resolveBtn.selected = YES;
-                self.unResolveBtn.enabled = NO;
-            }
-            else if(is_worked.integerValue == 1){
                 self.unResolveBtn.selected = YES;
                 self.resolveBtn.enabled = NO;
+            }
+            else if(is_worked.integerValue == 1){
+                self.resolveBtn.selected = YES;
+                self.unResolveBtn.enabled = NO;
+                
             }
             else{
                 
@@ -560,7 +567,7 @@
     }
     
     
-    _bgView.frame = CGRectMake(15, 0.5, kHintCelMaxWidth, originY + 4.5);
+    _bgView.frame = CGRectMake(12.5, 1, kHintCelMaxWidth+4.5, originY + 4);
     
     [self.backView setMessage:self.message];
     [self setBackViewWithWidth:kHintCelMaxWidth + 25 WithHeight:originY + 5];

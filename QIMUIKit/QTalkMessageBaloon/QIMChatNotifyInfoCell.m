@@ -35,13 +35,11 @@ static double _global_message_cell_width = 0;
 @implementation QIMChatNotifyInfoCell
 + (CGFloat)getCellHeightWithMessage:(QIMMessageModel *)message chatType:(ChatType)chatType {
     
-    UILabel *label = [[UILabel alloc] init];
+    RTLabel * label = [[RTLabel alloc] initWithFrame:CGRectMake(0, 0, kCellWidth, 20)];
     label.text = message.message;
-    label.width = kCellWidth * 4/5;
-    label.numberOfLines = 0;
     label.font = [UIFont systemFontOfSize:12];
 //    [label sizeToFit];
-    return label.height + 20;
+    return [label optimumSize].height + 20;
     //去特么的第三方，算的高度是错的
 }
 
@@ -58,8 +56,10 @@ static double _global_message_cell_width = 0;
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         
         self.bgImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        [self.bgImageView setImage:[[UIImage qim_imageWithColor:qim_ChatTimestampCellBgColor] stretchableImageWithLeftCapWidth:6 topCapHeight:6]];
-
+//        [self.bgImageView setImage:[[UIImage qim_imageWithColor:0xDBDBDB] stretchableImageWithLeftCapWidth:6 topCapHeight:6]];
+        self.bgImageView.backgroundColor = [UIColor colorWithRGBHex:0xD3D3D3];
+        self.bgImageView.layer.masksToBounds = YES;
+        self.bgImageView.layer.cornerRadius = 2.0f;
         [self.bgImageView setUserInteractionEnabled:YES];
         [self.contentView addSubview:self.bgImageView];
         
@@ -79,6 +79,7 @@ static double _global_message_cell_width = 0;
     }
     self.htmlLabel = [[RTLabel alloc] initWithFrame:CGRectMake(0, 0, kCellWidth, 20)];
     self.htmlLabel.backgroundColor = [UIColor clearColor];
+    self.htmlLabel.textColor = [UIColor qim_colorWithHex:0x666666 alpha:1];
     [self.bgImageView addSubview:self.htmlLabel];
     
     self.nameLabel.hidden = YES;
@@ -86,9 +87,9 @@ static double _global_message_cell_width = 0;
     
     self.htmlLabel.delegate = self;
 //    self.htmlLabel.numberOfLines = 0;
-    self.htmlLabel.font = [UIFont systemFontOfSize:14];
-    self.htmlLabel.textAlignment = NSTextAlignmentCenter;
-    self.htmlLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.htmlLabel.font = [UIFont systemFontOfSize:12];
+    self.htmlLabel.textAlignment = RTTextAlignmentCenter;
+//    self.htmlLabel.translatesAutoresizingMaskIntoConstraints = NO;
 //    self.htmlLabel.adjustsFontSizeToFitWidth = YES;
     
     self.htmlLabel.linkAttributes = @{@"color":@"#0000FF"};
@@ -120,13 +121,6 @@ static double _global_message_cell_width = 0;
                                                                              metrics:metrics
                                                                                views:views]];
 }
--(float) widthForString:(NSString *)value fontSize:(float)fontSize andHeight:(float)height{CGSize sizeToFit = [value sizeWithFont:[UIFont systemFontOfSize:fontSize] constrainedToSize:CGSizeMake(CGFLOAT_MAX, height) lineBreakMode:NSLineBreakByWordWrapping];//此处的换行类型（lineBreakMode）可根据自己的实际情况进行设置returnsizeToFit.width;}
-}
-
--(float) heightForString:(NSString *)value fontSize:(float)fontSize andWidth:(float)width{CGSize sizeToFit = [value sizeWithFont:[UIFont systemFontOfSize:fontSize] constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByCharWrapping];//此处的换行类型（lineBreakMode）可根据自己的实际情况进行设置returnsizeToFit.height;}
-    
-}
-
 //- (void)HTMLLabel:(MDHTMLLabel *)label didSelectLinkWithURL:(NSURL *)URL {
 //    QIMVerboseLog(@"Did select link with URL: %@", URL.absoluteString);
 //    [QIMFastEntrance openWebViewForUrl:URL.absoluteString showNavBar:YES];

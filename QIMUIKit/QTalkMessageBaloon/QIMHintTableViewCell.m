@@ -119,7 +119,9 @@
         [self.contentView setBackgroundColor:[UIColor clearColor]];
         
         _backView = [[UIImageView alloc] initWithImage:nil];
-        _backView.backgroundColor = [UIColor qim_colorWithHex:0xDBDBDB];
+        _backView.backgroundColor = [UIColor qim_colorWithHex:0xD3D3D3];
+        _backView.layer.masksToBounds = YES;
+        _backView.layer.cornerRadius = 2.f;
         [self.contentView addSubview:_backView];
         
         _hintLabel = [[QIMAttributedLabel alloc] init];
