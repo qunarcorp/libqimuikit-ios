@@ -75,7 +75,7 @@
     NSDictionary *questionItemDic = [self.items objectAtIndex:indexPath.row];
     NSString * itemText = [questionItemDic objectForKey:@"text"];
     cell.textLabel.text = (itemText.length > 0) ? itemText : @"";
-    cell.textLabel.textColor = [UIColor qim_colorWithHex:0x5CC57F];
+    cell.textLabel.textColor = [UIColor qim_colorWithHex:0x00CABE];
     cell.textLabel.font = [UIFont systemFontOfSize:14];
     return cell;
 }
@@ -121,7 +121,7 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, CGRectGetWidth(view.frame), 70)];
     [label setBackgroundColor:[UIColor whiteColor]];
     [label setFont:[UIFont boldSystemFontOfSize:15]];
-    [label setTextColor:[UIColor qim_colorWithHex:0x00CABE]];
+    [label setTextColor:[UIColor qim_colorWithHex:0x666666]];
     [label setText:self.popHeaderTitle];
     [view addSubview:label];
     return view;

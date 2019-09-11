@@ -178,7 +178,7 @@
                 return [QIMForecastCell getCellHeightWithMessage:message chatType:self.chatType] + 30;
             }
             case QIMMessageType_GroupNotify: {
-                return [QIMChatNotifyInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 30;
+                return [QIMChatNotifyInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
             }
                 break;
             case QIMMessageType_Text:
@@ -248,7 +248,7 @@
             }
                 break;
             case QIMMessageTypeRobotTurnToUser:{
-                return [QIMHintTableViewCell getCellHeightWihtMessage:temp chatType:self.chatType] + 45;
+                return [QIMHintTableViewCell getCellHeightWihtMessage:temp chatType:self.chatType] + 15;
             }
                 break;
             default: {
