@@ -22,9 +22,7 @@
 
 
 -(id)initWithFrame:(CGRect)frame{
-    if (self=[super initWithFrame:frame]) {
-        //设置勾勾的位置
-        
+    if (self=[super initWithFrame:frame]) {        
         checkedIcon = [UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_checxbox_sel"];
         selectedColor   = [UIColor colorWithWhite:1 alpha:0.3];
         disabledColor   = [UIColor colorWithWhite:1 alpha:0.9];
