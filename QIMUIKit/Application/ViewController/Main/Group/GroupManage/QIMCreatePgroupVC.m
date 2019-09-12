@@ -66,8 +66,8 @@
 //    
 //    [_navBar setRightBarItem:rightView];
 //    
-//    [_navBar setTitle:@"创建群组"];
-    [self.navigationItem setTitle:@"创建群组"];
+//    [_navBar setTitle:[NSBundle qim_localizedStringForKey:@"Create Group"]];
+    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"Create Group"]];
 }
 
 -(void)initTableView

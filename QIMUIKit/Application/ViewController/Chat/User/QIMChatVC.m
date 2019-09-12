@@ -89,6 +89,8 @@
 #import "QIMNavBackBtn.h"
 #import "QIMNotifyView.h"
 #import "QIMRedMindView.h"
+#import "QIMHintTableViewCell.h"
+#import "QIMChatRobotQuestionListTableViewCell.h"
 
 #if __has_include("QIMNotifyManager.h")
     #import "QIMNotifyManager.h"
@@ -133,7 +135,7 @@
 
 #endif
 
-@interface QIMChatVC () <UIGestureRecognizerDelegate, QIMSingleChatCellDelegate, QIMSingleChatVoiceCellDelegate, QIMMWPhotoBrowserDelegate, QIMRemoteAudioPlayerDelegate, QIMMsgBaloonBaseCellDelegate, QIMChatBGImageSelectControllerDelegate, QIMContactSelectionViewControllerDelegate, QIMInputPopViewDelegate, QIMPushProductViewControllerDelegate, UIActionSheetDelegate, UserLocationViewControllerDelegate, QIMNotReadMsgTipViewsDelegate, QIMTextBarDelegate, QIMPNActionRichTextCellDelegate, QIMPNRichTextCellDelegate, PNNoticeCellDelegate, PlayVoiceManagerDelegate, QIMAttributedLabelDelegate, UIViewControllerPreviewingDelegate, QTalkMessageTableScrollViewDelegate, QIMRobotQuestionCellDelegate, QIMRobotAnswerCellLoadDelegate, QIMOrganizationalVCDelegate> {
+@interface QIMChatVC () <UIGestureRecognizerDelegate, QIMSingleChatCellDelegate, QIMSingleChatVoiceCellDelegate, QIMMWPhotoBrowserDelegate, QIMRemoteAudioPlayerDelegate, QIMMsgBaloonBaseCellDelegate, QIMChatBGImageSelectControllerDelegate, QIMContactSelectionViewControllerDelegate, QIMInputPopViewDelegate, QIMPushProductViewControllerDelegate, UIActionSheetDelegate, UserLocationViewControllerDelegate, QIMNotReadMsgTipViewsDelegate, QIMTextBarDelegate, QIMPNActionRichTextCellDelegate, QIMPNRichTextCellDelegate, PNNoticeCellDelegate, PlayVoiceManagerDelegate, QIMAttributedLabelDelegate, UIViewControllerPreviewingDelegate, QTalkMessageTableScrollViewDelegate, QIMRobotQuestionCellDelegate, QIMRobotAnswerCellLoadDelegate, QIMOrganizationalVCDelegate,QIMHintCellDelegate,QIMChatRobotQuestionListCellDelegate> {
     
     bool _isReloading;
     
@@ -431,7 +433,7 @@
         _forwardNavTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, self.navigationController.navigationBar.bounds.size.height)];
         _forwardNavTitleView.backgroundColor = [UIColor whiteColor];
         UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
         [cancelBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         [cancelBtn addTarget:self action:@selector(cancelForwardHandle:) forControlEvents:UIControlEventTouchUpInside];
         cancelBtn.frame = CGRectMake(20, 0, 50, _forwardNavTitleView.height);
@@ -452,7 +454,7 @@
     if (!_forwardBtn) {
         _forwardBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _forwardBtn.frame = CGRectMake(0, self.view.height - 50 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], self.view.width, 50);
-        [_forwardBtn setTitle:@"转发" forState:UIControlStateNormal];
+        [_forwardBtn setTitle:[NSBundle qim_localizedStringForKey:@"Forward"] forState:UIControlStateNormal];
         [_forwardBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_forwardBtn addTarget:self action:@selector(forwardBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [_forwardBtn setEnabled:NO];
@@ -567,7 +569,7 @@
                                                     }];
             
         }];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *_Nonnull action) {
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleCancel handler:^(UIAlertAction *_Nonnull action) {
             
         }];
         
@@ -577,7 +579,7 @@
         [self presentViewController:alertController animated:YES completion:nil];
         
     } else {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:[NSBundle qim_localizedStringForKey:@"One-by-One Forward"], [NSBundle qim_localizedStringForKey:@"Combine and Forward"], nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"One-by-One Forward"], [NSBundle qim_localizedStringForKey:@"Combine and Forward"], nil];
         alertView.tag = kForwardMsgAlertViewTag;
         [alertView show];
     }
@@ -885,6 +887,27 @@
     if ([self.chatId containsString:@"dujia_warning"]) {
         [self performSelector:@selector(synchronizeDujiaWarning) withObject:nil afterDelay:1.5];
     }
+    if (self.chatType == ChatType_Consult) {
+        [self requestRobotConsult];
+    }
+}
+
+-(void)requestRobotConsult{
+    NSString *  rexian_id= [self.chatId componentsSeparatedByString:@"@"].firstObject;
+    NSString * urlStr = [NSString stringWithFormat:@"%@/robot/qtalk_robot/sendtips?rexian_id=%@&m_from=%@&m_to=%@",[[QIMKit sharedInstance] qimNav_NewHttpUrl],rexian_id,self.chatId,[[QIMKit sharedInstance] getLastJid]];
+    
+    [[QIMKit sharedInstance] sendTPGetRequestWithUrl:urlStr withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary * responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        NSLog(@"转人工 %@",responseDic);
+    } withFailedCallBack:^(NSError *error) {
+        NSLog(@"%@",error);
+    }];
+//    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withSuccessCallBack:^(NSData *responseData) {
+//        NSDictionary * responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+//        NSLog(@"转人工 %@",responseDic);
+//    } withFailedCallBack:^(NSError *error) {
+//        NSLog(@"%@",error);
+//    }];
 }
 
 - (void)initNotifications {
@@ -1093,7 +1116,7 @@
     UIPreviewAction *p1 = [UIPreviewAction actionWithTitle:title style:UIPreviewActionStyleDefault handler:^(UIPreviewAction *_Nonnull action, UIViewController *_Nonnull previewViewController) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kChatSessionStick object:self.chatInfoDict];
     }];
-    UIPreviewAction *p3 = [UIPreviewAction actionWithTitle:@"删除" style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction *_Nonnull action, UIViewController *_Nonnull previewViewController) {
+    UIPreviewAction *p3 = [UIPreviewAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Delete"] style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction *_Nonnull action, UIViewController *_Nonnull previewViewController) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kChatSessionDelete object:self.chatInfoDict];
     }];
     return @[p1, p3];
@@ -1432,7 +1455,7 @@
 - (void)endChatSession {
     UIAlertController *endChatSessionAlertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"您确认结束本次服务？" preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         
     }];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -1749,7 +1772,7 @@
     [_joinShareLctView addSubview:contentLabel];
     
     UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+    [cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
     [cancelBtn setBackgroundColor:[UIColor qim_colorWithHex:0x53676f alpha:1]];
     [cancelBtn setClipsToBounds:YES];
     [cancelBtn.layer setCornerRadius:2.5];
@@ -2055,7 +2078,7 @@
 
 - (void)msgReSendNotificationHandle:(NSNotification *)notify {
     _resendMsg = notify.object;
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"删除", @"重发", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], @"重发", nil];
     
     alertView.tag = kReSendMsgAlertViewTag;
     alertView.delegate = self;
@@ -2282,6 +2305,9 @@
 - (BOOL)shouldScrollToBottomForNewMessage {
 //    CGFloat _h = self.tableView.contentSize.height - self.tableView.contentOffset.y - (CGRectGetHeight(self.tableView.frame) - self.tableView.contentInset.bottom);
     
+    if ((self.messageManager.dataSource.count - self.currentMsgIndexs) == self.messageManager.dataSource.count) {
+        return YES;
+    }
     return (self.messageManager.dataSource.count - self.currentMsgIndexs) <= 3;
 }
 
@@ -3653,6 +3679,13 @@ static CGPoint tableOffsetPoint;
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 }
 
+-(void)refreshQIMChatRobotListQuestionMessageCell:(QIMMsgBaloonBaseCell *)cell{
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    [self.tableView reloadData];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+}
+
+
 - (void)refreshRobotAnswerMessageCell:(QIMMsgBaloonBaseCell *)cell {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     [self.tableView reloadData];
@@ -3677,6 +3710,70 @@ static CGPoint tableOffsetPoint;
 
 - (void)sendTextMessageForText:(NSString *)messageContent isSendToServer:(BOOL)isSendToServer userType:(NSString *)userType {
     [self sendText:messageContent];
+}
+
+-(void)sendQIMChatRobotQusetionListTextMessageForText:(NSString *)messageContent isSendToServer:(BOOL)isSendToServer userType:(NSString *)userType{
+    [self sendText:messageContent];
+}
+
+-(void)hintCell:(QIMHintTableViewCell *)cell linkClickedWithInfo:(NSDictionary *)infoFic {
+    if (!(infoFic && infoFic.count > 0)) {
+        return;
+    }
+    NSDictionary *linkData = infoFic[@"linkData"];
+    NSDictionary *eventData = linkData[@"event"];
+    NSString *eventType = [eventData objectForKey:@"type"];
+    if ([eventType isEqualToString:@"extext"]) {
+        NSString *msgText = [eventData  objectForKey:@"msgText"];
+        NSString *extendJson = [eventData  objectForKey:@"extend"];
+//        [self sendTextMessageForText:msgText isSendToServer:YES userType:@"usr" extendJson:extendJson WithMsgType:MessageType_ExText];
+        [self sendTextMessageForText:msgText isSendToServer:YES userType:extendJson];
+    } else {
+        NSString * type = eventData[@"type"];
+        if ([type isEqualToString:@"postInterface"]) {
+            NSDictionary * params = eventData[@"params"];
+            
+            NSData *versionData = [[QIMJSONSerializer sharedInstance] serializeObject:params error:nil];
+//            __block NSString * appendUrl = @"";
+//
+//
+////            for (NSString * str in params.allKeys) {
+////
+////                appendUrl = [[appendUrl stringByAppendingString:@"%@=%@",str,params[@"str"]] ]
+////            }
+////            for (int i = 0; i<params.allKeys.count; i++) {
+////                NSString * key = params.allKeys[i];
+////                if (key.length > 0 && key) {
+////                    NSString * value = [params objectForKey:key];
+////                    if (!(value && value.length>0)) {
+////                        value = @"";
+////                    }
+////                    if (i!=0) {
+////                    appendUrl = [appendUrl stringByAppendingString:[NSString stringWithFormat:@"&",key,value]];
+////                    }
+////                    appendUrl =  [appendUrl stringByAppendingString:[NSString stringWithFormat:@"%@=%@",key,value]];
+////                }
+////
+////            }
+//            NSString * urlstr = [NSString stringWithFormat:@"%@?%@",eventData[@"url"],appendUrl];
+//            [[QIMKit sharedInstance] sendTPGetRequestWithUrl:urlstr withSuccessCallBack:^(NSData *responseData) {
+//                NSDictionary * responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+//                NSLog(@"转人工 %@",responseDic);
+//            } withFailedCallBack:^(NSError *error) {
+//
+//            }];
+            [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:eventData[@"url"] withRequestBodyData:versionData withSuccessCallBack:^(NSData *responseData) {
+                NSDictionary * responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+                NSLog(@"转人工 %@",responseDic);
+            } withFailedCallBack:^(NSError *error) {
+                
+            }];
+            
+        }else{
+            NSString * url = infoFic[@"linkData"][@"url"];
+//            [QIMWebView showWebViewByUrl:url];
+        }
+    }
 }
 
 @end

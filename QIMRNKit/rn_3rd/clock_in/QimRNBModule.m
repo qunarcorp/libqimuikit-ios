@@ -864,7 +864,7 @@ RCT_EXPORT_METHOD(deleteUserFriend:(NSDictionary *)param) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         UIAlertController *delteFriendSheetVC = [UIAlertController alertControllerWithTitle:@"确定要删除该好友吗？" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleCancel handler:nil];
         UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"删除好友" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 BOOL isSuccess = [[QIMKit sharedInstance] deleteFriendWithXmppId:userId WithMode:2];
@@ -1749,11 +1749,11 @@ RCT_EXPORT_METHOD(openSwitchAccount) {
 }
 
 - (void)swicthAccount {
-    [[self swicthAccountAlert] showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage qim_imageNamedFromQIMUIKitBundle:@"switch"] color:[UIColor brownColor] title:@"切换账号" subTitle:nil closeButtonTitle:@"取消" duration:0];
+    [[self swicthAccountAlert] showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage qim_imageNamedFromQIMUIKitBundle:@"switch"] color:[UIColor brownColor] title:@"切换账号" subTitle:nil closeButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] duration:0];
 }
 
 - (void)showSwitchAccountView {
-    [[self swicthAccountAlert] showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage qim_imageNamedFromQIMUIKitBundle:@"switch"] color:[UIColor brownColor] title:@"切换账号" subTitle:nil closeButtonTitle:@"取消" duration:0];
+    [[self swicthAccountAlert] showCustom:[[[[UIApplication sharedApplication] delegate] window] rootViewController] image:[UIImage qim_imageNamedFromQIMUIKitBundle:@"switch"] color:[UIColor brownColor] title:@"切换账号" subTitle:nil closeButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] duration:0];
 }
 
 - (void)swicthAccountWithAccount:(NSDictionary *)accountDict {

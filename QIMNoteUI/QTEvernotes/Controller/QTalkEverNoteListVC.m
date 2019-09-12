@@ -12,6 +12,8 @@
 #import "QIMNoteModel.h"
 #import "QTNoteCell.h"
 #import <SCLAlertView-Objective-C/SCLAlertView.h>
+#import "NSBundle+QIMLibrary.h"
+
 @interface QTalkEverNoteListVC () <UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic, strong) UIButton *addBtn;//新建按钮
 @property(nonatomic, strong) UITableView *tableView;//笔记列表
@@ -123,7 +125,7 @@
  */
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     QIMNoteModel *evernoteSModel = self.dataSource[indexPath.row];
-    UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+    UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:[NSBundle qim_localizedStringForKey:@"Delete"] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         [[QIMNoteManager sharedInstance] deleteQTNoteSubItemWithQSModel:evernoteSModel];
         [self getLocalEverNotes];
     }];

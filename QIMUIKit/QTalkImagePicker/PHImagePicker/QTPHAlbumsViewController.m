@@ -58,7 +58,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     // Buttons
     NSDictionary* barButtonItemAttributes = @{NSFontAttributeName: [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontHeaderSize]};
 
-    NSString *cancelTitle = @"取消";
+    NSString *cancelTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:cancelTitle
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self.picker

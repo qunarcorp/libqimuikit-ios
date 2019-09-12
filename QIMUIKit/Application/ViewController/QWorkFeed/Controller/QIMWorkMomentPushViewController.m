@@ -558,12 +558,12 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
 - (void)setupNav {
 
-    self.navigationItem.title = @"发布动态";
+    self.navigationItem.title = [NSBundle qim_localizedStringForKey:@"Share Moments"];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
     if (self.shareWorkMoment) {
         self.navigationController.navigationBar.translucent = NO;
     } else {
-        UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
+        UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
         [[self navigationItem] setLeftBarButtonItem:cancelBtn];
     }
     UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.pushBtn];
@@ -574,8 +574,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     if (!_pushBtn) {
         _pushBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_pushBtn setFrame:CGRectMake(0, 0, 36, 18)];
-        [_pushBtn setTitle:@"发布" forState:UIControlStateNormal];
-        [_pushBtn setTitle:@"发布" forState:UIControlStateDisabled];
+        [_pushBtn setTitle:[NSBundle qim_localizedStringForKey:@"Post"] forState:UIControlStateNormal];
+        [_pushBtn setTitle:[NSBundle qim_localizedStringForKey:@"Post"] forState:UIControlStateDisabled];
         [_pushBtn setTitleColor:[UIColor qim_colorWithHex:0xBFBFBF] forState:UIControlStateDisabled];
         [_pushBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         [_pushBtn addTarget:self action:@selector(pushNewMoment:) forControlEvents:UIControlEventTouchUpInside];
@@ -720,7 +720,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         picker.delegate = strongSelf;
         picker.title = @"选取照片";
         picker.customDoneButtonTitle = @"";
-        picker.customCancelButtonTitle = @"取消";
+        picker.customCancelButtonTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
         picker.customNavigationBarPrompt = nil;
         
         picker.colsInPortrait = 4;

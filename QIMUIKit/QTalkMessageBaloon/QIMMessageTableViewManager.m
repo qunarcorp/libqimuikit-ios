@@ -29,6 +29,8 @@
 #import "QIMRobotQuestionCell.h"
 #import "QIMRobotAnswerCell.h"
 #import "QIMMeetingRemindCell.h"
+#import "QIMHintTableViewCell.h"
+#import "QIMChatRobotQuestionListTableViewCell.h"
 
 //#import "TransferInfoCell.h"
 #import "QIMGroupChatCell.h"
@@ -176,7 +178,7 @@
                 return [QIMForecastCell getCellHeightWithMessage:message chatType:self.chatType] + 30;
             }
             case QIMMessageType_GroupNotify: {
-                return [QIMChatNotifyInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 30;
+                return [QIMChatNotifyInfoCell getCellHeightWithMessage:message chatType:self.chatType] + 20;
             }
                 break;
             case QIMMessageType_Text:
@@ -239,6 +241,14 @@
                 break;
             case QIMMessageTypeWorkMomentRemind: {
                 return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 45;
+            }
+                break;
+            case QIMMessageTypeQChatRobotQuestionList:{
+                return [QIMChatRobotQuestionListTableViewCell getCellHeightWithMessage:temp chatType:self.chatType] + 45;
+            }
+                break;
+            case QIMMessageTypeRobotTurnToUser:{
+                return [QIMHintTableViewCell getCellHeightWihtMessage:temp chatType:self.chatType] + 15;
             }
                 break;
             default: {
@@ -476,6 +486,7 @@
     }
     BOOL isvisable = [[tableView indexPathsForVisibleRows] containsObject:indexPath];
     id temp = [self.dataSource objectAtIndex:row];
+    
    QIMMessageModel *message = temp;
 //    QIMVerboseLog(@"解密会话状态 : %lu,   %d", (unsigned long)[[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId], message.messageType);
 #if __has_include("QIMNoteManager.h")
@@ -747,7 +758,7 @@
         }
             break;
         case QIMMessageType_GroupNotify: {
-            NSString *cellIdentifier = [NSString stringWithFormat:@"QIMMessageType_GroupNotify Cell %@", message.messageId];
+            NSString *cellIdentifier = [NSString stringWithFormat:@"QIMMessageType_GroupNotify_Cell"];
             QIMChatNotifyInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
             if (cell == nil) {
                 cell = [[QIMChatNotifyInfoCell alloc] initWithStyle:UITableViewCellStyleDefault
@@ -755,10 +766,9 @@
                 cell.chatType = self.chatType;
                 [cell setFrameWidth:self.ownerVc.view.width];
                 [cell setDelegate:self.ownerVc];
-                [cell setMessage:message];
-                [cell refreshUI];
             }
-            
+            [cell setMessage:message];
+            [cell refreshUI];
             return cell;
         }
             break;
@@ -950,6 +960,43 @@
             return cell;
         }
             break;
+            
+        case QIMMessageTypeQChatRobotQuestionList:{
+            NSString * cellIdentifier = @"QIMMessageTypeQChatRobotQuestionList";
+            QIMChatRobotQuestionListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+            if (cell == nil) {
+                cell = [[QIMChatRobotQuestionListTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                   reuseIdentifier:cellIdentifier];
+                [cell setFrameWidth:self.ownerVc.view.width];
+                cell.chatType = self.chatType;
+                cell.delegate = self.ownerVc;
+                [cell setOwerViewController:self.ownerVc];
+            }
+            
+            [cell setMessage:message];
+            [cell setChatType:self.chatType];
+            [cell refreshUI];
+            return cell;
+        }
+            break;
+        case QIMMessageTypeRobotTurnToUser:{
+            NSString * cellIdentfier = @"QIMMEssageTypeQChatRobotTurnToUser";
+            QIMHintTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentfier];
+            if (cell == nil) {
+                cell = [[QIMHintTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentfier];
+                //                [cell setFrameWidth:_chatView.width];
+                cell.delegate = self.ownerVc;
+                cell.hintDelegate = self.ownerVc;
+            }
+            cell.chatType = self.chatType;
+            //            [cell setOwerViewController:self];
+            [cell setMessage:message];
+            [cell refreshUI];
+            return cell;
+            
+        }
+            break;
+            break;
         default: {
             Class someClass = [[QIMKit sharedInstance] getRegisterMsgCellClassForMessageType:message.messageType];
             if (someClass) {
@@ -983,7 +1030,7 @@
         }
             break;
     }
-}
+ }
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.dataSource.count;

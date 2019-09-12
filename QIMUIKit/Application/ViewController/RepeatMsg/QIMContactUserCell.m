@@ -105,7 +105,7 @@
         [_nameLabel setText:self.name];
     } else if (self.isSystem) {
         [_headerView qim_setImageWithJid:self.jid WithChatType:ChatType_System];
-        [_nameLabel setText:@"系统消息"];
+        [_nameLabel setText:[NSBundle qim_localizedStringForKey:@"System Messages"]];//@"系统消息"];
     } else {
          [_headerView qim_setImageWithJid:self.jid WithChatType:ChatType_SingleChat];
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.jid];

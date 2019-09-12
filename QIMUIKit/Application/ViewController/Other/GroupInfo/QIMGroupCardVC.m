@@ -295,7 +295,7 @@
 
 - (void)delMemHandle:(MemberButton *)sender {
     _currentMemberInfo = sender.memberDic;
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:[NSString stringWithFormat:@"您即将将 %@ 踢出群组",_currentMemberInfo[@"name"]] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:[NSString stringWithFormat:@"您即将将 %@ 踢出群组",_currentMemberInfo[@"name"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
     alertView.tag = kKickMemberAlertViewTag;
     [alertView show];
 }
@@ -334,7 +334,7 @@
 
 - (void)onDoneButtonClick:(UIButton *)sender {
     if (_atGroupIn) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您是否确定要退出该群？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定",nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您是否确定要退出该群？" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定",nil];
         alert.tag = kQuitGroupAlertViewTag;
         [alert show];
     } else {

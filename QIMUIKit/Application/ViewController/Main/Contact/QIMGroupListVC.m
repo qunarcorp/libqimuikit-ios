@@ -77,7 +77,7 @@
     
     UIButton *createGroupButton = [[UIButton alloc] initWithFrame:CGRectMake(0, lineView.bottom, _actionMenuView.width, 20)];
     [createGroupButton.titleLabel setFont:[UIFont fontWithName:FONT_NAME size:FONT_SIZE - 2]];
-    [createGroupButton setTitle:@"创建群组" forState:UIControlStateNormal];
+    [createGroupButton setTitle:[NSBundle qim_localizedStringForKey:@"Create Group"] forState:UIControlStateNormal];
     [createGroupButton addTarget:self action:@selector(CreateGroup:) forControlEvents:UIControlEventTouchUpInside];
     [_actionMenuView addSubview:createGroupButton];
     
