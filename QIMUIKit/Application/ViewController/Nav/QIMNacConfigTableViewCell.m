@@ -99,7 +99,7 @@
 - (UIButton *)deleteBtn {
     if (!_deleteBtn) {
         _deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_deleteBtn setTitle:@"删除" forState:UIControlStateNormal];
+        [_deleteBtn setTitle:[NSBundle qim_localizedStringForKey:@"Delete"] forState:UIControlStateNormal];
         [_deleteBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_deleteBtn.titleLabel setFont:[UIFont systemFontOfSize:12]];
         _deleteBtn.layer.borderWidth = 1.0f;

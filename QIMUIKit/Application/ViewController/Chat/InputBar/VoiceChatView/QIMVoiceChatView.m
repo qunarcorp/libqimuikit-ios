@@ -92,7 +92,7 @@
         
         
         _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+        [_cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
         [_cancelBtn setBackgroundColor:[UIColor whiteColor]];
         [_cancelBtn setTitleColor:[UIColor qim_colorWithHex:0x1da4e9 alpha:1] forState:UIControlStateNormal];
         _cancelBtn.frame = CGRectMake(- 0.5, self.height - 40, self.width / 2, 40);

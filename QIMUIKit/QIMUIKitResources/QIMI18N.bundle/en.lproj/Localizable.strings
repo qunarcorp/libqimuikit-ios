@@ -376,3 +376,221 @@
 "QTalk Privacy Location Message" = "Unable to get your location data. Please enable location service in [Setting]->[Privacy]->[Location Service] and allow QTalk to get your location data.";
 "QChat Privacy Location Message" = "Unable to get your location data. Please enable location service in [Setting]->[Privacy]->[Location Service] and allow QTalk to get your location data.";
 
+//消息/ Chat
+"Connecting…" = "Connecting…";
+
+"Loading…" = "Loading…";
+
+"Chat" = "Chat";
+
+"Search" = "Search";
+
+"ALL" = "ALL";
+
+"Contacts" = "Contacts";
+
+"Groups" = "Groups";
+
+"Chat Histories" = "Chat Histories";
+
+"Files" = "Files";
+
+
+"Search Contacts, Groups, and Chat Histories; Allows Searching by Keywords or IDs" = "Search Contacts, Groups, and Chat Histories; Allows Searching by Keywords or IDs";
+
+"System Messages" = "System Messages";
+
+"[Photo]" = "[Photo]";
+
+"[File]" = "[File]";
+
+"Copy" = "Copy";
+
+"Add to Stickers" = "Add to Stickers";
+
+"Quote" = "Quote";
+
+"Forward" = "Forward";
+
+"Select a Group" = "Select a Group";
+
+"Latest Chats" = "Latest Chats";
+
+"Delete" = "Delete";
+
+"More" = "More";
+
+"Group Name" = "Group Name";
+
+"Group QR Code" = "Group QR Code";
+
+"Group Notice" = "Group Notice";
+
+"Group Messages Notification" = "Group Messages Notification";
+
+"Sticky on Top" = "Sticky on Top";
+
+"Clear Chat History" = "Clear Chat History";
+
+"Scan" = "Scan";
+
+"Album" = "Album";
+
+"Light" = "Light";
+
+"Unread Messages" = "Unread Messages";
+
+"Create Group" = "Create Group";
+
+"Mark All as Read" = "Mark All as Read";
+
+//联系人/ Contacts
+
+"Starred" = "Starred";
+"Starred"="Starred";
+"External Contacts"="External Contacts";
+"Add from…"="Add from…";
+
+//发现/ Discover
+"Approval"="Approval";
+"Pending"="Pending";
+"Approved"="Approved";
+"All Types"="All Types";
+"All Dates"="All Dates";
+"All Publishers"="All Publishers";
+"Holidays"="Holidays";
+"Make-up Punching in"="Make-up Punching in";
+"Overtime Pay"="Overtime Pay";
+"Cancel Holidays"="Cancel Holidays";
+"Work on Nonworkdays"="Work on Nonworkdays";
+"Offer"="offer";
+
+"Regularization of Employees"="Regularization of Employees";
+"Demission"="Demission";
+"Business Trip"="Business Trip";
+"Promotion"="Promotion";
+"Contract Extension"="Contract Extension";
+"Handover"="Handover";
+"Transition to New Job"="Transition to New Job";
+"Account"="Account";
+"Change"="Change";
+"SRC"="SRC";
+"Auto Posting"="Auto Posting布";
+"Physical Machine"="Physical Machine";
+"IT Workbench"="IT Workbench";
+"Quality Test"="Quality Test";
+"Portal"="Portal";
+"Qunar OA"="Qunar OA";
+"Management System of Accommodation Resources"="Management System of Accommodation Resources";
+"Safety Work Order"="Safety Work Order";
+"MPortal"="MPortal";
+"Authority System of Air Tickets Data"="Authority System of Air Tickets Data";
+"Reset"="Reset";
+"Confirm"="Confirm";
+"Today"="Today";
+"7 Days"="7 Days";
+"1 Month"="1 Month";
+"2 Months"="2 Months";
+"All"="All";
+"Select From Friend List"="Select From Friend List";
+"Select From Group List"="Select From Group List";
+"Done"="Done";
+"Approval Center"="Approval Center";
+"IT Workbench"="IT Workbench";
+"Continuous Integration"="Continuous Integration";
+"Attendance"="Attendance";
+"Today"="Today";
+"7 Days"="7 Days";
+"Current Month"="Current Month";
+"Last Month"="Last Month";
+"Past 2 Months"="Past 2 Months";
+"Abnormal"="Abnormal";
+"Normal"="Normal";
+"Longer than 11.5h"="Longer than 11.5h";
+"Labor Hour"="Labor Hour";
+"Monday"="Monday";
+"Tuesday"="Tuesday";
+"Wednesday"="Wednesday";
+"Thursday"="Thursday";
+"Friday"="Friday";
+"Saturday"="Saturday";
+"Sunday"="Sunday";
+"New OA"="New OA";
+"Reimbursement"="Reimbursement";
+"Pay for Procurement"="Pay for Procurement";
+"Apply for Procurement"="Apply for Procurement";
+"Select All"="Select All";
+"Approve"="Approve";
+"Refuse"="Refuse";
+"HR"="HR";
+"My Holidays"="My Holidays";
+"Shift Holidays"="Shift Holidays";
+"Annual Leave"="Annual Leave";
+"Full-pay Sick Leave"="Full-pay Sick Leave";
+"Partial-pay Sick Leave"="Partial-pay Sick Leave";
+"Type"="Type";
+"Start Date"="Start Date";
+"End Date"="End Date";
+"Start from a Half of Day"="Start from a Half of Day";
+"Number of Days"="Number of Days";
+"Days Remaining"="Days Remaining";
+"Attachments"="Attachments";
+"Please select attachments"="Please select attachments";
+"Please fill in the reason for leaving (mandatory)"="Please fill in the reason for leaving (mandatory)";
+"Submit"="Submit";
+"Efficiency/Tools"="Efficiency/Tools";
+"Meeting Room Reservation"="Meeting Room Reservation";
+"Create a Schedule Now!"="Create a Schedule Now!";
+"Tax File Number"="Tax File Number";
+"Wiki"="Wiki";
+"Notebook"="Notebook";
+"Jira Tasks"="Jira Tasks";
+"My Tasks"="My Tasks";
+"Taking a Taxi"="Taking a Taxi";
+"Product Packaging"="Product Packaging";
+"Material Library"="Material Library";
+"More"="More";
+"Temporary Token"="Temporary Token";
+"Apply for WiFi"="Apply for WiFi";
+"Alarming Timeline"="Alarming Timeline";
+"Events"="Events";
+"Alarming Histories"="Alarming Histories";
+"Select All"="Select All";
+"In Progress"="In Progress";
+"Critical"="Critical";
+"Called"="Called";
+"Business Alarm"="Business Alarm";
+"Basic Alarm"="Basic Alarm";
+"Qtalk Notification"="Qtalk Notification";
+"Message Notification"="Message Notification";
+"Phone Notification"="Phone Notification";
+"Account Status"="Account Status";
+"Account Locked Status"="Account Locked Status";
+"Latest Login Time"="Latest Login Time";
+"Latest Time of Revising Password"="Latest Time of Revising Password";
+"Latest Time of Wrong Password"="Latest Time of Wrong Password";
+"Number of Times of Wrong Password"="Number of Times of Wrong Password";
+"Emails"="Emails";
+"Account"="Account";
+"Guide for Printing"="Guide for Printing";
+"Guide for VPN"="Guide for VPN";
+"Settings"="Settings";
+"Application Store"="Application Store";
+
+//朋友圈/ Moments
+"…min(s) ago"="…min(s) ago";
+"…hr(s) ago"="…hr(s) ago";
+"…day(s) ago"="…day(s) ago";
+"Search"="Search";
+"Cancel"="Cancel";
+"Allows Searching by “Names” or “Keywords”"="Allows Searching by “Names” or “Keywords”";
+"My Moments"="My Moments";
+"My Moments"="My Moments";
+"My Replies"="My Replies";
+"Mentioned Me"="Mentioned Me";
+"Share Moments"="Share Moments";
+"Post"="Post";
+
+
+
+

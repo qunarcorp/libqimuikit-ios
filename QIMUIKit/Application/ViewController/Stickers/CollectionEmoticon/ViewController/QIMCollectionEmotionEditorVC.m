@@ -119,7 +119,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _cancelBtn.frame = CGRectMake(0, 0, 44, 44);
         [_cancelBtn setTitle:@"关闭" forState:UIControlStateNormal];
-        [_cancelBtn setTitle:@"取消" forState:UIControlStateSelected];
+        [_cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateSelected];
         [_cancelBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         [_cancelBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateSelected];
         [_cancelBtn addTarget:self action:@selector(CancelAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -166,7 +166,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         _emotionDelBtn.titleLabel.textAlignment = NSTextAlignmentRight;
         [_emotionDelBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
         [_emotionDelBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
-        [_emotionDelBtn setTitle:@"删除" forState:UIControlStateNormal];
+        [_emotionDelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Delete"] forState:UIControlStateNormal];
         [_emotionDelBtn addTarget:self action:@selector(emotionDelBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
     [_emotionDelBar addSubview:_emotionDelBtn];
@@ -176,7 +176,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         [_emotionDelBtn setTitle:[NSString stringWithFormat:@"删除(%@)",@(_emotionSelectedList.count)] forState:UIControlStateNormal];
         [_emotionDelBtn setEnabled:YES];
     }else{
-        [_emotionDelBtn setTitle:@"删除" forState:UIControlStateNormal];
+        [_emotionDelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Delete"] forState:UIControlStateNormal];
         [_emotionDelBtn setEnabled:NO];
         
     }
@@ -215,7 +215,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         
         if (![self isChangeDataList]) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"确定取消改动？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"确定取消改动？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
             alertView.tag = 0;
             [alertView show];
         }

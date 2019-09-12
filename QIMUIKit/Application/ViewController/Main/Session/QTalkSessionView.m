@@ -645,11 +645,11 @@
                         } else if ([jid hasPrefix:@"rbt-zhongbao"]) {
                             [chatSystemVC setTitle:@"抢单"];
                         } else {
-                            [chatSystemVC setTitle:@"系统消息"];
+                            [chatSystemVC setTitle:[NSBundle qim_localizedStringForKey:@"System Messages"]];//@"系统消息"];
                         }
                     } else {
 
-                        [chatSystemVC setTitle:@"系统消息"];
+                        [chatSystemVC setTitle:[NSBundle qim_localizedStringForKey:@"System Messages"]];//@"系统消息"];
                     }
                     return chatSystemVC;
                 }
@@ -744,7 +744,7 @@
     if (name) {
         return name;
     } else {
-        return @"系统消息";
+        return [NSBundle qim_localizedStringForKey:@"System Messages"];//@"系统消息";
     }
 }
 

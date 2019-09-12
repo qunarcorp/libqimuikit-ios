@@ -164,14 +164,14 @@
             QIMContactManager *manager = [QIMContactManager sharedInstanceWithRootVc:rootVc phoneNum:phoneNum];
             [manager saveExistContact];
         }];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         }];
         [saveContactAlertVc addAction:saveNewContactAction];
         [saveContactAlertVc addAction:saveExistContactAction];
         [saveContactAlertVc addAction:cancelAction];
         [rootVc presentViewController:saveContactAlertVc animated:YES completion:nil];
     }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
     }];
     [alertVc addAction:callAction];
     [alertVc addAction:copyNumAction];

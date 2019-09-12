@@ -141,7 +141,7 @@
 #pragma mark - init ui
 
 - (void)initWithNavbar {
-    [self.navigationItem setTitle:@"创建群组"];
+    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"Create Group"]];
 }
 
 - (void)initWithTableView{

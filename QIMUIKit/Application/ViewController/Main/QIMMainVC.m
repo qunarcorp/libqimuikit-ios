@@ -325,13 +325,13 @@ static dispatch_once_t __onceMainToken;
         }
             break;
         case AppWorkState_Logining: {
-            self.appNetWorkTitle = @"连接中...";
+            self.appNetWorkTitle = [NSBundle qim_localizedStringForKey:@"Connecting…"];//@"连接中...";
             self.showNetWorkBar = NO;
             [self.sessionView updateSessionHeaderViewWithShowNetWorkBar:NO];
         }
             break;
         case AppWorkState_Updating: {
-            self.appNetWorkTitle = @"接收中...";
+            self.appNetWorkTitle = [NSBundle qim_localizedStringForKey:@"Loading…"];//@"接收中...";
             self.showNetWorkBar = NO;
             [self.sessionView updateSessionHeaderViewWithShowNetWorkBar:NO];
         }
@@ -1149,7 +1149,7 @@ static dispatch_once_t __onceMainToken;
     NSString *wikiHost = [[QIMKit sharedInstance] qimNav_WikiUrl];
     self.moreActionArray = [[NSMutableArray alloc] initWithCapacity:3];
     NSArray *moreActionImages = nil;
-    self.moreActionArray = @[@"扫一扫", @"未读消息", @"创建群组", @"一键已读"];
+    self.moreActionArray = @[[NSBundle qim_localizedStringForKey:@"Scan"], [NSBundle qim_localizedStringForKey:@"Unread Messages"], [NSBundle qim_localizedStringForKey:@"Create Group"], [NSBundle qim_localizedStringForKey:@"Mark All as Read"]];
     moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_scan_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_notread_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_gototalk_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_clearnotread_font size:28 color:qim_rightArrowImageColor]]];
     point = CGPointMake(rect3.origin.x + rect3.size.width / 2, rect3.origin.y + rect3.size.height / 2);
     _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:135 Height:50 * self.moreActionArray.count + 10 Type:Type_UpRight Color:[UIColor whiteColor]];
@@ -1249,7 +1249,7 @@ static dispatch_once_t __onceMainToken;
 - (void)scanQrcode:(id)sender {
     [QIMFastEntrance openQRCodeVC];
 #if __has_include("QIMAutoTracker.h")
-    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"RichScan" withDescription:@"扫一扫"];
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"RichScan" withDescription:[NSBundle qim_localizedStringForKey:@"Scan"]];
 #endif
 }
 
@@ -1337,20 +1337,20 @@ static dispatch_once_t __onceMainToken;
 - (void)selectIndexPathRow:(NSInteger)index {
     QIMVerboseLog(@"右上角快捷入口%s , %ld", __func__, index);
     NSString *moreActionId = [self.moreActionArray objectAtIndex:index];
-    if ([moreActionId isEqualToString:@"扫一扫"]) {
+    if ([moreActionId isEqualToString:[NSBundle qim_localizedStringForKey:@"Scan"]]) {
         [QIMFastEntrance openQRCodeVC];
 #if __has_include("QIMAutoTracker.h")
-        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"RichScan" withDescription:@"扫一扫"];
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"RichScan" withDescription:[NSBundle qim_localizedStringForKey:@"Scan"]];
 #endif
-    } else if ([moreActionId isEqualToString:@"创建群组"]) {
+    } else if ([moreActionId isEqualToString:[NSBundle qim_localizedStringForKey:@"Create Group"]]) {
         [QIMFastEntrance openQIMGroupListVC];
 #if __has_include("QIMAutoTracker.h")
-        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"StarToTalk" withDescription:@"创建群组"];
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"StarToTalk" withDescription:[NSBundle qim_localizedStringForKey:@"Create Group"]];
 #endif
-    } else if ([moreActionId isEqualToString:@"一键已读"]) {
+    } else if ([moreActionId isEqualToString:[NSBundle qim_localizedStringForKey:@"Mark All as Read"]]) {
         [self oneKeyRead];
 #if __has_include("QIMAutoTracker.h")
-        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"A key has been read" withDescription:@"一键已读"];
+        [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"A key has been read" withDescription:[NSBundle qim_localizedStringForKey:@"Mark All as Read"]];
 #endif
     } else if ([moreActionId isEqualToString:@"随记"]) {
         [QIMFastEntrance openQTalkNotesVC];
@@ -1364,7 +1364,7 @@ static dispatch_once_t __onceMainToken;
             [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"note" withDescription:@"wiki"];
 #endif
         }
-    } else if ([moreActionId isEqualToString:@"未读消息"]) {
+    } else if ([moreActionId isEqualToString:[NSBundle qim_localizedStringForKey:@"Unread Messages"]]) {
         [QIMFastEntrance openNotReadMessageVC];
     } else {
         
@@ -1379,14 +1379,14 @@ static dispatch_once_t __onceMainToken;
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"继续" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [[QIMKit sharedInstance] clearAllNoRead];
         }];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
         [alertVc addAction:okAction];
         [alertVc addAction:cancelAction];
         [self presentViewController:alertVc animated:YES completion:nil];
         /*
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"接下来会清空所有未读消息状态,以及「@all」消息提醒，是否继续？" delegate:self cancelButtonTitle:@"继续" otherButtonTitles:@"取消", nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"接下来会清空所有未读消息状态,以及「@all」消息提醒，是否继续？" delegate:self cancelButtonTitle:@"继续" otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Cancel"], nil];
         alertView.tag = kClearAllNotReadMsg;
         [alertView show];
          */

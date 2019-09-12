@@ -55,7 +55,7 @@
         }];
         
         UILabel *promotLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        promotLabel.text = @"搜索";
+        promotLabel.text = [NSBundle qim_localizedStringForKey:@"Search"];//@"搜索";
         promotLabel.textColor = [UIColor qim_colorWithHex:0xB5B5B5];
         promotLabel.font = [UIFont systemFontOfSize:qim_listSearchTextSize];
         [self.searchBgView addSubview:promotLabel];
