@@ -69,7 +69,6 @@
 #import "QIMWorkFeedSearchViewController.h"
 #import "QIMWorkMomentPushViewController.h"
 #import "QIMWorkFeedMYCirrleViewController.h"
-
 @interface QIMFastEntrance () <MFMailComposeViewControllerDelegate>
 
 @end
@@ -1293,6 +1292,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         [navVC pushViewController:qrVC animated:YES];
     });
+    
+    
 }
 
 + (void)signOutWithNoPush {

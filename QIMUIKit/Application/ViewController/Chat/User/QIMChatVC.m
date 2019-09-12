@@ -89,6 +89,8 @@
 #import "QIMNavBackBtn.h"
 #import "QIMNotifyView.h"
 #import "QIMRedMindView.h"
+#import "QIMHintTableViewCell.h"
+#import "QIMChatRobotQuestionListTableViewCell.h"
 
 #if __has_include("QIMNotifyManager.h")
     #import "QIMNotifyManager.h"
@@ -133,7 +135,7 @@
 
 #endif
 
-@interface QIMChatVC () <UIGestureRecognizerDelegate, QIMSingleChatCellDelegate, QIMSingleChatVoiceCellDelegate, QIMMWPhotoBrowserDelegate, QIMRemoteAudioPlayerDelegate, QIMMsgBaloonBaseCellDelegate, QIMChatBGImageSelectControllerDelegate, QIMContactSelectionViewControllerDelegate, QIMInputPopViewDelegate, QIMPushProductViewControllerDelegate, UIActionSheetDelegate, UserLocationViewControllerDelegate, QIMNotReadMsgTipViewsDelegate, QIMTextBarDelegate, QIMPNActionRichTextCellDelegate, QIMPNRichTextCellDelegate, PNNoticeCellDelegate, PlayVoiceManagerDelegate, QIMAttributedLabelDelegate, UIViewControllerPreviewingDelegate, QTalkMessageTableScrollViewDelegate, QIMRobotQuestionCellDelegate, QIMRobotAnswerCellLoadDelegate, QIMOrganizationalVCDelegate> {
+@interface QIMChatVC () <UIGestureRecognizerDelegate, QIMSingleChatCellDelegate, QIMSingleChatVoiceCellDelegate, QIMMWPhotoBrowserDelegate, QIMRemoteAudioPlayerDelegate, QIMMsgBaloonBaseCellDelegate, QIMChatBGImageSelectControllerDelegate, QIMContactSelectionViewControllerDelegate, QIMInputPopViewDelegate, QIMPushProductViewControllerDelegate, UIActionSheetDelegate, UserLocationViewControllerDelegate, QIMNotReadMsgTipViewsDelegate, QIMTextBarDelegate, QIMPNActionRichTextCellDelegate, QIMPNRichTextCellDelegate, PNNoticeCellDelegate, PlayVoiceManagerDelegate, QIMAttributedLabelDelegate, UIViewControllerPreviewingDelegate, QTalkMessageTableScrollViewDelegate, QIMRobotQuestionCellDelegate, QIMRobotAnswerCellLoadDelegate, QIMOrganizationalVCDelegate,QIMHintCellDelegate,QIMChatRobotQuestionListCellDelegate> {
     
     bool _isReloading;
     
@@ -885,6 +887,27 @@
     if ([self.chatId containsString:@"dujia_warning"]) {
         [self performSelector:@selector(synchronizeDujiaWarning) withObject:nil afterDelay:1.5];
     }
+    if (self.chatType == ChatType_Consult) {
+        [self requestRobotConsult];
+    }
+}
+
+-(void)requestRobotConsult{
+    NSString *  rexian_id= [self.chatId componentsSeparatedByString:@"@"].firstObject;
+    NSString * urlStr = [NSString stringWithFormat:@"%@/robot/qtalk_robot/sendtips?rexian_id=%@&m_from=%@&m_to=%@",[[QIMKit sharedInstance] qimNav_NewHttpUrl],rexian_id,self.chatId,[[QIMKit sharedInstance] getLastJid]];
+    
+    [[QIMKit sharedInstance] sendTPGetRequestWithUrl:urlStr withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary * responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        NSLog(@"转人工 %@",responseDic);
+    } withFailedCallBack:^(NSError *error) {
+        NSLog(@"%@",error);
+    }];
+//    [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:urlStr withSuccessCallBack:^(NSData *responseData) {
+//        NSDictionary * responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+//        NSLog(@"转人工 %@",responseDic);
+//    } withFailedCallBack:^(NSError *error) {
+//        NSLog(@"%@",error);
+//    }];
 }
 
 - (void)initNotifications {
@@ -2282,6 +2305,9 @@
 - (BOOL)shouldScrollToBottomForNewMessage {
 //    CGFloat _h = self.tableView.contentSize.height - self.tableView.contentOffset.y - (CGRectGetHeight(self.tableView.frame) - self.tableView.contentInset.bottom);
     
+    if ((self.messageManager.dataSource.count - self.currentMsgIndexs) == self.messageManager.dataSource.count) {
+        return YES;
+    }
     return (self.messageManager.dataSource.count - self.currentMsgIndexs) <= 3;
 }
 
@@ -3653,6 +3679,13 @@ static CGPoint tableOffsetPoint;
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 }
 
+-(void)refreshQIMChatRobotListQuestionMessageCell:(QIMMsgBaloonBaseCell *)cell{
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    [self.tableView reloadData];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+}
+
+
 - (void)refreshRobotAnswerMessageCell:(QIMMsgBaloonBaseCell *)cell {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     [self.tableView reloadData];
@@ -3677,6 +3710,70 @@ static CGPoint tableOffsetPoint;
 
 - (void)sendTextMessageForText:(NSString *)messageContent isSendToServer:(BOOL)isSendToServer userType:(NSString *)userType {
     [self sendText:messageContent];
+}
+
+-(void)sendQIMChatRobotQusetionListTextMessageForText:(NSString *)messageContent isSendToServer:(BOOL)isSendToServer userType:(NSString *)userType{
+    [self sendText:messageContent];
+}
+
+-(void)hintCell:(QIMHintTableViewCell *)cell linkClickedWithInfo:(NSDictionary *)infoFic {
+    if (!(infoFic && infoFic.count > 0)) {
+        return;
+    }
+    NSDictionary *linkData = infoFic[@"linkData"];
+    NSDictionary *eventData = linkData[@"event"];
+    NSString *eventType = [eventData objectForKey:@"type"];
+    if ([eventType isEqualToString:@"extext"]) {
+        NSString *msgText = [eventData  objectForKey:@"msgText"];
+        NSString *extendJson = [eventData  objectForKey:@"extend"];
+//        [self sendTextMessageForText:msgText isSendToServer:YES userType:@"usr" extendJson:extendJson WithMsgType:MessageType_ExText];
+        [self sendTextMessageForText:msgText isSendToServer:YES userType:extendJson];
+    } else {
+        NSString * type = eventData[@"type"];
+        if ([type isEqualToString:@"postInterface"]) {
+            NSDictionary * params = eventData[@"params"];
+            
+            NSData *versionData = [[QIMJSONSerializer sharedInstance] serializeObject:params error:nil];
+//            __block NSString * appendUrl = @"";
+//
+//
+////            for (NSString * str in params.allKeys) {
+////
+////                appendUrl = [[appendUrl stringByAppendingString:@"%@=%@",str,params[@"str"]] ]
+////            }
+////            for (int i = 0; i<params.allKeys.count; i++) {
+////                NSString * key = params.allKeys[i];
+////                if (key.length > 0 && key) {
+////                    NSString * value = [params objectForKey:key];
+////                    if (!(value && value.length>0)) {
+////                        value = @"";
+////                    }
+////                    if (i!=0) {
+////                    appendUrl = [appendUrl stringByAppendingString:[NSString stringWithFormat:@"&",key,value]];
+////                    }
+////                    appendUrl =  [appendUrl stringByAppendingString:[NSString stringWithFormat:@"%@=%@",key,value]];
+////                }
+////
+////            }
+//            NSString * urlstr = [NSString stringWithFormat:@"%@?%@",eventData[@"url"],appendUrl];
+//            [[QIMKit sharedInstance] sendTPGetRequestWithUrl:urlstr withSuccessCallBack:^(NSData *responseData) {
+//                NSDictionary * responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+//                NSLog(@"转人工 %@",responseDic);
+//            } withFailedCallBack:^(NSError *error) {
+//
+//            }];
+            [[QIMKit sharedInstance] sendTPPOSTRequestWithUrl:eventData[@"url"] withRequestBodyData:versionData withSuccessCallBack:^(NSData *responseData) {
+                NSDictionary * responseDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+                NSLog(@"转人工 %@",responseDic);
+            } withFailedCallBack:^(NSError *error) {
+                
+            }];
+            
+        }else{
+            NSString * url = infoFic[@"linkData"][@"url"];
+//            [QIMWebView showWebViewByUrl:url];
+        }
+    }
 }
 
 @end
