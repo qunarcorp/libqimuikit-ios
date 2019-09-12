@@ -58,7 +58,7 @@
 - (UIBarButtonItem *)cancelItem {
     
     if (!_cancelItem) {
-        _cancelItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+        _cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     }
     return _cancelItem;
 }
@@ -67,7 +67,7 @@
     
     self.title = [[QIMKit sharedInstance] qimNav_Debug] ? [NSBundle qim_localizedStringForKey:@"nav_title_debug_configManager"] : [NSBundle qim_localizedStringForKey:@"nav_title_configManager"];
     self.view.backgroundColor = [UIColor whiteColor];
-    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     self.navigationItem.leftBarButtonItem = cancelItem;
     
     UIBarButtonItem *feedBackItem = [[UIBarButtonItem alloc] initWithTitle:@"确定" style:UIBarButtonItemStylePlain target:self action:@selector(onSave)];
@@ -164,7 +164,7 @@
     } else {
         message = @"是否要切换到测试环境？";
     }
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:message delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
     [alertView setTag:kAlertViewDebugTag];
     [alertView show];
 }

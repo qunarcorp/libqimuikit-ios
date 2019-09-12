@@ -146,7 +146,7 @@
     
     __weak __typeof(self) weakSelf = self;
     LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
-                                             cancelButtonTitle:@"取消"
+                                             cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"]
                                                        clicked:^(LCActionSheet * _Nonnull actionSheet, NSInteger buttonIndex) {
                                                            __typeof(self) strongSelf = weakSelf;
                                                            if (!strongSelf) {

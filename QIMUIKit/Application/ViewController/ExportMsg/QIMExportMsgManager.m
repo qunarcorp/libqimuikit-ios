@@ -179,7 +179,7 @@
                 imgStr = [imgStr stringByReplacingOccurrencesOfString:@"[MSGIMGALT]" withString:@"[表情]"];
             }else{
                 imgStr = [imgStr stringByReplacingOccurrencesOfString:@"[MSGIMGSRC]" withString:[[textStorage imageURL] absoluteString]];
-                imgStr = [imgStr stringByReplacingOccurrencesOfString:@"[MSGIMGALT]" withString:@"[图片]"];
+                imgStr = [imgStr stringByReplacingOccurrencesOfString:@"[MSGIMGALT]" withString:[NSBundle qim_localizedStringForKey:@"[Photo]"]];//@"[图片]"];
             }
             msgText = [msgText stringByAppendingString:imgStr];
         }

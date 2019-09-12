@@ -612,7 +612,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                         self.showName = @"抢单";
                     } else {
                         
-                        self.showName = @"系统消息";
+                        self.showName = [NSBundle qim_localizedStringForKey:@"System Messages"];//@"系统消息";
                     }
                 }
             }
@@ -822,7 +822,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:tStr]];
             if ([type isEqualToString:@"image"]) {
                 
-                [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"[图片]"]];
+                [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:[NSBundle qim_localizedStringForKey:@"[Photo]"]]];
             } else if ([type isEqualToString:@"emoticon"]) {
                 
                 [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"[表情]"]];

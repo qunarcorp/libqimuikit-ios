@@ -319,7 +319,7 @@
 - (void)setupNav {
     
     self.title = self.navTitle.length > 0 ? self.navTitle : @"新增导航";
-    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     [self.navigationItem setLeftBarButtonItem:cancelItem];
     
     UIBarButtonItem *saveItem = [[UIBarButtonItem alloc] initWithTitle:@"保存" style:UIBarButtonItemStylePlain target:self action:@selector(onSave)];

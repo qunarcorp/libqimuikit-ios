@@ -440,7 +440,7 @@
     _repeatButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_repeatButton setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin];
     [_repeatButton setFrame:CGRectMake(0, 0, width, _bottomView.height)];
-    [_repeatButton setTitle:@"转发" forState:UIControlStateNormal];
+    [_repeatButton setTitle:[NSBundle qim_localizedStringForKey:@"Forward"] forState:UIControlStateNormal];
     [_repeatButton addTarget:self action:@selector(onRepeatButton:) forControlEvents:UIControlEventTouchUpInside];
     [_bottomView addSubview:_repeatButton];
     

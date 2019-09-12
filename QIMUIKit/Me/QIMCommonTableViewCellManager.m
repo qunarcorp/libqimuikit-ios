@@ -431,7 +431,7 @@
             QIMCommonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
             if (cell == nil) {
                 cell = [[QIMCommonTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-                [cell.textLabel setText:@"群公告"];
+                [cell.textLabel setText:[NSBundle qim_localizedStringForKey:@"Group Notice"]];
                 
                 QIMMenuView * menuView = [[QIMMenuView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 50)];
                 menuView.tag = 1000;
@@ -462,7 +462,7 @@
             }
             [cell setAccessibilityIdentifier:@"MyQrcode"];
             cell.accessoryType_LL = UITableViewCellAccessoryDisclosureIndicator;
-            cell.textLabel.text = @"群二维码";
+            cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"Group QR Code"];
             cell.detailTextLabel.font = [UIFont fontWithName:@"Qtalk" size:24];
             cell.detailTextLabel.text = @"\U0000f10d";
             cell.textLabel.font = [UIFont fontWithName:FONT_NAME size:[[QIMCommonFont sharedInstance] currentFontSize] - 4];

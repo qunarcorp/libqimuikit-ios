@@ -98,7 +98,7 @@ CGFloat imageItemWidth;
     }
     [self.navigationItem setTitle:self.title];
     
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(dismiss:)];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(dismiss:)];
     [self.navigationItem setRightBarButtonItem:rightItem];
     
 }
@@ -145,7 +145,7 @@ CGFloat imageItemWidth;
 
 - (void)onPhotoTypeClick{
     QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择图片尺寸" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清 (%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]],
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择图片尺寸" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清 (%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]],
                             [NSString stringWithFormat:@"原图 (%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]],nil];
     [sheet showInView:self.view];
 }
