@@ -31,7 +31,7 @@ static const NSInteger labelTag = 29314;
 }
 
 - (void)setUI{
-    NSArray * array = [NSArray arrayWithObjects:@"我的帖子",@"我的回复",@"@提到我", nil];
+    NSArray * array = [NSArray arrayWithObjects:[NSBundle qim_localizedStringForKey:@"My Moments"],[NSBundle qim_localizedStringForKey:@"My Replies"],[NSBundle qim_localizedStringForKey:@"Mentioned Me"], nil];
     for(int i = 0;i<3;i++)
     {
         UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake([UIScreen mainScreen].qim_rightWidth/3 * i, 0, [UIScreen mainScreen].qim_rightWidth/3, self.height)];

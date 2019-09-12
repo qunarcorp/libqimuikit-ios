@@ -61,7 +61,7 @@
         [_subViewBgView addSubview:_textView];
         
         _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+        [_cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
         [_cancelBtn setTitleColor:[UIColor qunarBlueColor] forState:UIControlStateNormal];
         [_cancelBtn addTarget:self action:@selector(cancelBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [_subViewBgView addSubview:_cancelBtn];

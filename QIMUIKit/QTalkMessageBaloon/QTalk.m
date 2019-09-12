@@ -57,7 +57,7 @@ static QTalk *__global_qtalk = nil;
     [[QIMKit sharedInstance] setMsgShowText:@"[文本]" ForMessageType:QIMMessageType_Text];
     // 图片
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSingleChatImageCell" ForMessageType:QIMMessageType_Image];
-    [[QIMKit sharedInstance] setMsgShowText:@"[图片]" ForMessageType:QIMMessageType_Image];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"[Photo]"] ForMessageType:QIMMessageType_Image];
     [[QIMKit sharedInstance] setMsgShowText:@"[表情]" ForMessageType:QIMMessageType_ImageNew];
 
     // 语音
@@ -65,7 +65,7 @@ static QTalk *__global_qtalk = nil;
     [[QIMKit sharedInstance] setMsgShowText:@"[语音]" ForMessageType:QIMMessageType_Voice];
     // 文件
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMFileCell" ForMessageType:QIMMessageType_File];
-    [[QIMKit sharedInstance] setMsgShowText:@"[文件]" ForMessageType:QIMMessageType_File];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"[File]"] ForMessageType:QIMMessageType_File];
     // 时间戳
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSingleChatTimestampCell" ForMessageType:QIMMessageType_Time];
     // Topic

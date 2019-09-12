@@ -91,7 +91,7 @@ static const NSInteger searchMinCharacterCount = 2;
 - (UILabel *)searchPlaceHolderLabel {
     if (!_searchPlaceHolderLabel) {
         _searchPlaceHolderLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        NSString *placeHolderStr = @"支持“姓名”或“关键词”搜索";
+        NSString *placeHolderStr = [NSBundle qim_localizedStringForKey:@"Allows Searching by “Names” or “Keywords”"];
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:placeHolderStr];
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         // 设置文字居中
@@ -169,7 +169,7 @@ static const NSInteger searchMinCharacterCount = 2;
     UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [cancelBtn addTarget:self action:@selector(cancelSearch:) forControlEvents:UIControlEventTouchUpInside];
     [cancelBtn setBackgroundColor:[UIColor whiteColor]];
-    [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+    [cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
     [cancelBtn setTitleColor:[UIColor qim_colorWithHex:0x666666] forState:UIControlStateNormal];
     [cancelBtn.titleLabel setFont:[UIFont systemFontOfSize:17]];
     [searchBgView addSubview:cancelBtn];
@@ -181,7 +181,7 @@ static const NSInteger searchMinCharacterCount = 2;
     }];
     
     QIMWorkFeedSearchField *textField = [[QIMWorkFeedSearchField alloc] initWithFrame:CGRectZero];
-    textField.placeholder = @"搜索";
+    textField.placeholder = [NSBundle qim_localizedStringForKey:@"Search"];//@"搜索";
     textField.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
     textField.font = [UIFont systemFontOfSize:17];
     textField.layer.cornerRadius = 4.0f;

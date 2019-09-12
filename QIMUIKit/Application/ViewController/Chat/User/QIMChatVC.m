@@ -433,7 +433,7 @@
         _forwardNavTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, self.navigationController.navigationBar.bounds.size.height)];
         _forwardNavTitleView.backgroundColor = [UIColor whiteColor];
         UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
         [cancelBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         [cancelBtn addTarget:self action:@selector(cancelForwardHandle:) forControlEvents:UIControlEventTouchUpInside];
         cancelBtn.frame = CGRectMake(20, 0, 50, _forwardNavTitleView.height);
@@ -454,7 +454,7 @@
     if (!_forwardBtn) {
         _forwardBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _forwardBtn.frame = CGRectMake(0, self.view.height - 50 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], self.view.width, 50);
-        [_forwardBtn setTitle:@"转发" forState:UIControlStateNormal];
+        [_forwardBtn setTitle:[NSBundle qim_localizedStringForKey:@"Forward"] forState:UIControlStateNormal];
         [_forwardBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_forwardBtn addTarget:self action:@selector(forwardBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [_forwardBtn setEnabled:NO];
@@ -569,7 +569,7 @@
                                                     }];
             
         }];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *_Nonnull action) {
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleCancel handler:^(UIAlertAction *_Nonnull action) {
             
         }];
         
@@ -579,7 +579,7 @@
         [self presentViewController:alertController animated:YES completion:nil];
         
     } else {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:[NSBundle qim_localizedStringForKey:@"One-by-One Forward"], [NSBundle qim_localizedStringForKey:@"Combine and Forward"], nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"One-by-One Forward"], [NSBundle qim_localizedStringForKey:@"Combine and Forward"], nil];
         alertView.tag = kForwardMsgAlertViewTag;
         [alertView show];
     }
@@ -1116,7 +1116,7 @@
     UIPreviewAction *p1 = [UIPreviewAction actionWithTitle:title style:UIPreviewActionStyleDefault handler:^(UIPreviewAction *_Nonnull action, UIViewController *_Nonnull previewViewController) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kChatSessionStick object:self.chatInfoDict];
     }];
-    UIPreviewAction *p3 = [UIPreviewAction actionWithTitle:@"删除" style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction *_Nonnull action, UIViewController *_Nonnull previewViewController) {
+    UIPreviewAction *p3 = [UIPreviewAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Delete"] style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction *_Nonnull action, UIViewController *_Nonnull previewViewController) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kChatSessionDelete object:self.chatInfoDict];
     }];
     return @[p1, p3];
@@ -1455,7 +1455,7 @@
 - (void)endChatSession {
     UIAlertController *endChatSessionAlertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"您确认结束本次服务？" preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         
     }];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -1772,7 +1772,7 @@
     [_joinShareLctView addSubview:contentLabel];
     
     UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+    [cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
     [cancelBtn setBackgroundColor:[UIColor qim_colorWithHex:0x53676f alpha:1]];
     [cancelBtn setClipsToBounds:YES];
     [cancelBtn.layer setCornerRadius:2.5];
@@ -2078,7 +2078,7 @@
 
 - (void)msgReSendNotificationHandle:(NSNotification *)notify {
     _resendMsg = notify.object;
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"删除", @"重发", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], @"重发", nil];
     
     alertView.tag = kReSendMsgAlertViewTag;
     alertView.delegate = self;

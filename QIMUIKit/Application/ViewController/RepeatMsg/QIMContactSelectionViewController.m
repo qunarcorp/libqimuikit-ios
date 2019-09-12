@@ -120,7 +120,7 @@
 -(void)initNavBar {
     UIBarButtonItem *leftBarButtonBar = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(goBack:)];
     [[self navigationItem] setLeftBarButtonItem:leftBarButtonBar];
-    [self.navigationItem setTitle:@"发送到"];
+    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"Forward to"]];
 }
 
 -(void)initTableView {
@@ -179,7 +179,7 @@
     
     
     UILabel *groupTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.width - 60, 54)];
-    groupTitleLabel.text = @"选择一个群聊";
+    groupTitleLabel.text = [NSBundle qim_localizedStringForKey:@"Select a Group"];
     groupTitleLabel.textColor = [UIColor qtalkTextBlackColor];
     [groupView addSubview:groupTitleLabel];
     [headerBG addSubview:groupView];
@@ -199,7 +199,7 @@
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 20)];
     [titleLabel setBackgroundColor:[UIColor clearColor]];
     [titleLabel setTextColor:[UIColor blackColor]];
-    [titleLabel setText:@"最近聊天"];
+    [titleLabel setText:[NSBundle qim_localizedStringForKey:@"Latest Chats"]];
     [titleLabel setFont:[UIFont systemFontOfSize:14]];
     [titleView addSubview:titleLabel];
     

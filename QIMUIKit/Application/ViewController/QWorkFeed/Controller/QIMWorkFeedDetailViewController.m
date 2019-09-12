@@ -339,7 +339,7 @@
                 [indexSet addIndex:1];
                 __weak __typeof(self) weakSelf = self;
                 LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
-                                                         cancelButtonTitle:@"取消"
+                                                         cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"]
                                                                    clicked:^(LCActionSheet * _Nonnull actionSheet, NSInteger buttonIndex) {
                                                                        __typeof(self) strongSelf = weakSelf;
                                                                        if (!strongSelf) {
@@ -366,7 +366,7 @@
                                                                            [strongSelf beginAddCommentWithComment:commentModel];
                                                                        }
                                                                    }
-                                                     otherButtonTitleArray:@[@"删除", @"回复"]];
+                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], @"回复"]];
                 actionSheet.destructiveButtonIndexSet = indexSet;
                 actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
                 [actionSheet show];
@@ -409,7 +409,7 @@
                 [indexSet addIndex:1];
                 __weak __typeof(self) weakSelf = self;
                 LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
-                                                         cancelButtonTitle:@"取消"
+                                                         cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"]
                                                                    clicked:^(LCActionSheet * _Nonnull actionSheet, NSInteger buttonIndex) {
                                                                        __typeof(self) strongSelf = weakSelf;
                                                                        if (!strongSelf) {
@@ -430,7 +430,7 @@
                                                                            [strongSelf beginAddCommentWithComment:commentModel];
                                                                        }
                                                                    }
-                                                     otherButtonTitleArray:@[@"删除", @"回复"]];
+                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], @"回复"]];
                 actionSheet.destructiveButtonIndexSet = indexSet;
                 actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
                 [actionSheet show];

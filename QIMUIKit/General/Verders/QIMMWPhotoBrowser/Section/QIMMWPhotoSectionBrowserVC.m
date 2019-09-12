@@ -98,7 +98,7 @@
         _chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _chooseBtn.frame = CGRectMake(0, 0, 45, 22);
         [_chooseBtn setTitle:@"选择" forState:UIControlStateNormal];
-        [_chooseBtn setTitle:@"取消" forState:UIControlStateSelected];
+        [_chooseBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateSelected];
         [_chooseBtn setTitleColor:[UIColor qunarTextBlackColor] forState:UIControlStateNormal];
         [_chooseBtn setTitleColor:[UIColor qunarTextBlackColor] forState:UIControlStateSelected];
         [_chooseBtn addTarget:self action:@selector(chooseMedia:) forControlEvents:UIControlEventTouchUpInside];

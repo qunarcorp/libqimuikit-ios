@@ -207,7 +207,7 @@
 
 - (void)onMoreClick:(UIButton *)sender{
 //    @"举报",@"清空内容",@"推荐给朋友",
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"不再关注", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:@"不再关注", nil];
     [sheet setDestructiveButtonIndex:0];
     [sheet showInView:self.view];
     
