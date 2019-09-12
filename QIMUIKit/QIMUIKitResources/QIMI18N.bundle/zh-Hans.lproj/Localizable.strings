@@ -391,3 +391,229 @@
 
 "QTalk Privacy NotificationCenter Message" = "你现在无法收到新消息通知。请到系统[设置]->[通知]->[QTalk]中开启";
 "QCalk Privacy NotificationCenter Message" = "你现在无法收到新消息通知。请到系统[设置]->[通知]->[QChat]中开启";
+
+
+//消息/ Chat
+"Connecting…" = "连接中...";
+
+"Loading…" = "接受中...";
+
+"Chat" = "消息";
+
+"Search" = "搜索";
+
+"ALL" = "ALL";
+
+"Contacts" = "联系人";
+
+"Groups" = "群组";
+
+"Chat Histories" = "聊天记录";
+
+"Files" = "文件";
+
+"Search Contacts, Groups, and Chat Histories; Allows Searching by Keywords or IDs" = "搜索联系人，群组，聊天记录，支持关键词，ID搜索";
+
+"System Messages" = "系统消息";
+
+"[Photo]" = "[图片]";
+
+"[File]" = "[文件]";
+
+"Copy" = "复制文字";
+
+"Add to Stickers" = "添加为表情";
+
+"Quote" = "引用";
+
+"Forward" = "转发";
+
+"Forward to" = "发送到";
+
+"Select a Group" = "选择一个群聊";
+
+"Delete" = "删除";
+
+"More" = "更多";
+
+"Group Name" = "群聊名称";
+
+"Group QR Code" = "群二维码";
+
+"Group Notice" = "群公告";
+
+"Group Messages Notification" = "群消息提醒";
+
+"Sticky on Top" = "置顶聊天";
+
+"Search Chat History" = "查找聊天记录";
+
+"Clear Chat History" = "清空聊天记录";
+
+"Scan"="扫一扫";
+
+"Album" = "相册";
+
+"Mark All as Read" = "一键已读";
+
+"Create Group" = "创建群组";
+
+"Unread Messages" = "未读消息";
+
+"Light" = "开灯";
+
+"Album" = "相册";
+
+//联系人/ Contacts
+
+"Starred" = "星标联系人";
+"My Groups"="我的群组";
+"External Contacts"="外部联系人";
+"Add from…"="从…添加";
+
+//发现/ Discover
+"Approval"="待我审批";
+"Pending"="待审批";
+"Approved"="已审批";
+"All Types"="全部类型";
+"All Dates"="全部时间";
+"All Publishers"="全部发布人";
+"Holidays"="休假";
+"Make-up Punching in"="补打卡";
+"Overtime Pay"="加班费";
+"Cancel Holidays"="撤销休假";
+"Work on Nonworkdays"="非工作日出勤";
+"Offer"="offer";
+
+"Regularization of Employees"="转正";
+"Demission"="离职";
+"Business Trip"="出差/公出";
+"Promotion"="员工晋升";
+"Contract Extension"="合同续签";
+"Handover"="离职交接";
+"Transition to New Job"="调动转岗";
+"Account"="账号";
+"Change"="变更";
+"SRC"="SRC";
+"Auto Posting"="自助发布";
+"Physical Machine"="实体机";
+"IT Workbench"="IT工作台";
+"Quality Test"="质量检测";
+"Portal"="Portal";
+"Qunar OA"="Qunar OA";
+"Management System of Accommodation Resources"="大住宿资源管理系统";
+"Safety Work Order"="安全工单";
+"MPortal"="MPortal";
+"Authority System of Air Tickets Data"="机票数据权限系统";
+"Reset"="重置";
+"Confirm"="确定";
+"Today"="今天";
+"7 Days"="7天";
+"1 Month"="一月";
+"2 Months"="两月";
+"All"="所有人员";
+"Select From Friend List"="从朋友列表中选择";
+"Select From Group List"="从群组列表中选择";
+"Done"="完成";
+"Approval Center"="审批中心";
+"IT Workbench"="IT工作台";
+"Continuous Integration"="CM质量检测";
+"Attendance"="考勤";
+"Today"="今天";
+"7 Days"="7天";
+"Current Month"="当月";
+"Last Month"="上月";
+"Past 2 Months"="上两月";
+"Abnormal"="异常";
+"Normal"="正常";
+"Longer than 11.5h"="大于11.5h";
+"Labor Hour"="工时";
+"Monday"="星期一";
+"Tuesday"="星期二";
+"Wednesday"="星期三";
+"Thursday"="星期四";
+"Friday"="星期五";
+"Saturday"="星期六";
+"Sunday"="星期日";
+"New OA"="新OA";
+"Reimbursement"="费用报销";
+"Pay for Procurement"="采购付款";
+"Apply for Procurement"="采购申请";
+"Select All"="全选";
+"Approve"="通过";
+"Refuse"="拒绝";
+"HR"="HR相关";
+"My Holidays"="我的假期";
+"Shift Holidays"="调休假";
+"Annual Leave"="年假";
+"Full-pay Sick Leave"="全薪病假";
+"Partial-pay Sick Leave"="部分带薪病假";
+"Type"="请假类型";
+"Start Date"="开始日期";
+"End Date"="结束日期";
+"Start from a Half of Day"="开始日半天";
+"Number of Days"="天数";
+"Days Remaining"="余额";
+"Attachments"="附件";
+"Please select attachments"="请选择附件";
+"Please fill in the reason for leaving (mandatory)"="请填写请假原因（必填）";
+"Submit"="提交";
+"Efficiency/Tools"="效率/工具";
+"Meeting Room Reservation"="会议室预定";
+"Create a Schedule Now!"="还没有行程，快去创建行程吧！";
+"Tax File Number"="税号";
+"Wiki"="Wiki";
+"Notebook"="笔记本";
+"Jira Tasks"="jira任务";
+"My Tasks"="我的任务";
+"Taking a Taxi"="打车";
+"Product Packaging"="NTS产品包装";
+"Material Library"="骆驼素材库";
+"More"="更多应用";
+"Temporary Token"="临时Token";
+"Apply for WiFi"="Wifi申请";
+"Alarming Timeline"="报警时间线";
+"Events"="事件页";
+"Alarming Histories"="报警历史";
+"Select All"="全选";
+"In Progress"="持续中";
+"Critical"="Critical";
+"Called"="打过电话";
+"Business Alarm"="业务报警";
+"Basic Alarm"="基础报警";
+"Qtalk Notification"="Qtalk通知";
+"Message Notification"="短信通知";
+"Phone Notification"="电话通知";
+"Account Status"="账号状态";
+"Account Locked Status"="账号锁定状态";
+"Latest Login Time"="最近登陆时间";
+"Latest Time of Revising Password"="最近修改密码时间";
+"Latest Time of Wrong Password"="最近错误密码时间";
+"Number of Times of Wrong Password"="最近错误密码次数";
+"Emails"="邮件组";
+"Account"="账号";
+"Guide for Printing"="打印教程";
+"Guide for VPN"="VPN教程";
+"Settings"="设置";
+"Application Store"="应用商店";
+
+//朋友圈/ Moments
+"…min(s) ago"="…分钟前";
+"…hr(s) ago"="…小时前";
+"…day(s) ago"="…天前";
+"Search"="搜索";
+"Cancel"="取消";
+"Allows Searching by “Names” or “Keywords”"="支持“姓名”或“关键词”搜索";
+"My Moments"="我的朋友圈";
+"My Moments"="我的帖子";
+"My Replies"="我的回复";
+"Mentioned Me"="@提到我";
+"Share Moments"="发布动态";
+"Post"="发布";
+
+
+
+
+
+
+

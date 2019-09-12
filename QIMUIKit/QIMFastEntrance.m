@@ -69,7 +69,6 @@
 #import "QIMWorkFeedSearchViewController.h"
 #import "QIMWorkMomentPushViewController.h"
 #import "QIMWorkFeedMYCirrleViewController.h"
-
 @interface QIMFastEntrance () <MFMailComposeViewControllerDelegate>
 
 @end
@@ -698,11 +697,11 @@ static QIMFastEntrance *_sharedInstance = nil;
             } else if ([jid hasPrefix:@"rbt-zhongbao"]) {
                 [chatSystemVC setTitle:@"抢单"];
             } else {
-                [chatSystemVC setTitle:@"系统消息"];
+                [chatSystemVC setTitle:[NSBundle qim_localizedStringForKey:@"System Messages"]];//@"系统消息"];
             }
         } else {
 
-            [chatSystemVC setTitle:@"系统消息"];
+            [chatSystemVC setTitle:[NSBundle qim_localizedStringForKey:@"System Messages"]];//@"系统消息"];
         }
         return chatSystemVC;
     }
@@ -1293,6 +1292,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         [navVC pushViewController:qrVC animated:YES];
     });
+    
+    
 }
 
 + (void)signOutWithNoPush {

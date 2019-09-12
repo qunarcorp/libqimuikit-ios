@@ -468,7 +468,7 @@ static NSString *totalDurationStr = nil;
     NSArray *buttonTitles = @[@"发送给朋友", @"分享到驼圈", @"保存视频"];
     __weak __typeof(self) weakSelf = self;
     LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
-                                             cancelButtonTitle:@"取消"
+                                             cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"]
                                                        clicked:^(LCActionSheet * _Nonnull actionSheet, NSInteger buttonIndex) {
                                                            __typeof(self) strongSelf = weakSelf;
                                                            if (!strongSelf) {

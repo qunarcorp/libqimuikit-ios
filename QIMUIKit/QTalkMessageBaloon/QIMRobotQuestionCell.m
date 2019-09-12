@@ -78,7 +78,7 @@
     if (infoDic == nil && jsonStr.length) {
         infoDic = @{@"content":jsonStr?jsonStr:@""};
     }
-    if (infoDic.count) { 
+    if (infoDic.count) {
         //消息标题
         NSString * content = [infoDic objectForKey:@"content"];
         if (content.length) {
@@ -279,7 +279,7 @@
             }
             NSUInteger index = 0;
             _listBGView.hidden = NO;
-      
+            
             for (NSDictionary * item in items) {
                 if ([item objectForKey:@"text"]) {
                     float actionBtnHeight = [[item objectForKey:@"text"] qim_sizeWithFontCompatible:kIMChatContentFont constrainedToSize:CGSizeMake(backWidth, MAXFLOAT) lineBreakMode:NSLineBreakByCharWrapping].height + 5;
@@ -345,32 +345,32 @@
         _listBGView.frame = CGRectMake(kIMChatContentLeft, 10, backWidth, originY - 2.5);
         _listBGView.backgroundColor = [UIColor whiteColor];
         
-//        if (_textContainer) {
-//            UIView *line = [[UIView alloc] initWithFrame:CGRectMake(kIMChatContentLeft - 4.5, 0, backWidth - kIMChatContentLeft - kIMChatContentRight, 0.5)];
-//            line.backgroundColor = [UIColor qim_colorWithHex:0xe7e7e7];
-//            [_listBGView addSubview:line];
-//        }
-//        backHeight = _listBGView.bottom;
+        //        if (_textContainer) {
+        //            UIView *line = [[UIView alloc] initWithFrame:CGRectMake(kIMChatContentLeft - 4.5, 0, backWidth - kIMChatContentLeft - kIMChatContentRight, 0.5)];
+        //            line.backgroundColor = [UIColor qim_colorWithHex:0xe7e7e7];
+        //            [_listBGView addSubview:line];
+        //        }
+        //        backHeight = _listBGView.bottom;
     }
     _bgView.frame = CGRectMake(0, 0, screenW, originY + 5);
-//    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
+    //    [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     
     //hints
-//    if (_hintContainer) {
-//
-//        _hintLabel.delegate = self;
-//
-//        _hintLabel.textContainer = _hintContainer;
-//
-//        float spaceToSide = ([UIScreen mainScreen].bounds.size.width - kSpaceToSide - _hintLabel.textContainer.textWidth) / 2;
-//
-//        [_hintLabel setFrameWithOrign:CGPointMake(spaceToSide, _bgView.bottom + 10) Width:_hintLabel.textContainer.textWidth];
-//        _hintLabel.hidden = NO;
-//    } else{
-//        [_hintLabel setHidden:YES];
-//    }
-//    [self.backView setBubbleBgColor:[UIColor whiteColor]];
-//    [super refreshUI];
+    //    if (_hintContainer) {
+    //
+    //        _hintLabel.delegate = self;
+    //
+    //        _hintLabel.textContainer = _hintContainer;
+    //
+    //        float spaceToSide = ([UIScreen mainScreen].bounds.size.width - kSpaceToSide - _hintLabel.textContainer.textWidth) / 2;
+    //
+    //        [_hintLabel setFrameWithOrign:CGPointMake(spaceToSide, _bgView.bottom + 10) Width:_hintLabel.textContainer.textWidth];
+    //        _hintLabel.hidden = NO;
+    //    } else{
+    //        [_hintLabel setHidden:YES];
+    //    }
+    //    [self.backView setBubbleBgColor:[UIColor whiteColor]];
+    //    [super refreshUI];
 }
 
 - (void)requestHttpWithRequestUrl:(NSString *)urlStr {
@@ -409,7 +409,7 @@
             
             items = [infoDic[@"listArea"] objectForKey:@"items"];
             initSize = [infoDic[@"listArea"][@"style"][@"defSize"] intValue];
-//            initSize = [infoDic[@"listArea"][@"stype"][@"defSize"] intValue];
+            //            initSize = [infoDic[@"listArea"][@"stype"][@"defSize"] intValue];
         }
     }
     BOOL isUnfold = NO;
@@ -456,16 +456,16 @@
         [QIMCustomPopManager showPopVC:popVc withRootVC:[[UIApplication sharedApplication] visibleViewController]];
     }
     /*
-    else if (index == maxIndex){
-        //折叠 展开
-        NSMutableDictionary * newIsUnfoldDic = [NSMutableDictionary dictionaryWithDictionary:isUnfoldDic];
-        [newIsUnfoldDic setObject:@(!isUnfold) forKey:self.message.messageId];
-        [[QIMMessageCellCache sharedInstance] setObject:newIsUnfoldDic forKey:kMessageIsUnfold];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(refreshRobotQuestionMessageCell:)]) {
-            [self.delegate refreshRobotQuestionMessageCell:self];
-        }
-    }
-    */
+     else if (index == maxIndex){
+     //折叠 展开
+     NSMutableDictionary * newIsUnfoldDic = [NSMutableDictionary dictionaryWithDictionary:isUnfoldDic];
+     [newIsUnfoldDic setObject:@(!isUnfold) forKey:self.message.messageId];
+     [[QIMMessageCellCache sharedInstance] setObject:newIsUnfoldDic forKey:kMessageIsUnfold];
+     if (self.delegate && [self.delegate respondsToSelector:@selector(refreshRobotQuestionMessageCell:)]) {
+     [self.delegate refreshRobotQuestionMessageCell:self];
+     }
+     }
+     */
 }
 
 - (NSArray *)showMenuActionTypeList {

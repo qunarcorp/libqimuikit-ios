@@ -129,7 +129,7 @@
                     [alertView show];
                 }
             }];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDestructive handler:nil];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleDestructive handler:nil];
             [sheetVc addAction:showHeaderAction];
             [sheetVc addAction:pickerPhotoAction];
             [sheetVc addAction:takePhoto];
