@@ -430,7 +430,10 @@ static const int companyTag = 10001;
         NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
         QIMVerboseLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
         NSString *navTitle = [oldNavConfigUrlDict objectForKey:@"title"];
-        CGSize titleSize = [navTitle sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(MAXFLOAT, 16)];
+        CGSize titleSize = CGSizeMake(0, 0);
+        if (navTitle.length > 0) {
+           titleSize = [navTitle sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(MAXFLOAT, 16)];
+        }
         [self.companyShowLabel setText:navTitle];
         [self.view addSubview:self.companyShowLabel];
         [self.companyShowLabel mas_makeConstraints:^(MASConstraintMaker *make) {
