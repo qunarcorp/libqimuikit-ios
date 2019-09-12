@@ -1981,31 +1981,30 @@ static CGPoint tableOffsetPoint;
     
     if (self.fixedImageArray.count > 0) {
         NSString *imageUrl = [self.fixedImageArray[0] absoluteString];
-        NSURL *url = [NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
+        if ([imageUrl containsString:@"LocalFileName"]) {
+            imageUrl = [[imageUrl componentsSeparatedByString:@"LocalFileName="] lastObject];
+            imageUrl = [[QIMImageManager sharedInstance] defaultCachePathForKey:imageUrl];
+            NSURL *url = [NSURL fileURLWithPath:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
+        } else {
+            NSURL *url = [NSURL URLWithString:[imageUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
+        }
     }
     
     if (index > _imagesArr.count) {
         return nil;
     }
     
-    NSString *imageHttpUrl;
     QIMImageStorage *storage = [_imagesArr objectAtIndex:index];
-    imageHttpUrl = storage.imageURL.absoluteString;
-//    NSData *imageData = [[QIMKit sharedInstance] getFileDataFromUrl:imageHttpUrl forCacheType:QIMFileCacheTypeColoction needUpdate:NO];
+    NSString *imageHttpUrl = storage.imageURL.absoluteString;
     
     if ([imageHttpUrl containsString:@"LocalFileName"]) {
         imageHttpUrl = [[imageHttpUrl componentsSeparatedByString:@"LocalFileName="] lastObject];
         imageHttpUrl = [[QIMImageManager sharedInstance] defaultCachePathForKey:imageHttpUrl];
-    }
-    NSData *imageData = [NSData dataWithContentsOfFile:imageHttpUrl];
-    if (imageData.length > 0) {
-        
-        QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithImage:[UIImage qim_animatedImageWithAnimatedGIFData:imageData]];
-        photo.photoData = imageData;
-        return photo;
+        NSURL *url = [NSURL fileURLWithPath:[imageHttpUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
     } else {
-        
         if (![imageHttpUrl containsString:@"platform"]) {
             imageHttpUrl = [imageHttpUrl stringByAppendingString:@"&platform=touch"];
         }
@@ -2498,7 +2497,7 @@ static CGPoint tableOffsetPoint;
     CGFloat height = CGImageGetHeight(image.CGImage);
     
     NSString *msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", imagePath, width, height];
-    QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:ChatType_GroupChat msgType:QIMMessageType_ImageNew];
+    QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:ChatType_GroupChat msgType:QIMMessageType_Text];
     
     [self.messageManager.dataSource addObject:msg];
     [self updateGroupUsersHeadImgForMsgs:@[msg]];

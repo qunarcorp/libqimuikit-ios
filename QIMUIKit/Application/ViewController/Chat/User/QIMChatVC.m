@@ -2887,23 +2887,17 @@ static CGPoint tableOffsetPoint;
         return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
     }
     NSArray *tempImageArr = _imagesArr;
-    if (index > tempImageArr.count)
+    if (index > tempImageArr.count) {
         return nil;
+    }
     
-    NSString *imageHttpUrl;
     QIMImageStorage *storage = [tempImageArr objectAtIndex:index];
-    imageHttpUrl = storage.imageURL.absoluteString;
-//    NSData *imageData = [[QIMKit sharedInstance] getFileDataFromUrl:imageHttpUrl forCacheType:QIMFileCacheTypeColoction needUpdate:NO];
-//    imageData = nil;
+    NSString *imageHttpUrl = storage.imageURL.absoluteString;
     if ([imageHttpUrl containsString:@"LocalFileName"]) {
         imageHttpUrl = [[imageHttpUrl componentsSeparatedByString:@"LocalFileName="] lastObject];
         imageHttpUrl = [[QIMImageManager sharedInstance] defaultCachePathForKey:imageHttpUrl];
-    }
-    NSData *imageData = [NSData dataWithContentsOfFile:imageHttpUrl];
-    if (imageData.length) {
-        QIMMWPhoto *photo = [[QIMMWPhoto alloc] initWithImage:[UIImage qim_animatedImageWithAnimatedGIFData:imageData]];
-        photo.photoData = imageData;
-        return photo;
+        NSURL *url = [NSURL fileURLWithPath:[imageHttpUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
     } else {
         if (![imageHttpUrl containsString:@"platform"]) {
             imageHttpUrl = [imageHttpUrl stringByAppendingString:@"&platform=touch"];
@@ -3234,10 +3228,10 @@ static CGPoint tableOffsetPoint;
     NSString *msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", imagePath, width, height];
     QIMMessageModel *msg = nil;
     if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
-        msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:QIMMessageType_ImageNew forMsgId:nil willSave:YES];
+        msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:QIMMessageType_Text forMsgId:nil willSave:YES];
     } else {
         QIMVerboseLog(@"普通图片消息");
-        msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:ChatType_SingleChat msgType:QIMMessageType_ImageNew];
+        msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:ChatType_SingleChat msgType:QIMMessageType_Text];
     }
     
     [self.messageManager.dataSource addObject:msg];
