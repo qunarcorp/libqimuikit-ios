@@ -42,7 +42,7 @@
         _addNavServerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _addNavServerBtn.frame = CGRectMake(45, [UIScreen mainScreen].bounds.size.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 49 - 29, self.view.width - 90, 48);
         _addNavServerBtn.backgroundColor = [UIColor whiteColor];
-        [_addNavServerBtn setTitle:@"新增配置" forState:UIControlStateNormal];
+        [_addNavServerBtn setTitle:[NSBundle qim_localizedStringForKey:@"nav_new_Configuration"] forState:UIControlStateNormal];
         [_addNavServerBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         [_addNavServerBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         _addNavServerBtn.layer.borderColor = [UIColor qim_colorWithHex:0x00CABE].CGColor;
@@ -58,7 +58,7 @@
 - (UIBarButtonItem *)cancelItem {
     
     if (!_cancelItem) {
-        _cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+        _cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     }
     return _cancelItem;
 }
@@ -67,10 +67,10 @@
     
     self.title = [[QIMKit sharedInstance] qimNav_Debug] ? [NSBundle qim_localizedStringForKey:@"nav_title_debug_configManager"] : [NSBundle qim_localizedStringForKey:@"nav_title_configManager"];
     self.view.backgroundColor = [UIColor whiteColor];
-    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     self.navigationItem.leftBarButtonItem = cancelItem;
     
-    UIBarButtonItem *feedBackItem = [[UIBarButtonItem alloc] initWithTitle:@"确定" style:UIBarButtonItemStylePlain target:self action:@selector(onSave)];
+    UIBarButtonItem *feedBackItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIBarButtonItemStylePlain target:self action:@selector(onSave)];
     self.navigationItem.rightBarButtonItem = feedBackItem;
     
     [self.view addSubview:self.tableView];
@@ -80,7 +80,7 @@
     
     if (!_tableView) {
         
-        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 49 - 35) style:UITableViewStylePlain];
         _tableView.estimatedRowHeight = 0;
         _tableView.estimatedSectionHeaderHeight = 0;
         _tableView.estimatedSectionFooterHeight = 0;
@@ -164,7 +164,7 @@
     } else {
         message = @"是否要切换到测试环境？";
     }
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:message delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:message delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"ok"], nil];
     [alertView setTag:kAlertViewDebugTag];
     [alertView show];
 }
@@ -199,9 +199,9 @@
                     });
                 } else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
-                                                                        message:@"无可用的导航信息"
+                                                                        message:[NSBundle qim_localizedStringForKey:@"nav_no_available_Navigation"]
                                                                        delegate:nil
-                                                              cancelButtonTitle:@"确定"
+                                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"]
                                                               otherButtonTitles:nil];
                     [alertView show];
                 }
@@ -209,7 +209,7 @@
         });
     } else {
         [MBProgressHUD hideHUDForView:self.view animated:YES];
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"请输入有效的Nav地址!" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSBundle qim_localizedStringForKey:@"nav_valid_promot"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"] otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -232,7 +232,12 @@
 #pragma mark - ButtonItem Action
 
 - (void)onCancel{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    UIViewController *vc =  self;
+    while (vc.presentingViewController) {
+        vc = vc.presentingViewController;
+    }
+    [vc dismissViewControllerAnimated:YES completion:nil];
+//    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)onFeedBack {

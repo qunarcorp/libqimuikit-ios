@@ -10,10 +10,9 @@
 #import "QIMworkFeedView.h"
 #if __has_include("QIMAutoTracker.h")
 #import "QIMAutoTracker.h"
+#endif
 #import "QIMWorkFeedMessageView.h"
 #import "UIScreen+QIMIpad.h"
-#endif
-
 #import "QIMKit+QIMWorkFeed.h"
 #import "QIMWorkOwnerCamelTabBar.h"
 #import "QIMWorkNoticeMessageModel.h"

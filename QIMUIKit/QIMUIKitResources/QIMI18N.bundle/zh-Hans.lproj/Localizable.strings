@@ -1,10 +1,10 @@
-/* 
-  Localizable.strings
-  qunarChatIphone
-
-  Created by admin on 16/1/21.
-
-*/
+/*
+ Localizable.strings
+ qunarChatIphone
+ 
+ Created by admin on 16/1/21.
+ 
+ */
 //
 "ok" = "确定";
 "cancel" = "取消";
@@ -258,12 +258,31 @@
 "login_get_code" = "获取";
 "login_code" = "验证码";
 "Login_name" = "用户名";
+"Login_password" = "密码";
 "login_agree" = "同意";
 "login_privacy_policy" = "《使用条款和隐私政策》";
 "login_input_code" = "验证码";
 "login_waiting" = "请您耐心等待, 登录中...";
 "login_get_code_tips" = "验证码获取成功，请输入手机短信接收到的验证码进行登录。"; 
 "relogin_checkNetWork" = "   加载登录页面失败， \n 请确保您已经开启Wi-Fi或移动数据，并点击确认按钮重新加载页面";
+
+"login_sign_Up" = "注册";
+"login_forget_password" = "忘记密码";
+"not_have_company" = "还没有公司？创建一个";
+"nav_Set_Service_Address" = "设置服务地址";
+"company_domain" = "请输入您的公司域名，如qunar.com";
+"company_name" = "请输入导航服务器名称或公司名";
+"Navigation_Name" = "导航名";
+"nav_scan_Configure_Navigation" = "扫码配置导航";
+"Configure_Navigation" = "手动配置导航";
+"Configure_Navigation_Manually" = "您也可以手动输入导航";
+"nav_new_Configuration" = "新增配置";
+"nav_change_Navigation" = "修改";
+"nav_delete_Navigation" = "删除";
+"nav_required_domain_name" = "域名/服务器地址（必填）";
+"nav_valid_promot" = "请输入有效的Nav地址";
+"nav_new_Navigation" = "新增导航";
+"nav_no_available_Navigation" = "无可用的导航信息";
 
 // User Privacy Settings
 "privacy_settings" = "隐私设置";
