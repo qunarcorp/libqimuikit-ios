@@ -158,7 +158,7 @@ static QIMAuthorizationManager *instance = nil;
 //        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:openUrl]];
     }]];
     
-//    [alertController addAction: [UIAlertAction actionWithTitle: @"取消"
+//    [alertController addAction: [UIAlertAction actionWithTitle: [NSBundle qim_localizedStringForKey:@"Cancel"]
 //                                                         style: UIAlertActionStyleCancel
 //                                                       handler: nil]];
     

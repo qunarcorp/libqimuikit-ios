@@ -69,7 +69,7 @@
     [super viewDidAppear:animated];
     
     if ([linkUrl length] > 0) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"是否更新" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消",nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"是否更新" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Cancel"],nil];
         [alertView show];
     }
     

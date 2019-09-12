@@ -1643,8 +1643,8 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 
                 LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
                                                                   delegate:self
-                                                         cancelButtonTitle:@"取消"
-                                                         otherButtonTitles: @"发送给朋友", @"添加为表情", @"保存图片", @"更多", nil];
+                                                         cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"]
+                                                         otherButtonTitles: @"发送给朋友", [NSBundle qim_localizedStringForKey:@"Add to Stickers"], @"保存图片", [NSBundle qim_localizedStringForKey:@"Delete"], nil];
                 self.activityViewController = nil;
                 [self hideControlsAfterDelay];
                 [self hideProgressHUD:YES];
@@ -1653,8 +1653,8 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 
                 LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
                                                                   delegate:self
-                                                         cancelButtonTitle:@"取消"
-                                                         otherButtonTitles:@"发送给朋友", @"添加为表情", @"保存图片", @"识别二维码", @"更多", nil];
+                                                         cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"]
+                                                         otherButtonTitles:@"发送给朋友", [NSBundle qim_localizedStringForKey:@"Add to Stickers"], @"保存图片", @"识别二维码", [NSBundle qim_localizedStringForKey:@"Delete"], nil];
                 self.activityViewController = nil;
                 [self hideControlsAfterDelay];
                 [self hideProgressHUD:YES];

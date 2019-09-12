@@ -126,7 +126,7 @@ typedef enum {
         [self alertViewWithNotebookOptionType:ENUM_Notebook_OptionTypeEdit evernoteModel:evernoteModel];
     }];
     
-    UITableViewRowAction *action1 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+    UITableViewRowAction *action1 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:[NSBundle qim_localizedStringForKey:@"Delete"] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         [self alertViewWithNotebookOptionType:ENUM_Notebook_OptionTypeDelete evernoteModel:evernoteModel];
     }];
     
@@ -141,7 +141,7 @@ typedef enum {
     alert.shouldDismissOnTapOutside = YES;
     alert.customViewColor = [UIColor qim_colorWithHex:0x22B573 alpha:1.0];
     
-    SCLButton *cancelBtn = [alert addButton:@"取消" actionBlock:^(void) {}];
+    SCLButton *cancelBtn = [alert addButton:[NSBundle qim_localizedStringForKey:@"Cancel"] actionBlock:^(void) {}];
     cancelBtn.buttonFormatBlock = ^NSDictionary* (void) {
         NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
         buttonConfig[@"backgroundColor"] = [UIColor redColor];
@@ -219,7 +219,7 @@ typedef enum {
             alert.shouldDismissOnTapOutside = YES;
             alert.customViewColor = [UIColor qim_colorWithHex:0x22B573 alpha:1.0];
             
-            SCLButton *cancelBtn = [alert addButton:@"取消" actionBlock:^(void) {}];
+            SCLButton *cancelBtn = [alert addButton:[NSBundle qim_localizedStringForKey:@"Cancel"] actionBlock:^(void) {}];
             cancelBtn.buttonFormatBlock = ^NSDictionary* (void) {
                 NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
                 buttonConfig[@"backgroundColor"] = [UIColor redColor];

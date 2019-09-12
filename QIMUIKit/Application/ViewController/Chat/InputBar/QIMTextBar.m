@@ -1800,7 +1800,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                          CGImageRelease(image);
                          
                          NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
-                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
+                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
                          [alertView setVideoOutPath:videoResultPath];
                          [alertView setThumbImage:thumb];
                          [alertView setFileSizeStr:fileSizeStr];
@@ -1812,7 +1812,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                      break;
                  case AVAssetExportSessionStatusFailed:
                      dispatch_async(dispatch_get_main_queue(), ^{
-                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩失败{%@}",exportSession.error] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩失败{%@}",exportSession.error] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
                          [alertView setPicker:picker];
                          [alertView show];
                      });
@@ -1846,7 +1846,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         picker.delegate = self;
         picker.title = @"选取照片";
         picker.customDoneButtonTitle = @"";
-        picker.customCancelButtonTitle = @"取消";
+        picker.customCancelButtonTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
         picker.customNavigationBarPrompt = nil;
         
         picker.colsInPortrait = 4;
@@ -1961,7 +1961,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                          CGImageRelease(image);
                          
                          NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
-                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
+                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
                          [alertView setVideoOutPath:videoResultPath];
                          [alertView setThumbImage:thumb];
                          [alertView setFileSizeStr:fileSizeStr];
@@ -1973,7 +1973,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                      break;
                  case AVAssetExportSessionStatusFailed:
                      dispatch_async(dispatch_get_main_queue(), ^{
-                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩失败{%@}",exportSession.error] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩失败{%@}",exportSession.error] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
                          [alertView setPicker:cameraVC];
                          [alertView show];
                      });

@@ -147,7 +147,7 @@
 
 - (void)onSearchPublicNumber{
     [self onMoreCancelClick];
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"查找公众号" message:@"输入公众号ID打开名片，查看关注！" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定",nil];
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"查找公众号" message:@"输入公众号ID打开名片，查看关注！" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定",nil];
 //    [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
 //    [alert show];
 //    

@@ -941,7 +941,7 @@
     
     _resendMsg = notify.object;
     
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"删除",@"重发", nil];
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"],@"重发", nil];
     
     alertView.tag = kReSendMsgAlertViewTag;
     alertView.delegate = self;
