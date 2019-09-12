@@ -48,7 +48,6 @@
         _titleLabel = [UILabel new];
         _titleLabel.font = [UIFont systemFontOfSize:14];
         _titleLabel.textColor = [UIColor qim_colorWithHex:0x9B9B9B];
-//        [_titleLabel setText:@"Qtalk公共域"];
     }
     return _titleLabel;
 }
@@ -59,7 +58,6 @@
         _navLabel.font = [UIFont systemFontOfSize:12];
         _navLabel.numberOfLines = 0;
         _navLabel.textColor = [UIColor qim_colorWithHex:0x9B9B9B];
-//        [_navLabel setText:@"https://qt.qunar.com/package/static/qtalk/nav"];
     }
     return _navLabel;
 }
@@ -86,7 +84,7 @@
 - (UIButton *)modifyBtn {
     if (!_modifyBtn) {
         _modifyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_modifyBtn setTitle:@"修改" forState:UIControlStateNormal];
+        [_modifyBtn setTitle:[NSBundle qim_localizedStringForKey:@"nav_change_Navigation"] forState:UIControlStateNormal];
         [_modifyBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_modifyBtn.titleLabel setFont:[UIFont systemFontOfSize:12]];
         _modifyBtn.layer.borderWidth = 1.0f;
@@ -99,7 +97,7 @@
 - (UIButton *)deleteBtn {
     if (!_deleteBtn) {
         _deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_deleteBtn setTitle:[NSBundle qim_localizedStringForKey:@"Delete"] forState:UIControlStateNormal];
+        [_deleteBtn setTitle:[NSBundle qim_localizedStringForKey:@"nav_delete_Navigation"] forState:UIControlStateNormal];
         [_deleteBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_deleteBtn.titleLabel setFont:[UIFont systemFontOfSize:12]];
         _deleteBtn.layer.borderWidth = 1.0f;

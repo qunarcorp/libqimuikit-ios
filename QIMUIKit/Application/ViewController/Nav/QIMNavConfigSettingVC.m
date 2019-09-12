@@ -62,14 +62,14 @@
     [self.view addSubview:self.scanSettingNavBtn];
     
     UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(20, self.scanSettingNavBtn.bottom + 36, SCREEN_WIDTH - 20, 16)];
-    label.text = @"您也可以手动输入导航";
+    label.text = [NSBundle qim_localizedStringForKey:@"Configure_Navigation_Manually"];
     label.font = [UIFont systemFontOfSize:14];
     label.textAlignment = NSTextAlignmentLeft;
     label.textColor = [UIColor qim_colorWithHex:0xBFBFBF];
     [self.view addSubview:label];
     
     _navNickNameLable = [[UILabel alloc] initWithFrame:CGRectMake(20, label.bottom + 16, self.view.width - 40, 20)];
-    [_navNickNameLable setText:@"导航名"];
+    [_navNickNameLable setText:[NSBundle qim_localizedStringForKey:@"Navigation_Name"]];
     [_navNickNameLable setBackgroundColor:[UIColor clearColor]];
     [_navNickNameLable setFont:[UIFont systemFontOfSize:16]];
     [_navNickNameLable setTextColor:[UIColor blackColor]];
@@ -84,7 +84,7 @@
     [_navNickNameTextField setBackgroundColor:[UIColor clearColor]];
     [_navNickNameTextField setFont:[UIFont systemFontOfSize:14]];
     [_navNickNameTextField setTextColor:[UIColor blackColor]];
-    [_navNickNameTextField setPlaceholder:@"请输入导航服务器名称或公司名"];
+    [_navNickNameTextField setPlaceholder:[NSBundle qim_localizedStringForKey:@"company_name"]];
     if (self.navTitle.length > 0) {
         [_navNickNameTextField setText:self.navTitle];
     }
@@ -98,7 +98,7 @@
     [_navAddressLabel setTextColor:[UIColor blackColor]];
     [_navAddressLabel setTextAlignment:NSTextAlignmentLeft];
     [self.view addSubview:_navAddressLabel];
-    [_navAddressLabel setText:@"域名/服务器地址（必填）"];
+    [_navAddressLabel setText:[NSBundle qim_localizedStringForKey:@"nav_required_domain_name"]];
     
     UIView *navAddressTextBgView = [[UIView alloc] initWithFrame:CGRectMake(_navAddressLabel.left, _navAddressLabel.bottom + 10, _navAddressLabel.width, 36)];
     navAddressTextBgView.layer.borderWidth = 1.0f;
@@ -113,7 +113,7 @@
     if (self.navUrl) {
         [_navAddressTextField setText:self.navUrl];
     } else {
-        [_navAddressTextField setPlaceholder:@"请输入您的公司域名，如qunar.com"];
+        [_navAddressTextField setPlaceholder:[NSBundle qim_localizedStringForKey:@"company_domain"]];
     }
     [navAddressTextBgView addSubview:_navAddressTextField];
     
@@ -318,11 +318,11 @@
 
 - (void)setupNav {
     
-    self.title = self.navTitle.length > 0 ? self.navTitle : @"新增导航";
-    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+    self.title = self.navTitle.length > 0 ? self.navTitle : [NSBundle qim_localizedStringForKey:@"nav_new_Navigation"];
+    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     [self.navigationItem setLeftBarButtonItem:cancelItem];
     
-    UIBarButtonItem *saveItem = [[UIBarButtonItem alloc] initWithTitle:@"保存" style:UIBarButtonItemStylePlain target:self action:@selector(onSave)];
+    UIBarButtonItem *saveItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_save"] style:UIBarButtonItemStylePlain target:self action:@selector(onSave)];
     [self.navigationItem setRightBarButtonItem:saveItem];
 }
 
@@ -349,9 +349,9 @@
                     [self onCancel];
                 } else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
-                                                                        message:@"无可用的导航信息"
+                                                                        message:[NSBundle qim_localizedStringForKey:@"nav_no_available_Navigation"]
                                                                        delegate:nil
-                                                              cancelButtonTitle:@"确定"
+                                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"]
                                                               otherButtonTitles:nil];
                     [alertView show];
                 }
@@ -359,9 +359,9 @@
         });
     } else {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
-                                                            message:@"请输入可用的导航地址"
+                                                            message:[NSBundle qim_localizedStringForKey:@"nav_valid_promot"]
                                                            delegate:nil
-                                                  cancelButtonTitle:@"确定"
+                                                  cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"]
                                                   otherButtonTitles:nil];
         [alertView show];
     }
@@ -372,7 +372,7 @@
     if (!_scanSettingNavBtn) {
         _scanSettingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _scanSettingNavBtn.backgroundColor = [UIColor qim_colorWithHex:0x00CABE];
-        [_scanSettingNavBtn setTitle:@"扫码配置导航" forState:UIControlStateNormal];
+        [_scanSettingNavBtn setTitle:[NSBundle qim_localizedStringForKey:@"nav_scan_Configure_Navigation"] forState:UIControlStateNormal];
         [_scanSettingNavBtn setTitleColor:[UIColor qim_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
         _scanSettingNavBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:4];
         [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateNormal];

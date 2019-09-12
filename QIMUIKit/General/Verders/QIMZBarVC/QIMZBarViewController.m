@@ -98,14 +98,17 @@
     
     if (self.isSettingNav) {
         self.settingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [self.settingNavBtn setTitle:@"手动配置导航" forState:UIControlStateNormal];
+        [self.settingNavBtn setTitle:[NSBundle qim_localizedStringForKey:@"Configure_Navigation"] forState:UIControlStateNormal];
         [self.settingNavBtn setTitleColor:[UIColor qim_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
         self.settingNavBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-        [self.settingNavBtn setFrame:CGRectMake((self.view.width - 200)/2, self.view.height - 45, 200, 45)];
+        UIFont *fnt = [UIFont systemFontOfSize:17];
+        // 根据字体得到NSString的尺寸
+        CGSize size = [[NSBundle qim_localizedStringForKey:@"not_have_company"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:fnt,NSFontAttributeName,nil]];
+        
+        [self.settingNavBtn setFrame:CGRectMake((self.view.width - size.width - 30)/2, self.view.height - 45, size.width + 30, 45)];
         [self.settingNavBtn addTarget:self action:@selector(settingNavBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:self.settingNavBtn];
-    }
-    else{
+    } else{
         
     }
     NSArray*unSelectImageNames=@[@"qrcode_scan_btn_photo_nor",@"qrcode_scan_btn_flash_nor",@"qrcode_scan_btn_myqrcode_nor"];

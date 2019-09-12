@@ -56,7 +56,7 @@
         _settingNavByhandLabel = [[UILabel alloc] init];
         _settingNavByhandLabel.numberOfLines = 0;
         _settingNavByhandLabel.userInteractionEnabled = YES;
-        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"手动配置导航 >"attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFang-SC-Regular" size: 14],NSForegroundColorAttributeName: [UIColor colorWithRed:136/255.0 green:136/255.0 blue:136/255.0 alpha:1.0]}];
+        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:[NSBundle qim_localizedStringForKey:@"Configure_Navigation"] attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFang-SC-Regular" size: 14],NSForegroundColorAttributeName: [UIColor colorWithRed:136/255.0 green:136/255.0 blue:136/255.0 alpha:1.0]}];
         _settingNavByhandLabel.tag = 123112234452;
         _settingNavByhandLabel.attributedText = string;
         _settingNavByhandLabel.textAlignment = NSTextAlignmentLeft;
@@ -71,7 +71,7 @@
     if (!_scanSettingNavBtn) {
         _scanSettingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _scanSettingNavBtn.backgroundColor = [UIColor qim_colorWithHex:0x00CABE];
-        [_scanSettingNavBtn setTitle:@"扫码配置导航" forState:UIControlStateNormal];
+        [_scanSettingNavBtn setTitle:[NSBundle qim_localizedStringForKey:@"nav_scan_Configure_Navigation"] forState:UIControlStateNormal];
         [_scanSettingNavBtn setTitleColor:[UIColor qim_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
         _scanSettingNavBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:4];
         [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateNormal];
