@@ -19,7 +19,7 @@
 "login_userNameInputView_placeholder" = "e.g. : wu.wang";
 
 // Tab bar Title
-"tab_title_chat" = "Chat";
+"tab_title_chat" = "Chats";
 "tab_title_travel" = "Travel";
 "tab_title_contact" = "Contact";
 "tab_title_discover" = "Discover";
@@ -259,13 +259,34 @@
 "login_get_code" = "Get Code";
 "login_code" = "Verification code";
 "Login_name" = "User Name";
-"login_agree" = "Read & Agreed";
-"login_privacy_policy" = "Terms and privacy policy";
+"Login_password" = "Password";
+"login_agree" = "Agreed";
+"login_privacy_policy" = " privacy Clause";
 "login_input_code" = "Please enter the verification code";
 "login_waiting" = "Please wait patiently, login...";
 "login_get_code_tips" = "Verification code to succeed, please enter the verification code received by the phone message to log on.";
 "relogin_checkNetWork" = "Loading login page failed, make sure you have Wi-Fi or mobile data turned on, and reload the login page";
 
+"login_sign_Up" = "Sign Up";
+"login_scan" = "Scan";
+"login_forget_password" = "Forget Password";
+"not_have_company" = "Do not have company? Create";
+
+"nav_Set_Service_Address" = "Set Service Address";
+"company_domain" = "Please enter the domain name of your company (eg. qunar.com)";
+"company_name" = "Please enter the server name or company name";
+"Navigation_Name" = "Navigation Name";
+"nav_scan_Configure_Navigation" = "Scan";
+"Configure_Navigation" = "Configure Navigation Manually";
+"Configure_Navigation_Manually" = "Configure Navigation Manually";
+"nav_new_Configuration" = "New Configuration";
+"nav_change_Navigation" = "Change";
+"nav_delete_Navigation" = "Delete";
+"nav_required_domain_name" = "Domain Name/Server Address (Required)";
+
+"nav_valid_promot" = "Please enter valid navigation address";
+"nav_new_Navigation" = "New Navigation";
+"nav_no_available_Navigation" = "No navigation information available";
 // User Privacy Settings
 "privacy_settings" = "Privacy Setting.";
 "pms_all_refuse" = "Reject any person's message.";
