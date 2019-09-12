@@ -79,7 +79,7 @@ static const int companyTag = 10001;
         _loginTitleLabel = [[UILabel alloc] init];
         _loginTitleLabel.font = [UIFont boldSystemFontOfSize:26];
         _loginTitleLabel.textColor = [UIColor qim_colorWithHex:0x333333];
-        _loginTitleLabel.text = @"登录";
+        _loginTitleLabel.text = [NSBundle qim_localizedStringForKey:@"login"];
         [_loginTitleLabel sizeToFit];
     }
     return _loginTitleLabel;
@@ -88,7 +88,7 @@ static const int companyTag = 10001;
 - (UIButton *)registerNewCompanyBtn {
     if (!_registerNewCompanyBtn) {
         _registerNewCompanyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_registerNewCompanyBtn setTitle:@"还没有公司? 创建一个" forState:UIControlStateNormal];
+        [_registerNewCompanyBtn setTitle:[NSBundle qim_localizedStringForKey:@"not_have_company"] forState:UIControlStateNormal];
         _registerNewCompanyBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         [_registerNewCompanyBtn setTitleColor:[UIColor qim_colorWithHex:0x888888] forState:UIControlStateNormal];
         [_registerNewCompanyBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
@@ -100,7 +100,7 @@ static const int companyTag = 10001;
 - (UIButton *)registerUserBtn{
     if (!_registerUserBtn) {
         _registerUserBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_registerUserBtn setTitle:@"注册" forState:UIControlStateNormal];
+        [_registerUserBtn setTitle:[NSBundle qim_localizedStringForKey:@"login_sign_Up"] forState:UIControlStateNormal];
         [_registerUserBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         _registerUserBtn.titleLabel.font = [UIFont systemFontOfSize:17];
         [_registerUserBtn addTarget:self action:@selector(registerNewUserBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -131,7 +131,7 @@ static const int companyTag = 10001;
 - (UITextField *)userNameTextField {
     if (!_userNameTextField) {
         _userNameTextField = [[UITextField alloc] init];
-        _userNameTextField.placeholder = @"请输入用户名";
+        _userNameTextField.placeholder = [NSBundle qim_localizedStringForKey:@"Login_name"];
         _userNameTextField.delegate = self;
         _userNameTextField.backgroundColor = [UIColor whiteColor];
     }
@@ -149,7 +149,7 @@ static const int companyTag = 10001;
 - (UITextField *)userPwdTextField {
     if (!_userPwdTextField) {
         _userPwdTextField = [[UITextField alloc] init];
-        _userPwdTextField.placeholder = @"请输入密码";
+        _userPwdTextField.placeholder = [NSBundle qim_localizedStringForKey:@"Login_password"];
         _userPwdTextField.delegate = self;
         _userPwdTextField.keyboardType = UIKeyboardTypeASCIICapable;
         _userPwdTextField.secureTextEntry = YES;
@@ -189,7 +189,7 @@ static const int companyTag = 10001;
     if (!_scanSettingNavBtn) {
         _scanSettingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _scanSettingNavBtn.backgroundColor = [UIColor qim_colorWithHex:0x00CABE];
-        [_scanSettingNavBtn setTitle:@"扫码配置导航" forState:UIControlStateNormal];
+        [_scanSettingNavBtn setTitle:[NSBundle qim_localizedStringForKey:@"login_scan"] forState:UIControlStateNormal];
         [_scanSettingNavBtn setTitleColor:[UIColor qim_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
         _scanSettingNavBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:4];
         [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateNormal];
@@ -216,7 +216,7 @@ static const int companyTag = 10001;
         _forgotBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_forgotBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         [_forgotBtn.titleLabel setTextAlignment:NSTextAlignmentRight];
-        [_forgotBtn setTitle:@"忘记密码" forState:UIControlStateNormal];
+        [_forgotBtn setTitle:[NSBundle qim_localizedStringForKey:@"login_forget_password"] forState:UIControlStateNormal];
         [_forgotBtn.titleLabel setFont:[UIFont systemFontOfSize:15]];
         [_forgotBtn addTarget:self action:@selector(forgotPWD:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -228,8 +228,8 @@ static const int companyTag = 10001;
         _textLabel = [[UILabel alloc] init];
         _textLabel.textColor = [UIColor qim_colorWithHex:0x999999];
         _textLabel.font = [UIFont systemFontOfSize:14];
-        NSString *commentNumStr = @"《使用条款和隐私政策》";
-        NSString *titleText = [NSString stringWithFormat:@"同意%@", commentNumStr];
+        NSString *commentNumStr = [NSBundle qim_localizedStringForKey:@"login_privacy_policy"];
+        NSString *titleText = [NSString stringWithFormat:@"%@%@", [NSBundle qim_localizedStringForKey:@"login_agree"],  commentNumStr];
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
         [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor spectralColorGrayBlueColor], NSFontAttributeName:[UIFont systemFontOfSize:14]}
                                 range:[titleText rangeOfString:commentNumStr]];
@@ -255,7 +255,7 @@ static const int companyTag = 10001;
 - (UIButton *)loginBtn {
     if (!_loginBtn) {
         _loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_loginBtn setTitle:@"登录" forState:UIControlStateNormal];
+        [_loginBtn setTitle:[NSBundle qim_localizedStringForKey:@"login"] forState:UIControlStateNormal];
         UIImage *disableImage = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0xABE9E5]];
         [_loginBtn setBackgroundImage:disableImage forState:UIControlStateDisabled];
         UIImage *normalImage = [UIImage qim_imageWithColor:[UIColor qim_colorWithHex:0x00CABE]];
@@ -275,7 +275,7 @@ static const int companyTag = 10001;
 //        _settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
 //        [_settingBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
 //        [_settingBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
-//        [_settingBtn setTitle:@"设置服务地址" forState:UIControlStateNormal];
+//        [_settingBtn setTitle:@[NSBundle qim_localizedStringForKey:@"nav_Set_Service_Address"] forState:UIControlStateNormal];
 //        [_settingBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconSetting"] forState:UIControlStateNormal];
 //        [_settingBtn addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];
 //    }
@@ -385,15 +385,19 @@ static const int companyTag = 10001;
     [self.loginTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_offset(33);
         make.top.mas_offset(56);
-        make.width.mas_equalTo(60);
+        make.width.mas_equalTo(150);
         make.height.mas_equalTo(38);
     }];
     
     [self.view addSubview:self.registerNewCompanyBtn];
+    UIFont *fnt = [UIFont systemFontOfSize:14];
+    // 根据字体得到NSString的尺寸
+    CGSize size = [[NSBundle qim_localizedStringForKey:@"not_have_company"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:fnt,NSFontAttributeName,nil]];
+    
     [self.registerNewCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.view.mas_centerX);
         make.bottom.mas_offset(-30);
-        make.width.mas_equalTo(200);
+        make.width.mas_equalTo(size.width + 30);
         make.height.mas_equalTo(21);
     }];
     
@@ -403,7 +407,7 @@ static const int companyTag = 10001;
     [label mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.registerNewCompanyBtn.mas_bottom).offset(1);
         make.centerX.mas_equalTo(self.view.mas_centerX);
-        make.width.mas_equalTo(160);
+        make.width.mas_equalTo(self.registerNewCompanyBtn.mas_width);
         make.height.mas_equalTo(1);
     }];
     
@@ -516,11 +520,14 @@ static const int companyTag = 10001;
 //        }];
         
         [self.view addSubview:self.forgotBtn];
+        UIFont *forgotBtnFont = [UIFont systemFontOfSize:14];
+        // 根据字体得到NSString的尺寸
+        CGSize forgotBtnSize = [[NSBundle qim_localizedStringForKey:@"login_forget_password"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:forgotBtnFont,NSFontAttributeName,nil]];
         [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(31);
             make.right.mas_equalTo(self.userPwdLineView.mas_right);
             make.height.mas_equalTo(16);
-            make.width.mas_equalTo(80);
+            make.width.mas_equalTo(forgotBtnSize.width+30);
         }];
         
         
@@ -533,13 +540,15 @@ static const int companyTag = 10001;
         }];
         
     } else {
-        
+        UIFont *forgotBtnFont = [UIFont systemFontOfSize:14];
+        // 根据字体得到NSString的尺寸
+        CGSize forgotBtnSize = [[NSBundle qim_localizedStringForKey:@"login_forget_password"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:forgotBtnFont,NSFontAttributeName,nil]];
         [self.view addSubview:self.forgotBtn];
         [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(45);
             make.right.mas_equalTo(self.userPwdLineView.mas_right);
             make.height.mas_equalTo(16);
-            make.width.mas_equalTo(80);
+            make.width.mas_equalTo(forgotBtnSize.width+30);
         }];
         
         
@@ -923,7 +932,7 @@ static const int companyTag = 10001;
                     [self setupUI];
                 } else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
-                                                                        message:@"无可用的导航信息"
+                                                                        message:[NSBundle qim_localizedStringForKey:@"nav_no_available_Navigation"]
                                                                        delegate:nil
                                                               cancelButtonTitle:@"确定"
                                                               otherButtonTitles:nil];
@@ -933,7 +942,7 @@ static const int companyTag = 10001;
         });
     } else {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
-                                                            message:@"请输入可用的导航地址"
+                                                            message:[NSBundle qim_localizedStringForKey:@"nav_valid_promot"]
                                                            delegate:nil
                                                   cancelButtonTitle:@"确定"
                                                   otherButtonTitles:nil];

@@ -254,7 +254,7 @@
         _userNamePlaceholder.backgroundColor = [UIColor clearColor];
         _userNamePlaceholder.textColor = [UIColor qim_colorWithHex:kPlaceholderColorHex alpha:1.0];
         _userNamePlaceholder.font = [UIFont systemFontOfSize:kNomalFontSize];
-        _userNamePlaceholder.text = @"用户名";
+        _userNamePlaceholder.text = [NSBundle qim_localizedStringForKey:@"Login_name"];
         [_loginBgView addSubview:_userNamePlaceholder];
     }
     return _userNamePlaceholder;
@@ -327,9 +327,9 @@
         [_loginBgView addSubview:_validCodePlaceholder];
     }
     if (self.loginType == QTLoginTypePwd) {
-        _validCodePlaceholder.text = @"密码";
+        _validCodePlaceholder.text = [NSBundle qim_localizedStringForKey:@"Login_password"];
     } else {
-        _validCodePlaceholder.text = @"验证码";
+        _validCodePlaceholder.text = [NSBundle qim_localizedStringForKey:@"login_code"];
     }
     return _validCodePlaceholder;
 }
@@ -368,7 +368,7 @@
         _commitBtn.textColor = [UIColor qim_colorWithHex:0xFFFFFF];
         _commitBtn.textAlignment = NSTextAlignmentCenter;
         _commitBtn.font = [UIFont boldSystemFontOfSize:17];
-        _commitBtn.text = @"登录";
+        _commitBtn.text = [NSBundle qim_localizedStringForKey:@"login"];
         [_loginBgView addSubview:_commitBtn];
         
         UITapGestureRecognizer * commitTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(commitTapHandle:)];
@@ -458,7 +458,7 @@
         [_settingBtn setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
         [_settingBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
         [_settingBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
-        [_settingBtn setTitle:@"设置服务地址" forState:UIControlStateNormal];
+        [_settingBtn setTitle:[NSBundle qim_localizedStringForKey:@"nav_Set_Service_Address"] forState:UIControlStateNormal];
         [_settingBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconSetting"] forState:UIControlStateNormal];
         [_settingBtn addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:_settingBtn];
@@ -730,7 +730,7 @@
     }
     
     if (_agreeBtn.selected == NO) {
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"请查看并同意\n《使用条款和隐私政策》" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"请查看并同意\n《使用条款和隐私政策》" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"] otherButtonTitles:nil, nil];
         [alert show];
         return;
     }

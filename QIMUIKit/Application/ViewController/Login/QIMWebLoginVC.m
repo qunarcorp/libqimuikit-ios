@@ -217,7 +217,7 @@
     [_settingButton setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
     [_settingButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_settingButton setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
-    [_settingButton setTitle:@"设置服务地址" forState:UIControlStateNormal];
+    [_settingButton setTitle:[NSBundle qim_localizedStringForKey:@"nav_Set_Service_Address"] forState:UIControlStateNormal];
     [_settingButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconSetting"] forState:UIControlStateNormal];
     [_settingButton addTarget:self action:@selector(onSettingClick:) forControlEvents:UIControlEventTouchUpInside];
     _settingButton.hidden = YES;

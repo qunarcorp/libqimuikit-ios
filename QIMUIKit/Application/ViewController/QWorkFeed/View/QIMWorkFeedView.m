@@ -19,9 +19,9 @@
 #import "QIMMessageCellCache.h"
 #import <YYModel/YYModel.h>
 #import <MJRefresh/MJRefresh.h>
+#import "QIMWorkOwnerCamalNoDataView.h"
 #if __has_include("QIMAutoTracker.h")
 #import "QIMAutoTracker.h"
-#import "QIMWorkOwnerCamalNoDataView.h"
 #endif
 
 @interface QIMWorkFeedView () <UITableViewDelegate, UITableViewDataSource, QIMWorkMomentNotifyViewDelegtae>
