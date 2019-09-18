@@ -34,7 +34,7 @@
             [[QIMKit sharedInstance] sendMessage:@"我通过了你的朋友验证请求，现在我们可以开始聊天了" WithInfo:nil ToUserId:jid WithMsgType:QIMMessageType_Text];
         } else {
             [[self progressHUD] hide:YES];
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"添加好友失败,原因:%@。",reason] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"添加好友失败,原因:%@。",reason] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
             [alertView show];
         }
     }
@@ -103,7 +103,7 @@
         _progressHUD.minSize = CGSizeMake(120, 120);
         _progressHUD.minShowTime = 1;
         [_progressHUD setLabelText:@""];
-        [_progressHUD setDetailsLabelText:@"请稍等..."];
+        [_progressHUD setDetailsLabelText:[NSBundle qim_localizedStringForKey:@"Please wait for a momente"]];
         [self.view addSubview:_progressHUD];
     }
     return _progressHUD;

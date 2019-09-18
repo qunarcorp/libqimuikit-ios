@@ -366,7 +366,7 @@
                                                                            [strongSelf beginAddCommentWithComment:commentModel];
                                                                        }
                                                                    }
-                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], @"回复"]];
+                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Reply"]]];
                 actionSheet.destructiveButtonIndexSet = indexSet;
                 actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
                 [actionSheet show];
@@ -393,7 +393,7 @@
 - (void)beginControlCommentWithComment:(QIMWorkCommentModel *)commentModel withIsHotComment:(BOOL)isHotComment withIndexPath:(NSIndexPath *)indexPath {
     self.staticCommentModel = commentModel;
     if (self.staticCommentModel.isDelete == YES) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSBundle qim_localizedStringForKey:@"moment_comment_has_deleted"] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"该评论已被删除" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
@@ -430,7 +430,7 @@
                                                                            [strongSelf beginAddCommentWithComment:commentModel];
                                                                        }
                                                                    }
-                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], @"回复"]];
+                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Reply"]]];
                 actionSheet.destructiveButtonIndexSet = indexSet;
                 actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
                 [actionSheet show];

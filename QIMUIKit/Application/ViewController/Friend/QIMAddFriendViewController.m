@@ -30,7 +30,7 @@
             [self openChatSession];
         } else {
             [[self progressHUD] hide:YES];
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"添加好友失败,原因:%@。",reason] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"添加好友失败,原因:%@。",reason] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
             [alertView show];
         }
     }
@@ -158,7 +158,7 @@
         if (state == 1) {
             UIButton  *replyButton = [[UIButton alloc] initWithFrame:CGRectMake(contentView.width - 100, addMsgLabel.bottom + 10, 80, 25)];
             [replyButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"AV_Check_start_button_normal"] forState:UIControlStateNormal];
-            [replyButton setTitle:@"回复" forState:UIControlStateNormal];
+            [replyButton setTitle:[NSBundle qim_localizedStringForKey:@"Reply"] forState:UIControlStateNormal];
             [replyButton addTarget:self action:@selector(onReplyClick:) forControlEvents:UIControlEventTouchUpInside];
             [addMsgView addSubview:replyButton];
             addMsgView.height += 40;
@@ -278,7 +278,7 @@
         _progressHUD.minSize = CGSizeMake(120, 120);
         _progressHUD.minShowTime = 1;
         [_progressHUD setLabelText:@""];
-        [_progressHUD setDetailsLabelText:@"请稍等..."];
+        [_progressHUD setDetailsLabelText:[NSBundle qim_localizedStringForKey:@"Please wait for a momente"]];
         [self.view addSubview:_progressHUD];
     }
     return _progressHUD;

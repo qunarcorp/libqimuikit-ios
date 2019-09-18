@@ -447,7 +447,7 @@
                                                                [strongSelf didAddComment:cell];
                                                            }
                                                        }
-                                         otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], @"回复"]];
+                                         otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Reply"]]];
     actionSheet.destructiveButtonIndexSet = indexSet;
     actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
     [actionSheet show];

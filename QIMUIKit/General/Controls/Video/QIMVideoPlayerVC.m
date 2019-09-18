@@ -465,7 +465,7 @@ static NSString *totalDurationStr = nil;
 }
 
 - (void)actionButtonPressed {
-    NSArray *buttonTitles = @[@"发送给朋友", @"分享到驼圈", @"保存视频"];
+    NSArray *buttonTitles = @[[NSBundle qim_localizedStringForKey:@"Send to Friends"], @"分享到驼圈", @"保存视频"];
     __weak __typeof(self) weakSelf = self;
     LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"]
@@ -475,7 +475,7 @@ static NSString *totalDurationStr = nil;
                                                                return;
                                                            }
                                                            if (buttonIndex == 1) {
-                                                               QIMVerboseLog(@"发送给朋友");
+                                                               QIMVerboseLog([NSBundle qim_localizedStringForKey:@"Send to Friends"]);
                                                                [strongSelf shareVideoToFriends];
                                                            }
                                                            if (buttonIndex == 2) {

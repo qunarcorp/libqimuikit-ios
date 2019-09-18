@@ -65,15 +65,15 @@
     _addBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     _addBtn.frame = CGRectMake(0,0, 50, 25);
     _addBtn.titleLabel.font = [UIFont systemFontOfSize:16.5];
-    [_addBtn setTitle:@"保存" forState:UIControlStateNormal];
+    [_addBtn setTitle:[NSBundle qim_localizedStringForKey:@"Save"] forState:UIControlStateNormal];
     [_addBtn addTarget:self action:@selector(newAction) forControlEvents:UIControlEventTouchUpInside];
     [btnsView addSubview:_addBtn];
     
     _rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _rightBtn.frame = CGRectMake(0,0, 50, 25);
     _rightBtn.titleLabel.font = [UIFont systemFontOfSize:16.5];
-    [_rightBtn setTitle:@"编辑" forState:UIControlStateNormal];
-    [_rightBtn setTitle:@"保存" forState:UIControlStateSelected];
+    [_rightBtn setTitle:[NSBundle qim_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
+    [_rightBtn setTitle:[NSBundle qim_localizedStringForKey:@"Save"] forState:UIControlStateSelected];
     [_rightBtn setTitleColor:[UIColor qim_colorWithHex:0x22B573 alpha:1.0] forState:UIControlStateNormal];
     [_rightBtn setTitleColor:[UIColor qim_colorWithHex:0x22B573 alpha:1.0] forState:UIControlStateSelected];
     _rightBtn.adjustsImageWhenHighlighted = NO;

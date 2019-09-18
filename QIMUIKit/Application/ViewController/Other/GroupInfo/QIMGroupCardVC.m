@@ -295,7 +295,7 @@
 
 - (void)delMemHandle:(MemberButton *)sender {
     _currentMemberInfo = sender.memberDic;
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:[NSString stringWithFormat:@"您即将将 %@ 踢出群组",_currentMemberInfo[@"name"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"], nil];
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:[NSString stringWithFormat:@"您即将将 %@ 踢出群组",_currentMemberInfo[@"name"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"], nil];
     alertView.tag = kKickMemberAlertViewTag;
     [alertView show];
 }
@@ -318,7 +318,7 @@
                 [self.navigationController setNavigationBarHidden:NO animated:YES];
                 [self.navigationController popToRootViewControllerAnimated:YES];
             } else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"退群失败" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"退群失败" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                 [alert show];
             }
         }
@@ -334,7 +334,7 @@
 
 - (void)onDoneButtonClick:(UIButton *)sender {
     if (_atGroupIn) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"您是否确定要退出该群？" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"],nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Delete and Leave?"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"],nil];
         alert.tag = kQuitGroupAlertViewTag;
         [alert show];
     } else {
@@ -356,7 +356,7 @@
 - (void)onGroupErrorNotify:(NSNotification *)notify {
     [self registerNotify:NO];
     if ([_groupId isEqualToString:notify.object]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"ERROR %@:%@",[notify.userInfo objectForKey:@"errCode"],[notify.userInfo objectForKey:@"errMsg"]] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"ERROR %@:%@",[notify.userInfo objectForKey:@"errCode"],[notify.userInfo objectForKey:@"errMsg"]] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -622,7 +622,7 @@
             
         } else {
             if (error) {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[error description] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[error description] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                 [alertView show];
             }
         }

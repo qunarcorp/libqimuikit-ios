@@ -926,7 +926,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                 _referDelCount ++;
                 BOOL notDisplay = [[[QIMKit sharedInstance] userObjectForKey:kReferAlertViewNotDisplay] boolValue];
                 if (notDisplay == NO) {
-                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"再次删除操作将取消消息引用！" delegate:self cancelButtonTitle:@"好的" otherButtonTitles:@"不再提醒", nil];
+                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSBundle qim_localizedStringForKey:@"Delete again to cancel quotation"] delegate:self cancelButtonTitle:@"好的" otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Don't show again"], nil];
                     alertView.tag = kReferAlertViewTag;
                     [alertView show];
                 }

@@ -451,8 +451,8 @@ typedef enum {
                                message:@"RGB颜色值为6位16进制正整数"
                          textFieldHint:@"请输入RGB颜色值,如0xFFFFFF"
                         textFieldValue:nil
-                     cancelButtonTitle:@"返回"
-                     otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"]
+                     cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Back"]
+                     otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"]
      
                      cancelButtonBlock:^{
                      } otherButtonBlock:^(NSString * result){

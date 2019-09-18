@@ -81,7 +81,7 @@
 
 -(void)searchBtnHandle:(id)sender{
     if (_searchTextField.text.length == 0) {
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"产品Id不能为空！" delegate:nil cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"产品Id不能为空！" delegate:nil cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
         [alertView show];
         return;
     }

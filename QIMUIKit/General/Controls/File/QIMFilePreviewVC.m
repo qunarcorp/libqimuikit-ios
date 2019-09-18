@@ -447,14 +447,14 @@
     _downLoadButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_downLoadButton setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin];
     [_downLoadButton setFrame:CGRectMake(width, 0, width, _bottomView.height)];
-    [_downLoadButton setTitle:@"下载到本机" forState:UIControlStateNormal];
+    [_downLoadButton setTitle:[NSBundle qim_localizedStringForKey:@"Download to this device"] forState:UIControlStateNormal];
     [_downLoadButton addTarget:self action:@selector(onDownloadButton:) forControlEvents:UIControlEventTouchUpInside];
     [_bottomView addSubview:_downLoadButton];
     
     _deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_deleteButton setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin];
     [_deleteButton setFrame:CGRectMake(width, 0, width, _bottomView.height)];
-    [_deleteButton setTitle:@"从本机删除" forState:UIControlStateNormal];
+    [_deleteButton setTitle:[NSBundle qim_localizedStringForKey:@"Delete from this device"] forState:UIControlStateNormal];
     [_deleteButton addTarget:self action:@selector(onDeleteButton:) forControlEvents:UIControlEventTouchUpInside];
     [_bottomView addSubview:_deleteButton];
     
@@ -536,7 +536,7 @@
     otherAppOpenBtn.frame = CGRectMake(20, fileSizeLabel.bottom + 20, self.view.width - 40, 60);
     otherAppOpenBtn.backgroundColor = [UIColor qtalkIconSelectColor];
     [otherAppOpenBtn addTarget:self action:@selector(openWithOthers:) forControlEvents:UIControlEventTouchUpInside];
-    [otherAppOpenBtn setTitle:@"用其他应用打开" forState:UIControlStateNormal];
+    [otherAppOpenBtn setTitle:[NSBundle qim_localizedStringForKey:@"Open in Other Apps"] forState:UIControlStateNormal];
     [_downloadView addSubview:otherAppOpenBtn];
     
     UILabel *infoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, otherAppOpenBtn.bottom+20, self.view.width, 40)];

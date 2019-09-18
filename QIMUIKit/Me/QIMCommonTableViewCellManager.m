@@ -179,7 +179,7 @@
         }
             break;
         case QIMCommonTableViewCellDataTypeClearSessionList: {
-            UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"将要删掉当前用户的所有消息，是否继续？" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"将要删掉当前用户的所有消息，是否继续？" preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIAlertActionStyleCancel handler:nil];
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
                 [[QIMKit sharedInstance] clearAllNoRead];
@@ -226,7 +226,7 @@
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 [[QIMKit sharedInstance] checkClientConfig];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"配置更新完成，建议重启客户端进行查看！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"配置更新完成，建议重启客户端进行查看！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                     [alertView show];
                 });
             });
@@ -548,10 +548,10 @@
         case QIMCommonTableViewCellDataTypeMessageOnlineNotification: {
             BOOL success = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_ONLINE WithSwitchOn:sender.on];
             if (!success) {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"切换状态失败"
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Failed to switch the setting"]
                                                                    delegate:self
                                                           cancelButtonTitle:nil
-                                                          otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"], nil];
+                                                          otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"], nil];
                 
                 [alertView show];
                 [sender setOn:!sender.on animated:YES];

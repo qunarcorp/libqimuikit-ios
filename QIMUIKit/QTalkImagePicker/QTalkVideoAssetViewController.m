@@ -361,7 +361,7 @@
                      }
                          break;
                      case AVAssetExportSessionStatusFailed:{
-                         QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"%@{%@}", [NSBundle qim_localizedStringForKey:@"Failed_compress"], exportSession.error] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+                         QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"%@{%@}",[NSBundle qim_localizedStringForKey:@"Failed to compress"],exportSession.error] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                          [alertView show];
                      }
                          break;
@@ -384,7 +384,7 @@
     CGImageRelease(image);
     
     NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
-    QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"%@%@,%@",[NSBundle qim_localizedStringForKey:@"video_compress_sizeStr"], fileSizeStr, [NSBundle qim_localizedStringForKey:@"video_compress_send"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"send_directly"],[NSBundle qim_localizedStringForKey:@"Save_album_send"], nil];
+    QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"The video size after compressed is %@. Still send it?"],fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Send directly"],@"保存相册并发送", nil];
     [alertView setVideoOutPath:videoResultPath];
     [alertView setThumbImage:thumb];
     [alertView setFileSizeStr:fileSizeStr];

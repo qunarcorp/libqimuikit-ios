@@ -73,7 +73,7 @@
     [self.view addSubview:self.mainTableView];
     self.navigationItem.title = [NSBundle qim_localizedStringForKey:@"explore_tab_my_file"];
     self.navigationController.navigationBar.translucent = NO;
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(goBackBtnHandle)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Back"] style:UIBarButtonItemStylePlain target:self action:@selector(goBackBtnHandle)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"全选" style:UIBarButtonItemStylePlain target:self action:@selector(selectAllBtnHandle:)];
     self.navigationItem.rightBarButtonItem.tag = 10002;
     if (self.isSelect) {
@@ -111,7 +111,7 @@
     }
     [(UIButton *)[_bottomView viewWithTag:10000] setEnabled:enabled];
     [(UIButton *)[_bottomView viewWithTag:100001] setEnabled:enabled];
-    self.navigationItem.title = enabled ? [NSString stringWithFormat:@"已选择%lu个文件", (unsigned long)self.selectArray.count] : @"选择文件";
+    self.navigationItem.title = enabled ? [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Selected %lu items"], (unsigned long)self.selectArray.count] : @"选择文件";
     [self.navigationItem.rightBarButtonItem setTitle:enabled ? @"全不选" : @"全选"];
 }
 
@@ -190,7 +190,7 @@
 //    [self sendMailWithFile:[NSData dataWithContentsOfFile:zipFilePath] WithFileName:zipFileName];
     
     /*
-    __block UIAlertController *sendLogAlertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"请输入App故障时间及详细Case，并确认将日志文件以文件消息形式发送给lilulucas.li?" preferredStyle:UIAlertControllerStyleAlert];
+    __block UIAlertController *sendLogAlertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请输入App故障时间及详细Case，并确认将日志文件以文件消息形式发送给lilulucas.li?" preferredStyle:UIAlertControllerStyleAlert];
     [sendLogAlertVc addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alertTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:textField];
         textField.placeholder = @"00:00App出现未登录情况";
@@ -228,8 +228,8 @@
             if ([[responseDic objectForKey:@"ok"] boolValue]) {
                 __weak typeof(self) weakSelf = self;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"感谢你的问题反馈，我们会及时处理的" preferredStyle:UIAlertControllerStyleAlert];
-                    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"感谢你的问题反馈，我们会及时处理的" preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                         [weakSelf goBackBtnHandle];
                     }];
                     [alertVc addAction:okAction];
@@ -343,7 +343,7 @@
         [self presentViewController:mailPicker animated:YES completion:nil];
         _mailControlle = mailPicker;
     } else {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"请先配置邮箱账户或该设备不支持发邮件！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Please configure email account first, or you are unable to send emails with this device"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -356,7 +356,7 @@
             [weakSelf goBackBtnHandle];
         } else {
             if (error) {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[error description] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[error description] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                 [alertView show];
             }
         }

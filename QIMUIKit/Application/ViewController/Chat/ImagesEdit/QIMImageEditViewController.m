@@ -261,7 +261,7 @@ const float colormatrix_yese[] = {
 - (void)addDuangView
 {
     _dataSource = [[NSArray alloc] initWithObjects:@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit", nil];
-    _titles = [[NSArray alloc] initWithObjects:@"原图",@"LOMO",@"黑白",@"怀旧",@"哥特",@"锐化",@"淡雅",@"酒红",@"清宁",@"浪漫",@"光晕",@"蓝调",@"梦幻",@"夜色", nil];
+    _titles = [[NSArray alloc] initWithObjects:[NSBundle qim_localizedStringForKey:@"Full Image"],@"LOMO",@"黑白",@"怀旧",@"哥特",@"锐化",@"淡雅",@"酒红",@"清宁",@"浪漫",@"光晕",@"蓝调",@"梦幻",@"夜色", nil];
     _duangView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_toolBar.bounds), CGRectGetHeight(_toolBar.bounds))];
     _duangView.showsVerticalScrollIndicator = NO;
     _duangView.backgroundColor = [UIColor qim_colorWithHex:0x2e2e2e alpha:1.0];

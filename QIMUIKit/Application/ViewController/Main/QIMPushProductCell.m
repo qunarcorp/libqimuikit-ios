@@ -89,7 +89,7 @@
         
         _sendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _sendBtn.backgroundColor = [UIColor qtalkIconSelectColor];
-        [_sendBtn setTitle:@"发送" forState:UIControlStateNormal];
+        [_sendBtn setTitle:[NSBundle qim_localizedStringForKey:@"Send"] forState:UIControlStateNormal];
         [_sendBtn addTarget:self action:@selector(sendBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_sendBtn];
         

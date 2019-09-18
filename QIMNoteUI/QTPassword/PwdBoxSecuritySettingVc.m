@@ -24,7 +24,7 @@
 
 - (NSArray *)securityNumbers {
     if (!_securityNumbers) {
-        NSDictionary *oneM = @{@"intro":[NSBundle qim_localizedStringForKey:@"1分钟"], @"value":@(1 * 60)};
+        NSDictionary *oneM = @{@"intro":[NSBundle qim_localizedStringForKey:[NSBundle qim_localizedStringForKey:@"1 min"]], @"value":@(1 * 60)};
         NSDictionary *twoM = @{@"intro":[NSBundle qim_localizedStringForKey:@"2分钟"], @"value":@(2 * 60)};
         NSDictionary *fiveM = @{@"intro":[NSBundle qim_localizedStringForKey:@"5分钟"], @"value":@(5 * 60)};
         NSDictionary *tenM = @{@"intro":[NSBundle qim_localizedStringForKey:@"10分钟"], @"value":@(10 * 60)};

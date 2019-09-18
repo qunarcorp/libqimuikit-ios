@@ -76,7 +76,7 @@
 //    [_navbar setTitle:@"加入群组"];
 //    [self.view addSubview:_navbar];
 //    
-//    BarButton *leftButton = [[BarButton alloc] initWithTitle:@"返回" style:eBarButtonStyleBack target:self action:@selector(goBack:)];
+//    BarButton *leftButton = [[BarButton alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Back"] style:eBarButtonStyleBack target:self action:@selector(goBack:)];
 //    [_navbar setLeftBarItem:leftButton];
     [self.navigationItem setTitle:@"加入群组"];
 }
@@ -311,7 +311,7 @@
     self.groupId = [NSString stringWithFormat:@"%@@%@.%@",_groupNameField.text,@"conference",[[QIMKit sharedInstance] getDomain]];
     _nickName = [[QIMKit sharedInstance] getMyNickName];
     if ([[QIMKit sharedInstance] isGroupMemberByGroupId:self.groupId]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"已经是该群成员。" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"已经是该群成员。" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
     } else {
         [[QIMKit sharedInstance] joinGroupId:self.groupId ByName:_nickName isInitiative:YES];
@@ -346,7 +346,7 @@
 
 - (void)onGroupErrorNotify:(NSNotification *)notify{
     if ([_groupId isEqualToString:notify.object]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"ERROR %@:%@",[notify.userInfo objectForKey:@"errCode"],[notify.userInfo objectForKey:@"errMsg"]] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"ERROR %@:%@",[notify.userInfo objectForKey:@"errCode"],[notify.userInfo objectForKey:@"errMsg"]] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
     }
 }

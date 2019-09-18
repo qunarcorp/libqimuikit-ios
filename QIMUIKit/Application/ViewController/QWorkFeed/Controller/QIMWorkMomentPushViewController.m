@@ -1306,7 +1306,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         [cell.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
         cell.detailTextLabel.text = [NSBundle qim_localizedStringForKey:@"moment_anonymous"];
     }
-    
+
     return cell;
 }
 

@@ -94,7 +94,7 @@
 
     self.title = [NSBundle qim_localizedStringForKey:@"About_tab_feedBack"];
 //    self.navigationController.navigationBar.translucent = NO;
-//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(goBack)];
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Back"] style:UIBarButtonItemStylePlain target:self action:@selector(goBack)];
 }
 
 - (void)viewDidLoad {
