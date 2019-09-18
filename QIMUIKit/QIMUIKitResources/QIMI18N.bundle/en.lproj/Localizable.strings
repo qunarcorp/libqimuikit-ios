@@ -625,7 +625,7 @@
 "moment_share_video" = "Shared a video";
 "moment_faild_share" = "Failed to share moments. Please try again later.";
 "moment_nickname" = "NickName";
-"moment_real" = "Use My Real Name";
+"moment_real" = "Real Name";
 "moment_anonymous" = "Anonymous User";
 "moment_Loading_Nicknames" = "Loading Nicknames...";
 "moment_mention" = "@Mention";

@@ -405,7 +405,12 @@
         _contentLabel.textContainer = textContainer;
         
     }
-    _showAllBtn.frame = CGRectMake(self.nameLab.left, _contentLabel.bottom + 5, 60, 20);
+    NSString *showAllStr = self.showAllBtn.titleLabel.text;
+    UIFont *showAllFont = [UIFont systemFontOfSize:15];
+    // 根据字体得到NSString的尺寸
+    CGSize size = [showAllStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:showAllFont,NSFontAttributeName,nil]];
+
+    _showAllBtn.frame = CGRectMake(self.nameLab.left, _contentLabel.bottom + 5, size.width + 5, 20);
     if (_showAllBtn.hidden) {
         bottom = _contentLabel.bottom + 8;
         _rowHeight = self.contentLabel.bottom;
@@ -560,12 +565,17 @@
 }
 
 - (void)updateCommentUI {
-    _commentBtn.frame = CGRectMake(_likeBtn.left - 15 - 70, _rowHeight + 15, 70, 27);
     if (self.moment.commentsNum > 0) {
         [_commentBtn setTitle:[NSString stringWithFormat:@"%ld", self.moment.commentsNum] forState:UIControlStateNormal];
     } else {
         [_commentBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_comment"] forState:UIControlStateNormal];
     }
+    NSString *commentStr = _commentBtn.titleLabel.text;
+    UIFont *commentFont = [UIFont systemFontOfSize:15];
+    // 根据字体得到NSString的尺寸
+    CGSize size = [commentStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:commentFont,NSFontAttributeName,nil]];
+
+    _commentBtn.frame = CGRectMake(_likeBtn.left - 15 - size.width - 18, _rowHeight + 15, size.width + 18, 27);
 }
 
 - (void)setLikeActionHidden:(BOOL)likeActionHidden {
