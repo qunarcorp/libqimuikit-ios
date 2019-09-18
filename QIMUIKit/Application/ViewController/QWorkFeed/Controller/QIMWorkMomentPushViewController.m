@@ -245,7 +245,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         [_textView setTextColor:[UIColor qim_colorWithHex:0x333333]];
         [_textView setTintColor:[UIColor qim_colorWithHex:0x333333]];
         UILabel *placeHolderLabel = [[UILabel alloc] init];
-        placeHolderLabel.text = @"来吧，尽情发挥吧…";
+        placeHolderLabel.text = [NSBundle qim_localizedStringForKey:@"moment_say_something"];
         placeHolderLabel.numberOfLines = 0;
         placeHolderLabel.textColor = [UIColor qim_colorWithHex:0xBFBFBF];
         [placeHolderLabel sizeToFit];
