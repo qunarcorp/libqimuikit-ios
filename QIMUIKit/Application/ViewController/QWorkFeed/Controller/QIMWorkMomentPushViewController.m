@@ -70,22 +70,12 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     BOOL isAnonymous = userModel.isAnonymous;
     if (isAnonymous == NO) {
         [self.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-        self.userIdentityLabel.text = @"实名发布";
+        self.userIdentityLabel.text = [NSBundle qim_localizedStringForKey:@"moment_real"];
     } else {
         NSString *anonymousPhoto = userModel.anonymousPhoto;
         [self.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-        self.userIdentityLabel.text = @"匿名发布";
+        self.userIdentityLabel.text = [NSBundle qim_localizedStringForKey:@"moment_anonymous"];
     }
-    
-    /* Mark by 匿名
-    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-        [self.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-        self.userIdentityLabel.text = @"实名发布";
-    } else {
-        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-        [self.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-        self.userIdentityLabel.text = @"匿名发布";
-    } */
 }
 
 - (void)openUserIdentity {
@@ -115,7 +105,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         self.iconView.layer.masksToBounds = YES;
         
         self.userIdentityLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        self.userIdentityLabel.text = @"实名发布";
+        self.userIdentityLabel.text = [NSBundle qim_localizedStringForKey:@"moment_real"];
         self.userIdentityLabel.textColor = [UIColor qim_colorWithHex:0x666666];
         self.userIdentityLabel.font = [UIFont systemFontOfSize:12];
         [self addSubview:self.userIdentityLabel];
@@ -422,7 +412,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 - (UILabel *)atLabel {
     if (!_atLabel) {
         _atLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 1, [[UIScreen mainScreen] qim_rightWidth], 51)];
-        _atLabel.text = @"     @ 提醒谁看";
+        _atLabel.text = [NSString stringWithFormat:@"      %@", [NSBundle qim_localizedStringForKey:@"moment_mention"]];
         _atLabel.textAlignment = NSTextAlignmentLeft;
         _atLabel.backgroundColor = [UIColor whiteColor];
         _atLabel.textColor = [UIColor qim_colorWithHex:0x333333];
@@ -780,16 +770,16 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     BOOL emptyContent = (((self.selectPhotos.count <= 0) && ((self.textView.text.length <= 0) || ([self isEmpty:self.textView.text] == YES))) && (self.workFeedContentType == QIMWorkFeedContentTypeText));
     
     if (emptyContent == YES) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"请尽情发挥吧..." preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSBundle qim_localizedStringForKey:@"moment_say_something"] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
         [alertVc addAction:okAction];
         [self.navigationController presentViewController:alertVc animated:YES completion:nil];
     } else {
-        [self showProgressHUDWithMessage:@"动态上传中..."];
+        [self showProgressHUDWithMessage:[NSBundle qim_localizedStringForKey:@"moment_uploading"]];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self showProgressHUDWithMessage:@"动态上传中..."];
+            [self showProgressHUDWithMessage:[NSBundle qim_localizedStringForKey:@"moment_uploading"]];
             NSMutableDictionary *momentDic = [NSMutableDictionary dictionaryWithCapacity:3];
             [momentDic setQIMSafeObject:self.momentId forKey:@"uuid"];
             [momentDic setQIMSafeObject:[QIMKit getLastUserName] forKey:@"owner"];
@@ -997,7 +987,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [self hideProgressHUD:YES];
                                 dispatch_after(3, dispatch_get_main_queue(), ^{
-                                    [QTalkTipsView showTips:[NSString stringWithFormat:@"发布驼圈失败，请稍后重试"] InView:self.view];
+                                    [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"moment_faild_share"]] InView:self.view];
                                 });
                             });
                         }
@@ -1311,27 +1301,12 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     
     if (isAnonymous == NO) {
         [cell.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-        cell.detailTextLabel.text = @"实名发布";
+        cell.detailTextLabel.text = [NSBundle qim_localizedStringForKey:@"moment_real"];
     } else {
         [cell.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-        cell.detailTextLabel.text = @"匿名发布";
+        cell.detailTextLabel.text = [NSBundle qim_localizedStringForKey:@"moment_anonymous"];
     }
     
-    /* Mark by 匿名
-    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-        [cell.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-    } else {
-        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-        [cell.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-    }
-    cell.detailTextLabel.font = [UIFont systemFontOfSize:15];
-    cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
-    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-        cell.detailTextLabel.text = @"实名发布";
-    } else {
-        cell.detailTextLabel.text = @"匿名发布";
-    }
-     */
     return cell;
 }
 

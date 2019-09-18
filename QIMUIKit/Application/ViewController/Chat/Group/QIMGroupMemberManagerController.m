@@ -122,7 +122,7 @@ typedef enum {
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         _currentIndexPath = indexPath;
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:@"是否确定将该成员从群组中移除？" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:@"是否确定将该成员从群组中移除？" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"], nil];
         [alertView show];
         
     }

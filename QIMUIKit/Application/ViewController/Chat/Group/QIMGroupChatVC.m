@@ -1951,7 +1951,7 @@ static CGPoint tableOffsetPoint;
         QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
         if (![storage.linkData length]) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Wrong_Interface"] message:[NSBundle qim_localizedStringForKey:@"Wrong_URL"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         } else {
             
@@ -2448,7 +2448,7 @@ static CGPoint tableOffsetPoint;
 
 - (void)clickFaildCollectionFace {
     
-    UIAlertController *notFoundEmojiAlertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"该表情已失效" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *notFoundEmojiAlertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"该表情已失效" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:nil];
     [notFoundEmojiAlertVc addAction:okAction];
     [self presentViewController:notFoundEmojiAlertVc animated:YES completion:nil];
@@ -2538,7 +2538,7 @@ static CGPoint tableOffsetPoint;
 
 - (void)emptyText:(NSString *)text {
     //    UIAlertController *emptyTextVc = [UIAlertController alertControllerWithTitle:@"不能发送空白消息" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    //    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
+    //    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
     //        QIMVerboseLog(@"不能发送空白消息");
     //    }];
     //    [emptyTextVc addAction:okAction];

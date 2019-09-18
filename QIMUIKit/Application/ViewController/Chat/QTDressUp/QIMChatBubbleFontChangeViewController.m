@@ -452,7 +452,7 @@ typedef enum {
                          textFieldHint:@"请输入RGB颜色值,如0xFFFFFF"
                         textFieldValue:nil
                      cancelButtonTitle:@"返回"
-                     otherButtonTitles:@"确定"
+                     otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"]
      
                      cancelButtonBlock:^{
                      } otherButtonBlock:^(NSString * result){

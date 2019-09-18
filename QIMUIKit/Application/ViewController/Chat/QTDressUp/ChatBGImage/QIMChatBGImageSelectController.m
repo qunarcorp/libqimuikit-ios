@@ -273,7 +273,7 @@
 {
     _chatBGImageView.image = image;
 //    [self saveChatBGImage:image];
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"设置成功，快去查看吧~" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"设置成功，快去查看吧~" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
     [alertView show];
 }
 
@@ -283,7 +283,7 @@
 {
     _chatBGImageView.image = image;
 //    [self saveChatBGImage:image];
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"设置成功，快去查看吧~" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"设置成功，快去查看吧~" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
     [alertView show];
 }
 

@@ -84,7 +84,7 @@
                     _publicNumberCardDic = tempDic;
                     [self initUI];
                 } else {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"该公众号不存在！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"该公众号不存在！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
                     [alertView show];
                 }
             });
@@ -187,7 +187,7 @@
         [[QIMKit sharedInstance] bulkInsertPublicNumbers:_resultList];
         [self onOpenPublicNumberClick:sender];
     } else {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"关注失败！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"关注失败！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -219,7 +219,7 @@
         if (isSuccess) {
             [self.navigationController popToRootViewControllerAnimated:YES];
         } else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"取消关注失败!" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"取消关注失败!" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         }
     }

@@ -19,7 +19,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     UIImage *image = [UIImage qim_imageWithColor:[UIColor whiteColor]];
     [self.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
-    self.navigationItem.title = @"重置密码";
+    self.navigationItem.title = [NSBundle qim_localizedStringForKey:@"Reset_password"];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
 
 }

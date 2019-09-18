@@ -52,7 +52,7 @@
 - (UILabel *)promptLabel {
     if (!_promptLabel) {
         _promptLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _platFormLabel.bottom + 15, _platFormImageView.width * 4, 30)];
-        _promptLabel.text = [NSString stringWithFormat:@"登录确认已失效，请重新扫码登录"];
+        _promptLabel.text = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"rescan qrCode Login"]];
         _promptLabel.textColor = [UIColor redColor];
         _promptLabel.textAlignment = NSTextAlignmentCenter;
         _promptLabel.hidden = YES;
@@ -75,7 +75,7 @@
     if (!_cancelLoginButton) {
         _cancelLoginButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _cancelLoginButton.frame = CGRectMake(100, self.view.height - 50, 80, 30);
-        [_cancelLoginButton setTitle:@"取消登录" forState:UIControlStateNormal];
+        [_cancelLoginButton setTitle:[NSBundle qim_localizedStringForKey:@"Cancel Login"] forState:UIControlStateNormal];
         [_cancelLoginButton setTitleColor:[UIColor qunarTextGrayColor] forState:UIControlStateNormal];
         [_cancelLoginButton addTarget:self action:@selector(cancelLogin:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -96,7 +96,7 @@
 }
 
 - (void)setupNav {
-    UIBarButtonItem *closeBarItem = [[UIBarButtonItem alloc] initWithTitle:@"关闭" style:UIBarButtonItemStyleDone target:self action:@selector(closeQRCodeLogin)];
+    UIBarButtonItem *closeBarItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_close"] style:UIBarButtonItemStyleDone target:self action:@selector(closeQRCodeLogin)];
     self.navigationItem.leftBarButtonItem = closeBarItem;
 }
 
@@ -129,7 +129,7 @@
     switch (self.loginState) {
         case QIMQRCodeLoginStateNone: {
             self.promptLabel.hidden = YES;
-            [self.loginButton setTitle:@"登录" forState:UIControlStateNormal];
+            [self.loginButton setTitle:[NSBundle qim_localizedStringForKey:@"Login"] forState:UIControlStateNormal];
             [self.loginButton addTarget:self action:@selector(confirmLogin:) forControlEvents:UIControlEventTouchUpInside];
         }
             break;
@@ -140,7 +140,7 @@
         case QIMQRCodeLoginStateFailed: {
             self.promptLabel.hidden = NO;
             self.cancelLoginButton.hidden = YES;
-            [self.loginButton setTitle:@"重新扫码登录" forState:UIControlStateNormal];
+            [self.loginButton setTitle:[NSBundle qim_localizedStringForKey:@"rescan Login"] forState:UIControlStateNormal];
             [self.loginButton addTarget:self action:@selector(closeQRCodeLogin) forControlEvents:UIControlEventTouchUpInside];
         }
             break;

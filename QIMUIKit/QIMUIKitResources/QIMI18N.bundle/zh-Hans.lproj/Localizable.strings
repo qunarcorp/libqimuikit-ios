@@ -8,6 +8,7 @@
 //
 "ok" = "确定";
 "cancel" = "取消";
+"continue" = "继续";
 "not ask me again" = "不再提示";
 "send" = "发送";
 //mapSchemes
@@ -28,7 +29,6 @@
 
 //Navigation server
 "nav_title_configManager" = "导航地址列表";
-"nav_title_debug_configManager" = "Debug导航服务器";
 "nav_server_nickName" = "导航服务器名称";
 "nav_server_address" = "导航服务器地址";
 "nav_server_port" = "导航服务器端口";
@@ -262,6 +262,7 @@
 "login_agree" = "同意";
 "login_privacy_policy" = "《使用条款和隐私政策》";
 "login_input_code" = "验证码";
+"login_sending" = "发送中...";
 "login_waiting" = "请您耐心等待, 登录中...";
 "login_get_code_tips" = "验证码获取成功，请输入手机短信接收到的验证码进行登录。"; 
 "relogin_checkNetWork" = "   加载登录页面失败， \n 请确保您已经开启Wi-Fi或移动数据，并点击确认按钮重新加载页面";
@@ -444,7 +445,8 @@
 
 "Group Messages Notification" = "群消息提醒";
 
-"Sticky on Top" = "置顶聊天";
+"chat_Sticky_Top" = "置顶";
+"chat_remove_sticky" = "取消置顶";
 
 "Search Chat History" = "查找聊天记录";
 
@@ -604,16 +606,128 @@
 "Search"="搜索";
 "Cancel"="取消";
 "Allows Searching by “Names” or “Keywords”"="支持“姓名”或“关键词”搜索";
-"My Moments"="我的朋友圈";
+"My Moments"="我的驼圈";
 "My Moments"="我的帖子";
 "My Replies"="我的回复";
 "Mentioned Me"="@提到我";
 "Share Moments"="发布动态";
 "Post"="发布";
+"moment_my_moments" = "我的驼圈";
+"moment_stick_top" = "[置顶]";
+"moment_hot" = "[热帖]";
+"moment_detail" = "动态详情";
+"moment_faild_delete_comment" = "删除评论失败";
+"moment_comment_has_deleted" = "该评论已被删除";
+"moment_say_something" = "请尽情发挥吧...";
+"moment_uploading" = "动态上传中...";
+"moment_share_link" = "分享了一条链接";
+"moment_share_video" = "分享了一条视频";
+"moment_faild_share" = "发布驼圈失败，请稍后重试.";
+"moment_real" = "实名发布";
+"moment_anonymous" = "匿名发布";
+"moment_nickname" = "花名";
+"moment_Loading_Nicknames" = "花名获取中...";
+"moment_mention" = "提醒谁看";
+"moment_Hot_Comments" = "热评";
+"moment_viewed_all" = "全部看完了";
+"moment_be_mentioned" = "Hi~你被Cue到啦，快来看一下吧～";
+"moment_Unknown" = "未知";
+"moment_Show_Less" = "收起";
+"moment_Show_More" = "全文";
+"moment_comment" = "评论";
+"moment_like" = "顶";
+"moment_new_messages" = "条新消息";
+"moment_searhing" = "搜索中...";
 
 
 
+"clear_unread_messages" = "接下来会清空所有未读消息状态,以及「@all」消息提醒，是否继续";
+"notes" = "随记";
+"Disconnected" = "无网络连接";
+"No_network_available" = "无可用网络连接";
+"Updating_data" = "升级数据中...";
+"Not_Logged_In" = "未登录";
 
 
+"Failed_upload_log"  =  "上传日志失败，请稍后重试！";
+"Uploading_log" =   "日志反馈中...%ld%%，请勿关闭应用程序！";
+"Thanks_feedback"   = "感谢您的反馈.";
+"dissolved_group" = "销毁了群组";
+"group_dissolved" = "群组被销毁";
+"rescan qrCode Login" = "登录确认已失效，请重新扫码登录";
+"Cancel Login" = "取消登录";
+"rescan Login" = "重新扫码登录";
+"network_unavailable_tip" = "当前网络不可用，请检查网络或在'设置'-'蜂窝移动无线网络'-'使用无线局域网与蜂窝网络的应用中'查看是否授权给App";
+"Help" = "帮助";
+"Sending" =  "发送中...";
+"Privacy_Photo" = "请到“设置->隐私->照片”中允许访问相册";
+"Compressing" = "正在压缩...";
+"send_directly" = "直接发送";
+"Save_album_send" = "保存相册并发送";
+"Failed_compress" = "压缩失败";
+"video_compress_sizeStr" = "压缩视频后的大小为";
+"video_compress_send" = "确定要发送吗？";
+"Getting_photo" = "正在获取图片...";
 
 
+"Prediction_tip" = "[预测]";
+"Order_Taking_tip" =  "[抢单]";
+"redpack_tip" = "[红包]";
+"Split_Bill_tip" =  "[AA收款]";
+"Product_Information_tip" =  "[产品信息]";
+"Event_tip" = "[活动]";
+"Voice_Call_tip" = "[语音聊天]";
+"Video_Call_tip" =  "[视频聊天]";
+"Video_Conference_tip" =  "[视频会议]";
+"Shake_Screen_tip" =   "[窗口抖动]";
+"Problem_List_tip" =   "[问题列表]";
+"Robot_Answer_tip" =   "[机器人回答]";
+"Encrypted_Message_tip" =   "[加密消息]";
+"Meeting_Room_Notification" = "会议室提醒";
+"Moments_Notification" = "驼圈提醒";
+"received_message" = "收到一条消息";
+"Favorite" = "收藏";
+"Reply" =   "回复";
+"Recall" =   "撤回";
+"Original_Message" =   "原始消息";
+"recalled_message" =    "撤回了一条消息";
+"Saved_Success" = "保存成功";
+"Video_saved"  =  "小视频已经保存到相册";
+"save_faild" = "保存失败";
+"Photo_Privacy"  =  "请到“设置->隐私->照片”中允许访问相册";
+"Photo_access_faild" =   "此应用无法使用您的照片或视频";
+"Photo_privacy_settings" = "你可以在「隐私设置」中启用存取";
+"No_Photos" = "没有照片或视频";
+"synchronize_photos" = "您可以使用 iTunes 将照片和视频\n同步到 iPhone";
+"Removing" = "移除中...";
+"Download" = "下载";
+"Update" =  "更新";
+"Downloaded" = "已下载";
+"Downloading" =  "正在下载...";
+"chat_Stickers"  = "聊天面板中的表情";
+"Reorder" = "排序";
+"Done" =  "完成";
+"Adjust_Chat_stickers" = "可以调整表情在聊天界面中的排序";
+"My_Stickers" = "我的表情";
+"Remove" = "移除";
+"Reordering_your_stickers" = "系统君正在重新排版您的收藏表情...";
+"Long_press_stickers" = "长按表情解锁新姿势";
+"Cancel_Change" = "确定取消改动？";
+"Stickers" =  "个表情";
+"Favorites_Stickers"  =  "收藏的表情";
+"Manage" = "整理";
+"has_added_sticker" = "已经收藏该表情";
+"Select_company" = "选择公司";
+"input_company_name" = "请输入公司名";
+"Reset_password" = "重置密码";
+"Recent_contacts" =  "最近联系人";
+"Select_from_groups" = "从群组列表中选择";
+"Select_from_friends" =  "从朋友列表中选择";
+"Search_contacts/groups" = "搜索联系人/群组";
+"Send_to"  =  "确认发送给";
+"Forward_chat_history" =  "确认转发聊天记录到";
+"Select_Friend"  =  "选择一个好友";
+"No_Moments" =  "暂时没有动态";
+"Wrong_URL" =  "输入的url有问题";
+"Wrong_Interface" =  "页面有问题";
+"no_unread_messages" = "当前无未读消息";

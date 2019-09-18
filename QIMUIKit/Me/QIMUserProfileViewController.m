@@ -279,7 +279,7 @@
                 if (isSuccess) {
                     [self.navigationController popToRootViewControllerAnimated:YES];
                 } else {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"删除好友失败。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"删除好友失败。" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
                     [alertView show];
                 }
             });
@@ -297,7 +297,7 @@
     switch (mode) {
         case VerifyMode_AllRefused:
         {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"对方拒绝添加好友。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"对方拒绝添加好友。" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         }
             break;
@@ -345,8 +345,8 @@
         if ([result isEqualToString:@"success"]) {
             [self openChatSession];
         } else {
-            UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"添加好友" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil];
+            UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"添加好友" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] style:UIAlertActionStyleDefault handler:nil];
             [alertVc addAction:okAction];
             [self presentViewController:alertVc animated:YES completion:nil];
         }

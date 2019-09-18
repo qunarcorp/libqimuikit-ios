@@ -311,7 +311,7 @@
     self.groupId = [NSString stringWithFormat:@"%@@%@.%@",_groupNameField.text,@"conference",[[QIMKit sharedInstance] getDomain]];
     _nickName = [[QIMKit sharedInstance] getMyNickName];
     if ([[QIMKit sharedInstance] isGroupMemberByGroupId:self.groupId]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"已经是该群成员。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"已经是该群成员。" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
         [alertView show];
     } else {
         [[QIMKit sharedInstance] joinGroupId:self.groupId ByName:_nickName isInitiative:YES];
@@ -346,7 +346,7 @@
 
 - (void)onGroupErrorNotify:(NSNotification *)notify{
     if ([_groupId isEqualToString:notify.object]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"ERROR %@:%@",[notify.userInfo objectForKey:@"errCode"],[notify.userInfo objectForKey:@"errMsg"]] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"ERROR %@:%@",[notify.userInfo objectForKey:@"errCode"],[notify.userInfo objectForKey:@"errMsg"]] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
         [alertView show];
     }
 }

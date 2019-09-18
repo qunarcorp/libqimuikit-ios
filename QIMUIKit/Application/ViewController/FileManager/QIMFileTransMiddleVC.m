@@ -15,7 +15,7 @@
 @implementation QIMFileTransMiddleVC
 
 - (void)setupNav {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"关闭", nil) style:UIBarButtonItemStylePlain target:self action:@selector(goBackBtnHandle)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_close"] style:UIBarButtonItemStylePlain target:self action:@selector(goBackBtnHandle)];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x5CC57F]}];
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor qim_colorWithHex:0x5CC57F]];
     //毛玻璃

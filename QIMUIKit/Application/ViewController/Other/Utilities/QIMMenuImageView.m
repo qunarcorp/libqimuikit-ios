@@ -281,14 +281,14 @@
 - (NSDictionary *)menuItemDicts {
     return @{@(MA_Copy) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Copy"], @"MenuAction" : @"copyMethod:"},
              @(MA_Collection) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Add to Stickers"], @"MenuAction" : @"collectionMethod:"},
-             @(MA_Favorite) : @{@"MenuTitle" : @"收藏", @"MenuAction" : @"favoriteMethod:"},
+             @(MA_Favorite) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Favorite"], @"MenuAction" : @"favoriteMethod:"},
              @(MA_Repeater) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Forward"], @"MenuAction" : @"transmitMsg:"},
              @(MA_Delete) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Delete"], @"MenuAction" : @"deleteMsg:"},
-             @(MA_ReplyMsg) : @{@"MenuTitle" : @"回复", @"MenuAction" : @"replyMsg:"},
-             @(MA_ToWithdraw) : @{@"MenuTitle" : @"撤回", @"MenuAction" : @"toWithdrawMsg:"},
+             @(MA_ReplyMsg) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Reply"], @"MenuAction" : @"replyMsg:"},
+             @(MA_ToWithdraw) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Recall"], @"MenuAction" : @"toWithdrawMsg:"},
              @(MA_Forward) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Delete"], @"MenuAction" : @"forwardMsgs:"},
              @(MA_Refer) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Quote"], @"MenuAction" : @"referMsgs:"},
-             @(MA_CopyOriginMsg) : @{@"MenuTitle" : @"原始消息", @"MenuAction" : @"copyOriginMsg:"},
+             @(MA_CopyOriginMsg) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Original_Message"], @"MenuAction" : @"copyOriginMsg:"},
              };
 }
 

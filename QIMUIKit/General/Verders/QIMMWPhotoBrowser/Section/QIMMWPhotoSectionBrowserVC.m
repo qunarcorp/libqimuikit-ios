@@ -546,7 +546,7 @@
                                                     [weakSelf.photoCollectionView reloadData];
                                                 }];
     } else {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"请选择视频或图片后再分享" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"请选择视频或图片后再分享" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
@@ -641,7 +641,7 @@
             }
         });
     } else {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"请选择视频或图片后再保存" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"请选择视频或图片后再保存" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];

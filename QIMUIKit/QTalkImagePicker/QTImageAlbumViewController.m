@@ -159,13 +159,13 @@
     message.translatesAutoresizingMaskIntoConstraints = NO;
     message.preferredMaxLayoutWidth = 304.0f;
     
-    title.text              = NSLocalizedString(@"此应用无法使用您的照片或视频。", nil);
+    title.text              = [NSBundle qim_localizedStringForKey:@"Photo_access_faild"];
     title.font              = [UIFont boldSystemFontOfSize:17.0];
     title.textColor         = [UIColor colorWithRed:129.0/255.0 green:136.0/255.0 blue:148.0/255.0 alpha:1];
     title.textAlignment     = NSTextAlignmentCenter;
     title.numberOfLines     = 5;
     
-    message.text            = NSLocalizedString(@"你可以在「隐私设置」中启用存取。", nil);
+    message.text            = [NSBundle qim_localizedStringForKey:@"Photo_privacy_settings"];
     message.font            = [UIFont systemFontOfSize:14.0];
     message.textColor       = [UIColor colorWithRed:129.0/255.0 green:136.0/255.0 blue:148.0/255.0 alpha:1];
     message.textAlignment   = NSTextAlignmentCenter;
@@ -207,13 +207,13 @@
     message.translatesAutoresizingMaskIntoConstraints = NO;
     message.preferredMaxLayoutWidth = 304.0f;
     
-    title.text              = NSLocalizedString(@"没有照片或视频。", nil);
+    title.text              = [NSBundle qim_localizedStringForKey:@"No_Photos"];
     title.font              = [UIFont systemFontOfSize:26.0];
     title.textColor         = [UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1];
     title.textAlignment     = NSTextAlignmentCenter;
     title.numberOfLines     = 5;
     
-    message.text            = NSLocalizedString(@"您可以使用 iTunes 将照片和视频\n同步到 iPhone。", nil);
+    message.text            = [NSBundle qim_localizedStringForKey:@"synchronize_photos"];
     message.font            = [UIFont systemFontOfSize:18.0];
     message.textColor       = [UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1];
     message.textAlignment   = NSTextAlignmentCenter;

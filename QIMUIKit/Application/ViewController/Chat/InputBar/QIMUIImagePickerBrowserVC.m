@@ -105,7 +105,7 @@
     UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.width - 110, 6, 100, 28)];
     [doneButton.layer setCornerRadius:5];
     [doneButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
-    [doneButton setTitle:@"确定" forState:UIControlStateNormal];
+    [doneButton setTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] forState:UIControlStateNormal];
     [doneButton setBackgroundColor:[UIColor spectralColorBlueColor]];
     [doneButton addTarget:self action:@selector(onDoneClick:) forControlEvents:UIControlEventTouchUpInside];
     [bottomView addSubview:doneButton];
@@ -191,15 +191,15 @@
     NSString *msg = nil ;
     UIAlertView *alert = nil;
     if(error != NULL){
-        msg = @"保存图片失败" ;
+        msg = [NSBundle qim_localizedStringForKey:@"save_faild"] ;
     }else{
-        msg = @"保存图片成功" ;
+        msg = [NSBundle qim_localizedStringForKey:@"Saved_Success"] ;
     }
     
-    alert = [[UIAlertView alloc] initWithTitle:@"提示"
+    alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
                                        message:msg
                                       delegate:self
-                             cancelButtonTitle:@"确定"
+                             cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"]
                              otherButtonTitles:nil];
     
     [alert show];

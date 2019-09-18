@@ -31,7 +31,7 @@
                     GVC.groupId = groupId;
                     [nav popToRootVCThenPush:GVC animated:YES];
                 } else {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"无法识别该信息。" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"无法识别该信息。" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                     [alertView show];
                 }
             }
@@ -154,7 +154,7 @@
                     [QIMFastEntrance openUserCardVCByUserId:sub];
                 });
             } else {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"结果：%@", str] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"结果：%@", str] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
                 [alertView show];
             }
         }
