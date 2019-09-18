@@ -90,7 +90,7 @@
         [[QIMKit sharedInstance] setUserObject:@([NSDate timeIntervalSinceReferenceDate]) forKey:timeAkey];
 //        self.model.privateKey = self.pwdTextField.text;
     } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"密码错误，请再尝试一次" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Wrong password. Please try again."] preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:nil];
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];

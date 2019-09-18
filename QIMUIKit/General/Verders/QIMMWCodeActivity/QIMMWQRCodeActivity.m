@@ -89,7 +89,7 @@
                         [QIMFastEntrance openUserCardVCByUserId:sub];
                     });
                 } else {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"结果：%@",str]delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles: nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"结果：%@",str]delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles: nil];
                     [alertView show];
                 }
             }

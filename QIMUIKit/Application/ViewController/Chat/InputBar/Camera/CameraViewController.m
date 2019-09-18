@@ -148,7 +148,7 @@ typedef enum {
         
         _photoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _photoBtn.frame = CGRectMake(0, 5, 30, 20);
-        [_photoBtn setTitle:@"照片" forState:UIControlStateNormal];
+        [_photoBtn setTitle:[NSBundle qim_localizedStringForKey:@"Photos"] forState:UIControlStateNormal];
         [_photoBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_photoBtn setTitleColor:[UIColor qim_colorWithHex:0xfcd109 alpha:1.0] forState:UIControlStateSelected];
         _photoBtn.backgroundColor = [UIColor clearColor];

@@ -86,7 +86,7 @@
     _sdButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_sdButton setFrame:CGRectMake(80, 10, 60, 20)];
     [_sdButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
-    [_sdButton setTitle:@"标清" forState:UIControlStateNormal];
+    [_sdButton setTitle:[NSBundle qim_localizedStringForKey:@"Standard Definition"] forState:UIControlStateNormal];
     [_sdButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
     [_sdButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
     [_sdButton setImageEdgeInsets:UIEdgeInsetsMake(0, -10, 0, 0)];
@@ -96,7 +96,7 @@
     UIButton * imageEditButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [imageEditButton setFrame:CGRectMake(10, 10, 60, 20)];
     [imageEditButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
-    [imageEditButton setTitle:@"编辑" forState:UIControlStateNormal];
+    [imageEditButton setTitle:[NSBundle qim_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
     [imageEditButton addTarget:self action:@selector(onImageEditClick:) forControlEvents:UIControlEventTouchUpInside];
     [bottomView addSubview:imageEditButton];
     
@@ -105,7 +105,7 @@
     UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.width - 110, 6, 100, 28)];
     [doneButton.layer setCornerRadius:5];
     [doneButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
-    [doneButton setTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] forState:UIControlStateNormal];
+    [doneButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     [doneButton setBackgroundColor:[UIColor spectralColorBlueColor]];
     [doneButton addTarget:self action:@selector(onDoneClick:) forControlEvents:UIControlEventTouchUpInside];
     [bottomView addSubview:doneButton];
@@ -131,10 +131,10 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex == 0) {
         _isSD = YES;
-        [_sdButton setTitle:@"标清" forState:UIControlStateNormal];
+        [_sdButton setTitle:[NSBundle qim_localizedStringForKey:@"Standard Definition"] forState:UIControlStateNormal];
     } else if(buttonIndex == 1){
         _isSD = NO;
-        [_sdButton setTitle:@"原图" forState:UIControlStateNormal];
+        [_sdButton setTitle:[NSBundle qim_localizedStringForKey:@"Full Image"] forState:UIControlStateNormal];
     }
 }
 
@@ -156,7 +156,7 @@
         data = UIImageJPEGRepresentation(image, 1);
         bqStr = [QIMStringTransformTools CapacityTransformStrWithSize:data.length];
     }
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择图片尺寸" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清 (%@)",bqStr],
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清 (%@)",bqStr],
                             [NSString stringWithFormat:@"原图 (%@)",sourceStr],nil];
     [sheet showInView:self.view];
 }
@@ -196,10 +196,10 @@
         msg = [NSBundle qim_localizedStringForKey:@"Saved_Success"] ;
     }
     
-    alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
+    alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"]
                                        message:msg
                                       delegate:self
-                             cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"]
+                             cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
                              otherButtonTitles:nil];
     
     [alert show];

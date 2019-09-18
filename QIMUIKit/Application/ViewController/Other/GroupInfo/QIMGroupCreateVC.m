@@ -244,7 +244,7 @@
             [[QIMKit sharedInstance] clearNotReadMsgByGroupId:groupId];
             [QIMFastEntrance openGroupChatVCByGroupId:groupId];
         } else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"创建失败" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"创建失败" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
             [alertView show];
         }
     }];

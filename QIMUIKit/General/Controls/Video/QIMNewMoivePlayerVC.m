@@ -136,9 +136,9 @@
     NSLog(@"cachePath : %@", cachePath);
     if (self.videoModel.FileUrl.length > 0) {
         if (canSave == YES) {
-            buttonTitles = @[@"发送给朋友", @"分享到驼圈", @"保存视频"];
+            buttonTitles = @[[NSBundle qim_localizedStringForKey:@"Send to Friends"], @"分享到驼圈", @"保存视频"];
         } else {
-            buttonTitles = @[@"发送给朋友", @"分享到驼圈"];
+            buttonTitles = @[[NSBundle qim_localizedStringForKey:@"Send to Friends"], @"分享到驼圈"];
         }
     } else {
         buttonTitles = @[@"分享到驼圈", @"保存视频"];

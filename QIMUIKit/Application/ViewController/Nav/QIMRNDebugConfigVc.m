@@ -94,7 +94,7 @@
 
 - (void)initNav {
     self.title = @"RN调试配置页面";
-    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithTitle:@"保存" style:UIBarButtonItemStylePlain target:self action:@selector(saverRNDebugConfig)];
+    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Save"] style:UIBarButtonItemStylePlain target:self action:@selector(saverRNDebugConfig)];
     self.navigationItem.rightBarButtonItem = save;
 }
 

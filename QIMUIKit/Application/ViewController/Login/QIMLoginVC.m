@@ -738,7 +738,7 @@
     }
     
     if (_agreeBtn.selected == NO) {
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"请查看并同意\n《使用条款和隐私政策》" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"] otherButtonTitles:nil, nil];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请查看并同意\n《使用条款和隐私政策》" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"] otherButtonTitles:nil, nil];
         [alert show];
         return;
     }
@@ -853,7 +853,7 @@
 //                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
 //                                                                    message:@"发生未知错误"
 //                                                                   delegate:nil
-//                                                          cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"]
+//                                                          cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
 //                                                          otherButtonTitles:nil];
 //                [alertView show];
                 [weakSelf showNetWorkUnableAlert];
@@ -865,13 +865,13 @@
             int statusId = [[dic allKeys] containsObject:@"status_id"] ? [[dic objectForKey:@"status_id"] intValue] : -1;
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (statusId == 501 && [[userName lowercaseString] isEqualToString:@"appstore"]) {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"对不起,订单信息未找到,请直接输入6位密码登录" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"对不起,订单信息未找到,请直接输入6位密码登录" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                     [alertView show];
                     [_getValidCodeBtn setUserInteractionEnabled:YES];
                     [_getValidCodeBtn setText:kValidCodeDisplayString];
                     [self setValidCodeBtnUIWaiting:NO];
                 } else if (statusId != 0) {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[dic objectForKey:@"msg"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[dic objectForKey:@"msg"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                     [alertView show];
                     [_getValidCodeBtn setUserInteractionEnabled:YES];
                     [_getValidCodeBtn setText:kValidCodeDisplayString];
@@ -896,7 +896,7 @@
         [self setLoginBtnEnabled:sender.selected];
     }
     if (sender.selected == NO) {
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"亲，请查看并同意\n《使用条款和隐私政策》\n才可以登录哟～" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"亲，请查看并同意\n《使用条款和隐私政策》\n才可以登录哟～" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
         [alert show];
     }
 }

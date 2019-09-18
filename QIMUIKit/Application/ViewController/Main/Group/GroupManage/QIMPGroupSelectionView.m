@@ -358,11 +358,11 @@
 - (void)initNavbar {
     
     [self.navigationItem setTitle:@"添加群成员"];
-    NSString *title = [NSBundle qim_localizedStringForKey:@"common_ok"];
+    NSString *title = [NSBundle qim_localizedStringForKey:@"Confirm"];
     CGSize size = [title sizeWithFont:[UIFont systemFontOfSize:16] forWidth:INT16_MAX lineBreakMode:NSLineBreakByCharWrapping];
     _joinToGroupBtn = [[UIButton alloc] initWithFrame:CGRectMake(0,0,size.width,30)];
     [_joinToGroupBtn.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_joinToGroupBtn setTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] forState:UIControlStateNormal];
+    [_joinToGroupBtn setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     [_joinToGroupBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
     [_joinToGroupBtn setTitleColor:[UIColor qim_colorWithHex:0xc1c1c1 alpha:1] forState:UIControlStateDisabled];
     [_joinToGroupBtn addTarget:self action:@selector(joinGroupById:) forControlEvents:UIControlEventTouchUpInside];
@@ -413,7 +413,7 @@
     } else {
         
         [_joinToGroupBtn setEnabled:NO];
-        NSString * title  = [NSBundle qim_localizedStringForKey:@"common_ok"];
+        NSString * title  = [NSBundle qim_localizedStringForKey:@"Confirm"];
         [_joinToGroupBtn  setTitle:title forState:UIControlStateNormal];
         CGSize size = [title sizeWithFont:[UIFont systemFontOfSize:16] forWidth:INT16_MAX lineBreakMode:NSLineBreakByCharWrapping];
         [_joinToGroupBtn setWidth:size.width];

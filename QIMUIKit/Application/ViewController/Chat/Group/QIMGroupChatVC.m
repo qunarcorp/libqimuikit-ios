@@ -896,7 +896,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)collectEmojiFaceSuccess:(NSNotification *)notify {
     
-    [self setProgressHUDDetailsLabelText:@"添加成功"];
+    [self setProgressHUDDetailsLabelText:[NSBundle qim_localizedStringForKey:@"Added"]];
     [self closeHUD];
 }
 
@@ -944,7 +944,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [tipsLabel setTextAlignment:NSTextAlignmentCenter];
         [tipsLabel setFont:[UIFont systemFontOfSize:14]];
         tipsLabel.textColor = [UIColor whiteColor];
-        [tipsLabel setText:[NSString stringWithFormat:@"%@正在共享位置", [userInfo objectForKey:@"Name"]]];
+        [tipsLabel setText:[NSString stringWithFormat:@"%@%@", [userInfo objectForKey:@"Name"],[NSBundle qim_localizedStringForKey:@"Location sharing"]]];
         [_joinShareLctView addSubview:tipsLabel];
         
         UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"Arrow"]];
@@ -1554,7 +1554,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)msgReSendNotificationHandle:(NSNotification *)notify {
     _resendMsg = notify.object;
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], @"重发", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Resend"], nil];
     
     alertView.tag = kReSendMsgAlertViewTag;
     alertView.delegate = self;
@@ -2448,7 +2448,7 @@ static CGPoint tableOffsetPoint;
 
 - (void)clickFaildCollectionFace {
     
-    UIAlertController *notFoundEmojiAlertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"该表情已失效" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *notFoundEmojiAlertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"该表情已失效" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:nil];
     [notFoundEmojiAlertVc addAction:okAction];
     [self presentViewController:notFoundEmojiAlertVc animated:YES completion:nil];
@@ -2538,7 +2538,7 @@ static CGPoint tableOffsetPoint;
 
 - (void)emptyText:(NSString *)text {
     //    UIAlertController *emptyTextVc = [UIAlertController alertControllerWithTitle:@"不能发送空白消息" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    //    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
+    //    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
     //        QIMVerboseLog(@"不能发送空白消息");
     //    }];
     //    [emptyTextVc addAction:okAction];

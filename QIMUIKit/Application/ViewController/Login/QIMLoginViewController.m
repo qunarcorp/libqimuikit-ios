@@ -69,7 +69,7 @@
     [super viewDidAppear:animated];
     
     if ([linkUrl length] > 0) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"是否更新" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Cancel"],nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"是否更新" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Cancel"],nil];
         [alertView show];
     }
     
@@ -149,7 +149,7 @@
     }
     else
     {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"用户名密码无效" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"用户名密码无效" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
     }
 }

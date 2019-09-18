@@ -61,8 +61,8 @@
     if (!_saveBtn) {
         _saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_saveBtn setFrame:CGRectMake(0, 0, 36, 18)];
-        [_saveBtn setTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] forState:UIControlStateNormal];
-        [_saveBtn setTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] forState:UIControlStateDisabled];
+        [_saveBtn setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
+        [_saveBtn setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateDisabled];
         [_saveBtn setTitleColor:[UIColor qim_colorWithHex:0xBFBFBF] forState:UIControlStateDisabled];
         [_saveBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         [_saveBtn addTarget:self action:@selector(didselectUserIdentity:) forControlEvents:UIControlEventTouchUpInside];

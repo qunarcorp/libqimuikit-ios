@@ -246,7 +246,7 @@ static QIMFastEntrance *_sharedInstance = nil;
                 [[[UIApplication sharedApplication] visibleViewController] presentViewController:controller animated:YES completion:nil];
             }
         } else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"请先配置邮箱账户或该设备不支持发邮件！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Please configure email account first, or you are unable to send emails with this device"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
             [alertView show];
         }
     });
@@ -1396,11 +1396,11 @@ static QIMFastEntrance *_sharedInstance = nil;
             });
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"退出登录失败，请重试" preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_Nonnull action) {
+                UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Failed to log out, please try again"] preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_Nonnull action) {
                     
                 }];
-                UIAlertAction *quitAction = [UIAlertAction actionWithTitle:@"强制退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
+                UIAlertAction *quitAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Log out anyway"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
                     [QIMFastEntrance signOutWithNoPush];
                 }];
                 [alertVc addAction:okAction];
@@ -1461,7 +1461,7 @@ static QIMFastEntrance *_sharedInstance = nil;
 
         } else {
             if (error) {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[error description] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[error description] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                 [alertView show];
             }
         }
