@@ -8,6 +8,7 @@
 
 #import "NetWatcher.h"
 #import "AFNetworking/AFNetworking.h"
+#import "NSBundle+QIMLibrary.h"
 
 @interface NetWatcher()
 @property NSArray *definitions;
