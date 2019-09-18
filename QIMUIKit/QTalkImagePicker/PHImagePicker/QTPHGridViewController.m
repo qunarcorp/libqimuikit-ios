@@ -308,7 +308,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     [_photoTypeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
     [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
-    [_photoTypeButton setTitle:self.picker.isOriginal ? @" 原图" : @" 标清" forState:UIControlStateNormal];
+    [_photoTypeButton setTitle:self.picker.isOriginal ? [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] : [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
     [_photoTypeButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_photoTypeButton setEnabled:NO];
     [_photoTypeButton addTarget:self action:@selector(onPhotoTypeClick) forControlEvents:UIControlEventTouchUpInside];
@@ -395,12 +395,12 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex == 0) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" 标清"] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
         self.picker.isOriginal = NO;
         [[QIMKit sharedInstance] setPickerPixelOriginal:NO];
     } else if (buttonIndex == 1) {
         
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" 原图"] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] forState:UIControlStateNormal];
         self.picker.isOriginal = YES;
         [[QIMKit sharedInstance] setPickerPixelOriginal:YES];
     }
@@ -559,7 +559,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
         BOOL canContinueSelectionVideo = [[QTPHImagePickerManager sharedInstance] canContinueSelectionVideo];
         if (NO == canContinueSelectionVideo) {
             //不允许选择视频
-            [QTalkTipsView showTips:[NSString stringWithFormat:@"不支持继续上传视频"] InView:self.view];
+            [QTalkTipsView showTips:[NSBundle qim_localizedStringForKey:@"Unable to upload more videos"] InView:self.view];
             return NO;
         }
         

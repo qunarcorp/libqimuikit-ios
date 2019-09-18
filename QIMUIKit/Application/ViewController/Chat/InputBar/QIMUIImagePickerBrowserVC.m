@@ -156,8 +156,7 @@
         data = UIImageJPEGRepresentation(image, 1);
         bqStr = [QIMStringTransformTools CapacityTransformStrWithSize:data.length];
     }
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清 (%@)",bqStr],
-                            [NSString stringWithFormat:@"原图 (%@)",sourceStr],nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"%@ (%@)", [NSBundle qim_localizedStringForKey:@"Standard Definition"], bqStr], [NSString stringWithFormat:@"%@ (%@)", [NSBundle qim_localizedStringForKey:@"Full Image"], sourceStr],nil];
     [sheet showInView:self.view];
 }
 

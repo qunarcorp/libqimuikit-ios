@@ -1151,6 +1151,11 @@ static dispatch_once_t __onceMainToken;
     NSArray *moreActionImages = nil;
     self.moreActionArray = @[[NSBundle qim_localizedStringForKey:@"Scan"], [NSBundle qim_localizedStringForKey:@"Unread Messages"], [NSBundle qim_localizedStringForKey:@"Create Group"], [NSBundle qim_localizedStringForKey:@"Mark All as Read"]];
     moreActionImages = @[[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_scan_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_notread_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_gototalk_font size:28 color:qim_rightArrowImageColor]], [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_arrow_clearnotread_font size:28 color:qim_rightArrowImageColor]]];
+    NSInteger arrowWidth = 135;
+    NSString *Language = [[QIMKit sharedInstance] currentLanguage];
+    if ([Language containsString:@"en"]) {
+        arrowWidth = 180;
+    }
     point = CGPointMake(rect3.origin.x + rect3.size.width / 2, rect3.origin.y + rect3.size.height / 2);
     _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:135 Height:50 * self.moreActionArray.count + 10 Type:Type_UpRight Color:[UIColor whiteColor]];
     _arrowPopView.dataArray = self.moreActionArray;

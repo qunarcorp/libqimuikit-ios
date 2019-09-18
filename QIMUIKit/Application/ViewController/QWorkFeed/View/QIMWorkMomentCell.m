@@ -574,8 +574,11 @@
     UIFont *commentFont = [UIFont systemFontOfSize:15];
     // 根据字体得到NSString的尺寸
     CGSize size = [commentStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:commentFont,NSFontAttributeName,nil]];
-
-    _commentBtn.frame = CGRectMake(_likeBtn.left - 15 - size.width - 18, _rowHeight + 15, size.width + 18, 27);
+    if (size.width > 70) {
+        _commentBtn.frame = CGRectMake(_likeBtn.left - 15 - size.width - 18, _rowHeight + 15, size.width + 18, 27);
+    } else {
+        _commentBtn.frame = CGRectMake(_likeBtn.left - 15 - 70, _rowHeight + 15, 70, 27);
+    }
 }
 
 - (void)setLikeActionHidden:(BOOL)likeActionHidden {

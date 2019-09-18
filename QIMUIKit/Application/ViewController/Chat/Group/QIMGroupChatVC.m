@@ -901,7 +901,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)collectEmojiFaceFailed:(NSNotification *)notify {
-    [self setProgressHUDDetailsLabelText:@"收藏表情失败"];
+    [self setProgressHUDDetailsLabelText:[NSBundle qim_localizedStringForKey:@"Failed to add to stickers"]];
     [self closeHUD];
 }
 
@@ -1554,7 +1554,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)msgReSendNotificationHandle:(NSNotification *)notify {
     _resendMsg = notify.object;
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Resend"], nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Resend the message?"] message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Resend"], nil];
     
     alertView.tag = kReSendMsgAlertViewTag;
     alertView.delegate = self;

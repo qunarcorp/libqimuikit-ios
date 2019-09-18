@@ -31,7 +31,7 @@
     [self.view addSubview:transFileImgView];
     
     UILabel *transFileLabel = [[UILabel alloc] init];
-    [transFileLabel setText:@"你已在电脑登录QTalk"];
+    [transFileLabel setText:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"You have logged in %@ on your computer"], @"QTalk"]];
     transFileLabel.textAlignment = NSTextAlignmentCenter;
     transFileLabel.width = 156.0f;
     transFileLabel.height = 22.0f;
@@ -41,7 +41,7 @@
     [self.view addSubview:transFileLabel];
     
     UILabel *promtLabel = [[UILabel alloc] init];
-    [promtLabel setText:@"无需数据线，电脑与手机轻松互传文件"];
+    [promtLabel setText:[NSBundle qim_localizedStringForKey:@"Transfer files between phone and computer without using USB."]];
     promtLabel.textAlignment = NSTextAlignmentCenter;
     promtLabel.font = [UIFont systemFontOfSize:16];
     promtLabel.width = self.view.width;
@@ -53,7 +53,7 @@
     [self.view addSubview:promtLabel];
     
     UILabel *promtLabel2 = [[UILabel alloc] init];
-    [promtLabel2 setText:@"快来试试吧～～"];
+    [promtLabel2 setText:[NSBundle qim_localizedStringForKey:@"Try is now"]];
     promtLabel2.textAlignment = NSTextAlignmentCenter;
     promtLabel2.font = [UIFont systemFontOfSize:16];
     promtLabel2.width = self.view.width;
