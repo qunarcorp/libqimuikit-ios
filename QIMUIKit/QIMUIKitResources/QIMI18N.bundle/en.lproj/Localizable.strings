@@ -637,7 +637,7 @@
 "moment_Show_More" = "Show More";
 "moment_like" = "Like";
 "moment_comment" = "Comment";
-"moment_new_messages" = "new messages";
+"moment_new_messages" = " new messages";
 "moment_searhing" = "Searching...";
 
 
@@ -679,9 +679,11 @@
 "Nickname"="Nickname";
 "Mention"="Mention";
 "Enter here to search"="Enter here to search";
-"Logged in to QTalk on computer"="Logged in to QTalk on computer";
-"You have logged in QTalk on your computer"="You have logged in QTalk on your computer";
-"Transfer files between phone and computer without using USB. Try it now!"="Transfer files between phone and computer without using USB. Try it now!";
+"Logged in to %@ on computer"="Logged in to %@ on computer";
+"You have logged in %@ on your computer"="You have logged in %@ on your computer";
+"Transfer files between phone and computer without using USB."="Transfer files between phone and computer without using USB.";
+"Try is now" = "Try it now!";
+
 "Reminder"="Reminder";
 "Please enter your feedback"="Please enter your feedback";
 "Sending…"="Sending…";
@@ -804,12 +806,12 @@
 "Wrong password. Please try again."="Wrong password. Please try again.";
 "Please configure email account first, or you are unable to send emails with this device"="Please configure email account first, or you are unable to send emails with this device";
 "Please share after selecting videos or photos"="Please share after selecting videos or photos";
-"Send to Friends"="Send to Friends":
+"Send to Friends"="Send to Friends";
 "Add to Stickers"="Add to Sticker";
 "Extract QR Code"="Extract QR Code";
 "Q_More"="Q_More";
 "Your friend request was rejected."="Your friend request was rejected.";
-"Failed to switch the setting"="Failed to switch the setting":
+"Failed to switch the setting"="Failed to switch the setting";
 "Configure Navigation Manually"="Configure Navigation Manually";
 "Open in Other Apps"="Open in Other Apps";
 "Unable to open this file. Please open and preview it in other apps."="Unable to open this file. Please open and preview it in other apps.";
@@ -906,3 +908,4 @@
 "Wrong_URL" =  "Wrong URL";
 "Wrong_Interface" =  "Wrong Interface";
 "no_unread_messages" = "No unread messages";
+"%ldn mentioned"="@you %ld times";

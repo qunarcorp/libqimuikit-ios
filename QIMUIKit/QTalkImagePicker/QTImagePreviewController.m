@@ -160,9 +160,9 @@
     }
     picker.isOriginalImage =  [[QIMKit sharedInstance] pickerPixelOriginal];
     if (picker.isOriginalImage == NO) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)", [NSBundle qim_localizedStringForKey:@"Standard Definition"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
     } else {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)", [NSBundle qim_localizedStringForKey:@"Full Image"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
     }
 }
 
@@ -230,12 +230,12 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
     if (buttonIndex == 0) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)",[NSBundle qim_localizedStringForKey:@"Standard Definition"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
         picker.isOriginalImage = NO;
         [[QIMKit sharedInstance] setPickerPixelOriginal:NO];
     } else if (buttonIndex == 1) {
         
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)",[NSBundle qim_localizedStringForKey:@"Full Image"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
         picker.isOriginalImage = YES;
         [[QIMKit sharedInstance] setPickerPixelOriginal:YES];
     }
@@ -243,8 +243,8 @@
 
 - (void)onPhotoTypeClick{
     QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清 (%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]],
-                            [NSString stringWithFormat:@"原图 (%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]],nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"%@ (%@)", [NSBundle qim_localizedStringForKey:@"Standard Definition"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]],
+                            [NSString stringWithFormat:@"%@ (%@)", [NSBundle qim_localizedStringForKey:@"Full Image"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]],nil];
     [sheet showInView:self.view];
 }
 

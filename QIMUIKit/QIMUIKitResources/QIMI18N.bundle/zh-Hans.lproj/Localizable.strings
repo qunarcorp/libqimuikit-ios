@@ -677,9 +677,10 @@
 "Nickname"="花名";
 "Mention"="提醒谁看";
 "Enter here to search"="输入完成后点击搜索";
-"Logged in to QTalk on computer"="桌面QTalk已登录";
-"You have logged in QTalk on your computer"="您已在电脑登录QTalk";
-"Transfer files between phone and computer without using USB. Try it now!"="无需数据线，电脑与手机轻松互传文件，快来试试吧！";
+"Logged in to %@ on computer"="桌面%@已登录";
+"You have logged in %@ on your computer"="您已在电脑登录%@";
+"Transfer files between phone and computer without using USB."="无需数据线，电脑与手机轻松互传文件";
+"Try is now" = "快来试试吧~~";
 "Reminder"="提示";
 "Please enter your feedback"="请输入要反馈的内容";
 "Sending…"="发送中，请稍后";
@@ -742,7 +743,7 @@
 "Scan"="扫一扫";
 "Search official accounts"="查找公众号";
 "More"="更多";
-"Camera Roll"="[NSBundle qim_localizedStringForKey:@"Camera Roll"]";
+"Camera Roll"="相机胶卷";
 "n Photos"="%ld 张照片";
 "Photos"="照片";
 "This application cannot access to your photos or videos"="此应用无法使用您的照片或视频";
@@ -802,12 +803,12 @@
 "Wrong password. Please try again."="密码错误，请再尝试一次";
 "Please configure email account first, or you are unable to send emails with this device"="请先配置邮箱账户或该设备不支持发邮件！";
 "Please share after selecting videos or photos"="请选择视频或图片后再分享";
-"Send to Friends"="发送给朋友":
+"Send to Friends"="发送给朋友";
 "Add to Stickers"="添加为表情";
 "Extract QR Code"="识别二维码";
 "Q_More"="更多";
 "Your friend request was rejected."="对方拒绝添加好友。";
-"Failed to switch the setting"="切换状态失败":
+"Failed to switch the setting"="切换状态失败";
 "Configure Navigation Manually"="手动配置导航";
 "Open in Other Apps"="用其他应用打开";
 "Unable to open this file. Please open and preview it in other apps."="暂不支持打开此类文件 可使用前其他应用打开并预览";
@@ -905,3 +906,5 @@
 "Wrong_URL" =  "输入的url有问题";
 "Wrong_Interface" =  "页面有问题";
 "no_unread_messages" = "当前无未读消息";
+
+"%ldn mentioned"="我被@%ld次";
