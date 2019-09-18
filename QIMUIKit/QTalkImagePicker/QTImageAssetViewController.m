@@ -264,7 +264,7 @@ CGFloat imageItemWidth;
         else if (self.assets.count > 0)
         {
             [_tableView reloadData];
-            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:ceil(self.assets.count*1.0/kColoumn)-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:ceil(self.assets.count*1.0/kColoumn)-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
             
             UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _tableView.width, 40)];
             [_tableView setTableFooterView:footerView];
@@ -286,6 +286,10 @@ CGFloat imageItemWidth;
             [label setText:title];
             [footerView addSubview:label];
         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_tableView reloadData];
+            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:ceil(self.assets.count*1.0/kColoumn)-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        });
     };
     
     [self.assetsGroup enumerateAssetsUsingBlock:resultsBlock];
