@@ -35,7 +35,7 @@
     self.imageView.image        = [UIImage imageWithCGImage:posterImage scale:scale orientation:UIImageOrientationUp];
     self.textLabel.text         = [assetsGroup valueForProperty:ALAssetsGroupPropertyName];
     if ([self.textLabel.text.lowercaseString isEqualToString:@"camera roll"]) {
-        self.textLabel.text = @"相机胶卷";
+        self.textLabel.text = @"[NSBundle qim_localizedStringForKey:@"Camera Roll"]";
     }
     self.detailTextLabel.text   = [NSString stringWithFormat:@"%ld", (long)[assetsGroup numberOfAssets]];
     self.accessoryType          = UITableViewCellAccessoryDisclosureIndicator;
@@ -49,7 +49,7 @@
 - (NSString *)accessibilityLabel
 {
     NSString *label = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyName];
-    return [label stringByAppendingFormat:NSLocalizedString(@"%ld 张照片", nil), (long)[self.assetsGroup numberOfAssets]];
+    return [label stringByAppendingFormat:[NSBundle qim_localizedStringForKey:@"n Photos"], (long)[self.assetsGroup numberOfAssets]];
 }
 
 -(void)layoutSubviews

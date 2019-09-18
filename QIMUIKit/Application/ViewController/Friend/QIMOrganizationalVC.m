@@ -89,7 +89,7 @@
 }
 
 - (void)initWithNav{
-    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"组织架构"]];
+    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:[NSBundle qim_localizedStringForKey:@"Organization Structure"]]];
     if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setTitle:@"邀请" forState:UIControlStateNormal];

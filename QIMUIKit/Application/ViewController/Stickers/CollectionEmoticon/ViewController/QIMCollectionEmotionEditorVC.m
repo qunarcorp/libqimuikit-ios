@@ -215,7 +215,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         
         if (![self isChangeDataList]) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"确定取消改动？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"确定取消改动？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"], nil];
             alertView.tag = 0;
             [alertView show];
         }
@@ -265,7 +265,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
     if ([item isEqualToString:kImageFacePageViewAddFlagName]) {
         [_dataList removeLastObject];
         [self updateDelBar];
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"长按表情解锁新姿势" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"长按表情解锁新姿势" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
         [alertView show];
         
     }else{

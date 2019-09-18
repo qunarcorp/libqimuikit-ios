@@ -114,7 +114,7 @@
                 picker.allowsEditing = YES;
                 [weakSelf.rootVC presentViewController:picker animated:YES completion:nil];
             }];
-            UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Red Packet"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
                     
                     UIImagePickerControllerSourceType souceType = UIImagePickerControllerSourceTypeCamera;
@@ -125,7 +125,7 @@
                     [weakSelf.rootVC presentViewController:picker animated:YES completion:nil];
                 } else {
                     
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前设备不支持拍照" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"当前设备不支持拍照" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
                     [alertView show];
                 }
             }];

@@ -33,7 +33,7 @@
         [_titleLabel setFont:[UIFont boldSystemFontOfSize:16]];
         [_titleLabel setTextColor:[UIColor blackColor]];
         [_titleLabel setTextAlignment:NSTextAlignmentLeft];
-        [_titleLabel setText:@"群成员管理"];
+        [_titleLabel setText:[NSBundle qim_localizedStringForKey:@"Manage group members"]];
         [_rootView addSubview:_titleLabel];
         
     }

@@ -75,7 +75,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     NSDictionary *serviceShop = [self.serviceShops objectAtIndex:section];
     NSString *sname = [serviceShop objectForKey:@"sname"];
-    return [NSString stringWithFormat:@"店铺名 : %@", sname];
+    return [NSString stringWithFormat:@"%@ : %@",[NSBundle qim_localizedStringForKey:@"Store Name"],sname];
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section

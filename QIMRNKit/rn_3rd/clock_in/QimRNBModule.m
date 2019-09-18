@@ -717,7 +717,7 @@ RCT_EXPORT_METHOD(showUserPhoneNumber:(NSDictionary *)param) {
             if (phoneNumberStr.length > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *message = [NSString stringWithFormat:@"手机号:%@", phoneNumberStr];
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:message preferredStyle:UIAlertControllerStyleAlert];
                     UIAlertAction *copyAction = [UIAlertAction actionWithTitle:@"复制" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                         [[UIPasteboard generalPasteboard] setString:phoneNumberStr];
                         showNumberId = nil;
@@ -741,7 +741,7 @@ RCT_EXPORT_METHOD(showUserPhoneNumber:(NSDictionary *)param) {
             } else {
                 showNumberId = nil;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"没有查询到相应记录" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"没有查询到相应记录" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
                     [alert show];
                 });
             }
@@ -822,7 +822,7 @@ RCT_EXPORT_METHOD(addUserFriend:(NSDictionary *)param) {
         switch (mode) {
             case VerifyMode_AllRefused:
             {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"对方拒绝添加好友。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Your friend request was rejected."] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                 [alertView show];
             }
                 break;
@@ -851,7 +851,7 @@ RCT_EXPORT_METHOD(addUserFriend:(NSDictionary *)param) {
         }
     });
 #if __has_include("QIMAutoTracker.h")
-    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"add friends" withDescription:@"添加好友"];
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"add friends" withDescription:[NSBundle qim_localizedStringForKey:@"Add friend"]];
 #endif
 }
 
@@ -873,7 +873,7 @@ RCT_EXPORT_METHOD(deleteUserFriend:(NSDictionary *)param) {
                     if (isSuccess) {
                         [navVC popToRootViewControllerAnimated:YES];
                     } else {
-                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"删除好友失败。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"删除好友失败。" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                         [alertView show];
                     }
                 });
@@ -1311,7 +1311,7 @@ RCT_EXPORT_METHOD(takePhoto) {
             [navVC presentViewController:picker animated:YES completion:nil];
         } else {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前设备不支持拍照" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"当前设备不支持拍照" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
             [alertView show];
         }
         
@@ -1828,7 +1828,7 @@ RCT_EXPORT_METHOD(updateCheckConfig) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         [[QIMKit sharedInstance] checkClientConfig];
         dispatch_async(dispatch_get_main_queue(), ^{
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"配置更新完成，建议重启客户端进行查看！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"配置更新完成，建议重启客户端进行查看！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
             [alertView show];
         });
     });

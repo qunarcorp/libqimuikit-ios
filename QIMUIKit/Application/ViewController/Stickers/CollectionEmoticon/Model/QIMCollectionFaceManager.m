@@ -286,7 +286,7 @@
         });
     } else {
         
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"已经收藏该表情!" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"已经收藏该表情!" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
         return;
     }

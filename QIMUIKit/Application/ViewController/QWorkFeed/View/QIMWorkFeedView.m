@@ -225,7 +225,7 @@
 - (void)setupNav {
     self.title = (self.userId.length <= 0) ? @"驼圈" : [NSString stringWithFormat:@"%@的驼圈", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.userId]];
     if ([self.userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-        self.title = @"我的驼圈";
+        self.title = [NSBundle qim_localizedStringForKey:@"My Moments"];
     }
     if (self.userId.length <= 0) {
         UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.addNewMomentBtn];
@@ -545,7 +545,7 @@
                                                                [strongSelf didAddComment:cell];
                                                            }
                                                        }
-                                         otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], @"回复"]];
+                                         otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Reply"]]];
     actionSheet.destructiveButtonIndexSet = indexSet;
     actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
     [actionSheet show];

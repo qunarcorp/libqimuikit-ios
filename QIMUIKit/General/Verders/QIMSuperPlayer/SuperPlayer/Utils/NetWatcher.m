@@ -140,7 +140,7 @@
     if ([def isEqualToString:@"流畅"]) {
         return 10;
     }
-    if ([def isEqualToString:@"标清"]) {
+    if ([def isEqualToString:[NSBundle qim_localizedStringForKey:@"Standard Definition"]]) {
         return 15;
     }
     if ([def isEqualToString:@"高清"]) {

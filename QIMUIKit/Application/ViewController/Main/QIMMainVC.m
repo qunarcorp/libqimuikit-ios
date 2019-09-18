@@ -542,7 +542,7 @@ static dispatch_once_t __onceMainToken;
         }
     }
 
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:message delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
     [alertView show];
 
     [self.sessionView sessionViewWillAppear];
@@ -1375,7 +1375,7 @@ static dispatch_once_t __onceMainToken;
     
     NSUInteger count = [[QIMKit sharedInstance] getAppNotReaderCount];
     if (count) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"接下来会清空所有未读消息状态,以及「@all」消息提醒，是否继续？" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"接下来会清空所有未读消息状态,以及「@all」消息提醒，是否继续？" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"继续" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [[QIMKit sharedInstance] clearAllNoRead];
         }];
@@ -1386,19 +1386,19 @@ static dispatch_once_t __onceMainToken;
         [alertVc addAction:cancelAction];
         [self presentViewController:alertVc animated:YES completion:nil];
         /*
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"接下来会清空所有未读消息状态,以及「@all」消息提醒，是否继续？" delegate:self cancelButtonTitle:@"继续" otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Cancel"], nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"接下来会清空所有未读消息状态,以及「@all」消息提醒，是否继续？" delegate:self cancelButtonTitle:@"继续" otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Cancel"], nil];
         alertView.tag = kClearAllNotReadMsg;
         [alertView show];
          */
     } else {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"当前无未读消息" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"当前无未读消息" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [[QIMKit sharedInstance] clearAllNoRead];
         }];
         [alertVc addAction:okAction];
         [self presentViewController:alertVc animated:YES completion:nil];
         /*
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前无未读消息" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"当前无未读消息" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
         alertView.tag = kClearAllNotReadMsg;
         [alertView show];
          */

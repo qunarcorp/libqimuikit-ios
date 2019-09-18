@@ -84,10 +84,10 @@
         _identityLabel.text = [NSBundle qim_localizedStringForKey:@"contact_tab_group"];
     } else if ([[_memberInfo objectForKey:@"affiliation"] isEqualToString:@"admin"] ) {
         _identityLabel.backgroundColor = [UIColor greenColor];
-        _identityLabel.text = @"管理员";
+        _identityLabel.text = [NSBundle qim_localizedStringForKey:@"Administrator"];
     }else{
         _identityLabel.backgroundColor = [UIColor blueColor];
-        _identityLabel.text = @"普通成员";
+        _identityLabel.text = [NSBundle qim_localizedStringForKey:@"Member"];
     }
 
     _nickNameLabel.text = [_memberInfo objectForKey:@"name"];

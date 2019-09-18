@@ -341,7 +341,7 @@ CGFloat maxFullContentHeight = 0;
     if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
         QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
         if (![storage.linkData length]) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
             [alertView show];
         } else {
             [QIMFastEntrance openWebViewForUrl:storage.linkData showNavBar:YES];

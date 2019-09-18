@@ -233,7 +233,7 @@
 
 - (void)delMember:(NSDictionary *)memDic
 {
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:[NSString stringWithFormat:@"您即将将 %@ 踢出群组",memDic[@"name"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:[NSString stringWithFormat:@"您即将将 %@ 踢出群组",memDic[@"name"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"], nil];
     [alertView show];
 }
 

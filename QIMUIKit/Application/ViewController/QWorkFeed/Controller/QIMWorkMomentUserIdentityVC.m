@@ -61,8 +61,8 @@
     if (!_saveBtn) {
         _saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_saveBtn setFrame:CGRectMake(0, 0, 36, 18)];
-        [_saveBtn setTitle:@"确定" forState:UIControlStateNormal];
-        [_saveBtn setTitle:@"确定" forState:UIControlStateDisabled];
+        [_saveBtn setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
+        [_saveBtn setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateDisabled];
         [_saveBtn setTitleColor:[UIColor qim_colorWithHex:0xBFBFBF] forState:UIControlStateDisabled];
         [_saveBtn setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         [_saveBtn addTarget:self action:@selector(didselectUserIdentity:) forControlEvents:UIControlEventTouchUpInside];
@@ -201,7 +201,7 @@
     BOOL isAnonymous = self.lastUserModel.isAnonymous;
     
     if (userIdentityModel.isAnonymous == NO) {
-        cell.textLabel.text = @"实名发布";
+        cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"Use My Real Name"];
         [cell setUserIdentitySelected:!isAnonymous];
         /* Mark by 匿名
         if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) {
@@ -212,13 +212,13 @@
         */
     } else {
         if (userIdentityModel.mockAnonymous == YES) {
-            cell.textLabel.text = @"匿名发布";
+            cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"Anonymous User"];
             cell.detailTextLabel.text = [NSString stringWithFormat:@"花名获取中..."];
             cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
             cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
             [cell setUserIdentitySelected:NO];
         } else {
-            cell.textLabel.text = @"匿名发布";
+            cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"Anonymous User"];
             cell.detailTextLabel.text = [NSString stringWithFormat:@"花名：%@", userIdentityModel.anonymousName];
             cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
             cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
@@ -250,7 +250,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     QIMWorkMomentUserIdentityModel *userIdentityModel = [self.userIdentityList objectAtIndex:indexPath.row];
     if (userIdentityModel.mockAnonymous == YES) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"花名正在路上，再等等。" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"花名正在路上，再等等。" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];

@@ -295,7 +295,7 @@
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
                                                                         message:@"该消息已过期。"
                                                                        delegate:nil
-                                                              cancelButtonTitle:@"确定"
+                                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
                                                               otherButtonTitles:nil];
                     [alertView show];
                 } else {
