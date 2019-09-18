@@ -482,7 +482,7 @@ static const NSInteger searchMinCharacterCount = 2;
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField.text.length < 2) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请至少输入两个字符开始搜索" delegate:self cancelButtonTitle:nil otherButtonTitles:@"好的", nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请至少输入两个字符开始搜索" delegate:self cancelButtonTitle:nil otherButtonTitles:@"好的", nil];
         [alertView show];
         return NO;
     }

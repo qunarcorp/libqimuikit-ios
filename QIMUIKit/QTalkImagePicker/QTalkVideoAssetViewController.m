@@ -361,7 +361,7 @@
                      }
                          break;
                      case AVAssetExportSessionStatusFailed:{
-                         QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩失败{%@}",exportSession.error] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                         QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"%@{%@}",[NSBundle qim_localizedStringForKey:@"Failed to compress"],exportSession.error] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                          [alertView show];
                      }
                          break;
@@ -384,7 +384,7 @@
     CGImageRelease(image);
     
     NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
-    QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"直接发送",@"保存相册并发送", nil];
+    QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"The video size after compressed is %@. Still send it?"],fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Send directly"],@"保存相册并发送", nil];
     [alertView setVideoOutPath:videoResultPath];
     [alertView setThumbImage:thumb];
     [alertView setFileSizeStr:fileSizeStr];
@@ -441,10 +441,10 @@
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo: (void *)contextInfo {
     
     if (!error) {
-        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:@"保存成功！" message:@"小视频已经保存到相册..." delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:@"保存成功！" message:@"小视频已经保存到相册..." delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
         [alertView show];
     }else{
-        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:@"保存失败！" message:@"请到“设置->隐私->照片”中允许访问相册" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Failed to save!"] message:[NSBundle qim_localizedStringForKey:@"Please allow Camera access in Settings->Privacy->Photo"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
         [alertView show];
     }
 }

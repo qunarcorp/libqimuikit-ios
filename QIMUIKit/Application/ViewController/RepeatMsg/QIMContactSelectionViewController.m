@@ -394,7 +394,7 @@
     if (self.ExternalForward) {
         redeemContactMsg = [NSString stringWithFormat:@"确认发送给%@?", name];
     }
-    UIAlertController *redeemContactVc = [UIAlertController alertControllerWithTitle:@"提示" message:redeemContactMsg preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *redeemContactVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:redeemContactMsg preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIAlertActionStyleCancel handler:nil];
     __weak typeof(self) weakSelf = self;
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

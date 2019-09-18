@@ -79,7 +79,7 @@
     self.navigationController.navigationBar.translucent = NO;
     self.title = (self.userId.length <= 0) ? @"驼圈" : [NSString stringWithFormat:@"%@的驼圈", [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.userId]];
     if ([self.userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-        self.title = @"我的驼圈";
+        self.title = [NSBundle qim_localizedStringForKey:@"My Moments"];
         UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.addNewMomentBtn];
         self.navigationItem.rightBarButtonItem = newMomentBtn;
     }

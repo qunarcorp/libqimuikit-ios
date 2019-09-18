@@ -70,21 +70,21 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     BOOL isAnonymous = userModel.isAnonymous;
     if (isAnonymous == NO) {
         [self.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-        self.userIdentityLabel.text = @"实名发布";
+        self.userIdentityLabel.text = [NSBundle qim_localizedStringForKey:@"Use My Real Name"];
     } else {
         NSString *anonymousPhoto = userModel.anonymousPhoto;
         [self.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-        self.userIdentityLabel.text = @"匿名发布";
+        self.userIdentityLabel.text = [NSBundle qim_localizedStringForKey:@"Anonymous User"];
     }
     
     /* Mark by 匿名
     if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
         [self.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-        self.userIdentityLabel.text = @"实名发布";
+        self.userIdentityLabel.text = [NSBundle qim_localizedStringForKey:@"Use My Real Name"];
     } else {
         NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
         [self.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-        self.userIdentityLabel.text = @"匿名发布";
+        self.userIdentityLabel.text = [NSBundle qim_localizedStringForKey:@"Anonymous User"];
     } */
 }
 
@@ -115,7 +115,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         self.iconView.layer.masksToBounds = YES;
         
         self.userIdentityLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        self.userIdentityLabel.text = @"实名发布";
+        self.userIdentityLabel.text = [NSBundle qim_localizedStringForKey:@"Use My Real Name"];
         self.userIdentityLabel.textColor = [UIColor qim_colorWithHex:0x666666];
         self.userIdentityLabel.font = [UIFont systemFontOfSize:12];
         [self addSubview:self.userIdentityLabel];
@@ -780,8 +780,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     BOOL emptyContent = (((self.selectPhotos.count <= 0) && ((self.textView.text.length <= 0) || ([self isEmpty:self.textView.text] == YES))) && (self.workFeedContentType == QIMWorkFeedContentTypeText));
     
     if (emptyContent == YES) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"请尽情发挥吧..." preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请尽情发挥吧..." preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
         [alertVc addAction:okAction];
@@ -1311,10 +1311,10 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     
     if (isAnonymous == NO) {
         [cell.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-        cell.detailTextLabel.text = @"实名发布";
+        cell.detailTextLabel.text = [NSBundle qim_localizedStringForKey:@"Use My Real Name"];
     } else {
         [cell.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-        cell.detailTextLabel.text = @"匿名发布";
+        cell.detailTextLabel.text = [NSBundle qim_localizedStringForKey:@"Anonymous User"];
     }
     
     /* Mark by 匿名
@@ -1327,9 +1327,9 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     cell.detailTextLabel.font = [UIFont systemFontOfSize:15];
     cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
     if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-        cell.detailTextLabel.text = @"实名发布";
+        cell.detailTextLabel.text = [NSBundle qim_localizedStringForKey:@"Use My Real Name"];
     } else {
-        cell.detailTextLabel.text = @"匿名发布";
+        cell.detailTextLabel.text = [NSBundle qim_localizedStringForKey:@"Anonymous User"];
     }
      */
     return cell;

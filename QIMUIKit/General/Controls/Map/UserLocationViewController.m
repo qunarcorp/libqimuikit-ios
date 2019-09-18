@@ -322,7 +322,7 @@ typedef enum {
     if (!_isNotSend) {
         sendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         sendBtn.frame = CGRectMake(self.view.width - self.view.width / 3 + 22, 20, self.view.width / 3, 43);
-        [sendBtn setTitle:@"发送" forState:UIControlStateNormal];
+        [sendBtn setTitle:[NSBundle qim_localizedStringForKey:@"Send"] forState:UIControlStateNormal];
         [sendBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         sendBtn.backgroundColor = [UIColor spectralColorBlueColor];
         [sendBtn addTarget:self action:@selector(sendBtnHandle:) forControlEvents:UIControlEventTouchUpInside];

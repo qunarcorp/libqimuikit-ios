@@ -34,12 +34,12 @@
 #pragma mark - init ui
 - (void)onDoneClick{
     if (_questionTextField.text.length <= 0) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入问题内容。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请输入问题内容。" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
         return;
     }
     if (_answerTextField.text.length <= 0) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入答案内容。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请输入答案内容。" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
         return;
     }

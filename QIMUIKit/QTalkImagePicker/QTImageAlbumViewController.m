@@ -64,7 +64,7 @@
 
 - (void)initNavBar{
 
-    [self.navigationItem setTitle:@"照片"];
+    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"Photos"]];
 
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(dismiss:)];
     [self.navigationItem setRightBarButtonItem:rightItem];

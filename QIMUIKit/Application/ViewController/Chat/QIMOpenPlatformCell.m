@@ -58,14 +58,14 @@
         [_tagLabel setBackgroundColor:[UIColor clearColor]];
         [_tagLabel setFont:[UIFont systemFontOfSize:16]];
         [_tagLabel setTextColor:[UIColor qim_colorWithHex:0x41bbc4 alpha:1]];
-        [_tagLabel setText:@"#标签#"];
+        [_tagLabel setText:[NSBundle qim_localizedStringForKey:@"#tag#"]];
         [_backView addSubview:_tagLabel];
         
         _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(_backView.width - 90, 10, 80, 20)];
         [_timeLabel setBackgroundColor:[UIColor clearColor]];
         [_timeLabel setFont:[UIFont systemFontOfSize:12]];
         [_timeLabel setTextColor:[UIColor qim_colorWithHex:0x999999 alpha:1]];
-        [_timeLabel setText:@"0分钟前"];
+        [_timeLabel setText:[NSBundle qim_localizedStringForKey:@"0 min ago"]];
         [_timeLabel setTextAlignment:NSTextAlignmentRight];
         [_backView addSubview:_timeLabel];
         
@@ -81,7 +81,7 @@
         [_bottomButton setBackgroundColor:[UIColor clearColor]];
         [_bottomButton setBackgroundImage:[UIImage qim_imageFromColor:[UIColor qim_colorWithHex:0x41bbc4 alpha:1]] forState:UIControlStateNormal];
         [_bottomButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [_bottomButton setTitle:@"立即答复" forState:UIControlStateNormal];
+        [_bottomButton setTitle:[NSBundle qim_localizedStringForKey:@"Answer now"] forState:UIControlStateNormal];
         [_bottomButton addTarget:self action:@selector(onBottomClick:) forControlEvents:UIControlEventTouchUpInside];
         [_backView addSubview:_bottomButton];
         
@@ -108,7 +108,7 @@
     switch (state) {
         case QDDealState_None:
         {
-            [_bottomButton setTitle:@"立即答复" forState:UIControlStateNormal];
+            [_bottomButton setTitle:[NSBundle qim_localizedStringForKey:@"Answer now"] forState:UIControlStateNormal];
             [_bottomButton addTarget:self action:@selector(onBottomClick:) forControlEvents:UIControlEventTouchUpInside];
             [_bottomButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [_bottomButton setBackgroundImage:[UIImage qim_imageFromColor:[UIColor qim_colorWithHex:0x41bbc4 alpha:1]] forState:UIControlStateNormal];
@@ -124,7 +124,7 @@
             break;
         case QDDealState_Faild:
         {
-            [_bottomButton setTitle:@"已被抢答" forState:UIControlStateNormal];
+            [_bottomButton setTitle:[NSBundle qim_localizedStringForKey:@"It has been answered"] forState:UIControlStateNormal];
             [_bottomButton removeTarget:self action:@selector(onBottomClick:)forControlEvents:UIControlEventTouchUpInside];
             [_bottomButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [_bottomButton setBackgroundImage:[UIImage qim_imageFromColor:[UIColor qim_colorWithHex:0x94e0e9 alpha:1]] forState:UIControlStateNormal];
@@ -132,7 +132,7 @@
             break;
         case QDDealState_TimeOut:
         {
-            [_bottomButton setTitle:@"订单已过期" forState:UIControlStateNormal];
+            [_bottomButton setTitle:[NSBundle qim_localizedStringForKey:@"Expired"] forState:UIControlStateNormal];
             [_bottomButton removeTarget:self action:@selector(onBottomClick:)forControlEvents:UIControlEventTouchUpInside];
             [_bottomButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [_bottomButton setBackgroundImage:[UIImage qim_imageFromColor:[UIColor qim_colorWithHex:0x94e0e9 alpha:1]] forState:UIControlStateNormal];
