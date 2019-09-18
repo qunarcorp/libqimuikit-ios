@@ -94,7 +94,7 @@ CGFloat imageItemWidth;
     
     self.title = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyName];
     if ([self.title.lowercaseString isEqualToString:@"camera roll"]) {
-        self.title = @"[NSBundle qim_localizedStringForKey:@"Camera Roll"]";
+        self.title = [NSBundle qim_localizedStringForKey:@"Camera Roll"];
     }
     [self.navigationItem setTitle:self.title];
     

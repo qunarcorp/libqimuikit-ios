@@ -35,7 +35,7 @@
     self.imageView.image        = [UIImage imageWithCGImage:posterImage scale:scale orientation:UIImageOrientationUp];
     self.textLabel.text         = [assetsGroup valueForProperty:ALAssetsGroupPropertyName];
     if ([self.textLabel.text.lowercaseString isEqualToString:@"camera roll"]) {
-        self.textLabel.text = @"[NSBundle qim_localizedStringForKey:@"Camera Roll"]";
+        self.textLabel.text = [NSBundle qim_localizedStringForKey:@"Camera Roll"];
     }
     self.detailTextLabel.text   = [NSString stringWithFormat:@"%ld", (long)[assetsGroup numberOfAssets]];
     self.accessoryType          = UITableViewCellAccessoryDisclosureIndicator;
