@@ -90,7 +90,7 @@
 - (UITextField *)searchBar {
     if (_searchBar == nil) {
         _searchBar = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.width - 20, [self headerView].height)];
-        _searchBar.placeholder = @"搜索联系人/群组";
+        _searchBar.placeholder = [NSBundle qim_localizedStringForKey:@"Search_contacts/groups"];
         _searchBar.font = [UIFont systemFontOfSize:15];
         _searchBar.backgroundColor = [UIColor clearColor];
         _searchBar.textColor = [UIColor spectralColorGrayDarkColor];
@@ -150,7 +150,7 @@
     
     UIButton * friendListJump = [UIButton buttonWithType:UIButtonTypeCustom];
     friendListJump.frame = CGRectMake(10, 0, headerView.width - 20, 50);
-    [friendListJump setTitle:@"从朋友列表中选择" forState:UIControlStateNormal];
+    [friendListJump setTitle:[NSBundle qim_localizedStringForKey:@"Select_from_friends"] forState:UIControlStateNormal];
     [friendListJump setTitleColor:[UIColor spectralColorGrayDarkColor] forState:UIControlStateNormal];
     [friendListJump setTitleEdgeInsets:UIEdgeInsetsMake(0, - self.view.width / 2, 0, 0)];
     [friendListJump addTarget:self action:@selector(jumpToFriendList:) forControlEvents:UIControlEventTouchUpInside];
@@ -162,7 +162,7 @@
     
     UIButton * groupListJump = [UIButton buttonWithType:UIButtonTypeCustom];
     groupListJump.frame = CGRectMake(10, friendListJump.bottom + 0.5, headerView.width - 20, 50);
-    [groupListJump setTitle:@"从群组列表中选择" forState:UIControlStateNormal];
+    [groupListJump setTitle:[NSBundle qim_localizedStringForKey:@"Select_from_groups"] forState:UIControlStateNormal];
     [groupListJump setTitleColor:[UIColor spectralColorGrayDarkColor] forState:UIControlStateNormal];
     [groupListJump setTitleEdgeInsets:UIEdgeInsetsMake(0, - self.view.width / 2, 0, 0)];
     [groupListJump addTarget:self action:@selector(jumpToGroupList:) forControlEvents:UIControlEventTouchUpInside];
@@ -404,7 +404,7 @@
     [view setBackgroundColor:[UIColor spectralColorLightColor]];
     
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(10, 3, tableView.width - 20, 24)];
-    label.text = @"最近联系人";
+    label.text = [NSBundle qim_localizedStringForKey:@"Recent_contacts"];
     [label setBackgroundColor:[UIColor clearColor]];
     [label setTextColor:[UIColor blackColor]];
     [label setFont:[UIFont systemFontOfSize:14]];

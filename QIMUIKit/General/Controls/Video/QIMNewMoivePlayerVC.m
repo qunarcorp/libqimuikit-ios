@@ -211,10 +211,10 @@
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo: (void *)contextInfo {
     
     if (!error) {
-        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:@"保存成功！" message:@"小视频已经保存到相册..." delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Saved_Success"] message:[NSBundle qim_localizedStringForKey:@"Video_saved"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
         [alertView show];
     } else {
-        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:@"保存失败！" message:@"请到“设置->隐私->照片”中允许访问相册" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"save_faild"] message:[NSBundle qim_localizedStringForKey:@"Privacy_Photo"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
         [alertView show];
     }
 }

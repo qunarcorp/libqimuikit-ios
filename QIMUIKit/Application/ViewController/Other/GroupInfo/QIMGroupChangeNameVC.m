@@ -54,7 +54,7 @@
 
 - (void)onSaveGroupName{
     if (_textField.text.length <= 0) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入要修改的群名称" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"请输入要修改的群名称" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
         [alertView show];
         return;
     }

@@ -162,7 +162,7 @@
             
             self.organLabel.frame = CGRectMake(self.nameLabel.right + 8, 0, 66, 20);
             NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-            NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
+            NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:[NSBundle qim_localizedStringForKey:@"moment_Unknown"];
             NSString *lastDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
             if(lastDp.length > 0) {
                 self.organLabel.text = [NSString stringWithFormat:@"%@", lastDp];
@@ -199,7 +199,7 @@
     }
     self.contentLabel.frame = CGRectMake(self.nameLabel.left, self.headerImageView.bottom, SCREEN_WIDTH - 56 - 6 - self.headerImageView.right - 22, 56);
     if (noticeMsgModel.eventType == QIMWorkFeedNotifyTypePOSTAt && self.cellType == QIMWorkMomentCellTypeMyMessage) {
-        self.contentLabel.text = @"Hi~你被Cue到啦，快来看一下吧～";
+        self.contentLabel.text = [NSBundle qim_localizedStringForKey:@"moment_be_mentioned"];
     }
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:(noticeMsgModel.createTime/1000)];
     self.timeLabel.text = [timeDate qim_timeIntervalDescription];

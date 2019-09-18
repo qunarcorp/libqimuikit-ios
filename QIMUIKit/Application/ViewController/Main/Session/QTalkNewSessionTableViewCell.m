@@ -291,7 +291,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_deleteBtn) {
         
-        _deleteBtn = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"移除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        _deleteBtn = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:[NSBundle qim_localizedStringForKey:@"Remove"] handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
             
             if (self.sessionScrollDelegate && [self.sessionScrollDelegate respondsToSelector:@selector(qimDeleteSession:)]) {
                 
@@ -306,7 +306,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (UITableViewRowAction *)stickyBtn {
     
-    NSString *title = self.isStick ? @"取消置顶" : @"置顶";
+    NSString *title = self.isStick ? [NSBundle qim_localizedStringForKey:@"chat_remove_sticky"] : [NSBundle qim_localizedStringForKey:@"chat_Sticky_Top"];
     
     _stickyBtn = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:title handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
         

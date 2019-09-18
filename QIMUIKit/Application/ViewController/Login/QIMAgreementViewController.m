@@ -33,7 +33,7 @@
 - (void)setUpNav
 {
     self.navigationItem.title = [NSString stringWithFormat:@"%@软件使用许可协议", [QIMKit getQIMProjectType] == QIMProjectTypeStartalk ? @"Startalk" : @"QTalk"];
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"关闭" style:UIBarButtonItemStyleDone target:self action:@selector(closeHandle:)];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_close"] style:UIBarButtonItemStyleDone target:self action:@selector(closeHandle:)];
     [self.navigationItem setRightBarButtonItem:rightItem];
 }
 

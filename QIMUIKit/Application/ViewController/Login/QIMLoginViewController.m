@@ -69,7 +69,7 @@
     [super viewDidAppear:animated];
     
     if ([linkUrl length] > 0) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"是否更新" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Cancel"],nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"是否更新" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Cancel"],nil];
         [alertView show];
     }
     
@@ -136,7 +136,7 @@
                 [[QIMKit sharedInstance] saveUserInfoWithName:userName passWord:[self.passwordTextField text]];
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{ 
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"[%d] %@",[[loginDic objectForKey:@"errcode"] intValue],[loginDic objectForKey:@"errmsg"]] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"[%d] %@",[[loginDic objectForKey:@"errcode"] intValue],[loginDic objectForKey:@"errmsg"]] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
                     [alertView show];
                     
                     //登录动画
@@ -149,7 +149,7 @@
     }
     else
     {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"用户名密码无效" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"用户名密码无效" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -162,7 +162,7 @@
         if ([notify.object boolValue]) {
             [QIMFastEntrance showMainVc];
         } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"登录失败！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSBundle qim_localizedStringForKey:@"login_faild"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alert show];
         }
     });
@@ -173,12 +173,12 @@
         [_loadingView stopAnimation];
         [self enableLoginUI];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂不开放注册" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"暂不开放注册" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
         [alert show];
         return;
         
         if ([notify.object boolValue] == NO) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"注册失败！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"注册失败！" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alert show];
         }
     });

@@ -125,7 +125,7 @@
                     [weakSelf.rootVC presentViewController:picker animated:YES completion:nil];
                 } else {
                     
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前设备不支持拍照" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"当前设备不支持拍照" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
                     [alertView show];
                 }
             }];

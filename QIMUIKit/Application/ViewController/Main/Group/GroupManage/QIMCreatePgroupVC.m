@@ -344,12 +344,12 @@
     {
         if ([[groupNameTextField text] length] == 0) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"群名称不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"群名称不能为空" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         }
         else if([_selectionArray count] == 0)
         {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"请选择群成员" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"请选择群成员" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         }
         

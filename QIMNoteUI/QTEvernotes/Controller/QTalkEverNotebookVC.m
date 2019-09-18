@@ -182,7 +182,7 @@ typedef enum {
             
             [self getLocalEverNotes];
         }];
-        [alert showEdit:self title:@"提示" subTitle:@"新建笔记本" closeButtonTitle:nil duration:0.0f];
+        [alert showEdit:self title:[NSBundle qim_localizedStringForKey:@"common_prompt"] subTitle:@"新建笔记本" closeButtonTitle:nil duration:0.0f];
         
     }else if (optionType == ENUM_Notebook_OptionTypeEdit) {
         if (model) {
@@ -210,7 +210,7 @@ typedef enum {
                 }
                 [self getLocalEverNotes];
             }];
-            [alert showEdit:self title:@"提示" subTitle:@"编辑笔记本" closeButtonTitle:nil duration:0.0f];
+            [alert showEdit:self title:[NSBundle qim_localizedStringForKey:@"common_prompt"] subTitle:@"编辑笔记本" closeButtonTitle:nil duration:0.0f];
         }
     }else if (optionType == ENUM_Notebook_OptionTypeDelete) {
         if (model) {
@@ -227,11 +227,11 @@ typedef enum {
                 return buttonConfig;
             };
             
-            [alert addButton:@"确定" actionBlock:^(void) {
+            [alert addButton:[NSBundle qim_localizedStringForKey:@"common_ok"] actionBlock:^(void) {
                 [[QIMNoteManager sharedInstance] deleteQTNoteMainItemWithModel:model];
                 [self getLocalEverNotes];
             }];
-            [alert showWarning:@"提示" subTitle:@"确定要删除此笔记本吗？此笔记本中的任何笔记都将被删除" closeButtonTitle:nil duration:0.0f];
+            [alert showWarning:[NSBundle qim_localizedStringForKey:@"common_prompt"] subTitle:@"确定要删除此笔记本吗？此笔记本中的任何笔记都将被删除" closeButtonTitle:nil duration:0.0f];
         }
     }
 }

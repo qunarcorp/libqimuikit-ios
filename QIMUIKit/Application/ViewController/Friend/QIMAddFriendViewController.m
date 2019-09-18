@@ -30,7 +30,7 @@
             [self openChatSession];
         } else {
             [[self progressHUD] hide:YES];
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"添加好友失败,原因:%@。",reason] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"添加好友失败,原因:%@。",reason] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         }
     }

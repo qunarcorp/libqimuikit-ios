@@ -241,7 +241,7 @@
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_sendButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
-    [_sendButton setTitle:@"确定" forState:UIControlStateNormal];
+    [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] forState:UIControlStateNormal];
     [_sendButton addTarget:self action:@selector(onSendClick) forControlEvents:UIControlEventTouchUpInside];
     [_sendButton setEnabled:NO];
     [_bottomView addSubview:_sendButton];
@@ -270,7 +270,7 @@
         [_editButton setEnabled:NO];
         [_photoTypeButton setEnabled:NO];
         [_sendButton setEnabled:NO];
-        [_sendButton setTitle:@"确定" forState:UIControlStateNormal];
+        [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] forState:UIControlStateNormal];
     }
 //    if (picker.isOriginalImage == NO) {
 //        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
@@ -310,7 +310,7 @@
     PHImageRequestOptions * options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeExact;
     options.networkAccessAllowed = YES;
-    [[self tipHUDWithText:@"正在获取图片..."] show:YES];
+    [[self tipHUDWithText:[NSBundle qim_localizedStringForKey:@"Getting_photo"]] show:YES];
     __weak typeof(self) weakSelf = self;
     [_imageManager requestImageForAsset:[self.photoArray objectAtIndex:index] targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];

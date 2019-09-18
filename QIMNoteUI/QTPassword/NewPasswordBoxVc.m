@@ -144,7 +144,7 @@
     NSString *pwd = self.pwdBoxField.text;
     NSString *repeatPwd = self.repeatPwdBoxField.text;
     if (name.length <= 0) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"密码箱名称不能为空" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"密码箱名称不能为空" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.pwdBoxField resignFirstResponder];
             [self.repeatPwdBoxField resignFirstResponder];
@@ -155,7 +155,7 @@
         return NO;
     }
     if (pwd.length <= 0) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"密码箱主密码不能为空" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"密码箱主密码不能为空" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.nameTextField resignFirstResponder];
             [self.repeatPwdBoxField resignFirstResponder];
@@ -166,7 +166,7 @@
         return NO;
     }
     if (repeatPwd.length <= 0) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"请确认密码箱主密码" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"请确认密码箱主密码" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.nameTextField resignFirstResponder];
             [self.pwdBoxField resignFirstResponder];
@@ -177,7 +177,7 @@
         return NO;
     }
     if (![pwd isEqualToString:repeatPwd]) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"密码箱主密码不一致" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"密码箱主密码不一致" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.nameTextField resignFirstResponder];
             [self.pwdBoxField resignFirstResponder];
@@ -188,7 +188,7 @@
         return NO;
     }
     if (!self.agreeBtn.selected) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"请仔细阅读注意事项，同意后勾选选项" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"请仔细阅读注意事项，同意后勾选选项" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.nameTextField resignFirstResponder];
             [self.pwdBoxField resignFirstResponder];

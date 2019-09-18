@@ -419,7 +419,7 @@ static UIImage *__rightBallocImage = nil;
                     self.indicatorView.center = CGPointMake(self.backView.left - 24, self.backView.centerY);
                     [self.contentView addSubview:self.indicatorView];
                     [self.indicatorView startAnimating];
-                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@" %@-%@", @"发送中", self.message.messageId];
+                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@" %@-%@", [NSBundle qim_localizedStringForKey:@"Sending"], self.message.messageId];
                 }
                     break;
                 case QIMMessageSendState_Faild: {

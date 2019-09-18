@@ -247,7 +247,7 @@
 #if __has_include("QIMLocalLog.h")
     __weak typeof(self) weakSelf = self;
     if (![self.dataSource containsObject:@"isLogging"]) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"确认开始记录App性能数据吗？再次点击屏幕五下关闭！！！" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"确认开始记录App性能数据吗？再次点击屏幕五下关闭！！！" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIAlertActionStyleCancel handler:nil];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 //            [weakSelf.dataSource addObject:@"isLogging"];
