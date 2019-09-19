@@ -177,7 +177,6 @@ static QIMFastEntrance *_sharedInstance = nil;
                 [QIMMainVC setMainVCReShow:YES];
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
                 [window setRootViewController:nav];
-
             }
         }
     }
