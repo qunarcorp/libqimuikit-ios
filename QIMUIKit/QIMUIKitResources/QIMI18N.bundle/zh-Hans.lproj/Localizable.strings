@@ -269,6 +269,7 @@
 "relogin_checkNetWork" = "   加载登录页面失败， \n 请确保您已经开启Wi-Fi或移动数据，并点击确认按钮重新加载页面";
 
 "login_sign_Up" = "注册";
+"login_scan" = "扫码配置导航";
 "login_forget_password" = "忘记密码";
 "not_have_company" = "还没有公司？创建一个";
 "nav_Set_Service_Address" = "设置服务地址";
@@ -910,3 +911,5 @@
 "no_unread_messages" = "当前无未读消息";
 
 "%ldn mentioned"="我被@%ld次";
+"New_Messages_Below" = "下面有新消息";
+"All_Messages_Above" = "以上为所有消息";

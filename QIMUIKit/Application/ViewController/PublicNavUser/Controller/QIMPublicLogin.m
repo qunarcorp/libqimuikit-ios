@@ -92,7 +92,6 @@ static const int companyTag = 10001;
         _registerNewCompanyBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         [_registerNewCompanyBtn setTitleColor:[UIColor qim_colorWithHex:0x888888] forState:UIControlStateNormal];
         [_registerNewCompanyBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
-        [_registerNewCompanyBtn.titleLabel setFont:[UIFont systemFontOfSize:16]];
     }
     return _registerNewCompanyBtn;
 }
@@ -399,16 +398,6 @@ static const int companyTag = 10001;
         make.bottom.mas_offset(-30);
         make.width.mas_equalTo(size.width + 30);
         make.height.mas_equalTo(21);
-    }];
-    
-    UILabel * label = [[UILabel alloc]init];
-    label.backgroundColor = [UIColor grayColor];
-    [self.view addSubview:label];
-    [label mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.registerNewCompanyBtn.mas_bottom).offset(1);
-        make.centerX.mas_equalTo(self.view.mas_centerX);
-        make.width.mas_equalTo(self.registerNewCompanyBtn.mas_width);
-        make.height.mas_equalTo(1);
     }];
     
     [self.view addSubview:self.scanSettingNavBtn];
