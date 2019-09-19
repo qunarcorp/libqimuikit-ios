@@ -262,9 +262,9 @@
         [_sendButton setEnabled:YES];
         NSInteger maxNumber = [[QTPHImagePickerManager sharedInstance] maximumNumberOfSelection];
         if (maxNumber > 0) {
-            [_sendButton setTitle:[NSString stringWithFormat:@"确定(%ld/%@)",(long)indexPaths.count,@(maxNumber)] forState:UIControlStateNormal];
+            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle qim_localizedStringForKey:@"Confirm"], (long)indexPaths.count,@(maxNumber)] forState:UIControlStateNormal];
         } else {
-            [_sendButton setTitle:[NSString stringWithFormat:@"确定(%ld/%@)",(long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
+            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle qim_localizedStringForKey:@"Confirm"],(long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
         }
     } else {
         [_editButton setEnabled:NO];

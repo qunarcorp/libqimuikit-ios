@@ -35,7 +35,7 @@
 }
 
 - (void)updateNotReadAtMsgCount:(int)notReadAtMsgCount {
-    _title = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"%ldn mentioned"],_notReadCount];
+    _title = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"%ldn mentioned"],notReadAtMsgCount];
     [_titleLabel setText:_title];
 }
 

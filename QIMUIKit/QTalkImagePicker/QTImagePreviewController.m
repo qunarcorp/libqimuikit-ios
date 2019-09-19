@@ -151,7 +151,7 @@
         }
         [_photoTypeButton setEnabled:YES];
         [_sendButton setEnabled:YES];
-        [_sendButton setTitle:[NSString stringWithFormat:@"确定(%ld/%ld)",(long)indexPaths.count,(long)picker.maximumNumberOfSelection] forState:UIControlStateNormal];
+        [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%ld)", [NSBundle qim_localizedStringForKey:@"Confirm"], (long)indexPaths.count,(long)picker.maximumNumberOfSelection] forState:UIControlStateNormal];
     } else {
         [_editButton setEnabled:NO];
         [_photoTypeButton setEnabled:NO];
