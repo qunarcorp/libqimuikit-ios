@@ -92,7 +92,6 @@ static const int companyTag = 10001;
         _registerNewCompanyBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         [_registerNewCompanyBtn setTitleColor:[UIColor qim_colorWithHex:0x888888] forState:UIControlStateNormal];
         [_registerNewCompanyBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
-        [_registerNewCompanyBtn.titleLabel setFont:[UIFont systemFontOfSize:16]];
     }
     return _registerNewCompanyBtn;
 }
@@ -401,16 +400,6 @@ static const int companyTag = 10001;
         make.height.mas_equalTo(21);
     }];
     
-    UILabel * label = [[UILabel alloc]init];
-    label.backgroundColor = [UIColor grayColor];
-    [self.view addSubview:label];
-    [label mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.registerNewCompanyBtn.mas_bottom).offset(1);
-        make.centerX.mas_equalTo(self.view.mas_centerX);
-        make.width.mas_equalTo(self.registerNewCompanyBtn.mas_width);
-        make.height.mas_equalTo(1);
-    }];
-    
     [self.view addSubview:self.scanSettingNavBtn];
     [self.scanSettingNavBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo((56 + 38/2) - 30/2);
@@ -657,7 +646,7 @@ static const int companyTag = 10001;
         userName = [userName stringByReplacingOccurrencesOfString:@" " withString:@""];
         NSString *validCode = self.userPwdTextField.text;
 #warning 报错即将登陆的用户名 并请求导航
-        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"登录中..."];
+        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:[NSBundle qim_localizedStringForKey:@"login_waiting"]];
         [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
         if ([[userName lowercaseString] isEqualToString:@"appstore"]) {
             NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
@@ -721,7 +710,7 @@ static const int companyTag = 10001;
             [QIMFastEntrance showMainVc];
         } else {
             __weak __typeof(self) weakSelf = self;
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"登录失败" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"login_faild"] preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
             }];

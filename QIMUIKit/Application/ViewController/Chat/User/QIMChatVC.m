@@ -357,7 +357,7 @@
         
         UILabel *commentCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 5, 70, 20)];
         [commentCountLabel setTextColor:[UIColor whiteColor]];
-        [commentCountLabel setText:@"下面有新消息"];
+        [commentCountLabel setText:[NSBundle qim_localizedStringForKey:@"New_Messages_Below"]];
         [commentCountLabel setFont:[UIFont boldSystemFontOfSize:10]];
         [_notificationView addSubview:commentCountLabel];
         [self.view addSubview:_notificationView];
