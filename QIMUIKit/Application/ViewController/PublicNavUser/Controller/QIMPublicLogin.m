@@ -657,7 +657,7 @@ static const int companyTag = 10001;
         userName = [userName stringByReplacingOccurrencesOfString:@" " withString:@""];
         NSString *validCode = self.userPwdTextField.text;
 #warning 报错即将登陆的用户名 并请求导航
-        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"登录中..."];
+        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:[NSBundle qim_localizedStringForKey:@"login_waiting"]];
         [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
         if ([[userName lowercaseString] isEqualToString:@"appstore"]) {
             NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
@@ -721,7 +721,7 @@ static const int companyTag = 10001;
             [QIMFastEntrance showMainVc];
         } else {
             __weak __typeof(self) weakSelf = self;
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"登录失败" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"login_faild"] preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
             }];
