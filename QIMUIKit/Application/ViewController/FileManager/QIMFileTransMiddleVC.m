@@ -34,7 +34,7 @@
     NSString *transFileLabelText = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"You have logged in %@ on your computer"], @"QTalk"];
     UIFont *fnt = [UIFont systemFontOfSize:16];
     // 根据字体得到NSString的尺寸
-    CGSize size = [[NSBundle qim_localizedStringForKey:@"not_have_company"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:fnt,NSFontAttributeName,nil]];
+    CGSize size = [transFileLabelText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:fnt,NSFontAttributeName,nil]];
 
     [transFileLabel setText:transFileLabelText];
     transFileLabel.textAlignment = NSTextAlignmentCenter;

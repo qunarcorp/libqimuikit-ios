@@ -911,3 +911,5 @@
 "Wrong_Interface" =  "Wrong Interface";
 "no_unread_messages" = "No unread messages";
 "%ldn mentioned"="@you %ld times";
+"New_Messages_Below" = "New Msgs Below";
+"All_Messages_Above" = "All Msgs Above";
