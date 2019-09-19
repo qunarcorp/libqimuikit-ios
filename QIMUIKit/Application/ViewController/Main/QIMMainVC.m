@@ -1154,10 +1154,10 @@ static dispatch_once_t __onceMainToken;
     NSInteger arrowWidth = 135;
     NSString *Language = [[QIMKit sharedInstance] currentLanguage];
     if ([Language containsString:@"en"]) {
-        arrowWidth = 180;
+        arrowWidth = 220;
     }
     point = CGPointMake(rect3.origin.x + rect3.size.width / 2, rect3.origin.y + rect3.size.height / 2);
-    _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:135 Height:50 * self.moreActionArray.count + 10 Type:Type_UpRight Color:[UIColor whiteColor]];
+    _arrowPopView = [[QIMArrowTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) Origin:point Width:arrowWidth Height:50 * self.moreActionArray.count + 10 Type:Type_UpRight Color:[UIColor whiteColor]];
     _arrowPopView.dataArray = self.moreActionArray;
     _arrowPopView.backView.layer.cornerRadius = 5.0f;
     _arrowPopView.images = moreActionImages;

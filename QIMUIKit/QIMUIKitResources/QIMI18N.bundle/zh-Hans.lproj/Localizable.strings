@@ -138,6 +138,7 @@
 "About_tab_sendLog" = "发送日志";
 "About_tab_recordLog" = "记录本地日志";
 "About_tab_instruments" = "监测App数据";
+"About_tab_storage_space" = "聊天记录存储空间";
 
 //Group
 "group_name" = "群聊名称";
@@ -680,6 +681,7 @@
 "Logged in to %@ on computer"="桌面%@已登录";
 "You have logged in %@ on your computer"="您已在电脑登录%@";
 "Transfer files between phone and computer without using USB."="无需数据线，电脑与手机轻松互传文件";
+"Transfer_files" = "传文件";
 "Try is now" = "快来试试吧~~";
 "Reminder"="提示";
 "Please enter your feedback"="请输入要反馈的内容";

@@ -386,7 +386,7 @@
         [cell setAccessoryView:switchButton];
     } else if ([value isEqualToString:@"DataFile"]) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier];
-        cell.textLabel.text = @"聊天记录存储空间";
+        cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"About_tab_storage_space"];
         cell.accessoryType = UITableViewCellAccessoryNone;
         cell.detailTextLabel.text = [self dataFileSize];
     }
