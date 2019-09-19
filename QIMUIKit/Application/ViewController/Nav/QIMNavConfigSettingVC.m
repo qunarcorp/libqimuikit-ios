@@ -337,11 +337,16 @@
 }
 
 - (void)onCancel{
-    UIViewController *lastVC = self.navigationController;
-    while (lastVC.presentingViewController) {
-        lastVC = lastVC.presentingViewController;
+    UIViewController *parentVC = self.presentingViewController;
+    UIViewController *bottomVC;
+    while (parentVC) {
+        bottomVC = parentVC;
+        parentVC = parentVC.presentingViewController;
     }
-    [lastVC dismissViewControllerAnimated:YES completion:nil];
+    [bottomVC dismissViewControllerAnimated:NO completion:^{
+        //dismiss后再切换根视图
+        [[QIMFastEntrance sharedInstance] launchMainControllerWithWindow:[UIApplication sharedApplication].delegate.window];
+    }];
 }
 
 - (void)onSave{
