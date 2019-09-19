@@ -145,7 +145,7 @@
         } else {
             platTitle = [QIMKit getQIMProjectTitleName];
         }
-        pcTipLabel.text = [NSString stringWithFormat:@"桌面%@已登录", platTitle];
+        pcTipLabel.text = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Logged in to %@ on computer"], platTitle];
         pcTipLabel.textColor = qim_otherPlatformViewTextColor;
         pcTipLabel.font = [UIFont systemFontOfSize:14];
         [_otherPlatformView addSubview:pcTipLabel];

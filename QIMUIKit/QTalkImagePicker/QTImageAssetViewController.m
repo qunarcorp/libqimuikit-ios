@@ -94,7 +94,7 @@ CGFloat imageItemWidth;
     
     self.title = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyName];
     if ([self.title.lowercaseString isEqualToString:@"camera roll"]) {
-        self.title = @"相机胶卷";
+        self.title = [NSBundle qim_localizedStringForKey:@"Camera Roll"];
     }
     [self.navigationItem setTitle:self.title];
     
@@ -132,12 +132,12 @@ CGFloat imageItemWidth;
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
     if (buttonIndex == 0) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)", [NSBundle qim_localizedStringForKey:@"Standard Definition"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
         picker.isOriginalImage = NO;
         [[QIMKit sharedInstance] setPickerPixelOriginal:NO];
     } else if (buttonIndex == 1) {
 
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)", [NSBundle qim_localizedStringForKey:@"Full Image"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
         picker.isOriginalImage = YES;
         [[QIMKit sharedInstance] setPickerPixelOriginal:YES];
     }
@@ -145,8 +145,8 @@ CGFloat imageItemWidth;
 
 - (void)onPhotoTypeClick{
     QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择图片尺寸" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清 (%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]],
-                            [NSString stringWithFormat:@"原图 (%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]],nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"%@ (%@)",[NSBundle qim_localizedStringForKey:@"Standard Definition"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]],
+                            [NSString stringWithFormat:@"%@ (%@)", [NSBundle qim_localizedStringForKey:@"Full Image"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]],nil];
     [sheet showInView:self.view];
 }
 
@@ -166,7 +166,7 @@ CGFloat imageItemWidth;
     _previewButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_previewButton setFrame:CGRectMake(10, 8, 60, 30)];
     [_previewButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_previewButton setTitle:@"预览" forState:UIControlStateNormal];
+    [_previewButton setTitle:[NSBundle qim_localizedStringForKey:@"Preview"] forState:UIControlStateNormal];
      [_previewButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_previewButton addTarget:self action:@selector(onPreviewClick) forControlEvents:UIControlEventTouchUpInside];
     [_previewButton setEnabled:NO];
@@ -175,7 +175,7 @@ CGFloat imageItemWidth;
     _editButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_editButton setFrame:CGRectMake(_previewButton.right, 8, 60, 30)];
     [_editButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_editButton setTitle:@"编辑" forState:UIControlStateNormal];
+    [_editButton setTitle:[NSBundle qim_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
     [_editButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_editButton addTarget:self action:@selector(onEditClick) forControlEvents:UIControlEventTouchUpInside];
     [_editButton setEnabled:NO];
@@ -188,7 +188,7 @@ CGFloat imageItemWidth;
     [_photoTypeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
     [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
-    [_photoTypeButton setTitle:@"标清" forState:UIControlStateNormal];
+    [_photoTypeButton setTitle:[NSBundle qim_localizedStringForKey:@"Standard Definition"] forState:UIControlStateNormal];
     [_photoTypeButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_photoTypeButton setEnabled:NO];
     [_photoTypeButton addTarget:self action:@selector(onPhotoTypeClick) forControlEvents:UIControlEventTouchUpInside];
@@ -202,7 +202,7 @@ CGFloat imageItemWidth;
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_sendButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
-    [_sendButton setTitle:@"确定" forState:UIControlStateNormal];
+    [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     [_sendButton addTarget:self action:@selector(onSendClick) forControlEvents:UIControlEventTouchUpInside];
     [_sendButton setEnabled:NO];
     [_bottomView addSubview:_sendButton];
@@ -264,7 +264,7 @@ CGFloat imageItemWidth;
         else if (self.assets.count > 0)
         {
             [_tableView reloadData];
-            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:ceil(self.assets.count*1.0/kColoumn)-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:ceil(self.assets.count*1.0/kColoumn)-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
             
             UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _tableView.width, 40)];
             [_tableView setTableFooterView:footerView];
@@ -275,17 +275,21 @@ CGFloat imageItemWidth;
             [label setTextAlignment:NSTextAlignmentCenter];
             NSString *title = nil;
             if (_numberOfVideos == 0) {
-                title = [NSString stringWithFormat:@"%ld 张照片",(long)_numberOfPhotos];
+                title = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"n Photos"], (long)_numberOfPhotos];
             }
             else if (_numberOfPhotos == 0) {
-                title = [NSString stringWithFormat:@"%ld 部视频", (long)_numberOfVideos];
+                title = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"n Videos"], (long)_numberOfVideos];
             }
             else {
-                title = [NSString stringWithFormat:@"%ld 张照片, %ld 部视频", (long)_numberOfPhotos, (long)_numberOfVideos];
+                title =[NSString stringWithFormat:@"%@,%@",[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"n Photos"],(long)_numberOfPhotos],[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"n Videos"],(long)_numberOfVideos]];
             }
             [label setText:title];
             [footerView addSubview:label];
         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_tableView reloadData];
+            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:ceil(self.assets.count*1.0/kColoumn)-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        });
     };
     
     [self.assetsGroup enumerateAssetsUsingBlock:resultsBlock];
@@ -347,7 +351,7 @@ CGFloat imageItemWidth;
     BOOL isVideo = [[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo];
     if (isVideo) {
         if (picker.selectedPhoto) {
-            [QTalkTipsView showTips:@"不能同时选择照片和视频" InView:self.view];
+            [QTalkTipsView showTips:[NSBundle qim_localizedStringForKey:@"You cannot select photos and videos at the same time"] InView:self.view];
         } else { 
             QTalkVideoAssetViewController *vc = [[QTalkVideoAssetViewController alloc]  init];
             [vc setVideoAsset:asset];
@@ -360,7 +364,7 @@ CGFloat imageItemWidth;
     if (picker.indexPathsForSelectedItems.count >= picker.maximumNumberOfSelection) {
         if (picker.delegate!=nil&&[picker.delegate respondsToSelector:@selector(qtImagePickerControllerDidMaximum:)]) {
             [picker.imageDelegate qtImagePickerControllerDidMaximum:picker];
-            [QTalkTipsView showTips:[NSString stringWithFormat:@"最多只能选择%d张照片",(int)picker.maximumNumberOfSelection] InView:self.view];
+            [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Select a maximum of %d photos"],(int)picker.maximumNumberOfSelection] InView:self.view];
         }
     }
     return (selectable && picker.indexPathsForSelectedItems.count < picker.maximumNumberOfSelection);
@@ -459,14 +463,14 @@ CGFloat imageItemWidth;
         [_editButton setEnabled:NO];
         [_photoTypeButton setEnabled:NO];
         [_sendButton setEnabled:NO];
-        [_sendButton setTitle:@"确定" forState:UIControlStateNormal];
+        [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     }
     picker.isOriginalImage = [[QIMKit sharedInstance] pickerPixelOriginal];
 
     if (picker.isOriginalImage == NO) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)", [NSBundle qim_localizedStringForKey:@"Standard Definition"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
     } else {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)",[NSBundle qim_localizedStringForKey:@"Full Image"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
     }
 }
 

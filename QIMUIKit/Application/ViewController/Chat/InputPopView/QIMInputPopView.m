@@ -67,7 +67,7 @@
         [_subViewBgView addSubview:_cancelBtn];
         
         _confirmBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_confirmBtn setTitle:@"确定" forState:UIControlStateNormal];
+        [_confirmBtn setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
         [_confirmBtn setTitleColor:[UIColor qunarBlueColor] forState:UIControlStateNormal];
         [_confirmBtn addTarget:self action:@selector(confirmBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [_subViewBgView addSubview:_confirmBtn];

@@ -1111,7 +1111,7 @@
 //lilu 9.22 3DTouch
 - (NSArray<id <UIPreviewActionItem>> *)previewActionItems {
     BOOL isStick = [[QIMKit sharedInstance] isStickWithCombineJid:self.chatId];
-    NSString *title = isStick ? @"取消置顶" : @"置顶";
+    NSString *title = isStick ? [NSBundle qim_localizedStringForKey:@"chat_remove_sticky"] : [NSBundle qim_localizedStringForKey:@"chat_Sticky_Top"];
     
     UIPreviewAction *p1 = [UIPreviewAction actionWithTitle:title style:UIPreviewActionStyleDefault handler:^(UIPreviewAction *_Nonnull action, UIViewController *_Nonnull previewViewController) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kChatSessionStick object:self.chatInfoDict];
@@ -1156,7 +1156,7 @@
 
 - (void)collectEmojiFaceSuccess:(NSNotification *)notify {
     
-    [self setProgressHUDDetailsLabelText:@"添加成功"];
+    [self setProgressHUDDetailsLabelText:[NSBundle qim_localizedStringForKey:@"Added"]];
     [self closeHUD];
 }
 
@@ -1453,19 +1453,19 @@
 
 //右上角关闭咨询会话
 - (void)endChatSession {
-    UIAlertController *endChatSessionAlertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"您确认结束本次服务？" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *endChatSessionAlertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"您确认结束本次服务？" preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         
     }];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [[QIMKit sharedInstance] closeSessionWithShopId:self.virtualJid WithVisitorId:self.chatId withBlock:^(NSString *closeMsg) {
             if (closeMsg.length > 0) {
                 [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:closeMsg];
                 [[QIMProgressHUD sharedInstance] closeHUD];
                 [self leftBarBtnClicked:nil];
             } else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"结束本地会话失败" delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"结束本地会话失败" delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
                 [alert show];
             }
         }];
@@ -1720,7 +1720,7 @@
         [tipsLabel setTextAlignment:NSTextAlignmentCenter];
         [tipsLabel setFont:[UIFont systemFontOfSize:14]];
         tipsLabel.textColor = [UIColor whiteColor];
-        [tipsLabel setText:[NSString stringWithFormat:@"%@正在共享位置", [userInfo objectForKey:@"Name"]]];
+        [tipsLabel setText:[NSString stringWithFormat:@"%@%@", [userInfo objectForKey:@"Name"],[NSBundle qim_localizedStringForKey:@"Location sharing"]]];
         [_joinShareLctView addSubview:tipsLabel];
         
         UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconfont-arrow"]];
@@ -1813,7 +1813,7 @@
         [tipsLabel setTextAlignment:NSTextAlignmentCenter];
         [tipsLabel setFont:[UIFont systemFontOfSize:14]];
         tipsLabel.textColor = [UIColor whiteColor];
-        [tipsLabel setText:[NSString stringWithFormat:@"%@正在共享位置", [userInfo objectForKey:@"Name"]]];
+        [tipsLabel setText:[NSString stringWithFormat:@"%@%@", [userInfo objectForKey:@"Name"],[NSBundle qim_localizedStringForKey:@"Location sharing"]]];
         [_joinShareLctView addSubview:tipsLabel];
         
         UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"iconfont-arrow"]];
@@ -2078,7 +2078,7 @@
 
 - (void)msgReSendNotificationHandle:(NSNotification *)notify {
     _resendMsg = notify.object;
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], @"重发", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Resend"], nil];
     
     alertView.tag = kReSendMsgAlertViewTag;
     alertView.delegate = self;
@@ -2590,7 +2590,7 @@
 }
 
 - (void)clickFaildCollectionFace {
-    UIAlertController *notFoundEmojiAlertVc = [UIAlertController alertControllerWithTitle:@"提示" message:@"该表情已失效" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *notFoundEmojiAlertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"该表情已失效" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:nil];
     [notFoundEmojiAlertVc addAction:okAction];
     [self presentViewController:notFoundEmojiAlertVc animated:YES completion:nil];
@@ -2975,7 +2975,7 @@ static CGPoint tableOffsetPoint;
     if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
         QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
         if (![storage.linkData length]) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Wrong_Interface"] message:[NSBundle qim_localizedStringForKey:@"Wrong_URL"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         } else {
             QIMWebView *webView = [[QIMWebView alloc] init];
@@ -3696,7 +3696,7 @@ static CGPoint tableOffsetPoint;
     NSString *attributedText = [self.textBar getSendAttributedText];
     if (attributedText.length > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"请清空输入框之后再试" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请清空输入框之后再试" preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
             }];

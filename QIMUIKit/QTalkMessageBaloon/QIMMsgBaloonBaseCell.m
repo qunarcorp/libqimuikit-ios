@@ -419,7 +419,7 @@ static UIImage *__rightBallocImage = nil;
                     self.indicatorView.center = CGPointMake(self.backView.left - 24, self.backView.centerY);
                     [self.contentView addSubview:self.indicatorView];
                     [self.indicatorView startAnimating];
-                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@" %@-%@", @"发送中", self.message.messageId];
+                    self.messgaeRealStateLabel.text = [NSString stringWithFormat:@" %@-%@", [NSBundle qim_localizedStringForKey:@"Sending"], self.message.messageId];
                 }
                     break;
                 case QIMMessageSendState_Faild: {
@@ -625,14 +625,12 @@ static UIImage *__rightBallocImage = nil;
             }
             [self.HeadView qim_setImageWithURL:collectionUserUrl placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
         } else if (self.chatType == ChatType_Consult) {
-            NSLog(@"22222");
             if (self.message.messageDirection == QIMMessageDirection_Sent) {
                 [self.HeadView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid] WithChatType:ChatType_SingleChat];
             } else {
                 [self.HeadView qim_setImageWithJid:self.message.xmppId];
             }
         } else {
-            NSLog(@"122");
             if (self.message.messageDirection == QIMMessageDirection_Sent) {
                 [self.HeadView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid] WithChatType:ChatType_SingleChat];
             } else {

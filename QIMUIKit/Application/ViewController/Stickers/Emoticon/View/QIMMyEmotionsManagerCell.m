@@ -108,7 +108,7 @@
     if (!_removeBtn) {
         _removeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_removeBtn setBackgroundColor:[UIColor whiteColor]];
-        [_removeBtn setTitle:@"移除" forState:UIControlStateNormal];
+        [_removeBtn setTitle:[NSBundle qim_localizedStringForKey:@"Remove"] forState:UIControlStateNormal];
         [_removeBtn setTitleColor:[UIColor qtalkTextLightColor] forState:UIControlStateNormal];
         _removeBtn.layer.cornerRadius = 3.0f;
         _removeBtn.layer.masksToBounds = YES;
@@ -132,7 +132,7 @@
 }
 
 - (void)removeEmotionPackage:(UIButton *)sender {
-    [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"移除中..."];
+    [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:[NSBundle qim_localizedStringForKey:@"Removing"]];
     [[QIMEmotionManager sharedInstance] removeEmotionPkgForPkId:self.pkID];
 }
 

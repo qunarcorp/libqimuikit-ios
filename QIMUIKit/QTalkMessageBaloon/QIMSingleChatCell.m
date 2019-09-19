@@ -153,7 +153,7 @@ static double _global_message_cell_width = 0;
 - (void)tapHandle:(UITapGestureRecognizer *)tap{
     if (self.message.messageSendState == QIMMessageSendState_Faild) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kXmppStreamReSendMessage object:self.message];
-        //        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:@"重发",[NSBundle qim_localizedStringForKey:@"Delete"], nil];
+        //        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Resend"],[NSBundle qim_localizedStringForKey:@"Delete"], nil];
         //        [actionSheet showInView:[(UIViewController *)self.delegate view]];
     }
 }

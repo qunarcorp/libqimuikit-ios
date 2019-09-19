@@ -35,7 +35,7 @@
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         pasteboard.string = self.coprText;
     }else{
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"并没有什么东西可以复制的！" delegate:nil cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"并没有什么东西可以复制的！" delegate:nil cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
         [alertView show];
     }
 }

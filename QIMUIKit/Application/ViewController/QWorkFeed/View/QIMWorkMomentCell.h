@@ -18,7 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 @class QIMWorkMomentLinkView;
 @class QIMWorkMomentVideoView;
 @class QIMWorkAttachCommentListView;
-@class QIMWorkMomentTagCollectionView;
 
 @protocol MomentCellDelegate <NSObject>
 
@@ -66,9 +65,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 //Video
 @property (nonatomic, strong) QIMWorkMomentVideoView *videoView;
-
-//标签collectionView
-@property (nonatomic, strong) QIMWorkMomentTagCollectionView *tagCollectionView;
 
 //附带评论listView
 @property (nonatomic, strong) QIMWorkAttachCommentListView *attachCommentListView;

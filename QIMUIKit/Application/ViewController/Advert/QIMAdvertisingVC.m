@@ -110,7 +110,7 @@
         [self onCloseClick];
     } else {
         NSString *skipTips = [[QIMKit sharedInstance] qimNav_AdSkipTips];
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:skipTips delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:skipTips delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"OK"] otherButtonTitles:nil];
         [alertView show];
     }
 }

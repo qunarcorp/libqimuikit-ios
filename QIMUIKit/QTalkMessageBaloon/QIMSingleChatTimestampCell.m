@@ -64,7 +64,7 @@
     }
     if (self.message.messageType == QIMMessageType_Revoke) {
         
-        timeStr = [NSString stringWithFormat:@" \"%@\"撤回了一条消息",[[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.message.from]];
+        timeStr = [NSString stringWithFormat:@" \"%@\"%@",[[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.message.from], [NSBundle qim_localizedStringForKey:@"recalled_message"]];
     }
     if (timeStr) {
         CGSize size = [timeStr sizeWithFont:_timestampButton.titleLabel.font constrainedToSize:CGSizeMake(INT64_MAX, 15) lineBreakMode:NSLineBreakByCharWrapping];
