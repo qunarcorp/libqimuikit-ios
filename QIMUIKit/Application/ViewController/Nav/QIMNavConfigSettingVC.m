@@ -337,16 +337,21 @@
 }
 
 - (void)onCancel{
-    UIViewController *parentVC = self.presentingViewController;
-    UIViewController *bottomVC;
-    while (parentVC) {
-        bottomVC = parentVC;
-        parentVC = parentVC.presentingViewController;
-    }
-    [bottomVC dismissViewControllerAnimated:NO completion:^{
-        //dismiss后再切换根视图
+    dispatch_async(dispatch_get_main_queue(), ^{
         [[QIMFastEntrance sharedInstance] launchMainControllerWithWindow:[UIApplication sharedApplication].delegate.window];
-    }];
+        /*
+        UIViewController *parentVC = self.presentingViewController;
+        UIViewController *bottomVC;
+        while (parentVC) {
+            bottomVC = parentVC;
+            parentVC = parentVC.presentingViewController;
+        }
+        [bottomVC dismissViewControllerAnimated:NO completion:^{
+            //dismiss后再切换根视图
+            [[QIMFastEntrance sharedInstance] launchMainControllerWithWindow:[UIApplication sharedApplication].delegate.window];
+        }];
+        */
+    });
 }
 
 - (void)onSave{
