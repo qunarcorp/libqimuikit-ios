@@ -43,7 +43,7 @@
 
 - (void)initNav{
     
-    self.navigationItem.title = @"个性签名";
+    self.navigationItem.title = [NSBundle qim_localizedStringForKey:@"What's Up"];
     
     UIView *rightItemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
     
@@ -89,7 +89,7 @@
         }];
         [self.navigationController popViewControllerAnimated:YES];
     }else{
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您并没有写下任何东西~" delegate:nil cancelButtonTitle:@"俺 know~" otherButtonTitles:nil, nil];
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"您并没有写下任何东西~" delegate:nil cancelButtonTitle:@"俺 know~" otherButtonTitles:nil, nil];
         [alertView show];
     }
 }

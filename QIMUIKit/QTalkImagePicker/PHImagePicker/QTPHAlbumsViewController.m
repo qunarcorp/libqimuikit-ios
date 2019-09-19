@@ -87,7 +87,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     // Title
     if (!self.picker.title) {
-        self.title = @"照片";
+        self.title = [NSBundle qim_localizedStringForKey:@"Photos"];
     } else {
         self.title = self.picker.title;
     }
@@ -105,7 +105,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     }
     
     self.collectionsFetchResults = tempArr;
-    self.collectionsLocalizedTitles = @[@"所有照片",@"自定义相册",@"智能相册"];
+    self.collectionsLocalizedTitles = @[[NSBundle qim_localizedStringForKey:@"All Photos"],[NSBundle qim_localizedStringForKey:@"Custon Album"],[NSBundle qim_localizedStringForKey:@"Intelligent Album"]];
     
     [self updateFetchResults];
     
@@ -165,7 +165,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:options];
         [allFetchResultArray addObject:assetsFetchResult];
-        [allFetchResultLabel addObject:@"所有照片"];
+        [allFetchResultLabel addObject:[NSBundle qim_localizedStringForKey:@"All Photos"]];
     }
     
     //User albums:

@@ -86,7 +86,7 @@
 }
 
 - (void)initWithNav {
-    [self.navigationItem setTitle:@"提醒谁看"];
+    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"moment_mention"]];
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(goBack:)];
     [self.navigationItem setLeftBarButtonItem:leftItem];
     

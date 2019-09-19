@@ -167,7 +167,7 @@
     UIView *friendView = [[UIView alloc] initWithFrame:CGRectMake(0, _searchBarKeyTmp.bottom, self.view.width, 54)];
     friendView.backgroundColor = [UIColor whiteColor];
     UILabel *friendTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.width - 30, 54)];
-    friendTitleLabel.text = @"选择一个好友";
+    friendTitleLabel.text = [NSBundle qim_localizedStringForKey:@"Select_Friend"];
     friendTitleLabel.textColor = [UIColor qtalkTextBlackColor];
     [friendView addSubview:friendTitleLabel];
 //    [headerBG addSubview:friendView];
@@ -390,11 +390,11 @@
     }
     name = [infoDic objectForKey:@"Name"];
     
-    NSString *redeemContactMsg = [NSString stringWithFormat:@"确认转发聊天记录到%@?", name];
+    NSString *redeemContactMsg = [NSString stringWithFormat:@"%@%@?", [NSBundle qim_localizedStringForKey:@"Forward_chat_history"], name];
     if (self.ExternalForward) {
-        redeemContactMsg = [NSString stringWithFormat:@"确认发送给%@?", name];
+        redeemContactMsg = [NSString stringWithFormat:@"%@%@?", [NSBundle qim_localizedStringForKey:@"Send_to"], name];
     }
-    UIAlertController *redeemContactVc = [UIAlertController alertControllerWithTitle:@"提示" message:redeemContactMsg preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *redeemContactVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:redeemContactMsg preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIAlertActionStyleCancel handler:nil];
     __weak typeof(self) weakSelf = self;
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

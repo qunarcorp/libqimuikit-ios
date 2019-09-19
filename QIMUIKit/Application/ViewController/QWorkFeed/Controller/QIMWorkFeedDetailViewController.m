@@ -152,7 +152,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.title = @"动态详情";
+    self.navigationItem.title = [NSBundle qim_localizedStringForKey:@"moment_detail"];
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
     }
@@ -358,7 +358,7 @@
                                                                                        [strongSelf.commentListView reloadCommentsData];
                                                                                    });
                                                                                } else {
-                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"删除评论失败"];
+                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSBundle qim_localizedStringForKey:@"moment_faild_delete_comment"]];
                                                                                }
                                                                            }];
                                                                        } else if (buttonIndex == 2) {
@@ -366,7 +366,7 @@
                                                                            [strongSelf beginAddCommentWithComment:commentModel];
                                                                        }
                                                                    }
-                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], @"回复"]];
+                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Reply"]]];
                 actionSheet.destructiveButtonIndexSet = indexSet;
                 actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
                 [actionSheet show];
@@ -393,7 +393,7 @@
 - (void)beginControlCommentWithComment:(QIMWorkCommentModel *)commentModel withIsHotComment:(BOOL)isHotComment withIndexPath:(NSIndexPath *)indexPath {
     self.staticCommentModel = commentModel;
     if (self.staticCommentModel.isDelete == YES) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"该评论已被删除" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"该评论已被删除" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
@@ -422,7 +422,7 @@
                                                                                if (success) {
                                                                                    [strongSelf.commentListView removeCommentWithIndexPath:indexPath withIsHotComment:isHotComment withSuperStatus:superStatus];
                                                                                } else {
-                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"删除评论失败"];
+                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSBundle qim_localizedStringForKey:@"moment_faild_delete_comment"]];
                                                                                }
                                                                            }];
                                                                        } else if (buttonIndex == 2) {
@@ -430,7 +430,7 @@
                                                                            [strongSelf beginAddCommentWithComment:commentModel];
                                                                        }
                                                                    }
-                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], @"回复"]];
+                                                     otherButtonTitleArray:@[[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Reply"]]];
                 actionSheet.destructiveButtonIndexSet = indexSet;
                 actionSheet.destructiveButtonColor = [UIColor qim_colorWithHex:0xF4333C];
                 [actionSheet show];

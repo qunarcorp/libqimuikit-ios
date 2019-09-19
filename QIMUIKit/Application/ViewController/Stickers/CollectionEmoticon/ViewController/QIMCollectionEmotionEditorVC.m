@@ -104,8 +104,8 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         
         _sortBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _sortBtn.frame =  CGRectMake(0, 0, 44, 44);
-        [_sortBtn setTitle:@"整理" forState:UIControlStateNormal];
-        [_sortBtn setTitle:@"完成" forState:UIControlStateSelected];
+        [_sortBtn setTitle:[NSBundle qim_localizedStringForKey:@"Manage"] forState:UIControlStateNormal];
+        [_sortBtn setTitle:[NSBundle qim_localizedStringForKey:@"Done"] forState:UIControlStateSelected];
         [_sortBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         [_sortBtn addTarget:self action:@selector(arrangeAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -118,7 +118,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         
         _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _cancelBtn.frame = CGRectMake(0, 0, 44, 44);
-        [_cancelBtn setTitle:@"关闭" forState:UIControlStateNormal];
+        [_cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"common_close"] forState:UIControlStateNormal];
         [_cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateSelected];
         [_cancelBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         [_cancelBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateSelected];
@@ -131,7 +131,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
 
 - (void)initUI {
     
-    self.title = @"收藏的表情";
+    self.title = [NSBundle qim_localizedStringForKey:@"Favorites_Stickers"];
     
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xececec alpha:1.0];
     [self.view addSubview:self.mainCollectionView];
@@ -151,7 +151,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         _emotionDelBar = [[UIView alloc] initWithFrame:CGRectMake(0, _mainCollectionView.bottom - 50, _mainCollectionView.width, 50)];
         _emotionDelBar.backgroundColor = [UIColor qtalkChatBgColor];
         UILabel * dispalyLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, _emotionDelBar.width / 2 - 10, 50)];
-        dispalyLabel.text = [NSString stringWithFormat:@"共%@个表情",@(_dataList.count)];
+        dispalyLabel.text = [NSString stringWithFormat:@"%ld%@",@(_dataList.count), [NSBundle qim_localizedStringForKey:@"Stickers"]];
         dispalyLabel.textColor = [UIColor grayColor];
         [_emotionDelBar addSubview:dispalyLabel];
         
@@ -215,7 +215,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         
         if (![self isChangeDataList]) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"确定取消改动？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:@"确定", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel_Change"] message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"], nil];
             alertView.tag = 0;
             [alertView show];
         }
@@ -265,7 +265,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
     if ([item isEqualToString:kImageFacePageViewAddFlagName]) {
         [_dataList removeLastObject];
         [self updateDelBar];
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"长按表情解锁新姿势" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSBundle qim_localizedStringForKey:@"Long_press_stickers"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
         [alertView show];
         
     }else{
@@ -276,7 +276,7 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         if (![self isChangeDataList]) {
             
             [[QIMCollectionFaceManager sharedInstance] resetCollectionItems:self.dataList WithUpdate:YES];
-            [[self progressHUDWithText:@"系统君正在重新排版您的收藏表情..."] show:YES];
+            [[self progressHUDWithText:[NSBundle qim_localizedStringForKey:@"Reordering_your_stickers"]] show:YES];
             [self performSelector:@selector(closeHUD) withObject:nil afterDelay:1.0f];
         }
         [self refresh];

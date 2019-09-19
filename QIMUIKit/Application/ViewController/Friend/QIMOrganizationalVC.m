@@ -89,14 +89,14 @@
 }
 
 - (void)initWithNav{
-    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"组织架构"]];
+    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"contact_tab_organization"]];
     if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setTitle:@"邀请" forState:UIControlStateNormal];
         [button setTitle:@"邀请" forState:UIControlStateSelected];
         [button setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateNormal];
         [button setTitleColor:[UIColor qim_colorWithHex:0x00CABE] forState:UIControlStateSelected];
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithCustomView:button]];
+//        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithCustomView:button]];
         [button addTarget:self action:@selector(inviteMemberToCompany:) forControlEvents:UIControlEventTouchUpInside];
     }
     if (self.shareCard == YES) {

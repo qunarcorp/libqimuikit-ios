@@ -43,7 +43,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self.navigationItem setTitle:@"预览"];
+    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"Preview"]];
     self.view.backgroundColor = [UIColor spectralColorBlueColor];
     self.picker.isOriginal = [[QIMKit sharedInstance] pickerPixelOriginal];
     
@@ -214,7 +214,7 @@
     _editButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_editButton setFrame:CGRectMake(10, 8, 60, 30)];
     [_editButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_editButton setTitle:@"编辑" forState:UIControlStateNormal];
+    [_editButton setTitle:[NSBundle qim_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
     [_editButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_editButton addTarget:self action:@selector(onEditClick) forControlEvents:UIControlEventTouchUpInside];
     [_editButton setEnabled:NO];
@@ -227,7 +227,7 @@
     [_photoTypeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
     [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
-    [_photoTypeButton setTitle:self.picker.isOriginal ? @" 原图" : @" 标清" forState:UIControlStateNormal];
+    [_photoTypeButton setTitle:self.picker.isOriginal ? [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] : [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
     [_photoTypeButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_photoTypeButton setEnabled:NO];
     [_photoTypeButton addTarget:self action:@selector(onPhotoTypeClick) forControlEvents:UIControlEventTouchUpInside];
@@ -241,7 +241,7 @@
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_sendButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
-    [_sendButton setTitle:@"确定" forState:UIControlStateNormal];
+    [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     [_sendButton addTarget:self action:@selector(onSendClick) forControlEvents:UIControlEventTouchUpInside];
     [_sendButton setEnabled:NO];
     [_bottomView addSubview:_sendButton];
@@ -270,7 +270,7 @@
         [_editButton setEnabled:NO];
         [_photoTypeButton setEnabled:NO];
         [_sendButton setEnabled:NO];
-        [_sendButton setTitle:@"确定" forState:UIControlStateNormal];
+        [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     }
 //    if (picker.isOriginalImage == NO) {
 //        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
@@ -310,7 +310,7 @@
     PHImageRequestOptions * options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeExact;
     options.networkAccessAllowed = YES;
-    [[self tipHUDWithText:@"正在获取图片..."] show:YES];
+    [[self tipHUDWithText:[NSBundle qim_localizedStringForKey:@"Getting_photo"]] show:YES];
     __weak typeof(self) weakSelf = self;
     [_imageManager requestImageForAsset:[self.photoArray objectAtIndex:index] targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
@@ -328,20 +328,20 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex == 0) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" 标清"] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
         self.picker.isOriginal = NO;
         [[QIMKit sharedInstance] setPickerPixelOriginal:NO];
     } else if (buttonIndex == 1) {
         
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" 原图"] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] forState:UIControlStateNormal];
         self.picker.isOriginal = YES;
         [[QIMKit sharedInstance] setPickerPixelOriginal:YES];
     }
 }
 
 - (void)onPhotoTypeClick{
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择图片尺寸" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清"],
-                            [NSString stringWithFormat:@"原图"],nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Standard Definition"]],
+                            [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Full Image"]],nil];
     [sheet showInView:self.view];
 }
 

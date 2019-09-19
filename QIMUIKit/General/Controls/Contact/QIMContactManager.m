@@ -142,7 +142,7 @@
         NSString *telPhoneNum = [NSString stringWithFormat:@"telprompt:%@", phoneNum];
         NSString *deviceType = [UIDevice currentDevice].model;
         if (TARGET_IPHONE_SIMULATOR || [deviceType isEqualToString:@"iPod touch"] || [deviceType  isEqualToString:@"iPad"] || [deviceType  isEqualToString:@"iPhone Simulator"]) {
-            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"您的设备不支持通话功能" delegate:nil cancelButtonTitle:@"好的" otherButtonTitles:nil,nil];
+            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"您的设备不支持通话功能" delegate:nil cancelButtonTitle:@"好的" otherButtonTitles:nil,nil];
             [alert show];
             return;
             

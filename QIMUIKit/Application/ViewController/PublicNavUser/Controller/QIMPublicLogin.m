@@ -646,8 +646,8 @@ static const int companyTag = 10001;
     
     if (self.checkBtn.selected == NO) {
         __weak __typeof(self) weakSelf = self;
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"请选择同意Startalk服务条款后登录" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请选择同意Startalk服务条款后登录" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
         [alert addAction:action];
@@ -721,8 +721,8 @@ static const int companyTag = 10001;
             [QIMFastEntrance showMainVc];
         } else {
             __weak __typeof(self) weakSelf = self;
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"登录失败" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"登录失败" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
             }];
             [alert addAction:action];
@@ -941,7 +941,7 @@ static const int companyTag = 10001;
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
                                                                         message:[NSBundle qim_localizedStringForKey:@"nav_no_available_Navigation"]
                                                                        delegate:nil
-                                                              cancelButtonTitle:@"确定"
+                                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
                                                               otherButtonTitles:nil];
                     [alertView show];
                 }
@@ -951,7 +951,7 @@ static const int companyTag = 10001;
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
                                                             message:[NSBundle qim_localizedStringForKey:@"nav_valid_promot"]
                                                            delegate:nil
-                                                  cancelButtonTitle:@"确定"
+                                                  cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
                                                   otherButtonTitles:nil];
         [alertView show];
     }

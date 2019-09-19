@@ -23,8 +23,8 @@
 }
 
 - (CGFloat)getWidthForNotReadCount:(int)notReadCount{
-    NSString *titleStr = [NSString stringWithFormat:@"我被@%ld次 ",notReadCount];
-    _title = [NSString stringWithFormat:@"我被@%ld次",notReadCount];
+    NSString *titleStr = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"%ldn mentioned"],notReadCount];
+    _title = titleStr;
     CGSize titleSize = [titleStr sizeWithFont:[UIFont systemFontOfSize:13] forWidth:INT8_MAX lineBreakMode:NSLineBreakByCharWrapping];
     return titleSize.width + [self getHeight] / 2.0 - 5 + 10 + 17 + 8;
 }
@@ -35,7 +35,7 @@
 }
 
 - (void)updateNotReadAtMsgCount:(int)notReadAtMsgCount {
-    _title = [NSString stringWithFormat:@"我被@%ld次",notReadAtMsgCount];
+    _title = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"%ldn mentioned"],_notReadCount];
     [_titleLabel setText:_title];
 }
 

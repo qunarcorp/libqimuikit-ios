@@ -261,7 +261,7 @@ const float colormatrix_yese[] = {
 - (void)addDuangView
 {
     _dataSource = [[NSArray alloc] initWithObjects:@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit",@"imageEdit", nil];
-    _titles = [[NSArray alloc] initWithObjects:@"原图",@"LOMO",@"黑白",@"怀旧",@"哥特",@"锐化",@"淡雅",@"酒红",@"清宁",@"浪漫",@"光晕",@"蓝调",@"梦幻",@"夜色", nil];
+    _titles = [[NSArray alloc] initWithObjects:[NSBundle qim_localizedStringForKey:@"Full Image"],@"LOMO",@"黑白",@"怀旧",@"哥特",@"锐化",@"淡雅",@"酒红",@"清宁",@"浪漫",@"光晕",@"蓝调",@"梦幻",@"夜色", nil];
     _duangView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_toolBar.bounds), CGRectGetHeight(_toolBar.bounds))];
     _duangView.showsVerticalScrollIndicator = NO;
     _duangView.backgroundColor = [UIColor qim_colorWithHex:0x2e2e2e alpha:1.0];
@@ -466,10 +466,10 @@ const float colormatrix_yese[] = {
 {
     if ([[btn titleForState:UIControlStateNormal] isEqualToString:[NSBundle qim_localizedStringForKey:@"common_ok"]]) {
         [self saveDoodleImage];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
                                                         message:@"图片尚未保存，是否保存图片？"
                                                        delegate:self
-                                              cancelButtonTitle:@"直接发送"
+                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"send_directly"]
                                               otherButtonTitles:@"保存并发送",nil];
         alert.delegate = self;
         [alert show];
@@ -501,11 +501,11 @@ const float colormatrix_yese[] = {
     NSString *msg = nil ;
     UIAlertView *alert = nil;
     if(error != NULL){
-        msg = @"保存图片失败" ;
-        alert = [[UIAlertView alloc] initWithTitle:@"提示"
+        msg = [NSBundle qim_localizedStringForKey:@"save_faild"] ;
+        alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
                                    message:msg
                                   delegate:self
-                         cancelButtonTitle:@"确定"
+                         cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"]
                                  otherButtonTitles:nil];
     }else{
         [self sendImage];
