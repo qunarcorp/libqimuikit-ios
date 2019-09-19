@@ -423,17 +423,19 @@ static const int companyTag = 10001;
         NSMutableDictionary *oldNavConfigUrlDict = [[QIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
         QIMVerboseLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
         NSString *navTitle = [oldNavConfigUrlDict objectForKey:@"title"];
-        CGSize titleSize = CGSizeMake(0, 0);
-        if (navTitle.length > 0) {
-           titleSize = [navTitle sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(MAXFLOAT, 16)];
-        }
         [self.companyShowLabel setText:navTitle];
+        UIFont *navTitleFont = [UIFont systemFontOfSize:14];
+        // 根据字体得到NSString的尺寸
+        CGSize navTitleSize = [navTitle sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:navTitleFont,NSFontAttributeName,nil]];
+
         [self.view addSubview:self.companyShowLabel];
         [self.companyShowLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(self.loginTitleLabel.mas_left);
             make.height.mas_equalTo(18);
-            if (titleSize.width>200) {
-                make.width.mas_equalTo(200);
+            if (navTitleSize.width>220) {
+                make.width.mas_equalTo(220);
+            } else {
+                make.width.mas_equalTo(navTitleSize.width + 10);
             }
             make.top.mas_equalTo(self.loginTitleLabel.mas_bottom).mas_offset(16);
         }];
