@@ -195,6 +195,7 @@
             if (!_navNickNameTextField.text.length) {
                 _navNickNameTextField.text = [[str.lastPathComponent componentsSeparatedByString:@"="] lastObject];
             }
+            [self onSave];
         }
     }];
     [self presentViewController:vc animated:YES completion:nil];
@@ -327,7 +328,11 @@
 }
 
 - (void)onCancel{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    UIViewController *vc =  self;
+    while (vc.presentingViewController) {
+        vc = vc.presentingViewController;
+    }
+    [vc dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)onSave{
