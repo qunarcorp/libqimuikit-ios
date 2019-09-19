@@ -116,6 +116,7 @@
 "About_tab_JoinUs" = "Join In QTalk Family";
 "About_tab_recordLog" = "Record Local Log";
 "About_tab_instruments" = "Instruments";
+"About_tab_storage_space" = "Chat storage space";
 
 //myself tab
 "myself_tab_id" = "ID";
@@ -680,8 +681,9 @@
 "Mention"="Mention";
 "Enter here to search"="Enter here to search";
 "Logged in to %@ on computer"="Logged in to %@ on computer";
-"You have logged in %@ on your computer"="You have logged in %@ on your computer";
+"You have logged in %@ on your computer"="You have logged in %@";
 "Transfer files between phone and computer without using USB."="Transfer files between phone and computer without using USB.";
+"Transfer_files" = "Transfer files";
 "Try is now" = "Try it now!";
 
 "Reminder"="Reminder";

@@ -21,7 +21,7 @@
         self.iconView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:self.iconView];
         
-        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.iconView.frame) + 8, 10, 100, 20)];
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.iconView.frame) + 8, 10, self.contentView.bounds.size.width - CGRectGetMaxX(self.iconView.frame) - 16, 20)];
         [self.contentView addSubview:self.titleLabel];
     }
     return self;

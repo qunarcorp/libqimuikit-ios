@@ -31,9 +31,14 @@
     [self.view addSubview:transFileImgView];
     
     UILabel *transFileLabel = [[UILabel alloc] init];
-    [transFileLabel setText:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"You have logged in %@ on your computer"], @"QTalk"]];
+    NSString *transFileLabelText = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"You have logged in %@ on your computer"], @"QTalk"];
+    UIFont *fnt = [UIFont systemFontOfSize:16];
+    // 根据字体得到NSString的尺寸
+    CGSize size = [[NSBundle qim_localizedStringForKey:@"not_have_company"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:fnt,NSFontAttributeName,nil]];
+
+    [transFileLabel setText:transFileLabelText];
     transFileLabel.textAlignment = NSTextAlignmentCenter;
-    transFileLabel.width = 156.0f;
+    transFileLabel.width = size.width + 10;
     transFileLabel.height = 22.0f;
     [transFileLabel setFont:[UIFont systemFontOfSize:16]];
     transFileLabel.center = CGPointMake(self.view.centerX, self.view.centerY - 80);
@@ -78,8 +83,13 @@
     fileImageView.center = fileImgbgView.center;
     [self.view addSubview:fileImageView];
     
-    UILabel *fileLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, fileImgbgView.bottom + 5, 56, 17)];
-    fileLabel.text = @"传文件";
+    NSString *fileLabelText = [NSBundle qim_localizedStringForKey:@"Transfer_files"];
+    UIFont *fileLabelfnt = [UIFont systemFontOfSize:12];
+    // 根据字体得到NSString的尺寸
+    CGSize fileLabelTextSize = [fileLabelText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:fileLabelfnt,NSFontAttributeName,nil]];
+
+    UILabel *fileLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, fileImgbgView.bottom + 5, fileLabelTextSize.width + 5, 17)];
+    fileLabel.text = fileLabelText;
     [fileLabel setFont:[UIFont systemFontOfSize:12]];
     [fileLabel setTextAlignment:NSTextAlignmentCenter];
     fileLabel.centerX = fileImgbgView.centerX;
