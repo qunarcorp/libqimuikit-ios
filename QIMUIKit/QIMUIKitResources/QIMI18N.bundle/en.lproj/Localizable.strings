@@ -265,7 +265,7 @@
 "login_privacy_policy" = " privacy Clause";
 "login_input_code" = "Please enter the verification code";
 "login_sending" = "Sending...";
-"login_waiting" = "Please wait patiently, login...";
+"login_waiting" = "login...";
 "login_get_code_tips" = "Verification code to succeed, please enter the verification code received by the phone message to log on.";
 "relogin_checkNetWork" = "Loading login page failed, make sure you have Wi-Fi or mobile data turned on, and reload the login page";
 
