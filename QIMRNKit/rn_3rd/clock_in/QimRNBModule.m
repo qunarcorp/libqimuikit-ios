@@ -70,6 +70,7 @@
 #define BalanceInquiry @"BalanceInquiry"
 #define AccountInfo @"AccountInfo"
 #define MyFile @"MyFile"
+#define MyMedal @"MyMedal"
 
 @interface QIMRCTRootView : RCTRootView
 @property (nonatomic, weak) UIViewController *ownerVC;
@@ -294,6 +295,9 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
     } else if ([nativeName isEqualToString:MyFile]) {
        
         [QIMFastEntrance openMyFileVC];
+    } else if ([nativeName isEqualToString:MyMedal]) {
+        //打开我的勋章
+        [QIMFastEntrance openMyFileVC];
     } else if ([nativeName isEqualToString:@"NotReadMsg"]){
         
         [QIMFastEntrance openNotReadMessageVC];
@@ -408,7 +412,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-//    return [NSURL URLWithString:@"http://ip:8081/index.ios.bundle?platform=ios&dev=true"];
+    return [NSURL URLWithString:@"http://100.80.128.154:8081/index.ios.bundle?platform=ios&dev=true"];
 
     NSString *qtalkFoundRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkFoundRNDebugUrl"];
     if (qtalkFoundRNDebugUrlStr.length > 0) {

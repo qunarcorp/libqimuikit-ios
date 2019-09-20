@@ -172,7 +172,18 @@ Pod::Spec.new do |s|
   
   s.subspec 'QIMFlutter' do |flutter|
     
-    flutter.dependency 'QIMFlutterFramework'
+    flutter.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMFlutterEnable=1', "HEADER_SEARCH_PATHS" => "$(PROJECT_DIR)/flutter_service/.ios/*"}
+    flutter.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
+    flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
+    flutter.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Public/QIMFlutter/**\" \"$(PODS_ROOT)/flutter_service/.ios/**\""}
+    flutter.resource = 'QIMFlutter/QIMFlutter.bundle'
+    flutter.frameworks = 'UIKit', 'Foundation'
+    
+    if $debug
+      
+      else
+      flutter.dependency 'QIMFlutterFramework'
+    end
     
   end
   
@@ -192,6 +203,7 @@ Pod::Spec.new do |s|
     norn.dependency 'QIMUIKit/QIMSuperPlayer'
     norn.dependency 'QIMUIKit/QIMUIVendorKit'
     norn.dependency 'QIMUIKit/QIMNote'
+    norn.dependency 'QIMUIKit/QIMFlutter'
   end
   
   s.subspec 'QIMUIKit-FULL' do |full|
@@ -211,6 +223,7 @@ Pod::Spec.new do |s|
     full.dependency 'QIMUIKit/QIMUIVendorKit'
     full.dependency 'QIMUIKit/QIMNote'
     full.dependency 'QIMUIKit/QIMRN'
+    full.dependency 'QIMUIKit/QIMFlutter'
 #    full.dependency 'QIMUIKit/QIMFlutter'
   end
   
