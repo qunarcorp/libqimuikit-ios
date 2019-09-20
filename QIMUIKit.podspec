@@ -172,16 +172,22 @@ Pod::Spec.new do |s|
   
   s.subspec 'QIMFlutter' do |flutter|
     
-    flutter.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMFlutterEnable=1', "HEADER_SEARCH_PATHS" => "$(PROJECT_DIR)/flutter_service/.ios/*"}
-    flutter.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
+#    flutter.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
     flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
-    flutter.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Public/QIMFlutter/**\" \"$(PODS_ROOT)/flutter_service/.ios/**\""}
-    flutter.resource = 'QIMFlutter/QIMFlutter.bundle'
-    flutter.frameworks = 'UIKit', 'Foundation'
-    
+#    flutter.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PROJECT_DIR)/flutter_service/.ios/Flutter/**/*\" \"$(PROJECT_DIR)/flutter_service/.ios/engine/**/*\" \"$(PROJECT_DIR)/flutter_service/.ios/FlutterPluginRegistrant/**/*\""}
+#    flutter.resource = 'QIMFlutter/QIMFlutter.bundle'
+#    flutter.frameworks = 'UIKit', 'Foundation'
+#    flutter.dependency 'Flutter'
+#    flutter.dependency 'fluttertoast'
+#    flutter.dependency 'path_provider'
+#    flutter.dependency 'shared_preferences'
+#    flutter.dependency 'sqflite'
+#    flutter.vendored_framework = '../flutter_service/.ios/Flutter/App.framework', '../flutter_service/.ios/Flutter/engine/Flutter.framework'
+#    flutter.source_files = "../libTest/**/*{h,m,c}"
+
     if $debug
       
-      else
+    else
       flutter.dependency 'QIMFlutterFramework'
     end
     
