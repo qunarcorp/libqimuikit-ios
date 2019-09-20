@@ -8,6 +8,8 @@
 
 
 #import "QimRNBModule.h"
+#import "QIMFlutterModule.h"
+
 #import "QIMMainVC.h"
 #import "UIApplication+QIMApplication.h"
 #import "QimRNBModule+TravelCalendar.h"
@@ -297,7 +299,8 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
         [QIMFastEntrance openMyFileVC];
     } else if ([nativeName isEqualToString:MyMedal]) {
         //打开我的勋章
-        [QIMFastEntrance openMyFileVC];
+        [QIMFlutterModule openUserMedalFlutter];
+//        [QIMFastEntrance openMyFileVC];
     } else if ([nativeName isEqualToString:@"NotReadMsg"]){
         
         [QIMFastEntrance openNotReadMessageVC];
