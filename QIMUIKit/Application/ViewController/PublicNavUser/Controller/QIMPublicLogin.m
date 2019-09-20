@@ -482,14 +482,14 @@ static const int companyTag = 10001;
             make.height.mas_equalTo(1);
         }];
     }
-//    if ([[QIMKit sharedInstance] qimNav_isToC]) {
-//        self.registerUserBtn.hidden = NO;
-//        self.scanSettingNavBtn.hidden = YES;
-//    }
-//    else{
-//        self.registerUserBtn.hidden = YES;
-//        self.scanSettingNavBtn.hidden = NO;
-//    }
+    if ([[QIMKit sharedInstance] qimNav_isToC]) {
+        self.registerUserBtn.hidden = NO;
+        self.scanSettingNavBtn.hidden = YES;
+    }
+    else{
+        self.registerUserBtn.hidden = YES;
+        self.scanSettingNavBtn.hidden = NO;
+    }
     
     
     [self.view addSubview:self.userPwdTextField];
