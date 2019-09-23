@@ -40,7 +40,7 @@
 
 #endif
 
-#import "UIView+Toast.h"
+#import "UIView+QIMToast.h"
 #import "QIMUpdateAlertView.h"
 
 #define kTabBarHeight   49
@@ -455,19 +455,19 @@ static dispatch_once_t __onceMainToken;
         if (str.length > 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+//                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
                 });
             });
             dispatch_async(dispatch_get_main_queue(), ^{
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:str];
                 });
             });
         }
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
             });
         });
     }
@@ -478,12 +478,12 @@ static dispatch_once_t __onceMainToken;
     NSString *promotMessage = [dic objectForKey:@"promotMessage"];
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
         });
     });
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:promotMessage];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:promotMessage];
         });
     });
 }
@@ -491,12 +491,12 @@ static dispatch_once_t __onceMainToken;
 - (void)submitLogSuccessed:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+//            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
         });
     });
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"感谢您的反馈"];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"感谢您的反馈"];
         });
     });
 }
@@ -504,12 +504,12 @@ static dispatch_once_t __onceMainToken;
 - (void)submitLogFaild:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+//            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
         });
     });
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"上传日志失败，请稍后重试！"];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"上传日志失败，请稍后重试！"];
         });
     });
 }
