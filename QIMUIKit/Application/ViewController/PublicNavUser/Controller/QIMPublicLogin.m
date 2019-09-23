@@ -481,7 +481,8 @@ static const int companyTag = 10001;
         }];
     }
 //    if ([[QIMKit sharedInstance] qimNav_isToC]) {
-//        self.registerUserBtn.hidden = NO;
+//        self.register
+//        UserBtn.hidden = NO;
 //        self.scanSettingNavBtn.hidden = YES;
 //    }
 //    else{
