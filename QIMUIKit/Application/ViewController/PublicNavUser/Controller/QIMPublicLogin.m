@@ -408,11 +408,14 @@ static const int companyTag = 10001;
         make.right.mas_equalTo(@(-24));
     }];
     
+    UIFont *registerUserBtnFont = [UIFont systemFontOfSize:17];
+    // 根据字体得到NSString的尺寸
+    CGSize registerUserBtnSize = [[NSBundle qim_localizedStringForKey:@"login_sign_Up"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:registerUserBtnFont,NSFontAttributeName,nil]];
     [self.view addSubview:self.registerUserBtn];
     [self.registerUserBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo((56 + 38/2) - 30/2);
         make.height.mas_equalTo(@(30));
-        make.width.mas_equalTo(@(50));
+        make.width.mas_equalTo(@(registerUserBtnSize.width + 5));
         make.right.mas_equalTo(@(-16));
     }];
     self.registerUserBtn.hidden = YES;
@@ -963,7 +966,7 @@ static const int companyTag = 10001;
 }
 
 - (void)registerNewUserBtnClicked:(UIButton *)btn{
-//    [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_webAppUrl] showNavBar:YES];
+    [QIMFastEntrance openWebViewForUrl:[[QIMKit sharedInstance] qimNav_webAppUrl] showNavBar:YES];
 }
 
 #pragma loginUnSettingNavViewDelegate
