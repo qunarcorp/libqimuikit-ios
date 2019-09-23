@@ -53,7 +53,7 @@
 #import "QIMSwitchAccountView.h"
 #import "SCLAlertView.h"
 #import "NSDate+Extension.h"
-#import "UIView+Toast.h"
+#import "UIView+QIMToast.h"
 #import "QIMPublicRedefineHeader.h"
 #import "QIMAddIndexViewController.h"
 #import "QIMUserCacheManager.h"
@@ -990,14 +990,14 @@ RCT_EXPORT_METHOD(kickGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock
         NSString *str = @"踢出群成员成功";
         dispatch_async(dispatch_get_main_queue(), ^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
-                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:str];
             });
         });
     } else {
         NSString *str = @"踢出群成员失败";
         dispatch_async(dispatch_get_main_queue(), ^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
-                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:str];
             });
         });
     }
