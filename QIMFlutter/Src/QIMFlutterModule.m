@@ -46,7 +46,7 @@
         @"IncrementVersion":@"",
         @"Introduce":@"",
         @"LastUpdateTime":@"4152",
-        @"Name":@"胡滨hubin",
+        @"Name":@"李露lucas",
         @"SearchIndex":@"hubinhubin|hbhubin",
         @"Topic":@"",
         @"UserId":@"lilulucas.li@ejabhost1",
@@ -83,6 +83,7 @@
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
+        [flutterVc.navigationController setNavigationBarHidden:YES animated:NO];
         [navVC pushViewController:flutterVc animated:YES];
     });
 }
