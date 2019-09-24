@@ -649,14 +649,14 @@ static NSString *__default_ua = nil;
             }
         }
 //        if ([self.url isEqualToString:[[QIMKit sharedInstance] qimNav_getManagerAppUrl]]) {
-//            NSMutableDictionary *tcookieProperties = [NSMutableDictionary dictionary];
-//            [tcookieProperties setQIMSafeObject:@"confignav" forKey:NSHTTPCookieName];
-//            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_NavUrl] forKey:NSHTTPCookieValue];
-//            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-//            [tcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
-//            [tcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
-//            NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:tcookieProperties];
-//            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
+            NSMutableDictionary *confignavProperties = [NSMutableDictionary dictionary];
+            [confignavProperties setQIMSafeObject:@"confignav" forKey:NSHTTPCookieName];
+            [confignavProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_NavUrl] forKey:NSHTTPCookieValue];
+            [confignavProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [confignavProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [confignavProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
+            NSHTTPCookie *confignavCookie = [NSHTTPCookie cookieWithProperties:confignavProperties];
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:confignavCookie];
 //        }
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
         [cook setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
