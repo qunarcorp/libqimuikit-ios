@@ -349,6 +349,7 @@ static NSString *__default_ua = nil;
     return decodedString;
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.translucent = NO;
@@ -387,7 +388,7 @@ static NSString *__default_ua = nil;
     _webView.delegate = _progressProxy;
     if (self.needAuth) {
         if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-            NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:@" qunartalk-ios-client"];
+            NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:[NSString stringWithFormat:@"%@ - %@", @" qunartalk-ios-client", [[QIMKit sharedInstance] getDefaultUserAgentString]]];
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : ua, @"User-Agent":ua}];
         } else {
             if (self.fromMsgList) {
