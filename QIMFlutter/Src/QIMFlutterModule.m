@@ -10,7 +10,7 @@
 #import "QIMFlutterViewController.h"
 #import "QIMFastEntrance.h"
 #import "UIApplication+QIMApplication.h"
-//#import <Flutter/Flutter.h>
+#import <Flutter/Flutter.h>
 
 @implementation QIMFlutterModule
 
@@ -35,7 +35,6 @@
          result(FlutterMethodNotImplemented);
        }
     */
-    /*
     dispatch_async(dispatch_get_main_queue(), ^{
         
         FlutterViewController *flutterVc = [FlutterViewController new];
@@ -50,9 +49,9 @@
         @"Name":@"胡滨hubin",
         @"SearchIndex":@"hubinhubin|hbhubin",
         @"Topic":@"",
-        @"UserId":@"hubin.hu",
+        @"UserId":@"lilulucas.li@ejabhost1",
         @"UserInfo":@"",
-        @"XmppId":@"hin.hu@ejabhost1",
+        @"XmppId":@"lilulucas.li@ejabhost1",
         @"collectionBind": @0,
         @"collectionUnReadCount": @0,
         @"id": @0,
@@ -63,13 +62,29 @@
         };
         NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:dic];
         [flutterVc setInitialRoute:str];
-        
+        FlutterMethodChannel *medalChannel = [FlutterMethodChannel methodChannelWithName:@"data.flutter.io/medal" binaryMessenger:flutterVc];
+        __weak typeof(self) weakSelf = self;
+        [medalChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call, FlutterResult  _Nonnull result) {
+            if ([@"getMedalList" isEqualToString:call.method]) {
+                NSLog(@"getMedalList Channel");
+                NSDictionary *callArguments = (NSDictionary *)call.arguments;
+                NSDictionary *userId = [callArguments objectForKey:@"userId"];
+                userId = @"lilulucas.li";
+                NSArray *array = [[QIMKit sharedInstance] getUserWearMedalStatusByUserid:userId];
+                NSString *jsonStr2 = [[QIMJSONSerializer sharedInstance] serializeObject:array];
+                result(jsonStr2);
+
+            } else {
+              result(FlutterMethodNotImplemented);
+            }
+        }];
+  
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         [navVC pushViewController:flutterVc animated:YES];
-    });*/
+    });
 }
 
 @end
