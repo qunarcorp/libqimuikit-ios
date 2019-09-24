@@ -174,7 +174,7 @@ Pod::Spec.new do |s|
     
 #    flutter.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
     flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
-#    flutter.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PROJECT_DIR)/flutter_service/.ios/Flutter/**/*\" \"$(PROJECT_DIR)/flutter_service/.ios/engine/**/*\" \"$(PROJECT_DIR)/flutter_service/.ios/FlutterPluginRegistrant/**/*\""}
+    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
 #    flutter.resource = 'QIMFlutter/QIMFlutter.bundle'
 #    flutter.frameworks = 'UIKit', 'Foundation'
 #    flutter.dependency 'Flutter'
