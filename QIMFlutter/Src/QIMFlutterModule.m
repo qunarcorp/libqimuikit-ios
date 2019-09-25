@@ -12,37 +12,80 @@
 #import "UIApplication+QIMApplication.h"
 #import <Flutter/Flutter.h>
 
+@interface QIMFlutterModule ()
+
+@property (nonatomic, strong) FlutterMethodChannel *medalChannel;
+
+@property (nonatomic, strong) QIMFlutterViewController *flutterVc;
+
+@end
+
 @implementation QIMFlutterModule
 
-+ (void)openUserMedalFlutter {
-    /*
-    FlutterMethodChannel* batteryChannel = [FlutterMethodChannel
-         methodChannelWithName:@"samples.flutter.io/battery"
-               binaryMessenger:controller];
-     __weak typeof(self) weakSelf = self;
-     [batteryChannel setMethodCallHandler:^(FlutterMethodCall* call,
-                                            FlutterResult result) {
-       if ([@"getBatteryLevel" isEqualToString:call.method]) {
-         int batteryLevel = [weakSelf getBatteryLevel];
-         if (batteryLevel == -1) {
-           result([FlutterError errorWithCode:@"UNAVAILABLE"
-                                      message:@"Battery info unavailable"
-                                      details:nil]);
-         } else {
-           result(@(batteryLevel));
-         }
-       } else {
-         result(FlutterMethodNotImplemented);
-       }
-    */
+static QIMFlutterModule *_flutterModule = nil;
++ (instancetype)sharedInstance {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _flutterModule = [[QIMFlutterModule alloc] init];
+    });
+    return _flutterModule;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.medalChannel;
+        
+    }
+    return self;
+}
+
+- (QIMFlutterViewController *)flutterVc {
+    if (!_flutterVc) {
+        _flutterVc = [QIMFlutterViewController new];
+        //取消闪App启动图
+        _flutterVc.splashScreenView = nil;
+    }
+    return _flutterVc;
+}
+
+- (FlutterMethodChannel *)medalChannel {
+    if (!_medalChannel) {
+        _medalChannel = [FlutterMethodChannel methodChannelWithName:@"data.flutter.io/medal" binaryMessenger:self.flutterVc];
+        __weak typeof(self) weakSelf = self;
+        [_medalChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call, FlutterResult  _Nonnull result) {
+            if ([@"getMedalList" isEqualToString:call.method]) {
+                NSLog(@"getMedalList Channel");
+                NSDictionary *callArguments = (NSDictionary *)call.arguments;
+                NSDictionary *userId = [callArguments objectForKey:@"userId"];
+                userId = @"lilulucas.li";
+                NSArray *array = [[QIMKit sharedInstance] getUserWearMedalStatusByUserid:userId];
+                NSString *jsonStr2 = [[QIMJSONSerializer sharedInstance] serializeObject:array];
+                result(jsonStr2);
+
+            } else if ([@"getUsersInMedal" isEqualToString:call.method]) {
+                
+                NSDictionary *callArguments = (NSDictionary *)call.arguments;
+                NSInteger medalId = [callArguments objectForKey:@"medalId"];
+                
+                
+            } else {
+              result(FlutterMethodNotImplemented);
+            }
+        }];
+    }
+    return _medalChannel;
+}
+
+- (void)openUserMedalFlutter {
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        FlutterViewController *flutterVc = [FlutterViewController new];
+//        FlutterViewController *flutterVc = [FlutterViewController new];
         NSDictionary *dic = @{
         @"DescInfo":@"/QUNAR/基础研发部/短信及Push",
         @"ExtendedFlag":@"",
         @"GroupId":@"",
-        @"HeaderSrc":@"https://qim.qunar.com/file/v2/download/avatar/new/99ae30fe52c58254be484496.png",
+    @"HeaderSrc":@"https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/static/protocol/https/home/img/qrcode/zbios_x2_5869f49.png",
         @"IncrementVersion":@"",
         @"Introduce":@"",
         @"LastUpdateTime":@"4152",
@@ -60,31 +103,15 @@
         @"mood":@"11222",
         @"root": @(NO)
         };
+        
         NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:dic];
-        [flutterVc setInitialRoute:str];
-        FlutterMethodChannel *medalChannel = [FlutterMethodChannel methodChannelWithName:@"data.flutter.io/medal" binaryMessenger:flutterVc];
-        __weak typeof(self) weakSelf = self;
-        [medalChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call, FlutterResult  _Nonnull result) {
-            if ([@"getMedalList" isEqualToString:call.method]) {
-                NSLog(@"getMedalList Channel");
-                NSDictionary *callArguments = (NSDictionary *)call.arguments;
-                NSDictionary *userId = [callArguments objectForKey:@"userId"];
-                userId = @"lilulucas.li";
-                NSArray *array = [[QIMKit sharedInstance] getUserWearMedalStatusByUserid:userId];
-                NSString *jsonStr2 = [[QIMJSONSerializer sharedInstance] serializeObject:array];
-                result(jsonStr2);
-
-            } else {
-              result(FlutterMethodNotImplemented);
-            }
-        }];
+        [self.flutterVc setInitialRoute:str];
   
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
-        [flutterVc.navigationController setNavigationBarHidden:YES animated:NO];
-        [navVC pushViewController:flutterVc animated:YES];
+        [navVC pushViewController:self.flutterVc animated:YES];
     });
 }
 

@@ -299,8 +299,9 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
         [QIMFastEntrance openMyFileVC];
     } else if ([nativeName isEqualToString:MyMedal]) {
         //打开我的勋章
-        [QIMFlutterModule openUserMedalFlutter];
-//        [QIMFastEntrance openMyFileVC];
+        dispatch_async(dispatch_get_main_queue(), ^{
+           [[QIMFlutterModule sharedInstance] openUserMedalFlutter];
+        });
     } else if ([nativeName isEqualToString:@"NotReadMsg"]){
         
         [QIMFastEntrance openNotReadMessageVC];
