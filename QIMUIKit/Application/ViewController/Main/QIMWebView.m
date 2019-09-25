@@ -343,12 +343,6 @@ static NSString *__default_ua = nil;
     return self;
 }
 
-//URLDEcode
-+ (NSString *)decodeString:(NSString*)encodedString {
-    NSString *decodedString  = (__bridge_transfer NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL,(__bridge CFStringRef)encodedString,   CFSTR(""),CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
-    return decodedString;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.translucent = NO;
