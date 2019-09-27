@@ -438,6 +438,18 @@
             [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:YES isCaller:YES];
 #endif
         }
+        case QIMMessageType_WebRTC_Vedio:{
+#if __has_include("QIMWebRTCClient.h")
+            [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
+            //            [[QIMWebRTCClient sharedInstance] setHeaderImage:[[QIMKit sharedInstance] getUserHeaderImageByUserId:self.chatId]];
+            [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:YES isCaller:YES];
+#endif
+        }
+        case QIMMessageType_WebRTC_Audio:{
+            [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
+            //            [[QIMWebRTCClient sharedInstance] setHeaderImage:[[QIMKit sharedInstance] getUserHeaderImageByUserId:self.chatId]];
+            [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:NO isCaller:YES];
+        }
             break;
             
         default:

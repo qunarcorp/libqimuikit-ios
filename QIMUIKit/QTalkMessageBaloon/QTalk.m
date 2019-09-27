@@ -136,13 +136,13 @@ static QTalk *__global_qtalk = nil;
     
 #if __has_include("QIMWebRTCClient.h")
     //语音聊天
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMWebRTC_MsgType_Audio];
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageType_WebRTC_Audio];
     //视频聊天
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMWebRTC_MsgType_Video];
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageType_WebRTC_Vedio];
     
-    [[QIMKit sharedInstance] setMsgShowText:@"[语音聊天]" ForMessageType:QIMWebRTC_MsgType_Audio];
+    [[QIMKit sharedInstance] setMsgShowText:@"[语音聊天]" ForMessageType:QIMMessageType_WebRTC_Audio];
     
-    [[QIMKit sharedInstance] setMsgShowText:@"[视频聊天]" ForMessageType:QIMWebRTC_MsgType_Video];
+    [[QIMKit sharedInstance] setMsgShowText:@"[视频聊天]" ForMessageType:QIMMessageType_WebRTC_Vedio];
 #endif
 #if __has_include("QIMWebRTCClient.h")
     //视频会议

@@ -18,11 +18,11 @@
 #import "QIMMsgBaloonBaseCell.h"
 //#import "UIImageView+QIMWebCache.h"
 #import "QIMRTCChatCell.h"
-
+#import "RTLabel.h"
 @interface QIMRTCChatCell () <QIMMenuImageViewDelegate>
 {
     UIImageView     * _imageView;
-    UILabel         * _titleLabel;
+    RTLabel         * _titleLabel;
 }
 
 @end
@@ -45,11 +45,6 @@
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         [self.contentView addSubview:_imageView];
         
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _titleLabel.numberOfLines = 0;
-        _titleLabel.font = [UIFont systemFontOfSize:15];
-        _titleLabel.backgroundColor = [UIColor clearColor];
-        [self.contentView addSubview:_titleLabel];
     }
     return self;
 }
@@ -66,44 +61,51 @@
 - (void)refreshUI
 {
     [super refreshUI];
-    
+    if (_titleLabel) {
+        [_titleLabel removeFromSuperview];
+        _titleLabel = nil;
+    }
+    _titleLabel = [[RTLabel alloc] initWithFrame:CGRectMake(0, 0, kRTCCellWidth, 24)];
+    _titleLabel.font = [UIFont systemFontOfSize:15];
+    _titleLabel.backgroundColor = [UIColor clearColor];
+    [self.contentView addSubview:_titleLabel];
     self.backView.message = self.message;
-    
-    float backWidth = kRTCCellWidth;
+    _titleLabel.textAlignment = kCTRightTextAlignment;
+    if (self.message.messageType == QIMMessageType_WebRTC_Audio) {
+        _titleLabel.text = @"发起了语音聊天";
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Call"];
+    } else if (self.message.messageType == QIMMessageType_WebRTC_Vedio) {
+        _titleLabel.text = self.message.message;
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Video"];
+    } else if (self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoMeeting) {
+        _titleLabel.text = @"发起了视频会议";
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Meeting"];
+    }
+    float backWidth = [_titleLabel optimumSize].width + 50;
     float backHeight = kRTCCellHeight;
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
-    [super refreshUI];
-
+    
     switch (self.message.messageDirection) {
         case QIMMessageDirection_Received: {
             _titleLabel.textColor = [UIColor blackColor];
             _imageView.frame = CGRectMake(self.backView.left + 16, self.backView.top + 5, 24, 24);
-            _titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top, self.backView.width - 40 - 10, self.backView.height);
-            _titleLabel.centerY = self.backView.centerY;
+            _titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top + 7, self.backView.width - 40 - 10, self.backView.height);
+//            _titleLabel.centerY = self.backView.centerY;
             _titleLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
         case QIMMessageDirection_Sent: {
             _titleLabel.textColor = [UIColor whiteColor];
             _imageView.frame = CGRectMake(self.backView.left + 10, self.backView.top + 5, 24, 24);
-            _titleLabel.frame = CGRectMake(_imageView.right + 5, 5, self.backView.width - 40 - 10, self.backView.height);
-            _titleLabel.centerY = self.backView.centerY;
+            _titleLabel.frame = CGRectMake(_imageView.right + 5, 5 + 7, self.backView.width - 40 - 10, self.backView.height);
+//            _titleLabel.centerY = self.backView.centerY;
             _titleLabel.textColor = [UIColor qim_rightBallocFontColor];
         }
             break;
         default:
             break;
     }
-    if (self.message.messageType == QIMWebRTC_MsgType_Audio) {
-        _titleLabel.text = @"发起了语音聊天";
-        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Call"];
-    } else if (self.message.messageType == QIMWebRTC_MsgType_Video) {
-        _titleLabel.text = @"发起了视频聊天";
-        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Video"];
-    } else if (self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoMeeting) {
-        _titleLabel.text = @"发起了视频会议";
-        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Meeting"];
-    }
+    
 }
 
 - (NSArray *)showMenuActionTypeList {
