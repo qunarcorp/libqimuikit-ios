@@ -74,9 +74,9 @@ static QIMNotificationManager *_notificationManager = nil;
         NSString *name = [userInfo objectForKey:@"Name"];
         [[QIMWebRTCClient sharedInstance] setRemoteJID:jid];
         [[QIMWebRTCClient sharedInstance] setRemoteResource:resource];
-        [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:jid isVideo:msgType == QIMWebRTC_MsgType_Video isCaller:NO];
+        [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:jid isVideo:msgType == QIMMessageType_WebRTC_Vedio isCaller:NO];
     } else {
-        [[QIMKit sharedInstance] sendAudioVideoWithType:QIMWebRTC_MsgType_Video WithBody:@"busy" WithExtentInfo:[[QIMJSONSerializer sharedInstance] serializeObject:@{@"type":@"busy"}] WithMsgId:[QIMUUIDTools UUID] ToJid:[NSString stringWithFormat:@"%@%@",jid,resource.length > 0?[NSString stringWithFormat:@"/%@",resource]:@""]];
+        [[QIMKit sharedInstance] sendAudioVideoWithType:QIMMessageType_WebRTC_Vedio WithBody:@"busy" WithExtentInfo:[[QIMJSONSerializer sharedInstance] serializeObject:@{@"type":@"busy"}] WithMsgId:[QIMUUIDTools UUID] ToJid:[NSString stringWithFormat:@"%@%@",jid,resource.length > 0?[NSString stringWithFormat:@"/%@",resource]:@""]];
     }
 #endif
 }
