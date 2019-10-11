@@ -300,7 +300,7 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
     } else if ([nativeName isEqualToString:MyMedal]) {
         //打开我的勋章
         dispatch_async(dispatch_get_main_queue(), ^{
-           [[QIMFlutterModule sharedInstance] openUserMedalFlutter];
+            [[QIMFlutterModule sharedInstance] openUserMedalFlutterWithUserId:[[QIMKit sharedInstance] getLastJid]];
         });
     } else if ([nativeName isEqualToString:@"NotReadMsg"]){
         
@@ -416,7 +416,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-    return [NSURL URLWithString:@"http://100.80.128.224:8081/index.ios.bundle?platform=ios&dev=true"];
+    return [NSURL URLWithString:@"http://100.80.128.153:8081/index.ios.bundle?platform=ios&dev=true"];
 
     NSString *qtalkFoundRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkFoundRNDebugUrl"];
     if (qtalkFoundRNDebugUrlStr.length > 0) {

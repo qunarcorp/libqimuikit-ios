@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface QIMFlutterModule : NSObject
 
 + (instancetype)sharedInstance;
-- (void)openUserMedalFlutter;
+- (void)openUserMedalFlutterWithUserId:(NSString *)userId;
 
 @end
 
