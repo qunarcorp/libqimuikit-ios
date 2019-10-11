@@ -56,18 +56,45 @@ static QIMFlutterModule *_flutterModule = nil;
         [_medalChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call, FlutterResult  _Nonnull result) {
             if ([@"getMedalList" isEqualToString:call.method]) {
                 NSLog(@"getMedalList Channel");
+                //获取我的勋章列表
                 NSDictionary *callArguments = (NSDictionary *)call.arguments;
                 NSDictionary *userId = [callArguments objectForKey:@"userId"];
-                userId = @"lilulucas.li";
                 NSArray *array = [[QIMKit sharedInstance] getUserWearMedalStatusByUserid:userId];
                 NSString *jsonStr2 = [[QIMJSONSerializer sharedInstance] serializeObject:array];
                 result(jsonStr2);
 
             } else if ([@"getUsersInMedal" isEqualToString:call.method]) {
                 
+                //获取这个勋章下的所有用户
                 NSDictionary *callArguments = (NSDictionary *)call.arguments;
-                NSInteger medalId = [callArguments objectForKey:@"medalId"];
-                
+                NSInteger medalId = [[callArguments objectForKey:@"medalId"] integerValue];
+                NSInteger limit = [[callArguments objectForKey:@"limit"] integerValue];
+                NSInteger offset = [[callArguments objectForKey:@"offset"] integerValue];
+                NSArray *userInfoList = [[QIMKit sharedInstance] getUsersInMedal:medalId withLimit:limit withOffset:offset];
+                NSString *jsonStr2 = [[QIMJSONSerializer sharedInstance] serializeObject:userInfoList];
+                result(jsonStr2);
+            } else if ([@"updateUserMedalStatus" isEqualToString:call.method]) {
+                //设置勋章状态
+                NSDictionary *callArguments = (NSDictionary *)call.arguments;
+                NSInteger medalId = [[callArguments objectForKey:@"medalId"] integerValue];
+                NSInteger status = [[callArguments objectForKey:@"status"] integerValue];
+                [[QIMKit sharedInstance] userMedalStatusModifyWithStatus:status withMedalId:medalId withCallBack:^(BOOL success, NSString *errmsg) {
+                    if (success == YES) {
+                        NSLog(@"medaiId : %ld, status : %ld", medalId, status);
+                        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithCapacity:3];
+                        [dic setObject:@(YES) forKey:@"isOK"];
+                        NSDictionary *medalDic = [[QIMKit sharedInstance] getUserMedalWithMedalId:medalId withUserId:[[QIMKit sharedInstance] getLastJid]];
+                        [dic setObject:medalDic forKey:@"medal"];
+                        NSString *jsonStr2 = [[QIMJSONSerializer sharedInstance] serializeObject:dic];
+                        result(jsonStr2);
+                    } else {
+                        NSLog(@"medaiId : %ld, status : %ld", medalId, status);
+                        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithCapacity:3];
+                        [dic setObject:@(NO) forKey:@"isOK"];
+                        NSString *jsonStr2 = [[QIMJSONSerializer sharedInstance] serializeObject:dic];
+                        result(jsonStr2);
+                    }
+                }];
                 
             } else {
               result(FlutterMethodNotImplemented);
@@ -77,34 +104,12 @@ static QIMFlutterModule *_flutterModule = nil;
     return _medalChannel;
 }
 
-- (void)openUserMedalFlutter {
+- (void)openUserMedalFlutterWithUserId:(NSString *)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        
-//        FlutterViewController *flutterVc = [FlutterViewController new];
-        NSDictionary *dic = @{
-        @"DescInfo":@"/QUNAR/基础研发部/短信及Push",
-        @"ExtendedFlag":@"",
-        @"GroupId":@"",
-    @"HeaderSrc":@"https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/static/protocol/https/home/img/qrcode/zbios_x2_5869f49.png",
-        @"IncrementVersion":@"",
-        @"Introduce":@"",
-        @"LastUpdateTime":@"4152",
-        @"Name":@"李露lucas",
-        @"SearchIndex":@"hubinhubin|hbhubin",
-        @"Topic":@"",
-        @"UserId":@"lilulucas.li@ejabhost1",
-        @"UserInfo":@"",
-        @"XmppId":@"lilulucas.li@ejabhost1",
-        @"collectionBind": @0,
-        @"collectionUnReadCount": @0,
-        @"id": @0,
-        @"isInGroup": @(NO),
-        @"mark":@"",
-        @"mood":@"11222",
-        @"root": @(NO)
-        };
-        
-        NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:dic];
+        NSDictionary *dic = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
+        NSMutableDictionary *userInfoDic = [NSMutableDictionary dictionaryWithDictionary:dic];
+        [userInfoDic setObject:@"" forKey:@"UserInfo"];
+        NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:userInfoDic];
         [self.flutterVc setInitialRoute:str];
   
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
