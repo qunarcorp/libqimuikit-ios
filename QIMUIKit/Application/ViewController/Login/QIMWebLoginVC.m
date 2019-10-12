@@ -90,11 +90,6 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    NSDictionary *jjj = @{@"token":@{@"plat":@"app",@"macCode":@"02:00:00:00:00:00",@"token":@"3721554158157086188738951"}};
-        NSString *lastUserName = @"nigotuu7479";
-        NSString * lastUserToken = [[QIMJSONSerializer sharedInstance] serializeObject:jjj];
-         [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserToken];
-    return YES;
     [_progressHUD setHidden:NO];
     NSHTTPCookieStorage *myCookie = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     NSString *q = nil;
@@ -128,11 +123,6 @@
         
         NSString *lastUserName = [QIMKit getLastUserName];
         NSString *lastUserToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-        NSDictionary *jjj = @{@"token":@{@"plat":@"app",@"macCode":@"02:00:00:00:00:00",@"token":@"3721554158157086188738951"}};
-        lastUserName = @"nigotuu7479";
-        lastUserToken = [[QIMJSONSerializer sharedInstance] serializeObject:jjj];
-        [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserToken];
-
         if (lastUserName.length > 0 && lastUserToken.length > 0) {
             [[QIMKit sharedInstance] setUserObject:lastUserToken forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserToken];
