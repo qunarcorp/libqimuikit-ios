@@ -22,7 +22,7 @@
 @interface QIMRTCChatCell () <QIMMenuImageViewDelegate>
 {
     UIImageView     * _imageView;
-    RTLabel         * _titleLabel;
+    UILabel     *   titleLabel;
 }
 
 @end
@@ -61,50 +61,113 @@
 - (void)refreshUI
 {
     [super refreshUI];
-    if (_titleLabel) {
-        [_titleLabel removeFromSuperview];
-        _titleLabel = nil;
+    if (titleLabel) {
+        [titleLabel removeFromSuperview];
+        titleLabel = nil;
     }
-    _titleLabel = [[RTLabel alloc] initWithFrame:CGRectMake(0, 0, kRTCCellWidth, 24)];
-    _titleLabel.font = [UIFont systemFontOfSize:15];
-    _titleLabel.backgroundColor = [UIColor clearColor];
-    [self.contentView addSubview:_titleLabel];
+//    _titleLabel = [[RTLabel alloc] initWithFrame:CGRectMake(0, 0, kRTCCellWidth, 20)];
+//    _titleLabel.font = [UIFont systemFontOfSize:15];
+//    _titleLabel.backgroundColor = [UIColor clearColor];
+//    _titleLabel.textAlignment = kCTTextAlignmentLeft;
+//
+    titleLabel = [[UILabel alloc]init];
+    titleLabel.font = [UIFont systemFontOfSize:15];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textAlignment = NSTextAlignmentLeft;
+    
+    [self.contentView addSubview:titleLabel];
     self.backView.message = self.message;
-    _titleLabel.textAlignment = kCTRightTextAlignment;
     if (self.message.messageType == QIMMessageType_WebRTC_Audio) {
-        _titleLabel.text = @"发起了语音聊天";
+        titleLabel.text = @"音视频通话";
         _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Call"];
     } else if (self.message.messageType == QIMMessageType_WebRTC_Vedio) {
-        _titleLabel.text = self.message.message;
+//        _titleLabel.text = self.message.message;
+        NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.extendInformation error:nil];
+        if (infoDic) {
+            NSString * type = infoDic[@"type"];
+            NSNumber * number = infoDic[@"time"];
+            
+           if (self.message.messageDirection == QIMMessageDirection_Sent) {
+                if ([type isEqualToString:@"cancel"]) {
+                    titleLabel.text = @"已取消";
+                }
+                else if ([type isEqualToString:@"deny"]) {
+                    titleLabel.text = @"对方已拒绝";
+                }
+                else if (number && number.integerValue>0) {
+                    titleLabel.text = self.message.message;
+                }
+            }
+            else if(self.message.messageDirection == QIMMessageDirection_Received){
+                if ([type isEqualToString:@"cancel"]) {
+                    titleLabel.text = @"对方已取消";
+                }
+                else if ([type isEqualToString:@"deny"]) {
+                    titleLabel.text = @"已拒绝";
+                }
+                else if ([type isEqualToString:@"timeout"]) {
+                    titleLabel.text = @"音视频通话";
+                }
+                else if (number && number.integerValue>0) {
+                    titleLabel.text = [NSString stringWithFormat:@"通话时长：%@",[self getTimestamp:number.integerValue]];
+                }
+            }
+            else{
+                titleLabel.text = self.message.message;
+            }
+        }
+        else{
+            titleLabel.text = @"音视频通话";
+        }
         _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Video"];
     } else if (self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoMeeting) {
-        _titleLabel.text = @"发起了视频会议";
+        titleLabel.text = @"视频会议";
         _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Meeting"];
     }
-    float backWidth = [_titleLabel optimumSize].width + 50;
+    else if(self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoGroup) {
+        titleLabel.text = @"视频会议";
+        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Meeting"];
+    }
+    [titleLabel sizeToFit];
+    float backWidth = titleLabel.width + 60;//[_titleLabel optimumSize].width + 60;
     float backHeight = kRTCCellHeight;
     [self setBackViewWithWidth:backWidth WithHeight:backHeight];
     
     switch (self.message.messageDirection) {
         case QIMMessageDirection_Received: {
-            _titleLabel.textColor = [UIColor blackColor];
+            titleLabel.textColor = [UIColor blackColor];
             _imageView.frame = CGRectMake(self.backView.left + 16, self.backView.top + 5, 24, 24);
-            _titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top + 7, self.backView.width - 40 - 10, self.backView.height);
+            titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top + (self.backView.height - 20)/2, titleLabel.width, 20);
 //            _titleLabel.centerY = self.backView.centerY;
-            _titleLabel.textColor = [UIColor qim_leftBallocFontColor];
+            titleLabel.textColor = [UIColor qim_leftBallocFontColor];
         }
             break;
         case QIMMessageDirection_Sent: {
-            _titleLabel.textColor = [UIColor whiteColor];
+            titleLabel.textColor = [UIColor whiteColor];
             _imageView.frame = CGRectMake(self.backView.left + 10, self.backView.top + 5, 24, 24);
-            _titleLabel.frame = CGRectMake(_imageView.right + 5, 5 + 7, self.backView.width - 40 - 10, self.backView.height);
+            titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top + (self.backView.height - 20)/2, titleLabel.width, 20);
 //            _titleLabel.centerY = self.backView.centerY;
-            _titleLabel.textColor = [UIColor qim_rightBallocFontColor];
+            titleLabel.textColor = [UIColor qim_rightBallocFontColor];
         }
             break;
         default:
             break;
     }
+    
+}
+
+- (NSString *)getTimestamp:(NSInteger )interval{
+    
+    //format of minute
+    NSString *str_minute = [NSString stringWithFormat:@"%ld",interval/60];
+    //format of second
+    NSString *str_second = [NSString stringWithFormat:@"%ld",interval%60];
+    //format of time
+    NSString *format_time = [NSString stringWithFormat:@"%@:%@",str_minute,str_second];
+    
+    NSLog(@"format_time : %@",format_time);
+    
+    return format_time;
     
 }
 
