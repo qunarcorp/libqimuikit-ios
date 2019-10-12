@@ -1351,7 +1351,15 @@ RCT_EXPORT_METHOD(takePhoto) {
 // 打开开发人员会话窗口
 RCT_EXPORT_METHOD(openDeveloperChat) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openSingleChatVCByUserId:@"lilulucas.li@ejabhost1"];
+        NSString *userId = @"lilulucas.li@ejabhost1";
+        if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+            userId = @"qcxjfu@ejabhost1";
+        } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            userId = @"lilulucas.li@ejabhost1";
+        } else {
+            userId = @"lilulucas.li@ejabhost1";
+        }
+        [QIMFastEntrance openSingleChatVCByUserId:userId];
     });
 }
 
