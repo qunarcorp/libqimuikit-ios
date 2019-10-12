@@ -52,6 +52,7 @@
 #endif
 
 #import "QIMFileCell.h"
+#import "QIMRTCChatCell.h"
 
 @interface QIMMessageTableViewManager () 
 
@@ -251,6 +252,9 @@
                 return [QIMHintTableViewCell getCellHeightWihtMessage:temp chatType:self.chatType] + 15;
             }
                 break;
+//            case QIMMessageTypeWebRtcMsgTypeVideoMeeting:{
+//                return [QIMRTCChatCell]
+//            }
             default: {
                 
                 Class someClass = [[QIMKit sharedInstance] getRegisterMsgCellClassForMessageType:message.messageType];
@@ -431,6 +435,19 @@
 #endif
         }
             break;
+        case QIMMessageTypeWebRtcMsgTypeVideoGroup: {
+#if __has_include("QIMWebRTCClient.h")
+            
+            NSString *infoStr = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
+            if (infoStr.length > 0) {
+                NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
+                if (infoDic.count) {
+                    [[QIMWebRTCMeetingClient sharedInstance] joinRoomByMessage:infoDic];
+                }
+            }
+#endif
+        }
+            break;
         case QIMWebRTC_MsgType_Video: {
 #if __has_include("QIMWebRTCClient.h")
             [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
@@ -438,6 +455,7 @@
             [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:YES isCaller:YES];
 #endif
         }
+            break;
         case QIMMessageType_WebRTC_Vedio:{
 #if __has_include("QIMWebRTCClient.h")
             [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
@@ -445,6 +463,7 @@
             [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:YES isCaller:YES];
 #endif
         }
+            break;
         case QIMMessageType_WebRTC_Audio:{
             [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
             //            [[QIMWebRTCClient sharedInstance] setHeaderImage:[[QIMKit sharedInstance] getUserHeaderImageByUserId:self.chatId]];
