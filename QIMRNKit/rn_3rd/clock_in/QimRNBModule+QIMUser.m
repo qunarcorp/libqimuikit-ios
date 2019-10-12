@@ -34,6 +34,22 @@
     return mood?mood:@"这家伙很懒,什么都没留下";
 }
 
++ (NSArray *)qimrn_getNewUserMedalByUserId:(NSString *)xmppId {
+    if (!xmppId || xmppId.length <= 0) {
+        return nil;
+    }
+    NSArray *localUserMedals = [[QIMKit sharedInstance] getUserWearMedalStatusByUserid:xmppId];
+    NSMutableArray *tempArray = [[NSMutableArray alloc] initWithCapacity:2];
+    for (NSDictionary *medalDic in localUserMedals) {
+        NSString *medalSmallIcon = [medalDic objectForKey:@"smallIcon"];
+        if (medalSmallIcon.length > 0) {
+            [tempArray addObject:medalSmallIcon];
+        }
+    }
+
+    return tempArray;
+}
+
 + (NSArray *)qimrn_getUserMedalByUserId:(NSString *)xmppId {
     if (!xmppId || xmppId.length <= 0) {
         return nil;
