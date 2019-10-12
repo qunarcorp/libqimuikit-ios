@@ -63,6 +63,12 @@ static QIMFlutterModule *_flutterModule = nil;
                 NSString *jsonStr2 = [[QIMJSONSerializer sharedInstance] serializeObject:array];
                 result(jsonStr2);
 
+            } else if ([@"getNickInfo" isEqualToString:call.method]) {
+                
+                NSDictionary *callArguments = (NSDictionary *)call.arguments;
+                NSString *userId = [callArguments objectForKey:@"userid"];
+                NSString *userNickInfo = [self getNickInfoWithUserXmppId:userId];
+                result(userNickInfo);
             } else if ([@"getUsersInMedal" isEqualToString:call.method]) {
                 
                 //获取这个勋章下的所有用户
@@ -95,6 +101,11 @@ static QIMFlutterModule *_flutterModule = nil;
                         result(jsonStr2);
                     }
                 }];
+            } else if ([@"nativeLocalLog" isEqualToString:call.method]) {
+                NSDictionary *callArguments = (NSDictionary *)call.arguments;
+                NSString *logCode = [callArguments objectForKey:@"logCode"];
+                NSString *logDes = [callArguments objectForKey:@"logDes"];
+                
                 
             } else {
               result(FlutterMethodNotImplemented);
@@ -104,13 +115,21 @@ static QIMFlutterModule *_flutterModule = nil;
     return _medalChannel;
 }
 
+- (NSString *)getNickInfoWithUserXmppId:(NSString *)userId {
+    NSDictionary *dic = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
+    NSMutableDictionary *userInfoDic = [NSMutableDictionary dictionaryWithDictionary:dic];
+    [userInfoDic setObject:@"" forKey:@"UserInfo"];
+    NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:userInfoDic];
+    return str;
+}
+
 - (void)openUserMedalFlutterWithUserId:(NSString *)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary *dic = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-        NSMutableDictionary *userInfoDic = [NSMutableDictionary dictionaryWithDictionary:dic];
-        [userInfoDic setObject:@"" forKey:@"UserInfo"];
-        NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:userInfoDic];
-        [self.flutterVc setInitialRoute:str];
+//        NSDictionary *dic = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
+//        NSMutableDictionary *userInfoDic = [NSMutableDictionary dictionaryWithDictionary:dic];
+//        [userInfoDic setObject:@"" forKey:@"UserInfo"];
+//        NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:userInfoDic];
+        [self.flutterVc setInitialRoute:[[QIMKit sharedInstance] getLastJid]];
   
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {

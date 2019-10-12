@@ -1253,7 +1253,9 @@ RCT_EXPORT_METHOD(getMyInfo:(RCTResponseSenderBlock)callback) {
     [info setObject:department ? department : @"" forKey:@"Department"];
     [info setObject:userId ? userId : @"" forKey:@"UserId"];
     
-    callback(@[@{@"MyInfo":info?info:@{}}]);
+    NSArray *medals = [QimRNBModule qimrn_getNewUserMedalByUserId:userId];
+    
+    callback(@[@{@"MyInfo":info?info:@{}, @"medalList": medals?medals:@[]}]);
 }
 
 //获取自己的个性签名
