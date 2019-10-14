@@ -64,9 +64,9 @@ static QIMFlutterModule *_flutterModule = nil;
                 result(jsonStr2);
 
             } else if ([@"getNickInfo" isEqualToString:call.method]) {
-                
+                //获取用户信息，需要把updatetime从long long替换成String类型
                 NSDictionary *callArguments = (NSDictionary *)call.arguments;
-                NSString *userId = [callArguments objectForKey:@"userid"];
+                NSString *userId = [callArguments objectForKey:@"userId"];
                 NSString *userNickInfo = [self getNickInfoWithUserXmppId:userId];
                 result(userNickInfo);
             } else if ([@"getUsersInMedal" isEqualToString:call.method]) {
@@ -119,17 +119,18 @@ static QIMFlutterModule *_flutterModule = nil;
     NSDictionary *dic = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
     NSMutableDictionary *userInfoDic = [NSMutableDictionary dictionaryWithDictionary:dic];
     [userInfoDic setObject:@"" forKey:@"UserInfo"];
+    long long updateTime = [[dic objectForKey:@"LastUpdateTime"] longLongValue];
+    [userInfoDic setObject:[NSString stringWithFormat:@"%lld", updateTime] forKey:@"LastUpdateTime"];
+    
     NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:userInfoDic];
     return str;
 }
 
 - (void)openUserMedalFlutterWithUserId:(NSString *)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-//        NSDictionary *dic = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-//        NSMutableDictionary *userInfoDic = [NSMutableDictionary dictionaryWithDictionary:dic];
-//        [userInfoDic setObject:@"" forKey:@"UserInfo"];
-//        NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:userInfoDic];
-        [self.flutterVc setInitialRoute:[[QIMKit sharedInstance] getLastJid]];
+        NSDictionary *routeDic = @{@"selfUserId": [[QIMKit sharedInstance] getLastJid], @"targetUserId": userId};
+        NSString *routeStr = [[QIMJSONSerializer sharedInstance] serializeObject:routeDic];
+        [self.flutterVc setInitialRoute:routeStr];
   
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {

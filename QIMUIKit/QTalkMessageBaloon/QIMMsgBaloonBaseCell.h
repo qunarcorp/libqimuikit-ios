@@ -30,6 +30,12 @@
 #define NAME_SUPER_WIDTH 160
 #define NAME_SUPER_HEIGHT 18
 
+//MedalListView 和superView之间的约束
+#define MEDAL_SUPER_LEFT 3
+#define MEDAL_SUPER_TOP 0
+#define MEDAL_SUPER_WIDTH 160
+#define MEDAL_SUPER_HEIGHT 18
+
 #define CELL_EDIT_OFFSET 36
 
 @protocol QIMMsgBaloonBaseCellDelegate <NSObject>
@@ -47,6 +53,8 @@
 @property (nonatomic, strong) UIImageView *HeadView; //用户头像
 
 @property (nonatomic, strong) UILabel *nameLabel;   //用户昵称
+
+@property (nonatomic, strong) UIView *medalListView;
 
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;   //加载菊花
 

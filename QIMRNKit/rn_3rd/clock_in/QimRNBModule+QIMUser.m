@@ -38,16 +38,7 @@
     if (!xmppId || xmppId.length <= 0) {
         return nil;
     }
-    NSArray *localUserMedals = [[QIMKit sharedInstance] getUserWearMedalStatusByUserid:xmppId];
-    NSMutableArray *tempArray = [[NSMutableArray alloc] initWithCapacity:2];
-    for (NSDictionary *medalDic in localUserMedals) {
-        NSString *medalSmallIcon = [medalDic objectForKey:@"smallIcon"];
-        if (medalSmallIcon.length > 0) {
-            [tempArray addObject:medalSmallIcon];
-        }
-    }
-
-    return tempArray;
+    return [[QIMKit sharedInstance] getUserWearMedalSmallIconListByUserid:xmppId];
 }
 
 + (NSArray *)qimrn_getUserMedalByUserId:(NSString *)xmppId {
