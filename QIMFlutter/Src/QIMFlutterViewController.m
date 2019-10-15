@@ -6,6 +6,12 @@
 //
 
 #import "QIMFlutterViewController.h"
+#import "UINavigationController+FDFullscreenPopGesture.h"
+#if __has_include(<FlutterPluginRegistrant/GeneratedPluginRegistrant.h>)
+#import <FlutterPluginRegistrant/GeneratedPluginRegistrant.h> // Only if you have Flutter Plugins
+#else
+#import "GeneratedPluginRegistrant.h" // Only if you have Flutter Plugins
+#endif
 
 @interface QIMFlutterViewController ()
 
@@ -21,6 +27,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    self.fd_interactivePopDisabled = YES;
+#if __has_include("GeneratedPluginRegistrant.h")
+    [GeneratedPluginRegistrant registerWithRegistry:self];
+#endif
     // Do any additional setup after loading the view.
 }
 
