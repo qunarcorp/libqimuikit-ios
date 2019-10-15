@@ -172,23 +172,16 @@ Pod::Spec.new do |s|
   
   s.subspec 'QIMFlutter' do |flutter|
     
-#    flutter.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
     flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
-    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
-#    flutter.resource = 'QIMFlutter/QIMFlutter.bundle'
-#    flutter.frameworks = 'UIKit', 'Foundation'
-#    flutter.dependency 'Flutter'
-#    flutter.dependency 'fluttertoast'
-#    flutter.dependency 'path_provider'
-#    flutter.dependency 'shared_preferences'
-#    flutter.dependency 'sqflite'
-#    flutter.vendored_framework = '../flutter_service/.ios/Flutter/App.framework', '../flutter_service/.ios/Flutter/engine/Flutter.framework'
-#    flutter.source_files = "../libTest/**/*{h,m,c}"
+#    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
+#    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
+    flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
 
     if $debug
-      
+      flutter.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.release.15'
     else
-#      flutter.dependency 'QIMFlutterFramework'
+      flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
+      flutter.dependency 'QIMFlutterFramework'
     end
     
   end

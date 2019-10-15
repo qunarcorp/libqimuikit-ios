@@ -35,7 +35,6 @@ static QIMFlutterModule *_flutterModule = nil;
     self = [super init];
     if (self) {
         self.medalChannel;
-        
     }
     return self;
 }
