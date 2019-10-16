@@ -178,7 +178,7 @@ Pod::Spec.new do |s|
     flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
 
     if $debug
-      flutter.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.release.15'
+      flutter.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.qtalk-flutter.17'
     else
       flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
       flutter.dependency 'QIMFlutterFramework'
