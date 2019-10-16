@@ -63,6 +63,7 @@
 @property(nonatomic, strong) UIView *rnSuggestView;
 @property(nonatomic, strong) QIMWorkFeedView *momentView;
 @property(nonatomic, strong) UIView *mineView;
+@property(nonatomic, strong) UIViewController *mineVC;
 
 @property(nonatomic, strong) UIButton *searchDemissionBtn;
 
@@ -813,6 +814,7 @@ static dispatch_once_t __onceMainToken;
                 NSDictionary *param = @{@"module": @"MySetting"};
                 vc = [RunC performSelector:sel withObject:param];
             }
+            _mineVC = vc;
             _mineView = [vc view];
             [_mineView setFrame:CGRectMake(0, 0, _contentView.width, _contentView.height)];
             [_mineView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
