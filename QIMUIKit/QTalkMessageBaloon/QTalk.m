@@ -177,6 +177,10 @@ static QTalk *__global_qtalk = nil;
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMWorkMomentRemindCell" ForMessageType:QIMMessageTypeWorkMomentRemind];
     [[QIMKit sharedInstance] setMsgShowText:@"驼圈提醒" ForMessageType:QIMMessageTypeWorkMomentRemind];
     
+    //勋章提醒
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMUserMedalRemindCell" ForMessageType:QIMMessageTypeUserMedalRemind];
+    [[QIMKit sharedInstance] setMsgShowText:@"勋章提醒" ForMessageType:QIMMessageTypeUserMedalRemind];
+    
     [[QIMKit sharedInstance] setMsgShowText:@"收到一条消息" ForMessageType:QIMMessageType_GroupNotify];
 }
 

@@ -29,7 +29,7 @@
 #import "QIMRobotQuestionCell.h"
 #import "QIMRobotAnswerCell.h"
 #import "QIMMeetingRemindCell.h"
-
+#import "QIMUserMedalRemindCell.h"
 //#import "TransferInfoCell.h"
 #import "QIMGroupChatCell.h"
 #import "QIMPublicNumberNoticeCell.h"
@@ -239,6 +239,10 @@
                 break;
             case QIMMessageTypeWorkMomentRemind: {
                 return [QIMMeetingRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 45;
+            }
+                break;
+            case QIMMessageTypeUserMedalRemind: {
+                return [QIMUserMedalRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 45;
             }
                 break;
             default: {

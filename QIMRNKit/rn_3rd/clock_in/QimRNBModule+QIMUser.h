@@ -17,6 +17,8 @@
 
 + (NSArray *)qimrn_getNewUserMedalByUserId:(NSString *)xmppId;
 
++ (NSArray *)qimrn_getNewUserHaveMedalByUserId:(NSString *)xmppId;
+
 + (NSArray *)qimrn_getUserMedalByUserId:(NSString *)xmppId;
 
 + (NSDictionary *)qimrn_getUserLeaderInfoByUserId:(NSString *)userId;

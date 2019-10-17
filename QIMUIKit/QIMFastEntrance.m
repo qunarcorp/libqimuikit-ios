@@ -70,6 +70,10 @@
 #import "QIMWorkMomentPushViewController.h"
 #import "QIMWorkFeedMYCirrleViewController.h"
 
+#if __has_include("QIMFlutterModule.h")
+#import "QIMFlutterModule.h"
+#endif
+
 @interface QIMFastEntrance () <MFMailComposeViewControllerDelegate>
 
 @end
@@ -768,6 +772,12 @@ static QIMFastEntrance *_sharedInstance = nil;
             navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
         }
         [navVC pushViewController:webView animated:YES];
+    });
+}
+
++ (void)openUserMedalFlutterWithUserId:(NSString *)userId {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[QIMFlutterModule sharedInstance] openUserMedalFlutterWithUserId:userId];
     });
 }
 

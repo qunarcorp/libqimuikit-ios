@@ -300,9 +300,7 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
     } else if ([nativeName isEqualToString:MyMedal]) {
         //打开我的勋章
         NSString *userId = [params objectForKey:@"userId"];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[QIMFlutterModule sharedInstance] openUserMedalFlutterWithUserId:userId];
-        });
+        [QIMFastEntrance openUserMedalFlutterWithUserId:userId];
     } else if ([nativeName isEqualToString:@"NotReadMsg"]){
         
         [QIMFastEntrance openNotReadMessageVC];
@@ -417,7 +415,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-    return [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
+//    return [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
 
     NSString *qtalkFoundRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkFoundRNDebugUrl"];
     if (qtalkFoundRNDebugUrlStr.length > 0) {
@@ -632,7 +630,9 @@ RCT_EXPORT_METHOD(getUserInfoByUserCard:(NSString *)userId :(RCTResponseSenderBl
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[QIMKit sharedInstance] updateUserCard:userId withCache:NO];
     });
-    callback(@[@{@"UserInfo" : properties ? properties : @{}}]);
+    NSArray *userMedallist = [QimRNBModule qimrn_getNewUserHaveMedalByUserId:userId];
+    
+    callback(@[@{@"UserInfo" : properties ? properties : @{}, @"medalList": userMedallist ? userMedallist : @[]}]);
 }
 
 //获取单人会话置顶状态
