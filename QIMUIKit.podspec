@@ -173,12 +173,12 @@ Pod::Spec.new do |s|
   s.subspec 'QIMFlutter' do |flutter|
     
     flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
-#    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
+    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
 #    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
-    flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
+#    flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
 
     if $debug
-      flutter.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.qtalk-flutter.17'
+#      flutter.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.qtalk-flutter.19'
     else
       flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
       flutter.dependency 'QIMFlutterFramework'
