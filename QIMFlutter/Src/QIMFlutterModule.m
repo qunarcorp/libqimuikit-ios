@@ -31,14 +31,6 @@ static QIMFlutterModule *_flutterModule = nil;
     return _flutterModule;
 }
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        self.medalChannel;
-    }
-    return self;
-}
-
 - (QIMFlutterViewController *)flutterVc {
     if (!_flutterVc) {
         _flutterVc = [QIMFlutterViewController new];
@@ -49,6 +41,9 @@ static QIMFlutterModule *_flutterModule = nil;
 }
 
 - (FlutterMethodChannel *)medalChannel {
+    if (!_flutterVc) {
+        _medalChannel = nil;
+    }
     if (!_medalChannel) {
         _medalChannel = [FlutterMethodChannel methodChannelWithName:@"data.flutter.io/medal" binaryMessenger:self.flutterVc];
         __weak typeof(self) weakSelf = self;
@@ -106,6 +101,8 @@ static QIMFlutterModule *_flutterModule = nil;
                 NSString *logDes = [callArguments objectForKey:@"logDes"];
                 
                 
+            } else if ([@"quitFlutterApp" isEqualToString:call.method]) {
+                self.flutterVc = nil;
             } else {
               result(FlutterMethodNotImplemented);
             }
@@ -126,6 +123,8 @@ static QIMFlutterModule *_flutterModule = nil;
 }
 
 - (void)openUserMedalFlutterWithUserId:(NSString *)userId {
+    self.flutterVc = nil;
+    self.medalChannel;
     dispatch_async(dispatch_get_main_queue(), ^{
         NSDictionary *routeDic = @{@"selfUserId": [[QIMKit sharedInstance] getLastJid], @"targetUserId": userId};
         NSString *routeStr = [[QIMJSONSerializer sharedInstance] serializeObject:routeDic];

@@ -243,6 +243,11 @@ static UIImage *__rightBallocImage = nil;
     tapHead.numberOfTouchesRequired = 1;
     [self.HeadView addGestureRecognizer:tapHead];
     
+    UITapGestureRecognizer *medalTapHead = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onHeaderViewClick:)];
+    medalTapHead.numberOfTapsRequired = 1;
+    medalTapHead.numberOfTouchesRequired = 1;
+    [self.medalListView addGestureRecognizer:medalTapHead];
+    
     UILongPressGestureRecognizer *longGes = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(atSomeOne:)];
     longGes.minimumPressDuration = 0.6;
     longGes.allowableMovement = 1000;
@@ -379,7 +384,7 @@ static UIImage *__rightBallocImage = nil;
                 CGFloat marginLeft = 0;
                 for (NSInteger i = 0; i < medals.count; i++) {
                     UIImageView *medalIconView = [[UIImageView alloc] initWithFrame:CGRectMake(marginLeft, 0, 18, 18)];
-                    [medalIconView qim_setImageWithURL:[NSURL URLWithString:medals[i]] placeholderImage:nil];
+                    [medalIconView qim_setImageWithURL:[NSURL URLWithString:medals[i]] placeholderImage:[UIImage new]];
                     marginLeft += (18+5);
                     [self.medalListView addSubview:medalIconView];
                 }
