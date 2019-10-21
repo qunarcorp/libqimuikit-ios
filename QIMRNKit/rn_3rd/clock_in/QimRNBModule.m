@@ -19,6 +19,7 @@
 #import "QimRNBModule+MySetting.h"
 #import "NSBundle+QIMLibrary.h"
 #import "QIMRNBaseVc.h"
+#import "QIMStringTransformTools.h"
 #import "QIMCommonUIFramework.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -203,7 +204,7 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
             //本地Check
             NSString *bundleUrl = [params objectForKey:@"BundleUrls"];
             if (bundleUrl.length > 0) {
-                NSString *bundleMd5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrl] stringByAppendingFormat:@".jsbundle"];
+                NSString *bundleMd5Name = [[[QIMKit sharedInstance] qim_specialMd5fromUrl:bundleUrl] stringByAppendingFormat:@".jsbundle"];
                 BOOL check = [[QIMRNExternalAppManager sharedInstance] checkQIMRNExternalAppWithBundleUrl:bundleUrl];
                 if (check) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -631,7 +632,7 @@ RCT_EXPORT_METHOD(getUserInfoByUserCard:(NSString *)userId :(RCTResponseSenderBl
         [[QIMKit sharedInstance] updateUserCard:userId withCache:NO];
     });
     NSArray *userMedallist = [QimRNBModule qimrn_getNewUserHaveMedalByUserId:userId];
-    
+
     callback(@[@{@"UserInfo" : properties ? properties : @{}, @"medalList": userMedallist ? userMedallist : @[]}]);
 }
 
@@ -1255,7 +1256,7 @@ RCT_EXPORT_METHOD(getMyInfo:(RCTResponseSenderBlock)callback) {
     [info setObject:userId ? userId : @"" forKey:@"UserId"];
     
     NSArray *medals = [QimRNBModule qimrn_getNewUserMedalByUserId:userId];
-    
+
     callback(@[@{@"MyInfo":info?info:@{}, @"medalList": medals?medals:@[]}]);
 }
 
@@ -1847,7 +1848,7 @@ RCT_EXPORT_METHOD(updateCheckConfig) {
 
 RCT_EXPORT_METHOD(getAppCache:(RCTResponseSenderBlock)callback) {
     long long totalSize = [[QIMDataController getInstance] sizeofImagePath];
-    NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
+    NSString *str = [QIMStringTransformTools qim_CapacityTransformStrWithSize:totalSize];
     callback(@[@{@"AppCache" : str ? str : @""}]);
 }
 

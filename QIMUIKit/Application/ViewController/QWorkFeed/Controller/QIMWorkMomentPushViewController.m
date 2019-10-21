@@ -76,16 +76,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         [self.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
         self.userIdentityLabel.text = @"匿名发布";
     }
-    
-    /* Mark by 匿名
-    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-        [self.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-        self.userIdentityLabel.text = @"实名发布";
-    } else {
-        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-        [self.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-        self.userIdentityLabel.text = @"匿名发布";
-    } */
 }
 
 - (void)openUserIdentity {
@@ -542,11 +532,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
     }
-    /* Mark by 匿名
-    QIMVerboseLog(@"即将进入发帖页面匿名名称 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName]);
-    QIMVerboseLog(@"即将进入发帖页面匿名状态 : %d", [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]);
-    QIMVerboseLog(@"即将进入发帖页面匿名头像地址 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto]);
-    */
 //    [self.panelListView reloadData];
     
     [self.identiView updatePushUserIdentityView];
@@ -597,6 +582,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:9];
     [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
     [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
+    [[QTPHImagePickerManager sharedInstance] setWorkFeedImagePicker:YES];
 //    [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:YES];
     self.navigationController.navigationBar.barTintColor = [UIColor qim_colorWithHex:0xF7F7F7];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
@@ -737,12 +723,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 }
 
 - (void)goBack:(id)sender {
-    /* Mark by 匿名
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
-     */
-//    [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:NO];
     [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
     [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
     if (self.shareWorkMoment) {
@@ -809,17 +789,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                 [momentDic setQIMSafeObject:anonymousPhoto forKey:@"AnonymousPhoto"];
             }
             
-            /* Mark by 匿名
-            [momentDic setQIMSafeObject:@([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) forKey:@"isAnonymous"];
-            if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousName"];
-                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousPhoto"];
-            } else {
-                [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName] forKey:@"AnonymousName"];
-                [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto] forKey:@"AnonymousPhoto"];
-            }
-             */
-            
             NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
             NSString *finallyContent = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:self.textView.attributedText WithOutAtInfo:&outATInfoArray];
             
@@ -831,7 +800,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                 [momentContentDic setQIMSafeObject:finallyContent forKey:@"content"];
             }
             [momentContentDic setQIMSafeObject:[[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:finallyContent] forKey:@"exContent"];
-            NSMutableArray *imageList = [[NSMutableArray alloc] init];
+            __block NSMutableArray *imageList = [[NSMutableArray alloc] init];
             NSMutableDictionary *videoPreDic = [[NSMutableDictionary alloc] init];
             dispatch_group_t group = dispatch_group_create();
             for (id mediaData in self.selectPhotos) {
@@ -848,12 +817,13 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                     NSData *imageData = [imageDic objectForKey:@"imageData"];
                     if ([imageData isKindOfClass:[NSData class]]) {
                         dispatch_group_enter(group);
-                        NSString *fileUrl = [QIMKit updateLoadMomentFile:imageData WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_Image WithPathExtension:@"png"];
-                        if (fileUrl.length > 0) {
-                            NSDictionary *imagePreDic = @{@"addTime":@(0), @"data":fileUrl};
-                            [imageList addObject:imagePreDic];
-                            dispatch_group_leave(group);
-                        }
+                        [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData withCallback:^(NSString *imageUrl) {
+                            if (imageUrl.length > 0) {
+                                NSDictionary *imagePreDic = @{@"addTime":@(0), @"data":imageUrl};
+                                [imageList addObject:imagePreDic];
+                                dispatch_group_leave(group);
+                            }
+                        }];
                     } else {
                         dispatch_group_leave(group);
                     }
@@ -876,7 +846,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         NSNumber *newVideo = [videoDic objectForKey:@"newVideo"];
                         NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
                         
-                        NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:videoSize];
+                        NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:videoSize];
 
                         [videoPreDic setQIMSafeObject:@([Duration integerValue] / 1000) forKey:@"Duration"];
                         [videoPreDic setQIMSafeObject:videoName forKey:@"FileName"];
@@ -896,7 +866,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         if ([videoData isKindOfClass:[NSData class]]) {
                             dispatch_group_enter(group);
                             __block NSDictionary *videoRemoteDic = nil;
-                            [QIMKit uploadVideoPath:LocalVideoOutPath withCallBack:^(NSDictionary *videoDic) {
+                            //Mark by NewVideo
+                            [[QIMKit sharedInstance] qim_uploadVideo:LocalVideoOutPath videoDic:videoDic withCallBack:^(NSDictionary *videoDic, BOOL needTrans) {
                                 NSLog(@"videoDic : %@", videoDic);
                                 videoRemoteDic = videoDic;
                                 if (videoRemoteDic.count > 0) {
@@ -923,7 +894,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                                     [videoPreDic setQIMSafeObject:firstThumbUrl forKey:@"ThumbUrl"];
                                     [videoPreDic setQIMSafeObject:width forKey:@"Width"];
                                     [videoPreDic setQIMSafeObject:LocalVideoOutPath forKey:@"LocalVideoOutPath"];
-                                    [videoPreDic setQIMSafeObject:@(YES) forKey:@"newVideo"];
+                                    [videoPreDic setQIMSafeObject:@(needTrans) forKey:@"newVideo"];
                                     dispatch_group_leave(group);
                                 } else {
                                     dispatch_group_leave(group);
@@ -1316,22 +1287,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         [cell.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
         cell.detailTextLabel.text = @"匿名发布";
     }
-    
-    /* Mark by 匿名
-    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-        [cell.iconView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-    } else {
-        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-        [cell.iconView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-    }
-    cell.detailTextLabel.font = [UIFont systemFontOfSize:15];
-    cell.detailTextLabel.textColor = [UIColor qim_colorWithHex:0x999999];
-    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-        cell.detailTextLabel.text = @"实名发布";
-    } else {
-        cell.detailTextLabel.text = @"匿名发布";
-    }
-     */
     return cell;
 }
 
@@ -1453,7 +1408,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                      NSString * key = [info objectForKey:@"PHImageFileSandboxExtensionTokenKey"];
                      videoResultPath = [[key componentsSeparatedByString:@";"] lastObject];
                  }
-                 NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+                 NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
                  AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:asset];
                  gen.appliesPreferredTrackTransform = YES;
                  CMTime time = CMTimeMakeWithSeconds(0.0, 600);
@@ -1554,14 +1509,10 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
 - (void)dealloc {
     [[YYKeyboardManager defaultManager] removeObserver:self];
-    /* Mark by 匿名
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
-    */
     [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:9];
     [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
     [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
+    [[QTPHImagePickerManager sharedInstance] setWorkFeedImagePicker:NO];
 }
 
 #pragma mark - QIMWorkMomentPushUserIdentityViewDelegate

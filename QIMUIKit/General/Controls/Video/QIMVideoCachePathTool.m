@@ -32,7 +32,7 @@
 }
 
 + (NSString *)suggestFileNameWithURL:(NSURL*)url{
-    NSString *md5 = [[QIMKit sharedInstance] getFileNameFromKey:[url absoluteString]];
+    NSString *md5 = [[QIMKit sharedInstance] qim_specialMd5fromUrl:[url absoluteString]];
     return [md5 stringByAppendingString:@".mp4"];
 }
 

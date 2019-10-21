@@ -7,7 +7,7 @@
 //
 
 #import "QIMPNActionRichTextCell.h"
-#import "LvtuAutoImageView.h"
+#import "QIMImageView.h"
 #import "QIMJSONSerializer.h"
 
 #define kSubtitleHeight 70
@@ -27,7 +27,7 @@
 @end
 @implementation QIMPNActionRichTextCell{
     UIView *_bgView;
-    LvtuAutoImageView *_imageView;
+    QIMImageView *_imageView;
     PNActionRichTextButton *_mainBgButton;
     UIView *_descBgView;
     UILabel *_descLabel;
@@ -63,7 +63,7 @@
         [_mainBgButton addTarget:self action:@selector(onLinkButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [_bgView addSubview:_mainBgButton];
         
-        _imageView = [[LvtuAutoImageView alloc] initWithFrame:CGRectZero];
+        _imageView = [[QIMImageView alloc] initWithFrame:CGRectZero];
         [_imageView setClipsToBounds:YES];
         [_imageView setContentMode:UIViewContentModeScaleAspectFill];
         [_imageView setBackgroundColor:[UIColor grayColor]];
@@ -104,7 +104,7 @@
     
     [_bgView setFrame:CGRectMake(kBackgroundCap, kCellCap, kScreenWidth-kBackgroundCap*2, 0)];
     CGFloat startY = 12;
-    [_imageView setImageURL:imageUrl];
+    [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl]];
     [_imageView setFrame:CGRectMake(kContentCap, startY, kScreenWidth - kBackgroundCap*2 - kContentCap*2, kMainTitleHeight)];
     CGSize introduceSize = [introduce sizeWithFont:_descLabel.font constrainedToSize:CGSizeMake(_imageView.width-20, INT_MAX) lineBreakMode:NSLineBreakByCharWrapping];
     [_descBgView setFrame:CGRectMake(_imageView.left, _imageView.bottom - introduceSize.height - 10, _imageView.width, introduceSize.height+10)];
@@ -140,10 +140,10 @@
         [introduceLabel setText:introduce];
         [_subTitlsView addSubview:introduceLabel];
         
-        LvtuAutoImageView *iconImageView = [[LvtuAutoImageView alloc] initWithFrame:CGRectMake(introduceLabel.right + 10, subStartY, kSubtitleHeight-10, kSubtitleHeight-10)];
+        QIMImageView *iconImageView = [[QIMImageView alloc] initWithFrame:CGRectMake(introduceLabel.right + 10, subStartY, kSubtitleHeight-10, kSubtitleHeight-10)];
         [iconImageView setClipsToBounds:YES];
         [iconImageView setBackgroundColor:[UIColor grayColor]];
-        [iconImageView setImageURL:iconUrl];
+        [iconImageView qim_setImageWithURL:[NSURL URLWithString:iconUrl]];
         [_subTitlsView addSubview:iconImageView];
         
         subStartY += kSubtitleHeight;

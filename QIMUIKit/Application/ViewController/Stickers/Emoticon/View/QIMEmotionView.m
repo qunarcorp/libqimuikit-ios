@@ -377,9 +377,8 @@ static NSString *collectionCellId = @"CollectionCellId";
             
             NSMutableDictionary *collInfo = [NSMutableDictionary dictionaryWithDictionary:@{}];
             [collInfo setValue:@(cell.tag - 1) forKey:@"Index"];
-            NSString *fileName = [[QIMKit sharedInstance] getFileNameFromUrl:fileUrl];
             
-            if (fileName || !cell.tag) {
+            if (fileUrl || !cell.tag) {
                 if (self.emotionViewDelegate && [self.emotionViewDelegate respondsToSelector:@selector(didSelectCollectionEmotion:)]) {
                     [self.emotionViewDelegate didSelectCollectionEmotion:fileUrl];
                 }

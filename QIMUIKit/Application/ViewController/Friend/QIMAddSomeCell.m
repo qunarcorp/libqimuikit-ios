@@ -68,30 +68,6 @@
     [_titleLabel setText:remarkName?remarkName:name];
     [_descLabel setText:descInfo];
     [_headerImageView qim_setImageWithJid:jid];
-    /*
-    __block UIImage * headImage = [[QIMKit sharedInstance] getUserHeaderImageByUserId:jid];
-    if (!headImage) {
-        NSString *iconUrl = [self.userInfoDic objectForKey:@"icon"];
-        if (![iconUrl isKindOfClass:[NSNull class]]) {
-            BOOL isHTTPRequest = [iconUrl qim_hasPrefixHttpHeader];
-            if (!isHTTPRequest) {
-                iconUrl = [NSString stringWithFormat:@"%@/%@",[QIMKit sharedInstance].qimNav_InnerFileHttpHost, iconUrl];
-            }
-            __block NSData *headImageData = [[QIMKit sharedInstance] getFileDataFromUrl:iconUrl width:headerWidth height:headerWidth  forCacheType:QIMFileCacheTypeColoction];
-            if (!headImageData.length) {
-                [[QIMKit sharedInstance] downloadImage:iconUrl width:headerWidth height:headerWidth forCacheType:QIMFileCacheTypeColoction complation:^(NSData *data) {
-                    headImageData = data;
-                    headImage = [UIImage imageWithData:headImageData];
-                }];
-            } else {
-                headImage = [UIImage imageWithData:headImageData];
-            }
-        }
-    }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [_headerImageView setImage:headImage];
-    });
-    */
 }
 
 @end

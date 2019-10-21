@@ -1009,48 +1009,8 @@ static NSString *__default_ua = nil;
             [self shareUrlImg:[request URL]];
             return NO;
         }
-    } else if ([urlStr hasPrefix:@"qtalkaphone://"]  && components.count > 1) {
-//        qtalkaphone://uploadNoteImage?fileName=2AE022E5-34DF-416A-8EB4-F29CBB7FCFB4.jpeg&fileStr=data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD/
-        /*
-        if ([[[components objectAtIndex:1] lowercaseString] hasPrefix:@"//uploadnoteimage"]) {
-            NSString *propertys = [[request URL] query];
-            NSArray *subArray = [propertys componentsSeparatedByString:@"&"];
-            NSMutableDictionary *tempDic = [NSMutableDictionary dictionaryWithCapacity:4];
-            for (int j = 0 ; j < subArray.count; j++)
-            {
-                
-                //在通过=拆分键和值
-                NSArray *dicArray = [subArray[j] componentsSeparatedByString:@"="];
-                //给字典加入元素
-                NSString *value = [[dicArray objectAtIndex:1] qim_URLDecodedString];
-                NSString *key = [[dicArray objectAtIndex:0] qim_URLDecodedString];
-                if (key && value) {
-                    [tempDic setQIMSafeObject:value forKey:key];
-                }
-            }
-            NSString *fileName = [tempDic objectForKey:@"fileName"];
-            NSString *fileStr = [tempDic objectForKey:@"fileStr"];
-            NSString *fileBaseStr = [[[[fileStr componentsSeparatedByString:@";"] lastObject] componentsSeparatedByString:@","] lastObject];
-            NSData *decodedImgData = [[NSData alloc] initWithBase64EncodedString:fileBaseStr options:NSDataBase64DecodingIgnoreUnknownCharacters];
-            NSLog(@"%@", fileBaseStr);
-            NSString *fileUrl = [QIMHttpApi updateLoadFile:decodedImgData WithMsgId:[QIMUUIDTools UUID] WithMsgType:1 WithPathExtension:nil];
-            NSLog(@"fileUrl : %@", fileUrl);
-            if (![fileUrl qim_hasPrefixHttpHeader]) {
-                fileUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileUrl];
-                
-                JSContext *context = [_webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-                
-                
-                NSString *jsStr = [NSString stringWithFormat:@"uploadCallback('%@')", fileUrl];
-                //OC调用JS方法
-                JSValue *value = [context evaluateScript:jsStr];
-                NSLog(@"jsValue : %@", value);
-//                NSString *str = [_webView stringByEvaluatingJavaScriptFromString:jsStr];
-//                NSLog(@"str : %@", str);
-            }
-            return  NO;
-        }
-        */
+    } else {
+        
     }
     return YES;
 }

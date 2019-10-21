@@ -34,6 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) BOOL canContinueSelectionVideo;
 
+/**
+ 是否为驼圈相册选择
+ */
+@property (nonatomic, assign) BOOL workFeedImagePicker;
+
 @end
 
 NS_ASSUME_NONNULL_END

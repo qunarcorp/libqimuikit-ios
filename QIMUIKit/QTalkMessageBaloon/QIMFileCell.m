@@ -124,14 +124,15 @@
 
 #pragma mark - ui
 
--(void)setMessage:(QIMMessageModel *)message{
+-(void)setMessage:(QIMMessageModel *)message {
     [super setMessage:message];
     
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     
     NSString * url = [infoDic objectForKey:@"HttpUrl"];
     
-    
+    /*
+     Mark by newfile
     NSData * data = [[QIMKit sharedInstance] getFileDataFromUrl:url forCacheType:QIMFileCacheTypeDefault];
     
     if ([url hasPrefix:@"file://"]) {
@@ -158,6 +159,7 @@
             [self.progressView setProgress:progress];
         }];
     }
+    */
 }
 - (void)refreshUI {
     
@@ -182,11 +184,11 @@
         fileUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_HttpHost], fileUrl];
     }
     
-    NSString *fileMd5 = [[QIMKit sharedInstance] getFileNameFromUrl:fileUrl];
+    NSString *fileMd5 = [[QIMKit sharedInstance] qim_specialMd5fromUrl:fileUrl];
     if (!fileMd5.length) {
-        fileMd5 = [[QIMKit sharedInstance] getFileNameFromUrl:fileUrl];
+        fileMd5 = [[QIMKit sharedInstance] qim_specialMd5fromUrl:fileUrl];
     }
-    NSString *fileExt = [[QIMKit sharedInstance] getFileExtFromUrl:fileUrl];
+    NSString *fileExt = [[QIMKit sharedInstance] qim_specialGetFileExtFromUrl:fileUrl];
     if (!fileExt.length) {
         fileExt = [fileName pathExtension];
         fileMd5 = [NSString stringWithFormat:@"%@.%@", fileMd5, fileExt];

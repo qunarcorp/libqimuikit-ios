@@ -120,11 +120,11 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:_fileForwardTempPath] == YES) {
         [[NSFileManager defaultManager] removeItemAtPath:_fileForwardTempPath error:nil];
     }
-    NSString *fileMd5 = [[QIMKit sharedInstance] getFileNameFromUrl:fileUrl];
+    NSString *fileMd5 = [[QIMKit sharedInstance] qim_specialMd5fromUrl:fileUrl];
     if (!fileMd5.length) {
         fileMd5 = [infoDic objectForKey:@"FileMd5"];
     }
-    NSString *fileExt = [[QIMKit sharedInstance] getFileExtFromUrl:fileUrl];
+    NSString *fileExt = [[QIMKit sharedInstance] qim_specialGetFileExtFromUrl:fileUrl];
     if (!fileExt.length) {
         fileExt = [_fileName pathExtension];
         fileMd5 = [NSString stringWithFormat:@"%@.%@", fileMd5, fileExt];

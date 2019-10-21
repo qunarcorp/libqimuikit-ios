@@ -556,6 +556,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     
     if (asset.mediaType == PHAssetMediaTypeVideo) {
         
+        BOOL workFeedPicker = [[QTPHImagePickerManager sharedInstance] workFeedImagePicker];
         BOOL canContinueSelectionVideo = [[QTPHImagePickerManager sharedInstance] canContinueSelectionVideo];
         if (NO == canContinueSelectionVideo) {
             //不允许选择视频
@@ -576,7 +577,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
                 configDuration = 15 * 1000;
             }
 
-            if (duration * 1000 > configDuration) {
+            if (duration * 1000 > configDuration && workFeedPicker) {
                 [QTalkTipsView showTips:[NSString stringWithFormat:@"不支持上传超过%lds的视频", configDuration / 1000] InView:self.view];
             } else {
                 [self.picker.selectedAssets insertObject:asset atIndex:self.picker.selectedAssets.count];

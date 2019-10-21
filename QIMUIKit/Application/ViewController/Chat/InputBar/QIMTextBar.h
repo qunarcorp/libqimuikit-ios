@@ -6,9 +6,6 @@
 //
 //
 
-//  关于声音的说明：在这里面进行声音的录制、保存、压缩和上传。保存的是原文件，上传的是压缩后的文件，再将文件名、文件大小和获取到的url返回给delagate，由delegate来进行有关于文件的描述信息的提交
-//  send的文件：filePath = [QIMPathManage getPathByFileName:fileName ofType:@"amr"];
-
 #import "QIMCommonUIFramework.h"
 #import "QIMTextBarExpandView.h"
 #import "QIMChatToolBar.h"
@@ -41,9 +38,14 @@ typedef enum {
 - (void)sendCollectionFaceStr:(NSString *)faceStr;
 - (void)clickFaildCollectionFace;
 @optional
-- (void)sendImageUrl:(NSString *)imageUrl;
-- (void)sendImageData:(NSData *)imageData;
-- (void)sendVoiceUrl:(NSString *)voiceUrl WithDuration:(int)duration WithSmallData:(NSData *)amrData WithFileName:(NSString *)filename AndFilePath:(NSString *)filepath;
+
+//图片
+- (void)qim_textbarSendImageWithImagePath:(NSString *)imagePath;
+//语音
+- (void)sendVoiceWithDuration:(int)duration WithFileName:(NSString *)filename AndFilePath:(NSString *)filepath;
+//文件
+- (void)qim_textbarSendFileWithFileName:(NSString *)fileName;
+
 - (void)setKeyBoardHeight:(CGFloat)height WithScrollToBottom:(BOOL)flag;
 
 - (void)textBarReferBtnDidClicked:(QIMTextBar *)textBar;

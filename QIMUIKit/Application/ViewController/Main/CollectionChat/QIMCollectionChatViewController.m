@@ -201,7 +201,6 @@
 
 - (QTalkViewController *)sessionViewDidSelectRowAtIndexPath:(NSIndexPath *)indexPath infoDic:(NSDictionary *)infoDic BindId:(NSString *)bindId{
     
-//     Mark by DB
     NSString *jid = [infoDic objectForKey:@"XmppId"];
     NSString *name = [infoDic objectForKey:@"Name"];
     ChatType chatType = [[infoDic objectForKey:@"ChatType"] intValue];

@@ -18,7 +18,6 @@
 #import "QIMJSONSerializer.h"
 #import "QIMLocationShareMsgCell.h"
 #import "UserLocationViewController.h"
-//#import "UIImageView+QIMWebCache.h"
 #import "ShapedImageView.h"
 
 @interface QIMLocationShareMsgCell()<QIMMenuImageViewDelegate>

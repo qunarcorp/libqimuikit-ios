@@ -151,10 +151,10 @@
     NSString *sourceStr = @"";
     @autoreleasepool {
         NSData *data = UIImageJPEGRepresentation(_sourceImage, 1);
-        sourceStr = [QIMStringTransformTools CapacityTransformStrWithSize:data.length];
+        sourceStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:data.length];
         UIImage *image = [_sourceImage qim_sdImage];
         data = UIImageJPEGRepresentation(image, 1);
-        bqStr = [QIMStringTransformTools CapacityTransformStrWithSize:data.length];
+        bqStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:data.length];
     }
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择图片尺寸" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清 (%@)",bqStr],
                             [NSString stringWithFormat:@"原图 (%@)",sourceStr],nil];
