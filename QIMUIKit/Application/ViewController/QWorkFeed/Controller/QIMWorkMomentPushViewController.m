@@ -712,12 +712,14 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         picker.colsInPortrait = 4;
         picker.colsInLandscape = 5;
         picker.minimumInteritemSpacing = 2.0;
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
-            [strongSelf presentViewController:picker animated:YES completion:nil];
-        } else {
-            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+                [strongSelf presentViewController:picker animated:YES completion:nil];
+            } else {
+                [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+            }
+        });
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }
