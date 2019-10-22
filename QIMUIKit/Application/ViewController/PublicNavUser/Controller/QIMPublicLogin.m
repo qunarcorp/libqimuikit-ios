@@ -296,7 +296,8 @@ static const int companyTag = 10001;
     
     [self setupUI];
     NSString *lastUserName = [QIMKit getLastUserName];
-    NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+    NSString * userToken = [[QIMKit sharedInstance] getLastUserToken];
+//    [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
     if (userToken && lastUserName) {
         
         [self autoLogin];
@@ -625,11 +626,13 @@ static const int companyTag = 10001;
         NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
         [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:lastUserName Check:YES WithForcedUpdate:YES];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] updateLastUserToken:@"appstore"];
+//            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
         });
     } else {
-        NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+        NSString *token = [[QIMKit sharedInstance] getLastUserToken];
+//        [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
         });
@@ -665,7 +668,8 @@ static const int companyTag = 10001;
             __weak id weakSelf = self;
             NSString *pwd = self.userPwdTextField.text;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] updateLastUserToken:pwd];
+//                [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
                 [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
             });
         }

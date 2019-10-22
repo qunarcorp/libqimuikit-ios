@@ -165,23 +165,29 @@ static QIMFastEntrance *_sharedInstance = nil;
         return;
     } else {
         NSString *userFullJid = [[QIMKit sharedInstance] getLastJid];
-        NSString *userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
-        if (userFullJid && userToken && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
-            QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
-            [QIMMainVC setMainVCReShow:YES];
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-            [window setRootViewController:nav];
+        NSString *userToken = [[QIMKit sharedInstance] getLastUserToken];
+        if (userFullJid.length > 0 && userToken.length > 0) {
+            QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:YES];
+            QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
+            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
         } else {
-            if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
-                QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
-                [QIMMainVC setMainVCReShow:YES];
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
-                [window setRootViewController:nav];
-            } else {
+            if (userFullJid && userToken && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
                 QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
                 [QIMMainVC setMainVCReShow:YES];
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
                 [window setRootViewController:nav];
+            } else {
+                if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
+                    QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
+                    [QIMMainVC setMainVCReShow:YES];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [window setRootViewController:nav];
+                } else {
+                    QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
+                    [QIMMainVC setMainVCReShow:YES];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];
+                    [window setRootViewController:nav];
+                }
             }
         }
     }
@@ -1314,8 +1320,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         [[QIMKit sharedInstance] clearLogginUser];
         [[QIMKit sharedInstance] quitLogin];
         [[QIMKit sharedInstance] setNeedTryRelogin:NO];
-        [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
-        [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
+        [[QIMKit sharedInstance] clearUserToken];
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 #if __has_include("QIMIPadWindowManager.h")
@@ -1366,8 +1371,7 @@ static QIMFastEntrance *_sharedInstance = nil;
             [[QIMKit sharedInstance] clearLogginUser];
             [[QIMKit sharedInstance] quitLogin];
             [[QIMKit sharedInstance] setNeedTryRelogin:NO];
-            [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
-            [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] clearUserToken];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 #if __has_include("QIMIPadWindowManager.h")
@@ -1427,15 +1431,13 @@ static QIMFastEntrance *_sharedInstance = nil;
         [[QIMKit sharedInstance] setNeedTryRelogin:NO];
         if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
 #if __has_include("QIMIPadWindowManager.h")
-            [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
-            [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] clearUserToken];
 //            IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
 //            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
 #endif
         } else {
             if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-                [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
-                [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] clearUserToken];
                 if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk) {
                     QIMPublicLogin *remoteVC = [[QIMPublicLogin alloc] init];
                     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];

@@ -1349,7 +1349,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 {
     NSData * imageData = UIImageJPEGRepresentation(image, 1.0);
     [self.selectPhotos removeObject:@"Q_Work_Add"];
-    [self.selectPhotos addObject:imageData];
+    NSDictionary *imageDic = @{@"MediaType":@(QIMWorkMomentMediaTypeImage), @"imageDic": @{@"imageData" : imageData}};
+    [self.selectPhotos addObject:imageDic];
     [self updateSelectPhotos];
     [picker dismissViewControllerAnimated:NO completion:nil];
 }
