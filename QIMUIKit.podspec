@@ -174,14 +174,14 @@ Pod::Spec.new do |s|
     
     flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
 #    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
-    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
+#    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
 #    flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
 
     if $debug
 #      flutter.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.qtalk-flutter.19'
     else
       flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
-      flutter.dependency 'QIMFlutterFramework'
+      flutter.dependency 'QIMFlutterFramework', '~> 4.0'
     end
     
   end
@@ -203,7 +203,6 @@ Pod::Spec.new do |s|
     norn.dependency 'QIMUIKit/QIMUIVendorKit'
     norn.dependency 'QIMUIKit/QIMNote'
     norn.dependency 'QIMUIKit/QIMFlutter'
-#    norn.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.test.14'
 
   end
   
@@ -225,8 +224,7 @@ Pod::Spec.new do |s|
     full.dependency 'QIMUIKit/QIMNote'
     full.dependency 'QIMUIKit/QIMRN'
     full.dependency 'QIMUIKit/QIMFlutter'
-#    full.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.test.14'
-#    full.dependency 'QIMUIKit/QIMFlutter'
+
   end
   
   s.dependency 'MJRefresh'
