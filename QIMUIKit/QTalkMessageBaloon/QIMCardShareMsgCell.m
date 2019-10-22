@@ -91,14 +91,14 @@
     }
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     NSString *userId = [infoDic objectForKey:@"userId"];
-    NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByRTX:userId];
+    NSDictionary *userInfoDic = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
     
     _userNameLabel.text = [userInfoDic objectForKey:@"Name"];
     _userDescLabel.text = [userInfoDic objectForKey:@"DescInfo"];
     
     _imageView.layer.masksToBounds = YES;
     _imageView.layer.cornerRadius = kIconWidth / 2.0;
-    [_imageView qim_setImageWithJid:[userInfoDic objectForKey:@"XmppId"]];
+    [_imageView qim_setImageWithJid:[userInfoDic objectForKey:@"xmppId"]];
     float backWidth = kCardCellWidth;
     float backHeight = kCardCellHeight;
     

@@ -151,10 +151,10 @@
     NSString *sourceStr = @"";
     @autoreleasepool {
         NSData *data = UIImageJPEGRepresentation(_sourceImage, 1);
-        sourceStr = [QIMStringTransformTools CapacityTransformStrWithSize:data.length];
+        sourceStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:data.length];
         UIImage *image = [_sourceImage qim_sdImage];
         data = UIImageJPEGRepresentation(image, 1);
-        bqStr = [QIMStringTransformTools CapacityTransformStrWithSize:data.length];
+        bqStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:data.length];
     }
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"%@ (%@)", [NSBundle qim_localizedStringForKey:@"Standard Definition"], bqStr], [NSString stringWithFormat:@"%@ (%@)", [NSBundle qim_localizedStringForKey:@"Full Image"], sourceStr],nil];
     [sheet showInView:self.view];

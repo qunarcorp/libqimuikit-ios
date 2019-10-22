@@ -716,12 +716,14 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         picker.colsInPortrait = 4;
         picker.colsInLandscape = 5;
         picker.minimumInteritemSpacing = 2.0;
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
-            [strongSelf presentViewController:picker animated:YES completion:nil];
-        } else {
-            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+                [strongSelf presentViewController:picker animated:YES completion:nil];
+            } else {
+                [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
+            }
+        });
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypePhotos];
 }
@@ -866,7 +868,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         NSNumber *newVideo = [videoDic objectForKey:@"newVideo"];
                         NSString *LocalVideoOutPath = [videoDic objectForKey:@"LocalVideoOutPath"];
                         
-                        NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:videoSize];
+                        NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:videoSize];
 
                         [videoPreDic setQIMSafeObject:@([Duration integerValue] / 1000) forKey:@"Duration"];
                         [videoPreDic setQIMSafeObject:videoName forKey:@"FileName"];
@@ -1428,7 +1430,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                      NSString * key = [info objectForKey:@"PHImageFileSandboxExtensionTokenKey"];
                      videoResultPath = [[key componentsSeparatedByString:@";"] lastObject];
                  }
-                 NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+                 NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
                  AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:asset];
                  gen.appliesPreferredTrackTransform = YES;
                  CMTime time = CMTimeMakeWithSeconds(0.0, 600);

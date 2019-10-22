@@ -219,7 +219,8 @@
 
 - (void)setUpTableViewHeader {
     
-    UIImage *headerImage = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.groupId];
+    UIImage *headerImage = nil;
+//    [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.groupId];
     UIImageView *header = [[UIImageView alloc] initWithImage:[headerImage qim_blurImageWithRadius:5]];
     header.frame = CGRectMake(0, 0, _tableView.width, 200);
     header.contentMode = UIViewContentModeScaleAspectFill;
