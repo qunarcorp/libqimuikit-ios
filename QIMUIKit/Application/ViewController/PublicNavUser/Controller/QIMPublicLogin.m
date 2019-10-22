@@ -392,14 +392,14 @@ static const int companyTag = 10001;
     UIFont *fnt = [UIFont systemFontOfSize:14];
     // 根据字体得到NSString的尺寸
     CGSize size = [[NSBundle qim_localizedStringForKey:@"not_have_company"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:fnt,NSFontAttributeName,nil]];
-    
+
     [self.registerNewCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.view.mas_centerX);
         make.bottom.mas_offset(-30);
         make.width.mas_equalTo(size.width + 30);
         make.height.mas_equalTo(21);
     }];
-    
+
     [self.view addSubview:self.scanSettingNavBtn];
     [self.scanSettingNavBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo((56 + 38/2) - 30/2);

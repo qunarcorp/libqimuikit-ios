@@ -34,6 +34,20 @@
     return mood?mood:@"这家伙很懒,什么都没留下";
 }
 
++ (NSArray *)qimrn_getNewUserMedalByUserId:(NSString *)xmppId {
+    if (!xmppId || xmppId.length <= 0) {
+        return nil;
+    }
+    return [[QIMKit sharedInstance] getUserWearMedalSmallIconListByUserid:xmppId];
+}
+
++ (NSArray *)qimrn_getNewUserHaveMedalByUserId:(NSString *)xmppId {
+    if (!xmppId || xmppId.length <= 0) {
+        return nil;
+    }
+    return [[QIMKit sharedInstance] getUserHaveMedalSmallIconListByUserid:xmppId];
+}
+
 + (NSArray *)qimrn_getUserMedalByUserId:(NSString *)xmppId {
     if (!xmppId || xmppId.length <= 0) {
         return nil;
