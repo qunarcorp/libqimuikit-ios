@@ -40,7 +40,7 @@
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
-#import <Toast/Toast.h>
+//#import "UIView+Toast.h"
 
 static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 

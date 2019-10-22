@@ -138,7 +138,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'QIMUIVendorKit' do |vendorkit|
-    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMUpdateView/**/*{h,m}']
+    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMUpdateView/**/*{h,m}', 'QIMUIVendorKit/QIMToast/**/*{h,m}']
 #    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMImagePickerController/**/*{h,m}']
     vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib']
 #    vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib', 'QIMUIVendorKit/QIMImagePickerController/**/*.{bundle}']
@@ -170,6 +170,22 @@ Pod::Spec.new do |s|
      end
   end
   
+  s.subspec 'QIMFlutter' do |flutter|
+    
+    flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
+#    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
+    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
+#    flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
+
+    if $debug
+#      flutter.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.qtalk-flutter.19'
+    else
+      flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
+      flutter.dependency 'QIMFlutterFramework'
+    end
+    
+  end
+  
   s.subspec 'QIMUIKit-NORN' do |norn|
 #    norn.resource = ['QIMUIKit/QIMUIKitResources/片段/*', 'QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib', 'QIMUIKit/QIMUIKitResources/Audio/*', 'QIMUIKit/QIMUIKitResources/Certificate/*', 'QIMUIKit/QIMUIKitResources/Fonts/*', 'QIMUIKit/QIMUIKitResources/Stickers/*', 'QIMUIKit/QIMUIKitResources/QIMI18N.bundle', 'QIMUIKit/QIMUIKitResources/QIMUIKit.bundle']
     norn.resources = "QIMUIKit/QIMUIKitResources/片段/*", "QIMUIKit/Application/ViewController/Login/QIMLoginViewController.xib", "QIMUIKit/QIMUIKitResources/Audio/*", "QIMUIKit/QIMUIKitResources/Certificate/*", "QIMUIKit/QIMUIKitResources/Fonts/*", "QIMUIKit/QIMUIKitResources/Stickers/*", "QIMUIKit/QIMUIKitResources/QIMI18N.bundle", "QIMUIKit/QIMUIKitResources/QIMUIKit.bundle"
@@ -186,6 +202,9 @@ Pod::Spec.new do |s|
     norn.dependency 'QIMUIKit/QIMSuperPlayer'
     norn.dependency 'QIMUIKit/QIMUIVendorKit'
     norn.dependency 'QIMUIKit/QIMNote'
+    norn.dependency 'QIMUIKit/QIMFlutter'
+#    norn.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.test.14'
+
   end
   
   s.subspec 'QIMUIKit-FULL' do |full|
@@ -205,6 +224,9 @@ Pod::Spec.new do |s|
     full.dependency 'QIMUIKit/QIMUIVendorKit'
     full.dependency 'QIMUIKit/QIMNote'
     full.dependency 'QIMUIKit/QIMRN'
+    full.dependency 'QIMUIKit/QIMFlutter'
+#    full.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.test.14'
+#    full.dependency 'QIMUIKit/QIMFlutter'
   end
   
   s.dependency 'MJRefresh'
@@ -221,7 +243,7 @@ Pod::Spec.new do |s|
   s.dependency 'AMap3DMap'
   s.dependency 'SCLAlertView-Objective-C'
   s.dependency 'MMMarkdown'
-  s.dependency 'Toast' 
+#  s.dependency 'Toast' 
   s.dependency 'YYKeyboardManager'
   s.dependency 'RTLabel'
 #  s.dependency 'SuperPlayer'

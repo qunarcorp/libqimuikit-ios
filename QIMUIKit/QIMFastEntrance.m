@@ -69,6 +69,11 @@
 #import "QIMWorkFeedSearchViewController.h"
 #import "QIMWorkMomentPushViewController.h"
 #import "QIMWorkFeedMYCirrleViewController.h"
+
+#if __has_include("QIMFlutterModule.h")
+#import "QIMFlutterModule.h"
+#endif
+
 @interface QIMFastEntrance () <MFMailComposeViewControllerDelegate>
 
 @end
@@ -769,6 +774,12 @@ static QIMFastEntrance *_sharedInstance = nil;
     });
 }
 
++ (void)openUserMedalFlutterWithUserId:(NSString *)userId {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[QIMFlutterModule sharedInstance] openUserMedalFlutterWithUserId:userId];
+    });
+}
+
 + (void)openVideoPlayerForUrl:(NSString *)videoUrl LocalOutPath:(NSString *)localOutPath CoverImageUrl:(NSString *)coverImageUrl {
     dispatch_async(dispatch_get_main_queue(), ^{
         QIMNewMoivePlayerVC *videoPlayer = [[QIMNewMoivePlayerVC alloc] init];
@@ -1291,8 +1302,8 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         [navVC pushViewController:qrVC animated:YES];
     });
-    
-    
+
+
 }
 
 + (void)signOutWithNoPush {

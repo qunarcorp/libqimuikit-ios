@@ -32,6 +32,7 @@
 #import "QIMHintTableViewCell.h"
 #import "QIMChatRobotQuestionListTableViewCell.h"
 
+#import "QIMUserMedalRemindCell.h"
 //#import "TransferInfoCell.h"
 #import "QIMGroupChatCell.h"
 #import "QIMPublicNumberNoticeCell.h"
@@ -249,6 +250,10 @@
                 break;
             case QIMMessageTypeRobotTurnToUser:{
                 return [QIMHintTableViewCell getCellHeightWihtMessage:temp chatType:self.chatType] + 15;
+            }
+                break;
+            case QIMMessageTypeUserMedalRemind: {
+                return [QIMUserMedalRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 45;
             }
                 break;
             default: {
@@ -486,7 +491,7 @@
     }
     BOOL isvisable = [[tableView indexPathsForVisibleRows] containsObject:indexPath];
     id temp = [self.dataSource objectAtIndex:row];
-    
+
    QIMMessageModel *message = temp;
 //    QIMVerboseLog(@"解密会话状态 : %lu,   %d", (unsigned long)[[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId], message.messageType);
 #if __has_include("QIMNoteManager.h")
@@ -960,7 +965,7 @@
             return cell;
         }
             break;
-            
+
         case QIMMessageTypeQChatRobotQuestionList:{
             NSString * cellIdentifier = @"QIMMessageTypeQChatRobotQuestionList";
             QIMChatRobotQuestionListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -972,7 +977,7 @@
                 cell.delegate = self.ownerVc;
                 [cell setOwerViewController:self.ownerVc];
             }
-            
+
             [cell setMessage:message];
             [cell setChatType:self.chatType];
             [cell refreshUI];
@@ -993,7 +998,7 @@
             [cell setMessage:message];
             [cell refreshUI];
             return cell;
-            
+
         }
             break;
             break;
