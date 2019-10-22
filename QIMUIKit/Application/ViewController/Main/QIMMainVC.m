@@ -184,7 +184,7 @@ static dispatch_once_t __onceMainToken;
         [_loadingActivityView setCenter:_loadingView.center];
         [_loadingView addSubview:_loadingActivityView];
     }
-    if (([QIMKit getQIMProjectType] != QIMProjectTypeQChat) && self.skipLogin) {
+    if (self.skipLogin) {
         [self autoLogin];
     }
 #if __has_include("RNSchemaParse.h")
@@ -1017,26 +1017,31 @@ static dispatch_once_t __onceMainToken;
 
 - (void)autoLogin {
     NSString *lastUserName = [QIMKit getLastUserName];
-    NSString *userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+    NSString *userToken = [[QIMKit sharedInstance] getLastUserToken];
+//    [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
     NSString *userFullJid = [[QIMKit sharedInstance] userObjectForKey:@"kFullUserJid"];
     QIMVerboseLog(@"autoLogin lastUserName : %@, userFullJid : %@, userToken : %@", lastUserName, userFullJid, userToken);
     QIMVerboseLog(@"autoLogin UserDict : %@", [[QIMKit sharedInstance] userObjectForKey:@"Users"]);
     if ([lastUserName length] > 0 && [userToken length] > 0) {
         if ([lastUserName isEqualToString:@"appstore"]) {
-            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] updateLastUserToken:@"appstore"];
+//            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
         } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
-            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] updateLastUserToken:@"qtalktest123"];
+//            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
         } else {
             if ([[QIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeSms) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSString *pwd = [NSString stringWithFormat:@"%@@%@", [QIMUUIDTools deviceUUID], userToken];
-                    [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
+                    [[QIMKit sharedInstance] updateLastUserToken:userToken];
+//                    [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
                     [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
                 });
             } else {
-                [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] updateLastUserToken:userToken];
+//                [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
                 [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:userToken];
             }
         }
