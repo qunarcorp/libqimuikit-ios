@@ -60,8 +60,8 @@
         leaderId = [leaderId stringByAppendingFormat:@"@%@", [[QIMKit sharedInstance] getDomain]];
     }
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-    [properties setObject:empno ? empno : @"未知" forKey:@"Empno"];
-    [properties setObject:leader ? leader : @"未知" forKey:@"Leader"];
+    [properties setObject:empno ? empno : [NSBundle qim_localizedStringForKey:@"moment_Unknown"] forKey:@"Empno"];
+    [properties setObject:leader ? leader : [NSBundle qim_localizedStringForKey:@"moment_Unknown"] forKey:@"Leader"];
     [properties setObject:leaderId ? leaderId : @"" forKey:@"LeaderId"];
     return properties;
 }

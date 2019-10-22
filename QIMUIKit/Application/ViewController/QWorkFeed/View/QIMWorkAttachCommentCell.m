@@ -122,7 +122,7 @@
     if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
         QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
         if (![storage.linkData length]) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Wrong_Interface"] message:[NSBundle qim_localizedStringForKey:@"Wrong_URL"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         } else {
             [QIMFastEntrance openWebViewForUrl:storage.linkData showNavBar:YES];

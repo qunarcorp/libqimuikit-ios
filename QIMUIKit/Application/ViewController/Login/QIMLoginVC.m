@@ -21,8 +21,8 @@
 #define kInputViewHeight        30
 #define kValidCodeBtnNomalWidth      120
 #define kValidCodeBtnWaitingWidth      50
-#define kValidCodeDisplayString      @"获取验证码"
-#define kValidCodeSendingString      @"发送中..."
+#define kValidCodeDisplayString      [NSBundle qim_localizedStringForKey:@"login_get_code"]
+#define kValidCodeSendingString      [NSBundle qim_localizedStringForKey:@"login_sending"]
 
 #define kPlaceholderFontSize   14
 #define kNomalFontSize         17
@@ -432,9 +432,14 @@
         [_agreeBtn addTarget:self action:@selector(agreeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [[self loginBgView] addSubview:_agreeBtn];
         
-        UILabel * agreeLabel = [[UILabel  alloc] initWithFrame:CGRectMake(_agreeBtn.right + 5, _agreeBtn.top, 30, _agreeBtn.height)];
+        NSString *login_agree = [NSBundle qim_localizedStringForKey:@"login_agree"];
+        UIFont *login_agreeFont = [UIFont systemFontOfSize:14];
+        // 根据字体得到NSString的尺寸
+        CGSize login_agreeSize = [login_agree sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:login_agreeFont,NSFontAttributeName,nil]];
+
+        UILabel * agreeLabel = [[UILabel  alloc] initWithFrame:CGRectMake(_agreeBtn.right + 5, _agreeBtn.top, login_agreeSize.width + 5, _agreeBtn.height)];
         agreeLabel.backgroundColor = [UIColor clearColor];
-        agreeLabel.text = [NSBundle qim_localizedStringForKey:@"login_agree"];
+        agreeLabel.text = login_agree;
         agreeLabel.textColor = [UIColor qim_colorWithHex:0x999999];
         agreeLabel.font = [UIFont systemFontOfSize:14];
         [[self loginBgView] addSubview:agreeLabel];
@@ -442,6 +447,9 @@
         UIButton * agreementBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         agreementBtn.frame = CGRectMake(agreeLabel.right, _agreeBtn.top, 160, _agreeBtn.height);
         [agreementBtn setTitle:[NSBundle qim_localizedStringForKey:@"login_privacy_policy"] forState:UIControlStateNormal];
+        [agreementBtn.titleLabel setTextAlignment:NSTextAlignmentLeft];
+        agreementBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        agreementBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
         [agreementBtn.titleLabel setFont:agreeLabel.font];
         [agreementBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
         [agreementBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateHighlighted];
@@ -795,11 +803,11 @@
 - (void)showNetWorkUnableAlert {
     
     __weak id weakSelf = self;
-    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:@"当前网络不可用，请检查网络或在'设置'-'蜂窝移动无线网络'-'使用无线局域网与蜂窝网络的应用中'查看是否授权给QTalk" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSBundle qim_localizedStringForKey:@"network_unavailable_tip"] preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [weakSelf stopLoginAnimation];
     }];
-    UIAlertAction *helpAction = [UIAlertAction actionWithTitle:@"帮助" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *helpAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@""] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [weakSelf stopLoginAnimation];
         NSString *netHelperPath = [[NSBundle mainBundle] pathForResource:@"NetWorkSetting" ofType:@"html"];
         NSString *netHelperString = [NSString stringWithContentsOfFile:netHelperPath encoding:NSUTF8StringEncoding error:nil];
@@ -923,8 +931,8 @@
             [self stopLoginAnimation];
             [self stopWritingLogo];
             __weak __typeof(self) weakSelf = self;
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"登录失败" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSBundle qim_localizedStringForKey:@"login_faild"] preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 [weakSelf dropLoginUserTableView:nil];
                 [weakSelf becomeFirstResponderForView:_validCodeInputView];
             }];

@@ -466,10 +466,10 @@ const float colormatrix_yese[] = {
 {
     if ([[btn titleForState:UIControlStateNormal] isEqualToString:[NSBundle qim_localizedStringForKey:@"common_ok"]]) {
         [self saveDoodleImage];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"]
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
                                                         message:@"图片尚未保存，是否保存图片？"
                                                        delegate:self
-                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Send directly"]
+                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"send_directly"]
                                               otherButtonTitles:@"保存并发送",nil];
         alert.delegate = self;
         [alert show];
@@ -501,11 +501,11 @@ const float colormatrix_yese[] = {
     NSString *msg = nil ;
     UIAlertView *alert = nil;
     if(error != NULL){
-        msg = @"保存图片失败" ;
-        alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"]
+        msg = [NSBundle qim_localizedStringForKey:@"save_faild"] ;
+        alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
                                    message:msg
                                   delegate:self
-                         cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
+                         cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"]
                                  otherButtonTitles:nil];
     }else{
         [self sendImage];

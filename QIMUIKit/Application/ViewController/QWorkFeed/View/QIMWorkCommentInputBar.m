@@ -71,7 +71,7 @@
         _likeBtn.frame = CGRectMake(CGRectGetWidth(self.frame) - 62, 17, 52, 26);
         [_likeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0e7" size:26 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
         [_likeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0cd" size:26 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateSelected];
-        [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
+        [_likeBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_like"] forState:UIControlStateNormal];
         [_likeBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
         [_likeBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateSelected];
         [_likeBtn.titleLabel setFont:[UIFont systemFontOfSize:12]];
@@ -182,7 +182,7 @@
         if (likeNum > 0) {
             [_likeBtn setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
         } else {
-            [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
+            [_likeBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_like"] forState:UIControlStateNormal];
         }
     }
 }
@@ -245,7 +245,7 @@
                 if (likeNum > 0) {
                     [sender setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
                 } else {
-                    [sender setTitle:@"顶" forState:UIControlStateNormal];
+                    [sender setTitle:[NSBundle qim_localizedStringForKey:@"moment_like"] forState:UIControlStateNormal];
                 }
                 sender.selected = NO;
             }

@@ -22,7 +22,7 @@
 }
 
 - (CGFloat)getWidthForNotReadCount:(int)notReadCount{
-    _title = [NSString stringWithFormat:@"%d条新消息",notReadCount];
+    _title = [NSString stringWithFormat:@"%d%@",notReadCount, [NSBundle qim_localizedStringForKey:@"moment_new_messages"]];
     CGSize titleSize = [_title sizeWithFont:[UIFont systemFontOfSize:13] forWidth:INT8_MAX lineBreakMode:NSLineBreakByCharWrapping];
     return titleSize.width + [self getHeight] / 2.0 - 5 + 10 + 17 + 8;
 }

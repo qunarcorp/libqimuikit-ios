@@ -17,7 +17,6 @@
 #import "QIMWorkMomentLinkView.h"
 #import "QIMWorkMomentVideoView.h"
 #import "QIMWorkAttachCommentListView.h"
-#import "QIMWorkMomentTagCollectionView.h"
 #import <YYModel/YYModel.h>
 #import "QIMEmotionManager.h"
 
@@ -160,9 +159,7 @@
     layout.itemSize = CGSizeMake(34, 17);
     layout.minimumLineSpacing = 10;
     layout.minimumInteritemSpacing = 10;
-//    _tagCollectionView = [[QIMWorkMomentTagCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-//    [self.contentView addSubview:_tagCollectionView];
-    
+
     _controlBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _controlBtn.frame = CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 15 - 25, _nameLab.top, 28, 30);
     [_controlBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f1cd" size:28 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
@@ -185,7 +182,7 @@
     _showAllBtn.titleLabel.font = [UIFont systemFontOfSize:15];
     _showAllBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     _showAllBtn.backgroundColor = [UIColor clearColor];
-    [_showAllBtn setTitle:@"全文" forState:UIControlStateNormal];
+    [_showAllBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_Show_More"] forState:UIControlStateNormal];
     [_showAllBtn setTitleColor:[UIColor qim_colorWithHex:0xBFBFBF] forState:UIControlStateNormal];
     [_showAllBtn addTarget:self action:@selector(fullTextClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_showAllBtn];
@@ -218,7 +215,7 @@
     _likeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_likeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0e7" size:20 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
     [_likeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0cd" size:20 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateSelected];
-    [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
+    [_likeBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_like"] forState:UIControlStateNormal];
     [_likeBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
     [_likeBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateSelected];
     _likeBtn.layer.cornerRadius = 13.5f;
@@ -234,7 +231,7 @@
     _commentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_commentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0ef" size:20 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
     [_commentBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0ef" size:20 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateSelected];
-    [_commentBtn setTitle:@"评论" forState:UIControlStateNormal];
+    [_commentBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_comment"] forState:UIControlStateNormal];
     [_commentBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
     [_commentBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateSelected];
     _commentBtn.layer.cornerRadius = 13.5f;
@@ -270,7 +267,7 @@
         
         _organLab.frame = CGRectMake(self.nameLab.right + 5, self.nameLab.top, 66, 20);
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
+        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:[NSBundle qim_localizedStringForKey:@"moment_Unknown"];
         NSString *showDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
         if (showDp.length > 0) {
             _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @"";
@@ -316,20 +313,11 @@
     for (NSInteger i = attay.count - 1; i >= 0; i--) {
         NSNumber *number = [attay objectAtIndex:i];
         if ([number integerValue] == 1) {
-//            [str setText:@"置顶"];
-//            str = @"置顶";
-            [str appendString:[NSString stringWithFormat:@"[obj type=\"topMoment\" value=\"%@\"]", @"[置顶]"]];
+            [str appendString:[NSString stringWithFormat:@"[obj type=\"topMoment\" value=\"%@\"]", [NSBundle qim_localizedStringForKey:@"moment_stick_top"]]];
             [str appendString:@" "];
-//            [label setTextColor:[UIColor qim_colorWithHex:0x00CABE]];
-//            label.layer.borderColor = [UIColor qim_colorWithHex:0x00CABE].CGColor;
         } else if ([number integerValue] == 2) {
-            [str appendString:[NSString stringWithFormat:@"[obj type=\"hotMoment\" value=\"%@\"]", @"[热帖]"]];
-//            str = [NSString stringWithFormat:@"[obj type=\"topMoment\" value=\"%@\"]", @"[热帖]"];
+            [str appendString:[NSString stringWithFormat:@"[obj type=\"hotMoment\" value=\"%@\"]", [NSBundle qim_localizedStringForKey:@"moment_hot"]]];
             [str appendString:@" "];
-//            [cell removeAllSubviews];
-//            [label setText:@"热帖"];
-//            [label setTextColor:[UIColor qim_colorWithHex:0xF9A539]];
-//            label.layer.borderColor = [UIColor qim_colorWithHex:0xF9A539].CGColor;
         } else {
 //            [cell removeAllSubviews];
         }
@@ -398,10 +386,10 @@
     } else {
         if (textContainer.totalNumLine > MaxNumberOfLines) {
             if (!self.isFullText) {
-                [self.showAllBtn setTitle:@"全文" forState:UIControlStateNormal];
+                [self.showAllBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_Show_More"] forState:UIControlStateNormal];
             } else {
                 textContainer = [QIMWorkMomentParser textContainerForMessage:msg fromCache:NO withCellWidth:[[QIMWindowManager shareInstance] getPrimaryWidth] - self.nameLab.left - 20 withFontSize:15 withFontColor:[UIColor qim_colorWithHex:0x333333] withNumberOfLines:0];
-                [self.showAllBtn setTitle:@"收起" forState:UIControlStateNormal];
+                [self.showAllBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_Show_Less"] forState:UIControlStateNormal];
             }
             _showAllBtn.hidden = NO;
         } else {
@@ -417,7 +405,12 @@
         _contentLabel.textContainer = textContainer;
         
     }
-    _showAllBtn.frame = CGRectMake(self.nameLab.left, _contentLabel.bottom + 5, 60, 20);
+    NSString *showAllStr = self.showAllBtn.titleLabel.text;
+    UIFont *showAllFont = [UIFont systemFontOfSize:15];
+    // 根据字体得到NSString的尺寸
+    CGSize size = [showAllStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:showAllFont,NSFontAttributeName,nil]];
+
+    _showAllBtn.frame = CGRectMake(self.nameLab.left, _contentLabel.bottom + 5, size.width + 5, 20);
     if (_showAllBtn.hidden) {
         bottom = _contentLabel.bottom + 8;
         _rowHeight = self.contentLabel.bottom;
@@ -566,17 +559,25 @@
         if (likeNum > 0) {
             [_likeBtn setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
         } else {
-            [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
+            [_likeBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_like"] forState:UIControlStateNormal];
         }
     }
 }
 
 - (void)updateCommentUI {
-    _commentBtn.frame = CGRectMake(_likeBtn.left - 15 - 70, _rowHeight + 15, 70, 27);
     if (self.moment.commentsNum > 0) {
         [_commentBtn setTitle:[NSString stringWithFormat:@"%ld", self.moment.commentsNum] forState:UIControlStateNormal];
     } else {
-        [_commentBtn setTitle:@"评论" forState:UIControlStateNormal];
+        [_commentBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_comment"] forState:UIControlStateNormal];
+    }
+    NSString *commentStr = _commentBtn.titleLabel.text;
+    UIFont *commentFont = [UIFont systemFontOfSize:15];
+    // 根据字体得到NSString的尺寸
+    CGSize size = [commentStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:commentFont,NSFontAttributeName,nil]];
+    if (size.width > 50) {
+        _commentBtn.frame = CGRectMake(_likeBtn.left - 15 - size.width - 18, _rowHeight + 15, size.width + 18, 27);
+    } else {
+        _commentBtn.frame = CGRectMake(_likeBtn.left - 15 - 70, _rowHeight + 15, 70, 27);
     }
 }
 
@@ -648,7 +649,7 @@
                 if (likeNum > 0) {
                     [sender setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
                 } else {
-                    [sender setTitle:@"顶" forState:UIControlStateNormal];
+                    [sender setTitle:[NSBundle qim_localizedStringForKey:@"moment_like"] forState:UIControlStateNormal];
                 }
             }
         } else {
@@ -710,7 +711,7 @@
     if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
         QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
         if (![storage.linkData length]) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Wrong_Interface"] message:[NSBundle qim_localizedStringForKey:@"Wrong_URL"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         } else {
             [QIMFastEntrance openWebViewForUrl:storage.linkData showNavBar:YES];

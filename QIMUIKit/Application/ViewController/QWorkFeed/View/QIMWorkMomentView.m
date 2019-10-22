@@ -150,7 +150,7 @@ CGFloat maxFullContentHeight = 0;
         
         _organLab.frame = CGRectMake(self.nameLab.right + 5, self.nameLab.top, 66, 20);
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
-        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
+        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:[NSBundle qim_localizedStringForKey:@"moment_Unknown"];
         NSString *showDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
         if (showDp.length > 0) {
             _organLab.text = showDp ? [NSString stringWithFormat:@"%@", showDp] : @"";
@@ -341,7 +341,7 @@ CGFloat maxFullContentHeight = 0;
     if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
         QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
         if (![storage.linkData length]) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Wrong_Interface"] message:[NSBundle qim_localizedStringForKey:@"Wrong_URL"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         } else {
             [QIMFastEntrance openWebViewForUrl:storage.linkData showNavBar:YES];

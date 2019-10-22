@@ -901,7 +901,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 }
 
 - (void)collectEmojiFaceFailed:(NSNotification *)notify {
-    [self setProgressHUDDetailsLabelText:@"收藏表情失败"];
+    [self setProgressHUDDetailsLabelText:[NSBundle qim_localizedStringForKey:@"Failed to add to stickers"]];
     [self closeHUD];
 }
 
@@ -1554,7 +1554,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 
 - (void)msgReSendNotificationHandle:(NSNotification *)notify {
     _resendMsg = notify.object;
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"重发该消息？" message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Resend"], nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Resend the message?"] message:nil delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Delete"], [NSBundle qim_localizedStringForKey:@"Resend"], nil];
     
     alertView.tag = kReSendMsgAlertViewTag;
     alertView.delegate = self;
@@ -1951,7 +1951,7 @@ static CGPoint tableOffsetPoint;
         QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
         if (![storage.linkData length]) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Wrong_Interface"] message:[NSBundle qim_localizedStringForKey:@"Wrong_URL"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         } else {
             
@@ -2792,7 +2792,7 @@ static CGPoint tableOffsetPoint;
         view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F9];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 90, 21)];
-        label.text = @"以上为所有消息";
+        label.text = [NSBundle qim_localizedStringForKey:@"All_Messages_Above"];
         label.textAlignment = NSTextAlignmentCenter;
         [label setTextColor:[UIColor redColor]];
         label.font = [UIFont systemFontOfSize:15];
@@ -2944,7 +2944,7 @@ static CGPoint tableOffsetPoint;
         if (commentCountLabel == nil) {
             commentCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 5, 70, 20)];
             [commentCountLabel setTextColor:[UIColor whiteColor]];
-            [commentCountLabel setText:@"下面有新消息"];
+            [commentCountLabel setText:[NSBundle qim_localizedStringForKey:@"New_Messages_Below"]];
             [commentCountLabel setFont:[UIFont boldSystemFontOfSize:10]];
             [notificationView addSubview:commentCountLabel];
         }

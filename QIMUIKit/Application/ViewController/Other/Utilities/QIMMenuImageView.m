@@ -288,7 +288,7 @@
              @(MA_ToWithdraw) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Recall"], @"MenuAction" : @"toWithdrawMsg:"},
              @(MA_Forward) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Delete"], @"MenuAction" : @"forwardMsgs:"},
              @(MA_Refer) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Quote"], @"MenuAction" : @"referMsgs:"},
-             @(MA_CopyOriginMsg) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Original Message"], @"MenuAction" : @"copyOriginMsg:"},
+             @(MA_CopyOriginMsg) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Original_Message"], @"MenuAction" : @"copyOriginMsg:"},
              };
 }
 

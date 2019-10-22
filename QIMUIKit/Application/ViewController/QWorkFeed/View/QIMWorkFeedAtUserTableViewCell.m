@@ -42,7 +42,6 @@
 - (UILabel *)nameLabel {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.headerView.right + 8, 5, 150, 18)];
-        _nameLabel.text = @"司徒公孙";
         _nameLabel.textColor = [UIColor qim_colorWithHex:0x333333];
         _nameLabel.font = [UIFont systemFontOfSize:12];
     }
@@ -52,7 +51,6 @@
 - (UILabel *)departmentLabel {
     if (!_departmentLabel) {
         _departmentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.headerView.right + 8, self.nameLabel.bottom + 5, self.width - self.headerView.right, 18)];
-        _departmentLabel.text = @"/QUNAR/公共产品部/UED";
         _departmentLabel.textColor = [UIColor qim_colorWithHex:0x333333];
         _departmentLabel.font = [UIFont systemFontOfSize:12];
     }

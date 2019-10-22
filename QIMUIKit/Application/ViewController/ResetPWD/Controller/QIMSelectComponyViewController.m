@@ -32,7 +32,7 @@
 - (UITextField *)companyTextField {
     if (!_companyTextField) {
         _companyTextField = [[UITextField alloc] init];
-        _companyTextField.placeholder = @"请输入公司名";
+        _companyTextField.placeholder = [NSBundle qim_localizedStringForKey:@"input_company_name"];
         _companyTextField.delegate = self;
         _companyTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         _companyTextField.backgroundColor = [UIColor whiteColor];
@@ -106,7 +106,7 @@
     [[YYKeyboardManager defaultManager] addObserver:self];
     UIImage *image = [UIImage qim_imageWithColor:[UIColor whiteColor]];
     [self.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
-    self.navigationItem.title = @"选择公司";
+    self.navigationItem.title = [NSBundle qim_localizedStringForKey:@"Select_company"];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
     UIBarButtonItem *barItem = [[UIBarButtonItem alloc] initWithImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f3cd" size:20 color:[UIColor qim_colorWithHex:0x333333]]] style:UIBarButtonItemStylePlain target:self action:@selector(backBtnClick:)];
     [barItem setTintColor:[UIColor qim_colorWithHex:0x333333]];

@@ -100,39 +100,39 @@ static QTalk *__global_qtalk = nil;
     
     //预测对赌
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMForecastCell" ForMessageType:QIMMessageType_Forecast];
-    [[QIMKit sharedInstance] setMsgShowText:@"[预测]" ForMessageType:QIMMessageType_Forecast];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Prediction_tip"] ForMessageType:QIMMessageType_Forecast];
     
     //抢单消息
-    [[QIMKit sharedInstance] setMsgShowText:@"[抢单]" ForMessageType:MessageType_C2BGrabSingle];
-    [[QIMKit sharedInstance] setMsgShowText:@"[抢单]" ForMessageType:MessageType_QCZhongbao];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Order_Taking_tip"] ForMessageType:MessageType_C2BGrabSingle];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Order_Taking_tip"] ForMessageType:MessageType_QCZhongbao];
 
     
     // red pack desc
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRedPackDescCell" ForMessageType:QIMMessageType_RedPackInfo];
-    [[QIMKit sharedInstance] setMsgShowText:@"[红包]" ForMessageType:QIMMessageType_RedPackInfo];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"redpack_tip"] ForMessageType:QIMMessageType_RedPackInfo];
     
     // AA收款
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMAACollectionCell" ForMessageType:QIMMessageType_AA];
-    [[QIMKit sharedInstance] setMsgShowText:@"[AA收款]" ForMessageType:QIMMessageType_AA];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Split_Bill_tip"] ForMessageType:QIMMessageType_AA];
     
     // AA收款 desc
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMAACollectionDescCell" ForMessageType:QIMMessageType_AAInfo];
-    [[QIMKit sharedInstance] setMsgShowText:@"[AA收款]" ForMessageType:QIMMessageType_AAInfo];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Split_Bill_tip"] ForMessageType:QIMMessageType_AAInfo];
     
     // 产品信息
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMProductInfoCell" ForMessageType:QIMMessageType_product];
-    [[QIMKit sharedInstance] setMsgShowText:@"[产品信息]" ForMessageType:QIMMessageType_product];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Product_Information_tip"] ForMessageType:QIMMessageType_product];
     
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMExtensibleProductCell" ForMessageType:QIMMessageType_ExProduct];
-    [[QIMKit sharedInstance] setMsgShowText:@"[产品信息]" ForMessageType:QIMMessageType_ExProduct];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Product_Information_tip"] ForMessageType:QIMMessageType_ExProduct];
     
     // 活动
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMActivityCell" ForMessageType:QIMMessageType_activity];
-    [[QIMKit sharedInstance] setMsgShowText:@"[活动]" ForMessageType:QIMMessageType_activity];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Event_tip"] ForMessageType:QIMMessageType_activity];
     
     // 撤回消息
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSingleChatTimestampCell" ForMessageType:QIMMessageType_Revoke];
-    [[QIMKit sharedInstance] setMsgShowText:@"撤回了一条消息" ForMessageType:QIMMessageType_Revoke];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"recalled_message"] ForMessageType:QIMMessageType_Revoke];
     
 #if __has_include("QIMWebRTCClient.h")
     //语音聊天
@@ -143,45 +143,52 @@ static QTalk *__global_qtalk = nil;
     [[QIMKit sharedInstance] setMsgShowText:@"[语音聊天]" ForMessageType:QIMMessageType_WebRTC_Audio];
     
     [[QIMKit sharedInstance] setMsgShowText:@"[视频聊天]" ForMessageType:QIMMessageType_WebRTC_Vedio];
+    
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Voice_Call_tip"] ForMessageType:QIMWebRTC_MsgType_Audio];
+    
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Video_Call_tip"] ForMessageType:QIMWebRTC_MsgType_Video];
 #endif
 #if __has_include("QIMWebRTCClient.h")
     //视频会议
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+
 
     [[QIMKit sharedInstance] setMsgShowText:@"[视频会议]" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
     
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoGroup];
     [[QIMKit sharedInstance] setMsgShowText:@"[视频会议]" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoGroup];
     
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Video_Conference_tip"] ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+    
 #endif
     // 窗口抖动
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMShockMsgCell" ForMessageType:QIMMessageType_Shock];
-    [[QIMKit sharedInstance] setMsgShowText:@"[窗口抖动]" ForMessageType:QIMMessageType_Shock];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Shake_Screen_tip"] ForMessageType:QIMMessageType_Shock];
 
     //问题列表
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRobotQuestionCell" ForMessageType:QIMMessageTypeRobotQuestionList];
-    [[QIMKit sharedInstance] setMsgShowText:@"[问题列表]" ForMessageType:QIMMessageTypeRobotQuestionList];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Problem_List_tip"] ForMessageType:QIMMessageTypeRobotQuestionList];
     
     //机器人答案
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRobotAnswerCell" ForMessageType:QIMMessageType_RobotAnswer];
-    [[QIMKit sharedInstance] setMsgShowText:@"[机器人回答]" ForMessageType:QIMMessageType_RobotAnswer];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Robot_Answer_tip"] ForMessageType:QIMMessageType_RobotAnswer];
     
     // 第三方通用Cell
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMCommonTrdInfoCell" ForMessageType:QIMMessageType_CommonTrdInfo];
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMCommonTrdInfoCell" ForMessageType:QIMMessageType_CommonTrdInfoPer];
     //加密消息Cell
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMEncryptChatCell" ForMessageType:QIMMessageType_Encrypt];
-    [[QIMKit sharedInstance] setMsgShowText:@"[加密消息]" ForMessageType:QIMMessageType_Encrypt];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Encrypted_Message_tip"] ForMessageType:QIMMessageType_Encrypt];
     
     //会议室提醒
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMMeetingRemindCell" ForMessageType:QIMMessageTypeMeetingRemind];
-    [[QIMKit sharedInstance] setMsgShowText:@"会议室提醒" ForMessageType:QIMMessageTypeMeetingRemind];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Meeting_Room_Notification"] ForMessageType:QIMMessageTypeMeetingRemind];
     
     //驼圈提醒
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMWorkMomentRemindCell" ForMessageType:QIMMessageTypeWorkMomentRemind];
-    [[QIMKit sharedInstance] setMsgShowText:@"驼圈提醒" ForMessageType:QIMMessageTypeWorkMomentRemind];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Moments_Notification"] ForMessageType:QIMMessageTypeWorkMomentRemind];
     
-    [[QIMKit sharedInstance] setMsgShowText:@"收到一条消息" ForMessageType:QIMMessageType_GroupNotify];
+    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"received_message"] ForMessageType:QIMMessageType_GroupNotify];
 }
 
 @end

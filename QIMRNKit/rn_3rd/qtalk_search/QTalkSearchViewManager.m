@@ -26,7 +26,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goBack) name:kNotify_RN_QTALK_SEARCH_GO_BACK object:nil];
     NSNumber *forceOldSearch = [[QIMKit sharedInstance] userObjectForKey:@"forceOldSearch"];
     //Mark by oldiPad
-    if ([forceOldSearch boolValue] == YES || [[QIMKit sharedInstance] getIsIpad] == YES) {
+    if ([forceOldSearch boolValue] == YES || [[QIMKit sharedInstance] getIsIpad] == YES || [QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
         QTalkSearchRNView *reactView = [[QTalkSearchRNView alloc] initWithFrame:self.view.bounds];
         [reactView setOwnerVC:self];
         

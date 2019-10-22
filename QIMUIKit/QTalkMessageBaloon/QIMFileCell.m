@@ -203,7 +203,7 @@
         }
     } else if(self.message.messageDirection == QIMMessageDirection_Sent) {
         if ([fileUrl hasPrefix:@"file"]) {
-            fileState = @"发送中";
+            fileState = [NSBundle qim_localizedStringForKey:@"Sending"];
         }
         else{
             fileState = [NSBundle qim_localizedStringForKey:@"common_sent"];

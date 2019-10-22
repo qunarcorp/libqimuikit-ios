@@ -309,7 +309,7 @@
     [loadingLabel setBackgroundColor:[UIColor clearColor]];
     [loadingLabel setFont:[UIFont boldSystemFontOfSize:16]];
     [loadingLabel setTextAlignment:NSTextAlignmentLeft];
-    [loadingLabel setText:@"正在压缩..."];
+    [loadingLabel setText:[NSBundle qim_localizedStringForKey:@"Compressing"]];
     [loadingLabel setTextColor:[UIColor whiteColor]];
     [loadView addSubview:loadingLabel];
     
@@ -441,10 +441,10 @@
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo: (void *)contextInfo {
     
     if (!error) {
-        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:@"保存成功！" message:@"小视频已经保存到相册..." delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
+        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Saved_Success"] message:[NSBundle qim_localizedStringForKey:@"Video_saved"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
         [alertView show];
     }else{
-        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Failed to save!"] message:[NSBundle qim_localizedStringForKey:@"Please allow Camera access in Settings->Privacy->Photo"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
+        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"save_faild"] message:[NSBundle qim_localizedStringForKey:@"Privacy_Photo"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
         [alertView show];
     }
 }

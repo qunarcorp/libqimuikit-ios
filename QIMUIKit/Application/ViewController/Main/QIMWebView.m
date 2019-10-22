@@ -343,12 +343,6 @@ static NSString *__default_ua = nil;
     return self;
 }
 
-//URLDEcode
-+ (NSString *)decodeString:(NSString*)encodedString {
-    NSString *decodedString  = (__bridge_transfer NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL,(__bridge CFStringRef)encodedString,   CFSTR(""),CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
-    return decodedString;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.translucent = NO;
@@ -387,7 +381,7 @@ static NSString *__default_ua = nil;
     _webView.delegate = _progressProxy;
     if (self.needAuth) {
         if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
-            NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:@" qunartalk-ios-client"];
+            NSString *ua = [[QIMWebView defaultUserAgent] stringByAppendingString:[[NSString alloc] initWithFormat:@"%@ - %@", @" qunartalk-ios-client", [[QIMKit sharedInstance] getDefaultUserAgentString]]];
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : ua, @"User-Agent":ua}];
         } else {
             if (self.fromMsgList) {
@@ -649,14 +643,14 @@ static NSString *__default_ua = nil;
             }
         }
 //        if ([self.url isEqualToString:[[QIMKit sharedInstance] qimNav_getManagerAppUrl]]) {
-//            NSMutableDictionary *tcookieProperties = [NSMutableDictionary dictionary];
-//            [tcookieProperties setQIMSafeObject:@"confignav" forKey:NSHTTPCookieName];
-//            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_NavUrl] forKey:NSHTTPCookieValue];
-//            [tcookieProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
-//            [tcookieProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
-//            [tcookieProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
-//            NSHTTPCookie *qckeyCookie = [NSHTTPCookie cookieWithProperties:tcookieProperties];
-//            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:qckeyCookie];
+            NSMutableDictionary *confignavProperties = [NSMutableDictionary dictionary];
+            [confignavProperties setQIMSafeObject:@"confignav" forKey:NSHTTPCookieName];
+            [confignavProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_NavUrl] forKey:NSHTTPCookieValue];
+            [confignavProperties setQIMSafeObject:[[QIMKit sharedInstance] qimNav_DomainHost] forKey:NSHTTPCookieDomain];
+            [confignavProperties setQIMSafeObject:@"/" forKey:NSHTTPCookiePath];
+            [confignavProperties setQIMSafeObject:@"0" forKey:NSHTTPCookieVersion];
+            NSHTTPCookie *confignavCookie = [NSHTTPCookie cookieWithProperties:confignavProperties];
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:confignavCookie];
 //        }
         NSHTTPCookieStorage *cook = [NSHTTPCookieStorage sharedHTTPCookieStorage];
         [cook setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];

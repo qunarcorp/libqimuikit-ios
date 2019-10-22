@@ -15,8 +15,6 @@
 #import "NSBundle+QIMLibrary.h"
 #import "QIMNacConfigTableViewCell.h"
 
-#define kAlertViewDebugTag              1001
-
 @interface QIMNavConfigManagerVC () <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, QIMNavConfigDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -65,7 +63,7 @@
  
 - (void)initUI {
     
-    self.title = [[QIMKit sharedInstance] qimNav_Debug] ? [NSBundle qim_localizedStringForKey:@"nav_title_debug_configManager"] : [NSBundle qim_localizedStringForKey:@"nav_title_configManager"];
+    self.title = [NSBundle qim_localizedStringForKey:@"nav_title_configManager"];
     self.view.backgroundColor = [UIColor whiteColor];
     UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     self.navigationItem.leftBarButtonItem = cancelItem;
@@ -154,34 +152,6 @@
     
     self.navConfigs = [[QIMKit sharedInstance] qimNav_localNavConfigs];
     [self.tableView reloadData];
-}
-
-- (void)debugSetting:(UITapGestureRecognizer *)sender
-{
-    NSString *message = nil;
-    if ([[QIMKit sharedInstance] qimNav_Debug]) {
-        message = @"是否要切换到线上环境？";
-    } else {
-        message = @"是否要切换到测试环境？";
-    }
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:message delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"ok"], nil];
-    [alertView setTag:kAlertViewDebugTag];
-    [alertView show];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    switch (alertView.tag) {
-        case kAlertViewDebugTag:
-        {
-            if (buttonIndex == 1) {
-                [[QIMKit sharedInstance] setUserObject:@(![QIMKit sharedInstance].qimNav_Debug) forKey:@"QC_Debug"];
-                [self onSave];
-            }
-        }
-            break;
-        default:
-            break;
-    }
 }
 
 - (void)onSaveWithNavUrl:(NSString *)navUrl WithNavDict:(NSDictionary *)navUrlDict needSaveAllDict:(BOOL)needSaveAllDict {
