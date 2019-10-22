@@ -423,7 +423,9 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
         }
         
         //mark by newfile
-        [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData withCallback:^(NSString *imageURL) {
+        [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData withProgressCallBack:^(float progressValue) {
+            
+        } withCallback:^(NSString *imageURL) {
             [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:imageURL];
             
             [[QIMCollectionFaceManager sharedInstance] checkForUploadLocalCollectionFace];
@@ -452,7 +454,9 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
     __block NSString *httpUrl = [NSString stringWithFormat:@""];
     
     //mark by newfile
-    [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData withCallback:^(NSString *imageURL) {
+    [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData withProgressCallBack:^(float progressValue) {
+        
+    } withCallback:^(NSString *imageURL) {
         httpUrl = imageURL;
         
         [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:imageURL];

@@ -819,7 +819,10 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                     NSData *imageData = [imageDic objectForKey:@"imageData"];
                     if ([imageData isKindOfClass:[NSData class]]) {
                         dispatch_group_enter(group);
-                        [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData withCallback:^(NSString *imageUrl) {
+                        [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData
+                                                         withProgressCallBack:^(float progressValue) {
+                                                             NSLog(@"progressValue : %f", progressValue);
+                                                         } withCallback:^(NSString *imageUrl) {
                             if (imageUrl.length > 0) {
                                 NSDictionary *imagePreDic = @{@"addTime":@(0), @"data":imageUrl};
                                 [imageList addObject:imagePreDic];
