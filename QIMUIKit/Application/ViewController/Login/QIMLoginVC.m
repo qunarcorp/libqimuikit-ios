@@ -303,7 +303,7 @@
         if ([_accountTableView respondsToSelector:@selector(setLayoutMargins:)]) {
             [_accountTableView setLayoutMargins:UIEdgeInsetsZero];
         }
-        [_loginBgView addSubview:_accountTableView];
+//        [_loginBgView addSubview:_accountTableView];
     }
     return _accountTableView;
 }
@@ -326,7 +326,7 @@
         _validCodePlaceholder.font = [UIFont systemFontOfSize:kNomalFontSize];
         [_loginBgView addSubview:_validCodePlaceholder];
     }
-    if (self.loginType == QTLoginTypePwd) {
+    if (self.loginType == QTLoginTypePwd || self.loginType == QTLoginTypeNewPwd) {
         _validCodePlaceholder.text = [NSBundle qim_localizedStringForKey:@"Login_password"];
     } else {
         _validCodePlaceholder.text = [NSBundle qim_localizedStringForKey:@"login_code"];
@@ -348,7 +348,7 @@
         _validCodeInputView.returnKeyType = UIReturnKeyGo;
         [_loginBgView addSubview:_validCodeInputView];
     }
-    if (self.loginType == QTLoginTypePwd) {
+    if (self.loginType == QTLoginTypePwd || self.loginType == QTLoginTypeNewPwd) {
         _validCodeInputView.frame = CGRectMake([self validCodeSepline].left, [self validCodeSepline].top - kInputViewHeight, [self userNameSepline].width, kInputViewHeight);
         _validCodeInputView.keyboardType = UIKeyboardTypeASCIICapable;
         _validCodeInputView.secureTextEntry = YES;
@@ -399,7 +399,7 @@
         UITapGestureRecognizer * getValidCodeTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(getValidCodeTapHandle:)];
         [_getValidCodeBtn addGestureRecognizer:getValidCodeTap];
     }
-    if (self.loginType == QTLoginTypePwd) {
+    if (self.loginType == QTLoginTypePwd || self.loginType == QTLoginTypeNewPwd) {
         [_getValidCodeBtn removeFromSuperview];
     } else {
         [_loginBgView insertSubview:_getValidCodeBtn belowSubview:[self validCodeSepline]];
@@ -725,7 +725,7 @@
 }
 
 - (void)commitTapHandle:(UITapGestureRecognizer *)sender {
-    
+
     if (!_userNameInputView.text.length) {
         UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSBundle qim_localizedStringForKey:@"common_input_username"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_got_it"] otherButtonTitles:nil, nil];
         [alertView show];
@@ -736,9 +736,9 @@
         [alertView show];
         return;
     }
-    
+
     if (_agreeBtn.selected == NO) {
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请查看并同意\n《使用条款和隐私政策》" delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"] otherButtonTitles:nil, nil];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"请查看并同意\n《使用条款和隐私政策》" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alert show];
         return;
     }
@@ -759,42 +759,75 @@
     } else {
         __weak id weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if (self.loginType != QTLoginTypePwd) {
-                NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+            if (self.loginType == QTLoginTypeSms) {
+                __block NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
                 if (token.length <= 0) {
-                    NSDictionary *tokenDic = [QIMKit getUserTokenWithUserName:userName
-                                                                  WithVerifyCode:validCode];
-                    int statusId = (tokenDic && [[tokenDic allKeys] containsObject:@"status_id"]) ?
-                    [[tokenDic objectForKey:@"status_id"] intValue] : -1;
-                    
-                    if (statusId == 0) {
-                        token = [[tokenDic objectForKey:@"data"] objectForKey:@"token"];
-                        [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
+                    [[QIMKit sharedInstance] getUserTokenWithUserName:userName WithVerifyCode:validCode withCallback:^(NSDictionary *tokenDic) {
+                        int statusId = (tokenDic && [[tokenDic allKeys] containsObject:@"status_id"]) ?
+                                [[tokenDic objectForKey:@"status_id"] intValue] : -1;
+
+                        if (statusId == 0) {
+                            token = [[tokenDic objectForKey:@"data"] objectForKey:@"token"];
+                            [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
+                            NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
+                            [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                NSString *error = [tokenDic objectForKey:@"msg"];
+                                if (error) {
+                                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
+                                                                                        message:error ? error : @"发生未知错误"
+                                                                                       delegate:nil
+                                                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_got_it"]
+                                                                              otherButtonTitles:nil];
+                                    [alertView show];
+                                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                                    //                                [weakSelf stopLoginAnimation];
+                                } else {
+                                    [weakSelf showNetWorkUnableAlert];
+                                }
+                            });
+                            return;
+                        }
+                    }];
+                } else {
+                    [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
+                    NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
+                    [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
+                }
+            } else if (self.loginType ==  QTLoginTypeNewPwd) {
+                [[QIMKit sharedInstance] getNewUserTokenWithUserName:userName WithPassword:validCode withCallback:^(NSDictionary *result) {
+                    if (result) {
+                        BOOL ret = [[result objectForKey:@"ret"] boolValue];
+                        NSInteger errcode = [[result objectForKey:@"errcode"] integerValue];
+                        if (ret && errcode == 0) {
+                            NSDictionary *data = [result objectForKey:@"data"];
+                            NSString *newUserName = [data objectForKey:@"u"];
+                            NSString *newToken = [data objectForKey:@"t"];
+                            if (newUserName.length && newToken.length) {
+                                [[QIMKit sharedInstance] setUserObject:newToken forKey:@"kTempUserToken"];
+                                [[QIMKit sharedInstance] loginWithUserName:newUserName WithPassWord:newToken];
+                            }
+                        } else {
+                            NSString *errmsg = [result objectForKey:@"data"];
+                            if (!errmsg.length) {
+                                errmsg = @"验证失败";
+                            }
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:errmsg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                                [alertView show];
+                                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                            });
+                        }
                     } else {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            NSString *error = [tokenDic objectForKey:@"msg"];
-                            if (error) {
-                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"]
-                                                                                    message:error ? error : @"发生未知错误"
-                                                                                   delegate:nil
-                                                                          cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_got_it"]
-                                                                          otherButtonTitles:nil];
-                                [alertView show];
-//                                [weakSelf stopLoginAnimation];
-                            } else {
-                                [weakSelf showNetWorkUnableAlert];
-                            }
+                            [weakSelf showNetWorkUnableAlert];
                         });
-                        return;
                     }
-                }
-                [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
-                NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
-                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
+                }];
             } else {
-                NSString *pwd = _validCodeInputView.text;
-                [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
-                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
+                [[QIMKit sharedInstance] setUserObject:validCode forKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:validCode];
             }
         });
     }
@@ -841,11 +874,44 @@
     }
     [_getValidCodeBtn setUserInteractionEnabled:NO];
     [_getValidCodeBtn setText:kValidCodeSendingString];
-    
+
     NSString *userName = [[_userNameInputView text] lowercaseString];
     userName = [userName stringByReplacingOccurrencesOfString:@" " withString:@""];
     __weak id weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[QIMKit sharedInstance] getVerifyCodeWithUserName:userName withCallback:^(NSDictionary *result) {
+            if (!result) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf showNetWorkUnableAlert];
+                    [_getValidCodeBtn setUserInteractionEnabled:YES];
+                    [_getValidCodeBtn setText:kValidCodeDisplayString];
+                    [self setValidCodeBtnUIWaiting:NO];
+                });
+            } else {
+                int statusId = [[result allKeys] containsObject:@"status_id"] ? [[result objectForKey:@"status_id"] intValue] : -1;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (statusId == 501 && [[userName lowercaseString] isEqualToString:@"appstore"]) {
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"对不起,订单信息未找到,请直接输入6位密码登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                        [alertView show];
+                        [_getValidCodeBtn setUserInteractionEnabled:YES];
+                        [_getValidCodeBtn setText:kValidCodeDisplayString];
+                        [self setValidCodeBtnUIWaiting:NO];
+                    } else if (statusId != 0) {
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[result objectForKey:@"msg"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                        [alertView show];
+                        [_getValidCodeBtn setUserInteractionEnabled:YES];
+                        [_getValidCodeBtn setText:kValidCodeDisplayString];
+                        [self setValidCodeBtnUIWaiting:NO];
+                    } else {
+                        _waiting = 59;
+                        [self performSelector:@selector(updateIndentifyText) withObject:nil afterDelay:1];
+                        [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
+                        [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
+                    }
+                });
+            }
+        }];
+        /*
         NSDictionary *dic = [QIMKit getVerifyCodeWithUserName:userName];
         QIMVerboseLog(@"登录用户名：%@，验证Dict：%@", userName, dic);
         if (!dic) {
@@ -853,7 +919,7 @@
 //                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
 //                                                                    message:@"发生未知错误"
 //                                                                   delegate:nil
-//                                                          cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
+//                                                          cancelButtonTitle:@"确定"
 //                                                          otherButtonTitles:nil];
 //                [alertView show];
                 [weakSelf showNetWorkUnableAlert];
@@ -865,13 +931,13 @@
             int statusId = [[dic allKeys] containsObject:@"status_id"] ? [[dic objectForKey:@"status_id"] intValue] : -1;
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (statusId == 501 && [[userName lowercaseString] isEqualToString:@"appstore"]) {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"对不起,订单信息未找到,请直接输入6位密码登录" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:@"对不起,订单信息未找到,请直接输入6位密码登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
                     [alertView show];
                     [_getValidCodeBtn setUserInteractionEnabled:YES];
                     [_getValidCodeBtn setText:kValidCodeDisplayString];
                     [self setValidCodeBtnUIWaiting:NO];
                 } else if (statusId != 0) {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[dic objectForKey:@"msg"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[dic objectForKey:@"msg"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
                     [alertView show];
                     [_getValidCodeBtn setUserInteractionEnabled:YES];
                     [_getValidCodeBtn setText:kValidCodeDisplayString];
@@ -884,13 +950,14 @@
                 }
             });
         }
+        */
     });
 }
 
 - (void)agreeBtnHandle:(UIButton *)sender
 {
     sender.selected = !sender.selected;
-    if (self.loginType == QTLoginTypePwd && _userNameInputView.text.length && _validCodeInputView.text.length > 0) {
+    if ((self.loginType == QTLoginTypePwd || self.loginType == QTLoginTypeNewPwd) && _userNameInputView.text.length && _validCodeInputView.text.length > 0) {
         [self setLoginBtnEnabled:sender.selected];
     } else if (_userNameInputView.text.length && _validCodeInputView.text.length == 6) {
         [self setLoginBtnEnabled:sender.selected];
@@ -984,7 +1051,7 @@
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == _validCodeInputView) {
-        if (self.loginType == QTLoginTypePwd && textField.text.length - range.length + string.length >= 1) {
+        if ((self.loginType == QTLoginTypePwd || self.loginType == QTLoginTypeNewPwd) && textField.text.length - range.length + string.length >= 1) {
             
             [self setLoginBtnEnabled:YES];
         } else if (textField.text.length - range.length + string.length == 6) {
