@@ -438,13 +438,19 @@
         case QIMMessageTypeWebRtcMsgTypeVideoGroup: {
 #if __has_include("QIMWebRTCClient.h")
             
-            NSString *infoStr = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
-            if (infoStr.length > 0) {
-                NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
-                if (infoDic.count) {
-                    [[QIMWebRTCMeetingClient sharedInstance] joinRoomByMessage:infoDic];
-                }
-            }
+            [[QIMWebRTCMeetingClient sharedInstance] setGroupId:self.chatId];
+            NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
+            NSString *groupName = [groupCardDic objectForKey:@"Name"];
+            [[QIMWebRTCMeetingClient sharedInstance] joinRoomById:self.chatId WithRoomName:groupName];
+            
+//            NSString *infoStr = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
+//            if (infoStr.length > 0) {
+//                NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
+//                if (infoDic.count) {
+////                    [[QIMWebRTCMeetingClient sharedInstance] joinRoomByMessage:infoDic];
+//
+//                }
+//            }
 #endif
         }
             break;
