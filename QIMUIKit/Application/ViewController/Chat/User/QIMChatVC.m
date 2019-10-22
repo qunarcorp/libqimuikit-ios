@@ -357,7 +357,7 @@
         
         UILabel *commentCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 5, 70, 20)];
         [commentCountLabel setTextColor:[UIColor whiteColor]];
-        [commentCountLabel setText:@"下面有新消息"];
+        [commentCountLabel setText:[NSBundle qim_localizedStringForKey:@"New_Messages_Below"]];
         [commentCountLabel setFont:[UIFont boldSystemFontOfSize:10]];
         [_notificationView addSubview:commentCountLabel];
         [self.view addSubview:_notificationView];
@@ -1111,7 +1111,7 @@
 //lilu 9.22 3DTouch
 - (NSArray<id <UIPreviewActionItem>> *)previewActionItems {
     BOOL isStick = [[QIMKit sharedInstance] isStickWithCombineJid:self.chatId];
-    NSString *title = isStick ? @"取消置顶" : @"置顶";
+    NSString *title = isStick ? [NSBundle qim_localizedStringForKey:@"chat_remove_sticky"] : [NSBundle qim_localizedStringForKey:@"chat_Sticky_Top"];
     
     UIPreviewAction *p1 = [UIPreviewAction actionWithTitle:title style:UIPreviewActionStyleDefault handler:^(UIPreviewAction *_Nonnull action, UIViewController *_Nonnull previewViewController) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kChatSessionStick object:self.chatInfoDict];
@@ -2975,7 +2975,7 @@ static CGPoint tableOffsetPoint;
     if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
         QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
         if (![storage.linkData length]) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Wrong_Interface"] message:[NSBundle qim_localizedStringForKey:@"Wrong_URL"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         } else {
             QIMWebView *webView = [[QIMWebView alloc] init];

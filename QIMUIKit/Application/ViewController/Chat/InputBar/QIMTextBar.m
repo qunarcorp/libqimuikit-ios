@@ -1342,7 +1342,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
         _loadingLabel.backgroundColor = [UIColor clearColor];
         _loadingLabel.font = [UIFont boldSystemFontOfSize:16];
         _loadingLabel.textAlignment = NSTextAlignmentLeft;
-        _loadingLabel.text = @"正在压缩...";
+        _loadingLabel.text = [NSBundle qim_localizedStringForKey:@"Compressing"];
         _loadingLabel.textColor = [UIColor whiteColor];
     }
     return _loadingLabel;
@@ -1719,7 +1719,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     if (!error) {
         
     }else{
-        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Failed to save!"] message:[NSBundle qim_localizedStringForKey:@"Please allow Camera access in Settings->Privacy->Photo"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil, nil];
+        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"save_faild"] message:[NSBundle qim_localizedStringForKey:@"Privacy_Photo"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
         [alertView show];
     }
     [_picker dismissViewControllerAnimated:YES completion:nil];
@@ -1800,7 +1800,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                          CGImageRelease(image);
                          
                          NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
-                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"The video size after compressed is %@. Still send it?"],fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Send directly"],@"保存相册并发送", nil];
+                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"send_directly"],[NSBundle qim_localizedStringForKey:@"Save_album_send"], nil];
                          [alertView setVideoOutPath:videoResultPath];
                          [alertView setThumbImage:thumb];
                          [alertView setFileSizeStr:fileSizeStr];
@@ -1812,7 +1812,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                      break;
                  case AVAssetExportSessionStatusFailed:
                      dispatch_async(dispatch_get_main_queue(), ^{
-                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"%@{%@}",[NSBundle qim_localizedStringForKey:@"Failed to compress"],exportSession.error] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"], nil];
+                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"%@{%@}", [NSBundle qim_localizedStringForKey:@"Failed_compress"], exportSession.error] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"], nil];
                          [alertView setPicker:picker];
                          [alertView show];
                      });
@@ -1961,7 +1961,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                          CGImageRelease(image);
                          
                          NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
-                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"The video size after compressed is %@. Still send it?"],fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Send directly"],@"保存相册并发送", nil];
+                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"%@%@,%@",[NSBundle qim_localizedStringForKey:@"video_compress_sizeStr"], fileSizeStr, [NSBundle qim_localizedStringForKey:@"video_compress_send"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"send_directly"],[NSBundle qim_localizedStringForKey:@"Save_album_send"], nil];
                          [alertView setVideoOutPath:videoResultPath];
                          [alertView setThumbImage:thumb];
                          [alertView setFileSizeStr:fileSizeStr];
@@ -1973,7 +1973,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                      break;
                  case AVAssetExportSessionStatusFailed:
                      dispatch_async(dispatch_get_main_queue(), ^{
-                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"{%@}",[NSBundle qim_localizedStringForKey:@"Failed to compress"],exportSession.error] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"], nil];
+                         IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"%@{%@}", [NSBundle qim_localizedStringForKey:@"Failed_compress"], exportSession.error] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"], nil];
                          [alertView setPicker:cameraVC];
                          [alertView show];
                      });
@@ -2504,7 +2504,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     if (asset) {
         if (asset.mediaType ==  PHAssetMediaTypeImage) {
             if (_tipHUD.hidden) {
-                [[self tipHUDWithText:@"正在获取图片..."] show:YES];
+                [[self tipHUDWithText:[NSBundle qim_localizedStringForKey:@"Getting_photo"]] show:YES];
             }
             [imageManager requestImageDataForAsset:asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
                 //gif 图片

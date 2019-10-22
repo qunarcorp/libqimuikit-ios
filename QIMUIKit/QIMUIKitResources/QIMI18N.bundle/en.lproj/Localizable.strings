@@ -8,6 +8,7 @@
 
 "ok" = "OK";
 "cancel" = "Cancel";
+"continue" = "Continue";
 "not ask me again" = "Don't ask me again";
 "send" = "Send";
 
@@ -35,8 +36,7 @@
 "Complaint" = "Complaint";
 
 //Navigation server
-"nav_title_configManager" = "Navigation Server Management";
-"nav_title_debug_configManager" = "Debug Navigation Server";
+"nav_title_configManager" = "Navigation Management";
 "nav_server_nickName" = "Navigation server nickName";
 "nav_server_address" = "Navigation server address";
 "nav_server_port" = "Navigation server port";
@@ -116,6 +116,7 @@
 "About_tab_JoinUs" = "Join In QTalk Family";
 "About_tab_recordLog" = "Record Local Log";
 "About_tab_instruments" = "Instruments";
+"About_tab_storage_space" = "Chat storage space";
 
 //myself tab
 "myself_tab_id" = "ID";
@@ -225,7 +226,7 @@
 "check_product" = "search";
 "common_save" = "Save";
 "common_small_video" = "Small Video";
-"common_prompt" = "Prompt";
+"common_prompt" = "Reminder";
 "common_got_it" = "Got It";
 "common_refresh" = "Refresh";
 "common_open_in_safari" = "Open in Safari";
@@ -263,7 +264,8 @@
 "login_agree" = "Agreed";
 "login_privacy_policy" = " privacy Clause";
 "login_input_code" = "Please enter the verification code";
-"login_waiting" = "Please wait patiently, login...";
+"login_sending" = "Sending...";
+"login_waiting" = "login...";
 "login_get_code_tips" = "Verification code to succeed, please enter the verification code received by the phone message to log on.";
 "relogin_checkNetWork" = "Loading login page failed, make sure you have Wi-Fi or mobile data turned on, and reload the login page";
 
@@ -402,7 +404,7 @@
 
 "Loading…" = "Loading…";
 
-"Chat" = "Chat";
+"Chat" = "Chats";
 
 "Search" = "Search";
 
@@ -449,7 +451,8 @@
 
 "Group Messages Notification" = "Group Messages Notification";
 
-"Sticky on Top" = "Sticky on Top";
+"chat_Sticky_Top" = "Sticky on Top";
+"chat_remove_sticky" = "Remove Sticky";
 
 "Clear Chat History" = "Clear Chat History";
 
@@ -611,6 +614,42 @@
 "Mentioned Me"="Mentioned Me";
 "Share Moments"="Share Moments";
 "Post"="Post";
+"moment_my_moments" = "My Moments";
+"moment_stick_top" = "[Top]";
+"moment_hot" = "[Hot]";
+"moment_detail" = "Detail";
+"moment_faild_delete_comment" = "Failed to delete comment";
+"moment_comment_has_deleted" = "The comment has been deleted";
+"moment_say_something" = "Say something...";
+"moment_uploading" = "Uploading...";
+"moment_share_link" = "Shared a link";
+"moment_share_video" = "Shared a video";
+"moment_faild_share" = "Failed to share moments. Please try again later.";
+"moment_nickname" = "NickName";
+"moment_real" = "Real Name";
+"moment_anonymous" = "Anonymous User";
+"moment_Loading_Nicknames" = "Loading Nicknames...";
+"moment_mention" = "@Mention";
+"moment_Hot_Comments" = "Hot Comments";
+"moment_viewed_all" = "Viewed all";
+"moment_be_mentioned" = "Hi, someone mentioned you, view it now";
+"moment_Unknown" = "Unknown";
+"moment_Show_Less" = "Show Less";
+"moment_Show_More" = "Show More";
+"moment_like" = "Like";
+"moment_comment" = "Comment";
+"moment_new_messages" = " new messages";
+"moment_searhing" = "Searching...";
+
+
+
+"clear_unread_messages" = "Clear all unread messages and @all notifications?";
+"notes" = "Notes";
+"Disconnected" = "Disconnected";
+"No_network_available" = "No network available";
+"Updating_data" = "Updating data...";
+"Not_Logged_In" = "Not Logged In";
+
 "Choose from album"="Choose from album";
 "Take photo"="Take photo";
 "View full image"="View full image";
@@ -630,7 +669,7 @@
 "Please enter"="Please enter";
 "Manage Backstage"="Manage Backstage";
 "My Moments"="My Moments";
-"Account Information"="Account Information"";
+"Account Information"="Account Information";
 "Organization Structure"="Organization Structure";
 "Friends"="Friends";
 "Official Accounts"="Official Accounts";
@@ -641,9 +680,12 @@
 "Nickname"="Nickname";
 "Mention"="Mention";
 "Enter here to search"="Enter here to search";
-"Logged in to QTalk on computer"="Logged in to QTalk on computer";
-"You have logged in QTalk on your computer"="You have logged in QTalk on your computer";
-"Transfer files between phone and computer without using USB. Try it now!"="Transfer files between phone and computer without using USB. Try it now!";
+"Logged in to %@ on computer"="Logged in to %@ on computer";
+"You have logged in %@ on your computer"="You have logged in %@";
+"Transfer files between phone and computer without using USB."="Transfer files between phone and computer without using USB.";
+"Transfer_files" = "Transfer files";
+"Try is now" = "Try it now!";
+
 "Reminder"="Reminder";
 "Please enter your feedback"="Please enter your feedback";
 "Sending…"="Sending…";
@@ -766,12 +808,12 @@
 "Wrong password. Please try again."="Wrong password. Please try again.";
 "Please configure email account first, or you are unable to send emails with this device"="Please configure email account first, or you are unable to send emails with this device";
 "Please share after selecting videos or photos"="Please share after selecting videos or photos";
-"Send to Friends"="Send to Friends":
+"Send to Friends"="Send to Friends";
 "Add to Stickers"="Add to Sticker";
 "Extract QR Code"="Extract QR Code";
 "Q_More"="Q_More";
 "Your friend request was rejected."="Your friend request was rejected.";
-"Failed to switch the setting"="Failed to switch the setting":
+"Failed to switch the setting"="Failed to switch the setting";
 "Configure Navigation Manually"="Configure Navigation Manually";
 "Open in Other Apps"="Open in Other Apps";
 "Unable to open this file. Please open and preview it in other apps."="Unable to open this file. Please open and preview it in other apps.";
@@ -786,3 +828,88 @@
 "Q_Change"="Q_Change";
 "Q_Save"="Q_Save";
 
+"Failed_upload_log"  =  "Failed to upload log. Please try again later.";
+"Uploading_log" =   "Uploading log...Please don't close the app.";
+"Thanks_feedback"   = "Thanks for your feedback.";
+"dissolved_group" = "dissolved the group";
+"group_dissolved" = "has been dissolved";
+"rescan qrCode Login" = "Please rescan the QR Code to login";
+"Cancel Login" = "Cancel Login";
+"rescan Login" = "Rescan the QR Code to login";
+"network_unavailable_tip" = "The network is unavailable, please check internet or allow access in Settings - Cellular - App that use WLAN & Cellular";
+"Help" = "Help";
+"Sending" =  "Sending...";
+"Privacy_Photo" = "Please allow Album access in Settings - Privacy - Photo";
+"Compressing" = "Compressing...";
+"send_directly" = "Send directly";
+"Save_album_send" = "Save to album and send";
+"Failed to compress" = "Failed to compress";
+"video_compress_sizeStr" = "The video size after compressed is";
+"video_compress_send" = "Still send it?";
+"Getting photo" = "Getting photo";
+
+
+"Prediction_tip" = "[Prediction]";
+"Order_Taking_tip" =  "[Order Taking]";
+"redpack_tip" = "[Red Packet]";
+"Split_Bill_tip" =  "[Split Bill]";
+"Product_Information_tip" =  "[Product Information]";
+"Event_tip" = "[Event]";
+"Voice_Call_tip" = "[Voice Call]";
+"Video_Call_tip" =  "[Video Call]";
+"Video_Conference_tip" =  "[Video Conference]";
+"Shake_Screen_tip" =   "[Shake Screen]";
+"Problem_List_tip" =   "[Problem List]";
+"Robot_Answer_tip" =   "[Robot Answer]";
+"Encrypted_Message_tip" =   "[Encrypted Message]";
+"Meeting_Room_Notification" = "Meeting Room Notification";
+"Moments_Notification" = "Moments Notification";
+"received_message" = "You've received a message";
+"Favorite" = "Favorite";
+"Reply" =   "Reply";
+"Recall" =   "Recall";
+"Original_Message" =   "Original Message";
+"recalled_message" =    "recalled a message";
+"Saved_Success" = "Saved";
+"Video_saved"  =  "Video was saved in album";
+"save_faild" = "Failed to save";
+"Photo_Privacy"  =  "Please allow Album access in Settings - Privacy - Photo";
+"Photo_access_faild" =   "This app can't access to your photos or videos";
+"Photo_privacy_settings" = "You can change the privacy settings in order to save photos and videos";
+"No_Photos" = "No photos or videos";
+"synchronize_photos" = "You can use iTunes to synchronize photos and videos to iPhone";
+"Removing" = "Removing...";
+"Download" = "Download";
+"Update" =  "Update";
+"Downloaded" = "Downloaded";
+"Downloading" =  "Downloading...";
+"chat_Stickers"  = "Stickers in chat panel";
+"Reorder" = "Reorder";
+"Done" =  "Done";
+"Adjust_Chat_stickers" = "Adjust order of stickers shown in chat panel";
+"My_Stickers" = "My Stickers";
+"Remove" = "Remove";
+"Reordering_your_stickers" = "Reordering your stickers....";
+"Long_press_stickers" = "Long press stickers to discover more";
+"Cancel_Change" = "Cancel Change?";
+"Stickers" =  "Stickers";
+"Favorites_Stickers"  =  "Favorites";
+"Manage" = "Manage";
+"has_added_sticker" = "The sticker has been added to favorites";
+"Select_company" = "Select a company";
+"input_company_name" = "Please enter company name";
+"Reset_password" = "Reset password";
+"Recent_contacts" =  "Recent contacts";
+"Select_from_groups" = "Select from groups";
+"Select_from_friends" =  "Select from friends";
+"Search_contacts/groups" = "Search contacts/groups";
+"Send_to"  =  "Send to";
+"Forward_chat_history" =  "Forward chat history to";
+"Select_Friend"  =  "Select a Friend";
+"No_Moments" =  "No Moments";
+"Wrong_URL" =  "Wrong URL";
+"Wrong_Interface" =  "Wrong Interface";
+"no_unread_messages" = "No unread messages";
+"%ldn mentioned"="@you %ld times";
+"New_Messages_Below" = "New Msgs Below";
+"All_Messages_Above" = "All Msgs Above";

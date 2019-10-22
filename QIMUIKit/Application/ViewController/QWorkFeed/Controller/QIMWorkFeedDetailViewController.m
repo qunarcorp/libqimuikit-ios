@@ -152,7 +152,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.title = @"动态详情";
+    self.navigationItem.title = [NSBundle qim_localizedStringForKey:@"moment_detail"];
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
     }
@@ -358,7 +358,7 @@
                                                                                        [strongSelf.commentListView reloadCommentsData];
                                                                                    });
                                                                                } else {
-                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"删除评论失败"];
+                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSBundle qim_localizedStringForKey:@"moment_faild_delete_comment"]];
                                                                                }
                                                                            }];
                                                                        } else if (buttonIndex == 2) {
@@ -422,7 +422,7 @@
                                                                                if (success) {
                                                                                    [strongSelf.commentListView removeCommentWithIndexPath:indexPath withIsHotComment:isHotComment withSuperStatus:superStatus];
                                                                                } else {
-                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"删除评论失败"];
+                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSBundle qim_localizedStringForKey:@"moment_faild_delete_comment"]];
                                                                                }
                                                                            }];
                                                                        } else if (buttonIndex == 2) {

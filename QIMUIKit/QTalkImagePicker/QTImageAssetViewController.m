@@ -132,12 +132,12 @@ CGFloat imageItemWidth;
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
     if (buttonIndex == 0) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)", [NSBundle qim_localizedStringForKey:@"Standard Definition"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
         picker.isOriginalImage = NO;
         [[QIMKit sharedInstance] setPickerPixelOriginal:NO];
     } else if (buttonIndex == 1) {
 
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)", [NSBundle qim_localizedStringForKey:@"Full Image"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
         picker.isOriginalImage = YES;
         [[QIMKit sharedInstance] setPickerPixelOriginal:YES];
     }
@@ -145,8 +145,8 @@ CGFloat imageItemWidth;
 
 - (void)onPhotoTypeClick{
     QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"标清 (%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]],
-                            [NSString stringWithFormat:@"原图 (%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]],nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:@"%@ (%@)",[NSBundle qim_localizedStringForKey:@"Standard Definition"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]],
+                            [NSString stringWithFormat:@"%@ (%@)", [NSBundle qim_localizedStringForKey:@"Full Image"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]],nil];
     [sheet showInView:self.view];
 }
 
@@ -264,7 +264,7 @@ CGFloat imageItemWidth;
         else if (self.assets.count > 0)
         {
             [_tableView reloadData];
-            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:ceil(self.assets.count*1.0/kColoumn)-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:ceil(self.assets.count*1.0/kColoumn)-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
             
             UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _tableView.width, 40)];
             [_tableView setTableFooterView:footerView];
@@ -286,6 +286,10 @@ CGFloat imageItemWidth;
             [label setText:title];
             [footerView addSubview:label];
         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_tableView reloadData];
+            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:ceil(self.assets.count*1.0/kColoumn)-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        });
     };
     
     [self.assetsGroup enumerateAssetsUsingBlock:resultsBlock];
@@ -453,7 +457,7 @@ CGFloat imageItemWidth;
         }
         [_photoTypeButton setEnabled:YES];
         [_sendButton setEnabled:YES];
-        [_sendButton setTitle:[NSString stringWithFormat:@"确定(%ld/%ld)",(long)indexPaths.count,(long)picker.maximumNumberOfSelection] forState:UIControlStateNormal];
+        [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%ld)", [NSBundle qim_localizedStringForKey:@"Confirm"], (long)indexPaths.count,(long)picker.maximumNumberOfSelection] forState:UIControlStateNormal];
     } else {
         [_previewButton setEnabled:NO];
         [_editButton setEnabled:NO];
@@ -464,9 +468,9 @@ CGFloat imageItemWidth;
     picker.isOriginalImage = [[QIMKit sharedInstance] pickerPixelOriginal];
 
     if (picker.isOriginalImage == NO) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)", [NSBundle qim_localizedStringForKey:@"Standard Definition"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
     } else {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   %@\r(%@)",[NSBundle qim_localizedStringForKey:@"Full Image"], [QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
     }
 }
 

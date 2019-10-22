@@ -114,7 +114,7 @@
                 picker.allowsEditing = YES;
                 [weakSelf.rootVC presentViewController:picker animated:YES completion:nil];
             }];
-            UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Red Packet"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
                     
                     UIImagePickerControllerSourceType souceType = UIImagePickerControllerSourceTypeCamera;

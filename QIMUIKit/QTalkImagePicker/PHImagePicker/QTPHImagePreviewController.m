@@ -227,7 +227,7 @@
     [_photoTypeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
     [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
-    [_photoTypeButton setTitle:self.picker.isOriginal ? @" 原图" : @" 标清" forState:UIControlStateNormal];
+    [_photoTypeButton setTitle:self.picker.isOriginal ? [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] : [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
     [_photoTypeButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_photoTypeButton setEnabled:NO];
     [_photoTypeButton addTarget:self action:@selector(onPhotoTypeClick) forControlEvents:UIControlEventTouchUpInside];
@@ -262,9 +262,9 @@
         [_sendButton setEnabled:YES];
         NSInteger maxNumber = [[QTPHImagePickerManager sharedInstance] maximumNumberOfSelection];
         if (maxNumber > 0) {
-            [_sendButton setTitle:[NSString stringWithFormat:@"确定(%ld/%@)",(long)indexPaths.count,@(maxNumber)] forState:UIControlStateNormal];
+            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle qim_localizedStringForKey:@"Confirm"], (long)indexPaths.count,@(maxNumber)] forState:UIControlStateNormal];
         } else {
-            [_sendButton setTitle:[NSString stringWithFormat:@"确定(%ld/%@)",(long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
+            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle qim_localizedStringForKey:@"Confirm"],(long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
         }
     } else {
         [_editButton setEnabled:NO];
@@ -310,7 +310,7 @@
     PHImageRequestOptions * options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeExact;
     options.networkAccessAllowed = YES;
-    [[self tipHUDWithText:@"正在获取图片..."] show:YES];
+    [[self tipHUDWithText:[NSBundle qim_localizedStringForKey:@"Getting_photo"]] show:YES];
     __weak typeof(self) weakSelf = self;
     [_imageManager requestImageForAsset:[self.photoArray objectAtIndex:index] targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
@@ -328,12 +328,12 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex == 0) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" 标清"] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
         self.picker.isOriginal = NO;
         [[QIMKit sharedInstance] setPickerPixelOriginal:NO];
     } else if (buttonIndex == 1) {
         
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" 原图"] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] forState:UIControlStateNormal];
         self.picker.isOriginal = YES;
         [[QIMKit sharedInstance] setPickerPixelOriginal:YES];
     }

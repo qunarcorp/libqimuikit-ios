@@ -149,6 +149,7 @@
                         weakSelf.navUrl = str;
                         _navAddressTextField.text = str;
                         _navNickNameTextField.text = navAddress;
+                        [self onSave];
                     } else if([key isEqualToString:@"configurl"]){
                         NSString * configUrlStr = [[item stringByReplacingOccurrencesOfString:@"configurl=" withString:@""] qim_base64DecodedString];
                         NSURL *  configUrl = [NSURL URLWithString:configUrlStr];
@@ -170,6 +171,7 @@
                             navUrl = configUrl.absoluteString;
                             navAddress =configUrl.absoluteString;
                             [self requestByURLSessionWithUrl:configUrl.absoluteString];
+                            [self onSave];
                         }
                     }
                 }
@@ -222,6 +224,7 @@
                                                   self.navUrl = urlStr;
                                                   _navAddressTextField.text = urlStr;
                                                   _navNickNameTextField.text = domain;
+                                                  [self onSave];
                                                   return;
                                               }
                                           }
@@ -242,13 +245,15 @@
                                                       
                                                       NSString * key = [value objectAtIndex:0];
                                                       if ([key isEqualToString:@"c"]) {
+                                                          //c=qunar.com
                                                           navUrl = requestLocationUrl;
                                                           navAddress = [item stringByReplacingOccurrencesOfString:@"c=" withString:@""];
                                                           self.navUrl = navUrl;
                                                           _navAddressTextField.text = navUrl;
                                                           _navNickNameTextField.text = navAddress;
-                                                      }
-                                                      else if([key isEqualToString:@"configurl"]){
+                                                          [self onSave];
+                                                      } else if([key isEqualToString:@"configurl"]){
+                                                          //加密的导航，需要二次请求
                                                           NSString * configUrlStr = [[item stringByReplacingOccurrencesOfString:@"configurl=" withString:@""] qim_base64DecodedString];
                                                           NSURL * configUrl = [NSURL URLWithString:configUrlStr];
                                                           NSString * configQuery = [configUrl query];
@@ -263,6 +268,7 @@
                                                                       self.navUrl = navUrl;
                                                                       _navAddressTextField.text = navUrl;
                                                                       _navNickNameTextField.text = navAddress;
+                                                                      [self onSave];
                                                                   }
                                                                   else{
                                                                       //                                                                      navUrl = configUrl.absoluteString;
@@ -272,14 +278,18 @@
                                                               }
                                                           }
                                                           else if([configUrlStr containsString:@"startalk_nav"]){
+                                                              //包含startalk_nav的，直接请求
                                                               [self requestByURLSessionWithUrl:configUrlStr];
+                                                              [self onSave];
                                                               return;
                                                           }
                                                           else{
+                                                              //其他外部网页生成的二维码
                                                               navUrl = configUrlStr;
                                                               self.navUrl = navUrl;
                                                               _navAddressTextField.text = navUrl;
                                                               _navNickNameTextField.text = navAddress;
+                                                              [self onSave];
                                                           }
                                                       }
                                                   }
@@ -327,7 +337,21 @@
 }
 
 - (void)onCancel{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[QIMFastEntrance sharedInstance] launchMainControllerWithWindow:[UIApplication sharedApplication].delegate.window];
+        /*
+        UIViewController *parentVC = self.presentingViewController;
+        UIViewController *bottomVC;
+        while (parentVC) {
+            bottomVC = parentVC;
+            parentVC = parentVC.presentingViewController;
+        }
+        [bottomVC dismissViewControllerAnimated:NO completion:^{
+            //dismiss后再切换根视图
+            [[QIMFastEntrance sharedInstance] launchMainControllerWithWindow:[UIApplication sharedApplication].delegate.window];
+        }];
+        */
+    });
 }
 
 - (void)onSave{

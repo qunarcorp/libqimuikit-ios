@@ -251,64 +251,36 @@
 + (NSArray *)getStoragesForTextString:(NSString *)tStr msgDirection:(QIMMessageDirection) direction {
     
     UIColor * textColor = [UIColor qim_colorWithHex:0x333333];
-    NSString *content = [NSString stringWithFormat:@"@%@",[[QIMKit sharedInstance] getMyNickName]];
+    NSString *content = @"";
     NSInteger startLoc = 0;
-    NSArray * subStrs = [tStr componentsSeparatedByString:content];
     NSMutableArray *storages = [NSMutableArray arrayWithCapacity:1];
-    /*
-    if (subStrs.count >= 1) {
-        NSUInteger tempLen = 0;
-        NSInteger i = 0;
-        for (NSString * subStr in subStrs) {
-            tempLen += subStr.length;
-            [storages addObject:[self parseTextStorageFromDictinary:@{@"content":subStr?subStr:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":textColor}]];
-            if (i < subStrs.count - 1) {
-                [storages addObject:[self parseTextStorageFromDictinary:@{@"content":content?content:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":[UIColor redColor]}]];
-                tempLen += content.length;
-            }
-            i ++;
-        }
-    } else{
-        */
         //文本中解析URL和PhoneNumber
-        NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink | NSTextCheckingTypePhoneNumber error:nil];
-        NSArray *matches = [linkDetector matchesInString:tStr options:0 range:NSMakeRange(0, [tStr length])];
-        for (NSTextCheckingResult *match in matches) {
-            NSRange tstrRange = NSMakeRange(startLoc, [match range].location - startLoc);
-            NSString *textStr = [tStr substringWithRange:tstrRange];
-            if (textStr.length > 0) {
-                [storages addObject:[self parseTextStorageFromDictinary:@{@"content":textStr?textStr:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":textColor}]];
-            }
-            if ([match resultType] == NSTextCheckingTypeLink) {
-                NSString *url = [[match URL] absoluteString];
-                NSRange urlRange = [match range];
-                if (urlRange.location + urlRange.length <= tStr.length && urlRange.length + urlRange.location > 0) {
-                    UIColor *linkTextColor = [UIColor qim_colorWithHex:0x336cd5];
-                    [storages addObject:[self parseLinkRunFromDictinary:@{@"content":url?url:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":linkTextColor,@"linkUrl":url,@"range":NSStringFromRange(match.range)}]];
-                    startLoc = match.range.location + match.range.length;
-                }
-            }
-            /*
-            else if ([match resultType] == NSTextCheckingTypePhoneNumber) {
-                NSString *phoneNumber = [match phoneNumber];
-                NSRange phoneNumberRange = [match range];
-                if (phoneNumberRange.location + phoneNumberRange.length <= tStr.length && phoneNumberRange.length + phoneNumberRange.location > 0) {
-                    UIColor *phoneNumColor = [UIColor qim_colorWithHex:0x336cd5];
-                    [storages addObject:[self parsePhoneNumberRunFromDictionary:@{@"content":phoneNumber?phoneNumber:@"", @"fontSize":@(kWorkMomentTextFontSize), @"phoneNumColor":phoneNumColor}]];
-                    startLoc = match.range.location + match.range.length;
-                }
-            } */
-            else {
-                
-            }
+    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
+    NSArray *matches = [linkDetector matchesInString:tStr options:0 range:NSMakeRange(0, [tStr length])];
+    for (NSTextCheckingResult *match in matches) {
+        NSRange tstrRange = NSMakeRange(startLoc, [match range].location - startLoc);
+        NSString *textStr = [tStr substringWithRange:tstrRange];
+        if (textStr.length > 0) {
+            [storages addObject:[self parseTextStorageFromDictinary:@{@"content":textStr?textStr:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":textColor}]];
         }
-        if (startLoc < tStr.length) {
-            NSString *testStr = [tStr substringFromIndex:startLoc];
-            if (testStr.length > 0) {
-                [storages addObject:[self parseTextStorageFromDictinary:@{@"content":testStr?testStr:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":textColor}]];
+        if ([match resultType] == NSTextCheckingTypeLink) {
+            NSString *url = [[match URL] absoluteString];
+            NSRange urlRange = [match range];
+            if (urlRange.location + urlRange.length <= tStr.length && urlRange.length + urlRange.location > 0) {
+                UIColor *linkTextColor = [UIColor qim_colorWithHex:0x336cd5];
+                [storages addObject:[self parseLinkRunFromDictinary:@{@"content":url?url:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":linkTextColor,@"linkUrl":url,@"range":NSStringFromRange(match.range)}]];
+                startLoc = match.range.location + match.range.length;
             }
+        } else {
+            
         }
-//    }
+    }
+    if (startLoc < tStr.length) {
+        NSString *testStr = [tStr substringFromIndex:startLoc];
+        if (testStr.length > 0) {
+            [storages addObject:[self parseTextStorageFromDictinary:@{@"content":testStr?testStr:@"",@"fontSize":@(kWorkMomentTextFontSize),@"color":textColor}]];
+        }
+    }
     return storages;
 }
 

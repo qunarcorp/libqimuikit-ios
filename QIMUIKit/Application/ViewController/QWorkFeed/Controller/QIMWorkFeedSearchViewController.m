@@ -456,7 +456,7 @@ static const NSInteger searchMinCharacterCount = 2;
         }
         if (textField.text.length + string.length - range.length >= searchMinCharacterCount) {
             __weak __typeof(self) weakSelf = self;
-            [self showProgressHUDWithMessage:@"搜索中..."];
+            [self showProgressHUDWithMessage:[NSBundle qim_localizedStringForKey:@"moment_searhing"]];
             [[QIMKit sharedInstance] searchMomentWithKey:searchText withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
                 __typeof(self) strongSelf = weakSelf;
                 if (!strongSelf) {
@@ -488,7 +488,7 @@ static const NSInteger searchMinCharacterCount = 2;
     }
     [self.searchDataList removeAllObjects];
     __weak __typeof(self) weakSelf = self;
-    [self showProgressHUDWithMessage:@"搜索中..."];
+    [self showProgressHUDWithMessage:[NSBundle qim_localizedStringForKey:@"moment_searhing"]];
     [[QIMKit sharedInstance] searchMomentWithKey:textField.text withSearchTime:0 withStartNum:0 withPageNum:20 withSearchType:0 withCallBack:^(NSArray *result) {
         __typeof(self) strongSelf = weakSelf;
         if (!strongSelf) {

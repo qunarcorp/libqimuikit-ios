@@ -228,12 +228,12 @@
 }
 - (nullable NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return @"移除";
+    return [NSBundle qim_localizedStringForKey:@"Remove"];
 }
 
 - (void)delMember:(NSDictionary *)memDic
 {
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:[NSString stringWithFormat:@"您即将将 %@ 踢出群组",memDic[@"name"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"], nil];
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"警告！" message:[NSString stringWithFormat:@"您即将将 %@ 踢出群组",memDic[@"name"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"common_ok"], nil];
     [alertView show];
 }
 

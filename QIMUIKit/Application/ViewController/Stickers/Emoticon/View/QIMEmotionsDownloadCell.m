@@ -110,7 +110,7 @@
         
         _downloadBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_downloadBtn setBackgroundColor:[UIColor whiteColor]];
-        [_downloadBtn setTitle:@"下载" forState:UIControlStateNormal];
+        [_downloadBtn setTitle:[NSBundle qim_localizedStringForKey:@"Download"] forState:UIControlStateNormal];
         [_downloadBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         _downloadBtn.layer.cornerRadius = 3.0f;
         _downloadBtn.layer.masksToBounds = YES;
@@ -135,7 +135,7 @@
     switch (_state) {
         case EmotionStateDownload:
         {
-            [_downloadBtn setTitle:@"下载" forState:UIControlStateNormal];
+            [_downloadBtn setTitle:[NSBundle qim_localizedStringForKey:@"Download"] forState:UIControlStateNormal];
             [_downloadBtn.layer setBorderColor:[UIColor qtalkIconSelectColor].CGColor];
             [_downloadBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
             [_downloadBtn setEnabled:YES];
@@ -143,7 +143,7 @@
             break;
         case EmotionStateUpdate:
         {
-            [_downloadBtn setTitle:@"更新" forState:UIControlStateNormal];
+            [_downloadBtn setTitle:[NSBundle qim_localizedStringForKey:@"Update"] forState:UIControlStateNormal];
             [_downloadBtn.layer setBorderColor:[UIColor qtalkIconSelectColor].CGColor];
             [_downloadBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
             [_downloadBtn setEnabled:YES];
@@ -151,7 +151,7 @@
             break;
         case EmotionStateDone:
         {
-            [_downloadBtn setTitle:@"已下载" forState:UIControlStateNormal];
+            [_downloadBtn setTitle:[NSBundle qim_localizedStringForKey:@"Downloaded"] forState:UIControlStateNormal];
             [_downloadBtn.layer setBorderColor:[UIColor qtalkSplitLineColor].CGColor];
             [_downloadBtn setTitleColor:[UIColor qtalkSplitLineColor] forState:UIControlStateNormal];
             [_downloadBtn setEnabled:YES];
@@ -171,9 +171,9 @@
     if (_state == EmotionStateDownload) {
         
 //        [[QIMEmotionManager sharedInstance] downloadEmotionForPkId:_pkID fileName:_pkID];
-        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"正在下载..."];
+        [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:[NSBundle qim_localizedStringForKey:@"Downloading"]];
         [[QIMEmotionManager sharedInstance] downloadEmotionForPkId:_pkID loadUrl:_loadURL];
-        [self.downloadBtn setTitle:@"下载..." forState:UIControlStateDisabled];
+        [self.downloadBtn setTitle:[NSBundle qim_localizedStringForKey:@"Downloading"] forState:UIControlStateDisabled];
         [self.downloadBtn setEnabled:NO];
     }
 //    else if(_state == EmotionStateDone){

@@ -104,7 +104,7 @@
     _likeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_likeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0e7" size:24 color:[UIColor qim_colorWithHex:0x999999]]] forState:UIControlStateNormal];
     [_likeBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000e0cd" size:24 color:[UIColor qim_colorWithHex:0x00CABE]]] forState:UIControlStateSelected];
-    [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
+    [_likeBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_like"] forState:UIControlStateNormal];
     [_likeBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateNormal];
     [_likeBtn setTitleColor:[UIColor qim_colorWithHex:0x999999] forState:UIControlStateSelected];
     _likeBtn.layer.cornerRadius = 13.5f;
@@ -156,7 +156,7 @@
         
         _organLab.frame = CGRectMake(self.nameLab.right + 5, self.nameLab.top, 66, 20);
         NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:commentFromUserId];
-        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"未知";
+        NSString *department = [userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:[NSBundle qim_localizedStringForKey:@"moment_Unknown"];
         NSString *lastDp = [[department componentsSeparatedByString:@"/"] objectAtIndex:2];
         if(lastDp.length > 0) {
             _organLab.text = [NSString stringWithFormat:@"%@", lastDp];
@@ -195,7 +195,7 @@
         if (likeNum > 0) {
             [_likeBtn setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
         } else {
-            [_likeBtn setTitle:@"顶" forState:UIControlStateNormal];
+            [_likeBtn setTitle:[NSBundle qim_localizedStringForKey:@"moment_like"] forState:UIControlStateNormal];
         }
     }
     _likeBtn.centerY = self.headImageView.centerY;
@@ -226,7 +226,7 @@
 
     NSString *likeString  = [NSString stringWithFormat:@"%@%@", replayStr, commentModel.content];
     if (commentModel.isDelete == YES) {
-        likeString = [NSString stringWithFormat:@"[obj type=\"deleteComment\" value=\"%@\"]",@"该评论已被删除"];
+        likeString = [NSString stringWithFormat:@"[obj type=\"deleteComment\" value=\"%@\"]",[NSBundle qim_localizedStringForKey:@"moment_comment_has_deleted"]];
     } else {
         
     }
@@ -287,7 +287,7 @@
                 if (likeNum > 0) {
                     [sender setTitle:[NSString stringWithFormat:@"%ld", likeNum] forState:UIControlStateNormal];
                 } else {
-                    [sender setTitle:@"顶" forState:UIControlStateNormal];
+                    [sender setTitle:[NSBundle qim_localizedStringForKey:@"moment_like"] forState:UIControlStateNormal];
                 }
             }
         } else {
@@ -315,7 +315,7 @@
     if ([textStorage isMemberOfClass:[QIMLinkTextStorage class]]) {
         QIMLinkTextStorage *storage = (QIMLinkTextStorage *) textStorage;
         if (![storage.linkData length]) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"页面有问题" message:@"输入的url有问题" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Wrong_Interface"] message:[NSBundle qim_localizedStringForKey:@"Wrong_URL"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
             [alertView show];
         } else {
             [QIMFastEntrance openWebViewForUrl:storage.linkData showNavBar:YES];

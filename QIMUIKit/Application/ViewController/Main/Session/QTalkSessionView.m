@@ -145,7 +145,7 @@
         } else {
             platTitle = [QIMKit getQIMProjectTitleName];
         }
-        pcTipLabel.text = [NSString stringWithFormat:@"桌面%@已登录", platTitle];
+        pcTipLabel.text = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Logged in to %@ on computer"], platTitle];
         pcTipLabel.textColor = qim_otherPlatformViewTextColor;
         pcTipLabel.font = [UIFont systemFontOfSize:14];
         [_otherPlatformView addSubview:pcTipLabel];
@@ -359,15 +359,15 @@
         UIViewController *currentVc = [UIApplication sharedApplication].visibleViewController;
         Class mainVC = NSClassFromString(@"QIMMainVC");
         Class helperVC = NSClassFromString(@"QIMMessageHelperVC");
-        if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]] || [[QIMKit sharedInstance] getIsIpad] == YES) {
+//        if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]] || [[QIMKit sharedInstance] getIsIpad] == YES) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadTableView) object:nil];
                 [self performSelector:@selector(reloadTableView) withObject:nil afterDelay:0.1];
             });
             self.notVisibleReload = NO;
-        } else {
-            self.notVisibleReload = YES;
-        }
+//        } else {
+//            self.notVisibleReload = YES;
+//        }
     });
 }
 

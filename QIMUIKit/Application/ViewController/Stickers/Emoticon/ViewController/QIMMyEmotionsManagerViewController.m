@@ -75,7 +75,7 @@ static NSString *cellID = @"QIMMyEmotionsManagerCell";
     if (!_promptLabel) {
         
         _promptLabel = [[UILabel alloc] initWithFrame:CGRectMake(18, 0, self.view.width, 30)];
-        _promptLabel.text = @"聊天面板中的表情";
+        _promptLabel.text = [NSBundle qim_localizedStringForKey:@"chat_Stickers"];
         _promptLabel.font = [UIFont systemFontOfSize:13];
         _promptLabel.textColor = [UIColor qtalkTextLightColor];
     }
@@ -103,7 +103,7 @@ static NSString *cellID = @"QIMMyEmotionsManagerCell";
         
         _editBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _editBtn.frame =  CGRectMake(0, 0, 44, 44);
-        [_editBtn setTitle:@"排序" forState:UIControlStateNormal];
+        [_editBtn setTitle:[NSBundle qim_localizedStringForKey:@"Reorder"] forState:UIControlStateNormal];
         [_editBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         [_editBtn addTarget:self action:@selector(editHandel:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -115,8 +115,8 @@ static NSString *cellID = @"QIMMyEmotionsManagerCell";
     UIButton *btn = sender;
     btn.selected = !btn.selected;
     [self.tableView setEditing:btn.selected animated:YES];
-    NSString *title = btn.selected ? @"完成" : @"排序";
-    NSString *promptTitle = btn.selected ? @"可以调整表情在聊天界面中的排序" : @"聊天面板中的表情";
+    NSString *title = btn.selected ? [NSBundle qim_localizedStringForKey:@"Done"] : [NSBundle qim_localizedStringForKey:@"Reorder"];
+    NSString *promptTitle = btn.selected ? [NSBundle qim_localizedStringForKey:@"Adjust_Chat_stickers"] : [NSBundle qim_localizedStringForKey:@"chat_Stickers"];
     [self.editBtn setTitle:title forState:UIControlStateNormal];
     [self.promptLabel setText:promptTitle];
 }
@@ -124,7 +124,7 @@ static NSString *cellID = @"QIMMyEmotionsManagerCell";
 
 - (void)initUI {
     
-    self.title = @"我的表情";
+    self.title = [NSBundle qim_localizedStringForKey:@"My_Stickers"];
     [self setUpNav];
     [self.view addSubview:self.promptLabel];
     [self.view addSubview:self.tableView];

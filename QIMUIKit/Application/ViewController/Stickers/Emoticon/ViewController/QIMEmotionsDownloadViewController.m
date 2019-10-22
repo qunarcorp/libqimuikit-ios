@@ -62,7 +62,7 @@ static NSString *cellID = @"QIMEmotionsDownloadCell";
         
         _managerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _managerBtn.frame =  CGRectMake(0, 0, 90, 44);
-        [_managerBtn setTitle:@"我的表情" forState:UIControlStateNormal];
+        [_managerBtn setTitle:[NSBundle qim_localizedStringForKey:@"My_Stickers"] forState:UIControlStateNormal];
         [_managerBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
         [_managerBtn addTarget:self action:@selector(myEmotionsHandel:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -77,7 +77,7 @@ static NSString *cellID = @"QIMEmotionsDownloadCell";
 
 - (void)setUpNav {
     
-    self.navigationItem.leftBarButtonItem = [UIBarButtonItem createBarButtonItemWithTitle:@"关闭" imageName:nil target:self action:@selector(quitItemHandle:)];
+    self.navigationItem.leftBarButtonItem = [UIBarButtonItem createBarButtonItemWithTitle:[NSBundle qim_localizedStringForKey:@"common_close"] imageName:nil target:self action:@selector(quitItemHandle:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.managerBtn];
 }
 
