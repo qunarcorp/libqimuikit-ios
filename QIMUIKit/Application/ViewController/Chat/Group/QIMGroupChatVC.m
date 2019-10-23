@@ -47,9 +47,6 @@
 
 #import "QIMMessageBrowserVC.h"
 #import "QIMChatBGImageSelectController.h"
-
-#import "QIMVideoPlayerVC.h"
-
 #import "QIMFileManagerViewController.h"
 
 #import "QIMPreviewMsgVC.h"

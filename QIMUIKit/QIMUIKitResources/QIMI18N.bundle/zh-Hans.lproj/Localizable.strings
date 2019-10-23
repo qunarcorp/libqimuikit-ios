@@ -648,7 +648,7 @@
 "Disconnected" = "无网络连接";
 "No_network_available" = "无可用网络连接";
 "Updating_data" = "升级数据中...";
-"Not_Logged_In" = "未登录";
+"Not_Logged_In…" = "未登录";
 "Choose from album"="相册上传头像";
 "Take photo"="拍照上传头像";
 "View full image"="查看大图";

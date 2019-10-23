@@ -50,9 +50,6 @@
 #import "QIMChatBGImageSelectController.h"
 
 #import "QIMMessageBrowserVC.h"
-
-#import "QIMVideoPlayerVC.h"
-
 #import "QIMInputPopView.h"
 
 #import "QIMFileManagerViewController.h"

@@ -139,11 +139,11 @@
         NSString *token = [[QIMKit sharedInstance] getLastUserToken];
 //        [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
         if ([lastUserName isEqualToString:@"appstore"]) {
-            [[QIMKit sharedInstance] updateLastUserToken:@"appstore"];
+            [[QIMKit sharedInstance] updateLastTempUserToken:@"appstore"];
 //            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
         } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
-            [[QIMKit sharedInstance] updateLastUserToken:@"qtalktest123"];
+            [[QIMKit sharedInstance] updateLastTempUserToken:@"qtalktest123"];
 //            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
         } else {
@@ -755,11 +755,11 @@
     [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
     [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithCheck:YES];
     if ([userName isEqualToString:@"appstore"]) {
-        [[QIMKit sharedInstance] updateLastUserToken:@"appstore"];
+        [[QIMKit sharedInstance] updateLastTempUserToken:@"appstore"];
 //        [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
         [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
     } else if ([[userName lowercaseString] isEqualToString:@"qtalktest"]) {
-        [[QIMKit sharedInstance] updateLastUserToken:@"qtalktest123"];
+        [[QIMKit sharedInstance] updateLastTempUserToken:@"qtalktest123"];
 //        [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
         [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
     } else {
@@ -775,7 +775,7 @@
 
                         if (statusId == 0) {
                             token = [[tokenDic objectForKey:@"data"] objectForKey:@"token"];
-                            [[QIMKit sharedInstance] updateLastUserToken:token];
+                            [[QIMKit sharedInstance] updateLastTempUserToken:token];
 //                            [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
                             NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
                             [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
@@ -799,7 +799,7 @@
                         }
                     }];
                 } else {
-                    [[QIMKit sharedInstance] updateLastUserToken:token];
+                    [[QIMKit sharedInstance] updateLastTempUserToken:token];
 //                    [[QIMKit sharedInstance] setUserObject:token forKey:@"kTempUserToken"];
                     NSString *pwd = [NSString stringWithFormat:@"%@@%@",[QIMUUIDTools deviceUUID],token];
                     [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
@@ -814,7 +814,7 @@
                             NSString *newUserName = [data objectForKey:@"u"];
                             NSString *newToken = [data objectForKey:@"t"];
                             if (newUserName.length && newToken.length) {
-                                [[QIMKit sharedInstance] updateLastUserToken:newToken];
+                                [[QIMKit sharedInstance] updateLastTempUserToken:newToken];
 //                                [[QIMKit sharedInstance] setUserObject:newToken forKey:@"kTempUserToken"];
                                 [[QIMKit sharedInstance] loginWithUserName:newUserName WithPassWord:newToken];
                             }
@@ -836,7 +836,7 @@
                     }
                 }];
             } else {
-                [[QIMKit sharedInstance] updateLastUserToken:validCode];
+                [[QIMKit sharedInstance] updateLastTempUserToken:validCode];
 //                [[QIMKit sharedInstance] setUserObject:validCode forKey:@"kTempUserToken"];
                 [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:validCode];
             }
