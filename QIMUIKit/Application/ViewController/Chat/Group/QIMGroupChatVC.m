@@ -700,7 +700,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         _joinShareLctView = nil;
     }
     
-    [self.remoteAudioPlayer stop];
+    [_remoteAudioPlayer stop];
     _currentPlayVoiceMsgId = nil;
     
     for (int i = 0; i < (int) self.messageManager.dataSource.count - kPageCount * 2; i++) {
