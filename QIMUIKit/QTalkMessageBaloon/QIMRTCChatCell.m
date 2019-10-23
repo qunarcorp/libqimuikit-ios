@@ -94,6 +94,9 @@
                 else if ([type isEqualToString:@"deny"]) {
                     titleLabel.text = @"对方已拒绝";
                 }
+                else if ([type isEqualToString:@"timeout"]){
+                    titleLabel.text = @"对方无人接听";
+                }
                 else if (number && number.integerValue>0) {
                     titleLabel.text = self.message.message;
                 }
