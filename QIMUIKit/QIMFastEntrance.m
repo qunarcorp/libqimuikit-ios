@@ -164,14 +164,14 @@ static QIMFastEntrance *_sharedInstance = nil;
         }
         return;
     } else {
-        NSString *userFullJid = [[QIMKit sharedInstance] getLastJid];
+        NSString *userName = [QIMKit getLastUserName];
         NSString *userToken = [[QIMKit sharedInstance] getLastUserToken];
-        if (userFullJid.length > 0 && userToken.length > 0) {
+        if (userName.length > 0 && userToken.length > 0) {
             QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:YES];
             QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
             [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
         } else {
-            if (userFullJid && userToken && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            if (userName && userToken && [QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
                 QIMLoginVC *remoteVC = [[QIMLoginVC alloc] init];
                 [QIMMainVC setMainVCReShow:YES];
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:remoteVC];

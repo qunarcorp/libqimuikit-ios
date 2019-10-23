@@ -648,7 +648,7 @@
 "Disconnected" = "Disconnected";
 "No_network_available" = "No network available";
 "Updating_data" = "Updating data...";
-"Not_Logged_In" = "Not Logged In";
+"Not_Logged_In…" = "Not Logged In";
 
 "Choose from album"="Choose from album";
 "Take photo"="Take photo";

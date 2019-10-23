@@ -13,17 +13,43 @@
 #import "QIMNewVideoCacheManager.h"
 #import "YYModel.h"
 #import "QIMContactSelectionViewController.h"
+#import "DACircularProgressView.h"
 
 @interface QIMNewMoivePlayerVC () <SuperPlayerDelegate>
 @property UIView *playerContainer;
 @property SuperPlayerView *playerView;
 @property BOOL isAutoPaused;
+@property (nonatomic, strong) DACircularProgressView *loadingIndicator;
 
 @end
 
 @implementation QIMNewMoivePlayerVC
 
+- (DACircularProgressView *)loadingIndicator {
+    if (!_loadingIndicator) {
+        // Loading indicator
+        _loadingIndicator = [[DACircularProgressView alloc] initWithFrame:CGRectMake(0, 0, 40.0f, 40.0f)];
+        _loadingIndicator.userInteractionEnabled = NO;
+        _loadingIndicator.thicknessRatio = 0.1;
+        _loadingIndicator.roundedCorners = NO;
+        [self.view addSubview:_loadingIndicator];
+        _loadingIndicator.center = self.view.center;
+    }
+    return _loadingIndicator;
+}
+
+- (void)hideLoadingIndicator {
+    self.loadingIndicator.hidden = YES;
+}
+
+- (void)showLoadingIndicator {
+    self.loadingIndicator.progress = 0;
+    self.loadingIndicator.hidden = NO;
+}
+
+
 - (NSString *)playUrl {
+//    return @"https://qim.qunar.com/file/v2/download/temp/new/00fe340a520d225d9dfd7b43c0c96957?name=00fe340a520d225d9dfd7b43c0c96957.mp4";
     if (self.videoModel.LocalVideoOutPath > 0) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:self.videoModel.LocalVideoOutPath]) {
             return self.videoModel.LocalVideoOutPath;
@@ -65,17 +91,63 @@
     // 设置父View
     _playerView.disableGesture = YES;
     
-    SuperPlayerModel *playerModel = [[SuperPlayerModel alloc] init];
-    playerModel.videoURL = self.playUrl;
-    self.playerView.delegate = self;
-    self.playerView.fatherView = self.playerContainer;
-    
-    // 开始播放
-    [_playerView playWithModel:playerModel];
     [self.view addSubview:self.playerContainer];
     
     UILongPressGestureRecognizer * longGes = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longGesHandle:)];
     [self.view addGestureRecognizer:longGes];
+//    self.videoModel.newVideo = NO;
+    if (self.videoModel.newVideo == YES) {
+        SuperPlayerModel *playerModel = [[SuperPlayerModel alloc] init];
+        playerModel.videoURL = self.playUrl;
+        self.playerView.delegate = self;
+        self.playerView.fatherView = self.playerContainer;
+    
+        // 开始播放
+        [_playerView playWithModel:playerModel];
+    } else {
+        NSString *imageCachePath = [UserCachesPath stringByAppendingPathComponent:@"imageCache"];
+        NSString *fileMd5 = [[QIMKit sharedInstance] md5fromUrl:self.playUrl];
+        NSString *fileExt = [[QIMKit sharedInstance] getFileExtFromUrl:self.playUrl];
+        NSString *cacheName = [NSString stringWithFormat:@"%@.%@", fileMd5, fileExt];
+        NSString *videoCachePath = [imageCachePath stringByAppendingPathComponent:cacheName];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:videoCachePath] && videoCachePath.length > 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                SuperPlayerModel *playerModel = [[SuperPlayerModel alloc] init];
+                playerModel.videoURL = videoCachePath;
+                self.playerView.delegate = self;
+                self.playerView.fatherView = self.playerContainer;
+                
+                // 开始播放
+                [_playerView playWithModel:playerModel];
+            });
+        } else {
+            [self showLoadingIndicator];
+            [[QIMKit sharedInstance] sendTPGetRequestWithUrl:self.playUrl withProgressCallBack:^(float progressValue) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.loadingIndicator.progress = progressValue;
+                });
+                NSLog(@"progressValue : %f", progressValue);
+            } withSuccessCallBack:^(NSData *responseData) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self hideLoadingIndicator];
+                });
+                [responseData writeToFile:videoCachePath atomically:YES];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    SuperPlayerModel *playerModel = [[SuperPlayerModel alloc] init];
+                    playerModel.videoURL = videoCachePath;
+                    self.playerView.delegate = self;
+                    self.playerView.fatherView = self.playerContainer;
+                    
+                    // 开始播放
+                    [_playerView playWithModel:playerModel];
+                });
+            } withFailedCallBack:^(NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self hideLoadingIndicator];
+                });
+            }];
+        }
+    }
 }
 
 - (BOOL)prefersStatusBarHidden {

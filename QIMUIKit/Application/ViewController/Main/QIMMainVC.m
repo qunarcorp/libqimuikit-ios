@@ -1024,23 +1024,23 @@ static dispatch_once_t __onceMainToken;
     QIMVerboseLog(@"autoLogin UserDict : %@", [[QIMKit sharedInstance] userObjectForKey:@"Users"]);
     if ([lastUserName length] > 0 && [userToken length] > 0) {
         if ([lastUserName isEqualToString:@"appstore"]) {
-            [[QIMKit sharedInstance] updateLastUserToken:@"appstore"];
+            [[QIMKit sharedInstance] updateLastTempUserToken:@"appstore"];
 //            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
         } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
-            [[QIMKit sharedInstance] updateLastUserToken:@"qtalktest123"];
+            [[QIMKit sharedInstance] updateLastTempUserToken:@"qtalktest123"];
 //            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
         } else {
             if ([[QIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeSms) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSString *pwd = [NSString stringWithFormat:@"%@@%@", [QIMUUIDTools deviceUUID], userToken];
-                    [[QIMKit sharedInstance] updateLastUserToken:userToken];
+                    [[QIMKit sharedInstance] updateLastTempUserToken:userToken];
 //                    [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
                     [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
                 });
             } else {
-                [[QIMKit sharedInstance] updateLastUserToken:userToken];
+                [[QIMKit sharedInstance] updateLastTempUserToken:userToken];
 //                [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
                 [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:userToken];
             }
