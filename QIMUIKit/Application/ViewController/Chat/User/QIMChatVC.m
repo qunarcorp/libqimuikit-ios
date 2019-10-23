@@ -817,7 +817,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.remoteAudioPlayer stop];
+    [_remoteAudioPlayer stop];
     _currentPlayVoiceMsgId = nil;
     if (_shareLctId && [[QIMKit sharedInstance] getShareLocationUsersByShareLocationId:_shareLctId].count == 0) {
         [_joinShareLctView removeFromSuperview];

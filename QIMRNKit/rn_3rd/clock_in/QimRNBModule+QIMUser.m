@@ -24,7 +24,7 @@
     [properties setObject:remarkName?remarkName:@"" forKey:@"Remarks"];
     [properties setObject:[userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"" forKey:@"Department"];
     [properties setObject:mood ? mood : @"这家伙很懒,什么都没留下" forKey:@"Mood"];
-    [properties setObject:sex forKey:@"Sex"];
+    [properties setQIMSafeObject:sex forKey:@"Sex"];
     return properties;
 }
 
