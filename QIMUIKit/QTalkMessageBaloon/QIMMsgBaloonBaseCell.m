@@ -243,7 +243,7 @@ static UIImage *__rightBallocImage = nil;
     tapHead.numberOfTouchesRequired = 1;
     [self.HeadView addGestureRecognizer:tapHead];
     
-    UITapGestureRecognizer *medalTapHead = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onHeaderViewClick:)];
+    UITapGestureRecognizer *medalTapHead = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onMedalViewClick:)];
     medalTapHead.numberOfTapsRequired = 1;
     medalTapHead.numberOfTouchesRequired = 1;
     [self.medalListView addGestureRecognizer:medalTapHead];
@@ -553,6 +553,20 @@ static UIImage *__rightBallocImage = nil;
     } else if (self.message.xmppId.length > 0 && self.chatType == ChatType_Consult && self.message.messageDirection == QIMMessageDirection_Received) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [QIMFastEntrance openUserCardVCByUserId:self.message.xmppId];
+        });
+    } else {
+        
+    }
+}
+
+- (void)onMedalViewClick:(UITapGestureRecognizer *)tap {
+    if (self.message.from.length > 0 && self.chatType != ChatType_CollectionChat && self.chatType != ChatType_Consult) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [QIMFastEntrance openUserMedalFlutterWithUserId:self.message.from];
+        });
+    } else if (self.message.xmppId.length > 0 && self.chatType == ChatType_Consult && self.message.messageDirection == QIMMessageDirection_Received) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [QIMFastEntrance openUserMedalFlutterWithUserId:self.message.xmppId];
         });
     } else {
         

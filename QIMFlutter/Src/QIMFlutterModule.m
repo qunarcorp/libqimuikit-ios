@@ -11,6 +11,9 @@
 #import "QIMFastEntrance.h"
 #import "UIApplication+QIMApplication.h"
 #import <Flutter/Flutter.h>
+#if __has_include("QIMAutoTracker.h")
+#import "QIMAutoTracker.h"
+#endif
 
 @interface QIMFlutterModule ()
 
@@ -79,6 +82,9 @@ static QIMFlutterModule *_flutterModule = nil;
                 NSInteger medalId = [[callArguments objectForKey:@"medalId"] integerValue];
                 NSInteger status = [[callArguments objectForKey:@"status"] integerValue];
                 [[QIMKit sharedInstance] userMedalStatusModifyWithStatus:status withMedalId:medalId withCallBack:^(BOOL success, NSString *errmsg) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotifyUpdateMedalStatus" object:@{@"status":@(status), @"success": @(success)}];
+                    });
                     if (success == YES) {
                         NSLog(@"medaiId : %ld, status : %ld", medalId, status);
                         NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithCapacity:3];
@@ -99,7 +105,9 @@ static QIMFlutterModule *_flutterModule = nil;
                 NSDictionary *callArguments = (NSDictionary *)call.arguments;
                 NSString *logCode = [callArguments objectForKey:@"logCode"];
                 NSString *logDes = [callArguments objectForKey:@"logDes"];
-                
+#if __has_include("QIMAutoTracker.h")
+                [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:logCode withDescription:logDes];
+#endif
                 
             } else if ([@"quitFlutterApp" isEqualToString:call.method]) {
                 self.flutterVc = nil;

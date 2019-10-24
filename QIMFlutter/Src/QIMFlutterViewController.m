@@ -12,6 +12,8 @@
 #else
 #import "GeneratedPluginRegistrant.h" // Only if you have Flutter Plugins
 #endif
+#import "UIView+QIMToast.h"
+#import "NSBundle+QIMLibrary.h"
 
 @interface QIMFlutterViewController ()
 
@@ -31,7 +33,43 @@
 #if __has_include("GeneratedPluginRegistrant.h")
     [GeneratedPluginRegistrant registerWithRegistry:self];
 #endif
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUpdateMedalStatusToast:) name:@"kNotifyUpdateMedalStatus" object:nil];
+
     // Do any additional setup after loading the view.
+}
+
+- (void)showUpdateMedalStatusToast:(NSNotification *)note {
+    NSDictionary *noteDic = note.object;
+    NSInteger status = [[noteDic objectForKey:@"status"] integerValue];
+    BOOL success = [[noteDic objectForKey:@"success"] boolValue];
+    NSString *toastStr = nil;
+    if ((status & 0x02) == 0x02) {
+        if (success) {
+            toastStr = [NSBundle qim_localizedStringForKey:@"wear_Already_worn"];
+        } else {
+            toastStr = [NSBundle qim_localizedStringForKey:@"wear_failure"];
+        }
+    } else {
+        if (success) {
+            toastStr = [NSBundle qim_localizedStringForKey:@"wear_Already_removed"];
+        } else {
+            toastStr = [NSBundle qim_localizedStringForKey:@"remove_failure"];
+        }
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.view qim_hideAllToasts];
+        });
+    });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.view qim_makeToast:toastStr];
+        });
+    });
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 /*
