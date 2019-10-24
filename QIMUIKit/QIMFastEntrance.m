@@ -166,7 +166,7 @@ static QIMFastEntrance *_sharedInstance = nil;
     } else {
         NSString *userName = [QIMKit getLastUserName];
         NSString *userToken = [[QIMKit sharedInstance] getLastUserToken];
-        if (userName.length > 0 && userToken.length > 0) {
+        if (userName.length > 0 && userToken.length > 0 && [[QIMKit sharedInstance] getIsIpad] == NO) {
             QIMMainVC *mainVC = [QIMMainVC sharedInstanceWithSkipLogin:YES];
             QIMNavController *navVC = [[QIMNavController alloc] initWithRootViewController:mainVC];
             [[[[UIApplication sharedApplication] delegate] window] setRootViewController:navVC];
@@ -1373,8 +1373,9 @@ static QIMFastEntrance *_sharedInstance = nil;
             [[QIMKit sharedInstance] setNeedTryRelogin:NO];
             [[QIMKit sharedInstance] clearUserToken];
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([[QIMKit sharedInstance] getIsIpad] && [QIMKit getQIMProjectType] != QIMProjectTypeQChat) {
+                if ([[QIMKit sharedInstance] getIsIpad]) {
 #if __has_include("QIMIPadWindowManager.h")
+                    [[QIMFastEntrance sharedInstance] launchMainControllerWithWindow:[[[UIApplication sharedApplication] delegate] window]];
 //                    IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
 //                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
 #endif
@@ -1409,19 +1410,27 @@ static QIMFastEntrance *_sharedInstance = nil;
                 }
             });
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Failed to log out, please try again"] preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_Nonnull action) {
-                    
-                }];
-                UIAlertAction *quitAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Log out anyway"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
-                    [QIMFastEntrance signOutWithNoPush];
-                }];
-                [alertVc addAction:okAction];
-                [alertVc addAction:quitAction];
-                UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-                [navVC presentViewController:alertVc animated:YES completion:nil];
-            });
+            if ([[QIMKit sharedInstance] getIsIpad]) {
+#if __has_include("QIMIPadWindowManager.h")
+                [[QIMFastEntrance sharedInstance] launchMainControllerWithWindow:[[[UIApplication sharedApplication] delegate] window]];
+                //                    IPAD_RemoteLoginVC *ipadVc = [[IPAD_RemoteLoginVC alloc] init];
+                //                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:ipadVc];
+#endif
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Failed to log out, please try again"] preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_Nonnull action) {
+                        
+                    }];
+                    UIAlertAction *quitAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Log out anyway"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *_Nonnull action) {
+                        [QIMFastEntrance signOutWithNoPush];
+                    }];
+                    [alertVc addAction:okAction];
+                    [alertVc addAction:quitAction];
+                    UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                    [navVC presentViewController:alertVc animated:YES completion:nil];
+                });
+            }
         }
     });
 }

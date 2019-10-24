@@ -913,3 +913,8 @@
 "%ldn mentioned"="我被@%ld次";
 "New_Messages_Below" = "下面有新消息";
 "All_Messages_Above" = "以上为所有消息";
+
+"wear_Already_worn" = "已佩戴";
+"wear_Already_removed" = "已卸下";
+"wear_failure" = "佩戴失败";
+"remove_failure" = "卸下失败";
