@@ -283,7 +283,43 @@
    QIMMessageModel *msg = [self.dataSource objectAtIndex:indexPath.row];
     
     switch (msg.messageType) {
-        case QIMMessageType_RedPack:
+        case QIMMessageType_RedPack:{
+            NSString *infoRed = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
+            if (infoRed.length > 0) {
+                NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoRed error:nil];
+                NSString* rid = [[infoDic objectForKey:@"rid"] stringValue];
+                [[QIMKit sharedInstance] openRedEnvelop:[self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] RedRid:rid IsChatRoom:(self.chatType == ChatType_GroupChat) withCallBack:^(NSDictionary *status,NSInteger errcode) {
+                    if(errcode == 0 && status){//获取状态成功
+                        //是否可以拆红包
+                        BOOL has_power = [[status objectForKey:@"has_power"] boolValue];
+                        //是否过期
+                        BOOL is_expired = [[status objectForKey:@"is_expired"] boolValue];
+                        //是否拆过
+                        BOOL is_grab = [[status objectForKey:@"is_grab"] boolValue];
+                        //是否已抢光
+                        BOOL is_out = [[status objectForKey:@"is_out"] boolValue];
+                        //今天是否还可以抢
+                        BOOL today_has_power = [[status objectForKey:@"today_has_power"] boolValue];
+                        if(has_power){
+                            
+                        }else if(is_expired){
+                            
+                        }else if(is_grab){//跳转到红包详情
+                            [QIMFastEntrance openRedPacketDetail:self.chatId isRoom:(self.chatType == ChatType_GroupChat) redRid:rid];
+                        }else if(is_out){
+                            
+                        }else if(today_has_power){
+                            
+                        }
+                    }else if(errcode == 4300){//开红包的人未绑定支付账户，需去绑定
+                        
+                    }else{//打开失败
+                        
+                    }
+                }];
+            }
+        }
+            break;
         case QIMMessageType_RedPackInfo:
         case QIMMessageType_AA:
         case QIMMessageType_AAInfo: {

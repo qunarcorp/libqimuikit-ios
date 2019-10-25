@@ -6,6 +6,7 @@
 //  Copyright (c) 2014年 ping.xue. All rights reserved.
 //
 
+#import <AlipaySDK/AlipaySDK.h>
 #import "QIMGroupChatVC.h"
 #import "QIMUUIDTools.h"
 #import "QIMIconInfo.h"
@@ -816,6 +817,11 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadIPadViewFrame:) name:@"reloadIPadViewFrame" object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarOrientationChange:)name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+        
+        //红包
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callAlipay:) name:kSendRedPack object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callAuth:) name:kAlipayAuth object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gotoSendRedPackRnView:) name:kSendRedPackRNView object:nil];
     }
 }
 
@@ -891,6 +897,77 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
 - (void)closeHUD {
     if (self.progressHUD) {
         [self.progressHUD hide:YES];
+    }
+}
+
+// 跳转rn发红包页面
+- (void)gotoSendRedPackRnView:(NSNotificationCenter *)notify {
+    [QIMFastEntrance openSendRedPacket:self.chatId isRoom:true];
+}
+
+- (void)showAlipayAlterMessage:(NSString *) msg {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:msg delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+        [alertView show];
+    });
+}
+//唤起支付宝支付
+- (void)callAlipay:(NSNotification *)notify {
+    //应用注册scheme,在AliSDKDemo-Info.plist定义URL types
+    NSString *payParams = [notify.object objectForKey:@"payParams"];
+    NSString *appScheme = @"impay";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if(payParams && payParams.length > 0){
+            [[AlipaySDK defaultService] payOrder:payParams fromScheme:appScheme callback:^(NSDictionary *resultDic) {
+                NSLog(@"reslut = %@",resultDic);
+                NSInteger statusCode = [[resultDic objectForKey:@"resultStatus"] intValue];
+                if(statusCode == 9000){//支付成功
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kAlipaySuccess object:nil];
+                }else if(statusCode == 6001){//用户取消
+                    [self showAlipayAlterMessage:@"支付取消！"];
+                }else{//支付失败
+                    [self showAlipayAlterMessage:@"支付失败！"];
+                }
+            }];
+        }else{
+            [self showAlipayAlterMessage:@"支付失败！"];
+        }
+    });
+}
+
+//唤起支付宝认证
+- (void)callAuth:(NSNotification *)notify {
+    NSString *appScheme = @"impay";
+    NSString *authInfoStr = [notify.object objectForKey:@"authInfo"];
+    if(authInfoStr && authInfoStr.length > 0){
+        [[AlipaySDK defaultService] auth_V2WithInfo:authInfoStr
+                                         fromScheme:appScheme
+                                           callback:^(NSDictionary *resultDic) {
+                                               NSLog(@"result = %@",resultDic);
+                                               // 解析 auth code
+                                               NSString *result = resultDic[@"result"];
+                                               NSString *openid = nil;
+                                               NSString *aliuid = nil;
+                                               if (result.length>0) {
+                                                   NSArray *resultArr = [result componentsSeparatedByString:@"&"];
+                                                   for (NSString *subResult in resultArr) {
+                                                       if (subResult.length > 15 && [subResult hasPrefix:@"alipay_open_id="]) {
+                                                           openid = [subResult substringFromIndex:15];
+                                                           continue;
+                                                       } else if(subResult.length > 8 && [subResult hasPrefix:@"user_id="]){
+                                                           aliuid = [subResult substringFromIndex:8];
+                                                           continue;
+                                                       }
+                                                   }
+                                               }
+                                               NSLog(@"授权结果 openid = %@", openid?:@"");
+                                               if(openid && aliuid){
+                                                   [[QIMKit sharedInstance] bindAlipayAccount:openid withAliUid:aliuid userId:[QIMKit getLastUserName]];
+                                               }
+                                           }];
+    }else{
+        //获取绑定关系失败
+        [self showAlipayAlterMessage:@"获取绑定关系失败！"];
     }
 }
 
@@ -1347,6 +1424,16 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         } else if ([trId isEqualToString:QIMTextBarExpandViewItem_RedPack]) {
             
             QIMVerboseLog(@"我是 群红包，点我 干哈？");
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [[QIMKit sharedInstance] getBindPayAccount:[QIMKit getLastUserName] withCallBack:^(BOOL successed){
+                    if(successed){
+                        [QIMFastEntrance openSendRedPacket:self.chatId isRoom:true];
+                    }else{
+                        
+                    }
+                }];
+            });
+            return;
             if ([[QIMKit sharedInstance] redPackageUrlHost]) {
                 QIMWebView *webView = [[QIMWebView alloc] init];
                 webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&group_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];

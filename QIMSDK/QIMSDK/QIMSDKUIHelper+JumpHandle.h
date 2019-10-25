@@ -57,6 +57,8 @@
 
 + (void)openTransferConversation:(NSString *)shopId withVistorId:(NSString *)realJid;
 
++ (void)openSendRedPacket:(NSString *)xmppid isRoom:(BOOL)isChatRoom;
+
 + (void)openMyAccountInfo;
 
 + (void)showQRCodeWithQRId:(NSString *)qrId withType:(NSInteger)qrcodeType;

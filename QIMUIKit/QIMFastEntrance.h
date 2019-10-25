@@ -142,6 +142,10 @@
 
 + (void)openTransferConversation:(NSString *)shopId withVistorId:(NSString *)realJid;
 
++ (void)openSendRedPacket:(NSString *)xmppid isRoom:(BOOL)isChatRoom;
+
++ (void)openRedPacketDetail:(NSString *)xmppid isRoom:(BOOL)isChatRoom redRid:(NSString *)rid;
+
 + (void)openMyAccountInfo;
 
 
