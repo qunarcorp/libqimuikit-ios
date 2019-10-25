@@ -78,7 +78,7 @@
     [self.contentView addSubview:titleLabel];
     self.backView.message = self.message;
     if (self.message.messageType == QIMMessageType_WebRTC_Audio) {
-        titleLabel.text = @"音视频通话";
+        titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_avcall"];//@"音视频通话";
         _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Call"];
     } else if (self.message.messageType == QIMMessageType_WebRTC_Vedio) {
 //        _titleLabel.text = self.message.message;
@@ -89,13 +89,13 @@
             
            if (self.message.messageDirection == QIMMessageDirection_Sent) {
                 if ([type isEqualToString:@"cancel"]) {
-                    titleLabel.text = @"已取消";
+                    titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_canceled"];//@"已取消";
                 }
                 else if ([type isEqualToString:@"deny"]) {
-                    titleLabel.text = @"对方已拒绝";
+                    titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_deny_other"];//@"对方已拒绝";
                 }
                 else if ([type isEqualToString:@"timeout"]){
-                    titleLabel.text = @"对方无人接听";
+                    titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_video_no_answer"];//@"对方无人接听";
                 }
                 else if (number && number.integerValue>0) {
                     titleLabel.text = self.message.message;
@@ -103,16 +103,16 @@
             }
             else if(self.message.messageDirection == QIMMessageDirection_Received){
                 if ([type isEqualToString:@"cancel"]) {
-                    titleLabel.text = @"对方已取消";
+                    titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_canceled_by_caller"];//@"对方已取消";
                 }
                 else if ([type isEqualToString:@"deny"]) {
-                    titleLabel.text = @"已拒绝";
+                    titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_deny"];
                 }
                 else if ([type isEqualToString:@"timeout"]) {
-                    titleLabel.text = @"音视频通话";
+                    titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_avcall"];//@"音视频通话";
                 }
                 else if (number && number.integerValue>0) {
-                    titleLabel.text = [NSString stringWithFormat:@"通话时长：%@",[self getTimestamp:number.integerValue]];
+                    titleLabel.text = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"atom_rtc_duration"],[self getTimestamp:number.integerValue]];
                 }
             }
             else{
@@ -120,15 +120,15 @@
             }
         }
         else{
-            titleLabel.text = @"音视频通话";
+            titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_avcall"];// @"音视频通话";
         }
         _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Video"];
     } else if (self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoMeeting) {
-        titleLabel.text = @"视频会议";
+        titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_video_conference"];//@"视频会议";
         _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Meeting"];
     }
     else if(self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoGroup) {
-        titleLabel.text = @"视频会议";
+        titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_video_conference"];//@"视频会议";
         _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Meeting"];
     }
     [titleLabel sizeToFit];
@@ -161,10 +161,23 @@
 
 - (NSString *)getTimestamp:(NSInteger )interval{
     
-    //format of minute
-    NSString *str_minute = [NSString stringWithFormat:@"%ld",interval/60];
+    NSString *str_minute = @"";
+    if (interval/60 < 10) {
+        str_minute = [NSString stringWithFormat:@"0%ld",interval/60];
+    }
+    else{
+        str_minute = [NSString stringWithFormat:@"%ld",interval/60];
+    }
+    
     //format of second
-    NSString *str_second = [NSString stringWithFormat:@"%ld",interval%60];
+    NSString *str_second = @"";
+    if (interval%60 < 10) {
+        str_second = [NSString stringWithFormat:@"0%ld",interval%60];
+    }
+    else
+    {
+        str_second = [NSString stringWithFormat:@"%ld",interval%60];
+    }
     //format of time
     NSString *format_time = [NSString stringWithFormat:@"%@:%@",str_minute,str_second];
     
