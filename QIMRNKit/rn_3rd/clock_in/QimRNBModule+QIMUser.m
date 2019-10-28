@@ -15,6 +15,8 @@
     NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
     NSString *headerSrc = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:userId];
     NSString *mood = [userInfo objectForKey:@"Mood"];
+    NSNumber *sex = [userInfo objectForKey:@"Sex"];
+
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
     [properties setObject:userId forKey:@"UserId"];
     [properties setObject:[userInfo objectForKey:@"Name"]?[userInfo objectForKey:@"Name"]:[userId componentsSeparatedByString:@"@"].firstObject forKey:@"Name"];
@@ -22,6 +24,7 @@
     [properties setObject:remarkName?remarkName:@"" forKey:@"Remarks"];
     [properties setObject:[userInfo objectForKey:@"DescInfo"]?[userInfo objectForKey:@"DescInfo"]:@"" forKey:@"Department"];
     [properties setObject:mood ? mood : @"这家伙很懒,什么都没留下" forKey:@"Mood"];
+    [properties setQIMSafeObject:sex forKey:@"Sex"];
     return properties;
 }
 
@@ -32,6 +35,20 @@
     NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
     NSString *mood = [userInfo objectForKey:@"Mood"];
     return mood?mood:@"这家伙很懒,什么都没留下";
+}
+
++ (NSArray *)qimrn_getNewUserMedalByUserId:(NSString *)xmppId {
+    if (!xmppId || xmppId.length <= 0) {
+        return nil;
+    }
+    return [[QIMKit sharedInstance] getUserWearMedalSmallIconListByUserid:xmppId];
+}
+
++ (NSArray *)qimrn_getNewUserHaveMedalByUserId:(NSString *)xmppId {
+    if (!xmppId || xmppId.length <= 0) {
+        return nil;
+    }
+    return [[QIMKit sharedInstance] getUserHaveMedalSmallIconListByUserid:xmppId];
 }
 
 + (NSArray *)qimrn_getUserMedalByUserId:(NSString *)xmppId {

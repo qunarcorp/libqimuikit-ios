@@ -39,7 +39,7 @@
 
 #endif
 
-#import "Toast.h"
+#import "UIView+QIMToast.h"
 #import "QIMUpdateAlertView.h"
 
 #define kTabBarHeight   49
@@ -62,6 +62,7 @@
 @property(nonatomic, strong) UIView *rnSuggestView;
 @property(nonatomic, strong) QIMWorkFeedView *momentView;
 @property(nonatomic, strong) UIView *mineView;
+@property(nonatomic, strong) UIViewController *mineVC;
 
 @property(nonatomic, strong) UIButton *searchDemissionBtn;
 
@@ -183,7 +184,7 @@ static dispatch_once_t __onceMainToken;
         [_loadingActivityView setCenter:_loadingView.center];
         [_loadingView addSubview:_loadingActivityView];
     }
-    if (([QIMKit getQIMProjectType] != QIMProjectTypeQChat) && self.skipLogin) {
+    if (self.skipLogin) {
         [self autoLogin];
     }
 #if __has_include("RNSchemaParse.h")
@@ -454,19 +455,19 @@ static dispatch_once_t __onceMainToken;
         if (str.length > 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
                 });
             });
             dispatch_async(dispatch_get_main_queue(), ^{
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:str];
                 });
             });
         }
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
             });
         });
     }
@@ -477,12 +478,12 @@ static dispatch_once_t __onceMainToken;
     NSString *promotMessage = [dic objectForKey:@"promotMessage"];
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
         });
     });
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:promotMessage];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:promotMessage];
         });
     });
 }
@@ -490,12 +491,12 @@ static dispatch_once_t __onceMainToken;
 - (void)submitLogSuccessed:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
         });
     });
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSBundle qim_localizedStringForKey:@"Thanks_feedback"]];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:[NSBundle qim_localizedStringForKey:@"Thanks_feedback"]];
         });
     });
 }
@@ -503,12 +504,12 @@ static dispatch_once_t __onceMainToken;
 - (void)submitLogFaild:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
         });
     });
     dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSBundle qim_localizedStringForKey:@"Failed_upload_log"]];
+            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:[NSBundle qim_localizedStringForKey:@"Failed_upload_log"]];
         });
     });
 }
@@ -812,6 +813,7 @@ static dispatch_once_t __onceMainToken;
                 NSDictionary *param = @{@"module": @"MySetting"};
                 vc = [RunC performSelector:sel withObject:param];
             }
+            _mineVC = vc;
             _mineView = [vc view];
             [_mineView setFrame:CGRectMake(0, 0, _contentView.width, _contentView.height)];
             [_mineView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
@@ -1015,26 +1017,31 @@ static dispatch_once_t __onceMainToken;
 
 - (void)autoLogin {
     NSString *lastUserName = [QIMKit getLastUserName];
-    NSString *userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+    NSString *userToken = [[QIMKit sharedInstance] getLastUserToken];
+//    [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
     NSString *userFullJid = [[QIMKit sharedInstance] userObjectForKey:@"kFullUserJid"];
     QIMVerboseLog(@"autoLogin lastUserName : %@, userFullJid : %@, userToken : %@", lastUserName, userFullJid, userToken);
     QIMVerboseLog(@"autoLogin UserDict : %@", [[QIMKit sharedInstance] userObjectForKey:@"Users"]);
     if ([lastUserName length] > 0 && [userToken length] > 0) {
         if ([lastUserName isEqualToString:@"appstore"]) {
-            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] updateLastTempUserToken:@"appstore"];
+//            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
         } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
-            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] updateLastTempUserToken:@"qtalktest123"];
+//            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:@"qtalktest" WithPassWord:@"qtalktest123"];
         } else {
             if ([[QIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeSms) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSString *pwd = [NSString stringWithFormat:@"%@@%@", [QIMUUIDTools deviceUUID], userToken];
-                    [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
+                    [[QIMKit sharedInstance] updateLastTempUserToken:userToken];
+//                    [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
                     [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:pwd];
                 });
             } else {
-                [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] updateLastTempUserToken:userToken];
+//                [[QIMKit sharedInstance] setUserObject:userToken forKey:@"kTempUserToken"];
                 [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:userToken];
             }
         }
@@ -1377,7 +1384,6 @@ static dispatch_once_t __onceMainToken;
 }
 
 - (void)oneKeyRead {
-    
     NSUInteger count = [[QIMKit sharedInstance] getAppNotReaderCount];
     if (count) {
         UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSBundle qim_localizedStringForKey:@"clear_unread_messages"] preferredStyle:UIAlertControllerStyleAlert];

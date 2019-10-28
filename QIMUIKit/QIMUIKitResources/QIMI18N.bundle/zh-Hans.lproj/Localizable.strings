@@ -399,7 +399,7 @@
 //消息/ Chat
 "Connecting…" = "连接中...";
 
-"Loading…" = "接受中...";
+"Loading…" = "接收中...";
 
 "Chat" = "消息";
 
@@ -921,3 +921,8 @@
 "atom_rtc_avcall"= "视频通话";
 "atom_rtc_video_conference" = "视频会议";
 "atom_rtc_video_no_answer" = "对方无人接听";
+
+"wear_Already_worn" = "已佩戴";
+"wear_Already_removed" = "已卸下";
+"wear_failure" = "佩戴失败";
+"remove_failure" = "卸下失败";

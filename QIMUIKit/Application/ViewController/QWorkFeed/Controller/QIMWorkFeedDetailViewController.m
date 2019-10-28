@@ -19,7 +19,7 @@
 #import <YYModel/YYModel.h>
 #import "LCActionSheet.h"
 #import "YYKeyboardManager.h"
-#import <Toast/Toast.h>
+#import "UIView+QIMToast.h"
 #import "QIMWorkMomentView.h"
 #import "UIApplication+QIMApplication.h"
 #if __has_include("QIMIPadWindowManager.h")
@@ -358,7 +358,7 @@
                                                                                        [strongSelf.commentListView reloadCommentsData];
                                                                                    });
                                                                                } else {
-                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSBundle qim_localizedStringForKey:@"moment_faild_delete_comment"]];
+                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:[NSBundle qim_localizedStringForKey:@"moment_faild_delete_comment"]];
                                                                                }
                                                                            }];
                                                                        } else if (buttonIndex == 2) {
@@ -422,7 +422,7 @@
                                                                                if (success) {
                                                                                    [strongSelf.commentListView removeCommentWithIndexPath:indexPath withIsHotComment:isHotComment withSuperStatus:superStatus];
                                                                                } else {
-                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSBundle qim_localizedStringForKey:@"moment_faild_delete_comment"]];
+                                                                                   [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:[NSBundle qim_localizedStringForKey:@"moment_faild_delete_comment"]];
                                                                                }
                                                                            }];
                                                                        } else if (buttonIndex == 2) {

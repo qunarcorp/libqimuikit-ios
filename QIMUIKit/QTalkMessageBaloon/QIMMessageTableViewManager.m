@@ -32,6 +32,7 @@
 #import "QIMHintTableViewCell.h"
 #import "QIMChatRobotQuestionListTableViewCell.h"
 
+#import "QIMUserMedalRemindCell.h"
 //#import "TransferInfoCell.h"
 #import "QIMGroupChatCell.h"
 #import "QIMPublicNumberNoticeCell.h"
@@ -252,6 +253,10 @@
                 return [QIMHintTableViewCell getCellHeightWihtMessage:temp chatType:self.chatType] + 15;
             }
                 break;
+            case QIMMessageTypeUserMedalRemind: {
+                return [QIMUserMedalRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 45;
+            }
+                break;
 //            case QIMMessageTypeWebRtcMsgTypeVideoMeeting:{
 //                return [QIMRTCChatCell]
 //            }
@@ -437,12 +442,12 @@
             break;
         case QIMMessageTypeWebRtcMsgTypeVideoGroup: {
 #if __has_include("QIMWebRTCClient.h")
-            
+
             [[QIMWebRTCMeetingClient sharedInstance] setGroupId:self.chatId];
             NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
             NSString *groupName = [groupCardDic objectForKey:@"Name"];
             [[QIMWebRTCMeetingClient sharedInstance] joinRoomById:self.chatId WithRoomName:groupName];
-            
+
 //            NSString *infoStr = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
 //            if (infoStr.length > 0) {
 //                NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
@@ -476,7 +481,7 @@
             [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:NO isCaller:YES];
         }
             break;
-            
+
         default:
             break;
     }

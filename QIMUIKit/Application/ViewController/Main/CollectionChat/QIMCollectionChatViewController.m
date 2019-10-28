@@ -273,8 +273,7 @@
                 [[QIMKit sharedInstance] clearcache];
                 [[QIMKit sharedInstance] clearLogginUser];
                 [[QIMKit sharedInstance] quitLogin];
-                [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
-                [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] clearUserToken];
                 [[QIMKit sharedInstance] setCacheName:userFullJid];
                 [[QIMKit sharedInstance] qimNav_swicthLocalNavConfigWithNavDict:navDict];
                 [[QIMKit sharedInstance] loginWithUserName:userId WithPassWord:pwd WithLoginNavDict:navDict];
