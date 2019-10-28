@@ -648,7 +648,7 @@
 "Disconnected" = "无网络连接";
 "No_network_available" = "无可用网络连接";
 "Updating_data" = "升级数据中...";
-"Not_Logged_In…" = "未登录";
+"Not_Logged_In" = "未登录";
 "Choose from album"="相册上传头像";
 "Take photo"="拍照上传头像";
 "View full image"="查看大图";
@@ -913,6 +913,14 @@
 "%ldn mentioned"="我被@%ld次";
 "New_Messages_Below" = "下面有新消息";
 "All_Messages_Above" = "以上为所有消息";
+"atom_rtc_deny" = "已拒绝";
+"atom_rtc_deny_other" = "对方已拒绝";
+"atom_rtc_canceled" = "已取消";
+"atom_rtc_canceled_by_caller" = "对方已取消";
+"atom_rtc_duration" = "通话时长：%@";
+"atom_rtc_avcall"= "视频通话";
+"atom_rtc_video_conference" = "视频会议";
+"atom_rtc_video_no_answer" = "对方无人接听";
 
 "wear_Already_worn" = "已佩戴";
 "wear_Already_removed" = "已卸下";
