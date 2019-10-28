@@ -648,7 +648,7 @@
 "Disconnected" = "Disconnected";
 "No_network_available" = "No network available";
 "Updating_data" = "Updating data...";
-"Not_Logged_In…" = "Not Logged In";
+"Not_Logged_In" = "Not Logged In";
 
 "Choose from album"="Choose from album";
 "Take photo"="Take photo";
@@ -913,6 +913,14 @@
 "%ldn mentioned"="@you %ld times";
 "New_Messages_Below" = "New Msgs Below";
 "All_Messages_Above" = "All Msgs Above";
+"atom_rtc_deny" = "Declined";
+"atom_rtc_deny_other" = "Call Declined";
+"atom_rtc_canceled" = "Canceled";
+"atom_rtc_canceled_by_caller" = "Call Canceled by caller";
+"atom_rtc_duration" = "Duration：%@";
+"atom_rtc_avcall" = "Video Call";
+"atom_rtc_video_conference" = "Video Conference";
+"atom_rtc_video_no_answer" = "Video Call No Answer";
 
 "wear_Already_worn" = "Already Worn";
 "wear_Already_removed" = "Already Removed";
