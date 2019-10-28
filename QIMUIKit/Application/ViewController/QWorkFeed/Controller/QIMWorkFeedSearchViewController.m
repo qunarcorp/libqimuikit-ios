@@ -462,8 +462,10 @@ static const NSInteger searchMinCharacterCount = 2;
                 if (!strongSelf) {
                     return;
                 }
-                [strongSelf hideProgressHUD:YES];
-                [strongSelf addModelWithResultList:result withReWrite:YES];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [strongSelf hideProgressHUD:YES];
+                    [strongSelf addModelWithResultList:result withReWrite:YES];
+                });
             }];
         } else {
             [self addModelWithResultList:nil withReWrite:YES];
@@ -517,6 +519,9 @@ static const NSInteger searchMinCharacterCount = 2;
 }
 
 - (void)addModelWithResultList:(NSArray *)result withReWrite:(BOOL)rewrite{
+    if (self.textField.text.length <= 0) {
+        result = nil;
+    }
     if (rewrite == YES) {
         [self.searchDataList removeAllObjects];
     }

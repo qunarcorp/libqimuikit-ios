@@ -1751,6 +1751,8 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:kPlayAllVoiceMsgFinishHandleNotification object:nil];
         }
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPlayAllVoiceMsgFinishHandleNotification object:nil];
     }
 }
 

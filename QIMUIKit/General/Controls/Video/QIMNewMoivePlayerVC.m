@@ -291,4 +291,8 @@
     }
 }
 
+- (void)dealloc {
+    [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
+}
+
 @end
