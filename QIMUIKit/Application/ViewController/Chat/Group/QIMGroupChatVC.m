@@ -47,9 +47,6 @@
 
 #import "QIMMessageBrowserVC.h"
 #import "QIMChatBGImageSelectController.h"
-
-#import "QIMVideoPlayerVC.h"
-
 #import "QIMFileManagerViewController.h"
 
 #import "QIMPreviewMsgVC.h"
@@ -703,7 +700,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         _joinShareLctView = nil;
     }
     
-    [self.remoteAudioPlayer stop];
+    [_remoteAudioPlayer stop];
     _currentPlayVoiceMsgId = nil;
     
     for (int i = 0; i < (int) self.messageManager.dataSource.count - kPageCount * 2; i++) {
@@ -1754,6 +1751,8 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:kPlayAllVoiceMsgFinishHandleNotification object:nil];
         }
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPlayAllVoiceMsgFinishHandleNotification object:nil];
     }
 }
 

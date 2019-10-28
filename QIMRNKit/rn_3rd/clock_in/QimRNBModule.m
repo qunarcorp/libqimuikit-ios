@@ -8,6 +8,8 @@
 
 
 #import "QimRNBModule.h"
+#import "QIMFlutterModule.h"
+
 #import "QIMMainVC.h"
 #import "UIApplication+QIMApplication.h"
 #import "QimRNBModule+TravelCalendar.h"
@@ -51,7 +53,7 @@
 #import "QIMSwitchAccountView.h"
 #import "SCLAlertView.h"
 #import "NSDate+Extension.h"
-#import "Toast.h"
+#import "UIView+QIMToast.h"
 #import "QIMPublicRedefineHeader.h"
 #import "QIMAddIndexViewController.h"
 #import "QIMUserCacheManager.h"
@@ -70,6 +72,7 @@
 #define BalanceInquiry @"BalanceInquiry"
 #define AccountInfo @"AccountInfo"
 #define MyFile @"MyFile"
+#define MyMedal @"MyMedal"
 
 @interface QIMRCTRootView : RCTRootView
 @property (nonatomic, weak) UIViewController *ownerVC;
@@ -294,6 +297,10 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
     } else if ([nativeName isEqualToString:MyFile]) {
        
         [QIMFastEntrance openMyFileVC];
+    } else if ([nativeName isEqualToString:MyMedal]) {
+        //打开我的勋章
+        NSString *userId = [params objectForKey:@"userId"];
+        [QIMFastEntrance openUserMedalFlutterWithUserId:userId];
     } else if ([nativeName isEqualToString:@"NotReadMsg"]){
         
         [QIMFastEntrance openNotReadMessageVC];
@@ -412,7 +419,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-//    return [NSURL URLWithString:@"http://ip:8081/index.ios.bundle?platform=ios&dev=true"];
+//    return [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
 
     NSString *qtalkFoundRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkFoundRNDebugUrl"];
     if (qtalkFoundRNDebugUrlStr.length > 0) {
@@ -627,7 +634,9 @@ RCT_EXPORT_METHOD(getUserInfoByUserCard:(NSString *)userId :(RCTResponseSenderBl
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[QIMKit sharedInstance] updateUserCard:userId withCache:NO];
     });
-    callback(@[@{@"UserInfo" : properties ? properties : @{}}]);
+    NSArray *userMedallist = [QimRNBModule qimrn_getNewUserHaveMedalByUserId:userId];
+    
+    callback(@[@{@"UserInfo" : properties ? properties : @{}, @"medalList": userMedallist ? userMedallist : @[]}]);
 }
 
 //获取单人会话置顶状态
@@ -987,14 +996,14 @@ RCT_EXPORT_METHOD(kickGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock
         NSString *str = @"踢出群成员成功";
         dispatch_async(dispatch_get_main_queue(), ^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
-                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:str];
             });
         });
     } else {
         NSString *str = @"踢出群成员失败";
         dispatch_async(dispatch_get_main_queue(), ^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
-                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:str];
             });
         });
     }
@@ -1249,7 +1258,9 @@ RCT_EXPORT_METHOD(getMyInfo:(RCTResponseSenderBlock)callback) {
     [info setObject:department ? department : @"" forKey:@"Department"];
     [info setObject:userId ? userId : @"" forKey:@"UserId"];
     
-    callback(@[@{@"MyInfo":info?info:@{}}]);
+    NSArray *medals = [QimRNBModule qimrn_getNewUserMedalByUserId:userId];
+    
+    callback(@[@{@"MyInfo":info?info:@{}, @"medalList": medals?medals:@[]}]);
 }
 
 //获取自己的个性签名
@@ -1785,8 +1796,7 @@ RCT_EXPORT_METHOD(openSwitchAccount) {
                 [[QIMKit sharedInstance] clearcache];
                 [[QIMKit sharedInstance] clearLogginUser];
                 [[QIMKit sharedInstance] quitLogin];
-                [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
-                [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] clearUserToken];
                 [[QIMKit sharedInstance] setCacheName:userFullJid];
                 [[QIMKit sharedInstance] qimNav_swicthLocalNavConfigWithNavDict:navDict];
                 [[QIMKit sharedInstance] loginWithUserName:userId WithPassWord:pwd WithLoginNavDict:navDict];

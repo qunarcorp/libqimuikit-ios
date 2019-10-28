@@ -19,7 +19,6 @@
 #import "QIMDataController.h"
 #if __has_include("QIMLocalLog.h")
 
-#import "QIMLocalLogViewController.h"
 #import "QIMLocalLog.h"
 #endif
 

@@ -921,3 +921,8 @@
 "atom_rtc_avcall" = "Video Call";
 "atom_rtc_video_conference" = "Video Conference";
 "atom_rtc_video_no_answer" = "Video Call No Answer";
+
+"wear_Already_worn" = "Already Worn";
+"wear_Already_removed" = "Already Removed";
+"wear_failure" = "Wearing failure";
+"remove_failure" = "Remove failure";

@@ -1799,7 +1799,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                          UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
                          CGImageRelease(image);
                          
-                         NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+                         NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
                          IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"压缩视频后的大小为%@,确定要发送吗？",fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"send_directly"],[NSBundle qim_localizedStringForKey:@"Save_album_send"], nil];
                          [alertView setVideoOutPath:videoResultPath];
                          [alertView setThumbImage:thumb];
@@ -1960,7 +1960,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                          UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
                          CGImageRelease(image);
                          
-                         NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+                         NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
                          IMAlertView *alertView = [[IMAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSString stringWithFormat:@"%@%@,%@",[NSBundle qim_localizedStringForKey:@"video_compress_sizeStr"], fileSizeStr, [NSBundle qim_localizedStringForKey:@"video_compress_send"]] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"send_directly"],[NSBundle qim_localizedStringForKey:@"Save_album_send"], nil];
                          [alertView setVideoOutPath:videoResultPath];
                          [alertView setThumbImage:thumb];
@@ -2547,7 +2547,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                      NSString * key = [info objectForKey:@"PHImageFileSandboxExtensionTokenKey"];
                      videoResultPath = [[key componentsSeparatedByString:@";"] lastObject];
                  }
-                 NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+                 NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
                  AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:asset];
                  gen.appliesPreferredTrackTransform = YES;
                  CMTime time = CMTimeMakeWithSeconds(0.0, 600);

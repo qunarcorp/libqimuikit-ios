@@ -50,9 +50,6 @@
 #import "QIMChatBGImageSelectController.h"
 
 #import "QIMMessageBrowserVC.h"
-
-#import "QIMVideoPlayerVC.h"
-
 #import "QIMInputPopView.h"
 
 #import "QIMFileManagerViewController.h"
@@ -820,7 +817,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.remoteAudioPlayer stop];
+    [_remoteAudioPlayer stop];
     _currentPlayVoiceMsgId = nil;
     if (_shareLctId && [[QIMKit sharedInstance] getShareLocationUsersByShareLocationId:_shareLctId].count == 0) {
         [_joinShareLctView removeFromSuperview];
@@ -1676,6 +1673,8 @@
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:kPlayAllVoiceMsgFinishHandleNotification object:nil];
         }
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPlayAllVoiceMsgFinishHandleNotification object:nil];
     }
 }
 

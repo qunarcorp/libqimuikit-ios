@@ -9,7 +9,6 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMVideoMsgCell.h"
 #import "QIMMenuImageView.h"
-#import "QIMVideoPlayerVC.h"
 #import "QIMJSONSerializer.h"
 #import "QIMVideoModel.h"
 #import "YYModel.h"
@@ -96,31 +95,32 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
 }
 
 - (void)updateProgress:(NSNotification *)notify {
-    
-    NSDictionary *infoDic = [notify object];
-    QIMMessageModel *message = [infoDic objectForKey:@"message"];
-    float progress = [[infoDic objectForKey:@"propress"] floatValue];
-    NSString * status = [infoDic objectForKey:@"status"];
-    if (__uploading_progress_dic == nil) {
-        __uploading_progress_dic = [NSMutableDictionary dictionary];
-    }
-    if (progress > 1) {
-        [__uploading_progress_dic removeObjectForKey:message.messageId];
-    } else {
-        [__uploading_progress_dic setObject:@(progress) forKey:message.messageId];
-    }
-    if ([message.messageId isEqualToString:self.message.messageId]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *infoDic = [notify object];
+        QIMMessageModel *message = [infoDic objectForKey:@"message"];
+        float progress = [[infoDic objectForKey:@"propress"] floatValue];
+        NSString * status = [infoDic objectForKey:@"status"];
+        if (__uploading_progress_dic == nil) {
+            __uploading_progress_dic = [NSMutableDictionary dictionary];
+        }
         if (progress > 1) {
-            [_progressView setHidden:YES];
+            [__uploading_progress_dic removeObjectForKey:message.messageId];
         } else {
-            [_progressView setHidden:NO];
-            [_progressView setProgress:progress];
+            [__uploading_progress_dic setObject:@(progress) forKey:message.messageId];
         }
-        if ([status isEqualToString:@"failed"]) {
-            self.message.messageSendState = QIMMessageSendState_Faild;
-            [self refreshUI];
+        if ([message.messageId isEqualToString:self.message.messageId]) {
+            if (progress > 1) {
+                [_progressView setHidden:YES];
+            } else {
+                [_progressView setHidden:NO];
+                [_progressView setProgress:progress];
+            }
+            if ([status isEqualToString:@"failed"]) {
+                self.message.messageSendState = QIMMessageSendState_Faild;
+                [self refreshUI];
+            }
         }
-    }
+    });
 }
 
 
@@ -130,6 +130,9 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
             self.message.message = self.message.extendInformation;
         }
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+        QIMVideoModel *videoModel = [QIMVideoModel yy_modelWithDictionary:infoDic];
+        [QIMFastEntrance openVideoPlayerForVideoModel:videoModel];
+        /*
         BOOL newVideo = [[infoDic objectForKey:@"newVideo"] boolValue];
         if (newVideo == YES) {
             
@@ -142,26 +145,8 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
             QIMVideoPlayerVC *videoPlayVC = [[QIMVideoPlayerVC alloc] init];
             [videoPlayVC setVideoMessageModel:self.message];
             [self.owerViewController.navigationController pushViewController:videoPlayVC animated:YES];
-
-            /*
-            NSString *fileName = [infoDic objectForKey:@"FileName"];
-            NSString *fileUrl = [infoDic objectForKey:@"FileUrl"];
-            NSInteger videoWidth = [[infoDic objectForKey:@"Width"] integerValue];;
-            NSInteger videoHeight = [[infoDic objectForKey:@"Height"] integerValue];;
-            
-            if (![fileUrl qim_hasPrefixHttpHeader]) {
-                fileUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
-            }
-            
-            NSString *filePath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingPathComponent:fileName?fileName:@""];
-            QIMVideoPlayerVC *videoPlayVC = [[QIMVideoPlayerVC alloc] init];
-            [videoPlayVC setVideoPath:filePath];
-            [videoPlayVC setVideoUrl:fileUrl];
-            [videoPlayVC setVideoWidth:videoWidth];
-            [videoPlayVC setVideoHeight:videoHeight];
-            [self.owerViewController.navigationController pushViewController:videoPlayVC animated:YES];
-             */
         }
+        */
     }
 }
 

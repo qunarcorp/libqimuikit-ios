@@ -122,9 +122,11 @@
         
         
         NSString *lastUserName = [QIMKit getLastUserName];
-        NSString *lastUserToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+        NSString *lastUserToken = [[QIMKit sharedInstance] getLastUserToken];
+//        [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
         if (lastUserName.length > 0 && lastUserToken.length > 0) {
-            [[QIMKit sharedInstance] setUserObject:lastUserToken forKey:@"kTempUserToken"];
+            [[QIMKit sharedInstance] updateLastTempUserToken:lastUserToken];
+//            [[QIMKit sharedInstance] setUserObject:lastUserToken forKey:@"kTempUserToken"];
             [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserToken];
             [_progressHUD setHidden:YES];
         } else {
@@ -140,7 +142,9 @@
                 [tokenDic setObject:[[QIMKit sharedInstance] macAddress] forKey:@"macCode"];
                 [tokenDic setObject:pwdToken forKey:@"token"];
                 NSString *password = [[QIMJSONSerializer sharedInstance] serializeObject:@{@"token":tokenDic}];
-                [[QIMKit sharedInstance] setUserObject:password forKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] updateLastTempUserToken:password];
+
+//                [[QIMKit sharedInstance] setUserObject:password forKey:@"kTempUserToken"];
                 [[QIMKit sharedInstance] loginWithUserName:userNameToken WithPassWord:password];
             } else {
                 [self clearLoginCookie];

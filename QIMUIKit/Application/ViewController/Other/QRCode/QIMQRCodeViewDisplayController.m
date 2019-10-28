@@ -162,7 +162,7 @@
         {
             [infoLabel setText:[NSBundle qim_localizedStringForKey:@"qrcode_tips_group"]];
             nameLabel.text = self.name;
-            icon.image = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.jid];
+//            icon.image = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.jid];
             QRCodeImageView.image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"qtalk://group?id=%@",self.jid] imageSize:QRCodeImageView.bounds.size.width];
             [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"group_qr_code"]];
         }

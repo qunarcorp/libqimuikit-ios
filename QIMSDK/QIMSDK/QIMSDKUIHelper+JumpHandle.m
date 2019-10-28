@@ -64,6 +64,10 @@
     [QIMFastEntrance openWebViewForUrl:url showNavBar:showNavBar];
 }
 
++ (void)openUserMedalFlutterWithUserId:(NSString *)userId {
+    [QIMFastEntrance openUserMedalFlutterWithUserId:userId];
+}
+
 + (void)openRNSearchVC {
     [QIMFastEntrance openRNSearchVC];
 }
