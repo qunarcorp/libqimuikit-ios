@@ -55,7 +55,9 @@
             QIMVerboseLog(@"AVAudioSession error overrideOutputAudioPort:%@", error);
         }
         //activate the audio session
-        success = [session setActive:NO error:&error];
+        success = [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error];
+
+//        success = [session setActive:NO error:&error];
         if (!success)  {
             QIMVerboseLog(@"AVAudioSession error activating: %@",error);
         } else {
@@ -260,7 +262,7 @@
 
 //播放语音消息结束提示音
 -(void)playVoiceEndSound {
-    
+
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"end" ofType:@"wav"];
     UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
     if (applicationState == UIApplicationStateActive)
