@@ -139,6 +139,7 @@
 "About_tab_recordLog" = "记录本地日志";
 "About_tab_instruments" = "监测App数据";
 "About_tab_storage_space" = "聊天记录存储空间";
+"About_tab_storage_wal_space" = "聊天记录Wal文件存储空间";
 
 //Group
 "group_name" = "群聊名称";

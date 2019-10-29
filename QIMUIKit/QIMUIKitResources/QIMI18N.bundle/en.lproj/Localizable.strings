@@ -117,6 +117,7 @@
 "About_tab_recordLog" = "Record Local Log";
 "About_tab_instruments" = "Instruments";
 "About_tab_storage_space" = "Chat storage space";
+"About_tab_storage_wal_space" = "Chat storage Wal Data space";
 
 //myself tab
 "myself_tab_id" = "ID";
