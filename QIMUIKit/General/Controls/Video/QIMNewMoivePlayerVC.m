@@ -49,7 +49,6 @@
 
 
 - (NSString *)playUrl {
-//    return @"https://qim.qunar.com/file/v2/download/temp/new/00fe340a520d225d9dfd7b43c0c96957?name=00fe340a520d225d9dfd7b43c0c96957.mp4";
     if (self.videoModel.LocalVideoOutPath > 0) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:self.videoModel.LocalVideoOutPath]) {
             return self.videoModel.LocalVideoOutPath;
@@ -95,7 +94,6 @@
     
     UILongPressGestureRecognizer * longGes = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longGesHandle:)];
     [self.view addGestureRecognizer:longGes];
-//    self.videoModel.newVideo = NO;
     if (self.videoModel.newVideo == YES) {
         SuperPlayerModel *playerModel = [[SuperPlayerModel alloc] init];
         playerModel.videoURL = self.playUrl;
