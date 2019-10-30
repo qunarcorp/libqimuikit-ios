@@ -914,12 +914,13 @@
 "%ldn mentioned"="@you %ld times";
 "New_Messages_Below" = "New Msgs Below";
 "All_Messages_Above" = "All Msgs Above";
-"atom_rtc_deny" = "Declined";
+"Declined" = "Declined";
 "atom_rtc_deny_other" = "Call Declined";
 "atom_rtc_canceled" = "Canceled";
 "atom_rtc_canceled_by_caller" = "Call Canceled by caller";
 "atom_rtc_duration" = "Duration：%@";
 "atom_rtc_avcall" = "Video Call";
+"atom_rtc_acall" = "Audio Call";
 "atom_rtc_video_conference" = "Video Conference";
 "atom_rtc_video_no_answer" = "Video Call No Answer";
 
