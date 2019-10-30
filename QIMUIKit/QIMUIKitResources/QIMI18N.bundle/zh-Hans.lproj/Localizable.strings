@@ -913,11 +913,12 @@
 "%ldn mentioned"="我被@%ld次";
 "New_Messages_Below" = "下面有新消息";
 "All_Messages_Above" = "以上为所有消息";
-"atom_rtc_deny" = "已拒绝";
+"Declined" = "已拒绝";
 "atom_rtc_deny_other" = "对方已拒绝";
 "atom_rtc_canceled" = "已取消";
 "atom_rtc_canceled_by_caller" = "对方已取消";
 "atom_rtc_duration" = "通话时长：%@";
 "atom_rtc_avcall"= "视频通话";
+"atom_rtc_acall" = "音频通话";
 "atom_rtc_video_conference" = "视频会议";
 "atom_rtc_video_no_answer" = "对方无人接听";
