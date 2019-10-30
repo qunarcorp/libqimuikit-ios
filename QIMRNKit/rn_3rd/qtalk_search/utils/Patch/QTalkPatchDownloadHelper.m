@@ -141,7 +141,7 @@
 
 +(NSString*) getDestCachePath:(NSString *)path{
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory,
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
                                                          NSUserDomainMask,
                                                          YES);
     NSString *cachePath = [paths objectAtIndex:0];

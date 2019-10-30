@@ -128,7 +128,7 @@ static RCTBridge *bridge = nil;
         NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QTalkSearchRNView getInnerBundleName] ofType:@"jsbundle"];
         NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
         // load jsbundle from cacheqtalk_temp_features
-        NSString *path = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+        NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
 
         NSString *latestJSCodeURLString = [[path stringByAppendingPathComponent:[QTalkSearchRNView getCachePath]] stringByAppendingPathComponent:[QTalkSearchRNView getAssetBundleName]];
 
