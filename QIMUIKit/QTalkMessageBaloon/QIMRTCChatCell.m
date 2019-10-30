@@ -77,10 +77,7 @@
     
     [self.contentView addSubview:titleLabel];
     self.backView.message = self.message;
-    if (self.message.messageType == QIMMessageType_WebRTC_Audio) {
-        titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_avcall"];//@"音视频通话";
-        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Call"];
-    } else if (self.message.messageType == QIMMessageType_WebRTC_Vedio) {
+    if (self.message.messageType == QIMMessageType_WebRTC_Audio || self.message.messageType == QIMMessageType_WebRTC_Vedio) {
 //        _titleLabel.text = self.message.message;
         NSDictionary * infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.extendInformation error:nil];
         if (infoDic) {
@@ -106,7 +103,7 @@
                     titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_canceled_by_caller"];//@"对方已取消";
                 }
                 else if ([type isEqualToString:@"deny"]) {
-                    titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_deny"];
+                    titleLabel.text = [NSBundle qim_localizedStringForKey:@"Declined"];
                 }
                 else if ([type isEqualToString:@"timeout"]) {
                     titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_avcall"];//@"音视频通话";
@@ -120,9 +117,20 @@
             }
         }
         else{
-            titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_avcall"];// @"音视频通话";
+            if (self.message.messageType == QIMMessageType_WebRTC_Audio) {
+                titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_acall"];
+            }
+            else{
+                titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_avcall"];// @"音视频通话";
+            }
         }
-        _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Video"];
+        
+        if (self.message.messageType == QIMMessageType_WebRTC_Audio) {
+            _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Call"];
+        }
+        else{
+            _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Video"];
+        }
     } else if (self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoMeeting) {
         titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_video_conference"];//@"视频会议";
         _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Meeting"];
