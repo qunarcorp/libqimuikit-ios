@@ -321,7 +321,7 @@ static dispatch_once_t __onceMainToken;
     NSInteger appworkState = [notify.object integerValue];
     switch (appworkState) {
         case AppWorkState_Logout: {
-            self.appNetWorkTitle = [NSBundle qim_localizedStringForKey:@"Not_Logged_In…"];
+            self.appNetWorkTitle = [NSBundle qim_localizedStringForKey:@"Not_Logged_In"];
             self.showNetWorkBar = NO;
         }
             break;
