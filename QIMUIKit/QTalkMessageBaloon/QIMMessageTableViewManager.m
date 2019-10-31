@@ -52,6 +52,9 @@
 #endif
 
 #import "QIMFileCell.h"
+#import "QIMRedPackManager.h"
+#import "Toast.h"
+#import "UIApplication+QIMApplication.h"
 
 @interface QIMMessageTableViewManager () 
 
@@ -288,7 +291,10 @@
             if (infoRed.length > 0) {
                 NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoRed error:nil];
                 NSString* rid = [[infoDic objectForKey:@"rid"] stringValue];
+                NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:msg.from];
+                __weak __typeof(self)weakSelf = self;
                 [[QIMKit sharedInstance] openRedEnvelop:[self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] RedRid:rid IsChatRoom:(self.chatType == ChatType_GroupChat) withCallBack:^(NSDictionary *status,NSInteger errcode) {
+                    __strong __typeof(weakSelf) strongSelf = weakSelf;
                     if(errcode == 0 && status){//获取状态成功
                         //是否可以拆红包
                         BOOL has_power = [[status objectForKey:@"has_power"] boolValue];
@@ -301,20 +307,90 @@
                         //今天是否还可以抢
                         BOOL today_has_power = [[status objectForKey:@"today_has_power"] boolValue];
                         if(has_power){
-                            
+                            //展示拆红包，点击拆红包按钮调用grapRedEnvelop:
+                            [[QIMRedPackManager sharedInstance] showRedPackWithUserId:msg.from withRedId:rid withISRoom:(strongSelf.chatType == ChatType_GroupChat) withRedPackInfoDic:infoDic withCallManagerBack:^(BOOL successed) {
+                                if (successed == YES) {
+                                    [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
+                                } else {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                                        });
+                                    });
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"打开红包失败"];
+                                        });
+                                    });
+                                }
+                            }];
                         }else if(is_expired){
-                            
+                            //红包已过期，展示拆红包
+                            [[QIMRedPackManager sharedInstance] showRedPackWithUserId:msg.from withRedId:rid withISRoom:(strongSelf.chatType == ChatType_GroupChat) withRedPackInfoDic:infoDic withCallManagerBack:^(BOOL successed) {
+                                if (successed == YES) {
+                                    [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
+                                } else {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                                        });
+                                    });
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"打开红包失败"];
+                                        });
+                                    });
+                                }
+                            }];
                         }else if(is_grab){//跳转到红包详情
-                            [QIMFastEntrance openRedPacketDetail:self.chatId isRoom:(self.chatType == ChatType_GroupChat) redRid:rid];
+                            [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
                         }else if(is_out){
-                            
+                            //展示拆红包
+                            [[QIMRedPackManager sharedInstance] showRedPackWithUserId:msg.from withRedId:rid withISRoom:(strongSelf.chatType == ChatType_GroupChat) withRedPackInfoDic:infoDic withCallManagerBack:^(BOOL successed) {
+                                if (successed == YES) {
+                                    [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
+                                } else {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                                        });
+                                    });
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                            [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"打开红包失败"];
+                                        });
+                                    });
+                                }
+                            }];
                         }else if(today_has_power){
-                            
+                            //展示toast，提示该用户的红包已达到上线
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                                });
+                            });
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSString stringWithFormat:@"今日领取%@的红包次数已到上线！", [userInfo objectForKey:@"Name"]]];
+                                });
+                            });
                         }
                     }else if(errcode == 4300){//开红包的人未绑定支付账户，需去绑定
-                        
+                        //调用一个接口去绑定支付宝
+//                        getAlipayLoginParams，接收通知之后，会自动呼起支付宝
+                        [[QIMKit sharedInstance] getAlipayLoginParams];
                     }else{//打开失败
-                        
+                        //展示toast，打开失败
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                            });
+                        });
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"打开红包失败"];
+                            });
+                        });
                     }
                 }];
             }
