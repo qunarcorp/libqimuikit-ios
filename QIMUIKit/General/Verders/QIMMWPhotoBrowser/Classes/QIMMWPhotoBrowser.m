@@ -1644,7 +1644,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
                                                                   delegate:self
                                                          cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"]
-                                                         otherButtonTitles: [NSBundle qim_localizedStringForKey:@"Send to Friends"], [NSBundle qim_localizedStringForKey:@"Add to Stickers"], [NSBundle qim_localizedStringForKey:@"Q_Save"], [NSBundle qim_localizedStringForKey:@"Delete"], nil];
+                                                         otherButtonTitles: [NSBundle qim_localizedStringForKey:@"Send to Friends"], [NSBundle qim_localizedStringForKey:@"Add to Stickers"], [NSBundle qim_localizedStringForKey:@"Q_Save"], [NSBundle qim_localizedStringForKey:@"More"], nil];
                 self.activityViewController = nil;
                 [self hideControlsAfterDelay];
                 [self hideProgressHUD:YES];
@@ -1654,7 +1654,7 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                 LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:nil
                                                                   delegate:self
                                                          cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"]
-                                                         otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Send to Friends"], [NSBundle qim_localizedStringForKey:@"Add to Stickers"], [NSBundle qim_localizedStringForKey:@"Q_Save"], [NSBundle qim_localizedStringForKey:@"Extract QR Code"], [NSBundle qim_localizedStringForKey:@"Delete"], nil];
+                                                         otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Send to Friends"], [NSBundle qim_localizedStringForKey:@"Add to Stickers"], [NSBundle qim_localizedStringForKey:@"Q_Save"], [NSBundle qim_localizedStringForKey:@"Extract QR Code"], [NSBundle qim_localizedStringForKey:@"More"], nil];
                 self.activityViewController = nil;
                 [self hideControlsAfterDelay];
                 [self hideProgressHUD:YES];
