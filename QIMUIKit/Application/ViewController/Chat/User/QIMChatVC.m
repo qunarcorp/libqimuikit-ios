@@ -2917,13 +2917,21 @@
                 if (isVisable) {
                     [_tableView reloadRowsAtIndexPaths:@[thisIndexPath] withRowAnimation:UITableViewRowAnimationNone];
                 }
+                
                 NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
                 [dicInfo setObject:[[QIMKit sharedInstance] getLastJid] forKey:@"fromId"];
                 [dicInfo setObject:[(QIMMessageModel *) eventMsg messageId] forKey:@"messageId"];
                 [dicInfo setObject:[(QIMMessageModel *) eventMsg message] forKey:@"message"];
+//                [dicInfo setObject:[(QIMMessageModel *) eventMsg messageDirection] forKey:@"messageDirection"];
                 NSString *msgInfo = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
+                if (self.chatType == ChatType_Consult) {
+//                    [[QIMKit sharedInstance] revokeConsultMessageWithMessageId:[(QIMMessageModel *) eventMsg messageId] message:msgInfo ToJid:self.chatId];
+                    [[QIMKit sharedInstance] revokeConsultMessageWithMessageId:[(QIMMessageModel *) eventMsg messageId] message:msgInfo ToJid:self.chatId realToJid:msg.realJid chatType:self.chatType];
+                }
+                else{
+                    [[QIMKit sharedInstance] revokeMessageWithMessageId:[(QIMMessageModel *) eventMsg messageId] message:msgInfo ToJid:self.chatId];
+                }
                 
-                [[QIMKit sharedInstance] revokeMessageWithMessageId:[(QIMMessageModel *) eventMsg messageId] message:msgInfo ToJid:self.chatId];
                 break;
             }
         }
