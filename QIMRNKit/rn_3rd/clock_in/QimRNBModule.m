@@ -8,7 +8,9 @@
 
 
 #import "QimRNBModule.h"
+#if __has_include("QIMFlutterModule.h")
 #import "QIMFlutterModule.h"
+#endif
 
 #import "QIMMainVC.h"
 #import "UIApplication+QIMApplication.h"
