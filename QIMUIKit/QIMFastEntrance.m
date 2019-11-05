@@ -781,9 +781,11 @@ static QIMFastEntrance *_sharedInstance = nil;
 }
 
 + (void)openUserMedalFlutterWithUserId:(NSString *)userId {
+#if __has_include("QIMFlutterModule.h")
     dispatch_async(dispatch_get_main_queue(), ^{
         [[QIMFlutterModule sharedInstance] openUserMedalFlutterWithUserId:userId];
     });
+#endif
 }
 
 + (void)openVideoPlayerForUrl:(NSString *)videoUrl LocalOutPath:(NSString *)localOutPath CoverImageUrl:(NSString *)coverImageUrl {
