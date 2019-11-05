@@ -40,7 +40,6 @@
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
-//#import "UIView+Toast.h"
 
 static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
@@ -706,17 +705,17 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         if (!strongSelf) {
             return;
         }
-        QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
-        picker.delegate = strongSelf;
-        picker.title = @"选取照片";
-        picker.customDoneButtonTitle = @"";
-        picker.customCancelButtonTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
-        picker.customNavigationBarPrompt = nil;
-        
-        picker.colsInPortrait = 4;
-        picker.colsInLandscape = 5;
-        picker.minimumInteritemSpacing = 2.0;
         dispatch_async(dispatch_get_main_queue(), ^{
+            QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
+            picker.delegate = strongSelf;
+            picker.title = @"选取照片";
+            picker.customDoneButtonTitle = @"";
+            picker.customCancelButtonTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
+            picker.customNavigationBarPrompt = nil;
+            
+            picker.colsInPortrait = 4;
+            picker.colsInLandscape = 5;
+            picker.minimumInteritemSpacing = 2.0;
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                 picker.modalPresentationStyle = UIModalPresentationCurrentContext;
                 [strongSelf presentViewController:picker animated:YES completion:nil];
