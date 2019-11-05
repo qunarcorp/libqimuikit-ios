@@ -546,16 +546,19 @@
         }
             break;
         case QIMCommonTableViewCellDataTypeMessageOnlineNotification: {
-            BOOL success = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_ONLINE WithSwitchOn:sender.on];
-            if (!success) {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Failed to switch the setting"]
-                                                                   delegate:self
-                                                          cancelButtonTitle:nil
-                                                          otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"], nil];
-                
-                [alertView show];
-                [sender setOn:!sender.on animated:YES];
-            }
+            [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_ONLINE WithSwitchOn:sender.on withCallBack:^(BOOL successed) {
+                if (!successed) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Failed to switch the setting"]
+                                                                           delegate:self
+                                                                  cancelButtonTitle:nil
+                                                                  otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Confirm"], nil];
+                        
+                        [alertView show];
+                        [sender setOn:!sender.on animated:YES];
+                    });
+                }
+            }];
         }
             break;
         case QIMCommonTableViewCellDataTypeShowSignature: {

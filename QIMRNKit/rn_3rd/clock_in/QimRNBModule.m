@@ -1565,8 +1565,9 @@ RCT_EXPORT_METHOD(syncOnLineNotifyState:(RCTResponseSenderBlock)callback) {
 
 //设置在线也收通知状态
 RCT_EXPORT_METHOD(updateOnLineNotifyState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_ONLINE WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_ONLINE WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+        callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取用户通知声音状态
@@ -1578,8 +1579,9 @@ RCT_EXPORT_METHOD(getNotifySoundState:(RCTResponseSenderBlock)callback) {
 
 //设置用户通知声音状态
 RCT_EXPORT_METHOD(updateNotifySoundState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGSOUND_INAPP WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGSOUND_INAPP WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+       callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取消息推送状态
@@ -1590,8 +1592,9 @@ RCT_EXPORT_METHOD(getStartPushState:(RCTResponseSenderBlock)callback) {
 
 //设置开启消息推送状态
 RCT_EXPORT_METHOD(updateStartNotifyState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_SWITCH WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_SWITCH WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+       callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取用户通知震动状态
@@ -1602,8 +1605,9 @@ RCT_EXPORT_METHOD(getNotifyVibrationState:(RCTResponseSenderBlock)callback) {
 
 //设置用户通知震动状态
 RCT_EXPORT_METHOD(updateNotifyVibrationState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGVIBRATE_INAPP WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGVIBRATE_INAPP WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+       callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取用户是否显示通知详情
@@ -1614,8 +1618,9 @@ RCT_EXPORT_METHOD(getNotifyPushDetailsState:(RCTResponseSenderBlock)callback) {
 
 //设置用户通知是否显示详情
 RCT_EXPORT_METHOD(updateNotifyPushDetailsState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGSHOW_CONTENT WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGSHOW_CONTENT WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+       callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取显示用户签名状态

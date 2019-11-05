@@ -72,7 +72,7 @@
     if (_isValueChanged) {
         NSDictionary *fontInfo = [[QIMKit sharedInstance] userObjectForKey:kCurrentFontInfo];
         NSString * infoDicStr = [[QIMJSONSerializer sharedInstance] serializeObject:fontInfo];
-        [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKCurrentFontInfo WithSubKey:[[QIMKit sharedInstance] getLastJid] WithConfigValue:infoDicStr WithDel:NO];
+        [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKCurrentFontInfo WithSubKey:[[QIMKit sharedInstance] getLastJid] WithConfigValue:infoDicStr WithDel:NO withCallback:nil];
         [[QIMMessageCellCache sharedInstance] clearUp];
     }
 }

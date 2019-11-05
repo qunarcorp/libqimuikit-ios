@@ -110,40 +110,41 @@
         }
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{ 
 
-            NSDictionary * loginDic = [[QIMKit sharedInstance] QChatLoginWithUserId:self.usernameTextField.text rsaPassword:RSAPassword type:type];
-            if ([[loginDic objectForKey:@"ret"] boolValue]) {
-                NSDictionary * cookieDic = [[loginDic objectForKey:@"data"] firstObject];
-                NSString *userName = [cookieDic objectForKey:@"username"];
-                NSString *type = [cookieDic objectForKey:@"type"];
-                if ([type isEqualToString:@"merchant"]) {
-                    [[QIMKit sharedInstance] setIsMerchant:YES];
-                } else {
-                    [[QIMKit sharedInstance] setIsMerchant:NO];
-                }
-                
-                NSMutableDictionary * passwordDic = [NSMutableDictionary dictionaryWithCapacity:1];
-                [passwordDic setQIMSafeObject:[cookieDic objectForKey:@"qcookie"] forKey:@"q"];
-                [passwordDic setQIMSafeObject:[cookieDic objectForKey:@"vcookie"] forKey:@"v"];
-                [passwordDic setQIMSafeObject:[cookieDic objectForKey:@"tcookie"] forKey:@"t"];
-                [passwordDic setQIMSafeObject:[cookieDic objectForKey:@"type"] forKey:@"type"];
-                NSString *password = [[QIMJSONSerializer sharedInstance] serializeObject:@{@"cookie":passwordDic}];
-                
-                [[QIMKit sharedInstance] setUserObject:passwordDic forKey:@"QChatCookie"];
-                
-                //同步http cookie
-                [self syncWebviewCookie];
-                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:password];
-                [[QIMKit sharedInstance] saveUserInfoWithName:userName passWord:[self.passwordTextField text]];
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{ 
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"[%d] %@",[[loginDic objectForKey:@"errcode"] intValue],[loginDic objectForKey:@"errmsg"]] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
-                    [alertView show];
+            [[QIMKit sharedInstance] QChatLoginWithUserId:self.usernameTextField.text rsaPassword:RSAPassword type:type withCallback:^(NSDictionary *loginDic) {
+                if ([[loginDic objectForKey:@"ret"] boolValue]) {
+                    NSDictionary * cookieDic = [[loginDic objectForKey:@"data"] firstObject];
+                    NSString *userName = [cookieDic objectForKey:@"username"];
+                    NSString *type = [cookieDic objectForKey:@"type"];
+                    if ([type isEqualToString:@"merchant"]) {
+                        [[QIMKit sharedInstance] setIsMerchant:YES];
+                    } else {
+                        [[QIMKit sharedInstance] setIsMerchant:NO];
+                    }
                     
-                    //登录动画
-                    [_loadingView stopAnimation];
-                    [self enableLoginUI];
-                });
-            }
+                    NSMutableDictionary * passwordDic = [NSMutableDictionary dictionaryWithCapacity:1];
+                    [passwordDic setQIMSafeObject:[cookieDic objectForKey:@"qcookie"] forKey:@"q"];
+                    [passwordDic setQIMSafeObject:[cookieDic objectForKey:@"vcookie"] forKey:@"v"];
+                    [passwordDic setQIMSafeObject:[cookieDic objectForKey:@"tcookie"] forKey:@"t"];
+                    [passwordDic setQIMSafeObject:[cookieDic objectForKey:@"type"] forKey:@"type"];
+                    NSString *password = [[QIMJSONSerializer sharedInstance] serializeObject:@{@"cookie":passwordDic}];
+                    
+                    [[QIMKit sharedInstance] setUserObject:passwordDic forKey:@"QChatCookie"];
+                    
+                    //同步http cookie
+                    [self syncWebviewCookie];
+                    [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:password];
+                    [[QIMKit sharedInstance] saveUserInfoWithName:userName passWord:[self.passwordTextField text]];
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"[%d] %@",[[loginDic objectForKey:@"errcode"] intValue],[loginDic objectForKey:@"errmsg"]] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil];
+                        [alertView show];
+                        
+                        //登录动画
+                        [_loadingView stopAnimation];
+                        [self enableLoginUI];
+                    });
+                }
+            }];
         });
        
     }
