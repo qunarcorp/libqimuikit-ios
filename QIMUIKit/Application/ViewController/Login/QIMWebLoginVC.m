@@ -132,25 +132,26 @@
         } else {
             //      切换成Token登录模式
             NSString *buName = @"app";
-            NSDictionary *qchatToken = [[QIMKit sharedInstance] getQChatTokenWithBusinessLineName:buName];
-            if (qchatToken.count) {
-                NSString *userNameToken = [qchatToken objectForKey:@"username"];
-                NSString *pwdToken = [qchatToken objectForKey:@"token"];
-                //        {"token":{"plat":"app", "macCode":"xxxxxxxxxxxx", "token":"xxxxxxxxxx"}}
-                NSMutableDictionary *tokenDic = [NSMutableDictionary dictionary];
-                [tokenDic setObject:buName forKey:@"plat"];
-                [tokenDic setObject:[[QIMKit sharedInstance] macAddress] forKey:@"macCode"];
-                [tokenDic setObject:pwdToken forKey:@"token"];
-                NSString *password = [[QIMJSONSerializer sharedInstance] serializeObject:@{@"token":tokenDic}];
-                [[QIMKit sharedInstance] updateLastTempUserToken:password];
-
-//                [[QIMKit sharedInstance] setUserObject:password forKey:@"kTempUserToken"];
-                [[QIMKit sharedInstance] loginWithUserName:userNameToken WithPassWord:password];
-            } else {
-                [self clearLoginCookie];
-                [self loadLoginUrl];
-                [_progressHUD setHidden:YES];
-            }
+            [[QIMKit sharedInstance] getQChatTokenWithBusinessLineName:buName withCallBack:^(NSDictionary *qchatToken) {
+                if (qchatToken.count) {
+                    NSString *userNameToken = [qchatToken objectForKey:@"username"];
+                    NSString *pwdToken = [qchatToken objectForKey:@"token"];
+                    //        {"token":{"plat":"app", "macCode":"xxxxxxxxxxxx", "token":"xxxxxxxxxx"}}
+                    NSMutableDictionary *tokenDic = [NSMutableDictionary dictionary];
+                    [tokenDic setObject:buName forKey:@"plat"];
+                    [tokenDic setObject:[[QIMKit sharedInstance] macAddress] forKey:@"macCode"];
+                    [tokenDic setObject:pwdToken forKey:@"token"];
+                    NSString *password = [[QIMJSONSerializer sharedInstance] serializeObject:@{@"token":tokenDic}];
+                    [[QIMKit sharedInstance] updateLastTempUserToken:password];
+                    [[QIMKit sharedInstance] loginWithUserName:userNameToken WithPassWord:password];
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self clearLoginCookie];
+                        [self loadLoginUrl];
+                        [_progressHUD setHidden:YES];
+                    });
+                }
+            }];
         }
         if ([request.URL.absoluteString containsString:@"/personalcenter/myaccount/"]) {
             return NO;

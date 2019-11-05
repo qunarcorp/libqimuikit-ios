@@ -228,7 +228,7 @@ typedef enum {
     }
     if (_isValueChange) {
         NSString *infoDicStr = [[QIMJSONSerializer sharedInstance] serializeObject:_chatColorInfo];
-        [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKChatColorInfo WithSubKey:[[QIMKit sharedInstance] getLastJid] WithConfigValue:infoDicStr WithDel:NO];
+        [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKChatColorInfo WithSubKey:[[QIMKit sharedInstance] getLastJid] WithConfigValue:infoDicStr WithDel:NO withCallback:nil];
         [[QIMMessageCellCache sharedInstance] clearUp];
     }
 }

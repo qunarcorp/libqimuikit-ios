@@ -302,7 +302,7 @@
 - (void)updateCollectionEmojiWithEmojiUrl:(NSString *)emojiUrl {
     dispatch_block_t block = ^{
         NSString *emojiMd5 = [[QIMKit sharedInstance] md5fromUrl:emojiUrl];
-        [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKCollectionCacheKey WithSubKey:emojiMd5 WithConfigValue:emojiUrl WithDel:NO];
+        [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKCollectionCacheKey WithSubKey:emojiMd5 WithConfigValue:emojiUrl WithDel:NO withCallback:nil];
     };
     
     if (dispatch_get_specific(_collectFaceQueueTag))
@@ -481,7 +481,7 @@
         }
         if (canUpdateArr.count) {
             NSString *infoDicStr = [[QIMJSONSerializer sharedInstance] serializeObject:canUpdateArr];
-            [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKCollectionCacheKey BatchProcessConfigInfo:canUpdateArr WithDel:del];
+            [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKCollectionCacheKey BatchProcessConfigInfo:canUpdateArr WithDel:del withCallback:nil];
         }
     };
     
@@ -526,7 +526,7 @@
         if (canUpdateArr.count) {
             NSString *infoDicStr = [[QIMJSONSerializer sharedInstance] serializeObject:canUpdateArr];
 //            [[QIMKit sharedInstance] updateRemoteClientConfigBatchProcessConfigInfo:infoDicStr WithDel:YES];
-            [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKCollectionCacheKey BatchProcessConfigInfo:infoDicStr WithDel:YES];
+            [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKCollectionCacheKey BatchProcessConfigInfo:infoDicStr WithDel:YES withCallback:nil];
         }
     };
 
