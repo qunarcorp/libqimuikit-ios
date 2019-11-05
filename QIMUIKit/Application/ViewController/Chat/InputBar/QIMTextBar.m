@@ -1842,29 +1842,31 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:pickerVc animated:YES completion:nil];
         }
         */
-        QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
-        picker.delegate = self;
-        picker.title = @"选取照片";
-        picker.customDoneButtonTitle = @"";
-        picker.customCancelButtonTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
-        picker.customNavigationBarPrompt = nil;
         
-        picker.colsInPortrait = 4;
-        picker.colsInLandscape = 5;
-        picker.minimumInteritemSpacing = 2.0;
-        //Mark by oldiPad
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
-#if __has_include("QIMIPadWindowManager.h")
-            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
-#endif
-        } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
+            picker.delegate = self;
+            picker.title = @"选取照片";
+            picker.customDoneButtonTitle = @"";
+            picker.customCancelButtonTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
+            picker.customNavigationBarPrompt = nil;
+            
+            picker.colsInPortrait = 4;
+            picker.colsInLandscape = 5;
+            picker.minimumInteritemSpacing = 2.0;
+            //Mark by oldiPad
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                 picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
+#endif
+            } else {
+                if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                    picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+                }
+                [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
             }
-            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
-        }
-    
+        });
         /* mark by newipad
          
          if ([[QIMKit sharedInstance] getIsIpad] == YES) {
