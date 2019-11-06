@@ -319,20 +319,28 @@ static NSInteger limitCount = 15;
 - (void)searchList {
     
     NSString *searchString = self.searchBar.text;
-    NSArray *searchList = [[QIMKit sharedInstance] searchUserListBySearchStr:searchString Url:self.domainURL id:self.domainId limit:limitCount offset:0];
-    [_searchResults removeAllObjects];
-    if (searchList) {
-        
-        [_searchResults addObjectsFromArray:searchList];
-    }
-    
-    NSLog(@"_searchResults : %@", _searchResults);
-    [self.tableView reloadData];
-    if (_searchResults.count <= 0) {
-        [self loadEmptyNotReadMsgList];
-    } else {
-        [self.emptyView removeFromSuperview];
-    }
+    __weak __typeof(self) weakSelf = self;
+    [[QIMKit sharedInstance] searchUserListBySearchStr:searchString Url:self.domainURL id:self.domainId limit:limitCount offset:0 withCallBack:^(NSArray *searchList) {
+        __typeof(self) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_searchResults removeAllObjects];
+            if (searchList) {
+                
+                [_searchResults addObjectsFromArray:searchList];
+            }
+            
+            NSLog(@"_searchResults : %@", _searchResults);
+            [strongSelf.tableView reloadData];
+            if (_searchResults.count <= 0) {
+                [strongSelf loadEmptyNotReadMsgList];
+            } else {
+                [strongSelf.emptyView removeFromSuperview];
+            }
+        });
+    }];
 }
 
 - (void)onReceiveFriendPresence:(NSNotification *)notify{
@@ -357,15 +365,6 @@ static NSInteger limitCount = 15;
 {
     [[QIMKit sharedInstance] openChatSessionByUserId:_infoDic[@"XmppId"]];
     [QIMFastEntrance openSingleChatVCByUserId:_infoDic[@"XmppId"]];
-    /*
-     QIMChatVC * chatVC  = [[QIMChatVC alloc] init];
-     [chatVC setStype:kSessionType_Chat];
-     [chatVC setChatId:_infoDic[@"XmppId"]];
-     [chatVC setName:_infoDic[@"Name"]];
-     [chatVC setTitle:_infoDic[@"Name"]];
-     [[NSNotificationCenter defaultCenter] postNotificationName:kNotifySelectTab object:@(0)];
-     [self.navigationController popToRootVCThenPush:chatVC animated:YES];
-     */
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
