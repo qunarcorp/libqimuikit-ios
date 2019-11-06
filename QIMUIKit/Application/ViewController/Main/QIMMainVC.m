@@ -387,7 +387,9 @@ static dispatch_once_t __onceMainToken;
                 count = [notify.object boolValue];
             }
         } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat && [QIMKit sharedInstance].isMerchant) {
-            count = [[QIMKit sharedInstance] getLeaveMsgNotReaderCount];
+            [[QIMKit sharedInstance] getLeaveMsgNotReaderCountWithCallBack:^(NSInteger num) {
+                count = num;
+            }];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([QIMKit getQIMProjectType] != QIMProjectTypeQChat) {

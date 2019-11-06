@@ -110,11 +110,33 @@
     NSInteger shopId = [[serviceShop objectForKey:@"sid"] integerValue];
     NSInteger shopServiceStatus = [[serviceShop objectForKey:@"st"] integerValue];
     if (status != shopServiceStatus) {
+        //Mark by AFN
+        __weak __typeof(self)weakSelf = self;
+        [[QIMKit sharedInstance] updateSeatSeStatusWithShopId:shopId WithStatus:status withCallBack:^(BOOL res) {
+            __strong __typeof(weakSelf) strongSelf = weakSelf;
+            if (res) {
+                [[QIMKit sharedInstance] getSeatSeStatusWithCallback:^(NSArray *list) {
+                    strongSelf.serviceShops = list;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [strongSelf.mainTableView reloadData];
+                    });
+                }];
+            }
+        }];
+        /*
         BOOL updateShopServiceSuccess = [[QIMKit sharedInstance] updateSeatSeStatusWithShopId:shopId WithStatus:status];
         if (updateShopServiceSuccess) {
-            self.serviceShops = [[QIMKit sharedInstance] getSeatSeStatus];
-            [self.mainTableView reloadData];
+            //Mark by AFN
+            __weak __typeof(self)weakSelf = self;
+            [[QIMKit sharedInstance] getSeatSeStatusWithCallback:^(NSArray *list) {
+                __strong __typeof(weakSelf) strongSelf = weakSelf;
+                strongSelf.serviceShops = list;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [strongSelf.mainTableView reloadData];
+                });
+            }];
         }
+        */
     }
 }
 
@@ -143,10 +165,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUpNavBar];
+    //Mark by AFN
+    __weak __typeof(self)weakSelf = self;
+    [[QIMKit sharedInstance] getSeatSeStatusWithCallback:^(NSArray *list) {
+        __strong __typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.serviceShops = list;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [strongSelf.view addSubview:strongSelf.mainTableView];
+            [strongSelf.view setBackgroundColor:[UIColor grayColor]];
+        });
+    }];
+    
+    /*
     self.serviceShops = [[QIMKit sharedInstance] getSeatSeStatus];
     QIMVerboseLog(@"self.serviceShops : %@", self.serviceShops);
     [self.view addSubview:self.mainTableView];
     [self.view setBackgroundColor:[UIColor grayColor]];
+    */
 }
 
 - (void)didReceiveMemoryWarning {

@@ -1663,8 +1663,11 @@ RCT_EXPORT_METHOD(updateWorkWorldRemind:(BOOL)state :(RCTResponseSenderBlock)cal
 //获取客服服务模式
 RCT_EXPORT_METHOD(getServiceState:(RCTResponseSenderBlock)callback) {
     
-    NSArray *array = [[QIMKit sharedInstance] getSeatSeStatus];
-    callback(@[@{@"JsonData" : array ? array : @[]}]);
+//    NSArray *array = [[QIMKit sharedInstance] getSeatSeStatus];
+    //mark by ANF
+    [[QIMKit sharedInstance] getSeatSeStatusWithCallback:^(NSArray *list) {
+        callback(@[@{@"JsonData" : list ? list : @[]}]);
+    }];
 }
 
 //设置客服服务模式
@@ -1675,8 +1678,11 @@ RCT_EXPORT_METHOD(setServiceState:(NSDictionary *)param :(RCTResponseSenderBlock
     NSInteger st = [[param objectForKey:@"state"] integerValue];
     NSInteger sid = [[param objectForKey:@"sid"] integerValue];
     if (sid) {
-        BOOL success = [[QIMKit sharedInstance] updateSeatSeStatusWithShopId:sid WithStatus:st];
-        callback(@[@{@"result" : @(success)}]);
+        //mark by AFN
+//        BOOL success = [[QIMKit sharedInstance] updateSeatSeStatusWithShopId:sid WithStatus:st];
+        [[QIMKit sharedInstance] updateSeatSeStatusWithShopId:sid WithStatus:st withCallBack:^(BOOL res) {
+            callback(@[@{@"result" : @(res)}]);
+        }];
     }
 }
 
