@@ -851,7 +851,7 @@
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [weakSelf stopLoginAnimation];
     }];
-    UIAlertAction *helpAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@""] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *helpAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Help"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [weakSelf stopLoginAnimation];
         NSString *netHelperPath = [[NSBundle mainBundle] pathForResource:@"NetWorkSetting" ofType:@"html"];
         NSString *netHelperString = [NSString stringWithContentsOfFile:netHelperPath encoding:NSUTF8StringEncoding error:nil];

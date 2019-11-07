@@ -1480,6 +1480,38 @@
 - (void)openPlatformRequest:(NSString *)urlStr ForDealId:(NSString *)dealId{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *temp = [urlStr stringByAppendingFormat:@"&qchat_id=%@",[[QIMKit sharedInstance] getLastJid]];
+        [[QIMKit sharedInstance] sendTPGetRequestWithUrl:[temp stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] withSuccessCallBack:^(NSData *responseData) {
+            NSDictionary *resultDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+            BOOL isSuccess = [[resultDic objectForKey:@"ret"] boolValue];
+            if (isSuccess) {
+                
+            } else {
+                NSString *errorMsg = [resultDic objectForKey:@"error_msg"];
+                [_qdLoadingView setInfoStr:errorMsg];
+                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateQDLoadingView) object:nil];
+                [self performSelector:@selector(hiddenQDLoadingView) withObject:nil afterDelay:1.5];
+                int errorCode = [[resultDic objectForKey:@"error_code"] intValue];
+                switch (errorCode) {
+                    case 5007:
+                        [[QIMKit sharedInstance] setDealId:dealId ForState:QDDealState_Faild];
+                        break;
+                    case 5008:
+                        [[QIMKit sharedInstance] setDealId:dealId ForState:QDDealState_TimeOut];
+                        break;
+                    default:
+                        break;
+                }
+                [_tableView reloadData];
+            }
+        } withFailedCallBack:^(NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_qdLoadingView setInfoStr:@"请求异常，抢单失败！"];
+                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateQDLoadingView) object:nil];
+                [self performSelector:@selector(hiddenQDLoadingView) withObject:nil afterDelay:1.5];
+            });
+        }];
+        //mark by AFN
+        /*
         NSURL *url = [NSURL URLWithString:[temp stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
         [request startSynchronous];
@@ -1513,6 +1545,7 @@
                 [self performSelector:@selector(hiddenQDLoadingView) withObject:nil afterDelay:1.5];
             }
         });
+        */
     });
 }
 

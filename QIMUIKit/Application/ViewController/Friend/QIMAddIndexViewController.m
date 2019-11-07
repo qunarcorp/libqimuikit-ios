@@ -163,10 +163,18 @@ static NSInteger limitCount = 15;
         if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
             urlStr = [urlStr stringByReplacingOccurrencesOfString:@"qtalk" withString:@"qchat"];
         }
-        NSURL *url = [NSURL URLWithString:urlStr];
         NSDictionary *paramDic = @{@"version":@0};
         NSData *requestData = [[QIMJSONSerializer sharedInstance] serializeObject:paramDic error:nil];
-        
+        [[QIMKit sharedInstance] sendTPPOSTFormUrlEncodedRequestWithUrl:urlStr withRequestBodyData:requestData withSuccessCallBack:^(NSData *responseData) {
+            NSDictionary *responseDict = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+            self.objectsArray = responseDict[@"data"][@"domains"];
+
+        } withFailedCallBack:^(NSError *error) {
+            
+        }];
+        //mark by AFN
+        /*
+        NSURL *url = [NSURL URLWithString:urlStr];
         ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
         [request addRequestHeader:@"content-type" value:@"application/json"];
         [request appendPostData:requestData];
@@ -178,7 +186,7 @@ static NSInteger limitCount = 15;
             NSDictionary *responseDict = [[QIMJSONSerializer sharedInstance] deserializeObject:request.responseData error:nil];
             self.objectsArray = responseDict[@"data"][@"domains"];
         }
-        
+        */
     } url:@"https://qim.qunar.com/s/qtalk/domainlist.php"];
     for (NSDictionary *dict in self.objectsArray) {
         if (dict) {

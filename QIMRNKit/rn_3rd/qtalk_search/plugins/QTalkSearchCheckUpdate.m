@@ -21,7 +21,7 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback) {
     
-    BOOL updateResult = NO;
+    __block BOOL updateResult = NO;
     
     // update param
     NSString *fullpackageUrl = [param objectForKey:@"bundleUrl"];
@@ -39,23 +39,31 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
             // download full zip
             // check md5
             // unzip
-            updateResult = [QTalkPatchDownloadHelper downloadFullPackageAndCheck:fullpackageUrl md5:fullMd5 bundleName:bundleName zipName: [QTalkSearchRNView getAssetZipBundleName] cachePath:[QTalkSearchRNView getCachePath] destAssetName: [QTalkSearchRNView getAssetBundleName]];
+            [QTalkPatchDownloadHelper downloadFullPackageAndCheck:fullpackageUrl md5:fullMd5 bundleName:bundleName zipName: [QTalkSearchRNView getAssetZipBundleName] cachePath:[QTalkSearchRNView getCachePath] destAssetName: [QTalkSearchRNView getAssetBundleName] withCallBack:^(BOOL res) {
+                updateResult = res;
+            }];
             
         } else if ([updateType isEqualToString:@"auto"]) {
             // try use patch first
             // patch error download full package
-            updateResult = [QTalkPatchDownloadHelper downloadPatchAndCheck:patchUrl patchMd5:patchMd5 fullMd5:fullMd5 cachePath: [QTalkSearchRNView getCachePath] destAssetName:[QTalkSearchRNView getAssetBundleName] innerBundleName: [QTalkSearchRNView getInnerBundleName]];
-            if(!updateResult){
-                
-                updateResult = [QTalkPatchDownloadHelper downloadFullPackageAndCheck:fullpackageUrl md5:fullMd5 bundleName:bundleName zipName: [QTalkSearchRNView getAssetZipBundleName] cachePath:[QTalkSearchRNView getCachePath] destAssetName: [QTalkSearchRNView getAssetBundleName]];
-            }
-            
+            [QTalkPatchDownloadHelper downloadPatchAndCheck:patchUrl patchMd5:patchMd5 fullMd5:fullMd5 cachePath: [QTalkSearchRNView getCachePath] destAssetName:[QTalkSearchRNView getAssetBundleName] innerBundleName: [QTalkSearchRNView getInnerBundleName] withCallBack:^(BOOL res) {
+                if(!res){
+                    
+                    [QTalkPatchDownloadHelper downloadFullPackageAndCheck:fullpackageUrl md5:fullMd5 bundleName:bundleName zipName: [QTalkSearchRNView getAssetZipBundleName] cachePath:[QTalkSearchRNView getCachePath] destAssetName: [QTalkSearchRNView getAssetBundleName] withCallBack:^(BOOL res) {
+                        updateResult = res;
+                    }];
+                } else {
+                    updateResult = res;
+                }
+            }];
         } else if ([updateType isEqualToString:@"patch"]){
             // TODO download patch
             // check patch md5
             // patch
             // check after patch md5
-            updateResult = [QTalkPatchDownloadHelper downloadPatchAndCheck:patchUrl patchMd5:patchMd5 fullMd5:fullMd5 cachePath:[QTalkSearchRNView getCachePath] destAssetName:[QTalkSearchRNView getAssetBundleName] innerBundleName: [QTalkSearchRNView getInnerBundleName]];
+            [QTalkPatchDownloadHelper downloadPatchAndCheck:patchUrl patchMd5:patchMd5 fullMd5:fullMd5 cachePath:[QTalkSearchRNView getCachePath] destAssetName:[QTalkSearchRNView getAssetBundleName] innerBundleName: [QTalkSearchRNView getInnerBundleName] withCallBack:^(BOOL res) {
+                updateResult = res;
+            }];
             
         }
     }

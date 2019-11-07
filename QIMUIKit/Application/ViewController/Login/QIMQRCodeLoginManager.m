@@ -69,12 +69,13 @@ static QIMQRCodeLoginManager *__qrcodeLoginManager = nil;
     [request setHTTPBody:postData];
     [QIMHTTPClient sendRequest:request complete:^(QIMHTTPResponse *response) {
         if (response.code == 200) {
-            QIMVerboseLog(@"确认扫码操作 : %@", response.responseString);
+            QIMVerboseLog(@"确认扫码操作");
         }
     } failure:^(NSError *error) {
         
     }];
     
+    //Mark by AFN
     /*
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:confirmURL]];
     [request setRequestMethod:@"POST"];
@@ -90,7 +91,6 @@ static QIMQRCodeLoginManager *__qrcodeLoginManager = nil;
 
 - (void)confirmQRCodeLogin {
     NSString *confirmURL = [NSString stringWithFormat:@"%@/qtapi/common/qrcode/auth.qunar", [[QIMKit sharedInstance] qimNav_Javaurl]];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:confirmURL]];
     NSString * qCookie = [[[QIMKit sharedInstance] userObjectForKey:@"QChatCookie"] objectForKey:@"q"];
     NSString * vCookie = [[[QIMKit sharedInstance] userObjectForKey:@"QChatCookie"] objectForKey:@"v"];
     NSString * tCookie = [[[QIMKit sharedInstance] userObjectForKey:@"QChatCookie"] objectForKey:@"t"];
@@ -101,6 +101,28 @@ static QIMQRCodeLoginManager *__qrcodeLoginManager = nil;
     NSString *authJSON = [[QIMJSONSerializer sharedInstance] serializeObject:authData];
     NSDictionary *param = @{@"qrcodekey" : self.loginKey, @"phase" : @(2), @"authdata" : authJSON};
     NSMutableData *postData = [NSMutableData dataWithData:[[QIMJSONSerializer sharedInstance] serializeObject:param error:nil]];
+    
+    [[QIMKit sharedInstance] sendTPPOSTFormUrlEncodedRequestWithUrl:confirmURL withRequestBodyData:postData withSuccessCallBack:^(NSData *responseData) {
+        NSDictionary *responseDict = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
+        QIMVerboseLog(@"二维码确认登陆结果 : %@", responseDict);
+        BOOL ret = [responseDict objectForKey:@"ret"];
+        NSInteger errcode = [[responseDict objectForKey:@"errcode"] integerValue];
+        if (ret && errcode == 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:QIMQRCodeLoginStateNotification object:@(QIMQRCodeLoginStateSuccess)];
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:QIMQRCodeLoginStateNotification object:@(QIMQRCodeLoginStateFailed)];
+            });
+        }
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:confirmURL]];
     [request setRequestMethod:@"POST"];
     [request setPostBody:postData];
     [request setUseCookiePersistence:NO];
@@ -124,16 +146,25 @@ static QIMQRCodeLoginManager *__qrcodeLoginManager = nil;
             });
         }
     }
+    */
 }
 
 - (void)cancelQRCodeLogin {
     NSString *headerUrl = [[QIMKit sharedInstance] getUserBigHeaderImageUrlWithUserId:[[QIMKit sharedInstance] getLastJid]];
     NSString *confirmURL = [NSString stringWithFormat:@"%@/qtapi/common/qrcode/auth.qunar", [[QIMKit sharedInstance] qimNav_Javaurl]];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:confirmURL]];
     NSDictionary *authData = @{@"a" : headerUrl?headerUrl:@"", @"t" : @"4", @"u" : [QIMKit getLastUserName], @"v" : @"1.0"};
     NSString *authJSON = [[QIMJSONSerializer sharedInstance] serializeObject:authData];
     NSDictionary *param = @{@"qrcodekey" : self.loginKey ? self.loginKey : @"", @"phase" : @(2), @"authdata" : authJSON ? authJSON : @""};
     NSMutableData *postData = [NSMutableData dataWithData:[[QIMJSONSerializer sharedInstance] serializeObject:param error:nil]];
+    [[QIMKit sharedInstance] sendTPPOSTFormUrlEncodedRequestWithUrl:confirmURL withRequestBodyData:postData withSuccessCallBack:^(NSData *responseData) {
+        
+    } withFailedCallBack:^(NSError *error) {
+        
+    }];
+    
+    //Mark by AFN
+    /*
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:confirmURL]];
     [request setRequestMethod:@"POST"];
     [request setPostBody:postData];
     [request setUseCookiePersistence:NO];
@@ -145,6 +176,7 @@ static QIMQRCodeLoginManager *__qrcodeLoginManager = nil;
     if ([request responseStatusCode] == 200 && ![request error]) {
         QIMVerboseLog(@"%@", request.responseString);
     }
+    */
 }
 
 @end
