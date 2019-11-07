@@ -7,7 +7,6 @@
 
 #import "QIMNotifyView.h"
 #import "QIMAttributedLabel.h"
-#import "ASIHTTPRequest.h"
 #import "QIMJSONSerializer.h"
 #import "QIMHTTPRequest.h"
 #import "QIMHTTPClient.h"

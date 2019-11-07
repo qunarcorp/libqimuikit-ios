@@ -7,7 +7,6 @@
 
 #import "QIMRNExternalAppManager.h"
 #import "QimRNBModule.h"
-#import "ASIHTTPRequest.h"
 #import "QIMJSONSerializer.h"
 
 static QIMRNExternalAppManager *_manager = nil;
@@ -82,12 +81,43 @@ static QIMRNExternalAppManager *_manager = nil;
     return checkSuccess;
 }
 
-- (BOOL)downloadQIMRNExternalAppWithBundleParams:(NSDictionary *)params {
+- (void)downloadQIMRNExternalAppWithBundleParams:(NSDictionary *)params withCallBack:(QIMKitDownloadQIMRNExternalAppBundleSuccessCallBack)callBack {
     NSString *bundleName= [params objectForKey:@"Bundle"];
     NSString *bundleUrls = [params objectForKey:@"BundleUrls"];
     NSDictionary *bundleDic = [[QIMJSONSerializer sharedInstance] deserializeObject:bundleUrls error:nil];
     BOOL updateBundleSuccess = NO;
     if (bundleUrls.length > 0) {
+        __weak __typeof(self) weakSelf = self;
+        [[QIMKit sharedInstance] sendTPGetRequestWithUrl:bundleUrls withSuccessCallBack:^(NSData *bundleData) {
+            __typeof(self) strongSelf = weakSelf;
+            if (!strongSelf) {
+                return;
+            }
+            if (bundleData.length > 0) {
+                NSString *qimrnCachePath = [UserCachesPath stringByAppendingPathComponent:[QimRNBModule getCachePath]];
+                if (![[NSFileManager defaultManager] fileExistsAtPath:qimrnCachePath]) {
+                    [[NSFileManager defaultManager] createDirectoryAtPath:qimrnCachePath withIntermediateDirectories:YES attributes:nil error:nil];
+                }
+                NSString *bundleMD5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrls] stringByAppendingFormat:@".jsbundle"];
+                
+                NSString *localBundlePath = [qimrnCachePath stringByAppendingPathComponent: bundleMD5Name];
+                [bundleData writeToFile:localBundlePath atomically:YES];
+                [strongSelf updateLocalRNExternalAppVersion];
+                if (callBack) {
+                    callBack(YES);
+                }
+            } else {
+                if (callBack) {
+                    callBack(NO);
+                }
+            }
+        } withFailedCallBack:^(NSError *error) {
+            if (callBack) {
+                callBack(NO);
+            }
+        }];
+        
+        /*
         ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:bundleUrls]];
         request.downloadProgressDelegate = self;
         [request setTimeOutSeconds:15];
@@ -114,8 +144,9 @@ static QIMRNExternalAppManager *_manager = nil;
         } else {
             updateBundleSuccess = NO;
         }
+        */
     }
-    return updateBundleSuccess;
+//    return updateBundleSuccess;
 }
 
 

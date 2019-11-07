@@ -375,6 +375,13 @@
 
 - (void)requestHttpWithRequestUrl:(NSString *)urlStr {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //Mark by AFN
+        [[QIMKit sharedInstance] sendTPGetRequestWithUrl:urlStr withSuccessCallBack:^(NSData *responseData) {
+            
+        } withFailedCallBack:^(NSError *error) {
+            
+        }];
+        /*
         NSURL *requestUrl = [[NSURL alloc] initWithString:urlStr];
         ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:requestUrl];
         [request addRequestHeader:@"content-type" value:@"application/json"];
@@ -390,6 +397,7 @@
         if (([request responseStatusCode] == 200) && !error) {
             
         }
+         */
     });
 }
 

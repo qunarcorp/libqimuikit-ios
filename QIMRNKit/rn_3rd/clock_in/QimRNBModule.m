@@ -226,6 +226,35 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"正在下载/更新应用"];
                     });
+                    [[QIMRNExternalAppManager sharedInstance] downloadQIMRNExternalAppWithBundleParams:params withCallBack:^(BOOL updateSuccess) {
+                        if (updateSuccess) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[QIMProgressHUD sharedInstance] closeHUD];
+                            });
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                                if (!navVC) {
+                                    navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+                                }
+                                NSDictionary *rnProperties = [[QIMJSONSerializer sharedInstance] deserializeObject:properties error:nil];
+                                @try {
+                                    [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:properties];
+                                } @catch (NSException *exception) {
+                                    QIMVerboseLog(@"exception2 - %@", exception);
+                                } @finally {
+                                    QIMVerboseLog(@"finally");
+                                }
+                            });
+                        } else {
+                            QIMVerboseLog(@"更新失败");
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"打开应用失败，请移步网络状态良好的地方打开"];
+                                [[QIMProgressHUD sharedInstance] closeHUD];
+                            });
+                        }
+                    }];
+                    //Mark by AFN
+                    /*
                     BOOL updateSuccess = [[QIMRNExternalAppManager sharedInstance] downloadQIMRNExternalAppWithBundleParams:params];
                     if (updateSuccess) {
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -253,6 +282,7 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
                             [[QIMProgressHUD sharedInstance] closeHUD];
                         });
                     }
+                    */
                 }
             }
         }
