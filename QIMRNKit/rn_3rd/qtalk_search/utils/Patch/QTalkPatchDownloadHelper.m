@@ -69,52 +69,6 @@
             callback(NO);
         }
     }];
-    
-    /*
-    // download bundle
-    ASIHTTPRequest *request = [QTalkPatchDownloadHelper downloadJSBundleWithUrl:url];
-    NSError *error = [request error];
-    
-    NSNumber *is_ok = 0;
-    
-    if (!error) {
-        
-        NSString *errorMsg = @"";
-        
-        @try {
-            // check package md5
-            NSString* md5 =[QIMKit getFileDataMD5WithFileData: [request responseData]];
-            if(![md5 isEqualToString:md5]){
-                // QIMVerboseLog(@"md5 check error");
-                errorMsg = @"md5 check error";
-                
-                return is_ok;
-            }
-            
-            [QTalkPatchDownloadHelper saveBundleToCache:[request responseData] cachePath:cachePath zipName:zipName];
-            
-            // unzip
-            [QTalkPatchDownloadHelper unzipBundle:cachePath zipName:zipName];
-            
-            // rename jsbundle filename
-            NSString *filePath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];
-            NSString *sourceFilePath =[filePath stringByAppendingPathComponent: bundleName];
-            NSString *destFilePath =[filePath stringByAppendingPathComponent: destAssetName];
-            
-            [QTalkPatchDownloadHelper renameFile:sourceFilePath dest:destFilePath];
-            
-            is_ok = @YES;
-        } @catch (NSException *exception) {
-            QIMVerboseLog(@"main: Caught %@: %@", [exception name], [exception reason]);
-            is_ok = 0;
-            errorMsg = [exception reason];
-        } @finally {
-            
-        }
-    }
-    
-    return is_ok;
-    */
 }
 
 + (void) downloadPatchAndCheck:(NSString *)url
@@ -188,72 +142,6 @@
             callback(NO);
         }
     }];
-    
-    //mark by AFN
-    /*
-    // TODO download patch
-    ASIHTTPRequest *request = [QTalkPatchDownloadHelper downloadJSBundleWithUrl:url];
-    NSError *error = [request error];
-    
-    NSNumber *is_ok = 0;
-    
-    if (!error) {
-        
-        NSString *errorMsg = @"";
-        
-        @try {
-            // TODO check patch md5
-            NSString* md5 =[QIMKit getFileDataMD5WithFileData: [request responseData]];
-            if(![patchMd5 isEqualToString:md5]){
-                // QIMVerboseLog(@"md5 check error");
-                errorMsg = @"md5 check error";
-                
-                return is_ok;
-            }
-            
-            NSString *patchPath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];
-            // append patch name 随机生成patch存储文件名
-            patchPath = [patchPath stringByAppendingPathComponent: [QIMUUIDTools UUID]];
-            // save patch file
-            [[request responseData] writeToFile:patchPath atomically:YES];
-            
-            // TODO patch
-            NSString *originPath = [QTalkPatchDownloadHelper getOriginBundlePath:cachePath assetBundleName:destAssetName innerBundleName:innerBundleName]
-            ;
-            NSString *destPath = [QTalkPatchDownloadHelper getDestBundlePath:cachePath assetBundleName:destAssetName];
-            
-            // patch result
-            BOOL success = [BSDiff bsdiffPatch:patchPath origin:originPath toDestination:destPath];
-            if(success){
-                
-                // check full md5 with after patch md5
-                
-                
-                NSString* md5 =[QIMKit getFileMD5WithPath: destPath];
-                if([fullMd5 isEqualToString:md5]){
-                    // rename jsbundle filename
-                    NSString *filePath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];
-                    
-                    NSString *sourceFilePath =[filePath stringByAppendingPathComponent: [QTalkPatchDownloadHelper getAssetTempBundleName:destAssetName]];
-                    NSString *destFilePath =[filePath stringByAppendingPathComponent:destAssetName];
-                    
-                    [QTalkPatchDownloadHelper renameFile:sourceFilePath dest:destFilePath];
-                    
-                    is_ok = @YES;
-                }
-            }
-            
-        } @catch (NSException *exception) {
-            QIMVerboseLog(@"main: Caught %@: %@", [exception name], [exception reason]);
-            is_ok = 0;
-            errorMsg = [exception reason];
-        } @finally {
-            
-        }
-    }
-    
-    return is_ok;
-    */
 }
 
 
@@ -341,17 +229,6 @@
     [zip UnzipOpenFile:zipFilePath];
     [zip UnzipFileTo:filePath overWrite:YES];
 }
-
-
-/*
-+(ASIHTTPRequest *) downloadJSBundleWithUrl:(NSString *)url{
-    NSURL *requestUrl = [[NSURL alloc] initWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:requestUrl];
-    [request startSynchronous];
-    
-    return request;
-}
-*/
 
 +(void) renameFile:(NSString *)source
               dest:(NSString *)dest{
