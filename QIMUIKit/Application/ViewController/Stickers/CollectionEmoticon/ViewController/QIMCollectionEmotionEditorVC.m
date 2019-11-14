@@ -422,6 +422,18 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
             imageData = UIImageJPEGRepresentation(image, 0.5);
         }
         
+        //mark temp
+        [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData WithMsgId:nil WithMsgType:30 WithPathExtension:@"png" withCallBack:^(NSString *httpPermUrl) {
+            [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:httpPermUrl];
+            
+            [[QIMCollectionFaceManager sharedInstance] checkForUploadLocalCollectionFace];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self refresh];
+                [picker dismissViewControllerAnimated:NO completion:nil];
+            });
+        }];
+        
+        /*
         [[QIMKit sharedInstance] uploadFileForData:imageData forCacheType:QIMFileCacheTypeColoction isFile:NO completionBlock:^(UIImage *image, NSError *error, QIMFileCacheType cacheType, NSString *imageURL) {
             
             
@@ -437,27 +449,35 @@ static NSString *collectEmojiCellID = @"collectEmojiCellID";
             [picker dismissViewControllerAnimated:NO completion:nil];
             
         }];
+        */
     }
 }
 
 -(void)qtImagePickerController:(QTImagePickerController *)picker didFinishPickingImage:(UIImage *)image
 {
     NSData * imageData = UIImageJPEGRepresentation(image, 0.9);
-    __block NSString *httpUrl = [NSString stringWithFormat:@""];
+    //mark temp
+    [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData WithMsgId:nil WithMsgType:30 WithPathExtension:@"jpg" withCallBack:^(NSString *imageURL) {
+        [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:imageURL];
+        [[QIMCollectionFaceManager sharedInstance] checkForUploadLocalCollectionFace];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self refresh];
+            [picker dismissViewControllerAnimated:NO completion:nil];
+        });
+    }];
+    /*
     [[QIMKit sharedInstance] uploadFileForData:imageData forCacheType:QIMFileCacheTypeColoction isFile:NO completionBlock:^(UIImage *image, NSError *error, QIMFileCacheType cacheType, NSString *imageURL) {
         
-        httpUrl = imageURL;
-        
-        [[QIMKit sharedInstance] getPermUrlWithTempUrl:httpUrl PermHttpUrl:^(NSString *httpPermUrl) {
+        if (imageURL.length > 0) {
             [[QIMCollectionFaceManager sharedInstance] insertCollectionEmojiWithEmojiUrl:httpPermUrl];
             [[QIMCollectionFaceManager sharedInstance] checkForUploadLocalCollectionFace];
 
-        }];
+        }
         [self refresh];
         [picker dismissViewControllerAnimated:NO completion:nil];
         
     }];
-    
+    */
 }
 
 #pragma mark - <QIMDragCellCollectionViewDelegate> <QIMDragCellCollectionViewDataSource>

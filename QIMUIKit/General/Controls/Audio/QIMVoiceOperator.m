@@ -7,7 +7,7 @@
 //
 
 #import "QIMVoiceOperator.h"
-#import "QIMPathManage.h"
+#import "QIMVoicePathManage.h"
 //#define MAX_AUDIO_RECODE_TIME 10.0
 #define MIN_TIMEOUT 1.0f            //最短录音时间长度
 
@@ -65,7 +65,7 @@
     }
     NSError *error=nil;
     _fileName = [NSString stringWithString:filename];
-    _filePath = [QIMPathManage getPathByFileName:_fileName ofType:@"wav"];
+    _filePath = [QIMVoicePathManage getPathByFileName:_fileName ofType:@"wav"];
     _recoder = [[AVAudioRecorder alloc] initWithURL:[NSURL URLWithString:_filePath]
                                            settings:[QIMVoiceOperator getAudioRecorderSettingDic]
                                               error:&error];
@@ -147,7 +147,7 @@
     float audioDurationSeconds =CMTimeGetSeconds(audioDuration);
     if (audioDurationSeconds < MIN_TIMEOUT || !_ifSave) {
         //录音时间太短||用户取消录音,删除文件，并通知delegate
-        [QIMPathManage deleteFileAtPath:_filePath];
+        [QIMVoicePathManage deleteFileAtPath:_filePath];
         [_voiceOperatorDelegate voiceOperatorFinishedRecordWithFilepath:nil andFilename:nil andTimeCount:audioDurationSeconds];
     } else {
         [_voiceOperatorDelegate voiceOperatorFinishedRecordWithFilepath:_filePath andFilename:_fileName andTimeCount:audioDurationSeconds];

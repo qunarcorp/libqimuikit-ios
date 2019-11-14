@@ -528,7 +528,7 @@
     }
     BOOL isvisable = [[tableView indexPathsForVisibleRows] containsObject:indexPath];
     id temp = [self.dataSource objectAtIndex:row];
-    
+
    QIMMessageModel *message = temp;
 //    QIMVerboseLog(@"解密会话状态 : %lu,   %d", (unsigned long)[[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId], message.messageType);
 #if __has_include("QIMNoteManager.h")

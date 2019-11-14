@@ -24,13 +24,13 @@ typedef enum {
 
 @interface QIMImageStorage : QIMDrawStorage <QIMViewStorageProtocol>
 
-@property (nonatomic, strong) QIMImage   *image;
+@property (nonatomic, copy) NSString *imageStorageMD5;
+
+@property (nonatomic, strong) QIMImage   *emotionImage;
 
 @property (nonatomic, strong) NSString  *imageName;
 
 @property (nonatomic, strong) NSURL     *imageURL;
-
-@property (nonatomic, strong) NSString  *placeholdImageName;
 
 @property (nonatomic, assign) QCImageAlignment imageAlignment; // default center
 

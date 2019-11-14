@@ -63,7 +63,7 @@
 {
     QIMImageStorage *imageStorage = [[QIMImageStorage alloc]init];
     if ([imageContent isKindOfClass:[UIImage class]]) {
-        imageStorage.image = imageContent;
+        imageStorage.emotionImage = imageContent;
     }else if ([imageContent isKindOfClass:[NSString class]]){
         imageStorage.imageName = imageContent;
     } else {
@@ -113,7 +113,7 @@
 {
     QIMImageStorage *imageStorage = [[QIMImageStorage alloc]init];
     if ([imageContent isKindOfClass:[UIImage class]]) {
-        imageStorage.image = imageContent;
+        imageStorage.emotionImage = imageContent;
     }else if ([imageContent isKindOfClass:[NSString class]]){
         imageStorage.imageName = imageContent;
     } else {

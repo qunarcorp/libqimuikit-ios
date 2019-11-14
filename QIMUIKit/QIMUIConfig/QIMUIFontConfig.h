@@ -25,7 +25,7 @@
 
 #define qim_arrow_scan_font     @"\U0000e739"     //扫一扫
 #define qim_arrow_notread_font  @"\U0000e73a"     //未读消息
-#define qim_arrow_gototalk_font      @"\U0000e738"     //[NSBundle qim_localizedStringForKey:@"Create Group"]
+#define qim_arrow_gototalk_font      @"\U0000e738"     //@"创建群组"
 #define qim_arrow_clearnotread_font @"\U0000e73b" //一键已读
 
 #define qim_otherPlatformViewIcon_font @"\U0000e751"              //其他平台已登录Icon

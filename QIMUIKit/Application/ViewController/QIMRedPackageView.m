@@ -158,6 +158,7 @@ static UIViewController *__redPackageVC = nil;
             [_webView setDelegate:self];
             [_webView setOpaque:NO];
             [_webView setBackgroundColor:[UIColor clearColor]];
+            [_webView.scrollView setBounces:NO];
             [self addSubview:_webView];
     }
     return self;
