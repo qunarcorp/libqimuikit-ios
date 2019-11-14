@@ -42,8 +42,6 @@
 
 - (void)processEvent:(MenuActionType)eventType withMessage:(id) message;
 
-- (NSUInteger)getColorHex:(NSString *)text;
-
 @end
 
 @interface QIMMsgBaloonBaseCell : UITableViewCell

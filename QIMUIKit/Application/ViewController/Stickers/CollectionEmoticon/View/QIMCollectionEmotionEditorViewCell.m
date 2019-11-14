@@ -72,7 +72,7 @@
     }else{
         _imageView.frame = CGRectMake(kImageViewCap, kImageViewCap, self.width - kImageViewCap * 2, self.height - kImageViewCap * 2);
     }
-    [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:nil options:SDWebImageFromLoaderOnly progress:nil completed:nil];
+    [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"] options:SDWebImageFromLoaderOnly progress:nil completed:nil];
 }
 
 - (void)setViewSelected:(BOOL)selected{
@@ -151,13 +151,6 @@
             emojiUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], emojiUrl];
         }
         [itemView setImageUrl:emojiUrl];
-        /*
-         Mark by SD
-        [[QIMCollectionFaceManager sharedInstance] showSmallImage:^(UIImage *image) {
-            
-            itemImage = image;
-        } withIndex:self.tag];
-        */
     }
     
     [itemView setViewSelected:NO];
@@ -179,7 +172,7 @@
     return self;
 }
 
-- (void)itemTapHandle:(UITapGestureRecognizer *)tap{
+- (void)itemTapHandle:(UITapGestureRecognizer *)tap {
     
     QIMEmotionEditorImageView * view = (QIMEmotionEditorImageView *)tap.view;
     if (self.canSelect) {

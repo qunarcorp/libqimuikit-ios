@@ -20,8 +20,6 @@
 @property (nonatomic, assign) long long fastMsgTimeStamp;   //搜索时候快速点击跳转的消息时间戳
 @property (nonatomic, assign) int notReadCount;
 
-- (void)sendImageData:(NSData *)imageData;
-
 - (void)refreshTableViewCell:(UITableViewCell * )cell;
 
 - (void)sendMessage:(NSString *)message WithInfo:(NSString *)info ForMsgType:(int)msgType;

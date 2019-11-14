@@ -26,6 +26,7 @@
 #import "QCGroupModel.h"
 #import "QIMMenuView.h"
 #import "QIMServiceStatusViewController.h"
+#import "QIMStringTransformTools.h"
 
 @interface QIMCommonTableViewCellManager ()
 
@@ -375,7 +376,7 @@
             cell.accessoryType_LL = UITableViewCellAccessoryDisclosureIndicator;
             cell.textLabel.text = cellData.title;
             long long totalSize = [[QIMDataController getInstance] sizeofImagePath];
-            NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
+            NSString *str = [QIMStringTransformTools qim_CapacityTransformStrWithSize:totalSize];
             cell.detailTextLabel.text = str;
             cell.textLabel.font = [UIFont fontWithName:FONT_NAME size:[[QIMCommonFont sharedInstance] currentFontSize] - 4];
             cell.textLabel.textColor = [UIColor qtalkTextBlackColor];

@@ -839,12 +839,13 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                     NSData *imageData = [imageDic objectForKey:@"imageData"];
                     if ([imageData isKindOfClass:[NSData class]]) {
                         dispatch_group_enter(group);
-                        NSString *fileUrl = [QIMKit updateLoadMomentFile:imageData WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_Image WithPathExtension:@"png"];
-                        if (fileUrl.length > 0) {
-                            NSDictionary *imagePreDic = @{@"addTime":@(0), @"data":fileUrl};
-                            [imageList addObject:imagePreDic];
-                            dispatch_group_leave(group);
-                        }
+                        [[QIMKit sharedInstance] qim_uploadImageWithImageData:imageData WithMsgId:[QIMUUIDTools UUID] WithMsgType:QIMMessageType_Image WithPathExtension:@"png" withCallBack:^(NSString *fileUrl) {
+                            if (fileUrl.length > 0) {
+                                NSDictionary *imagePreDic = @{@"addTime":@(0), @"data":fileUrl};
+                                [imageList addObject:imagePreDic];
+                                dispatch_group_leave(group);
+                            }
+                        }];
                     } else {
                         dispatch_group_leave(group);
                     }
@@ -887,7 +888,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         if ([videoData isKindOfClass:[NSData class]]) {
                             dispatch_group_enter(group);
                             __block NSDictionary *videoRemoteDic = nil;
-                            [QIMKit uploadVideoPath:LocalVideoOutPath withCallBack:^(NSDictionary *videoDic) {
+                            [[QIMKit sharedInstance] qim_uploadVideo:LocalVideoOutPath videoDic:videoDic withCallBack:^(NSDictionary *videoDic, BOOL needTrans) {
                                 NSLog(@"videoDic : %@", videoDic);
                                 videoRemoteDic = videoDic;
                                 if (videoRemoteDic.count > 0) {
