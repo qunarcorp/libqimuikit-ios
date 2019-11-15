@@ -1880,10 +1880,12 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 - (void)onCamerButtonClick:(UIButton *)sender {
     [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
-        CameraViewController * cameraVC = [[CameraViewController alloc] init];
-        cameraVC.delegate = self;
-        QIMNavController * nav = [[QIMNavController alloc] initWithRootViewController:cameraVC];
-        [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            CameraViewController * cameraVC = [[CameraViewController alloc] init];
+            cameraVC.delegate = self;
+            QIMNavController * nav = [[QIMNavController alloc] initWithRootViewController:cameraVC];
+            [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
+        });
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeCamera];
 }

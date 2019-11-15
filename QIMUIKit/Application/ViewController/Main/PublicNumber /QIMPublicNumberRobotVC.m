@@ -964,7 +964,7 @@
 //
 // 二人消息 是在这里收到的
 
-- (void)updateMessageList:(NSNotification *)notify{
+- (void)updateMessageList:(NSNotification *)notify {
     if ([self.robotJId isEqualToString:notify.object]) {
         QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
         

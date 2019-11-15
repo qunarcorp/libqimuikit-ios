@@ -1134,6 +1134,10 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
             [cell.contentView addSubview:iconView];
             [cell setMediaType:QIMWorkMomentMediaTypeImage];
             [cell setCanDelete:YES];
+            NSString *fileKey = [imageData qim_md5String];
+            NSString *fileExt = [UIImage qim_contentTypeForImageData:imageData];
+            NSString *imageMd5 = [NSString stringWithFormat:@"%@.%@", fileKey, fileExt];
+            [cell setMediaMd5:imageMd5];
         } else if (mediaType == QIMWorkMomentMediaTypeVideo) {
             //视频
             

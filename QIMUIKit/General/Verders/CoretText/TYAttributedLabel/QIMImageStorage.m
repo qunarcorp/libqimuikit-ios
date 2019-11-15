@@ -294,9 +294,10 @@
             }
             NSLog(@"upload Notify : %@", notify);
             float progressValue = [[imageUploadProgressDic objectForKey:@"ImageUploadProgress"] floatValue];
-            if (progressValue < 1.0) {
+            if (progressValue < 1.0 && progressValue > 0.0) {
                 self.uploadPropressView.frame = CGRectMake(_imageView.left, _imageView.top, _imageView.width, _imageView.height * (1 - progressValue));
-                
+                NSString *str = [NSString stringWithFormat:@"%d%%",(int)(progressValue * 100)];
+                [self.uploadProgressLabel setText:str];
                 [self.uploadPropressView setHidden:NO];
             } else {
                 [self.uploadPropressView setHidden:YES];

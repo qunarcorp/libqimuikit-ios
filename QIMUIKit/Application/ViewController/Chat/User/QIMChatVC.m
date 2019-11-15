@@ -2163,18 +2163,33 @@
     }
     if ([userId isEqualToString:notify.object]) {
         QIMMessageModel *msg = [notify.userInfo objectForKey:@"message"];
+        BOOL frontInsert = [[notify.userInfo objectForKey:@"frontInsert"] boolValue];
         if (msg) {
             if (!self.messageManager.dataSource) {
                 self.messageManager.dataSource = [[NSMutableArray alloc] initWithCapacity:20];
-                [self.messageManager.dataSource addObject:msg];
+                if (frontInsert == YES) {
+                    [self.messageManager.dataSource insertObject:msg atIndex:self.messageManager.dataSource.count - 1];
+                } else {
+                    [self.messageManager.dataSource addObject:msg];
+                }
                 [_tableView reloadData];
             } else if ([self.messageManager.dataSource count] != [_tableView numberOfRowsInSection:0]) {
-                [self.messageManager.dataSource addObject:msg];
+                if (frontInsert == YES) {
+                    [self.messageManager.dataSource insertObject:msg atIndex:self.messageManager.dataSource.count - 1];
+                } else {
+                    [self.messageManager.dataSource addObject:msg];
+                }
                 [_tableView reloadData];
             } else {
-                [self.messageManager.dataSource addObject:msg];
-                NSArray *insertIndexPaths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]];
-                [_tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+                if (frontInsert == YES) {
+                    [self.messageManager.dataSource insertObject:msg atIndex:self.messageManager.dataSource.count - 1];
+                    NSArray *insertIndexPaths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 2 inSection:0]];
+                    [_tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+                } else {
+                    [self.messageManager.dataSource addObject:msg];
+                    NSArray *insertIndexPaths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]];
+                    [_tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+                }
             }
             [self addImageToImageList];
             [self scrollToBottomWithCheck:NO];
