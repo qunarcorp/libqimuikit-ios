@@ -586,6 +586,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:9];
     [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
     [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
+    [[QTPHImagePickerManager sharedInstance] setWorkFeedImagePicker:YES];
 //    [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:YES];
     self.navigationController.navigationBar.barTintColor = [UIColor qim_colorWithHex:0xF7F7F7];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
@@ -1544,6 +1545,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:9];
     [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
     [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
+    [[QTPHImagePickerManager sharedInstance] setWorkFeedImagePicker:NO];
 }
 
 #pragma mark - QIMWorkMomentPushUserIdentityViewDelegate
