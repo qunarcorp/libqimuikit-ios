@@ -1085,26 +1085,6 @@
     NSString *fileName = [[videoPath lastPathComponent] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@",pathExtension] withString:@"_thumb.jpg"];
     NSString *thumbFilePath = [videoPath stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@",pathExtension] withString:@"_thumb.jpg"];
     [thumbData writeToFile:thumbFilePath atomically:YES];
-    
-    [[QIMKit sharedInstance] qim_uploadImageWithImagePath:thumbFilePath withCallback:^(NSString *httpUrl) {
-        NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
-        [dicInfo setQIMSafeObject:httpUrl forKey:@"ThumbUrl"];
-        [dicInfo setQIMSafeObject:fileName forKey:@"ThumbName"];
-        [dicInfo setQIMSafeObject:[videoPath lastPathComponent] forKey:@"FileName"];
-        [dicInfo setQIMSafeObject:@(size.width) forKey:@"Width"];
-        [dicInfo setQIMSafeObject:@(size.height) forKey:@"Height"];
-        [dicInfo setQIMSafeObject:fileSizeStr forKey:@"FileSize"];
-        [dicInfo setQIMSafeObject:@(duration) forKey:@"Duration"];
-        NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
-        
-        QIMMessageModel *msg = [[QIMKit sharedInstance] createPublicNumberMessageWithMsg:msgContent extenddInfo:nil publicNumberId:self.robotJId msgType:PublicNumberMsgType_SmallVideo];
-        
-        [_dataSounce addObject:msg];
-        [_tableView reloadData];
-        [self scrollToBottomWithCheck:YES];
-        //Mark temp
-//        [[QIMKit sharedInstance] uploadFileForPath:videoPath forMessage:msg withJid:self.robotJId isFile:YES];
-    }];
 }
 
 - (void)sendMessage:(NSString *)message WithInfo:(NSString *)info ForMsgType:(int)msgType{

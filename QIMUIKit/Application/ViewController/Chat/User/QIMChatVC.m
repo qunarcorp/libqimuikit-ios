@@ -2359,43 +2359,49 @@
     NSString *thumbFilePath = [videoPath stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@", pathExtension] withString:@"_thumb.jpg"];
     [thumbData writeToFile:thumbFilePath atomically:YES];
     
+    NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
+    [dicInfo setQIMSafeObject:thumbFilePath forKey:@"LocalVideoThumbPath"];
+    [dicInfo setQIMSafeObject:thumbFilePath forKey:@"ThumbUrl"];
+    [dicInfo setQIMSafeObject:fileName forKey:@"ThumbName"];
+    [dicInfo setQIMSafeObject:[videoPath lastPathComponent] forKey:@"FileName"];
+    [dicInfo setQIMSafeObject:@(size.width) forKey:@"Width"];
+    [dicInfo setQIMSafeObject:@(size.height) forKey:@"Height"];
+    [dicInfo setQIMSafeObject:fileSizeStr forKey:@"FileSize"];
+    [dicInfo setQIMSafeObject:@(duration) forKey:@"Duration"];
+    [dicInfo setQIMSafeObject:videoPath forKey:@"LocalVideoOutPath"];
+    NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
+    
+    QIMMessageModel *msg = [QIMMessageModel new];
+    [msg setMessageId:msgId];
+    [msg setMessageDirection:QIMMessageDirection_Sent];
+    [msg setChatType:self.chatType];
+    [msg setMessageType:QIMMessageType_SmallVideo];
+    [msg setMessageDate:([[NSDate date] timeIntervalSince1970] - [[QIMKit sharedInstance] getServerTimeDiff]) * 1000];
+    [msg setFrom:[[QIMKit sharedInstance] getLastJid]];
+    [msg setRealJid:self.chatId];
+    [msg setMessage:msgContent];
+    [msg setTo:self.chatId];
+    [msg setPlatform:IMPlatform_iOS];
+    [msg setMessageSendState:QIMMessageSendState_Waiting];
+    
+    [[QIMKit sharedInstance] saveMsg:msg ByJid:self.chatId];
+    [self.messageManager.dataSource addObject:msg];
+    [_tableView beginUpdates];
+    [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+    [_tableView endUpdates];
+    [self scrollToBottomWithCheck:YES];
+    [[QIMKit sharedInstance] qim_uploadVideoPath:videoPath forMessage:msg];
+    /*
     //mark by AFN
     [[QIMKit sharedInstance] qim_uploadImageWithImageData:thumbData WithMsgId:msgId WithMsgType:QIMMessageType_Image WithPathExtension:@"jpg" withCallBack:^(NSString *httpUrl) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSMutableDictionary *dicInfo = [NSMutableDictionary dictionary];
-            [dicInfo setQIMSafeObject:httpUrl forKey:@"ThumbUrl"];
-            [dicInfo setQIMSafeObject:fileName forKey:@"ThumbName"];
-            [dicInfo setQIMSafeObject:[videoPath lastPathComponent] forKey:@"FileName"];
-            [dicInfo setQIMSafeObject:@(size.width) forKey:@"Width"];
-            [dicInfo setQIMSafeObject:@(size.height) forKey:@"Height"];
-            [dicInfo setQIMSafeObject:fileSizeStr forKey:@"FileSize"];
-            [dicInfo setQIMSafeObject:@(duration) forKey:@"Duration"];
-            NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:dicInfo];
-            
-            QIMMessageModel *msg = [QIMMessageModel new];
-            [msg setMessageId:msgId];
-            [msg setMessageDirection:QIMMessageDirection_Sent];
-            [msg setChatType:self.chatType];
-            [msg setMessageType:QIMMessageType_SmallVideo];
-            [msg setMessageDate:([[NSDate date] timeIntervalSince1970] - [[QIMKit sharedInstance] getServerTimeDiff]) * 1000];
-            [msg setFrom:[[QIMKit sharedInstance] getLastJid]];
-            [msg setRealJid:self.chatId];
-            [msg setMessage:msgContent];
-            [msg setTo:self.chatId];
-            [msg setPlatform:IMPlatform_iOS];
-            [msg setMessageSendState:QIMMessageSendState_Waiting];
-            
-            [[QIMKit sharedInstance] saveMsg:msg ByJid:self.chatId];
-            [self.messageManager.dataSource addObject:msg];
-            [_tableView beginUpdates];
-            [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-            [_tableView endUpdates];
-            [self scrollToBottomWithCheck:YES];
+           
             //mark temp
             [[QIMKit sharedInstance] qim_uploadVideoPath:videoPath forMessage:msg];
             //        [[QIMKit sharedInstance] uploadFileForPath:videoPath forMessage:msg withJid:self.chatId isFile:YES];
         });
     }];
+    */
 }
 
 - (void)sendMessage:(NSString *)message WithInfo:(NSString *)info ForMsgType:(int)msgType {

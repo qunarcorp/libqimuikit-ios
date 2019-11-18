@@ -414,12 +414,16 @@
 #pragma mark - alert delegate
 - (void)alertView:(QTVideoAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (alertView.transFile == YES) {
-        NSString *videoPath = alertView.videoOutPath;
-        NSString *videoName = alertView.videoOutPath.lastPathComponent;
-        NSData *videoData = [NSData dataWithContentsOfFile:videoPath];
-        //Mark by temp
-        [[QIMKit sharedInstance] qim_saveLocalFileData:videoData withFileName:videoName];
-        [self.picker finishPickingVideoFile:videoName];
+        if (buttonIndex == 0) {
+            
+        } else {
+            NSString *videoPath = alertView.videoOutPath;
+            NSString *videoName = alertView.videoOutPath.lastPathComponent;
+            NSData *videoData = [NSData dataWithContentsOfFile:videoPath];
+            //Mark by temp
+            [[QIMKit sharedInstance] qim_saveLocalFileData:videoData withFileName:videoName];
+            [self.picker finishPickingVideoFile:videoName];
+        }
     } else {
         if (buttonIndex) {
             if (buttonIndex == 2) {
