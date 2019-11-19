@@ -90,31 +90,6 @@
                     }
                 });
             }];
-            //Mark by AFN
-            /*
-            _resultList = [[QIMKit sharedInstance] updatePublicNumberCardByIds:@[@{@"robot_name":self.publicNumberId,@"version":@(-1)}] WithNeedUpdate:NO];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (_resultList.count > 0) {
-                    NSDictionary *publicNumberInfo = [[_resultList firstObject] objectForKey:@"rbt_body"];
-                    _descStr = [publicNumberInfo objectForKey:@"robotDesc"];
-                    _telStr = [publicNumberInfo objectForKey:@"tel"];
-                    _fromSource = [publicNumberInfo objectForKey:@"fromsource"];
-                    NSString *name = [publicNumberInfo objectForKey:@"robotCnName"];
-                    NSString *headerSrc = [[[publicNumberInfo objectForKey:@"headerurl"] pathComponents] lastObject];
-                    NSMutableDictionary *tempDic = [NSMutableDictionary dictionary];
-                    [tempDic setQIMSafeObject:[NSString stringWithFormat:@"%@@%@",self.publicNumberId,[[QIMKit sharedInstance] getDomain]] forKey:@"XmppId"];
-                    [tempDic setQIMSafeObject:self.publicNumberId forKey:@"PublicNumberId"];
-                    [tempDic setQIMSafeObject:name forKey:@"Name"];
-                        [tempDic setQIMSafeObject:headerSrc forKey:@"HeaderSrc"];
-                    [tempDic setQIMSafeObject:publicNumberInfo forKey:@"PublicNumberInfo"];
-                    _publicNumberCardDic = tempDic;
-                    [self initUI];
-                } else {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"该公众号不存在！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
-                    [alertView show];
-                }
-            });
-            */
         });
     } else {
         _publicNumberCardDic = [[QIMKit sharedInstance] getPublicNumberCardByJid:self.jid];
@@ -266,17 +241,6 @@
                 }
             });
         }];
-        
-        //Mark by AFN
-        /*
-        BOOL isSuccess = [[QIMKit sharedInstance] cancelFocusOnPublicNumberId:self.publicNumberId];
-        if (isSuccess) {
-            [self.navigationController popToRootViewControllerAnimated:YES];
-        } else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"取消关注失败!" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
-            [alertView show];
-        }
-        */
     }
 }
 

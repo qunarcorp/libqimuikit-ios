@@ -184,9 +184,6 @@ typedef NS_ENUM(NSInteger, QTalkTipPositionType) {
         if ([cell isKindOfClass:[QIMFaceViewCell class]]) {
             QIMFaceViewCell *normalEmotionCell = (QIMFaceViewCell *)cell;
             [self.gifImageView qim_setImageWithURL:[NSURL fileURLWithPath:normalEmotionCell.emojiPath] placeholderImage:nil];
-            //Mark by SD
-//            NSData *gifData = [[QIMEmotionManager sharedInstance] getEmotionThumbIconDataWithImageStr:normalEmotionCell.emojiPath];
-//            self.gifImageView.image = [UIImage qimsd_animatedGIFWithData:gifData];
         } else if ([cell isKindOfClass:[QIMCollectionViewCell class]]) {
             QIMCollectionViewCell *collectionCell = (QIMCollectionViewCell *)cell;
             
@@ -195,14 +192,6 @@ typedef NS_ENUM(NSInteger, QTalkTipPositionType) {
                 emojiUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], emojiUrl];
             }
             [self.gifImageView qim_setImageWithURL:[NSURL URLWithString:emojiUrl] placeholderImage:nil];
-
-            //Mark by SD
-//            NSData *imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getCollectionFaceEmojiLocalPathWithIndex:collectionCell.tag - 1]];
-//            if (!imageData.length) {
-//                imageData = [NSData dataWithContentsOfFile:[[QIMCollectionFaceManager sharedInstance] getSmallEmojiLocalPathWithIndex:collectionCell.tag - 1]];
-//            }
-            
-//            self.gifImageView.image = [UIImage qimsd_animatedGIFWithData:imageData];
         }
     }
 }

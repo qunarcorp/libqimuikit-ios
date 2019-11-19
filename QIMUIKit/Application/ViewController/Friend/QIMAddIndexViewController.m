@@ -172,21 +172,6 @@ static NSInteger limitCount = 15;
         } withFailedCallBack:^(NSError *error) {
             
         }];
-        //mark by AFN
-        /*
-        NSURL *url = [NSURL URLWithString:urlStr];
-        ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-        [request addRequestHeader:@"content-type" value:@"application/json"];
-        [request appendPostData:requestData];
-        [request setRequestMethod:@"POST"];
-        [request startSynchronous];
-        NSError *error = [request error];
-        if ([request responseStatusCode] == 200 && !error) {
-            
-            NSDictionary *responseDict = [[QIMJSONSerializer sharedInstance] deserializeObject:request.responseData error:nil];
-            self.objectsArray = responseDict[@"data"][@"domains"];
-        }
-        */
     } url:@"https://qim.qunar.com/s/qtalk/domainlist.php"];
     for (NSDictionary *dict in self.objectsArray) {
         if (dict) {

@@ -1731,7 +1731,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 - (void)imagePickerBrowserDidFinish:(QIMUIImagePickerBrowserVC *)pickerBrowser {
     UIImage* editedImage = pickerBrowser.sourceImage;
     NSData *imageData = UIImageJPEGRepresentation(editedImage, 0.8);
-    //mark by newFile
     NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
     [self.delegate qim_textbarSendImageWithImagePath:imagePath];
     _isScrollToBottom = YES;
@@ -2364,8 +2363,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             image = [QIMImageUtil fixOrientation:image];
             imageData = UIImageJPEGRepresentation(image, 0.5);
         }
-
-        //mark by newFile
         NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
         [self.delegate qim_textbarSendImageWithImagePath:imagePath];
     }
@@ -2377,7 +2374,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 -(void)qtImagePickerController:(QTImagePickerController *)picker didFinishPickingImage:(UIImage *)image
 {
     NSData * imageData = UIImageJPEGRepresentation(image, 1.0);
-    //mark by newFile
     NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
     [self.delegate qim_textbarSendImageWithImagePath:imagePath];
 
@@ -2437,7 +2433,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
                     if (downloadFinined && imageData) {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            //mark by newFile
                             NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
                             [self.delegate qim_textbarSendImageWithImagePath:imagePath];
                             _isScrollToBottom = YES;
@@ -2524,7 +2519,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
     NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
     [self.delegate qim_textbarSendImageWithImagePath:imagePath];
-    //mark by newfile
     _isScrollToBottom = YES;
     [self needFirstResponder:NO];
     [picker dismissViewControllerAnimated:NO completion:nil];

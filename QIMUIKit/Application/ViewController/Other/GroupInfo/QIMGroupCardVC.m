@@ -313,7 +313,7 @@
         if (buttonIndex == 1) {
             BOOL result = [[QIMKit sharedInstance] quitGroupId:self.groupId];
             if (result) {
-                [[QIMKit sharedInstance] removeStickWithCombineJid:[NSString stringWithFormat:@"%@<>%@", self.groupId, self.groupId] WithChatType:ChatType_GroupChat];
+                [[QIMKit sharedInstance] removeStickWithCombineJid:[NSString stringWithFormat:@"%@<>%@", self.groupId, self.groupId] WithChatType:ChatType_GroupChat withCallback:nil];
                 [self.navigationController setNavigationBarHidden:NO animated:YES];
                 [self.navigationController popToRootViewControllerAnimated:YES];
             } else {
