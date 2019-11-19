@@ -531,11 +531,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
     }
-    /* Mark by 匿名
-    QIMVerboseLog(@"即将进入发帖页面匿名名称 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName]);
-    QIMVerboseLog(@"即将进入发帖页面匿名状态 : %d", [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]);
-    QIMVerboseLog(@"即将进入发帖页面匿名头像地址 : %@", [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto]);
-    */
 //    [self.panelListView reloadData];
     
     [self.identiView updatePushUserIdentityView];
@@ -729,11 +724,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 }
 
 - (void)goBack:(id)sender {
-    /* Mark by 匿名
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
-     */
 //    [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:NO];
     [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
     [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
@@ -800,18 +790,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                 [momentDic setQIMSafeObject:anonymousName forKey:@"AnonymousName"];
                 [momentDic setQIMSafeObject:anonymousPhoto forKey:@"AnonymousPhoto"];
             }
-            
-            /* Mark by 匿名
-            [momentDic setQIMSafeObject:@([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) forKey:@"isAnonymous"];
-            if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousName"];
-                [momentDic setQIMSafeObject:@"" forKey:@"AnonymousPhoto"];
-            } else {
-                [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName] forKey:@"AnonymousName"];
-                [momentDic setQIMSafeObject:[[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto] forKey:@"AnonymousPhoto"];
-            }
-             */
-            
             NSMutableArray *outATInfoArray = [NSMutableArray arrayWithCapacity:3];
             NSString *finallyContent = [[QIMMessageTextAttachment sharedInstance] getStringFromAttributedString:self.textView.attributedText WithOutAtInfo:&outATInfoArray];
             
@@ -1537,11 +1515,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
 - (void)dealloc {
     [[YYKeyboardManager defaultManager] removeObserver:self];
-    /* Mark by 匿名
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
-    [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
-    */
     [[QTPHImagePickerManager sharedInstance] setMaximumNumberOfSelection:9];
     [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
     [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];

@@ -521,17 +521,8 @@
 
 
         NSString *anonymousName = lastUserModel.anonymousName;
-//        [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
         NSString *anonymousPhoto = lastUserModel.anonymousPhoto;
-//        [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
         BOOL isAnonymous = lastUserModel.isAnonymous;
-//        [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
-
-        //Mark by 匿名
-//        NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
-//        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-//        BOOL isAnonymous = [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
-        
         BOOL isToAnonymous = self.staticCommentModel.isAnonymous;
         NSString *toAnonymousName = self.staticCommentModel.anonymousName;
         NSString *toAnonymousPhoto = self.staticCommentModel.anonymousPhoto;
@@ -563,16 +554,8 @@
         QIMWorkMomentUserIdentityModel *lastUserModel = [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] userIdentityModel];
 
         NSString *anonymousName = lastUserModel.anonymousName;
-//        [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
         NSString *anonymousPhoto = lastUserModel.anonymousPhoto;
-//        [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
         BOOL isAnonymous = lastUserModel.isAnonymous;
-//        [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
-//Mark by 匿名
-//        NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
-//        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-//        BOOL isAnonymous = [[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous];
-        
         NSMutableDictionary *commentDic = [[NSMutableDictionary alloc] init];
         [commentDic setQIMSafeObject:[NSString stringWithFormat:@"1-%@", [QIMUUIDTools UUID]] forKey:@"commentUUID"];
         [commentDic setQIMSafeObject:self.momentId forKey:@"postUUID"];

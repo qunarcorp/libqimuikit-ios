@@ -1617,9 +1617,6 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
     
     msg.extendInformation = msgContent;
-    
-    //Mark by NewFile
-//    [[QIMKit sharedInstance] uploadFileForData:[NSData dataWithContentsOfFile:_jsonFilePath] forMessage:msg withJid:[contactVC getSelectInfoDic][@"userId"] isFile:YES];
     [[QIMKit sharedInstance] qim_uploadFileWithFilePath:_jsonFilePath forMessage:msg];
 }
 
@@ -1634,9 +1631,7 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
     
     msg.extendInformation = msgContent;
     
-    //Mark by NewFile
     [[QIMKit sharedInstance] qim_uploadFileWithFilePath:_jsonFilePath forMessage:msg];
-//    [[QIMKit sharedInstance] uploadFileForData:[NSData dataWithContentsOfFile:_jsonFilePath] forMessage:msg withJid:[contactVC getSelectInfoDic][@"userId"] isFile:YES];
 }
 
 
@@ -2618,17 +2613,6 @@ static CGPoint tableOffsetPoint;
     [self scrollToBottomWithCheck:YES];
     
     [[QIMKit sharedInstance] qim_uploadVideoPath:videoPath forMessage:msg];
-
-    /*
-    [[QIMKit sharedInstance] qim_uploadImageWithImageData:thumbData WithMsgId:[QIMUUIDTools UUID] WithMsgType:30 WithPathExtension:@"jpg" withCallBack:^(NSString *httpUrl) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-           
-            //Mark by NewVideo
-            [[QIMKit sharedInstance] qim_uploadVideoPath:videoPath forMessage:msg];
-            //    [[QIMKit sharedInstance] uploadFileForPath:videoPath forMessage:msg withJid:self.chatId isFile:YES];
-        });
-    }];
-    */
 }
 
 - (void)sendVoiceData:(NSData *)voiceData WithDuration:(int)duration {

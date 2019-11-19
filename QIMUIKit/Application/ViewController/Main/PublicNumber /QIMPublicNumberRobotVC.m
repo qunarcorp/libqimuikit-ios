@@ -1455,42 +1455,6 @@
                 [self performSelector:@selector(hiddenQDLoadingView) withObject:nil afterDelay:1.5];
             });
         }];
-        //mark by AFN
-        /*
-        NSURL *url = [NSURL URLWithString:[temp stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
-        [request startSynchronous];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([request responseStatusCode] == 200) {
-                NSDictionary *resultDic = [[QIMJSONSerializer sharedInstance] deserializeObject:request.responseString error:nil];
-                BOOL isSuccess = [[resultDic objectForKey:@"ret"] boolValue];
-                if (isSuccess) {
-                    
-                } else {
-                    NSString *errorMsg = [resultDic objectForKey:@"error_msg"];
-                    [_qdLoadingView setInfoStr:errorMsg];
-                    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateQDLoadingView) object:nil];
-                    [self performSelector:@selector(hiddenQDLoadingView) withObject:nil afterDelay:1.5];
-                    int errorCode = [[resultDic objectForKey:@"error_code"] intValue];
-                    switch (errorCode) {
-                        case 5007: 
-                            [[QIMKit sharedInstance] setDealId:dealId ForState:QDDealState_Faild];
-                            break;
-                        case 5008:
-                            [[QIMKit sharedInstance] setDealId:dealId ForState:QDDealState_TimeOut];
-                            break;
-                        default:
-                            break;
-                    }
-                    [_tableView reloadData];
-                }
-            } else {
-                [_qdLoadingView setInfoStr:@"请求异常，抢单失败！"];
-                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateQDLoadingView) object:nil];
-                [self performSelector:@selector(hiddenQDLoadingView) withObject:nil afterDelay:1.5];
-            }
-        });
-        */
     });
 }
 

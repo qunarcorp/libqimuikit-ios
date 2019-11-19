@@ -74,19 +74,6 @@ static QIMQRCodeLoginManager *__qrcodeLoginManager = nil;
     } failure:^(NSError *error) {
         
     }];
-    
-    //Mark by AFN
-    /*
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:confirmURL]];
-    [request setRequestMethod:@"POST"];
-    [request setPostBody:postData];
-    [request setUseCookiePersistence:NO];
-
-    [request setRequestHeaders:cookieProperties];
-    [request startSynchronous];
-    if ([request responseStatusCode] == 200 && ![request error]) {
-        QIMVerboseLog(@"确认扫码操作 : %@", request.responseString);
-    } */
 }
 
 - (void)confirmQRCodeLogin {
@@ -119,34 +106,6 @@ static QIMQRCodeLoginManager *__qrcodeLoginManager = nil;
     } withFailedCallBack:^(NSError *error) {
         
     }];
-    
-    //Mark by AFN
-    /*
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:confirmURL]];
-    [request setRequestMethod:@"POST"];
-    [request setPostBody:postData];
-    [request setUseCookiePersistence:NO];
-    NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
-    NSString *requestHeaders = [NSString stringWithFormat:@"q_ckey=%@", [[QIMKit sharedInstance] thirdpartKeywithValue]];
-    [cookieProperties setObject:requestHeaders forKey:@"Cookie"];
-    [request setRequestHeaders:cookieProperties];
-    [request startSynchronous];
-    if ([request responseStatusCode] == 200 && ![request error]) {
-        QIMVerboseLog(@"二维码确认登陆结果 : %@", request.responseString);
-        NSDictionary *responseDict = [[QIMJSONSerializer sharedInstance] deserializeObject:request.responseData error:nil];
-        BOOL ret = [responseDict objectForKey:@"ret"];
-        NSInteger errcode = [[responseDict objectForKey:@"errcode"] integerValue];
-        if (ret && errcode == 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:QIMQRCodeLoginStateNotification object:@(QIMQRCodeLoginStateSuccess)];
-            });
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:QIMQRCodeLoginStateNotification object:@(QIMQRCodeLoginStateFailed)];
-            });
-        }
-    }
-    */
 }
 
 - (void)cancelQRCodeLogin {
@@ -161,22 +120,6 @@ static QIMQRCodeLoginManager *__qrcodeLoginManager = nil;
     } withFailedCallBack:^(NSError *error) {
         
     }];
-    
-    //Mark by AFN
-    /*
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:confirmURL]];
-    [request setRequestMethod:@"POST"];
-    [request setPostBody:postData];
-    [request setUseCookiePersistence:NO];
-    NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
-    NSString *requestHeaders = [NSString stringWithFormat:@"q_ckey=%@", [[QIMKit sharedInstance] thirdpartKeywithValue]];
-    [cookieProperties setObject:requestHeaders forKey:@"Cookie"];
-    [request setRequestHeaders:cookieProperties];
-    [request startSynchronous];
-    if ([request responseStatusCode] == 200 && ![request error]) {
-        QIMVerboseLog(@"%@", request.responseString);
-    }
-    */
 }
 
 @end

@@ -420,7 +420,6 @@
             NSString *videoPath = alertView.videoOutPath;
             NSString *videoName = alertView.videoOutPath.lastPathComponent;
             NSData *videoData = [NSData dataWithContentsOfFile:videoPath];
-            //Mark by temp
             [[QIMKit sharedInstance] qim_saveLocalFileData:videoData withFileName:videoName];
             [self.picker finishPickingVideoFile:videoName];
         }

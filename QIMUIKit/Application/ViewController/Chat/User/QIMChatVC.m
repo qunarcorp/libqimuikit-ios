@@ -2298,9 +2298,7 @@
     NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
     
     msg.extendInformation = msgContent;
-    //Mark by NewFile
     [[QIMKit sharedInstance] qim_uploadFileWithFilePath:_jsonFilePath forMessage:msg];
-//    [[QIMKit sharedInstance] uploadFileForData:[NSData dataWithContentsOfFile:_jsonFilePath] forMessage:msg withJid:[contactVC getSelectInfoDic][@"userId"] isFile:YES];
 }
 
 - (void)contactSelectionViewController:(QIMContactSelectionViewController *)contactVC groupChatVC:(QIMGroupChatVC *)vc {
@@ -2316,9 +2314,7 @@
     NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
     
     msg.extendInformation = msgContent;
-    //Mark by NewFile
     [[QIMKit sharedInstance] qim_uploadFileWithFilePath:_jsonFilePath forMessage:msg];
-//    [[QIMKit sharedInstance] uploadFileForData:[NSData dataWithContentsOfFile:_jsonFilePath] forMessage:msg withJid:[contactVC getSelectInfoDic][@"userId"] isFile:YES];
 }
 
 #pragma mark - QIMOrganizationalVCDelegate
@@ -2383,7 +2379,15 @@
     [msg setTo:self.chatId];
     [msg setPlatform:IMPlatform_iOS];
     [msg setMessageSendState:QIMMessageSendState_Waiting];
-    
+#if __has_include("QIMNoteManager.h")
+    if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
+        msg.encryptChatState = QIMEncryptChatStateEncrypting;
+    } else {
+#endif
+        
+#if __has_include("QIMNoteManager.h")
+    }
+#endif
     [[QIMKit sharedInstance] saveMsg:msg ByJid:self.chatId];
     [self.messageManager.dataSource addObject:msg];
     [_tableView beginUpdates];
@@ -2391,17 +2395,6 @@
     [_tableView endUpdates];
     [self scrollToBottomWithCheck:YES];
     [[QIMKit sharedInstance] qim_uploadVideoPath:videoPath forMessage:msg];
-    /*
-    //mark by AFN
-    [[QIMKit sharedInstance] qim_uploadImageWithImageData:thumbData WithMsgId:msgId WithMsgType:QIMMessageType_Image WithPathExtension:@"jpg" withCallBack:^(NSString *httpUrl) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-           
-            //mark temp
-            [[QIMKit sharedInstance] qim_uploadVideoPath:videoPath forMessage:msg];
-            //        [[QIMKit sharedInstance] uploadFileForPath:videoPath forMessage:msg withJid:self.chatId isFile:YES];
-        });
-    }];
-    */
 }
 
 - (void)sendMessage:(NSString *)message WithInfo:(NSString *)info ForMsgType:(int)msgType {
@@ -2419,18 +2412,22 @@
         }
         [msg setOriginalMessage:[msg message]];
         [msg setOriginalExtendedInfo:[msg extendInformation]];
-        
+#if __has_include("QIMNoteManager.h")
+        if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
+            msg.encryptChatState = QIMEncryptChatStateEncrypting;
+        } else {
+#endif
+            
+#if __has_include("QIMNoteManager.h")
+        }
+#endif
         [self.messageManager.dataSource addObject:msg];
         [_tableView beginUpdates];
         [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
         [_tableView endUpdates];
         [self scrollToBottomWithCheck:YES];
         [self addImageToImageList];
-
-        //mark by newfile
-//        [[QIMKit sharedInstance] qim_uploadFile:filepath forMessage:msg];
         [[QIMKit sharedInstance] qim_uploadImageWithImageKey:localPath forMessage:msg];
-//        [[QIMKit sharedInstance] uploadFileForData:imageData forMessage:msg withJid:self.chatId isFile:NO];
     } else {
        QIMMessageModel *msg = nil;
         if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
@@ -2688,17 +2685,21 @@
     [infoDic setQIMSafeObject:@"" forKey:@"linkurl"];
     NSString *msgContent = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
     msg.extendInformation = msgContent;
-    
-    //mark temp
-    [[QIMKit sharedInstance] qim_uploadFileWithFileData:fileData WithPathExtension:nil forMessage:msg];
-//    [[QIMKit sharedInstance] uploadFileForData:fileData forMessage:msg withJid:self.chatId isFile:YES];
-    
-    
+#if __has_include("QIMNoteManager.h")
+    if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
+        msg.encryptChatState = QIMEncryptChatStateEncrypting;
+    } else {
+#endif
+        
+#if __has_include("QIMNoteManager.h")
+    }
+#endif
     [self.messageManager.dataSource addObject:msg];
     [_tableView beginUpdates];
     [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
     [_tableView endUpdates];
     [self scrollToBottomWithCheck:YES];
+    [[QIMKit sharedInstance] qim_uploadFileWithFileData:fileData WithPathExtension:nil forMessage:msg];
 }
 
 - (void)sendimageText:(NSString *)text {
@@ -3337,6 +3338,15 @@ static CGPoint tableOffsetPoint;
         msg = [[QIMKit sharedInstance] createMessageWithMsg:msgText extenddInfo:nil userId:self.chatId userType:ChatType_SingleChat msgType:QIMMessageType_Text];
     }
     
+#if __has_include("QIMNoteManager.h")
+    if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
+        msg.encryptChatState = QIMEncryptChatStateEncrypting;
+    } else {
+#endif
+        
+#if __has_include("QIMNoteManager.h")
+    }
+#endif
     [self.messageManager.dataSource addObject:msg];
     [_tableView beginUpdates];
     [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
@@ -3364,7 +3374,15 @@ static CGPoint tableOffsetPoint;
                                      };
         NSString *extendInfo = [[QIMJSONSerializer sharedInstance] serializeObject:jsonObject];
         QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:extendInfo extenddInfo:extendInfo userId:self.chatId userType:self.chatType msgType:QIMMessageType_File];
-
+#if __has_include("QIMNoteManager.h")
+        if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
+            msg.encryptChatState = QIMEncryptChatStateEncrypting;
+        } else {
+#endif
+            
+#if __has_include("QIMNoteManager.h")
+        }
+#endif
         [self.messageManager.dataSource addObject:msg];
         [_tableView beginUpdates];
         [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
@@ -3449,7 +3467,16 @@ static CGPoint tableOffsetPoint;
     NSDictionary *msgBodyDic = @{@"HttpUrl": filepath, @"FileName" : filename, @"Seconds": [NSNumber numberWithInt:duration], @"filepath": filepath};
     NSString *msgBodyStr = [[QIMJSONSerializer sharedInstance] serializeObject:msgBodyDic];
     QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:msgBodyStr extenddInfo:nil userId:self.chatId userType:self.chatType msgType:QIMMessageType_Voice forMsgId:[QIMUUIDTools UUID]];
-
+#if __has_include("QIMNoteManager.h")
+    if(self.encryptChatState == QIMEncryptChatStateEncrypting) {
+        msg.encryptChatState = QIMEncryptChatStateEncrypting;
+    } else {
+#endif
+        
+#if __has_include("QIMNoteManager.h")
+    }
+#endif
+    
     [self.messageManager.dataSource addObject:msg];
     [_tableView beginUpdates];
     [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.messageManager.dataSource.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
