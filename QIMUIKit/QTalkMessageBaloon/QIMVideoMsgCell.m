@@ -188,6 +188,7 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
         if (![thumbUrl qim_hasPrefixHttpHeader]) {
             thumbUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingPathComponent:thumbUrl];
         }
+        thumbUrl = [thumbUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         [_imageView qim_setImageWithURL:[NSURL URLWithString:thumbUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
     }
     [_infoView setFrame:CGRectMake(0, _imageView.bottom - _infoView.height, _infoView.width, _infoView.height)];

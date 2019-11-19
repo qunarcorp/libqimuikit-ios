@@ -85,7 +85,7 @@
         [_playerView.coverImageView setImage:self.videoModel.LocalThubmImage];
         
     } else {
-        [_playerView.coverImageView qim_setImageWithURL:[NSURL URLWithString:self.videoModel.ThumbUrl]];
+        [_playerView.coverImageView qim_setImageWithURL:[NSURL URLWithString:[self.videoModel.ThumbUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]]];
     }
     // 设置父View
     _playerView.disableGesture = YES;

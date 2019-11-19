@@ -155,7 +155,6 @@
     //    [self removeNotification];
     //    [self removeObserverFromPlayerItem:self.player.currentItem];
     if (self.videoPath) {
-//        NSURL *url = [NSURL URLWithString:@"http://avi1.mtvxz.cn/%E7%AD%B7%E5%AD%90%E5%85%84%E5%BC%9F-%E5%B0%8F%E8%8B%B9%E6%9E%9C-%E5%9B%BD%E8%AF%AD%5Bwww.mtvxz.cn%5D.avi"];
         NSURL *url=[NSURL fileURLWithPath:self.videoPath];
         AVPlayerItem *playerItem=[AVPlayerItem playerItemWithURL:url];
         //切换视频
