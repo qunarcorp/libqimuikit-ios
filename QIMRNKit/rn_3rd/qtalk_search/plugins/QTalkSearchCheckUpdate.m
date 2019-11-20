@@ -31,6 +31,7 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
     NSString *fullMd5 = [param objectForKey:@"bundleMd5"];
     NSString *bundleName = [param objectForKey:@"bundleName"];
     
+    dispatch_semaphore_t sema = dispatch_semaphore_create(0);
     // check have new version
     if([[param objectForKey:@"new"] boolValue]){
         // check patch
@@ -41,6 +42,7 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
             // unzip
             [QTalkPatchDownloadHelper downloadFullPackageAndCheck:fullpackageUrl md5:fullMd5 bundleName:bundleName zipName: [QTalkSearchRNView getAssetZipBundleName] cachePath:[QTalkSearchRNView getCachePath] destAssetName: [QTalkSearchRNView getAssetBundleName] withCallBack:^(BOOL res) {
                 updateResult = res;
+                dispatch_semaphore_signal(sema);
             }];
             
         } else if ([updateType isEqualToString:@"auto"]) {
@@ -51,9 +53,11 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
                     
                     [QTalkPatchDownloadHelper downloadFullPackageAndCheck:fullpackageUrl md5:fullMd5 bundleName:bundleName zipName: [QTalkSearchRNView getAssetZipBundleName] cachePath:[QTalkSearchRNView getCachePath] destAssetName: [QTalkSearchRNView getAssetBundleName] withCallBack:^(BOOL res) {
                         updateResult = res;
+                        dispatch_semaphore_signal(sema);
                     }];
                 } else {
                     updateResult = res;
+                    dispatch_semaphore_signal(sema);
                 }
             }];
         } else if ([updateType isEqualToString:@"patch"]){
@@ -63,11 +67,14 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
             // check after patch md5
             [QTalkPatchDownloadHelper downloadPatchAndCheck:patchUrl patchMd5:patchMd5 fullMd5:fullMd5 cachePath:[QTalkSearchRNView getCachePath] destAssetName:[QTalkSearchRNView getAssetBundleName] innerBundleName: [QTalkSearchRNView getInnerBundleName] withCallBack:^(BOOL res) {
                 updateResult = res;
+                dispatch_semaphore_signal(sema);
             }];
             
         }
     }
     
+    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+
     if(updateResult) {
         NSDictionary *resp1 = @{@"is_ok": @YES, @"errorMsg": @""};
         
