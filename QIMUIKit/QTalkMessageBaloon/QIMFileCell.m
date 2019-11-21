@@ -13,12 +13,12 @@
 #import "QIMJSONSerializer.h"
 #import "UILabel+VerticalAlign.h"
 #import "NSBundle+QIMLibrary.h"
-#import "ASIProgressDelegate.h"
+//#import "ASIProgressDelegate.h"
 
 #define kCellWidth      250
 #define kCellHeight     109
 
-@interface QIMFileCell()<QIMMenuImageViewDelegate,ASIProgressDelegate>
+@interface QIMFileCell()<QIMMenuImageViewDelegate>
 
 @property (nonatomic, strong) UIView *bgView;
 @property (nonatomic, strong) UIImageView *iconImageView;

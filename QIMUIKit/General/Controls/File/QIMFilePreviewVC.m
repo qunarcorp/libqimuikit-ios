@@ -14,7 +14,7 @@
 #import "QIMIconInfo.h"
 #import "QIMContactSelectionViewController.h"
 
-@interface QIMFilePreviewVC ()<UIWebViewDelegate,ASIProgressDelegate,ASIHTTPRequestDelegate>{
+@interface QIMFilePreviewVC ()<UIWebViewDelegate>{
     dispatch_queue_t _writeDataQueue;
     UIWebView *_previewWebView;
     
@@ -35,7 +35,7 @@
     unsigned long long _fileOffset;
     long long _requestLength;
     long long _currentOffset;
-    ASIHTTPRequest *_downloadRequest;
+//    ASIHTTPRequest *_downloadRequest;
     QIMMoviePlayer *_videoPlayer;
     QIMAudioPlayer *_audioPlayer;
     
@@ -198,9 +198,10 @@
 
 - (void)dealloc {
     
-    [_downloadRequest clearDelegatesAndCancel];
-    if (!_downloadComplate)
+//    [_downloadRequest clearDelegatesAndCancel];
+    if (!_downloadComplate) {
         [[NSFileManager defaultManager] removeItemAtPath:_filePath error:nil];
+    }
 }
 
 - (void)showFile {
@@ -251,7 +252,7 @@
 }
 
 #pragma mark - asi http request delegate
-
+/*
 - (void)request:(ASIHTTPRequest *)request didReceiveResponseHeaders:(NSDictionary *)responseHeaders{
     QIMVerboseLog(@"didReceiveResponseHeaders %@",responseHeaders);
 }
@@ -352,6 +353,7 @@
     QIMVerboseLog(@"incrementUploadSizeBy %lld", newLength);
     _requestLength += newLength;
 }
+*/
 #pragma mark - init ui
 
 - (void)onRepeatButton:(UIButton *)sender{
@@ -378,13 +380,81 @@
     if (![fileUrl qim_hasPrefixHttpHeader]) {
         fileUrl =  [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", fileUrl];
     }
-    NSURL *url = [NSURL URLWithString:fileUrl];
     
+    [[QIMKit sharedInstance] downloadFileRequest:[fileUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] withTargetFilePath:_filePath withProgressBlock:^(float progressValue) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_progressView setProgress:progressValue animated:YES];
+        });
+    } withSuccessCallBack:^(NSData *responseData) {
+        NSURL *filePath = (NSURL *)responseData;
+        BOOL success = [[NSFileManager defaultManager] fileExistsAtPath:filePath.relativePath];
+        if (success) {
+            QIMVerboseLog(@"finished");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                _downloadComplate = YES;
+                [_deleteButton setHidden:NO];
+                [_downLoadButton setHidden:YES];
+                [_downloadView setHidden:YES];
+                [_progressBgView setHidden:YES];
+                [_bottomView setHidden:NO];
+                [self showFile];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyDownloadFileComplete
+                                                                    object:self.message.messageId];
+                [_fileHandle closeFile];
+                _fileHandle = nil;
+            });
+        } else {
+            
+        }
+        NSLog(@"%@", responseData);
+    } withFailedCallBack:^(NSError *error) {
+        QIMVerboseLog(@"requestFailed");
+    }];
+    
+    /*
+    [[QIMKit sharedInstance] sendTPGetRequestWithUrl:[fileUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] withProgressCallBack:^(float progressValue) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_progressView setProgress:progressValue animated:YES];
+        });
+    } withSuccessCallBack:^(NSData *responseData) {
+        if (responseData) {
+            [responseData writeToFile:_filePath atomically:YES];
+        }
+        QIMVerboseLog(@"finished");
+        dispatch_async(dispatch_get_main_queue(), ^{
+//            [_fileHandle synchronizeFile];
+            _downloadComplate = YES;
+            [_deleteButton setHidden:NO];
+            [_downLoadButton setHidden:YES];
+            [_downloadView setHidden:YES];
+            [_progressBgView setHidden:YES];
+            [_bottomView setHidden:NO];
+            [self showFile];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotifyDownloadFileComplete
+                                                                object:self.message.messageId];
+//            [_downloadRequest setDelegate:nil];
+//            [_downloadRequest setDownloadProgressDelegate:nil];
+//            _downloadRequest = nil;
+            [_fileHandle closeFile];
+            _fileHandle = nil;
+        });
+    } withFailedCallBack:^(NSError *error) {
+        QIMVerboseLog(@"requestFailed");
+//        [_downloadRequest setDelegate:nil];
+//        [_downloadRequest setDownloadProgressDelegate:nil];
+//        _downloadRequest = nil;
+//        [_fileHandle closeFile];
+//        _fileHandle = nil;
+    }];
+    */
+    /*
+    NSURL *url = [NSURL URLWithString:fileUrl];
     _downloadRequest = [[ASIHTTPRequest alloc] initWithURL:url];
     _downloadRequest.showAccurateProgress = YES;
     [_downloadRequest setDelegate:self];
     [_downloadRequest setDownloadProgressDelegate:self];
     [_downloadRequest startAsynchronous];
+     */
 }
 
 - (void)onDeleteButton:(UIButton *)sender{
@@ -407,8 +477,8 @@
 
 - (void)onCancelButton:(UIButton *)sender{
     
-    [_downloadRequest clearDelegatesAndCancel];
-    _downloadRequest = nil;
+//    [_downloadRequest clearDelegatesAndCancel];
+//    _downloadRequest = nil;
     _fileOffset = 0;
     _currentOffset = 0;
     _requestLength = 0;
@@ -479,10 +549,6 @@
     [_cancelDownButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"cancel_down_pressed"] forState:UIControlStateHighlighted];
     [_cancelDownButton addTarget:self action:@selector(onCancelButton:) forControlEvents:UIControlEventTouchUpInside];
     [_progressBgView addSubview:_cancelDownButton];
-}
-
-- (void)tempClick {
-    [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 }
 
 - (void)initWebView{
