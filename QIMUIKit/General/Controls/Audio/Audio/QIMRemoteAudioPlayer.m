@@ -10,13 +10,12 @@
 #import "IMAmrFileCodec.h"
 #import "QIMVoicePathManage.h"
 
-@interface QIMRemoteAudioPlayer ()<ASIProgressDelegate>
+@interface QIMRemoteAudioPlayer ()
 {
     BOOL _ready;
     BOOL _playAfterReady;
 }
 
-@property (nonatomic, retain) ASIHTTPRequest *request;
 @property (nonatomic, retain) AVAudioPlayer *player;
 @property (nonatomic, retain) NSString *fileName;
 
@@ -25,13 +24,13 @@
 @implementation QIMRemoteAudioPlayer
 
 @synthesize delegate = _delegate;
-@synthesize request = _request;
+//@synthesize request = _request;
 @synthesize player = _player;
 @synthesize fileName = _fileName;
 
 - (void)dealloc
 {
-    [self.request clearDelegatesAndCancel];
+//    [self.request clearDelegatesAndCancel];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.player = nil;
 }
@@ -100,11 +99,8 @@
     }
 }
 
-- (void)prepareForVoiceURL:(NSString *)voiceUrl playAfterReady:(BOOL)playAfterReady
-{
+- (void)prepareForVoiceURL:(NSString *)voiceUrl playAfterReady:(BOOL)playAfterReady {
     _playAfterReady = playAfterReady;
-    [self.request clearDelegatesAndCancel];
-    self.request = nil;
     if (![voiceUrl qim_hasPrefixHttpHeader]) {
         voiceUrl =  [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingFormat:@"/%@", voiceUrl];
     } 
@@ -113,6 +109,21 @@
     } else {
         voiceUrl = [voiceUrl stringByAppendingFormat:@"&u=%@&k=%@",[[QIMKit getLastUserName] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],[[QIMKit sharedInstance] myRemotelogginKey]];
     }
+    [[QIMKit sharedInstance] sendTPGetRequestWithUrl:[voiceUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] withProgressCallBack:^(float progressValue) {
+        if ([self.delegate respondsToSelector:@selector(downloadProgress:)]) {
+            [self.delegate downloadProgress:progressValue];
+        }
+    } withSuccessCallBack:^(NSData *responseData) {
+        [_delegate remoteAudioPlayerReady:self];
+        NSData *amrData = responseData;
+        //保存数据到本地
+        [QIMVoicePathManage getPathToSaveWithSaveData:amrData ToFileName:_fileName ofType:@"amr"];
+        [self prepareAmrData:amrData playAfterReady:YES];
+    } withFailedCallBack:^(NSError *error) {
+        [_delegate remoteAudioPlayerErrorOccured:self withErrorCode:QIMRemoteAudioPlayerLoadingFailure];
+        [self setPlayer:nil];
+    }];
+    /*
     NSURL *requestUrl = [NSURL URLWithString:voiceUrl];
     if (requestUrl == nil) {
         requestUrl = [NSURL URLWithString:[voiceUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
@@ -124,6 +135,7 @@
 
     self.request = request;
     [request startAsynchronous];
+    */
 }
 
 - (void)prepareAmrData:(NSData *)amrData playAfterReady:(BOOL)playAfterReady{
@@ -229,6 +241,7 @@
     }
 }
 
+/*
 - (void)requestFinished:(ASIHTTPRequest *)request
 {
     [_delegate remoteAudioPlayerReady:self];
@@ -244,6 +257,7 @@
     [_delegate remoteAudioPlayerErrorOccured:self withErrorCode:QIMRemoteAudioPlayerLoadingFailure];
     [self setPlayer:nil];
 }
+*/
 
 #pragma mark - AVAudioPlayerDelegate
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag

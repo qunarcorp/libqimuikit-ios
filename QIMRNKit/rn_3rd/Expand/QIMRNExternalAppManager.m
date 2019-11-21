@@ -13,7 +13,7 @@ static QIMRNExternalAppManager *_manager = nil;
 
 #define rnExternalAppVersion @"rnExternalAppVersion"
 
-@interface QIMRNExternalAppManager () <ASIProgressDelegate>
+@interface QIMRNExternalAppManager ()
 
 @property (nonatomic, strong) NSMutableDictionary *rnExternalAppVersionDict;
 
@@ -116,37 +116,7 @@ static QIMRNExternalAppManager *_manager = nil;
                 callBack(NO);
             }
         }];
-        
-        /*
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:bundleUrls]];
-        request.downloadProgressDelegate = self;
-        [request setTimeOutSeconds:15];
-        [request startSynchronous];
-        NSError *error = request.error;
-        if (!error && [request responseStatusCode] == 200) {
-            NSData *bundleData = [request responseData];
-            if (bundleData.length > 0) {
-                NSString *qimrnCachePath = [UserCachesPath stringByAppendingPathComponent:[QimRNBModule getCachePath]];
-                if (![[NSFileManager defaultManager] fileExistsAtPath:qimrnCachePath]) {
-                    [[NSFileManager defaultManager] createDirectoryAtPath:qimrnCachePath withIntermediateDirectories:YES attributes:nil error:nil];
-                }
-                NSString *bundleMD5Name = [[[QIMKit sharedInstance] qim_cachedFileNameForKey:bundleUrls] stringByAppendingFormat:@".jsbundle"];
-
-                NSString *localBundlePath = [qimrnCachePath stringByAppendingPathComponent: bundleMD5Name];
-                [bundleData writeToFile:localBundlePath atomically:YES];
-//                NSString *version = [params objectForKey:@"Version"];
-//                [self.rnExternalAppVersionDict setObject:version forKey:bundleName];
-                [self updateLocalRNExternalAppVersion];
-                updateBundleSuccess = YES;
-            } else {
-                updateBundleSuccess = NO;
-            }
-        } else {
-            updateBundleSuccess = NO;
-        }
-        */
     }
-//    return updateBundleSuccess;
 }
 
 
