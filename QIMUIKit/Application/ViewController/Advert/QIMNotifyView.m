@@ -7,7 +7,6 @@
 
 #import "QIMNotifyView.h"
 #import "QIMAttributedLabel.h"
-#import "ASIHTTPRequest.h"
 #import "QIMJSONSerializer.h"
 #import "QIMHTTPRequest.h"
 #import "QIMHTTPClient.h"
@@ -195,93 +194,6 @@ static QIMNotifyView *_notifyView = nil;
                 } failure:^(NSError *error) {
                     
                 }];
-                
-                /*
-                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:url]];
-                [request setTimeOutSeconds:10];
-                [request startSynchronous];
-                NSError *error = [request error];
-                if ([request responseStatusCode] == 200 && !error) {
-                    NSData *data = [request responseData];
-                    NSDictionary *requestDic = [[QIMJSONSerializer sharedInstance] deserializeObject:data error:nil]; */
-                    /*
-                    requestDic = @{
-                                   @"ret":@(YES),
-                                   @"data" : @{
-                                           @"desc":@"这一段是link",
-                                           @"type":@"link",
-                                           @"url":@"www.baidu.com"
-                                           }
-                                   };
-                    requestDic = @{
-                                   @"ret":@(YES),
-                                   @"data" : @{
-                                           @"desc":@"这一段是跳转",
-                                           @"type":@"newChat",
-                                           @"from":@"lilulucas.li@ejabhost1",
-                                           @"to":@"shop323@ejabhost1",
-                                           @"realFrom":@"lilulucas.li@ejabhost1",
-                                           @"realTo":@"huajun.liu@ejabhost1",
-                                           @"isConsult":@(YES),
-                                           @"consult":@"5"
-                                           }
-                                   };
-                    requestDic = @{
-                                   @"ret":@(YES),
-                                   @"data" : @{
-                                           @"desc":@"这一段是跳转",
-                                           @"type":@"newChat",
-                                           @"from":@"lilulucas.li@ejabhost1",
-                                           @"to":@"shop323@ejabhost1",
-                                           @"realFrom":@"lilulucas.li@ejabhost1",
-                                           @"realTo":@"huajun.liu@ejabhost1",
-                                           @"isConsult":@(YES),
-                                           @"consult":@"4"
-                                           }
-                                   };
-                     */
-                    /*
-                    BOOL ret = [[requestDic objectForKey:@"ret"] boolValue];
-                    
-                    if (ret) {
-                        NSDictionary *data = [requestDic objectForKey:@"data"];
-                        if (data.count) {
-                            NSString *type = [data objectForKey:@"type"];
-                            if ([type isEqualToString:@"link"]) {
-                                NSString *desc = [data objectForKey:@"desc"];
-                                NSString *url = [data objectForKey:@"url"];
-                                if (url) {
-                                    QIMVerboseLog(@"Notify Link请求回来的url为%@，准备跳转url", url);
-                                    [QIMFastEntrance openWebViewForUrl:url showNavBar:YES];
-                                } else {
-                                    QIMVerboseLog(@"Notify Link请求回来的url为空，不做任何跳转");
-                                }
-                            } else if ([type isEqualToString:@"newChat"]) {
-                                
-                                NSString *desc = [data objectForKey:@"desc"];
-                                NSString *from = [data objectForKey:@"from"];
-                                NSString *to = [data objectForKey:@"to"];
-                                NSString *realFrom = [data objectForKey:@"realFrom"];
-                                NSString *realTo = [data objectForKey:@"realTo"];
-                                NSInteger chatType = [[data objectForKey:@"consult"] integerValue];
-                                BOOL isConsult = [[data objectForKey:@"isConsult"] boolValue];
-                                if (isConsult) {
-                                    if (chatType == ChatType_Consult) {
-                                        [QIMFastEntrance openConsultChatByChatType:ChatType_Consult UserId:realTo WithVirtualId:to];
-                                    } else {
-                                        [QIMFastEntrance openConsultChatByChatType:ChatType_ConsultServer UserId:realTo WithVirtualId:to];
-                                    }
-                                } else {
-                                    [QIMFastEntrance openSingleChatVCByUserId:realFrom];
-                                }
-                                [self closeNotifView];
-                            } else {
-                                
-                            }
-                        }
-                    }
-                    QIMVerboseLog(@"%@", requestDic);
-                }*/
             }
         } else if ([type isEqualToString:@"newChat"]) {
             NSInteger chatType = [[linkData objectForKey:@"consult"] integerValue];

@@ -273,9 +273,9 @@
         [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     }
 //    if (picker.isOriginalImage == NO) {
-//        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
+//        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools qim_CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
 //    } else {
-//        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
+//        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[QIMStringTransformTools qim_CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
 //    }
 }
 

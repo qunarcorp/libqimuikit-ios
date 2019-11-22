@@ -107,12 +107,6 @@
         NSString *anonymousPhoto = self.lastUserModel.anonymousPhoto;
         NSInteger anonymousId = self.lastUserModel.anonymousId;
         BOOL anonymousReplaceable = self.lastUserModel.replaceable;
-        /* Mark by 匿名
-        NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
-        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-        NSInteger anonymousId = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousId];
-        BOOL anonymousReplaceable = [[QIMWorkMomentUserIdentityManager sharedInstance] replaceable];
-        */
         QIMWorkMomentUserIdentityModel *model = [[QIMWorkMomentUserIdentityModel alloc] init];
         model.isAnonymous = YES;
         model.anonymousId = anonymousId;
@@ -203,13 +197,6 @@
     if (userIdentityModel.isAnonymous == NO) {
         cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"moment_real"];
         [cell setUserIdentitySelected:!isAnonymous];
-        /* Mark by 匿名
-        if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous]) {
-            [cell setUserIdentitySelected:NO];
-        } else {
-            [cell setUserIdentitySelected:YES];
-        }
-        */
     } else {
         if (userIdentityModel.mockAnonymous == YES) {
             cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"moment_anonymous"];
@@ -250,20 +237,6 @@
         [self presentViewController:alertVc animated:YES completion:nil];
     } else {
         [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] setUserIdentityModel:userIdentityModel];
-        /* Mark by 匿名
-        if (userIdentityModel.isAnonymous == NO) {
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:NO];
-        } else {
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:YES];
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:userIdentityModel.anonymousName];
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:userIdentityModel.anonymousPhoto];
-            [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:userIdentityModel.replaceable];
-        } */
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:@"kReloadUserIdentifier" object:nil];
         });
@@ -304,21 +277,6 @@
     } else {
         [[QIMWorkMomentUserIdentityManager sharedInstanceWithPOSTUUID:self.momentId] setUserIdentityModel:nil];
     }
-    /* Mark by 匿名
-    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == YES) {
-        QIMWorkMomentUserIdentityModel *userIdentityModel = [self.userIdentityList lastObject];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:YES];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousId:userIdentityModel.anonymousId];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:userIdentityModel.anonymousName];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:userIdentityModel.anonymousPhoto];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:userIdentityModel.replaceable];
-    } else {
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setIsAnonymous:NO];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousName:nil];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setAnonymousPhoto:nil];
-        [[QIMWorkMomentUserIdentityManager sharedInstance] setReplaceable:NO];
-    }
-    */
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"kReloadUserIdentifier" object:nil];
     });

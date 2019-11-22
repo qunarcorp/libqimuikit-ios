@@ -17,8 +17,6 @@
 
 - (void)processEvent:(int) event withMessage:(id) message;
 
-- (NSUInteger)getColorHex:(NSString *)text;
-
 @end
 
 @interface QIMGroupChatCell : QIMMsgBaloonBaseCell

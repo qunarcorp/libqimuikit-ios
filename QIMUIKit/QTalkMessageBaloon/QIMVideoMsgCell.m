@@ -180,11 +180,17 @@ static NSMutableDictionary *__uploading_progress_dic = nil;
     }
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *thubmName = [infoDic objectForKey:@"ThumbName"] ? [infoDic objectForKey:@"ThumbName"] : [NSString stringWithFormat:@"%@_thumb.jpg", [[fileName componentsSeparatedByString:@"."] firstObject]];
-    NSString *thumbUrl = [infoDic objectForKey:@"ThumbUrl"];
-    if (![thumbUrl qim_hasPrefixHttpHeader]) {
-        thumbUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingPathComponent:thumbUrl];
+    NSString *localVideoThumbPath = [infoDic objectForKey:@"LocalVideoThumbPath"];
+    if (localVideoThumbPath.length > 0 && [[NSFileManager defaultManager] fileExistsAtPath:localVideoThumbPath]) {
+        [_imageView qim_setImageWithURL:[NSURL fileURLWithPath:localVideoThumbPath] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
+    } else {
+        NSString *thumbUrl = [infoDic objectForKey:@"ThumbUrl"];
+        if (![thumbUrl qim_hasPrefixHttpHeader]) {
+            thumbUrl = [[QIMKit sharedInstance].qimNav_InnerFileHttpHost stringByAppendingPathComponent:thumbUrl];
+        }
+        thumbUrl = [thumbUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        [_imageView qim_setImageWithURL:[NSURL URLWithString:thumbUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
     }
-    [_imageView qim_setImageWithURL:[NSURL URLWithString:thumbUrl] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"PhotoDownloadPlaceHolder"]];
     [_infoView setFrame:CGRectMake(0, _imageView.bottom - _infoView.height, _infoView.width, _infoView.height)];
     [_imageView setFrame:CGRectMake((self.message.messageDirection==QIMMessageDirection_Received?kBackViewCap+10:5) - 1, 5, size.width, size.height)];
     float backWidth = size.width + 6 + kBackViewCap + 8;

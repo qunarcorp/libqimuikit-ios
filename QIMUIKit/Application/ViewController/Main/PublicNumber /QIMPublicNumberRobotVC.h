@@ -21,7 +21,5 @@
 
 - (void)sendMessage:(NSString *)message ForMsgType:(int)msgType;
 
-- (void)sendImageData:(NSData *)imageData;
-
 - (void)sendText:(NSString *)text;
 @end

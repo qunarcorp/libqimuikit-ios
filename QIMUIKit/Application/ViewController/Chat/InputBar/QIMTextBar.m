@@ -38,7 +38,7 @@
 #import "QIMUUIDTools.h"
 #import "NSBundle+QIMLibrary.h"
 #import "QIMChatToolBarItem.h"
-#import "QIMPathManage.h"
+#import "QIMVoicePathManage.h"
 #import "QIMVoiceOperator.h"
 #import "IMAmrFileCodec.h"
 #import "QIMATGroupMemberTextAttachment.h"
@@ -710,8 +710,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     }
 }
 
-- (CGFloat)getSuperViewH
-{
+- (CGFloat)getSuperViewH {
     if (self.superview == nil) {
         return 0;
     }
@@ -1732,9 +1731,9 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 - (void)imagePickerBrowserDidFinish:(QIMUIImagePickerBrowserVC *)pickerBrowser {
     UIImage* editedImage = pickerBrowser.sourceImage;
     NSData *imageData = UIImageJPEGRepresentation(editedImage, 0.8);
-    [self.delegate sendImageData:imageData];
+    NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+    [self.delegate qim_textbarSendImageWithImagePath:imagePath];
     _isScrollToBottom = YES;
-    //    [self needFirstResponder:NO];
     [pickerBrowser dismissViewControllerAnimated:NO completion:nil];
 }
 
@@ -1826,7 +1825,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
-    [self.delegate sendImageData:nil];
+    [self.delegate qim_textbarSendImageWithImagePath:nil];
 }
 
 - (void)onPhotoButtonClick:(UIButton *)sender{
@@ -1842,29 +1841,31 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             [[[UIApplication sharedApplication] visibleViewController] presentViewController:pickerVc animated:YES completion:nil];
         }
         */
-        QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
-        picker.delegate = self;
-        picker.title = @"选取照片";
-        picker.customDoneButtonTitle = @"";
-        picker.customCancelButtonTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
-        picker.customNavigationBarPrompt = nil;
         
-        picker.colsInPortrait = 4;
-        picker.colsInLandscape = 5;
-        picker.minimumInteritemSpacing = 2.0;
-        //Mark by oldiPad
-        if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
-#if __has_include("QIMIPadWindowManager.h")
-            [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
-#endif
-        } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            QTPHImagePickerController *picker = [[QTPHImagePickerController alloc] init];
+            picker.delegate = self;
+            picker.title = @"选取照片";
+            picker.customDoneButtonTitle = @"";
+            picker.customCancelButtonTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
+            picker.customNavigationBarPrompt = nil;
+            
+            picker.colsInPortrait = 4;
+            picker.colsInLandscape = 5;
+            picker.minimumInteritemSpacing = 2.0;
+            //Mark by oldiPad
             if ([[QIMKit sharedInstance] getIsIpad] == YES) {
                 picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+                [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:picker animated:YES completion:nil];
+#endif
+            } else {
+                if ([[QIMKit sharedInstance] getIsIpad] == YES) {
+                    picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+                }
+                [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
             }
-            [[[UIApplication sharedApplication] visibleViewController] presentViewController:picker animated:YES completion:nil];
-        }
-    
+        });
         /* mark by newipad
          
          if ([[QIMKit sharedInstance] getIsIpad] == YES) {
@@ -1878,10 +1879,12 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 - (void)onCamerButtonClick:(UIButton *)sender {
     [QIMAuthorizationManager sharedManager].authorizedBlock = ^{
-        CameraViewController * cameraVC = [[CameraViewController alloc] init];
-        cameraVC.delegate = self;
-        QIMNavController * nav = [[QIMNavController alloc] initWithRootViewController:cameraVC];
-        [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            CameraViewController * cameraVC = [[CameraViewController alloc] init];
+            cameraVC.delegate = self;
+            QIMNavController * nav = [[QIMNavController alloc] initWithRootViewController:cameraVC];
+            [(UIViewController *)self.delegate presentViewController:nav animated:YES completion:nil];
+        });
     };
     [[QIMAuthorizationManager sharedManager] requestAuthorizationWithType:ENUM_QAM_AuthorizationTypeCamera];
 }
@@ -2052,45 +2055,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     [[QIMEmotionManager sharedInstance] setCurrentPackageId:selectPKId];
 }
 
-- (int)leftBorderIndexForText:(NSString *)text index:(NSInteger)index
-{
-    int textIndex = -1;
-    if (index >= 0 && text && index < text.length && [text characterAtIndex:index] == '[') {
-        return (int)index;
-    }else{
-        index --;
-    }
-    for (int i = (int)index; i >= 0 && text && i < text.length; i--) {
-        if ([text characterAtIndex:i] == '[') {
-            textIndex = i;
-            break;
-        }
-        if ([text characterAtIndex:i] == ']') {
-            break;
-        }
-    }
-    return textIndex;
-}
-
-- (int)rightBorderIndexForText:(NSString *)text index:(NSInteger)index {
-    int textIndex = -1;
-    if (index >= 0 && text && index < text.length && [text characterAtIndex:index] == ']') {
-        return (int)index;
-    }else{
-        index ++;
-    }
-    for (int i = (int)index; i < text.length && text; i++) {
-        if ([text characterAtIndex:i] == ']') {
-            textIndex = i;
-            break;
-        }
-        if ([text characterAtIndex:i] == '[') {
-            break;
-        }
-    }
-    return textIndex;
-}
-
 //发送文本消息
 -(void)SendTheContent {
     [self.delegate sendText:self.chatToolBar.textView.text];
@@ -2147,48 +2111,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     [self resetTextStyle];
 }
 
-
-//是否是系统表情
--(BOOL)stringContainsEmoji:(NSString *)string
-{
-    __block BOOL returnValue = NO;
-    [string enumerateSubstringsInRange:NSMakeRange(0, [string length]) options:NSStringEnumerationByComposedCharacterSequences usingBlock:
-     
-     ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop){
-         const unichar hs = [substring characterAtIndex:0];
-         // surrogate pair
-         if (0xd800 <= hs && hs <= 0xdbff){
-             if (substring.length > 1){
-                 const unichar ls = [substring characterAtIndex:1];
-                 const int uc = ((hs - 0xd800) * 0x400) + (ls - 0xdc00) + 0x10000;
-                 if (0x1d000 <= uc && uc <= 0x1f77f){
-                     returnValue = YES;
-                 }
-             }
-         }
-         else if (substring.length > 1){
-             const unichar ls = [substring characterAtIndex:1];
-             if (ls == 0x20e3){
-                 returnValue = YES;
-             }
-         }else{
-             // non surrogate
-             if (0x2100 <= hs && hs <= 0x27ff){
-                 returnValue = YES;
-             }else if (0x2B05 <= hs && hs <= 0x2b07){
-                 returnValue = YES;
-             }else if (0x2934 <= hs && hs <= 0x2935){
-                 returnValue = YES;
-             }else if (0x3297 <= hs && hs <= 0x3299){
-                 returnValue = YES;
-             }else if (hs == 0xa9 || hs == 0xae || hs == 0x303d || hs == 0x3030 || hs == 0x2b55 || hs == 0x2b1c || hs == 0x2b1b || hs == 0x2b50){
-                 returnValue = YES;
-             }
-         }
-     }];
-    return returnValue;
-}
-
 #pragma mark - method
 
 -(void)setSelectedEmotion:(void (^)(NSString *))onEmotionSelected{
@@ -2212,21 +2134,19 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     if (fileName && filePath) {
         [self.delegate voiceRecordWillFinishedIsTrue:YES andCancelByUser:NO];
         NSData *amrData = EncodeWAVEToAMR([NSData dataWithContentsOfFile:filePath], 1, 16);
-        [QIMPathManage deleteFileAtPath:filePath];
-        NSString *amrFilePath = [QIMPathManage getPathToSaveWithSaveData:amrData ToFileName:fileName ofType:@"amr"];
-        //将armData文件上传，获取到相应的url
-        NSString *httpUrl = [QIMKit updateLoadVoiceFile:amrData WithFilePath:amrFilePath];
+        [QIMVoicePathManage deleteFileAtPath:filePath];
+        NSString *amrFilePath = [QIMVoicePathManage getPathToSaveWithSaveData:amrData ToFileName:fileName ofType:@"amr"];
+
         if (_recordingStatus == VoiceChatRecordingStatusAudition) {
             if (!_voiceInfoDic) {
                 _voiceInfoDic = [NSMutableDictionary dictionaryWithCapacity:1];
             }
-            [_voiceInfoDic setQIMSafeObject:httpUrl forKey:@"httpUrl"];
-            [_voiceInfoDic setQIMSafeObject:@(timeCount + 1) forKey:@"timeCount"];
-            [_voiceInfoDic setQIMSafeObject:amrData forKey:@"amrData"];
-            [_voiceInfoDic setQIMSafeObject:fileName forKey:@"fileName"];
+
             [_voiceInfoDic setQIMSafeObject:amrFilePath forKey:@"amrFilePath"];
-        }else{
-            [self.delegate sendVoiceUrl:httpUrl WithDuration:timeCount + 1 WithSmallData:amrData WithFileName:fileName AndFilePath:amrFilePath];
+            [_voiceInfoDic setQIMSafeObject:@(timeCount + 1) forKey:@"Duration"];
+            [_voiceInfoDic setQIMSafeObject:fileName forKey:@"fileName"];
+        } else{
+            [self.delegate sendVoiceWithDuration:timeCount + 1 WithFileName:fileName AndFilePath:amrFilePath];
         }
     } else {
         if (timeCount < 1.0) {
@@ -2239,7 +2159,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 - (void)sendVoice
 {
-    [self.delegate sendVoiceUrl:[_voiceInfoDic objectForKey:@"httpUrl"] WithDuration:[[_voiceInfoDic objectForKey:@"timeCount"] intValue] WithSmallData:[_voiceInfoDic objectForKey:@"amrData"] WithFileName:[_voiceInfoDic objectForKey:@"fileName"] AndFilePath:[_voiceInfoDic objectForKey:@"amrFilePath"]];
+    [self.delegate sendVoiceWithDuration:[[_voiceInfoDic objectForKey:@"timeCount"] intValue] WithFileName:[_voiceInfoDic objectForKey:@"fileName"] AndFilePath:[_voiceInfoDic objectForKey:@"amrFilePath"]];
 }
 
 - (void)updateVoiceViewHeightWithPower:(float)power
@@ -2412,8 +2332,6 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     
 }
 
-
-
 - (void)remoteAudioPlayerDidStartPlaying:(QIMRemoteAudioPlayer *)player{
     
 }
@@ -2433,7 +2351,7 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 -(void)qtImagePickerController:(QTImagePickerController *)picker didFinishPickingAssets:(NSArray *)assets ToOriginal:(BOOL)flag
 {
     for (ALAsset * asset in assets) {
-        NSData * imageData = nil;
+        NSData *imageData = nil;
         if (flag) {
             uint8_t *buffer = (uint8_t *)malloc(asset.defaultRepresentation.size);
             NSInteger length = [asset.defaultRepresentation getBytes:buffer fromOffset:0 length:asset.defaultRepresentation.size error:nil];
@@ -2445,7 +2363,8 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
             image = [QIMImageUtil fixOrientation:image];
             imageData = UIImageJPEGRepresentation(image, 0.5);
         }
-        [self.delegate sendImageData:imageData];
+        NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+        [self.delegate qim_textbarSendImageWithImagePath:imagePath];
     }
     _isScrollToBottom = YES;
     [self needFirstResponder:NO];
@@ -2454,8 +2373,10 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 -(void)qtImagePickerController:(QTImagePickerController *)picker didFinishPickingImage:(UIImage *)image
 {
-    NSData * imageData = UIImageJPEGRepresentation(image, 0.9);
-    [self.delegate sendImageData:imageData];
+    NSData * imageData = UIImageJPEGRepresentation(image, 1.0);
+    NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+    [self.delegate qim_textbarSendImageWithImagePath:imagePath];
+
     _isScrollToBottom = YES;
     [self needFirstResponder:NO];
     [picker dismissViewControllerAnimated:NO completion:nil];
@@ -2512,7 +2433,8 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
                     if (downloadFinined && imageData) {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.delegate sendImageData:imageData];
+                            NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+                            [self.delegate qim_textbarSendImageWithImagePath:imagePath];
                             _isScrollToBottom = YES;
                             [self closeHUD];
                         });
@@ -2521,12 +2443,18 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
                     BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
                     if (downloadFinined) {
                         dispatch_async(dispatch_get_main_queue(), ^{
+                            /*
                             UIImage * imageFix = [QIMImageUtil fixOrientation:[UIImage imageWithData:imageData]];
                             if ((imageFix.size.width > 512 || imageFix.size.height > 512) && (!picker.isOriginal)) {
                                 CGFloat height = (imageFix.size.height / imageFix.size.width) * 512;
                                 imageFix = [imageFix qim_imageByScalingAndCroppingForSize:CGSizeMake(512, height)];
                             }
-                            [self.delegate sendImageData:UIImageJPEGRepresentation(imageFix, 0.8)];
+                            */
+                            //mark by newFile
+                            UIImage *imageFix = [QIMImageUtil fixOrientation:[UIImage imageWithData:imageData]];
+                            NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:UIImagePNGRepresentation(imageFix)];
+                            [self.delegate qim_textbarSendImageWithImagePath:imagePath];
+
                             _isScrollToBottom = YES;
                             [self closeHUD];
                         });
@@ -2567,7 +2495,13 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
     } else {
         [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     }
-    
+}
+
+- (void)assetsPickerController:(QTPHImagePickerController *)picker didFinishPickingVideoFile:(NSString *)videoFileName {
+    [self.delegate qim_textbarSendFileWithFileName:videoFileName];
+    dispatch_async(dispatch_get_main_queue(), ^{
+       [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    });
 }
 
 - (void)assetsPickerController:(QTPHImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray
@@ -2582,8 +2516,9 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 
 -(void)assetsPickerController:(QTPHImagePickerController *)picker didFinishEditWithImage:(UIImage *)image
 {
-    NSData * imageData = UIImageJPEGRepresentation(image, 1.0);
-    [self.delegate sendImageData:imageData];
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    NSString *imagePath = [[QIMKit sharedInstance] qim_saveImageData:imageData];
+    [self.delegate qim_textbarSendImageWithImagePath:imagePath];
     _isScrollToBottom = YES;
     [self needFirstResponder:NO];
     [picker dismissViewControllerAnimated:NO completion:nil];
@@ -2609,59 +2544,14 @@ static dispatch_once_t __publicNumberTextBarOnceToken;
 }
 
 #pragma mark - 录音Delegate
-/*
-_recordingStatus = status;
-switch (status) {
-    case VoiceChatRecordingStatusStart:
-    {
-        //设置文件名
-        self.fileName = [QIMUUIDTools UUID];
-        QIMVerboseLog(@"UUID == %@",self.fileName);
-        //开始录音
-        //            [recorderVC beginRecordByFileName:self.fileName];
-        if ([self.delegate respondsToSelector:@selector(beginDoVoiceRecord)]) {
-            [self.delegate beginDoVoiceRecord];
-        }
-        [self.voiceOperator doVoiceRecordByFilename:self.fileName];
-    }
-        break;
-    case VoiceChatRecordingStatusRecording: {
-        
-    }
-        break;
-    case VoiceChatRecordingStatusEnd: {
-        
-        [self.voiceOperator finishRecoderWithSave:YES];
-    }
-        break;
-    case VoiceChatRecordingStatusCancel: {
-        [self.voiceOperator finishRecoderWithSave:NO];
-    }
-        break;
-    case VoiceChatRecordingStatusAudition: {
-        [self.voiceOperator finishRecoderWithSave:YES];
-    }
-        break;
-    case VoiceChatRecordingStatusSend: {
-        [self sendVoice];
-    }
-        break;
-        
-    default:
-        break;
-}
-*/
 
 - (void)chatToolBarDidStartRecording:(QIMChatToolBar *)toolBar {
     self.fileName = [QIMUUIDTools UUID];
-    QIMVerboseLog(@"UUID == %@",self.fileName);
     //开始录音
-    //            [recorderVC beginRecordByFileName:self.fileName];
     if ([self.delegate respondsToSelector:@selector(beginDoVoiceRecord)]) {
         [self.delegate beginDoVoiceRecord];
     }
     [self.voiceOperator doVoiceRecordByFilename:self.fileName];
-
 }
 
 - (void)chatToolBarDidCancelRecording:(QIMChatToolBar *)toolBar {

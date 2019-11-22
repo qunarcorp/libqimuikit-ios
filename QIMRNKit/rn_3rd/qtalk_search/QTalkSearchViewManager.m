@@ -25,7 +25,7 @@
     }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goBack) name:kNotify_RN_QTALK_SEARCH_GO_BACK object:nil];
     NSNumber *forceOldSearch = [[QIMKit sharedInstance] userObjectForKey:@"forceOldSearch"];
-    //Mark by oldiPad
+    //iPad版/qchat App使用老版本搜索
     if ([forceOldSearch boolValue] == YES || [[QIMKit sharedInstance] getIsIpad] == YES || [QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
         QTalkSearchRNView *reactView = [[QTalkSearchRNView alloc] initWithFrame:self.view.bounds];
         [reactView setOwnerVC:self];
@@ -40,13 +40,6 @@
         
         [self.view addSubview:newReactView];
     }
-    /* mark by newipad
-    QTalkNewSearchRNView *newReactView = [[QTalkNewSearchRNView alloc] initWithFrame:self.view.bounds];
-    [newReactView setOwnerVC:self];
-    [newReactView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
-    
-    [self.view addSubview:newReactView];
-    */
 }
 
 - (void)didReceiveMemoryWarning {

@@ -219,9 +219,7 @@
 
 - (void)setUpTableViewHeader {
     
-    UIImage *headerImage = nil;
-//    [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.groupId];
-    UIImageView *header = [[UIImageView alloc] initWithImage:[headerImage qim_blurImageWithRadius:5]];
+    UIImageView *header = [[UIImageView alloc] init];
     header.frame = CGRectMake(0, 0, _tableView.width, 200);
     header.contentMode = UIViewContentModeScaleAspectFill;
     header.clipsToBounds = YES;
@@ -233,7 +231,7 @@
     headView.layer.borderWidth = 3.0f;
     headView.layer.borderColor = [UIColor whiteColor].CGColor;
     headView.clipsToBounds = YES;
-    headView.image = headerImage;
+    [headView qim_setImageWithURL:[[QIMKit sharedInstance] getGroupBigHeaderImageUrlWithGroupId:self.groupId]];
     [header addSubview:headView];
     
     UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 74)];
@@ -315,7 +313,7 @@
         if (buttonIndex == 1) {
             BOOL result = [[QIMKit sharedInstance] quitGroupId:self.groupId];
             if (result) {
-                [[QIMKit sharedInstance] removeStickWithCombineJid:[NSString stringWithFormat:@"%@<>%@", self.groupId, self.groupId] WithChatType:ChatType_GroupChat];
+                [[QIMKit sharedInstance] removeStickWithCombineJid:[NSString stringWithFormat:@"%@<>%@", self.groupId, self.groupId] WithChatType:ChatType_GroupChat withCallback:nil];
                 [self.navigationController setNavigationBarHidden:NO animated:YES];
                 [self.navigationController popToRootViewControllerAnimated:YES];
             } else {

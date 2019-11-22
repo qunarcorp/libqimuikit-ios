@@ -26,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) QIMWorkMomentMediaType mediaType;
 
+@property (nonatomic, copy) NSString *mediaMd5;
+
 @property (nonatomic, assign) BOOL canDelete;
 
 @end

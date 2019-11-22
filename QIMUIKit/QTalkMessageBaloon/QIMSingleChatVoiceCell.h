@@ -23,7 +23,7 @@
 #define kNotifyDownloadProgressProgress     @"kNotifyDownloadProgressProgress"
 
 
-@interface QIMSingleChatVoiceCell : QIMMsgBaloonBaseCell<QIMMenuImageViewDelegate>
+@interface QIMSingleChatVoiceCell : QIMMsgBaloonBaseCell <QIMMenuImageViewDelegate>
 
 @property (nonatomic, weak) id<QIMSingleChatVoiceCellDelegate,QIMMsgBaloonBaseCellDelegate> delegate;
 @property (nonatomic, strong) NSString *chatId;

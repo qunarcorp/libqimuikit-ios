@@ -7,7 +7,6 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
-#import "ASIHTTPRequestDelegate.h"
 #import "QIMCommonUIFramework.h"
 
 typedef enum
@@ -32,7 +31,7 @@ typedef enum
 
 @end
 
-@interface QIMRemoteAudioPlayer : NSObject <ASIHTTPRequestDelegate, AVAudioPlayerDelegate>
+@interface QIMRemoteAudioPlayer : NSObject <AVAudioPlayerDelegate>
 
 @property (nonatomic, assign) id<QIMRemoteAudioPlayerDelegate> delegate;
 

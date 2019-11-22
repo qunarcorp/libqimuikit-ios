@@ -18,7 +18,6 @@
 #import "QIMJSONSerializer.h"
 #import "QIMLocationShareMsgCell.h"
 #import "UserLocationViewController.h"
-//#import "UIImageView+QIMWebCache.h"
 #import "ShapedImageView.h"
 
 @interface QIMLocationShareMsgCell()<QIMMenuImageViewDelegate>
@@ -120,7 +119,8 @@
             imageUrlStr = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], imageUrlStr];
         }
         [_imageView qim_setImageWithURL:[NSURL URLWithString:imageUrlStr] placeholderImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"] options:SDWebImageDecodeFirstFrameOnly progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            [[QIMKit sharedInstance] saveFileData:UIImageJPEGRepresentation(image, 1.0) withFileName:nil forCacheType:QIMFileCacheTypeColoction];
+            //Mark temp
+//            [[QIMKit sharedInstance] saveFileData:UIImageJPEGRepresentation(image, 1.0) withFileName:nil forCacheType:QIMFileCacheTypeColoction];
         }];
     }else{
         _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"map_located"];

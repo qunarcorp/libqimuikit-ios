@@ -13,12 +13,12 @@
 #import "QIMJSONSerializer.h"
 #import "UILabel+VerticalAlign.h"
 #import "NSBundle+QIMLibrary.h"
-#import "ASIProgressDelegate.h"
+//#import "ASIProgressDelegate.h"
 
 #define kCellWidth      250
 #define kCellHeight     109
 
-@interface QIMFileCell()<QIMMenuImageViewDelegate,ASIProgressDelegate>
+@interface QIMFileCell()<QIMMenuImageViewDelegate>
 
 @property (nonatomic, strong) UIView *bgView;
 @property (nonatomic, strong) UIImageView *iconImageView;
@@ -103,7 +103,7 @@
         [self.backView addGestureRecognizer:tap];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downfileNotify:) name:kNotifyDownloadFileComplete object:nil];
-        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadFileNotify:) name:kQIMUploadFileProgress object:nil];
         
     }
     return self;
@@ -112,6 +112,28 @@
 - (void)downfileNotify:(NSNotification *)nofity {
     if ([self.message.messageId isEqualToString:nofity.object]) {
         [self refreshUI];
+    }
+}
+
+- (void)uploadFileNotify:(NSNotification *)notify {
+    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
+    NSString *fileMd5 = [infoDic objectForKey:@"FileMd5"];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:kQIMUploadFileProgress object:@{@"FileUploadKey":fileName, @"ImageUploadProgress":@(1.0)}];
+    NSDictionary *notifyInfoDic = [notify object];
+    NSString *FileUploadKey = [notifyInfoDic objectForKey:@"FileUploadKey"];
+    NSLog(@"FileUploadKey : %@", FileUploadKey);
+    BOOL fileUploading = [[infoDic objectForKey:@"Uploading"] boolValue];
+    NSString *msgId = [notifyInfoDic objectForKey:@"MessageId"];
+    if (fileUploading == YES && [fileMd5 isEqualToString:FileUploadKey] && [self.message.messageId isEqualToString:msgId]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            float progressValue = [[notifyInfoDic objectForKey:@"ImageUploadProgress"] floatValue];
+            if (progressValue < 1.0) {
+                [self.progressView setProgress:progressValue];
+            } else {
+                [self.progressView setHidden:YES];
+                [self.fileStateLabel setText:[NSBundle qim_localizedStringForKey:@"common_sent"]];
+            }
+        });
     }
 }
 
@@ -124,41 +146,6 @@
 
 #pragma mark - ui
 
--(void)setMessage:(QIMMessageModel *)message{
-    [super setMessage:message];
-    
-    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
-    
-    NSString * url = [infoDic objectForKey:@"HttpUrl"];
-    
-    
-    NSData * data = [[QIMKit sharedInstance] getFileDataFromUrl:url forCacheType:QIMFileCacheTypeDefault];
-    
-    if ([url hasPrefix:@"file://"]) {
-        [[QIMKit sharedInstance] uploadFileForData:data forCacheType:QIMFileCacheTypeDefault fileExt:[NSURL URLWithString:url].pathExtension isFile:YES uploadProgressDelegate:self.progressView completionBlock:^(UIImage *image, NSError *error, QIMFileCacheType cacheType, NSString *imageURL) {
-            [self uploadFileFinished];
-            if (imageURL.length > 0) {
-                if (self.message.extendInformation.length > 0) {
-                    self.message.message = self.message.extendInformation;
-                }
-                NSMutableDictionary *infoDic = [[[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil] mutableCopy];
-                [infoDic setObject:imageURL forKey:@"HttpUrl"];
-                
-                NSString * infoStr = [[QIMJSONSerializer sharedInstance] serializeObject:infoDic];
-                if (self.message.extendInformation.length > 0) {
-                    self.message.extendInformation = infoStr;
-                    self.message.from = [[QIMKit sharedInstance] getLastJid];
-                    self.message.message = self.message.extendInformation;
-//                    [[QIMKit sharedInstance] updateMsg:self.message ByJid:[[QIMKit sharedInstance] getLastJid]];
-                    [[QIMKit sharedInstance] sendMessage:self.message ToUserId:self.message.to];
-                }
-            }
-            [self refreshUI];
-        } progressBlock:^(CGFloat progress) {
-            [self.progressView setProgress:progress];
-        }];
-    }
-}
 - (void)refreshUI {
     
     self.backView.message = self.message;
@@ -174,7 +161,8 @@
     NSString *fileName = [infoDic objectForKey:@"FileName"];
     NSString *fileSize = [[infoDic objectForKey:@"FileSize"] description];
     NSString *fileUrl = [infoDic objectForKey:@"HttpUrl"];
-    if ([fileUrl hasPrefix:@"file://"]) {
+    BOOL Uploading = [[infoDic objectForKey:@"Uploading"] boolValue];
+    if (Uploading == YES) {
         self.progressView.hidden = NO;
     }
     
@@ -202,10 +190,9 @@
             fileState = [NSBundle qim_localizedStringForKey:@"common_already_download"];
         }
     } else if(self.message.messageDirection == QIMMessageDirection_Sent) {
-        if ([fileUrl hasPrefix:@"file"]) {
+        if (Uploading == YES) {
             fileState = [NSBundle qim_localizedStringForKey:@"Sending"];
-        }
-        else{
+        } else {
             fileState = [NSBundle qim_localizedStringForKey:@"common_sent"];
         }
     }

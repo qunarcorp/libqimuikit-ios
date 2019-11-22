@@ -1722,33 +1722,36 @@ static void * QIMMWVideoPlayerObservation = &QIMMWVideoPlayerObservation;
                     
                 }];
             } else {
-                NSString *fileName = [QIMKit updateLoadFile:photo.photoData WithMsgId:nil WithMsgType:QIMMessageType_ImageNew WithPathExtension:nil];
-                NSString *fileUrl = @"";
-                if ([fileName qim_hasPrefixHttpHeader]) {
-                    fileUrl = fileName;
-                } else {
-                    fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
-                }
-                NSString *sdimageFileKey = [[QIMImageManager sharedInstance] defaultCachePathForKey:fileUrl];
-                [photo.photoData writeToFile:sdimageFileKey atomically:YES];
-                UIImage *image = [QIMImage imageWithData:photo.photoData];
-                CGFloat width = CGImageGetWidth(image.CGImage);
-                CGFloat height = CGImageGetHeight(image.CGImage);
-                NSString *msgText = nil;
-                if ([fileName qim_hasPrefixHttpHeader]) {
-                    msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
-                } else {
-                    msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
-                }
-                QIMMessageModel *msg = [QIMMessageModel new];
-                [msg setMessageType:QIMMessageType_Text];
-                [msg setMessage:msgText];
-                QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
-                controller.ExternalForward = YES;
-                QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
-                [controller setMessage:msg];
-                [[self navigationController] presentViewController:nav animated:YES completion:^{
-                    
+                [[QIMKit sharedInstance] qim_uploadImageWithImageData:photo.photoData WithMsgId:nil WithMsgType:QIMMessageType_ImageNew WithPathExtension:nil withCallBack:^(NSString *fileName) {
+                    NSString *fileUrl = @"";
+                    if ([fileName qim_hasPrefixHttpHeader]) {
+                        fileUrl = fileName;
+                    } else {
+                        fileUrl = [NSString stringWithFormat:@"%@/LocalFileName=%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], fileName];
+                    }
+                    NSString *sdimageFileKey = [[QIMImageManager sharedInstance] defaultCachePathForKey:fileUrl];
+                    [photo.photoData writeToFile:sdimageFileKey atomically:YES];
+                    UIImage *image = [QIMImage imageWithData:photo.photoData];
+                    CGFloat width = CGImageGetWidth(image.CGImage);
+                    CGFloat height = CGImageGetHeight(image.CGImage);
+                    NSString *msgText = nil;
+                    if ([fileName qim_hasPrefixHttpHeader]) {
+                        msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"%@\" width=%f height=%f]", fileName, width, height];
+                    } else {
+                        msgText = [NSString stringWithFormat:@"[obj type=\"image\" value=\"LocalFileName=%@\" width=%f height=%f]", fileName, width, height];
+                    }
+                    QIMMessageModel *msg = [QIMMessageModel new];
+                    [msg setMessageType:QIMMessageType_Text];
+                    [msg setMessage:msgText];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        QIMContactSelectionViewController *controller = [[QIMContactSelectionViewController alloc] init];
+                        controller.ExternalForward = YES;
+                        QIMNavController *nav = [[QIMNavController alloc] initWithRootViewController:controller];
+                        [controller setMessage:msg];
+                        [[self navigationController] presentViewController:nav animated:YES completion:^{
+                            
+                        }];
+                    });
                 }];
             }
         }

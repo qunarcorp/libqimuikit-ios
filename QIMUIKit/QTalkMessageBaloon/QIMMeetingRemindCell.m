@@ -28,7 +28,7 @@
     
     NSString *infoStr = message.extendInformation.length <= 0 ? message.message : message.extendInformation;
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
-    
+
     NSMutableString *mutableTitle = [[NSMutableString alloc] initWithString:@""];
     
     if ([infoDic isKindOfClass:[NSDictionary class]]) {

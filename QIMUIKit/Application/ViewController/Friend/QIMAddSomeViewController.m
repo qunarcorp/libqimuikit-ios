@@ -192,13 +192,15 @@
 - (void)searchList{
     if (self.fromQChat) {
         NSString *searchString = self.searchDisplayController.searchBar.text;
-        NSArray *searchList = [[QIMKit sharedInstance] searchQunarUserBySearchStr:searchString];
-        [_searchResults removeAllObjects];
-        if (searchList) {
-            [_searchResults addObjectsFromArray:searchList];
-        }
-        [self.searchDisplayController.searchResultsTableView reloadData];
-        
+        [[QIMKit sharedInstance] searchQunarUserBySearchStr:searchString withCallback:^(NSArray *searchList) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_searchResults removeAllObjects];
+                if (searchList) {
+                    [_searchResults addObjectsFromArray:searchList];
+                }
+                [self.searchDisplayController.searchResultsTableView reloadData];
+            });
+        }];
     } else {
         NSArray *searchList = nil;
         NSString *searchString = self.searchDisplayController.searchBar.text;

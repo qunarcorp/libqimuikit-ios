@@ -100,24 +100,21 @@
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/api/pdt/productDtl.qunar?pdtId=%@&line=%@",@"https://qcadmin.qunar.com",_searchTextField.text,@"dujia"]];
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:url];
-        [request addRequestHeader:@"Content-type" value:@"application/x-www-form-urlencoded;"];
-        [request setRequestMethod:@"POST"];
-        [request startSynchronous];
-        
-        NSError *error = [request error];
-        if (([request responseStatusCode] == 200) && !error) {
-            NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:request.responseData error:nil];
+        [[QIMKit sharedInstance] sendTPPOSTFormUrlEncodedRequestWithUrl:[NSString stringWithFormat:@"%@/api/pdt/productDtl.qunar?pdtId=%@&line=%@",@"https://qcadmin.qunar.com",_searchTextField.text,@"dujia"] withRequestBodyData:nil withSuccessCallBack:^(NSData *responseData) {
+            NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:responseData error:nil];
             BOOL ret = [[infoDic objectForKey:@"ret"] boolValue];
             if (ret) {
-                _dataSource = [NSMutableArray arrayWithObject:[infoDic objectForKey:@"data"]];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [_mainTableView reloadData];
-                    [_HUDView hide:YES];
+                    _dataSource = [NSMutableArray arrayWithObject:[infoDic objectForKey:@"data"]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [_mainTableView reloadData];
+                        [_HUDView hide:YES];
+                    });
                 });
             }
-        } 
+        } withFailedCallBack:^(NSError *error) {
+            
+        }];
     });
 }
 

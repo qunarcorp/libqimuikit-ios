@@ -208,22 +208,6 @@
         }
         [_headerImageView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
     }
-    
-    /*
-     Mark by 匿名
-    if ([[QIMWorkMomentUserIdentityManager sharedInstance] isAnonymous] == NO) {
-        [self.headerImageView qim_setImageWithJid:[[QIMKit sharedInstance] getLastJid]];
-    } else {
-        NSString *anonymousName = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousName];
-        NSString *anonymousPhoto = [[QIMWorkMomentUserIdentityManager sharedInstance] anonymousPhoto];
-        if (![anonymousPhoto qim_hasPrefixHttpHeader]) {
-            anonymousPhoto = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], anonymousPhoto];
-        } else {
-            
-        }
-        [self.headerImageView qim_setImageWithURL:[NSURL URLWithString:anonymousPhoto]];
-    }
-    */
 }
 
 - (void)beginCommentToUserId:(NSString *)userId {

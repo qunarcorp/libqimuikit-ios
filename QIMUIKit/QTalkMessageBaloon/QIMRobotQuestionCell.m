@@ -375,21 +375,11 @@
 
 - (void)requestHttpWithRequestUrl:(NSString *)urlStr {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSURL *requestUrl = [[NSURL alloc] initWithString:urlStr];
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:requestUrl];
-        [request addRequestHeader:@"content-type" value:@"application/json"];
-        NSDictionary *properties = [[NSMutableDictionary alloc] init];
-        [properties setValue:[[QIMKit sharedInstance] thirdpartKeywithValue]  forKey:NSHTTPCookieValue];
-        [properties setValue:@"q_ckey" forKey:NSHTTPCookieName];
-        [properties setValue:@".qunar.com" forKey:NSHTTPCookieDomain];
-        [properties setValue:@"/" forKey:NSHTTPCookiePath];
-        NSHTTPCookie *cookie = [[NSHTTPCookie alloc] initWithProperties:properties];
-        [request setRequestCookies:[NSMutableArray arrayWithObject:cookie]];
-        [request startSynchronous];
-        NSError *error = [request error];
-        if (([request responseStatusCode] == 200) && !error) {
+        [[QIMKit sharedInstance] sendTPGetRequestWithUrl:urlStr withSuccessCallBack:^(NSData *responseData) {
             
-        }
+        } withFailedCallBack:^(NSError *error) {
+            
+        }];
     });
 }
 
