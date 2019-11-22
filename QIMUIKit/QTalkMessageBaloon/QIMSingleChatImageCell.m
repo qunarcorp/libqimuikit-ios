@@ -10,7 +10,6 @@
 #import "QIMMsgBaloonBaseCell.h"
 #import "QIMMenuImageView.h"
 #import <QuartzCore/QuartzCore.h>
-#import "LvtuAutoImageView.h"
 #import "QIMSingleChatImageTools.h"
 
 #define kMsgImageViewTop        3
@@ -26,7 +25,7 @@
 @implementation QIMSingleChatImageCell{
     
     QIMMenuImageView *_backView;
-    LvtuAutoImageView *_msgImageView;
+    QIMImageView *_msgImageView;
     UIButton *_errorButton;
     UIActivityIndicatorView *_waittingView;
 }
@@ -51,7 +50,7 @@
         [_backView setUserInteractionEnabled:YES];
         [self.contentView addSubview:_backView];
         
-        _msgImageView = [[LvtuAutoImageView alloc] initWithFrame:CGRectZero]; 
+        _msgImageView = [[QIMImageView alloc] initWithFrame:CGRectZero];
         [_msgImageView.layer setCornerRadius:15];
         [_msgImageView setClipsToBounds:YES];
         [_backView addSubview:_msgImageView];
@@ -118,7 +117,7 @@
                 image = [UIImage imageWithContentsOfFile:filePath];
             }
             if (image == nil && httpUrl.length > 0){
-                [_msgImageView setImageURL:httpUrl];;
+                [_msgImageView qim_setImageWithURL:[NSURL URLWithString:httpUrl]];
                 if (_msgImageView.image == nil) {
                     image = [[QIMSingleChatImageTools sharedInstance] getImageDownloadFaildWithDirect:self.message.messageDirection];
                 } else {
@@ -127,7 +126,7 @@
             }
         } else {
             if ([self.message.message hasPrefix:@"http://"]) {
-                [_msgImageView setImageURL:self.message.message];;
+                [_msgImageView qim_setImageWithURL:[NSURL URLWithString:self.message.message]];
                 if (_msgImageView.image == nil) {
                     image = [[QIMSingleChatImageTools sharedInstance] getImageDownloading];
                 } else {

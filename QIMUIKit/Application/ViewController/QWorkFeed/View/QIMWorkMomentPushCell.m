@@ -10,6 +10,10 @@
 
 @interface QIMWorkMomentPushCell ()
 
+//上传图片进度条
+@property (nonatomic, strong) UIView    *uploadPropressView;
+@property (nonatomic, strong) UILabel   *uploadProgressLabel;
+
 @property (nonatomic, strong) UIButton *deleteBtn;
 
 @property (nonatomic, strong) UIButton *playButton;
@@ -71,6 +75,7 @@
         self.layer.cornerRadius = 3.0f;
         self.layer.masksToBounds = YES;
         self.canDelete = YES;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listUploadProgress:) name:kQIMUploadImageProgress object:nil];
     }
     return self;
 }
@@ -85,6 +90,46 @@
     if (self.dDelegate && [self.dDelegate respondsToSelector:@selector(playSelectVideo:)]) {
         [self.dDelegate playSelectVideo:self];
     }
+}
+
+- (void)initUploadProgressView {
+    self.uploadPropressView = [[UIView alloc] initWithFrame:CGRectMake(self.contentView.left, self.contentView.top, self.contentView.width, self.contentView.height)];
+    self.uploadPropressView.backgroundColor = [UIColor lightGrayColor];
+    self.uploadPropressView.alpha = 0.5;
+    self.uploadPropressView.hidden = YES;
+    [self.contentView addSubview:self.uploadPropressView];
+    
+    self.uploadProgressLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _uploadPropressView.width, _uploadPropressView.height)];
+    [self.uploadProgressLabel setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
+    [self.uploadProgressLabel setBackgroundColor:[UIColor clearColor]];
+    [self.uploadProgressLabel setText:@""];
+    [self.uploadProgressLabel setTextAlignment:NSTextAlignmentCenter];
+    [self.uploadProgressLabel setTextColor:[UIColor whiteColor]];
+    [self.uploadPropressView addSubview:self.uploadProgressLabel];
+}
+
+- (void)listUploadProgress:(NSNotification *)notify {
+    NSDictionary *imageUploadProgressDic = notify.object;
+    //    @{@"ImageUploadKey":localImageKey, @"ImageUploadProgress":@(1.0)}
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *imageUploadKey = [imageUploadProgressDic objectForKey:@"ImageUploadKey"];
+        if ([imageUploadKey isEqualToString:self.mediaMd5]) {
+            if (!_uploadPropressView) {
+                [self initUploadProgressView];
+            }
+            NSLog(@"upload Notify : %@", notify);
+            float progressValue = [[imageUploadProgressDic objectForKey:@"ImageUploadProgress"] floatValue];
+            if (progressValue < 1.0 && progressValue > 0.0) {
+                self.uploadPropressView.frame = CGRectMake(self.contentView.left, self.contentView.top, self.contentView.width, self.contentView.height * (1 - progressValue));
+                NSString *str = [NSString stringWithFormat:@"%d%%",(int)(progressValue * 100)];
+                [self.uploadProgressLabel setText:str];
+                [self.uploadPropressView setHidden:NO];
+            } else {
+                [self.uploadPropressView setHidden:YES];
+            }
+        }
+    });
 }
 
 @end

@@ -759,6 +759,9 @@
             if ([result isKindOfClass:[NSArray class]]) {
                 [_httpEmotions addObjectsFromArray:result];
             }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:kEmotionListUpdateNotification object:nil];
+            });
         }
     }
     failure:^(NSError *error) {

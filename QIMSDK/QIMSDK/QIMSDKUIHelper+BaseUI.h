@@ -8,7 +8,7 @@
 
 #import "QIMSDKUIHelper.h"
 
-@class Message;
+@class QIMMessageModel;
 
 @interface QIMSDKUIHelper (BaseUI)
 
@@ -81,6 +81,6 @@
 
 - (UIViewController *)getQRCodeWithQRId:(NSString *)qrId withType:(NSInteger)qrcodeType;
 
-- (UIViewController *)getContactSelectionVC:(Message *)msg withExternalForward:(BOOL)externalForward;
+- (UIViewController *)getContactSelectionVC:(QIMMessageModel *)msg withExternalForward:(BOOL)externalForward;
 
 @end

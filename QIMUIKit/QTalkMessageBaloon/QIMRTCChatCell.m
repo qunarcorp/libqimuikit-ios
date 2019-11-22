@@ -148,6 +148,7 @@
         case QIMMessageDirection_Received: {
             titleLabel.textColor = [UIColor blackColor];
             _imageView.frame = CGRectMake(self.backView.left + 16, self.backView.top + 5, 24, 24);
+            _imageView.backgroundColor = [UIColor blackColor];
             titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top + (self.backView.height - 20)/2, titleLabel.width, 20);
 //            _titleLabel.centerY = self.backView.centerY;
             titleLabel.textColor = [UIColor qim_leftBallocFontColor];

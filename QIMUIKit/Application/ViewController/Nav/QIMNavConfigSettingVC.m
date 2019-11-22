@@ -362,24 +362,25 @@
         __block NSDictionary *userWillsaveNavDict = @{QIMNavNameKey:(navHttpName.length > 0) ? navHttpName : [[self.navUrl.lastPathComponent componentsSeparatedByString:@"="] lastObject], QIMNavUrlKey:self.navUrl};
         [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_UserWillSaveNavDict"];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            BOOL success = [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithCheck:YES];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                if (success) {
-                    [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_CurrentNavDict"];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:userWillsaveNavDict];
-                    });
-                    [self onCancel];
-                } else {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
-                                                                        message:[NSBundle qim_localizedStringForKey:@"nav_no_available_Navigation"]
-                                                                       delegate:nil
-                                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"]
-                                                              otherButtonTitles:nil];
-                    [alertView show];
-                }
-            });
+            [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithCheck:YES withCallBack:^(BOOL success) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                    if (success) {
+                        [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_CurrentNavDict"];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[NSNotificationCenter defaultCenter] postNotificationName:NavConfigSettingChanged object:userWillsaveNavDict];
+                        });
+                        [self onCancel];
+                    } else {
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                                            message:[NSBundle qim_localizedStringForKey:@"nav_no_available_Navigation"]
+                                                                           delegate:nil
+                                                                  cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"ok"]
+                                                                  otherButtonTitles:nil];
+                        [alertView show];
+                    }
+                });
+            }];
         });
     } else {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""

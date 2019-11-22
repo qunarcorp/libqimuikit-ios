@@ -26,6 +26,6 @@
 /**
  下载外部App Bundle包
  */
-- (BOOL)downloadQIMRNExternalAppWithBundleParams:(NSDictionary *)params;
+- (void)downloadQIMRNExternalAppWithBundleParams:(NSDictionary *)params withCallBack:(QIMKitDownloadQIMRNExternalAppBundleSuccessCallBack)callBack;
 
 @end

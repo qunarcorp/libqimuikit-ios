@@ -20,6 +20,7 @@
 @property SuperPlayerView *playerView;
 @property BOOL isAutoPaused;
 @property (nonatomic, strong) DACircularProgressView *loadingIndicator;
+@property (nonatomic, strong) UIImageView *placeHolderImageView;
 
 @end
 
@@ -47,6 +48,12 @@
     self.loadingIndicator.hidden = NO;
 }
 
+- (UIImageView *)placeHolderImageView {
+    if (!_placeHolderImageView) {
+        _placeHolderImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+    }
+    return _placeHolderImageView;
+}
 
 - (NSString *)playUrl {
     if (self.videoModel.LocalVideoOutPath > 0) {
@@ -85,7 +92,7 @@
         [_playerView.coverImageView setImage:self.videoModel.LocalThubmImage];
         
     } else {
-        [_playerView.coverImageView qim_setImageWithURL:[NSURL URLWithString:self.videoModel.ThumbUrl]];
+        [_playerView.coverImageView qim_setImageWithURL:[NSURL URLWithString:[self.videoModel.ThumbUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]]];
     }
     // 设置父View
     _playerView.disableGesture = YES;
@@ -106,10 +113,14 @@
         NSString *imageCachePath = [UserCachesPath stringByAppendingPathComponent:@"imageCache"];
         NSString *fileMd5 = [[QIMKit sharedInstance] md5fromUrl:self.playUrl];
         NSString *fileExt = [[QIMKit sharedInstance] getFileExtFromUrl:self.playUrl];
+        if (!fileExt || fileExt.length <= 0) {
+            fileExt = @"mp4";
+        }
         NSString *cacheName = [NSString stringWithFormat:@"%@.%@", fileMd5, fileExt];
         NSString *videoCachePath = [imageCachePath stringByAppendingPathComponent:cacheName];
         if ([[NSFileManager defaultManager] fileExistsAtPath:videoCachePath] && videoCachePath.length > 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                self.placeHolderImageView.hidden = YES;
                 SuperPlayerModel *playerModel = [[SuperPlayerModel alloc] init];
                 playerModel.videoURL = videoCachePath;
                 self.playerView.delegate = self;
@@ -119,8 +130,10 @@
                 [_playerView playWithModel:playerModel];
             });
         } else {
+            [self.view addSubview:self.placeHolderImageView];
+            [self.placeHolderImageView qim_setImageWithURL:[NSURL URLWithString:[self.videoModel.ThumbUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]]];
             [self showLoadingIndicator];
-            [[QIMKit sharedInstance] sendTPGetRequestWithUrl:self.playUrl withProgressCallBack:^(float progressValue) {
+            [[QIMKit sharedInstance] downloadFileRequest:self.playUrl withTargetFilePath:videoCachePath withProgressBlock:^(float progressValue) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.loadingIndicator.progress = progressValue;
                 });
@@ -128,17 +141,23 @@
             } withSuccessCallBack:^(NSData *responseData) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self hideLoadingIndicator];
+                    [self.placeHolderImageView setHidden:YES];
                 });
-                [responseData writeToFile:videoCachePath atomically:YES];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    SuperPlayerModel *playerModel = [[SuperPlayerModel alloc] init];
-                    playerModel.videoURL = videoCachePath;
-                    self.playerView.delegate = self;
-                    self.playerView.fatherView = self.playerContainer;
+                NSURL *filePath = (NSURL *)responseData;
+                BOOL success = [[NSFileManager defaultManager] fileExistsAtPath:filePath.relativePath];
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        SuperPlayerModel *playerModel = [[SuperPlayerModel alloc] init];
+                        playerModel.videoURL = videoCachePath;
+                        self.playerView.delegate = self;
+                        self.playerView.fatherView = self.playerContainer;
+                        
+                        // 开始播放
+                        [_playerView playWithModel:playerModel];
+                    });
+                } else {
                     
-                    // 开始播放
-                    [_playerView playWithModel:playerModel];
-                });
+                }     
             } withFailedCallBack:^(NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self hideLoadingIndicator];

@@ -8,7 +8,6 @@
 
 #import "NetWatcher.h"
 #import "AFNetworking/AFNetworking.h"
-#import "NSBundle+QIMLibrary.h"
 
 @interface NetWatcher()
 @property NSArray *definitions;
@@ -141,7 +140,7 @@
     if ([def isEqualToString:@"流畅"]) {
         return 10;
     }
-    if ([def isEqualToString:[NSBundle qim_localizedStringForKey:@"Standard Definition"]]) {
+    if ([def isEqualToString:@"标清"]) {
         return 15;
     }
     if ([def isEqualToString:@"高清"]) {

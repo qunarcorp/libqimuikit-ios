@@ -38,7 +38,7 @@ static QIMImageCache *_instance;
 }
 
 #pragma mark - md5加密
-+ (NSString *) md5:(NSString *)str
++ (NSString *)md5:(NSString *)str
 {
     const char *cStr = [str UTF8String];
     if (cStr == NULL) {

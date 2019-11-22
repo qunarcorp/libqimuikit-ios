@@ -66,28 +66,30 @@
         [self initUI];
     } else if (self.notConcern) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            _resultList = [[QIMKit sharedInstance] updatePublicNumberCardByIds:@[@{@"robot_name":self.publicNumberId,@"version":@(-1)}] WithNeedUpdate:NO];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (_resultList.count > 0) {
-                    NSDictionary *publicNumberInfo = [[_resultList firstObject] objectForKey:@"rbt_body"];
-                    _descStr = [publicNumberInfo objectForKey:@"robotDesc"];
-                    _telStr = [publicNumberInfo objectForKey:@"tel"];
-                    _fromSource = [publicNumberInfo objectForKey:@"fromsource"];
-                    NSString *name = [publicNumberInfo objectForKey:@"robotCnName"];
-                    NSString *headerSrc = [[[publicNumberInfo objectForKey:@"headerurl"] pathComponents] lastObject];
-                    NSMutableDictionary *tempDic = [NSMutableDictionary dictionary];
-                    [tempDic setQIMSafeObject:[NSString stringWithFormat:@"%@@%@",self.publicNumberId,[[QIMKit sharedInstance] getDomain]] forKey:@"XmppId"];
-                    [tempDic setQIMSafeObject:self.publicNumberId forKey:@"PublicNumberId"];
-                    [tempDic setQIMSafeObject:name forKey:@"Name"];
+            [[QIMKit sharedInstance] updatePublicNumberCardByIds:@[@{@"robot_name":self.publicNumberId,@"version":@(-1)}] WithNeedUpdate:NO withCallBack:^(NSArray *list) {
+                _resultList = list;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (_resultList.count > 0) {
+                        NSDictionary *publicNumberInfo = [[_resultList firstObject] objectForKey:@"rbt_body"];
+                        _descStr = [publicNumberInfo objectForKey:@"robotDesc"];
+                        _telStr = [publicNumberInfo objectForKey:@"tel"];
+                        _fromSource = [publicNumberInfo objectForKey:@"fromsource"];
+                        NSString *name = [publicNumberInfo objectForKey:@"robotCnName"];
+                        NSString *headerSrc = [[[publicNumberInfo objectForKey:@"headerurl"] pathComponents] lastObject];
+                        NSMutableDictionary *tempDic = [NSMutableDictionary dictionary];
+                        [tempDic setQIMSafeObject:[NSString stringWithFormat:@"%@@%@",self.publicNumberId,[[QIMKit sharedInstance] getDomain]] forKey:@"XmppId"];
+                        [tempDic setQIMSafeObject:self.publicNumberId forKey:@"PublicNumberId"];
+                        [tempDic setQIMSafeObject:name forKey:@"Name"];
                         [tempDic setQIMSafeObject:headerSrc forKey:@"HeaderSrc"];
-                    [tempDic setQIMSafeObject:publicNumberInfo forKey:@"PublicNumberInfo"];
-                    _publicNumberCardDic = tempDic;
-                    [self initUI];
-                } else {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"该公众号不存在！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
-                    [alertView show];
-                }
-            });
+                        [tempDic setQIMSafeObject:publicNumberInfo forKey:@"PublicNumberInfo"];
+                        _publicNumberCardDic = tempDic;
+                        [self initUI];
+                    } else {
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"该公众号不存在！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+                        [alertView show];
+                    }
+                });
+            }];
         });
     } else {
         _publicNumberCardDic = [[QIMKit sharedInstance] getPublicNumberCardByJid:self.jid];
@@ -182,6 +184,19 @@
 }
 
 - (void)onConcernClick:(UIButton *)sender{
+    
+    [[QIMKit sharedInstance] focusOnPublicNumberId:self.publicNumberId withCallBack:^(BOOL isSuccess) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (isSuccess) {
+                [[QIMKit sharedInstance] bulkInsertPublicNumbers:_resultList];
+                [self onOpenPublicNumberClick:sender];
+            } else {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"关注失败！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+                [alertView show];
+            }
+        });
+    }];
+    /*
     BOOL isSuccess = [[QIMKit sharedInstance] focusOnPublicNumberId:self.publicNumberId];
     if (isSuccess) {
         [[QIMKit sharedInstance] bulkInsertPublicNumbers:_resultList];
@@ -190,6 +205,7 @@
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"关注失败！" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
     }
+    */
 }
 
 - (void)onOpenPublicNumberClick:(UIButton *)sender{
@@ -215,13 +231,16 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex == 0) {
-        BOOL isSuccess = [[QIMKit sharedInstance] cancelFocusOnPublicNumberId:self.publicNumberId];
-        if (isSuccess) {
-            [self.navigationController popToRootViewControllerAnimated:YES];
-        } else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"取消关注失败!" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
-            [alertView show];
-        }
+        [[QIMKit sharedInstance] cancelFocusOnPublicNumberId:self.publicNumberId withCallBack:^(BOOL isSuccess) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (isSuccess) {
+                    [self.navigationController popToRootViewControllerAnimated:YES];
+                } else {
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"取消关注失败!" delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+                    [alertView show];
+                }
+            });
+        }];
     }
 }
 

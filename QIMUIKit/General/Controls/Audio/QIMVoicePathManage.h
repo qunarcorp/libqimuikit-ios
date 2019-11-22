@@ -1,5 +1,5 @@
 //
-//  QIMPathManage.h
+//  QIMVoicePathManage.h
 //  AudioTempForQT
 //
 //  Created by danzheng on 15/4/21.
@@ -9,7 +9,7 @@
 
 #import "QIMCommonUIFramework.h"
 
-@interface QIMPathManage : NSObject
+@interface QIMVoicePathManage : NSObject
 
 + (NSString*)getCurrentTimeString;
 + (NSString*)getCacheDirectory;
