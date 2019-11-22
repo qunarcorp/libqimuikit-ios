@@ -286,7 +286,7 @@
              @(MA_Delete) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Delete"], @"MenuAction" : @"deleteMsg:"},
              @(MA_ReplyMsg) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Reply"], @"MenuAction" : @"replyMsg:"},
              @(MA_ToWithdraw) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Recall"], @"MenuAction" : @"toWithdrawMsg:"},
-             @(MA_Forward) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Delete"], @"MenuAction" : @"forwardMsgs:"},
+             @(MA_Forward) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"More"], @"MenuAction" : @"forwardMsgs:"},
              @(MA_Refer) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Quote"], @"MenuAction" : @"referMsgs:"},
              @(MA_CopyOriginMsg) : @{@"MenuTitle" : [NSBundle qim_localizedStringForKey:@"Original_Message"], @"MenuAction" : @"copyOriginMsg:"},
              };
