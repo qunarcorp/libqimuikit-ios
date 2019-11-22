@@ -1,15 +1,15 @@
 //
 //  QTalkSessionDataManager.m
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by qitmac000645 on 2019/5/27.
 //
 
 #import "QTalkSessionDataManager.h"
 #import "QtalkSessionModel.h"
-#import "QIMNewSessionScrollDelegate.h"
+#import "STIMNewSessionScrollDelegate.h"
 
-@interface QTalkSessionDataManager () <QIMNewSessionScrollDelegate>
+@interface QTalkSessionDataManager () <STIMNewSessionScrollDelegate>
 
 @property(nonatomic, strong) NSMutableArray *dataSource;
 
@@ -226,7 +226,7 @@
     return combineJid;
 }
 
-#pragma mark - QIMSessionScrollDelegate
+#pragma mark - STIMSessionScrollDelegate
 
 //置顶会话
 - (void)qimStickySession:(NSIndexPath *)indexPath {
@@ -236,9 +236,9 @@
     NSString *xmppJid = sessionModel.XmppId;
     NSString *realJid = sessionModel.RealJid;
     NSString *combineJid = [self gsswithCHatType:chatType WithXmppId:xmppJid withRealJid:realJid];
-    NSDictionary *dict = @{@"topType": @(![[QIMKit sharedInstance] isStickWithCombineJid:combineJid]), @"chatType": @(chatType)};
-    NSString *value = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
-    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:[[QIMKit sharedInstance] isStickWithCombineJid:combineJid]];
+    NSDictionary *dict = @{@"topType": @(![[STIMKit sharedInstance] isStickWithCombineJid:combineJid]), @"chatType": @(chatType)};
+    NSString *value = [[STIMJSONSerializer sharedInstance] serializeObject:dict];
+    [[STIMKit sharedInstance] updateRemoteClientConfigWithType:STIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:[[STIMKit sharedInstance] isStickWithCombineJid:combineJid]];
 }
 
 - (void)deleteStick:(NSIndexPath *)indexPath {
@@ -249,8 +249,8 @@
     NSString *combineJid = [self gsswithCHatType:chatType WithXmppId:xmppJid withRealJid:realJid];
 
     NSDictionary *dict = @{@"topType": @(NO), @"chatType": @(chatType)};
-    NSString *value = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
-    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:YES];
+    NSString *value = [[STIMJSONSerializer sharedInstance] serializeObject:dict];
+    [[STIMKit sharedInstance] updateRemoteClientConfigWithType:STIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:YES];
 }
 
 //删除会话
@@ -264,14 +264,14 @@
         NSString *realJid = sessionModel.RealJid;
         if (sid && (chatType != ChatType_Consult && chatType != ChatType_ConsultServer)) {
             [self deleteStick:indexPath];
-            [[QIMKit sharedInstance] removeSessionById:sid];
+            [[STIMKit sharedInstance] removeSessionById:sid];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (self.qtBlock) {
                     self.qtBlock();
                 }
             });
         } else {
-            [[QIMKit sharedInstance] removeConsultSessionById:sid RealId:realJid];
+            [[STIMKit sharedInstance] removeConsultSessionById:sid RealId:realJid];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (self.qtBlock) {
                     self.qtBlock();

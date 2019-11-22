@@ -9,7 +9,7 @@
 #ifndef ExitApp_h
 #define ExitApp_h
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <React/RCTBridgeModule.h>
 
 @interface  ExitApp: NSObject <RCTBridgeModule>

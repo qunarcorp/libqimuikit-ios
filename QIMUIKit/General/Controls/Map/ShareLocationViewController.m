@@ -7,13 +7,13 @@
 //
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "QIMJSONSerializer.h"
+#import "STIMJSONSerializer.h"
 #import "ShareLocationViewController.h"
 #import "ShareLocationUserImageView.h"
-#import "QIMUUIDTools.h"
+#import "STIMUUIDTools.h"
 #import "FindDirectionsView.h"
 #import "MBProgressHUD.h"
-#import "NSBundle+QIMLibrary.h"
+#import "NSBundle+STIMLibrary.h"
 
 #define kUserHeaderBGViewTagFrom            1000
 
@@ -123,26 +123,26 @@
     _sysIdleTimerDisabled = [[UIApplication sharedApplication] isIdleTimerDisabled];
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
-        UIAlertController *locationNotifyAlertVc = [UIAlertController alertControllerWithTitle:nil message:[NSBundle qim_localizedStringForKey:@"QTalk Privacy Location Message"] preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *locationNotifyAlertVc = [UIAlertController alertControllerWithTitle:nil message:[NSBundle stimDB_localizedStringForKey:@"QTalk Privacy Location Message"] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [self dismissViewControllerAnimated:YES completion:nil];
         }];
         [locationNotifyAlertVc addAction:okAction];
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-            locationNotifyAlertVc.message = [NSBundle qim_localizedStringForKey:@"QChat Privacy Location Message"];
+        if ([STIMKit getSTIMProjectType] == STIMProjectTypeQChat) {
+            locationNotifyAlertVc.message = [NSBundle stimDB_localizedStringForKey:@"QChat Privacy Location Message"];
         }
         [self presentViewController:locationNotifyAlertVc animated:YES completion:nil];
     } else {
         if (self.shareLocationId) {
-            NSArray * userList = [[QIMKit sharedInstance] getShareLocationUsersByShareLocationId:self.shareLocationId];
+            NSArray * userList = [[STIMKit sharedInstance] getShareLocationUsersByShareLocationId:self.shareLocationId];
             
-            [[QIMKit sharedInstance] joinShareLocationToUsers:userList WithShareLocationId:self.shareLocationId];
+            [[STIMKit sharedInstance] joinShareLocationToUsers:userList WithShareLocationId:self.shareLocationId];
         }else{
-            self.shareLocationId = [QIMUUIDTools UUID];
+            self.shareLocationId = [STIMUUIDTools UUID];
             if ([self.userId rangeOfString:@"@conference."].location != NSNotFound) {
-                [[QIMKit sharedInstance] beginShareLocationToGroupId:self.userId WithShareLocationId:self.shareLocationId];
+                [[STIMKit sharedInstance] beginShareLocationToGroupId:self.userId WithShareLocationId:self.shareLocationId];
             }else{
-               QIMMessageModel * msg = [[QIMKit sharedInstance] beginShareLocationToUserId:self.userId WithShareLocationId:self.shareLocationId];
+               STIMMessageModel * msg = [[STIMKit sharedInstance] beginShareLocationToUserId:self.userId WithShareLocationId:self.shareLocationId];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate
                                                                     object:self.userId
                                                                   userInfo:@{@"message":msg}];
@@ -204,11 +204,11 @@
 
 
 - (void)closeBtnHandle:(id)sender{
-    NSArray * userList = [[QIMKit sharedInstance] getShareLocationUsersByShareLocationId:self.shareLocationId];
+    NSArray * userList = [[STIMKit sharedInstance] getShareLocationUsersByShareLocationId:self.shareLocationId];
     if (userList.count == 0) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kEndShareLocation object:self.shareLocationId];
     }
-    [[QIMKit sharedInstance] quitShareLocationToUsers:[[QIMKit sharedInstance] getShareLocationUsersByShareLocationId:self.shareLocationId] WithShareLocationId:self.shareLocationId];
+    [[STIMKit sharedInstance] quitShareLocationToUsers:[[STIMKit sharedInstance] getShareLocationUsersByShareLocationId:self.shareLocationId] WithShareLocationId:self.shareLocationId];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -217,7 +217,7 @@
 }
 
 - (void)myLctBtnHandle:(id)sender{
-    [self selectAnnotationForUserId:[[QIMKit sharedInstance] getLastJid]];
+    [self selectAnnotationForUserId:[[STIMKit sharedInstance] getLastJid]];
 }
 
 - (void)findDirectionBtnHandle:(id)sender{
@@ -250,19 +250,19 @@
 - (void)initNavBar{
     self.navigationController.navigationBarHidden = YES;
     UIView * navBgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 110)];
-    navBgView.backgroundColor = [UIColor qim_colorWithHex:0x000000 alpha:0.5];
+    navBgView.backgroundColor = [UIColor stimDB_colorWithHex:0x000000 alpha:0.5];
     [self.view addSubview:navBgView];
     
     UIButton * closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [closeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_icon_close"] forState:UIControlStateNormal];
-    [closeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_icon_close_HL"] forState:UIControlStateHighlighted];
+    [closeBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_icon_close"] forState:UIControlStateNormal];
+    [closeBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_icon_close_HL"] forState:UIControlStateHighlighted];
     closeBtn.frame = CGRectMake(15, 30, 32, 32);
     [closeBtn addTarget:self action:@selector(closeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     [navBgView addSubview:closeBtn];
     
     UIButton * smallBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [smallBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_icon_back"] forState:UIControlStateNormal];
-    [smallBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_icon_back_HL"] forState:UIControlStateHighlighted];
+    [smallBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_icon_back"] forState:UIControlStateNormal];
+    [smallBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_icon_back_HL"] forState:UIControlStateHighlighted];
     smallBtn.frame = CGRectMake(navBgView.width - 32 - 15, 30, 32, 32);
     [smallBtn addTarget:self action:@selector(smallBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     [navBgView addSubview:smallBtn];
@@ -280,8 +280,8 @@
 - (void)initMyLocationBtn{
     if (_myLctBtn == nil) {
         _myLctBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_myLctBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_mylocation"] forState:UIControlStateNormal];
-        [_myLctBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_mylocation_HL"] forState:UIControlStateHighlighted];
+        [_myLctBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_mylocation"] forState:UIControlStateNormal];
+        [_myLctBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_mylocation_HL"] forState:UIControlStateHighlighted];
         _myLctBtn.frame = CGRectMake(20, self.view.height - 20 - 40, 40, 40);
         [_myLctBtn addTarget:self action:@selector(myLctBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:_myLctBtn];
@@ -291,8 +291,8 @@
 - (void)initFindDirectionBtn{
     if (_findDirection == nil) {
         _findDirection = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_findDirection setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_mylocation"] forState:UIControlStateNormal];
-        [_findDirection setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_mylocation_HL"] forState:UIControlStateHighlighted];
+        [_findDirection setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_mylocation"] forState:UIControlStateNormal];
+        [_findDirection setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_mylocation_HL"] forState:UIControlStateHighlighted];
         _findDirection.frame = CGRectMake(20, self.view.height - 20 - 40 - 20 - 40, 40, 40);
         [_findDirection addTarget:self action:@selector(findDirectionBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:_findDirection];
@@ -324,7 +324,7 @@
     for (NSString * userId in _annotationsDic.allKeys) {
         NSInteger index = [_annotationsDic.allKeys indexOfObject:userId];
         UIImageView * userBgView = [[UIImageView alloc] initWithFrame:CGRectMake((10 + 50) * index + 10, 0, 50, 50)];
-        userBgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_avatar_bg"];
+        userBgView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_avatar_bg"];
         [_userListView addSubview:userBgView];
         
         userBgView.userInteractionEnabled = YES;
@@ -333,8 +333,8 @@
         [userBgView addGestureRecognizer:tapGes];
         
         UIImageView * userImageView = [[UIImageView alloc] initWithFrame:CGRectMake(6, 5, 38, 38)];
-//        userImageView.image = [[QIMKit sharedInstance] getUserHeaderImageByUserId:userId];
-        [userImageView qim_setImageWithJid:userId];
+//        userImageView.image = [[STIMKit sharedInstance] getUserHeaderImageByUserId:userId];
+        [userImageView stimDB_setImageWithJid:userId];
         userImageView.layer.cornerRadius = userImageView.height / 2;
         userImageView.clipsToBounds = YES;
         [userBgView addSubview:userImageView];
@@ -358,7 +358,7 @@
         ShareLocationUserImageView * shareImgView = [[ShareLocationUserImageView alloc] initWithUserId:[(MyAnnotation *)annotation userId]];
         shareImgView.tag = 9999;
         [antView addSubview:shareImgView];
-        [_antViewsDic setQIMSafeObject:antView forKey:[(MyAnnotation *)annotation identifier]];
+        [_antViewsDic setSTIMSafeObject:antView forKey:[(MyAnnotation *)annotation identifier]];
     }
     ShareLocationUserImageView * shareView = [antView viewWithTag:9999];
     [shareView updateDirectionTo:[(MyAnnotation *)annotation headingDirection]];
@@ -392,7 +392,7 @@
     [self performSelector:@selector(startUpdateUserLocation) withObject:nil afterDelay:5];
     CLLocationCoordinate2D coord = userLocation.location.coordinate;
     BOOL needShowAnts = NO;
-    if (![_annotationsDic.allKeys containsObject:[[QIMKit sharedInstance] getLastJid]]) {
+    if (![_annotationsDic.allKeys containsObject:[[STIMKit sharedInstance] getLastJid]]) {
         if (_annotationsDic.allKeys.count == 0) {
             //        CLLocationCoordinate2D centerCoordinate = CLLocationCoordinate2DMake((srcLocation.coordinate.latitude + desLocation.coordinate.latitude) / 2, (srcLocation.coordinate.longitude + desLocation.coordinate.longitude) / 2);
             CLLocationDistance distance = 500;//[desLocation distanceFromLocation:srcLocation];
@@ -407,18 +407,18 @@
         _annotationsDic = [NSMutableDictionary dictionaryWithCapacity:1];
     }
    CLLocationDirection mapAngle = -_mapView.camera.heading;
-    MyAnnotation * annotation = [_annotationsDic objectForKey:[[QIMKit sharedInstance] getLastJid]];
+    MyAnnotation * annotation = [_annotationsDic objectForKey:[[STIMKit sharedInstance] getLastJid]];
     if (annotation == nil) {
         MyAnnotation * annotation = [[MyAnnotation alloc] initWithCoordinates:coord title:@"当前位置" subTitle:@"我的子标题"];
-        annotation.identifier = [[QIMKit sharedInstance] getLastJid];
-        annotation.userId = [[QIMKit sharedInstance] getLastJid];
+        annotation.identifier = [[STIMKit sharedInstance] getLastJid];
+        annotation.userId = [[STIMKit sharedInstance] getLastJid];
         annotation.headingDirection = mapAngle + _mapView.userLocation.heading.trueHeading;
-        [_annotationsDic setQIMSafeObject:annotation forKey:[[QIMKit sharedInstance] getLastJid]];
+        [_annotationsDic setSTIMSafeObject:annotation forKey:[[STIMKit sharedInstance] getLastJid]];
         [self refreshUserList];
         [_mapView addAnnotation:annotation];
     }else{
         [annotation setCoordinate:coord];
-        [_annotationsDic setQIMSafeObject:annotation forKey:[[QIMKit sharedInstance] getLastJid]];
+        [_annotationsDic setSTIMSafeObject:annotation forKey:[[STIMKit sharedInstance] getLastJid]];
         MKAnnotationView *antView = [_antViewsDic objectForKey:[(MyAnnotation *)annotation identifier]];
         if (antView) {
             ShareLocationUserImageView * shareView = [antView viewWithTag:9999];
@@ -447,7 +447,7 @@
         [self performSelector:@selector(startUpdateUserLocation) withObject:nil afterDelay:5];
         CLLocationCoordinate2D coord = srcLocation.coordinate;
 
-        if (_annotationsDic.allKeys.count == 0 || ![_annotationsDic.allKeys containsObject:[[QIMKit sharedInstance] getLastJid]]) {
+        if (_annotationsDic.allKeys.count == 0 || ![_annotationsDic.allKeys containsObject:[[STIMKit sharedInstance] getLastJid]]) {
             //        CLLocationCoordinate2D centerCoordinate = CLLocationCoordinate2DMake((srcLocation.coordinate.latitude + desLocation.coordinate.latitude) / 2, (srcLocation.coordinate.longitude + desLocation.coordinate.longitude) / 2);
             CLLocationDistance distance = 1000;//[desLocation distanceFromLocation:srcLocation];
             MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coord, distance, distance);
@@ -458,18 +458,18 @@
             _annotationsDic = [NSMutableDictionary dictionaryWithCapacity:1];
         }
        CLLocationDirection mapAngle = -_mapView.camera.heading;
-        MyAnnotation * annotation = [_annotationsDic objectForKey:[[QIMKit sharedInstance] getLastJid]];
+        MyAnnotation * annotation = [_annotationsDic objectForKey:[[STIMKit sharedInstance] getLastJid]];
         if (annotation == nil) {
             MyAnnotation * annotation = [[MyAnnotation alloc] initWithCoordinates:coord title:@"当前位置" subTitle:@"我的子标题"];
-            annotation.identifier = [[QIMKit sharedInstance] getLastJid];
-            annotation.userId = [[QIMKit sharedInstance] getLastJid];
+            annotation.identifier = [[STIMKit sharedInstance] getLastJid];
+            annotation.userId = [[STIMKit sharedInstance] getLastJid];
             annotation.headingDirection = mapAngle + _mapView.userLocation.heading.trueHeading;
-            [_annotationsDic setQIMSafeObject:annotation forKey:[[QIMKit sharedInstance] getLastJid]];
+            [_annotationsDic setSTIMSafeObject:annotation forKey:[[STIMKit sharedInstance] getLastJid]];
             [self refreshUserList];
             [_mapView addAnnotation:annotation];
         }else{
             [annotation setCoordinate:coord];
-            [_annotationsDic setQIMSafeObject:annotation forKey:[[QIMKit sharedInstance] getLastJid]];
+            [_annotationsDic setSTIMSafeObject:annotation forKey:[[STIMKit sharedInstance] getLastJid]];
             MKAnnotationView *antView = [_antViewsDic objectForKey:[(MyAnnotation *)annotation identifier]];
             if (antView) {
                 ShareLocationUserImageView * shareView = [antView viewWithTag:9999];
@@ -484,16 +484,16 @@
     _currentHeading = newHeading;
     
     CLLocationDirection mapAngle = -_mapView.camera.heading;
-    MKAnnotationView * antView = [_antViewsDic objectForKey:[[QIMKit sharedInstance] getLastJid]];
+    MKAnnotationView * antView = [_antViewsDic objectForKey:[[STIMKit sharedInstance] getLastJid]];
     if (antView) {
         ShareLocationUserImageView * shareView = [antView viewWithTag:9999];
         [shareView updateDirectionTo: mapAngle +  _currentHeading.trueHeading];
     }
     
-    MyAnnotation * ant = [_annotationsDic objectForKey:[[QIMKit sharedInstance] getLastJid]];
+    MyAnnotation * ant = [_annotationsDic objectForKey:[[STIMKit sharedInstance] getLastJid]];
     if (ant) {
         ant.headingDirection = mapAngle + _currentHeading.trueHeading;
-        [_annotationsDic setQIMSafeObject:ant forKey:[[QIMKit sharedInstance] getLastJid]];
+        [_annotationsDic setSTIMSafeObject:ant forKey:[[STIMKit sharedInstance] getLastJid]];
     }
     
 }
@@ -532,7 +532,7 @@
 
 - (void)sendShareLocationMsgWithLatitude:(double)latitude longitude:(double)longitude headingDirection:(double)direction{
     NSDictionary * infoDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@",@(latitude)],@"latitude",[NSString stringWithFormat:@"%@",@(longitude)],@"longitude",[NSString stringWithFormat:@"%@",@(direction)],@"direction", nil];
-    [[QIMKit sharedInstance] sendMyLocationToUsers:[[QIMKit sharedInstance] getShareLocationUsersByShareLocationId:self.shareLocationId] WithLocationInfo:[[QIMJSONSerializer sharedInstance] serializeObject:infoDic] ByShareLocationId:self.shareLocationId];
+    [[STIMKit sharedInstance] sendMyLocationToUsers:[[STIMKit sharedInstance] getShareLocationUsersByShareLocationId:self.shareLocationId] WithLocationInfo:[[STIMJSONSerializer sharedInstance] serializeObject:infoDic] ByShareLocationId:self.shareLocationId];
 }
 
 #pragma mark - notifacation action
@@ -557,10 +557,10 @@
 }
 
 - (void)updateShareLocationMsg:(NSNotification *)noti{
-   QIMMessageModel * msg = [noti.userInfo objectForKey:@"message"];
-    if ([msg.to isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
+   STIMMessageModel * msg = [noti.userInfo objectForKey:@"message"];
+    if ([msg.to isEqualToString:[[STIMKit sharedInstance] getLastJid]]) {
         CLLocationDirection mapAngle = -_mapView.camera.heading;
-        NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:msg.message error:nil];
+        NSDictionary *infoDic = [[STIMJSONSerializer sharedInstance] deserializeObject:msg.message error:nil];
         if (_annotationsDic == nil) {
             _annotationsDic = [NSMutableDictionary dictionaryWithCapacity:1];
         }
@@ -570,7 +570,7 @@
             annotation.identifier = msg.from;
             annotation.userId = msg.from;
             annotation.headingDirection = mapAngle + [[infoDic objectForKey:@"direction"] doubleValue];
-            [_annotationsDic setQIMSafeObject:annotation forKey:msg.from];
+            [_annotationsDic setSTIMSafeObject:annotation forKey:msg.from];
             [self refreshUserList];
             [_mapView addAnnotation:annotation];
             [_mapView showAnnotations:_annotationsDic.allValues animated:YES];
@@ -578,7 +578,7 @@
             [annotation setCoordinate:[self getGaodeFromBaiduForLocationCoordinate:CLLocationCoordinate2DMake([[infoDic objectForKey:@"latitude"] doubleValue], [[infoDic objectForKey:@"longitude"] doubleValue])]];
             annotation.headingDirection = mapAngle + [[infoDic objectForKey:@"direction"] doubleValue];
             [_mapView addAnnotation:annotation];
-            [_annotationsDic setQIMSafeObject:annotation forKey:msg.from];
+            [_annotationsDic setSTIMSafeObject:annotation forKey:msg.from];
             
             MKAnnotationView *antView = [_antViewsDic objectForKey:[(MyAnnotation *)annotation identifier]];
             if (antView) {

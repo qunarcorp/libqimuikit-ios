@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "MGSwipeTableCell.h"
 
-@class QIMNoteModel;
+@class STIMNoteModel;
 @interface TodoListTableViewCell : MGSwipeTableCell
 
-- (void)setTodoListModel:(QIMNoteModel *)model;
+- (void)setTodoListModel:(STIMNoteModel *)model;
 
 @property (nonatomic, assign) BOOL unFinished;
 @property (nonatomic, assign) BOOL hasOutOfDate;

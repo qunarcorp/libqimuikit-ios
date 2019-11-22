@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#if __has_include("QIMNoteManager.h")
-#import "QIMNoteModel.h"
+#if __has_include("STIMNoteManager.h")
+#import "STIMNoteModel.h"
 
 @interface NewAddTodoListVc : UIViewController
 
 - (void)setEdited:(BOOL)edited;
 
-- (void)setTodoListModel:(QIMNoteModel *)model;
+- (void)setTodoListModel:(STIMNoteModel *)model;
 
 @end
 #endif

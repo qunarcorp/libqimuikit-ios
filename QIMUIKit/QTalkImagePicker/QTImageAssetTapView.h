@@ -6,8 +6,8 @@
 //
 //
 
-//#import "QIMCommonUIFramework.h"
-#import "QIMCommonUIFramework.h"
+//#import "STIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @protocol QTImageAssetTapViewDelegate <NSObject>
 @optional

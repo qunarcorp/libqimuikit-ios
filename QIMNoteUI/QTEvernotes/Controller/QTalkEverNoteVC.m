@@ -5,15 +5,15 @@
 //  Created by lihuaqi on 2017/9/18.
 //  Copyright © 2017年 lihuaqi. All rights reserved.
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "QTalkEverNoteVC.h"
-#import "QIMNoteModel.h"
+#import "STIMNoteModel.h"
 #import <JavaScriptCore/JavaScriptCore.h>
-#import "QIMNoteManager.h"
+#import "STIMNoteManager.h"
 #import "SCLAlertView.h"
 #import <WebKit/WebKit.h>
-#import "QIMNoteUICommonFramework.h"
-#import "QIMPublicRedefineHeader.h"
+#import "STIMNoteUICommonFramework.h"
+#import "STIMPublicRedefineHeader.h"
 
 @interface QTalkEverNoteVC () <UIWebViewDelegate,WKNavigationDelegate>
 @property(nonatomic, copy) NSString *rootHtmlPath;
@@ -37,7 +37,7 @@
     
     BOOL isDirectory = YES;
     if ([[NSFileManager defaultManager] fileExistsAtPath:_rootHtmlPath isDirectory:&isDirectory]) {
-        QIMVerboseLog(@"CKEditor _rootHtmlPath FileExistsAtPath");
+        STIMVerboseLog(@"CKEditor _rootHtmlPath FileExistsAtPath");
     }
 
     [self topbar];
@@ -65,17 +65,17 @@
     _addBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     _addBtn.frame = CGRectMake(0,0, 50, 25);
     _addBtn.titleLabel.font = [UIFont systemFontOfSize:16.5];
-    [_addBtn setTitle:[NSBundle qim_localizedStringForKey:@"Save"] forState:UIControlStateNormal];
+    [_addBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"Save"] forState:UIControlStateNormal];
     [_addBtn addTarget:self action:@selector(newAction) forControlEvents:UIControlEventTouchUpInside];
     [btnsView addSubview:_addBtn];
     
     _rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _rightBtn.frame = CGRectMake(0,0, 50, 25);
     _rightBtn.titleLabel.font = [UIFont systemFontOfSize:16.5];
-    [_rightBtn setTitle:[NSBundle qim_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
-    [_rightBtn setTitle:[NSBundle qim_localizedStringForKey:@"Save"] forState:UIControlStateSelected];
-    [_rightBtn setTitleColor:[UIColor qim_colorWithHex:0x22B573 alpha:1.0] forState:UIControlStateNormal];
-    [_rightBtn setTitleColor:[UIColor qim_colorWithHex:0x22B573 alpha:1.0] forState:UIControlStateSelected];
+    [_rightBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
+    [_rightBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"Save"] forState:UIControlStateSelected];
+    [_rightBtn setTitleColor:[UIColor stimDB_colorWithHex:0x22B573 alpha:1.0] forState:UIControlStateNormal];
+    [_rightBtn setTitleColor:[UIColor stimDB_colorWithHex:0x22B573 alpha:1.0] forState:UIControlStateSelected];
     _rightBtn.adjustsImageWhenHighlighted = NO;
     [_rightBtn addTarget:self action:@selector(rightBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     [btnsView addSubview:_rightBtn];
@@ -90,7 +90,7 @@
         SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindow];
         alert.horizontalButtons = YES;
         alert.shouldDismissOnTapOutside = YES;
-        alert.customViewColor = [UIColor qim_colorWithHex:0x22B573 alpha:1.0];
+        alert.customViewColor = [UIColor stimDB_colorWithHex:0x22B573 alpha:1.0];
         [alert showNotice:@"温馨提示" subTitle:@"笔记标题不能为空" closeButtonTitle:@"Done" duration:1.0f];
         return;
     }else if (_titleTF.text.length > 100) {
@@ -108,7 +108,7 @@
         SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindow];
         alert.horizontalButtons = YES;
         alert.shouldDismissOnTapOutside = YES;
-        alert.customViewColor = [UIColor qim_colorWithHex:0x22B573 alpha:1.0];
+        alert.customViewColor = [UIColor stimDB_colorWithHex:0x22B573 alpha:1.0];
         [alert showNotice:@"温馨提示" subTitle:@"笔记标题不能为空" closeButtonTitle:@"Done" duration:1.0f];
         return;
     }
@@ -124,9 +124,9 @@
 - (void)refreshCKEditorWithReadOnly:(BOOL)isReadOnly {
     
     if (isReadOnly) {
-        QIMVerboseLog(@"只读模式");
+        STIMVerboseLog(@"只读模式");
         NSString *jsStr = [NSString stringWithFormat:@"setCKEditor5ReadOnly('%@')", @(YES)];
-        NSString *filePath = [NSBundle qim_myLibraryResourcePathWithClassName:@"CKEditor5" BundleName:@"CKEditor5" pathForResource:@"CKEditor5Display" ofType:@"html"];
+        NSString *filePath = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"CKEditor5" BundleName:@"CKEditor5" pathForResource:@"CKEditor5Display" ofType:@"html"];
         
         //    NSString *filePath = [_rootHtmlPath stringByAppendingString:@"indexiPhoneDisplay.html"];
         NSMutableString *htmlString = [[NSMutableString alloc]initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
@@ -137,7 +137,7 @@
         }
         
     } else {
-        NSString *filePath = [NSBundle qim_myLibraryResourcePathWithClassName:@"CKEditor5" BundleName:@"CKEditor5" pathForResource:@"CKEditor5Edit" ofType:@"html"];
+        NSString *filePath = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"CKEditor5" BundleName:@"CKEditor5" pathForResource:@"CKEditor5Edit" ofType:@"html"];
         //    NSString *filePath = [_rootHtmlPath stringByAppendingString:@"indexiPhone.html"];
         NSMutableString *htmlString = [[NSMutableString alloc]initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
         NSString *content = self.evernoteSModel.qs_content? self.evernoteSModel.qs_content : @"";
@@ -176,17 +176,17 @@
     }
     
     if (self.everNoteType == ENUM_EverNote_TypeNew) {
-        [[QIMNoteManager sharedInstance] saveNewQTNoteSubItem:self.evernoteSModel];
+        [[STIMNoteManager sharedInstance] saveNewQTNoteSubItem:self.evernoteSModel];
     }else {
-        [[QIMNoteManager sharedInstance] updateToRemoteSubWithSubModel:self.evernoteSModel];
+        [[STIMNoteManager sharedInstance] updateToRemoteSubWithSubModel:self.evernoteSModel];
     }
 }
 
 - (BOOL)webView: (UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     NSURL *requestUrl = request.URL;
     NSString *urlStr = [requestUrl absoluteString];
-    QIMVerboseLog(@"request:%@",urlStr);
-    if ([urlStr qim_hasPrefixHttpHeader]) {
+    STIMVerboseLog(@"request:%@",urlStr);
+    if ([urlStr stimDB_hasPrefixHttpHeader]) {
         
     } else {
         if ([requestUrl.path isEqualToString:[_rootHtmlPath stringByAppendingString:@"uploadEvernoteImage"]]) {
@@ -239,7 +239,7 @@
 // 在收到响应后，决定是否跳转
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
     
-    QIMVerboseLog(@"%@",navigationResponse.response.URL.absoluteString);
+    STIMVerboseLog(@"%@",navigationResponse.response.URL.absoluteString);
     //允许跳转
     decisionHandler(WKNavigationResponsePolicyAllow);
     //不允许跳转
@@ -248,7 +248,7 @@
 // 在发送请求之前，决定是否跳转
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
     
-    QIMVerboseLog(@"%@",navigationAction.request.URL.absoluteString);
+    STIMVerboseLog(@"%@",navigationAction.request.URL.absoluteString);
     //允许跳转
     decisionHandler(WKNavigationActionPolicyAllow);
     //不允许跳转

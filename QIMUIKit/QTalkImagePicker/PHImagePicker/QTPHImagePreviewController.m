@@ -8,19 +8,19 @@
 
 #import "QTPHImagePreviewController.h"
 #import "QTPHImagePickerController.h"
-#import "QIMImageEditViewController.h"
+#import "STIMImageEditViewController.h"
 #import "QTImageAssetTools.h"
 #import "QTPHGridViewController.h"
-#import "QIMImageUtil.h"
+#import "STIMImageUtil.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 #import "MBProgressHUD.h"
 #import "QTPHImagePickerManager.h"
-#import "QIMStringTransformTools.h"
+#import "STIMStringTransformTools.h"
 
 #define kImageViewTag   1000
 #define kImageViewBGScrollViewTagFrom   2000
 
-@interface QTPHImagePreviewController ()<UIScrollViewDelegate,UIAlertViewDelegate,QIMImageEditViewControllerDelegate,UIActionSheetDelegate>{
+@interface QTPHImagePreviewController ()<UIScrollViewDelegate,UIAlertViewDelegate,STIMImageEditViewControllerDelegate,UIActionSheetDelegate>{
     UIScrollView * _scrollView;
     UIView   *_bottomView;
     UIButton *_editButton;
@@ -43,13 +43,13 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"Preview"]];
+    [self.navigationItem setTitle:[NSBundle stimDB_localizedStringForKey:@"Preview"]];
     self.view.backgroundColor = [UIColor spectralColorBlueColor];
-    self.picker.isOriginal = [[QIMKit sharedInstance] pickerPixelOriginal];
+    self.picker.isOriginal = [[STIMKit sharedInstance] pickerPixelOriginal];
     
     _rightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [_rightButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_header_icon_unchecked"] forState:UIControlStateNormal];
-    [_rightButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_header_icon_checked"] forState:UIControlStateSelected];
+    [_rightButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"photo_browser_header_icon_unchecked"] forState:UIControlStateNormal];
+    [_rightButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"photo_browser_header_icon_checked"] forState:UIControlStateSelected];
     [_rightButton addTarget:self action:@selector(onRightButtonClick) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:_rightButton];
     [self.navigationItem setRightBarButtonItem:rightItem];
@@ -95,7 +95,7 @@
     if (NavRect.size.height + StatusRect.size.height > 20) {
         bottomMargin = StatusRect.size.height + NavRect.size.height - 20;
     }
-    QIMVerboseLog(@"%f", StatusRect.size.height + NavRect.size.height);
+    STIMVerboseLog(@"%f", StatusRect.size.height + NavRect.size.height);
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, [UIScreen mainScreen].bounds.size.height - 46)];
     _scrollView.delegate = self;
     _scrollView.pagingEnabled = YES;
@@ -130,8 +130,8 @@
                             bgScrollView.showsHorizontalScrollIndicator = NO;
                             bgScrollView.showsVerticalScrollIndicator = NO;
                             
-                            QIMImageView * imageView = [[QIMImageView alloc] initWithFrame:bgScrollView.bounds];
-                            QIMImage *result = [QIMImage imageWithData:imageData];
+                            STIMImageView * imageView = [[STIMImageView alloc] initWithFrame:bgScrollView.bounds];
+                            STIMImage *result = [STIMImage imageWithData:imageData];
                             imageView.image = result;
                             imageView.tag = kImageViewTag;
                             imageView.backgroundColor = [UIColor whiteColor];
@@ -156,7 +156,7 @@
                     
                     UIImageView * imageView = [[UIImageView alloc] initWithFrame:bgScrollView.bounds];
                     UIImage *result = [UIImage imageWithData:imageData];
-                    UIImage * imageFix = [QIMImageUtil fixOrientation:result];
+                    UIImage * imageFix = [STIMImageUtil fixOrientation:result];
                     imageView.image = imageFix;
                     imageView.tag = kImageViewTag;
                     imageView.backgroundColor = [UIColor whiteColor];
@@ -184,7 +184,7 @@
                 bgScrollView.showsVerticalScrollIndicator = NO;
                 
                 UIImageView * imageView = [[UIImageView alloc] initWithFrame:bgScrollView.bounds];
-                UIImage * imageFix = [QIMImageUtil fixOrientation:result];
+                UIImage * imageFix = [STIMImageUtil fixOrientation:result];
                 imageView.image = imageFix;
                 imageView.tag = kImageViewTag;
                 imageView.backgroundColor = [UIColor whiteColor];
@@ -204,18 +204,18 @@
 - (void)initBottomView{
 
     _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, _scrollView.bottom, [UIScreen mainScreen].bounds.size.width, 46)];
-    [_bottomView setBackgroundColor:[UIColor qim_colorWithHex:0xf1f1f1 alpha:1]];
+    [_bottomView setBackgroundColor:[UIColor stimDB_colorWithHex:0xf1f1f1 alpha:1]];
     [self.view addSubview:_bottomView];
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _bottomView.width, 0.5)];
-    [lineView setBackgroundColor:[UIColor qim_colorWithHex:0x999999 alpha:1]];
+    [lineView setBackgroundColor:[UIColor stimDB_colorWithHex:0x999999 alpha:1]];
     [_bottomView addSubview:lineView];
     
     _editButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_editButton setFrame:CGRectMake(10, 8, 60, 30)];
     [_editButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_editButton setTitle:[NSBundle qim_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
-    [_editButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
+    [_editButton setTitle:[NSBundle stimDB_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
+    [_editButton setTitleColor:[UIColor stimDB_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_editButton addTarget:self action:@selector(onEditClick) forControlEvents:UIControlEventTouchUpInside];
     [_editButton setEnabled:NO];
     [_bottomView addSubview:_editButton];
@@ -225,23 +225,23 @@
     [_photoTypeButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
     [_photoTypeButton setFrame:CGRectMake(_editButton.right + 15, 8, 100, 30)];
     [_photoTypeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-    [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
-    [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
-    [_photoTypeButton setTitle:self.picker.isOriginal ? [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] : [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
-    [_photoTypeButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
+    [_photoTypeButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
+    [_photoTypeButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
+    [_photoTypeButton setTitle:self.picker.isOriginal ? [NSString stringWithFormat:@" %@", [NSBundle stimDB_localizedStringForKey:@"Full Image"]] : [NSString stringWithFormat:@" %@", [NSBundle stimDB_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
+    [_photoTypeButton setTitleColor:[UIColor stimDB_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_photoTypeButton setEnabled:NO];
     [_photoTypeButton addTarget:self action:@selector(onPhotoTypeClick) forControlEvents:UIControlEventTouchUpInside];
     [_bottomView addSubview:_photoTypeButton];
     
     _sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.width - 90, 8, 80, 30)];
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_focus_nor"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateNormal];
-    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_focus_pressed"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateHighlighted];
-    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_disabled"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateDisabled];
+    [_sendButton setBackgroundImage:[[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"common_button_focus_nor"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateNormal];
+    [_sendButton setBackgroundImage:[[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"common_button_focus_pressed"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateHighlighted];
+    [_sendButton setBackgroundImage:[[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"common_button_disabled"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateDisabled];
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_sendButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
-    [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
+    [_sendButton setTitleColor:[UIColor stimDB_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
+    [_sendButton setTitle:[NSBundle stimDB_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     [_sendButton addTarget:self action:@selector(onSendClick) forControlEvents:UIControlEventTouchUpInside];
     [_sendButton setEnabled:NO];
     [_bottomView addSubview:_sendButton];
@@ -262,20 +262,20 @@
         [_sendButton setEnabled:YES];
         NSInteger maxNumber = [[QTPHImagePickerManager sharedInstance] maximumNumberOfSelection];
         if (maxNumber > 0) {
-            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle qim_localizedStringForKey:@"Confirm"], (long)indexPaths.count,@(maxNumber)] forState:UIControlStateNormal];
+            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle stimDB_localizedStringForKey:@"Confirm"], (long)indexPaths.count,@(maxNumber)] forState:UIControlStateNormal];
         } else {
-            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle qim_localizedStringForKey:@"Confirm"],(long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
+            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle stimDB_localizedStringForKey:@"Confirm"],(long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
         }
     } else {
         [_editButton setEnabled:NO];
         [_photoTypeButton setEnabled:NO];
         [_sendButton setEnabled:NO];
-        [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
+        [_sendButton setTitle:[NSBundle stimDB_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     }
 //    if (picker.isOriginalImage == NO) {
-//        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
+//        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   标清\r(%@)",[STIMStringTransformTools CapacityTransformStrWithSize:picker.compressDataLength]] forState:UIControlStateNormal];
 //    } else {
-//        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[QIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
+//        [_photoTypeButton setTitle:[NSString stringWithFormat:@"   原图\r(%@)",[STIMStringTransformTools CapacityTransformStrWithSize:picker.originalDataLength]] forState:UIControlStateNormal];
 //    }
 }
 
@@ -310,14 +310,14 @@
     PHImageRequestOptions * options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeExact;
     options.networkAccessAllowed = YES;
-    [[self tipHUDWithText:[NSBundle qim_localizedStringForKey:@"Getting_photo"]] show:YES];
+    [[self tipHUDWithText:[NSBundle stimDB_localizedStringForKey:@"Getting_photo"]] show:YES];
     __weak typeof(self) weakSelf = self;
     [_imageManager requestImageForAsset:[self.photoArray objectAtIndex:index] targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
         if (downloadFinined) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self closeHUD];
-                QIMImageEditViewController * imageEditVC = [[QIMImageEditViewController alloc] initWithImage:result];
+                STIMImageEditViewController * imageEditVC = [[STIMImageEditViewController alloc] initWithImage:result];
                 imageEditVC.fromAlum = YES;
                 imageEditVC.delegate = self;
                 [weakSelf.navigationController pushViewController:imageEditVC animated:YES];
@@ -328,20 +328,20 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex == 0) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle stimDB_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
         self.picker.isOriginal = NO;
-        [[QIMKit sharedInstance] setPickerPixelOriginal:NO];
+        [[STIMKit sharedInstance] setPickerPixelOriginal:NO];
     } else if (buttonIndex == 1) {
         
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle stimDB_localizedStringForKey:@"Full Image"]] forState:UIControlStateNormal];
         self.picker.isOriginal = YES;
-        [[QIMKit sharedInstance] setPickerPixelOriginal:YES];
+        [[STIMKit sharedInstance] setPickerPixelOriginal:YES];
     }
 }
 
 - (void)onPhotoTypeClick{
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Standard Definition"]],
-                            [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Full Image"]],nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle stimDB_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Standard Definition"]],
+                            [NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Full Image"]],nil];
     [sheet showInView:self.view];
 }
 
@@ -403,9 +403,9 @@
 //    }
 }
 
-#pragma mark - QIMImageEditViewControllerDelegate
+#pragma mark - STIMImageEditViewControllerDelegate
 
-- (void)imageEditVC:(QIMImageEditViewController *)imageEditVC didEditWithProductImage:(UIImage *)productImage
+- (void)imageEditVC:(STIMImageEditViewController *)imageEditVC didEditWithProductImage:(UIImage *)productImage
 {
     if (productImage) {
         [self.picker finishEditWithImage:productImage];

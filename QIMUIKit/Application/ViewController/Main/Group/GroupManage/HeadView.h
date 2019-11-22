@@ -1,5 +1,5 @@
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 @class FriendGroup;
 
 @protocol HeadViewDelegate <NSObject>

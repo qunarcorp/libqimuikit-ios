@@ -5,14 +5,14 @@
 //  Created by lihuaqi on 2017/9/20.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "QTalkEverNoteListVC.h"
 #import "QTalkEverNoteVC.h"
-#import "QIMNoteManager.h"
-#import "QIMNoteModel.h"
+#import "STIMNoteManager.h"
+#import "STIMNoteModel.h"
 #import "QTNoteCell.h"
 #import <SCLAlertView-Objective-C/SCLAlertView.h>
-#import "NSBundle+QIMLibrary.h"
+#import "NSBundle+STIMLibrary.h"
 
 @interface QTalkEverNoteListVC () <UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic, strong) UIButton *addBtn;//新建按钮
@@ -23,15 +23,15 @@
 @implementation QTalkEverNoteListVC
 - (void)getLocalEverNotes {
     self.dataSource = [NSMutableArray arrayWithCapacity:1];
-    NSArray *array = [[QIMNoteManager sharedInstance] getSubItemWithCid:self.evernoteModel.c_id WithExpectState:QIMNoteStateDelete];
+    NSArray *array = [[STIMNoteManager sharedInstance] getSubItemWithCid:self.evernoteModel.c_id WithExpectState:STIMNoteStateDelete];
     [self.dataSource addObjectsFromArray:array];
     [self.tableView reloadData];
 }
 
 - (void)getRemoteEverNotes {
     
-    NSInteger maxTime = [[QIMNoteManager sharedInstance] getQTNoteSubItemMaxTimeWitModel:self.evernoteModel];
-    [[QIMNoteManager sharedInstance] getCloudRemoteSubWithQid:self.evernoteModel.q_id Cid:self.evernoteModel.c_id version:maxTime type:-1];
+    NSInteger maxTime = [[STIMNoteManager sharedInstance] getQTNoteSubItemMaxTimeWitModel:self.evernoteModel];
+    [[STIMNoteManager sharedInstance] getCloudRemoteSubWithQid:self.evernoteModel.q_id Cid:self.evernoteModel.c_id version:maxTime type:-1];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -79,10 +79,10 @@
 - (void)addNoteAction {
     QTalkEverNoteVC *vc = [[QTalkEverNoteVC alloc] init];
     vc.everNoteType = ENUM_EverNote_TypeNew;
-    QIMNoteModel *model = [[QIMNoteModel alloc] init];
+    STIMNoteModel *model = [[STIMNoteModel alloc] init];
     model.c_id = self.evernoteModel.c_id;
     model.q_id = self.evernoteModel.q_id;
-    model.qs_type = QIMNoteTypeEverNote;
+    model.qs_type = STIMNoteTypeEverNote;
     vc.evernoteSModel = model;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -102,7 +102,7 @@
 }
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    QIMNoteModel *evernoteSModel = self.dataSource[indexPath.row];
+    STIMNoteModel *evernoteSModel = self.dataSource[indexPath.row];
     QTNoteCell *cell = [QTNoteCell cellWithTableView:tableView];
     [cell refreshCellWithModel:evernoteSModel];
     return cell;
@@ -113,7 +113,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *evernoteSModel = self.dataSource[indexPath.row];
+    STIMNoteModel *evernoteSModel = self.dataSource[indexPath.row];
     QTalkEverNoteVC *vc = [[QTalkEverNoteVC alloc] init];
     vc.everNoteType = ENUM_EverNote_TypeEdit;
     vc.evernoteSModel = evernoteSModel;
@@ -124,9 +124,9 @@
  *  左滑cell时出现什么按钮
  */
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *evernoteSModel = self.dataSource[indexPath.row];
-    UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:[NSBundle qim_localizedStringForKey:@"Delete"] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-        [[QIMNoteManager sharedInstance] deleteQTNoteSubItemWithQSModel:evernoteSModel];
+    STIMNoteModel *evernoteSModel = self.dataSource[indexPath.row];
+    UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:[NSBundle stimDB_localizedStringForKey:@"Delete"] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+        [[STIMNoteManager sharedInstance] deleteQTNoteSubItemWithQSModel:evernoteSModel];
         [self getLocalEverNotes];
     }];
     

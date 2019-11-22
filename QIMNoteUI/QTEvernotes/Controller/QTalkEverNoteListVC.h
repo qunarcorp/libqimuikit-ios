@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#if __has_include("QIMNoteManager.h")
-@class QIMNoteModel;
+#if __has_include("STIMNoteManager.h")
+@class STIMNoteModel;
 @interface QTalkEverNoteListVC : UIViewController
-@property(nonatomic, strong) QIMNoteModel *evernoteModel;
+@property(nonatomic, strong) STIMNoteModel *evernoteModel;
 @end
 #endif

@@ -6,12 +6,12 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
-#if __has_include("QIMNoteManager.h")
-@class QIMNoteModel;
+#import "STIMCommonUIFramework.h"
+#if __has_include("STIMNoteManager.h")
+@class STIMNoteModel;
 @interface PasswordListViewController : UIViewController
 
-- (void)setQIMNoteModel:(QIMNoteModel *)model;
+- (void)setSTIMNoteModel:(STIMNoteModel *)model;
 
 @end
 #endif

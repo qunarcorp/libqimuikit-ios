@@ -10,7 +10,7 @@
 #define handleEventQTalkSuggest_h
 
 #import <React/RCTBridgeModule.h>
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface  HandleEventQTalkSuggest: NSObject <RCTBridgeModule>
 

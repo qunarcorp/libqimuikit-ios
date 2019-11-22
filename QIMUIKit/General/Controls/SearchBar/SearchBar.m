@@ -5,14 +5,14 @@
 //  Created by Neo on 7/30/11.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import "SearchBar.h"
 
 #define kCurNormalFontOfSize(fontSize)				[UIFont systemFontOfSize:fontSize]
 #define kCurBoldFontOfSize(fontSize)				[UIFont boldSystemFontOfSize:fontSize]
 #define kCurItalicFontOfSize(fontSize)				[UIFont italicSystemFontOfSize:fontSize]
 
-#define kUIColorOfHex(color)						[UIColor qim_colorWithHex:(color) alpha:1.0]
+#define kUIColorOfHex(color)						[UIColor stimDB_colorWithHex:(color) alpha:1.0]
 
 #define	kNaviBackBarButtonNormalImageFile		@"NaviItemBackNormal.png"
 #define	kNaviBackBarButtonHighlightedImageFile	@"NaviItemBackPress.png"
@@ -27,8 +27,8 @@
 
 // 颜色
 #define	kSearchBarBackGroundColor				kUIColorOfHex(0x1ba9ba)
-#define kSearchBarButtonTextColor             [UIColor qim_colorWithHex:0x77FFFF alpha:1.0f]
-#define kSearchBarButtonTextPressColor        [UIColor qim_colorWithHex:0x77FFFF alpha:0.5f]
+#define kSearchBarButtonTextColor             [UIColor stimDB_colorWithHex:0x77FFFF alpha:1.0f]
+#define kSearchBarButtonTextPressColor        [UIColor stimDB_colorWithHex:0x77FFFF alpha:0.5f]
 // ==================================================================
 // 布局参数
 // ==================================================================
@@ -47,7 +47,7 @@
 #define	kSearchBarTextFieldLeftHMargin			14
 #define kSearchBarTextFieldRightHMargin			10
 
-#define kUIColorOfHex(color)						[UIColor qim_colorWithHex:(color) alpha:1.0]
+#define kUIColorOfHex(color)						[UIColor stimDB_colorWithHex:(color) alpha:1.0]
 // 控件字体
 #define	kSearchBarTextFieldFont					kCurNormalFontOfSize(14)
 #define	kSearchBarButtonFont					kCurBoldFontOfSize(16)
@@ -55,8 +55,8 @@
 
 // 颜色
 #define	kSearchBarBackGroundColor				kUIColorOfHex(0x1ba9ba)
-#define kSearchBarButtonTextColor             [UIColor qim_colorWithHex:0x77FFFF alpha:1.0f]
-#define kSearchBarButtonTextPressColor        [UIColor qim_colorWithHex:0x77FFFF alpha:0.5f]
+#define kSearchBarButtonTextColor             [UIColor stimDB_colorWithHex:0x77FFFF alpha:1.0f]
+#define kSearchBarButtonTextPressColor        [UIColor stimDB_colorWithHex:0x77FFFF alpha:0.5f]
 
 @interface SearchBar ()
 
@@ -104,7 +104,7 @@
     
     // 创建输入背景ImageView
     _searchTextBG = [[UIImageView alloc] initWithFrame:CGRectZero];
-    [_searchTextBG setBackgroundColor:qim_listSearchBgViewColor];
+    [_searchTextBG setBackgroundColor:stimDB_listSearchBgViewColor];
     [[_searchTextBG layer] setCornerRadius:4.0f];
     [[_searchTextBG layer] setMasksToBounds:YES];
     [self addSubview:_searchTextBG];
@@ -150,11 +150,11 @@
     
     // 设置Button的背景图片
     _buttonBack = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_buttonBack setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:kNaviBackBarButtonNormalImageFile]
+    [_buttonBack setBackgroundImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:kNaviBackBarButtonNormalImageFile]
                            forState:UIControlStateNormal];
-    [_buttonBack setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:kNaviBackBarButtonHighlightedImageFile]
+    [_buttonBack setBackgroundImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:kNaviBackBarButtonHighlightedImageFile]
                            forState:UIControlStateHighlighted];
-    [_buttonBack setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:kNaviBackBarButtonDisableImageFile]
+    [_buttonBack setBackgroundImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:kNaviBackBarButtonDisableImageFile]
                            forState:UIControlStateDisabled];
     
     [_buttonBack addTarget:self
@@ -533,7 +533,7 @@
 		NSString *buttonTitle = [_buttonBar titleForState:UIControlStateNormal];
 		if((buttonTitle != nil) && ([buttonTitle length] != 0))
 		{
-			CGSize titleSize = [buttonTitle qim_sizeWithFontCompatible:kSearchBarButtonFont];
+			CGSize titleSize = [buttonTitle stimDB_sizeWithFontCompatible:kSearchBarButtonFont];
 			
 			// 为了动画效果，需要重新设置宽度
 			if(_isButtonShow == YES)
@@ -669,7 +669,7 @@
 			NSString *hintText = [_labelHint text];
 			if((hintText != nil) && ([hintText length] != 0))
 			{
-				CGSize hintSize = [hintText qim_sizeWithFontCompatible:kSearchBarLabelFont];
+				CGSize hintSize = [hintText stimDB_sizeWithFontCompatible:kSearchBarLabelFont];
 				
 				// 设置自己的尺寸
 				NSTimeInterval duration = 0.0;

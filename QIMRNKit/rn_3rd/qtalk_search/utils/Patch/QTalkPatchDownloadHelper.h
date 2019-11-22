@@ -9,7 +9,7 @@
 #ifndef QTalkPatchDownloadHelper_h
 #define QTalkPatchDownloadHelper_h
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface  QTalkPatchDownloadHelper : NSObject
 

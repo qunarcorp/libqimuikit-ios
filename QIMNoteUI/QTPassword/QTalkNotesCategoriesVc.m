@@ -5,16 +5,16 @@
 //  Created by 李露 on 2017/7/17.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "QTalkNotesCategoriesVc.h"
 #import "QTNoteTrashViewController.h"
 #import "PasswordBoxListVc.h"
 #import "TodoListMainVc.h"
-#import "QIMNoteManager.h"
-#import "QIMXMenu.h"
-#import "QIMXMenuItem.h"
+#import "STIMNoteManager.h"
+#import "STIMXMenu.h"
+#import "STIMXMenuItem.h"
 #import "QTalkEverNotebookVC.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface QTalkNotesCategoriesVc () <UITableViewDelegate, UITableViewDataSource>
 
@@ -33,7 +33,7 @@
         
         _items = [NSMutableArray arrayWithCapacity:3];
         for (NSString *item in self.dataSource) {
-            [_items addObject:[QIMXMenuItem menuTitle:item WithIcon:nil]];
+            [_items addObject:[STIMXMenuItem menuTitle:item WithIcon:nil]];
         }
     }
     return _items;
@@ -46,7 +46,7 @@
 //        [_dataSource addObject:@"TodoList"];
         [_dataSource addObject:@"Notes"];
         /*
-         if ([[QIMKit sharedInstance] qimNav_WikiUrl].length > 0) {
+         if ([[STIMKit sharedInstance] qimNav_WikiUrl].length > 0) {
             [_dataSource addObject:@"WiKi"];
         } */
     }
@@ -71,11 +71,11 @@
 }
 
 - (void)updateLocalMainItems {
-    [[QIMNoteManager sharedInstance] batchSyncToRemoteMainItems];
+    [[STIMNoteManager sharedInstance] batchSyncToRemoteMainItems];
 }
 
 - (void)setupUI {
-    self.title = [NSBundle qim_localizedStringForKey:@"explore_tab_notes"];
+    self.title = [NSBundle stimDB_localizedStringForKey:@"explore_tab_notes"];
     self.view.backgroundColor = [UIColor whiteColor];
     [self setupNav];
     [self.view addSubview:self.mainTableView];
@@ -85,7 +85,7 @@
     
     UIButton *newItemBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     newItemBtn.adjustsImageWhenHighlighted = NO;
-    [newItemBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"new_somthing_icon"] forState:UIControlStateNormal];
+    [newItemBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"new_somthing_icon"] forState:UIControlStateNormal];
     [newItemBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
     [newItemBtn addTarget:self action:@selector(addNewItem:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -99,7 +99,7 @@
     UIButton *barItem = sender;
     CGRect rect = CGRectMake(barItem.left, 0, barItem.width, 0);
     __weak typeof(self) weakSelf = self;
-    [QIMXMenu showMenuInView:self.view fromRect:rect menuItems:self.items selected:^(NSInteger index, QIMXMenuItem *item) {
+    [STIMXMenu showMenuInView:self.view fromRect:rect menuItems:self.items selected:^(NSInteger index, STIMXMenuItem *item) {
         if ([item.title isEqualToString:@"password"]) {
             [weakSelf addNewPassword];
         } else if ([item.title isEqualToString:@"TodoList"]) {
@@ -133,13 +133,13 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
     }
     if ([item isEqualToString:@"password"]) {
-        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
+        cell.imageView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"explore_tab_password"];
     } else if ([item isEqualToString:@"TodoList"]) {
-        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_todoList"];
+        cell.imageView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"explore_tab_todoList"];
     } else if ([item isEqualToString:@"Notes"]) {
-        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_notes"];
+        cell.imageView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"explore_tab_notes"];
     }
-    cell.textLabel.text = [NSBundle qim_localizedStringForKey:item];
+    cell.textLabel.text = [NSBundle stimDB_localizedStringForKey:item];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }
@@ -164,15 +164,15 @@
 }
 
 - (void)addNewPassword {
-    QIMVerboseLog(@"%s", __func__);
+    STIMVerboseLog(@"%s", __func__);
 }
 
 - (void)addNewTodoList {
-    QIMVerboseLog(@"%s", __func__);
+    STIMVerboseLog(@"%s", __func__);
 }
 
 - (void)addNewEverNote {
-    QIMVerboseLog(@"%s", __func__);
+    STIMVerboseLog(@"%s", __func__);
 }
 
 @end

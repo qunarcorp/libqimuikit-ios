@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 cmjstudio. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MobileCoreServices/MobileCoreServices.h>

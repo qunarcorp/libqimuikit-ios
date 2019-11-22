@@ -7,7 +7,7 @@
 //
 
 #import "TodoListUpArrowFooter.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface TodoListUpArrowFooter ()
 
@@ -34,7 +34,7 @@
     
     self.upArrowIconView.frame = CGRectMake(0, 5, 35, 35);
     self.upArrowIconView.centerX = self.centerX;
-    self.upArrowIconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowup_nor@2x"];
+    self.upArrowIconView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"chat_bottom_arrowup_nor@2x"];
 }
 
 - (void)setState:(MJRefreshState)state

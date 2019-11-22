@@ -10,7 +10,7 @@
 @implementation QtalkSessionModel
 
 - (NSString *)description{
-    NSMutableString *str = [NSMutableString stringWithString:[self qim_properties_aps]];
+    NSMutableString *str = [NSMutableString stringWithString:[self stimDB_properties_aps]];
     return str;
 }
 

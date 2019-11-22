@@ -1,6 +1,6 @@
 //
-//  UIImage+QIMImagePicker.h
-//  QIMUIKit
+//  UIImage+STIMImagePicker.h
+//  STIMUIKit
 //
 //  Created by lilu on 2019/4/24.
 //  Copyright © 2019 QIM. All rights reserved.
@@ -10,9 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIImage (QIMImagePicker)
+@interface UIImage (STIMImagePicker)
 
-+ (UIImage *)qim_imageNamedFromQIMImagePickerBundle:(NSString *)name;
++ (UIImage *)qim_imageNamedFromSTIMImagePickerBundle:(NSString *)name;
 
 @end
 

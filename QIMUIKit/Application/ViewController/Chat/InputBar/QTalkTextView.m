@@ -1,8 +1,8 @@
 
 #import "QTalkTextView.h"
-#import "QIMChatKeyBoardMacroDefine.h"
-#import "QIMATGroupMemberTextAttachment.h"
-#import "QIMEmojiTextAttachment.h"
+#import "STIMChatKeyBoardMacroDefine.h"
+#import "STIMATGroupMemberTextAttachment.h"
+#import "STIMEmojiTextAttachment.h"
 
 @implementation QTalkTextView
 
@@ -14,7 +14,7 @@
     if (self) {
         self.font = [UIFont systemFontOfSize:16.f];
         self.textColor = [UIColor blackColor];
-        self.layer.borderColor = [UIColor qim_colorWithHex:0xE4E4E4].CGColor;
+        self.layer.borderColor = [UIColor stimDB_colorWithHex:0xE4E4E4].CGColor;
         self.layer.cornerRadius = 5.0f;
         self.layer.borderWidth = 0.5;
         self.contentMode = UIViewContentModeRedraw;
@@ -44,14 +44,14 @@
                   usingBlock:^(id value, NSRange range, BOOL *stop) {
                       
                       //检查类型是否是自定义NSTextAttachment类
-                      if (value && [value isKindOfClass:[QIMEmojiTextAttachment class]]) {
+                      if (value && [value isKindOfClass:[STIMEmojiTextAttachment class]]) {
                           //替换
                           [plainString replaceCharactersInRange:NSMakeRange(range.location + base, range.length)
-                                                     withString:[((QIMEmojiTextAttachment *) value) getSendText]];
+                                                     withString:[((STIMEmojiTextAttachment *) value) getSendText]];
                           
                           //增加偏移量
-                          base += [((QIMEmojiTextAttachment *) value) getSendText].length - 1;
-                      } else if (value && [value isKindOfClass:[QIMATGroupMemberTextAttachment class]]) {
+                          base += [((STIMEmojiTextAttachment *) value) getSendText].length - 1;
+                      } else if (value && [value isKindOfClass:[STIMATGroupMemberTextAttachment class]]) {
                           flag = YES;
                       }
                   }];

@@ -7,15 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 typedef enum {
     ENUM_EverNote_TypeNew = 0,//新建
     ENUM_EverNote_TypeEdit//编辑
 } ENUM_EverNote_Type;
 
-@class QIMNoteModel;
+@class STIMNoteModel;
 @interface QTalkEverNoteVC : UIViewController
 @property(nonatomic, assign) ENUM_EverNote_Type everNoteType;
-@property(nonatomic, strong) QIMNoteModel *evernoteSModel;
+@property(nonatomic, strong) STIMNoteModel *evernoteSModel;
 @end
 #endif

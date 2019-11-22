@@ -9,7 +9,7 @@
 #ifndef QTalkProjectType_h
 #define QTalkProjectType_h
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <React/RCTBridgeModule.h>
 
 @interface QTalkProjectType : NSObject <RCTBridgeModule>

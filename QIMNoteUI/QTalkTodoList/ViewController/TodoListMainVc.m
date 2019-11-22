@@ -5,7 +5,7 @@
 //  Created by 李露 on 2017/7/27.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "TodoListMainVc.h"
 #import "MJRefresh.h"
 #import "MJRefreshHeader.h"
@@ -14,9 +14,9 @@
 #import "TODOListDIYHeader.h"
 #import "TodoListUpArrowFooter.h"
 #import "TodoListTableViewCell.h"
-#import "QIMNoteManager.h"
+#import "STIMNoteManager.h"
 #import "MGSwipeTableCell.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteUICommonFramework.h"
 
 #define TEST_USE_MG_DELEGATE 1
 
@@ -57,31 +57,31 @@
     NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"FirstTime" ofType:@"plist"];
     NSArray *firstTimeDicts = [[NSArray alloc] initWithContentsOfFile:bundlePath];
     for (NSDictionary *dict in firstTimeDicts) {
-        QIMNoteModel *placeHolderModle = [[QIMNoteModel alloc] init];
+        STIMNoteModel *placeHolderModle = [[STIMNoteModel alloc] init];
         NSString *randomTextStr = @"";
-        if ([[[QIMKit sharedInstance] currentLanguage] containsString:@"zh-Hant"]) {
+        if ([[[STIMKit sharedInstance] currentLanguage] containsString:@"zh-Hant"]) {
             randomTextStr = [dict objectForKey:@"zh-Hant"];
-        } else if ([[[QIMKit sharedInstance] currentLanguage] containsString:@"en"]) {
+        } else if ([[[STIMKit sharedInstance] currentLanguage] containsString:@"en"]) {
             randomTextStr = [dict objectForKey:@"en"];
-        } else if ([[[QIMKit sharedInstance] currentLanguage] containsString:@"zh-Hans"]) {
+        } else if ([[[STIMKit sharedInstance] currentLanguage] containsString:@"zh-Hans"]) {
             randomTextStr = [dict objectForKey:@"zh-Hans"];
         }
-        placeHolderModle.c_id = [[QIMNoteManager sharedInstance] getMaxQTNoteMainItemCid] + 1;
-        placeHolderModle.q_type = QIMNoteTypeTodoList;
+        placeHolderModle.c_id = [[STIMNoteManager sharedInstance] getMaxQTNoteMainItemCid] + 1;
+        placeHolderModle.q_type = STIMNoteTypeTodoList;
         placeHolderModle.q_title = randomTextStr;
-        placeHolderModle.q_state = QIMNoteStateNormal;
-        placeHolderModle.q_ExtendedFlag = QIMNoteExtendedFlagStateNoNeedUpdatedd;
+        placeHolderModle.q_state = STIMNoteStateNormal;
+        placeHolderModle.q_ExtendedFlag = STIMNoteExtendedFlagStateNoNeedUpdatedd;
         [placeHolders addObject:placeHolderModle];
-        [[QIMNoteManager sharedInstance] saveNewQTNoteMainItem:placeHolderModle];
+        [[STIMNoteManager sharedInstance] saveNewQTNoteMainItem:placeHolderModle];
     }
-    [[QIMKit sharedInstance] setUserObject:@(YES) forKey:@"todoListOldUser"];
+    [[STIMKit sharedInstance] setUserObject:@(YES) forKey:@"todoListOldUser"];
     return placeHolders;
 }
 
 - (void)loadTodoLists {
     self.dataSource = [NSMutableArray arrayWithCapacity:5];
-    NSArray *array = [[QIMNoteManager sharedInstance] getMainItemWithType:QIMNoteTypeTodoList WithExceptState:QIMNoteStateDelete];
-    BOOL todoListOldUser = [[[QIMKit sharedInstance] userObjectForKey:@"todoListOldUser"] boolValue];
+    NSArray *array = [[STIMNoteManager sharedInstance] getMainItemWithType:STIMNoteTypeTodoList WithExceptState:STIMNoteStateDelete];
+    BOOL todoListOldUser = [[[STIMKit sharedInstance] userObjectForKey:@"todoListOldUser"] boolValue];
     if (array.count < 1 && (!todoListOldUser || todoListOldUser == NO)) {
         [self.dataSource addObjectsFromArray:[self firstLoadPlaceHolders]];
     } else {
@@ -91,8 +91,8 @@
 }
 
 - (void)getRemoteTodoLists {
-    NSInteger version = [[QIMNoteManager sharedInstance] getQTNoteMainItemMaxTimeWithType:QIMNoteTypeTodoList];
-    [[QIMNoteManager sharedInstance] getCloudRemoteMainWithVersion:version WithType:QIMNoteTypeTodoList];
+    NSInteger version = [[STIMNoteManager sharedInstance] getQTNoteMainItemMaxTimeWithType:STIMNoteTypeTodoList];
+    [[STIMNoteManager sharedInstance] getCloudRemoteMainWithVersion:version WithType:STIMNoteTypeTodoList];
 }
 
 - (void)viewDidLoad {
@@ -133,7 +133,7 @@
     closeBtn.frame = CGRectMake(self.view.width - 60, self.view.height - 60, 45, 45);
     closeBtn.layer.masksToBounds = YES;
     closeBtn.layer.cornerRadius = CGRectGetWidth(closeBtn.frame) / 2.0;
-    [closeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"videoCall_btn_close"] forState:UIControlStateNormal];
+    [closeBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"videoCall_btn_close"] forState:UIControlStateNormal];
     [closeBtn setBackgroundColor:[UIColor redColor]];
     [closeBtn addTarget:self action:@selector(exitTodoList:) forControlEvents:UIControlEventTouchUpInside];
     [[UIApplication sharedApplication].keyWindow addSubview:closeBtn];
@@ -159,7 +159,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
+    STIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
     NSString *cellId = [NSString stringWithFormat:@"%ld_%@", (long)model.c_id, model.q_title];
     TodoListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (!cell) {
@@ -177,7 +177,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
+    STIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
     CGSize titleSize = [model.q_title boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]} context:nil].size;
     if (titleSize.height > 20) {
         return titleSize.height + 40;
@@ -186,8 +186,8 @@
     }
 }
 
-- (UIImage *)favoriteButtonIcon:(QIMNoteModel *)model {
-    return (model.q_state == QIMNoteStateFavorite) ? [UIImage qim_imageNamedFromQIMUIKitBundle:@"aboutMore_29x28_"] : [UIImage qim_imageNamedFromQIMUIKitBundle:@"heart_16x14_"];
+- (UIImage *)favoriteButtonIcon:(STIMNoteModel *)model {
+    return (model.q_state == STIMNoteStateFavorite) ? [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"aboutMore_29x28_"] : [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"heart_16x14_"];
 }
 
 #pragma mark Swipe Delegate
@@ -200,7 +200,7 @@
     swipeSettings.transition = MGSwipeTransitionBorder;
     expansionSettings.buttonIndex = 0;
     __weak __typeof(self) weakSelf = self;
-    __block QIMNoteModel *todoListModel = [self.dataSource objectAtIndex:[self.mainTableView indexPathForCell:cell].row];
+    __block STIMNoteModel *todoListModel = [self.dataSource objectAtIndex:[self.mainTableView indexPathForCell:cell].row];
     //从左向右滑
     if (direction == MGSwipeDirectionLeftToRight) {
         expansionSettings.fillOnTrigger = NO;
@@ -208,19 +208,19 @@
         
         MGSwipeButton *complete = [MGSwipeButton buttonWithTitle:@"---" backgroundColor:[UIColor redColor] callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
             todoListModel.q_state = 0;
-            QIMVerboseLog(@"完成滑动的Model Title = %@", todoListModel.q_title);
+            STIMVerboseLog(@"完成滑动的Model Title = %@", todoListModel.q_title);
             [(TodoListTableViewCell *)cell setHasCompleted:YES];
             todoListModel.q_introduce = QTTodolistStateComplete;
-            [[QIMNoteManager sharedInstance] updateQTNoteMainItemWithModel:todoListModel];
+            [[STIMNoteManager sharedInstance] updateQTNoteMainItemWithModel:todoListModel];
             [(TodoListTableViewCell *)cell refreshUI];
             return YES;
         }];
         
         MGSwipeButton * favorite = [MGSwipeButton buttonWithTitle:@"" icon:[weakSelf favoriteButtonIcon:todoListModel] backgroundColor:[UIColor whiteColor] padding:5 callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
             
-            todoListModel.q_state = QIMNoteStateFavorite;
-            [[QIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:todoListModel];
-            QIMVerboseLog(@"收藏滑动的Model Title = %@", todoListModel.q_title);
+            todoListModel.q_state = STIMNoteStateFavorite;
+            [[STIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:todoListModel];
+            STIMVerboseLog(@"收藏滑动的Model Title = %@", todoListModel.q_title);
             [(UIButton*)[cell.leftButtons objectAtIndex:1] setImage:[weakSelf favoriteButtonIcon:todoListModel] forState:UIControlStateNormal];
             return YES;
         }];
@@ -235,7 +235,7 @@
         
         expansionSettings.fillOnTrigger = YES;
         CGFloat padding = 10;
-        MGSwipeButton * edit = [MGSwipeButton buttonWithTitle:@"" icon:[UIImage qim_imageNamedFromQIMUIKitBundle:@"编辑_12x13_"] backgroundColor:[UIColor whiteColor] padding:padding callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
+        MGSwipeButton * edit = [MGSwipeButton buttonWithTitle:@"" icon:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"编辑_12x13_"] backgroundColor:[UIColor whiteColor] padding:padding callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
             NewAddTodoListVc *editTodoListVc = [[NewAddTodoListVc alloc] init];
             [editTodoListVc setEdited:YES];
             [editTodoListVc setTodoListModel:todoListModel];
@@ -245,12 +245,12 @@
             return YES;
         }];
         
-        MGSwipeButton * trash = [MGSwipeButton buttonWithTitle:@"" icon:[UIImage qim_imageNamedFromQIMUIKitBundle:@"删除_12x12_"] backgroundColor:[UIColor whiteColor] padding:padding callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
-            todoListModel.q_state = QIMNoteStateBasket;
+        MGSwipeButton * trash = [MGSwipeButton buttonWithTitle:@"" icon:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"删除_12x12_"] backgroundColor:[UIColor whiteColor] padding:padding callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
+            todoListModel.q_state = STIMNoteStateBasket;
             NSIndexPath *path = [_mainTableView indexPathForCell:cell];
             [_dataSource removeObjectAtIndex:path.row];
             [_mainTableView deleteRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationLeft];
-            [[QIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:todoListModel];
+            [[STIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:todoListModel];
             return YES;
         }];
         return @[trash, edit];
@@ -259,7 +259,7 @@
 }
 
 -(void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    QIMVerboseLog(@"Tapped accessory button");
+    STIMVerboseLog(@"Tapped accessory button");
 }
 
 #pragma mark - PresentVC

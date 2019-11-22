@@ -9,7 +9,7 @@
 #ifndef QTalkSearch_h
 #define QTalkSearch_h
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <React/RCTBridge.h>
 
 #define kNotify_RN_QTALK_SEARCH_BUNDLE_UPDATE @"kNotify_RN_QTALK_SEARCH_BUNDLE_UPDATE"

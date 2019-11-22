@@ -60,7 +60,7 @@
     {
         if (error)
         {
-            QIMVerboseLog(@"locError:{%ld - %@};", (long)error.code, error.localizedDescription);
+            STIMVerboseLog(@"locError:{%ld - %@};", (long)error.code, error.localizedDescription);
             
             //如果为定位失败的error，则不进行annotation的添加
             if (error.code == AMapLocationErrorLocateFailed)
@@ -116,7 +116,7 @@
 
 - (void)AMapSearchRequest:(id)request didFailWithError:(NSError *)error
 {
-    QIMVerboseLog(@"%s: searchRequest = %@, errInfo= %@", __func__, [request class], error);
+    STIMVerboseLog(@"%s: searchRequest = %@, errInfo= %@", __func__, [request class], error);
 }
 
 #pragma mark - Initialization
@@ -144,7 +144,7 @@
 - (void)initSearch
 {
     
-    [AMapServices sharedServices].apiKey = [[QIMKit sharedInstance] getGAODE_APIKEY];
+    [AMapServices sharedServices].apiKey = [[STIMKit sharedInstance] getGAODE_APIKEY];
     self.search = [[AMapSearchAPI alloc] init];
     self.search.delegate = self;
 }

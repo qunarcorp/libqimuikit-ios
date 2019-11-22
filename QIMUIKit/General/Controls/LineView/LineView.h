@@ -6,7 +6,7 @@
 //  Copyright (c) 2012年 Qunar.com. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 #define kLineHeight1px (1/[[UIScreen mainScreen] scale])
 

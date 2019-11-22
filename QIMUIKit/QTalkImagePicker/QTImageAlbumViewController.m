@@ -64,9 +64,9 @@
 
 - (void)initNavBar{
 
-    [self.navigationItem setTitle:[NSBundle qim_localizedStringForKey:@"Photos"]];
+    [self.navigationItem setTitle:[NSBundle stimDB_localizedStringForKey:@"Photos"]];
 
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(dismiss:)];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(dismiss:)];
     [self.navigationItem setRightBarButtonItem:rightItem];
     
 }
@@ -159,13 +159,13 @@
     message.translatesAutoresizingMaskIntoConstraints = NO;
     message.preferredMaxLayoutWidth = 304.0f;
     
-    title.text              = [NSBundle qim_localizedStringForKey:@"Photo_access_faild"];
+    title.text              = [NSBundle stimDB_localizedStringForKey:@"Photo_access_faild"];
     title.font              = [UIFont boldSystemFontOfSize:17.0];
     title.textColor         = [UIColor colorWithRed:129.0/255.0 green:136.0/255.0 blue:148.0/255.0 alpha:1];
     title.textAlignment     = NSTextAlignmentCenter;
     title.numberOfLines     = 5;
     
-    message.text            = [NSBundle qim_localizedStringForKey:@"Photo_privacy_settings"];
+    message.text            = [NSBundle stimDB_localizedStringForKey:@"Photo_privacy_settings"];
     message.font            = [UIFont systemFontOfSize:14.0];
     message.textColor       = [UIColor colorWithRed:129.0/255.0 green:136.0/255.0 blue:148.0/255.0 alpha:1];
     message.textAlignment   = NSTextAlignmentCenter;
@@ -207,13 +207,13 @@
     message.translatesAutoresizingMaskIntoConstraints = NO;
     message.preferredMaxLayoutWidth = 304.0f;
     
-    title.text              = [NSBundle qim_localizedStringForKey:@"No_Photos"];
+    title.text              = [NSBundle stimDB_localizedStringForKey:@"No_Photos"];
     title.font              = [UIFont systemFontOfSize:26.0];
     title.textColor         = [UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1];
     title.textAlignment     = NSTextAlignmentCenter;
     title.numberOfLines     = 5;
     
-    message.text            = [NSBundle qim_localizedStringForKey:@"synchronize_photos"];
+    message.text            = [NSBundle stimDB_localizedStringForKey:@"synchronize_photos"];
     message.font            = [UIFont systemFontOfSize:18.0];
     message.textColor       = [UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1];
     message.textAlignment   = NSTextAlignmentCenter;

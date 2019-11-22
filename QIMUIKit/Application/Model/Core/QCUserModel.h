@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 c. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 //用户性别
 typedef enum{

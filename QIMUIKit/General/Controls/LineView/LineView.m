@@ -38,8 +38,8 @@ static NSInteger const kDefaultDottedLineColor[] = {0xd3dada, 0xbfc8c8};
 		_isVertical = NO;
 		_isDotted = NO;
 		_arrayColor = [NSArray arrayWithObjects:
-					   [UIColor qim_colorWithHex:kDefaultLineColor[0] alpha:1.0f],
-					   [UIColor qim_colorWithHex:kDefaultLineColor[1] alpha:1.0f],
+					   [UIColor stimDB_colorWithHex:kDefaultLineColor[0] alpha:1.0f],
+					   [UIColor stimDB_colorWithHex:kDefaultLineColor[1] alpha:1.0f],
 					   nil];
 		
         [self setBackgroundColor:[UIColor clearColor]];
@@ -57,8 +57,8 @@ static NSInteger const kDefaultDottedLineColor[] = {0xd3dada, 0xbfc8c8};
 		_isVertical = NO;
 		_isDotted = YES;
 		_arrayColor = [NSArray arrayWithObjects:
-					   [UIColor qim_colorWithHex:kDefaultDottedLineColor[0] alpha:1.0f],
-					   [UIColor qim_colorWithHex:kDefaultDottedLineColor[1] alpha:1.0f],
+					   [UIColor stimDB_colorWithHex:kDefaultDottedLineColor[0] alpha:1.0f],
+					   [UIColor stimDB_colorWithHex:kDefaultDottedLineColor[1] alpha:1.0f],
 					   nil];
 		
         [self setBackgroundColor:[UIColor clearColor]];

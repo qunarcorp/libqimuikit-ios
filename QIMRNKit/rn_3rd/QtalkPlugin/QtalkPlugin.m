@@ -1,21 +1,21 @@
 
 //
 //  QtalkPlugin.m
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by 李露 on 11/13/18.
-//  Copyright © 2018 QIM. All rights reserved.
+//  Copyright © 2018 STIM. All rights reserved.
 //
 
 #import "QtalkPlugin.h"
-#import "QIMFastEntrance.h"
-#import "QIMNotificationKeys.h"
-#import "QIMJSONSerializer.h"
+#import "STIMFastEntrance.h"
+#import "STIMNotificationKeys.h"
+#import "STIMJSONSerializer.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTBridge.h>
 #import <React/RCTEventDispatcher.h>
-#import "UIApplication+QIMApplication.h"
+#import "UIApplication+STIMApplication.h"
 
 
 @implementation QtalkPlugin
@@ -23,23 +23,23 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(browseBigImage:(NSDictionary *)param :(RCTResponseSenderBlock)callback){
-    [[QIMFastEntrance sharedInstance] browseBigHeader:param];
+    [[STIMFastEntrance sharedInstance] browseBigHeader:param];
 }
 
 RCT_EXPORT_METHOD(openDownLoad:(NSDictionary *)param :(RCTResponseSenderBlock)callback){
-    [[QIMFastEntrance sharedInstance] openQIMFilePreviewVCWithParam:param];
+    [[STIMFastEntrance sharedInstance] openSTIMFilePreviewVCWithParam:param];
 }
 
 RCT_EXPORT_METHOD(openNativeWebView:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([QIMFastEntrance handleOpsasppSchema:param] == NO) {
+        if ([STIMFastEntrance handleOpsasppSchema:param] == NO) {
             NSString *linkUrl = [param objectForKey:@"linkurl"];
             if (linkUrl.length > 0) {
-                [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
+                [STIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
             } else {
                 NSString *linkUrl = [param objectForKey:@"url"];
                 if (linkUrl.length > 0) {
-                    [QIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
+                    [STIMFastEntrance openWebViewForUrl:linkUrl showNavBar:YES];
                 }
             }
         } else {
@@ -50,16 +50,16 @@ RCT_EXPORT_METHOD(openNativeWebView:(NSDictionary *)param) {
 
 RCT_EXPORT_METHOD(gotoWiki:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *wikiUrl = [[QIMKit sharedInstance] qimNav_WikiUrl];
+        NSString *wikiUrl = [[STIMKit sharedInstance] qimNav_WikiUrl];
         if (wikiUrl.length > 0) {
-            [QIMFastEntrance openWebViewForUrl:wikiUrl showNavBar:YES];
+            [STIMFastEntrance openWebViewForUrl:wikiUrl showNavBar:YES];
         }
     });
 }
 
 RCT_EXPORT_METHOD(gotoNote:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openQTalkNotesVC];
+        [STIMFastEntrance openQTalkNotesVC];
     });
 }
 
@@ -87,13 +87,13 @@ RCT_EXPORT_METHOD(getUserInfo:(RCTResponseSenderBlock)callback) {
     callback.invoke(map);
     */
     NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:3];
-    [map setObject:[[QIMKit sharedInstance] getLastJid] forKey:@"userId"];
-    [map setObject:[[QIMKit sharedInstance] getDomain] forKey:@"domain"];
+    [map setObject:[[STIMKit sharedInstance] getLastJid] forKey:@"userId"];
+    [map setObject:[[STIMKit sharedInstance] getDomain] forKey:@"domain"];
     [map setObject:@"192.168.0.1" forKey:@"clientIp"];
     
-    [map setObject:[[QIMKit sharedInstance] thirdpartKeywithValue] forKey:@"ckey"];
-    [map setObject:[[QIMKit sharedInstance] qimNav_HttpHost] forKey:@"httpHost"];
-    [map setObject:[[QIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"fileUrl"];
+    [map setObject:[[STIMKit sharedInstance] thirdpartKeywithValue] forKey:@"ckey"];
+    [map setObject:[[STIMKit sharedInstance] qimNav_HttpHost] forKey:@"httpHost"];
+    [map setObject:[[STIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"fileUrl"];
     callback(@[map ? map : @{}]);
 }
 
@@ -102,23 +102,23 @@ RCT_EXPORT_METHOD(sendEmail:(NSDictionary *)param) {
         NSString *userId = [param objectForKey:@"UserId"];
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
-            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+            navVC = [[STIMFastEntrance sharedInstance] getSTIMFastEntranceRootNav];
         }
-        [[QIMFastEntrance sharedInstance] sendMailWithRootVc:navVC ByUserId:userId];
+        [[STIMFastEntrance sharedInstance] sendMailWithRootVc:navVC ByUserId:userId];
     });
 }
 
 RCT_EXPORT_METHOD(getWorkWorldItem:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
-    NSDictionary *momentDic = [[QIMKit sharedInstance] getLastWorkMoment];
+    NSDictionary *momentDic = [[STIMKit sharedInstance] getLastWorkMoment];
     NSLog(@"getWorkWorldItem : %@", momentDic);
     callback(@[momentDic ? momentDic : @{}]);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        [[QIMKit sharedInstance] getRemoteLastWorkMoment];
+        [[STIMKit sharedInstance] getRemoteLastWorkMoment];
     });
 }
 
 RCT_EXPORT_METHOD(getWorkWorldNotRead:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
-    NSInteger notReadMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
+    NSInteger notReadMsgCount = [[STIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(STIMWorkFeedNotifyTypeComment), @(STIMWorkFeedNotifyTypePOSTAt), @(STIMWorkFeedNotifyTypeCommentAt)]];
     BOOL showNewPOST = NO;
     NSLog(@"getWorkWorldNotRead : %d", notReadMsgCount);
     NSDictionary *notReadMsgDic = @{@"notReadMsgCount":@(notReadMsgCount), @"showNewPost":@(showNewPOST)};
@@ -127,34 +127,34 @@ RCT_EXPORT_METHOD(getWorkWorldNotRead:(NSDictionary *)param :(RCTResponseSenderB
 
 //打开驼圈
 RCT_EXPORT_METHOD(openWorkWorld:(NSDictionary *)param) {
-    [[QIMFastEntrance sharedInstance] openWorkFeedViewController];
+    [[STIMFastEntrance sharedInstance] openWorkFeedViewController];
 }
 
 //打开笔记本
 RCT_EXPORT_METHOD(openNoteBook:(NSDictionary *)param) {
-    [QIMFastEntrance openQTalkNotesVC];
+    [STIMFastEntrance openQTalkNotesVC];
 }
 
 //打开文件助手
 RCT_EXPORT_METHOD(openFileTransfer:(NSDictionary *)param) {
-    NSString *xmppId = [NSString stringWithFormat:@"%@@%@", @"file-transfer", [[QIMKit sharedInstance] getDomain]];
-    [QIMFastEntrance openSingleChatVCByUserId:xmppId];
+    NSString *xmppId = [NSString stringWithFormat:@"%@@%@", @"file-transfer", [[STIMKit sharedInstance] getDomain]];
+    [STIMFastEntrance openSingleChatVCByUserId:xmppId];
 }
 
 //打开扫一扫
 RCT_EXPORT_METHOD(openScan:(NSDictionary *)param) {
-    [QIMFastEntrance openQRCodeVC];
+    [STIMFastEntrance openQRCodeVC];
 }
 
 //打开行程
 RCT_EXPORT_METHOD(openTravelCalendar:(NSDictionary *)param) {
-    [QIMFastEntrance openTravelCalendarVc];
+    [STIMFastEntrance openTravelCalendarVc];
 }
 
 //获取发现页应用列表
 RCT_EXPORT_METHOD(getFoundInfo:(RCTResponseSenderBlock)callback) {
-    NSString *foundListStr = [[QIMKit sharedInstance] getLocalFoundNavigation];
-    NSArray *foundList = [[QIMJSONSerializer sharedInstance] deserializeObject:foundListStr error:nil];
+    NSString *foundListStr = [[STIMKit sharedInstance] getLocalFoundNavigation];
+    NSArray *foundList = [[STIMJSONSerializer sharedInstance] deserializeObject:foundListStr error:nil];
     NSMutableArray *mutableGroupItems = [NSMutableArray arrayWithCapacity:3];
     NSMutableDictionary *mutableResult = [NSMutableDictionary dictionaryWithCapacity:1];
     
@@ -219,7 +219,7 @@ RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(
     NSLog(@"searchUrl : %@", searchUrl);
     NSLog(@"params : %@", params);
     NSLog(@"Cookie : %@", cookie);
-    [[QIMKit sharedInstance] searchWithUrl:searchUrl withParams:params withSuccessCallBack:^(BOOL successed, NSString *responseJson) {
+    [[STIMKit sharedInstance] searchWithUrl:searchUrl withParams:params withSuccessCallBack:^(BOOL successed, NSString *responseJson) {
         NSLog(@"请求搜索结果 : %@", responseJson);
         NSMutableDictionary *resultMap = [NSMutableDictionary dictionaryWithCapacity:3];
         [resultMap setObject:@(successed) forKey:@"isOk"];
@@ -237,21 +237,21 @@ RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(
 RCT_EXPORT_METHOD(openGroupChat:(NSDictionary *)params) {
     NSString *groupId = [params objectForKey:@"GroupId"];
     if (groupId.length > 0) {
-        [QIMFastEntrance openGroupChatVCByGroupId:groupId];
+        [STIMFastEntrance openGroupChatVCByGroupId:groupId];
     }
 }
 
 RCT_EXPORT_METHOD(openSignleChat:(NSDictionary *)params) {
     NSString *userId = [params objectForKey:@"UserId"];
     if (userId.length > 0) {
-        [QIMFastEntrance openSingleChatVCByUserId:userId];
+        [STIMFastEntrance openSingleChatVCByUserId:userId];
     }
 }
 
 RCT_EXPORT_METHOD(openUserCard:(NSDictionary *)params) {
     NSString *userId = [params objectForKey:@"UserId"];
     if (userId.length > 0) {
-        [QIMFastEntrance openUserCardVCByUserId:userId];
+        [STIMFastEntrance openUserCardVCByUserId:userId];
     }
 }
 
@@ -267,10 +267,10 @@ RCT_EXPORT_METHOD(showSearchHistoryResult:(NSDictionary *)params) {
     if (todoType == 16) {
         //群聊
         chatType = ChatType_GroupChat;
-        [QIMFastEntrance openGroupChatVCByGroupId:userJid withFastTime:time withRemoteSearch:YES];
+        [STIMFastEntrance openGroupChatVCByGroupId:userJid withFastTime:time withRemoteSearch:YES];
     } else {
         //单聊
-        if([[[QIMKit sharedInstance] getLastJid] isEqualToString:from]){
+        if([[[STIMKit sharedInstance] getLastJid] isEqualToString:from]){
 //            userJid = userJid;
 //            realJid = realto;
         }else{
@@ -279,7 +279,7 @@ RCT_EXPORT_METHOD(showSearchHistoryResult:(NSDictionary *)params) {
         }
         chatType="0";
         chatType = ChatType_SingleChat;
-        [QIMFastEntrance openSingleChatVCByUserId:userJid withFastTime:time withRemoteSearch:YES];
+        [STIMFastEntrance openSingleChatVCByUserId:userJid withFastTime:time withRemoteSearch:YES];
     }
 }
 
@@ -296,18 +296,18 @@ RCT_EXPORT_METHOD(getLocalSearchKeyHistory:(NSDictionary *)param :(RCTResponseSe
     
     NSInteger limit = [[param objectForKey:@"limit"] integerValue];
     NSInteger searchType = [[param objectForKey:@"searchType"] integerValue];
-    NSArray *searchKeys = [[QIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:searchType withLimit:limit];
+    NSArray *searchKeys = [[STIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:searchType withLimit:limit];
     callback(@[@{@"ok" : @(YES), @"searchKeys" : searchKeys ? searchKeys : @[]}]);
 }
 
 //更新本地搜索Key历史
 RCT_EXPORT_METHOD(updateLocalSearchKeyHistory:(NSDictionary *)param) {
-    [[QIMKit sharedInstance] updateLocalSearchKeyHistory:param];
+    [[STIMKit sharedInstance] updateLocalSearchKeyHistory:param];
 }
 
 //清空本地搜索历史Key
 RCT_EXPORT_METHOD(clearLocalSearchKeyHistory:(NSInteger)searchType) {
-    [[QIMKit sharedInstance] deleteSearchKeyHistory];
+    [[STIMKit sharedInstance] deleteSearchKeyHistory];
 }
 
 @end

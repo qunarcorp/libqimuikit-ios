@@ -9,7 +9,7 @@
 //This is the default image picker size!
 //static CGSize const kPopoverContentSize = {320, 480};
 //However, the iPad is 1024x768 so it can allow popups up to 768!
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <Photos/Photos.h>
 
 static CGSize const kPopoverContentSize = {480, 720};

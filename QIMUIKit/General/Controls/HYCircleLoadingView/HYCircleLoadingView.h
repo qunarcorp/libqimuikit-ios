@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 Shadow. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface HYCircleLoadingView : UIView
 

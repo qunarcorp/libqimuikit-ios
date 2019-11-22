@@ -45,7 +45,7 @@
  
  */
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <MapKit/MapKit.h>
 
 @interface PlaceAnnotation : NSObject <MKAnnotation>

@@ -8,11 +8,11 @@
 
 #import "QTalkVideoAssetViewController.h"
 
-#import "QIMMoviePlayer.h"
+#import "STIMMoviePlayer.h"
 
 #import <AVFoundation/AVFoundation.h>
 
-#import "QIMStringTransformTools.h"
+#import "STIMStringTransformTools.h"
 
 #import "QTImagePickerController.h"
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_8_0
@@ -121,7 +121,7 @@
     [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 1.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
         float current=CMTimeGetSeconds(time);
 //        float total=CMTimeGetSeconds([playerItem duration]);
-        QIMVerboseLog(@"当前已经播放%.2fs.",current);
+        STIMVerboseLog(@"当前已经播放%.2fs.",current);
         if (current) {
 //            CGFloat progressValue = (current/total);
 //            if (progress.value > progressValue) {
@@ -164,7 +164,7 @@
     if ([keyPath isEqualToString:@"status"]) {
         AVPlayerStatus status= [[change objectForKey:@"new"] intValue];
         if(status==AVPlayerStatusReadyToPlay){
-            QIMVerboseLog(@"正在播放...，视频总长度:%.2f",CMTimeGetSeconds(playerItem.duration));
+            STIMVerboseLog(@"正在播放...，视频总长度:%.2f",CMTimeGetSeconds(playerItem.duration));
 //            float total = CMTimeGetSeconds(playerItem.duration);
 //            NSString *totalStr = [NSString stringWithFormat:@"%02d:%02d",(int)total/60,(int)total%60];
         }
@@ -174,7 +174,7 @@
         float startSeconds = CMTimeGetSeconds(timeRange.start);
         float durationSeconds = CMTimeGetSeconds(timeRange.duration);
         NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
-        QIMVerboseLog(@"共缓冲：%.2f",totalBuffer);
+        STIMVerboseLog(@"共缓冲：%.2f",totalBuffer);
         //
     }
 }
@@ -242,16 +242,16 @@
     
     _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - 70, self.view.width, 70)];
     [_bottomView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
-    [_bottomView setBackgroundColor:[UIColor qim_colorWithHex:0x0 alpha:0.9]];
+    [_bottomView setBackgroundColor:[UIColor stimDB_colorWithHex:0x0 alpha:0.9]];
     [self.view addSubview:_bottomView];
     
     _playButton = [[UIButton alloc] initWithFrame:CGRectMake((self.view.width - 30)/2.0, 20, 30, 30)];
-    [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_play"] forState:UIControlStateNormal];
+    [_playButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"short_video_preview_play"] forState:UIControlStateNormal];
     [_playButton addTarget:self action:@selector(onPlayOrPause) forControlEvents:UIControlEventTouchUpInside];
     [_bottomView addSubview:_playButton];
     
     UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 23, 50, 24)];
-    [cancelButton setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
+    [cancelButton setTitle:[NSBundle stimDB_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
     [cancelButton addTarget:self action:@selector(onCancel) forControlEvents:UIControlEventTouchUpInside];
     [_bottomView addSubview:cancelButton];
     
@@ -296,7 +296,7 @@
 
 - (void)onOk{
     UIView *loadView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 150, 40)];
-    [loadView setBackgroundColor:[UIColor qim_colorWithHex:0x0 alpha:0.5]];
+    [loadView setBackgroundColor:[UIColor stimDB_colorWithHex:0x0 alpha:0.5]];
     [loadView.layer setCornerRadius:5];
     [loadView.layer setMasksToBounds:YES];
     
@@ -309,7 +309,7 @@
     [loadingLabel setBackgroundColor:[UIColor clearColor]];
     [loadingLabel setFont:[UIFont boldSystemFontOfSize:16]];
     [loadingLabel setTextAlignment:NSTextAlignmentLeft];
-    [loadingLabel setText:[NSBundle qim_localizedStringForKey:@"Compressing"]];
+    [loadingLabel setText:[NSBundle stimDB_localizedStringForKey:@"Compressing"]];
     [loadingLabel setTextColor:[UIColor whiteColor]];
     [loadView addSubview:loadingLabel];
     
@@ -332,9 +332,9 @@
     NSString *videoResultPath = nil;
     if ([self.videoAsset isKindOfClass:[AVURLAsset class]]) {
         AVURLAsset *videoAsset = (AVURLAsset *)self.videoAsset;
-        videoResultPath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingFormat:@"/video_%@.mp4", [[videoAsset.URL.lastPathComponent componentsSeparatedByString:@"."] firstObject]];
+        videoResultPath = [[[STIMKit sharedInstance] getDownloadFilePath] stringByAppendingFormat:@"/video_%@.mp4", [[videoAsset.URL.lastPathComponent componentsSeparatedByString:@"."] firstObject]];
     } else {
-        videoResultPath = [[[QIMKit sharedInstance] getDownloadFilePath] stringByAppendingFormat:@"/video_%@.mp4", [formater stringFromDate:[NSDate date]]];
+        videoResultPath = [[[STIMKit sharedInstance] getDownloadFilePath] stringByAppendingFormat:@"/video_%@.mp4", [formater stringFromDate:[NSDate date]]];
     }
     if ([[NSFileManager defaultManager] fileExistsAtPath:videoResultPath]) {
         [self exportVideoSuccessWithOutPath:videoResultPath];
@@ -347,13 +347,13 @@
                  [loadView removeFromSuperview];
                  switch ((int)exportSession.status) {
                      case AVAssetExportSessionStatusUnknown:
-                         QIMVerboseLog(@"AVAssetExportSessionStatusUnknown");
+                         STIMVerboseLog(@"AVAssetExportSessionStatusUnknown");
                          break;
                      case AVAssetExportSessionStatusWaiting:
-                         QIMVerboseLog(@"AVAssetExportSessionStatusWaiting");
+                         STIMVerboseLog(@"AVAssetExportSessionStatusWaiting");
                          break;
                      case AVAssetExportSessionStatusExporting:
-                         QIMVerboseLog(@"AVAssetExportSessionStatusExporting");
+                         STIMVerboseLog(@"AVAssetExportSessionStatusExporting");
                          break;
                      case AVAssetExportSessionStatusCompleted:
                      {
@@ -361,7 +361,7 @@
                      }
                          break;
                      case AVAssetExportSessionStatusFailed:{
-                         QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"%@{%@}",[NSBundle qim_localizedStringForKey:@"Failed to compress"],exportSession.error] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+                         QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"%@{%@}",[NSBundle stimDB_localizedStringForKey:@"Failed to compress"],exportSession.error] delegate:nil cancelButtonTitle:[NSBundle stimDB_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                          [alertView show];
                      }
                          break;
@@ -383,8 +383,8 @@
     UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
     CGImageRelease(image);
     
-    NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
-    QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"The video size after compressed is %@. Still send it?"],fileSizeStr] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle qim_localizedStringForKey:@"Send directly"],@"保存相册并发送", nil];
+    NSString *fileSizeStr = [STIMStringTransformTools stimDB_CapacityTransformStrWithSize:[self getFileSize:videoResultPath]];
+    QTVideoAlertView *alertView = [[QTVideoAlertView alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"The video size after compressed is %@. Still send it?"],fileSizeStr] delegate:self cancelButtonTitle:[NSBundle stimDB_localizedStringForKey:@"Cancel"] otherButtonTitles:[NSBundle stimDB_localizedStringForKey:@"Send directly"],@"保存相册并发送", nil];
     [alertView setVideoOutPath:videoResultPath];
     [alertView setThumbImage:thumb];
     [alertView setFileSizeStr:fileSizeStr];
@@ -399,11 +399,11 @@
 
 - (void)setPlayButtonImage:(BOOL)flag{
     if (flag) {
-        [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_play"] forState:UIControlStateNormal];
-        [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_play"] forState:UIControlStateHighlighted];
+        [_playButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"short_video_preview_play"] forState:UIControlStateNormal];
+        [_playButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"short_video_preview_play"] forState:UIControlStateHighlighted];
     } else {
-        [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_pause"] forState:UIControlStateNormal];
-        [_playButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"short_video_preview_pause"] forState:UIControlStateHighlighted];
+        [_playButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"short_video_preview_pause"] forState:UIControlStateNormal];
+        [_playButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"short_video_preview_pause"] forState:UIControlStateHighlighted];
     }
 }
 
@@ -434,17 +434,17 @@
             [picker.imageDelegate qtImagePickerController:picker didFinishPickingVideo:dic];
         }
     }
-    QIMVerboseLog(@"出去了...");
+    STIMVerboseLog(@"出去了...");
 }
 // 视频保存回调
 
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo: (void *)contextInfo {
     
     if (!error) {
-        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Saved_Success"] message:[NSBundle qim_localizedStringForKey:@"Video_saved"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
+        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Saved_Success"] message:[NSBundle stimDB_localizedStringForKey:@"Video_saved"] delegate:nil cancelButtonTitle:[NSBundle stimDB_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
         [alertView show];
     }else{
-        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"save_faild"] message:[NSBundle qim_localizedStringForKey:@"Privacy_Photo"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
+        UIAlertView * alertView  = [[UIAlertView alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"save_faild"] message:[NSBundle stimDB_localizedStringForKey:@"Privacy_Photo"] delegate:nil cancelButtonTitle:[NSBundle stimDB_localizedStringForKey:@"common_ok"] otherButtonTitles:nil, nil];
         [alertView show];
     }
 }

@@ -5,13 +5,13 @@
 //  Created by 李露 on 2017/7/20.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "QTNoteTrashViewController.h"
-#import "QIMNoteModel.h"
-#import "QIMNoteManager.h"
+#import "STIMNoteModel.h"
+#import "STIMNoteManager.h"
 #import "PasswordCell.h"
 #import "PasswordBoxCell.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteUICommonFramework.h"
 
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
@@ -44,9 +44,9 @@
 - (NSMutableArray *)dataSource {
     if (!_dataSource) {
         _dataSource = [NSMutableArray arrayWithCapacity:5];
-        NSArray *trashMainModels = [[QIMNoteManager sharedInstance] getMainItemWithType:QIMNoteTypePassword State:QIMNoteStateBasket];
+        NSArray *trashMainModels = [[STIMNoteManager sharedInstance] getMainItemWithType:STIMNoteTypePassword State:STIMNoteStateBasket];
         [self.dataSource addObjectsFromArray:trashMainModels];
-        NSArray *subModels = [[QIMNoteManager sharedInstance] getSubItemWithState:QIMNoteStateBasket];
+        NSArray *subModels = [[STIMNoteManager sharedInstance] getSubItemWithState:STIMNoteStateBasket];
         [self.dataSource addObjectsFromArray:subModels];
     }
     return _dataSource;
@@ -70,8 +70,8 @@
 }
 
 - (void)initUI {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_back"] style:UIBarButtonItemStylePlain target:self action:@selector(goBackBtnHandle:)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"common_all"] style:UIBarButtonItemStylePlain target:self action:@selector(selectAllBtnHandle:)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"common_back"] style:UIBarButtonItemStylePlain target:self action:@selector(goBackBtnHandle:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"common_all"] style:UIBarButtonItemStylePlain target:self action:@selector(selectAllBtnHandle:)];
     self.navigationItem.rightBarButtonItem.tag = 10002;
     [self.view addSubview:self.mainTableView];
     if (self.isSelect) {
@@ -88,8 +88,8 @@
 - (void)showBottomViewEnabled:(BOOL)enabled {
     if (!_bottomView) {
         _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 44, SCREEN_WIDTH, 44)];
-        if ([[QIMKit sharedInstance] getIsIpad]) {
-            _bottomView.frame = CGRectMake(0, [[UIScreen mainScreen] height] - 44, [[QIMWindowManager shareInstance] getPrimaryWidth], 44);
+        if ([[STIMKit sharedInstance] getIsIpad]) {
+            _bottomView.frame = CGRectMake(0, [[UIScreen mainScreen] height] - 44, [[STIMWindowManager shareInstance] getPrimaryWidth], 44);
         }
         _bottomView.backgroundColor = [UIColor whiteColor];
         [self.view addSubview:_bottomView];
@@ -99,38 +99,38 @@
         [_bottomView addSubview:line];
         
         UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeSystem];
-        [deleteBtn setTitle:[NSBundle qim_localizedStringForKey:@"common_delete"] forState:UIControlStateNormal];
+        [deleteBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"common_delete"] forState:UIControlStateNormal];
         deleteBtn.frame = CGRectMake(10, 7, 50, 30);
-        [deleteBtn addTarget:self action:@selector(deleteQIMNoteModels:) forControlEvents:UIControlEventTouchUpInside];
+        [deleteBtn addTarget:self action:@selector(deleteSTIMNoteModels:) forControlEvents:UIControlEventTouchUpInside];
         deleteBtn.tag = 10000;
         [_bottomView addSubview:deleteBtn];
         
         UIButton * sendBtn = [UIButton buttonWithType:UIButtonTypeSystem];
-        [sendBtn setTitle:[NSBundle qim_localizedStringForKey:@"common_resume"] forState:UIControlStateNormal];
+        [sendBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"common_resume"] forState:UIControlStateNormal];
         sendBtn.frame = CGRectMake(_bottomView.width - 70, 7, 60, 30);
-        [sendBtn addTarget:self action:@selector(resumeQIMNoteModels:) forControlEvents:UIControlEventTouchUpInside];
+        [sendBtn addTarget:self action:@selector(resumeSTIMNoteModels:) forControlEvents:UIControlEventTouchUpInside];
         sendBtn.tag = 100001;
         [_bottomView addSubview:sendBtn];
         
         _mainTableView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 44);
-        if ([[QIMKit sharedInstance] getIsIpad]) {
+        if ([[STIMKit sharedInstance] getIsIpad]) {
             _mainTableView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] width], [[UIScreen mainScreen] height] - 44);
         }
     }
     [(UIButton *)[_bottomView viewWithTag:10000] setEnabled:enabled];
     [(UIButton *)[_bottomView viewWithTag:100001] setEnabled:enabled];
-    self.navigationItem.title = enabled ? [NSString stringWithFormat:@"已选择%lu项", (unsigned long)self.selectArray.count] : [NSBundle qim_localizedStringForKey:@"Password_tab_trash"];
-    [self.navigationItem.rightBarButtonItem setTitle:enabled ? [NSBundle qim_localizedStringForKey:@"common_unselect_all"] : [NSBundle qim_localizedStringForKey:@"common_all"]];
+    self.navigationItem.title = enabled ? [NSString stringWithFormat:@"已选择%lu项", (unsigned long)self.selectArray.count] : [NSBundle stimDB_localizedStringForKey:@"Password_tab_trash"];
+    [self.navigationItem.rightBarButtonItem setTitle:enabled ? [NSBundle stimDB_localizedStringForKey:@"common_unselect_all"] : [NSBundle stimDB_localizedStringForKey:@"common_all"]];
 }
 
-- (void)deleteQIMNoteModels:(id)sender {
-    for (QIMNoteModel *model in self.selectArray) {
+- (void)deleteSTIMNoteModels:(id)sender {
+    for (STIMNoteModel *model in self.selectArray) {
         if (model.cs_id) {
-            model.qs_state = QIMNoteStateDelete;
-            [[QIMNoteManager sharedInstance] updateQTNoteSubItemStateWithQSModel:model];
+            model.qs_state = STIMNoteStateDelete;
+            [[STIMNoteManager sharedInstance] updateQTNoteSubItemStateWithQSModel:model];
         } else {
-            model.q_state = QIMNoteStateDelete;
-            [[QIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:model];
+            model.q_state = STIMNoteStateDelete;
+            [[STIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:model];
         }
         [self.dataSource removeObject:model];
     }
@@ -140,14 +140,14 @@
     [self showBottomViewEnabled:self.selectArray.count > 0];
 }
 
-- (void)resumeQIMNoteModels:(id)sender {
-    for (QIMNoteModel *model in self.selectArray) {
+- (void)resumeSTIMNoteModels:(id)sender {
+    for (STIMNoteModel *model in self.selectArray) {
         if (model.cs_id) {
-            model.qs_state = QIMNoteStateNormal;
-            [[QIMNoteManager sharedInstance] updateQTNoteSubItemStateWithQSModel:model];
+            model.qs_state = STIMNoteStateNormal;
+            [[STIMNoteManager sharedInstance] updateQTNoteSubItemStateWithQSModel:model];
         } else {
-            model.q_state = QIMNoteStateNormal;
-            [[QIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:model];
+            model.q_state = STIMNoteStateNormal;
+            [[STIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:model];
         }
         [self.dataSource removeObject:model];
     }
@@ -183,7 +183,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
+    STIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
     NSString *cellId = nil;
     UITableViewCell *cell = nil;
     if (model.cs_id) {
@@ -194,7 +194,7 @@
         }
         [pwdCell setCellSelected:[self.selectArray containsObject:model]];
         pwdCell.isSelect = self.isSelect;
-        [pwdCell setQIMNoteModel:model];
+        [pwdCell setSTIMNoteModel:model];
         return pwdCell;
     } else {
         cellId = [NSString stringWithFormat:@"%ld", (long)model.c_id];
@@ -204,14 +204,14 @@
         }
         [pwdBoxcell setCellSelected:[self.selectArray containsObject:model]];
         pwdBoxcell.isSelect = self.isSelect;
-        [pwdBoxcell setQIMNoteModel:model];
+        [pwdBoxcell setSTIMNoteModel:model];
         return pwdBoxcell;
     }
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
+    STIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
     if (self.isSelect) {
         if (model.cs_id) {
             PasswordCell *cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -239,7 +239,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
+    STIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
     CGFloat height = 44;
     if (model.cs_id) {
         height = [PasswordCell getCellHeight];

@@ -7,8 +7,8 @@
 //
 
 #import "LvtuAutoImageView.h"
-#import "QIMDataController.h"
-#import "UIImage+QIMUIKit.h"
+#import "STIMDataController.h"
+#import "UIImage+STIMUIKit.h"
 
 #define kNetworkTaskTimeOut					60
 
@@ -164,7 +164,7 @@ static NSMutableArray *__tempUrlQueue = nil;
         if (self.defaultImage) {
             [super setImage:self.defaultImage];
         } else {
-            [super setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"newspaper_default"]];
+            [super setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"newspaper_default"]];
         }
         [_activityView stopAnimating];
     }
@@ -180,7 +180,7 @@ static NSMutableArray *__tempUrlQueue = nil;
         
         _imageURL = imageURL;
         
-        id image =  [[QIMDataController getInstance] getResourceImage:imageURL];
+        id image =  [[STIMDataController getInstance] getResourceImage:imageURL];
         if ([image isKindOfClass:[UIImage class]]) {
             [self setImage:image];
         }
@@ -199,11 +199,11 @@ static NSMutableArray *__tempUrlQueue = nil;
                         [self setImage:img];
                     
 //                    [[DataController getInstance] addResource:[dic objectForKey:@"ResultData"] withKey:[dic objectForKey:@"UrlStr"]];
-                    [[QIMDataController getInstance] saveResourceWithFileName:[dic objectForKey:@"UrlStr"] data:[dic objectForKey:@"ResultData"]];
+                    [[STIMDataController getInstance] saveResourceWithFileName:[dic objectForKey:@"UrlStr"] data:[dic objectForKey:@"ResultData"]];
                 }
                 else {
                     [self setImage:nil];
-                    [[QIMDataController getInstance] addResource:[NSNull null] withKey:[dic objectForKey:@"UrlStr"]];
+                    [[STIMDataController getInstance] addResource:[NSNull null] withKey:[dic objectForKey:@"UrlStr"]];
                 }
             }];
             
@@ -263,12 +263,12 @@ static NSMutableArray *__tempUrlQueue = nil;
     UIImage *image = [[UIImage alloc] initWithData:_receivedData];
     if (image) {
         
-        [[QIMDataController getInstance] addResource:_receivedData withKey:[[self.urlConnDict allKeys] objectAtIndex:0]];
+        [[STIMDataController getInstance] addResource:_receivedData withKey:[[self.urlConnDict allKeys] objectAtIndex:0]];
         [self setImage:image];
     }
     else
     {
-        [[QIMDataController getInstance] addResource:[NSNull null] withKey:[[self.urlConnDict allKeys] objectAtIndex:0]];
+        [[STIMDataController getInstance] addResource:[NSNull null] withKey:[[self.urlConnDict allKeys] objectAtIndex:0]];
         [self setImage:nil];
     }
 }

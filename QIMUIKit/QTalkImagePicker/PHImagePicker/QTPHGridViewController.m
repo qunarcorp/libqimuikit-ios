@@ -12,12 +12,12 @@
 #import "QTPHGridViewCell.h"
 #import "QTPHImagePreviewController.h"
 #import <Photos/Photos.h>
-#import "QIMImageEditViewController.h"
+#import "STIMImageEditViewController.h"
 #import "QTalkTipsView.h"
 #import "QTalkVideoAssetViewController.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 #import "MBProgressHUD.h"
-#import "QIMWatchDog.h"
+#import "STIMWatchDog.h"
 #import "QTPHImagePickerManager.h"
 
 //Helper methods
@@ -56,7 +56,7 @@
 @end
 
 
-@interface QTPHGridViewController () <UIActionSheetDelegate,QIMImageEditViewControllerDelegate,PHPhotoLibraryChangeObserver>
+@interface QTPHGridViewController () <UIActionSheetDelegate,STIMImageEditViewControllerDelegate,PHPhotoLibraryChangeObserver>
 {
     UIView   *_bottomView;
     UIButton *_previewButton;
@@ -117,7 +117,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     {
         //Compute the thumbnail pixel size:
         CGFloat scale = [UIScreen mainScreen].scale;
-        //QIMVerboseLog(@"This is @%fx scale device", scale);
+        //STIMVerboseLog(@"This is @%fx scale device", scale);
         AssetGridThumbnailSize = CGSizeMake(layout.itemSize.width * scale, layout.itemSize.height * scale);
         
         self.collectionView.allowsMultipleSelection = picker.allowsMultipleSelection;
@@ -135,7 +135,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.picker.isOriginal = [[QIMKit sharedInstance] pickerPixelOriginal];
+    self.picker.isOriginal = [[STIMKit sharedInstance] pickerPixelOriginal];
     [self setupViews];
     [self initBottomView];
     // Navigation bar customization
@@ -248,9 +248,9 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 {
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.view.backgroundColor = [UIColor whiteColor];
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        self.view.frame = CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height]);
-        [self.collectionView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    if ([[STIMKit sharedInstance] getIsIpad] == YES) {
+        self.view.frame = CGRectMake(0, 0, [[UIScreen mainScreen] stimDB_rightWidth], [[UIScreen mainScreen] height]);
+        [self.collectionView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] stimDB_rightWidth], [[UIScreen mainScreen] height])];
     } else {
         self.collectionView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 46);
     }
@@ -258,7 +258,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 - (void)setupButtons
 {
-    NSString *cancelTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
+    NSString *cancelTitle = [NSBundle stimDB_localizedStringForKey:@"Cancel"];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:cancelTitle
                                                                               style:UIBarButtonItemStyleDone
                                                                              target:self.picker
@@ -272,22 +272,22 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 - (void)initBottomView{
     
-    _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 64 - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT], [UIScreen mainScreen].bounds.size.width, 49)];
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 64 - [[QIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT], [[UIScreen mainScreen] qim_rightWidth], 49)];
+    _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 64 - [[STIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT], [UIScreen mainScreen].bounds.size.width, 49)];
+    if ([[STIMKit sharedInstance] getIsIpad] == YES) {
+        _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 64 - [[STIMDeviceManager sharedInstance] getTAB_BAR_HEIGHT], [[UIScreen mainScreen] stimDB_rightWidth], 49)];
     }
-    [_bottomView setBackgroundColor:[UIColor qim_colorWithHex:0xf1f1f1 alpha:1]];
+    [_bottomView setBackgroundColor:[UIColor stimDB_colorWithHex:0xf1f1f1 alpha:1]];
     [self.view addSubview:_bottomView];
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _bottomView.width, 0.5)];
-    [lineView setBackgroundColor:[UIColor qim_colorWithHex:0x999999 alpha:1]];
+    [lineView setBackgroundColor:[UIColor stimDB_colorWithHex:0x999999 alpha:1]];
     [_bottomView addSubview:lineView];
     
     _previewButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_previewButton setFrame:CGRectMake(10, 8, 60, 30)];
     [_previewButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_previewButton setTitle:[NSBundle qim_localizedStringForKey:@"Preview"] forState:UIControlStateNormal];
-    [_previewButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
+    [_previewButton setTitle:[NSBundle stimDB_localizedStringForKey:@"Preview"] forState:UIControlStateNormal];
+    [_previewButton setTitleColor:[UIColor stimDB_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_previewButton addTarget:self action:@selector(onPreviewClick) forControlEvents:UIControlEventTouchUpInside];
     [_previewButton setEnabled:NO];
     [_bottomView addSubview:_previewButton];
@@ -295,8 +295,8 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     _editButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_editButton setFrame:CGRectMake(_previewButton.right, 8, 60, 30)];
     [_editButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_editButton setTitle:[NSBundle qim_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
-    [_editButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
+    [_editButton setTitle:[NSBundle stimDB_localizedStringForKey:@"Edit"] forState:UIControlStateNormal];
+    [_editButton setTitleColor:[UIColor stimDB_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_editButton addTarget:self action:@selector(onEditClick) forControlEvents:UIControlEventTouchUpInside];
     [_editButton setEnabled:NO];
     [_bottomView addSubview:_editButton];
@@ -306,26 +306,26 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     [_photoTypeButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
     [_photoTypeButton setFrame:CGRectMake(_editButton.right + 15, 8, 100, 30)];
     [_photoTypeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-    [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
-    [_photoTypeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
-    [_photoTypeButton setTitle:self.picker.isOriginal ? [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] : [NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
-    [_photoTypeButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
+    [_photoTypeButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"photo_browser_button_arrow_normal"] forState:UIControlStateNormal];
+    [_photoTypeButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"photo_browser_button_arrow_pressed"] forState:UIControlStateHighlighted];
+    [_photoTypeButton setTitle:self.picker.isOriginal ? [NSString stringWithFormat:@" %@", [NSBundle stimDB_localizedStringForKey:@"Full Image"]] : [NSString stringWithFormat:@" %@", [NSBundle stimDB_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
+    [_photoTypeButton setTitleColor:[UIColor stimDB_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
     [_photoTypeButton setEnabled:NO];
     [_photoTypeButton addTarget:self action:@selector(onPhotoTypeClick) forControlEvents:UIControlEventTouchUpInside];
     [_bottomView addSubview:_photoTypeButton];
     
     _sendButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 90, 8, 80, 30)];
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        _sendButton.frame = CGRectMake([[UIScreen mainScreen] qim_rightWidth] - 90, 8, 80, 30);
+    if ([[STIMKit sharedInstance] getIsIpad] == YES) {
+        _sendButton.frame = CGRectMake([[UIScreen mainScreen] stimDB_rightWidth] - 90, 8, 80, 30);
     }
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_focus_nor"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateNormal];
-    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_focus_pressed"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateHighlighted];
-    [_sendButton setBackgroundImage:[[UIImage qim_imageNamedFromQIMUIKitBundle:@"common_button_disabled"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateDisabled];
+    [_sendButton setBackgroundImage:[[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"common_button_focus_nor"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateNormal];
+    [_sendButton setBackgroundImage:[[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"common_button_focus_pressed"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateHighlighted];
+    [_sendButton setBackgroundImage:[[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"common_button_disabled"] stretchableImageWithLeftCapWidth:10 topCapHeight:15] forState:UIControlStateDisabled];
     [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_sendButton setTitleColor:[UIColor qim_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
-    [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
+    [_sendButton setTitleColor:[UIColor stimDB_colorWithHex:0xa1a1a1 alpha:1] forState:UIControlStateDisabled];
+    [_sendButton setTitle:[NSBundle stimDB_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     [_sendButton addTarget:self action:@selector(onSendClick) forControlEvents:UIControlEventTouchUpInside];
     [_sendButton setEnabled:NO];
     [_bottomView addSubview:_sendButton];
@@ -347,16 +347,16 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
         [_sendButton setEnabled:YES];
         NSInteger maxNumber = [[QTPHImagePickerManager sharedInstance] maximumNumberOfSelection];
         if (maxNumber > 0) {
-            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle qim_localizedStringForKey:@"Confirm"], (long)indexPaths.count,@(maxNumber)] forState:UIControlStateNormal];
+            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle stimDB_localizedStringForKey:@"Confirm"], (long)indexPaths.count,@(maxNumber)] forState:UIControlStateNormal];
         } else {
-            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle qim_localizedStringForKey:@"Confirm"], (long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
+            [_sendButton setTitle:[NSString stringWithFormat:@"%@(%ld/%@)", [NSBundle stimDB_localizedStringForKey:@"Confirm"], (long)indexPaths.count,@(kMaximumNumberOfSelection)] forState:UIControlStateNormal];
         }
     } else {
         [_previewButton setEnabled:NO];
         [_editButton setEnabled:NO];
         [_photoTypeButton setEnabled:NO];
         [_sendButton setEnabled:NO];
-        [_sendButton setTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
+        [_sendButton setTitle:[NSBundle stimDB_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
     }
 }
 
@@ -377,14 +377,14 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     PHImageRequestOptions * options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeExact;
     options.networkAccessAllowed = YES;
-    [[self tipHUDWithText:[NSBundle qim_localizedStringForKey:@"Getting_photo"]] show:YES];
+    [[self tipHUDWithText:[NSBundle stimDB_localizedStringForKey:@"Getting_photo"]] show:YES];
     __weak typeof(self) weakSelf = self;
     [_imageManager requestImageForAsset:[self.picker.selectedAssets firstObject] targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
         if (downloadFinined) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self closeHUD];
-                QIMImageEditViewController * imageEditVC = [[QIMImageEditViewController alloc] initWithImage:result];
+                STIMImageEditViewController * imageEditVC = [[STIMImageEditViewController alloc] initWithImage:result];
                 imageEditVC.fromAlum = YES;
                 imageEditVC.delegate = self;
                 [weakSelf.navigationController pushViewController:imageEditVC animated:YES];
@@ -395,19 +395,19 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex == 0) {
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle stimDB_localizedStringForKey:@"Standard Definition"]] forState:UIControlStateNormal];
         self.picker.isOriginal = NO;
-        [[QIMKit sharedInstance] setPickerPixelOriginal:NO];
+        [[STIMKit sharedInstance] setPickerPixelOriginal:NO];
     } else if (buttonIndex == 1) {
         
-        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle qim_localizedStringForKey:@"Full Image"]] forState:UIControlStateNormal];
+        [_photoTypeButton setTitle:[NSString stringWithFormat:@" %@", [NSBundle stimDB_localizedStringForKey:@"Full Image"]] forState:UIControlStateNormal];
         self.picker.isOriginal = YES;
-        [[QIMKit sharedInstance] setPickerPixelOriginal:YES];
+        [[STIMKit sharedInstance] setPickerPixelOriginal:YES];
     }
 }
 
 - (void)onPhotoTypeClick{
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Standard Definition"]],[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Full Image"]],nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Select photo size"] delegate:self cancelButtonTitle:[NSBundle stimDB_localizedStringForKey:@"Cancel"] destructiveButtonTitle:nil otherButtonTitles:[NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Standard Definition"]],[NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Full Image"]],nil];
     [sheet showInView:self.view];
 }
 
@@ -481,7 +481,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    CFAbsoluteTime startTime1 = [[QIMWatchDog sharedInstance] startTime];
+    CFAbsoluteTime startTime1 = [[STIMWatchDog sharedInstance] startTime];
 
     QTPHGridViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:QTPHGridViewCellIdentifier
                                                              forIndexPath:indexPath];
@@ -493,7 +493,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
 
     {
-        //QIMVerboseLog(@"Image manager: Requesting FILL image for iPhone");
+        //STIMVerboseLog(@"Image manager: Requesting FILL image for iPhone");
         @autoreleasepool {
             PHImageRequestOptions *options = [PHImageRequestOptions new];
             options.networkAccessAllowed = NO;
@@ -550,7 +550,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
     BOOL mixedSelection = [[QTPHImagePickerManager sharedInstance] mixedSelection];
     if ((self.picker.selectedAssets.count && [(PHAsset *)self.picker.selectedAssets.firstObject mediaType] != asset.mediaType) || mixedSelection == NO) {
-        [QTalkTipsView showTips:[NSBundle qim_localizedStringForKey:@"You cannot select photos and videos at the same time"] InView:self.view];
+        [QTalkTipsView showTips:[NSBundle stimDB_localizedStringForKey:@"You cannot select photos and videos at the same time"] InView:self.view];
         return NO;
     }
     
@@ -559,25 +559,25 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
         BOOL canContinueSelectionVideo = [[QTPHImagePickerManager sharedInstance] canContinueSelectionVideo];
         if (NO == canContinueSelectionVideo) {
             //不允许选择视频
-            [QTalkTipsView showTips:[NSBundle qim_localizedStringForKey:@"Unable to upload more videos"] InView:self.view];
+            [QTalkTipsView showTips:[NSBundle stimDB_localizedStringForKey:@"Unable to upload more videos"] InView:self.view];
             return NO;
         }
         
         BOOL notAllowSelectVideo = [[QTPHImagePickerManager sharedInstance] notAllowSelectVideo];
         if (notAllowSelectVideo == YES) {
             //不允许选择视频
-            [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Unable to upload videos"]] InView:self.view];
+            [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Unable to upload videos"]] InView:self.view];
         } else {
             int duration = (int)asset.duration;
 
-            NSInteger configDuration = [[[QIMKit sharedInstance] userObjectForKey:@"videoMaxTimeLen"] integerValue];
+            NSInteger configDuration = [[[STIMKit sharedInstance] userObjectForKey:@"videoMaxTimeLen"] integerValue];
             if (configDuration <= 0) {
                 //视频默认15s时长限制
                 configDuration = 15 * 1000;
             }
 
             if (duration * 1000 > configDuration) {
-                [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Unable to upload videos exceed %Ids"], configDuration / 1000] InView:self.view];
+                [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Unable to upload videos exceed %Ids"], configDuration / 1000] InView:self.view];
             } else {
                 [self.picker.selectedAssets insertObject:asset atIndex:self.picker.selectedAssets.count];
                 [_imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
@@ -597,12 +597,12 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     NSInteger maxNumber = [[QTPHImagePickerManager sharedInstance] maximumNumberOfSelection];
     if (maxNumber > 0) {
         if (self.picker.selectedAssets.count >= maxNumber) {
-            [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Select a maximum of %d photos"],maxNumber] InView:self.view];
+            [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Select a maximum of %d photos"],maxNumber] InView:self.view];
             return NO;
         }
     } else {
         if (self.picker.selectedAssets.count >= kMaximumNumberOfSelection) {
-            [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Select a maximum of %d photos"],kMaximumNumberOfSelection] InView:self.view];
+            [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Select a maximum of %d photos"],kMaximumNumberOfSelection] InView:self.view];
             return NO;
         }
     }
@@ -615,7 +615,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
         
         if (imageSize >= 30) {
             //判断图片大于30M，提示，取消选择状态
-            [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Unable to select photos exceed 30M"]] InView:self.view];
+            [QTalkTipsView showTips:[NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Unable to select photos exceed 30M"]] InView:self.view];
             if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldSelectAsset:)]) {
                 [self.picker.delegate assetsPickerController:self.picker shouldDeselectAsset:asset];
             }
@@ -854,9 +854,9 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
     return assets;
 }
 
-#pragma mark - QIMImageEditViewControllerDelegate
+#pragma mark - STIMImageEditViewControllerDelegate
 
-- (void)imageEditVC:(QIMImageEditViewController *)imageEditVC didEditWithProductImage:(UIImage *)productImage
+- (void)imageEditVC:(STIMImageEditViewController *)imageEditVC didEditWithProductImage:(UIImage *)productImage
 {
     if (productImage) {
         [self.picker finishEditWithImage:productImage];
@@ -865,7 +865,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationLandscapeLeft == toInterfaceOrientation || UIInterfaceOrientationLandscapeRight == toInterfaceOrientation;
     }else{
         return YES;
@@ -879,7 +879,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationMaskLandscape;
     }else{
         return UIInterfaceOrientationMaskPortrait;
@@ -889,7 +889,7 @@ NSString * const QTPHGridViewCellIdentifier = @"QTPHGridViewCellIdentifier";
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationLandscapeLeft;
     }else{
         UIInterfaceOrientation orientation;

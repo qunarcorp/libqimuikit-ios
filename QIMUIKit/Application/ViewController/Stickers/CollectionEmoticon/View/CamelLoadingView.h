@@ -6,7 +6,7 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface CamelLoadingView : UIView
 @property (nonatomic, strong) UIImage *image;

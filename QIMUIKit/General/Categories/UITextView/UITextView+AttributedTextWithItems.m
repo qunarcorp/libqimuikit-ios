@@ -7,12 +7,12 @@
 //
 
 #import "UITextView+AttributedTextWithItems.h"
-#import "QIMEmotionManager.h"
-#import "QIMEmojiTextAttachment.h"
+#import "STIMEmotionManager.h"
+#import "STIMEmojiTextAttachment.h"
 
 @implementation UITextView (AttributedTextWithItems)
 
-- (void)setQIMAttributedTextWithItems:(NSArray *)items {
+- (void)setSTIMAttributedTextWithItems:(NSArray *)items {
     
     if (![items isKindOfClass:[NSArray class]]) {
         
@@ -26,9 +26,9 @@
             NSArray * itemInfoArr = [item componentsSeparatedByString:@"____"];
             if (itemInfoArr.count == 3) {
                 
-                QIMEmojiTextAttachment *emojiTextAttachment = [QIMEmojiTextAttachment new];
+                STIMEmojiTextAttachment *emojiTextAttachment = [STIMEmojiTextAttachment new];
                 //设置表情图片
-                emojiTextAttachment.image = [UIImage imageWithContentsOfFile:[[QIMEmotionManager sharedInstance] getEmotionImagePathForShortCut:itemInfoArr[1] withPackageId:itemInfoArr[0]]];
+                emojiTextAttachment.image = [UIImage imageWithContentsOfFile:[[STIMEmotionManager sharedInstance] getEmotionImagePathForShortCut:itemInfoArr[1] withPackageId:itemInfoArr[0]]];
                 emojiTextAttachment.packageId = itemInfoArr[0];
                 emojiTextAttachment.shortCut = itemInfoArr[1];
                 emojiTextAttachment.tipsName = itemInfoArr[2];

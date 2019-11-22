@@ -5,22 +5,22 @@
 //  Created by 李露 on 2017/8/1.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "TodoListSearchTableViewCell.h"
-#import "QIMNoteModel.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteModel.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface TodoListSearchTableViewCell ()
 
 @property (nonatomic, strong) UILabel *timeLabel;
 
-@property (nonatomic, strong) QIMNoteModel *model;
+@property (nonatomic, strong) STIMNoteModel *model;
 
 @end
 
 @implementation TodoListSearchTableViewCell
 
-- (void)setTodoListModel:(QIMNoteModel *)model {
+- (void)setTodoListModel:(STIMNoteModel *)model {
     _model = model;
     [self refreshUI];
 }
@@ -35,7 +35,7 @@
 
 - (void)refreshUI {
     self.textLabel.text = self.model.q_title;
-    NSString *timeStr = [[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:self.model.q_time] qim_formattedDateDescription];
+    NSString *timeStr = [[NSDate stimDB_dateWithTimeIntervalInMilliSecondSince1970:self.model.q_time] stimDB_formattedDateDescription];
     self.timeLabel.text = [NSString stringWithFormat:@"%@", timeStr];
 }
 

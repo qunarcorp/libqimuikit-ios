@@ -1,18 +1,18 @@
 //
 //  QTalkNewSessionTableViewCell.h
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by qitmac000645 on 2019/6/10.
 //
 
-#import "QIMCommonUIFramework.h"
-#import "QIMNewSessionScrollDelegate.h"
+#import "STIMCommonUIFramework.h"
+#import "STIMNewSessionScrollDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QTalkNewSessionTableViewCell : UITableViewCell
 
-@property (nonatomic, weak) id <QIMNewSessionScrollDelegate> sessionScrollDelegate;
+@property (nonatomic, weak) id <STIMNewSessionScrollDelegate> sessionScrollDelegate;
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
 

@@ -92,14 +92,14 @@ static SkinManager *__global_SkinManager = nil;
 
 + (void)setMainBgType:(SkinMainBgType)bgType{
     
-    [[QIMKit sharedInstance] setUserObject:[NSNumber numberWithInt:bgType] forKey:@"SkinMainBgType"];
+    [[STIMKit sharedInstance] setUserObject:[NSNumber numberWithInt:bgType] forKey:@"SkinMainBgType"];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kSkinChangeNotifation object:nil];
     
 }
 
 + (SkinMainBgType)getMainBgType{
-    return [[[QIMKit sharedInstance] userObjectForKey:@"SkinMainBgType"] intValue];
+    return [[[STIMKit sharedInstance] userObjectForKey:@"SkinMainBgType"] intValue];
 }
 
 + (UIColor *)getMainBg:(SkinMainBgType)bgType{
@@ -112,17 +112,17 @@ static SkinManager *__global_SkinManager = nil;
             break;
         case SkinMainBg_clover:
         {
-            color = [UIColor colorWithPatternImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"clover"]];
+            color = [UIColor colorWithPatternImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"clover"]];
         }
             break;
         case SkinMainBg_colorful_mood:
         {
-            color = [UIColor colorWithPatternImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"colorful_mood"]];
+            color = [UIColor colorWithPatternImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"colorful_mood"]];
         }
             break;
         case SkinMainBg_winter_feeling:
         {
-            color = [UIColor colorWithPatternImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"winter_feeling"]];
+            color = [UIColor colorWithPatternImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"winter_feeling"]];
         }
             break;
         default:
@@ -146,13 +146,13 @@ static SkinManager *__global_SkinManager = nil;
 
 - (UIColor *)getDocumentColor:(id)colorType{
     NSDictionary *colorArray = [_documentColorDic objectForKey:colorType];
-    UIColor *color = [UIColor qim_colorWithHex:[[colorArray objectForKey:kColor_Hex] integerValue] alpha:[[colorArray objectForKey:kColor_Alpha] floatValue]];
+    UIColor *color = [UIColor stimDB_colorWithHex:[[colorArray objectForKey:kColor_Hex] integerValue] alpha:[[colorArray objectForKey:kColor_Alpha] floatValue]];
     return color;
 }
 
 - (UIColor *)getViewBgColor:(id)bgColorType{
     NSDictionary *colorArray = [_viewBgColorDic objectForKey:bgColorType];
-    UIColor *color = [UIColor qim_colorWithHex:[[colorArray objectForKey:kColor_Hex] integerValue] alpha:[[colorArray objectForKey:kColor_Alpha] floatValue]];
+    UIColor *color = [UIColor stimDB_colorWithHex:[[colorArray objectForKey:kColor_Hex] integerValue] alpha:[[colorArray objectForKey:kColor_Alpha] floatValue]];
     return color;
 }
 

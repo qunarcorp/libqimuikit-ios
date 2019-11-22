@@ -5,13 +5,13 @@
 //  Created by 李露 on 2017/7/27.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "TodoListDoneVC.h"
-#import "QIMNoteManager.h"
-#import "QIMNoteModel.h"
+#import "STIMNoteManager.h"
+#import "STIMNoteModel.h"
 #import "TODOListDIYHeader.h"
 #import "TodoListDownArrowHeader.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteUICommonFramework.h"
 
 #define kEMPTYSEARCHIMAGEVIEWW 270
 #define kEMPTYSEARCHIMAGEVIEWH 300
@@ -41,7 +41,7 @@
         
         UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
         searchButton.frame = CGRectMake(10, 10, 30, 30);
-        [searchButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"search_32x_32_"] forState:UIControlStateNormal];
+        [searchButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"search_32x_32_"] forState:UIControlStateNormal];
         
         UITextField *searchText = [[UITextField alloc] initWithFrame:CGRectMake(40, 2, [UIScreen mainScreen].bounds.size.width - 90, 48)];
         searchText.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -55,7 +55,7 @@
         
         UIButton *settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         settingBtn.frame = CGRectMake(searchText.right + 10, 10, 30, 30);
-        [settingBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"setup_38x38_"] forState:UIControlStateNormal];
+        [settingBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"setup_38x38_"] forState:UIControlStateNormal];
         [settingBtn addTarget:self action:@selector(todoListSetting:) forControlEvents:UIControlEventTouchUpInside];
         [_headerView addSubview:settingBtn];
         self.settingBtn = settingBtn;
@@ -76,7 +76,7 @@
 - (UIImageView *)emptySearchImageView {
     if (!_emptySearchImageView) {
         _emptySearchImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.headerView.bottom, kEMPTYSEARCHIMAGEVIEWW, kEMPTYSEARCHIMAGEVIEWH)];
-        _emptySearchImageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"noHistory-en_273x304_"];
+        _emptySearchImageView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"noHistory-en_273x304_"];
         _emptySearchImageView.hidden = YES;
     }
     return _emptySearchImageView;
@@ -98,7 +98,7 @@
     if (sender == self.searchTextField) {
         NSString *str = self.searchTextField.text;
         if (str.length > 0) {
-            NSArray *searchResult = [[QIMNoteManager sharedInstance] getMainItemWithType:QIMNoteTypeTodoList Keywords:str];
+            NSArray *searchResult = [[STIMNoteManager sharedInstance] getMainItemWithType:STIMNoteTypeTodoList Keywords:str];
             if (searchResult.count > 0) {
                 [self.emptySearchImageView setHidden:YES];
                 self.dataSource = nil;
@@ -117,7 +117,7 @@
 }
 
 - (void)loadCompleteTodoLists {
-    NSArray *array = [[QIMNoteManager sharedInstance] getTodoListItemWithCompleteState:QTTodolistStateComplete];
+    NSArray *array = [[STIMNoteManager sharedInstance] getTodoListItemWithCompleteState:QTTodolistStateComplete];
     self.dataSource = [NSMutableArray arrayWithCapacity:5];
     [self.dataSource addObjectsFromArray:array];
 }
@@ -159,7 +159,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
+    STIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
     NSString *cellId = [NSString stringWithFormat:@"%ld", (long)model.c_id];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (!cell) {
@@ -167,7 +167,7 @@
         cell.detailTextLabel.hidden = YES;
     }
     cell.textLabel.text = model.q_title;
-    NSString *timeStr = [[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:model.q_time] qim_formattedDateDescription];
+    NSString *timeStr = [[NSDate stimDB_dateWithTimeIntervalInMilliSecondSince1970:model.q_time] stimDB_formattedDateDescription];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", timeStr];
     return cell;
 }
@@ -195,9 +195,9 @@
         NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.dataSource];
         __block NSInteger row = indexPath.row;
         if ((row < [tempArray count]) && (row >= 0)) {
-            QIMNoteModel *model = [tempArray objectAtIndex:row];
-            model.q_state =QIMNoteStateDelete;
-            [[QIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:model];
+            STIMNoteModel *model = [tempArray objectAtIndex:row];
+            model.q_state =STIMNoteStateDelete;
+            [[STIMNoteManager sharedInstance] updateQTNoteMainItemStateWithModel:model];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_mainTableView beginUpdates];
                 [tempArray removeObjectAtIndex:row];
@@ -214,7 +214,7 @@
 }
 
 - (void)todoListSetting:(id)sender {
-    QIMVerboseLog(@"%s", __func__);
+    STIMVerboseLog(@"%s", __func__);
 }
 
 - (void)dismiss {

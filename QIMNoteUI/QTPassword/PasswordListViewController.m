@@ -5,20 +5,20 @@
 //  Created by 李露 on 2017/7/11.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "PasswordListViewController.h"
 #import "NewAddPasswordViewController.h"
 #import "PasswordDetailViewController.h"
-#import "QIMNoteManager.h"
+#import "STIMNoteManager.h"
 #import "PasswordCell.h"
-#import "QIMNoteModel.h"
+#import "STIMNoteModel.h"
 #import "AESCrypt.h"
 #import "AES.h"
-#import "QIMAES256.h"
+#import "STIMAES256.h"
 #import "AESTools.h"
 #import "Base64.h"
 #import <QIMGeneralModule/AES.h>
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface PasswordListViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
@@ -30,7 +30,7 @@
 
 @property (nonatomic, strong) NSMutableArray *dataSource;
 
-@property (nonatomic, strong) QIMNoteModel *model;
+@property (nonatomic, strong) STIMNoteModel *model;
 
 @end
 
@@ -57,11 +57,11 @@
         UILabel *commitBtn = [[UILabel alloc] initWithFrame:CGRectMake(_pwdTextField.left, _pwdTextField.bottom + 40, _pwdTextField.width, 40)];
         commitBtn.backgroundColor = [UIColor clearColor];
         commitBtn.userInteractionEnabled = YES;
-        commitBtn.layer.borderColor = [UIColor qim_colorWithHex:0x11cd6e alpha:1.0].CGColor;
+        commitBtn.layer.borderColor = [UIColor stimDB_colorWithHex:0x11cd6e alpha:1.0].CGColor;
         commitBtn.layer.borderWidth = 1;
         commitBtn.layer.cornerRadius = 3;
         commitBtn.clipsToBounds = YES;
-        commitBtn.textColor = [UIColor qim_colorWithHex:0x11cd6e alpha:1.0];
+        commitBtn.textColor = [UIColor stimDB_colorWithHex:0x11cd6e alpha:1.0];
         commitBtn.textAlignment = NSTextAlignmentCenter;
         commitBtn.font = [UIFont boldSystemFontOfSize:17];
         commitBtn.text = @"验证密码箱";
@@ -80,18 +80,18 @@
 - (void)touchVerification {
     NSString *str = [AESCrypt decrypt:self.model.q_content password:self.pwdTextField.text];
     if (!str) {
-        str = [QIMAES256 decryptForBase64:self.model.q_content password:self.pwdTextField.text];
+        str = [STIMAES256 decryptForBase64:self.model.q_content password:self.pwdTextField.text];
     }
     if (str.length > 0) {
         [self.pwdVerficationView removeAllSubviews];
         [self.pwdVerficationView removeFromSuperview];
         NSString *timeAkey = [NSString stringWithFormat:@"%ld_%@", (long)self.model.q_id, self.model.q_title];
-        [[QIMNoteManager sharedInstance] setPassword:self.pwdTextField.text ForCid:self.model.c_id];
-        [[QIMKit sharedInstance] setUserObject:@([NSDate timeIntervalSinceReferenceDate]) forKey:timeAkey];
+        [[STIMNoteManager sharedInstance] setPassword:self.pwdTextField.text ForCid:self.model.c_id];
+        [[STIMKit sharedInstance] setUserObject:@([NSDate timeIntervalSinceReferenceDate]) forKey:timeAkey];
 //        self.model.privateKey = self.pwdTextField.text;
     } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Wrong password. Please try again."] preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:nil];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:[NSBundle stimDB_localizedStringForKey:@"Wrong password. Please try again."] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:nil];
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];
     }
@@ -107,7 +107,7 @@
     return YES;
 }
 
-- (void)setQIMNoteModel:(QIMNoteModel *)model {
+- (void)setSTIMNoteModel:(STIMNoteModel *)model {
     if (model != nil) {
         _model = model;
     }
@@ -119,15 +119,15 @@
     [self getRemotePasswords];
     [self.dataSource addObjectsFromArray:[self loadLocalPasswords]];
     NSString *qid = [NSString stringWithFormat:@"%ld", (long)self.model.q_id];
-    [[QIMNoteManager sharedInstance] batchSyncToRemoteSubItemsWithMainQid:qid];
+    [[STIMNoteManager sharedInstance] batchSyncToRemoteSubItemsWithMainQid:qid];
     [self.mainTableView reloadData];
 }
 
 - (NSArray *)loadLocalPasswords {
     NSInteger q_id = self.model.c_id;
-    NSArray *array = [[QIMNoteManager sharedInstance] getSubItemWithCid:q_id WithExpectState:QIMNoteStateDelete];
+    NSArray *array = [[STIMNoteManager sharedInstance] getSubItemWithCid:q_id WithExpectState:STIMNoteStateDelete];
     NSMutableArray *models = [NSMutableArray arrayWithCapacity:5];
-    for (QIMNoteModel *model in array) {
+    for (STIMNoteModel *model in array) {
         model.q_id = self.model.q_id;
         [models addObject:model];
     }
@@ -135,8 +135,8 @@
 }
 
 - (void)getRemotePasswords {
-    NSInteger maxTime = [[QIMNoteManager sharedInstance] getQTNoteSubItemMaxTimeWitModel:self.model];
-    [[QIMNoteManager sharedInstance] getCloudRemoteSubWithQid:self.model.q_id Cid:self.model.c_id version:maxTime type:self.model.q_type];
+    NSInteger maxTime = [[STIMNoteManager sharedInstance] getQTNoteSubItemMaxTimeWitModel:self.model];
+    [[STIMNoteManager sharedInstance] getCloudRemoteSubWithQid:self.model.q_id Cid:self.model.c_id version:maxTime type:self.model.q_type];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -152,21 +152,21 @@
     [self initNav];
     self.view = self.mainTableView;
     NSString *timeAkey = [NSString stringWithFormat:@"%ld_%@", (long)self.model.q_id, self.model.q_title];
-    NSInteger lastVerficationTime = [[[QIMKit sharedInstance] userObjectForKey:timeAkey] integerValue];
-    NSInteger securitySettingTime = [[[QIMKit sharedInstance] userObjectForKey:@"securityMinute"] integerValue];
+    NSInteger lastVerficationTime = [[[STIMKit sharedInstance] userObjectForKey:timeAkey] integerValue];
+    NSInteger securitySettingTime = [[[STIMKit sharedInstance] userObjectForKey:@"securityMinute"] integerValue];
     if (securitySettingTime == 0) {
-        [[QIMKit sharedInstance] setUserObject:@(15 * 60) forKey:@"securityMinute"];
+        [[STIMKit sharedInstance] setUserObject:@(15 * 60) forKey:@"securityMinute"];
     }
     NSInteger nowTime = [NSDate timeIntervalSinceReferenceDate];
-    NSString *pwd = [[QIMNoteManager sharedInstance] getPasswordWithCid:self.model.c_id];
+    NSString *pwd = [[STIMNoteManager sharedInstance] getPasswordWithCid:self.model.c_id];
     if (nowTime - lastVerficationTime > securitySettingTime || !pwd) {
         
-        [[QIMNoteManager sharedInstance] setPassword:nil ForCid:self.model.c_id];
+        [[STIMNoteManager sharedInstance] setPassword:nil ForCid:self.model.c_id];
         
-        [[QIMKit sharedInstance] removeUserObjectForKey:timeAkey];
+        [[STIMKit sharedInstance] removeUserObjectForKey:timeAkey];
         [self.mainTableView addSubview:self.pwdVerficationView];
     } else {
-//        NSString *privateKey = [[QIMKit sharedInstance] userObjectForKey:pwdAkey];
+//        NSString *privateKey = [[STIMKit sharedInstance] userObjectForKey:pwdAkey];
 //        self.model.privateKey = privateKey;
     }
 }
@@ -209,8 +209,8 @@
     if (!cell) {
         cell = [[PasswordCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
-    QIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
-    [cell setQIMNoteModel:model];
+    STIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
+    [cell setSTIMNoteModel:model];
     return cell;
 }
 
@@ -226,9 +226,9 @@
         NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.dataSource];
         __block NSInteger row = indexPath.row;
         if ((row < [tempArray count]) && (row >= 0)) {
-            QIMNoteModel *model = [tempArray objectAtIndex:row];
-            model.qs_state = QIMNoteStateBasket;
-            [[QIMNoteManager sharedInstance] updateQTNoteSubItemStateWithQSModel:model];
+            STIMNoteModel *model = [tempArray objectAtIndex:row];
+            model.qs_state = STIMNoteStateBasket;
+            [[STIMNoteManager sharedInstance] updateQTNoteSubItemStateWithQSModel:model];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_mainTableView beginUpdates];
                 [tempArray removeObjectAtIndex:row];
@@ -242,14 +242,14 @@
 
 // 修改编辑按钮文字
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [NSBundle qim_localizedStringForKey:@"password_box_moveToBasket"];
+    return [NSBundle stimDB_localizedStringForKey:@"password_box_moveToBasket"];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    QIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
+    STIMNoteModel *model = [self.dataSource objectAtIndex:indexPath.row];
     PasswordDetailViewController *pwdDetailVc = [[PasswordDetailViewController alloc] init];
-    [pwdDetailVc setQIMNoteModel:model];
+    [pwdDetailVc setSTIMNoteModel:model];
     [self.navigationController pushViewController:pwdDetailVc animated:YES];
 }
 
@@ -264,7 +264,7 @@
 
 
 - (void)onCreateNewPasswdClcik {
-    QIMVerboseLog(@"%s", __func__);
+    STIMVerboseLog(@"%s", __func__);
     NewAddPasswordViewController *newPwdVc = [[NewAddPasswordViewController alloc] init];
     newPwdVc.QID = self.model.q_id;
     newPwdVc.CID = self.model.c_id;

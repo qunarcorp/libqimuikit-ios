@@ -6,14 +6,14 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
-#if __has_include("QIMNoteManager.h")
-#import "QIMBaseSelectedTableViewCell.h"
+#import "STIMCommonUIFramework.h"
+#if __has_include("STIMNoteManager.h")
+#import "STIMBaseSelectedTableViewCell.h"
 
-@class QIMNoteModel;
+@class STIMNoteModel;
 @interface PasswordCell : UITableViewCell
 
-- (void)setQIMNoteModel:(QIMNoteModel *)model;
+- (void)setSTIMNoteModel:(STIMNoteModel *)model;
 
 + (CGFloat)getCellHeight;
 

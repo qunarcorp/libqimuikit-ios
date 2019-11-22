@@ -7,12 +7,12 @@
 //
 
 #import "QTalk.h"
-#import "QIMKitPublicHeader.h"
-#import "QIMIconFont.h"
-#import "QIMImageManager.h"
-#import "QIMEmotionManager.h"
-#if __has_include("QIMNoteManager.h")
-#import "QIMNoteManager.h"
+#import "STIMKitPublicHeader.h"
+#import "STIMIconFont.h"
+#import "STIMImageManager.h"
+#import "STIMEmotionManager.h"
+#if __has_include("STIMNoteManager.h")
+#import "STIMNoteManager.h"
 #endif
 
 static QTalk *__global_qtalk = nil;
@@ -37,163 +37,163 @@ static QTalk *__global_qtalk = nil;
 
 - (void)initConfiguration {
     //初始化字体集
-    [QIMIconFont setFontName:@"QTalk-QChat"];
+    [STIMIconFont setFontName:@"QTalk-QChat"];
     
     //初始化图片缓存地址
-    [[QIMImageManager sharedInstance] initWithQIMImageCacheNamespace:@"QIMImageCache"];
+    [[STIMImageManager sharedInstance] initWithSTIMImageCacheNamespace:@"STIMImageCache"];
 
     // 初始化表情
-    [QIMEmotionManager sharedInstance];
+    [STIMEmotionManager sharedInstance];
     // 初始化管理类
-    [QIMKit sharedInstance];
-#if __has_include("QIMNoteManager.h")
-    //初始化QIMNote
-    [QIMNoteManager sharedInstance];
+    [STIMKit sharedInstance];
+#if __has_include("STIMNoteManager.h")
+    //初始化STIMNote
+    [STIMNoteManager sharedInstance];
 #endif
     
     // 注册支持的消息类型
     // 文本消息
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMDefalutMessageCell" ForMessageType:QIMMessageType_Text];
-    [[QIMKit sharedInstance] setMsgShowText:@"[文本]" ForMessageType:QIMMessageType_Text];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMDefalutMessageCell" ForMessageType:STIMMessageType_Text];
+    [[STIMKit sharedInstance] setMsgShowText:@"[文本]" ForMessageType:STIMMessageType_Text];
     // 图片
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSingleChatImageCell" ForMessageType:QIMMessageType_Image];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"[Photo]"] ForMessageType:QIMMessageType_Image];
-    [[QIMKit sharedInstance] setMsgShowText:@"[表情]" ForMessageType:QIMMessageType_ImageNew];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMSingleChatImageCell" ForMessageType:STIMMessageType_Image];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"[Photo]"] ForMessageType:STIMMessageType_Image];
+    [[STIMKit sharedInstance] setMsgShowText:@"[表情]" ForMessageType:STIMMessageType_ImageNew];
 
     // 语音
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSingleChatVoiceCell" ForMessageType:QIMMessageType_Voice];
-    [[QIMKit sharedInstance] setMsgShowText:@"[语音]" ForMessageType:QIMMessageType_Voice];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMSingleChatVoiceCell" ForMessageType:STIMMessageType_Voice];
+    [[STIMKit sharedInstance] setMsgShowText:@"[语音]" ForMessageType:STIMMessageType_Voice];
     // 文件
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMFileCell" ForMessageType:QIMMessageType_File];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"[File]"] ForMessageType:QIMMessageType_File];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMFileCell" ForMessageType:STIMMessageType_File];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"[File]"] ForMessageType:STIMMessageType_File];
     // 时间戳
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSingleChatTimestampCell" ForMessageType:QIMMessageType_Time];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMSingleChatTimestampCell" ForMessageType:STIMMessageType_Time];
     // Topic
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMGroupTopicCell" ForMessageType:QIMMessageType_Topic];
-    [[QIMKit sharedInstance] setMsgShowText:@"[群公告]" ForMessageType:QIMMessageType_Topic];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMGroupTopicCell" ForMessageType:STIMMessageType_Topic];
+    [[STIMKit sharedInstance] setMsgShowText:@"[群公告]" ForMessageType:STIMMessageType_Topic];
     // Location Share 
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMLocationShareMsgCell" ForMessageType:QIMMessageType_LocalShare];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMLocationShareMsgCell" ForMessageType:STIMMessageType_LocalShare];
     // card Share
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMCardShareMsgCell" ForMessageType:QIMMessageType_CardShare];
-    [[QIMKit sharedInstance] setMsgShowText:@"[位置分享]" ForMessageType:QIMMessageType_LocalShare];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMCardShareMsgCell" ForMessageType:STIMMessageType_CardShare];
+    [[STIMKit sharedInstance] setMsgShowText:@"[位置分享]" ForMessageType:STIMMessageType_LocalShare];
     
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMShareLocationChatCell" ForMessageType:QIMMessageType_shareLocation];
-    [[QIMKit sharedInstance] setMsgShowText:@"[位置共享]" ForMessageType:QIMMessageType_shareLocation];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMShareLocationChatCell" ForMessageType:STIMMessageType_shareLocation];
+    [[STIMKit sharedInstance] setMsgShowText:@"[位置共享]" ForMessageType:STIMMessageType_shareLocation];
     
     // Video
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMVideoMsgCell" ForMessageType:QIMMessageType_SmallVideo];
-    [[QIMKit sharedInstance] setMsgShowText:@"[视频]" ForMessageType:QIMMessageType_SmallVideo];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMVideoMsgCell" ForMessageType:STIMMessageType_SmallVideo];
+    [[STIMKit sharedInstance] setMsgShowText:@"[视频]" ForMessageType:STIMMessageType_SmallVideo];
     // Source Code
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSourceCodeCell" ForMessageType:QIMMessageType_SourceCode];
-    [[QIMKit sharedInstance] setMsgShowText:@"[代码段]" ForMessageType:QIMMessageType_SourceCode];
-//    QIMMessageType_Markdown
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSourceCodeCell" ForMessageType:QIMMessageType_Markdown];
-    [[QIMKit sharedInstance] setMsgShowText:@"[Markdown]" ForMessageType:QIMMessageType_Markdown];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMSourceCodeCell" ForMessageType:STIMMessageType_SourceCode];
+    [[STIMKit sharedInstance] setMsgShowText:@"[代码段]" ForMessageType:STIMMessageType_SourceCode];
+//    STIMMessageType_Markdown
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMSourceCodeCell" ForMessageType:STIMMessageType_Markdown];
+    [[STIMKit sharedInstance] setMsgShowText:@"[Markdown]" ForMessageType:STIMMessageType_Markdown];
     
     // red pack
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRedPackCell" ForMessageType:QIMMessageType_RedPack];
-    [[QIMKit sharedInstance] setMsgShowText:@"[红包]" ForMessageType:QIMMessageType_RedPack];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMRedPackCell" ForMessageType:STIMMessageType_RedPack];
+    [[STIMKit sharedInstance] setMsgShowText:@"[红包]" ForMessageType:STIMMessageType_RedPack];
     
     // red pack desc
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRedPackDescCell" ForMessageType:QIMMessageType_RedPackInfo];
-    [[QIMKit sharedInstance] setMsgShowText:@"[红包]" ForMessageType:QIMMessageType_RedPackInfo];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMRedPackDescCell" ForMessageType:STIMMessageType_RedPackInfo];
+    [[STIMKit sharedInstance] setMsgShowText:@"[红包]" ForMessageType:STIMMessageType_RedPackInfo];
     
     //预测对赌
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMForecastCell" ForMessageType:QIMMessageType_Forecast];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Prediction_tip"] ForMessageType:QIMMessageType_Forecast];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMForecastCell" ForMessageType:STIMMessageType_Forecast];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Prediction_tip"] ForMessageType:STIMMessageType_Forecast];
     
     //抢单消息
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Order_Taking_tip"] ForMessageType:MessageType_C2BGrabSingle];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Order_Taking_tip"] ForMessageType:MessageType_QCZhongbao];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Order_Taking_tip"] ForMessageType:MessageType_C2BGrabSingle];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Order_Taking_tip"] ForMessageType:MessageType_QCZhongbao];
 
     
     // red pack desc
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRedPackDescCell" ForMessageType:QIMMessageType_RedPackInfo];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"redpack_tip"] ForMessageType:QIMMessageType_RedPackInfo];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMRedPackDescCell" ForMessageType:STIMMessageType_RedPackInfo];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"redpack_tip"] ForMessageType:STIMMessageType_RedPackInfo];
     
     // AA收款
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMAACollectionCell" ForMessageType:QIMMessageType_AA];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Split_Bill_tip"] ForMessageType:QIMMessageType_AA];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMAACollectionCell" ForMessageType:STIMMessageType_AA];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Split_Bill_tip"] ForMessageType:STIMMessageType_AA];
     
     // AA收款 desc
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMAACollectionDescCell" ForMessageType:QIMMessageType_AAInfo];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Split_Bill_tip"] ForMessageType:QIMMessageType_AAInfo];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMAACollectionDescCell" ForMessageType:STIMMessageType_AAInfo];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Split_Bill_tip"] ForMessageType:STIMMessageType_AAInfo];
     
     // 产品信息
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMProductInfoCell" ForMessageType:QIMMessageType_product];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Product_Information_tip"] ForMessageType:QIMMessageType_product];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMProductInfoCell" ForMessageType:STIMMessageType_product];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Product_Information_tip"] ForMessageType:STIMMessageType_product];
     
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMExtensibleProductCell" ForMessageType:QIMMessageType_ExProduct];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Product_Information_tip"] ForMessageType:QIMMessageType_ExProduct];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMExtensibleProductCell" ForMessageType:STIMMessageType_ExProduct];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Product_Information_tip"] ForMessageType:STIMMessageType_ExProduct];
     
     // 活动
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMActivityCell" ForMessageType:QIMMessageType_activity];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Event_tip"] ForMessageType:QIMMessageType_activity];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMActivityCell" ForMessageType:STIMMessageType_activity];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Event_tip"] ForMessageType:STIMMessageType_activity];
     
     // 撤回消息
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMSingleChatTimestampCell" ForMessageType:QIMMessageType_Revoke];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"recalled_message"] ForMessageType:QIMMessageType_Revoke];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMSingleChatTimestampCell" ForMessageType:STIMMessageType_Revoke];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"recalled_message"] ForMessageType:STIMMessageType_Revoke];
     
-#if __has_include("QIMWebRTCClient.h")
+#if __has_include("STIMWebRTCClient.h")
     //语音聊天
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageType_WebRTC_Audio];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMRTCChatCell" ForMessageType:STIMMessageType_WebRTC_Audio];
     //视频聊天
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageType_WebRTC_Vedio];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMRTCChatCell" ForMessageType:STIMMessageType_WebRTC_Vedio];
     
-    [[QIMKit sharedInstance] setMsgShowText:@"[语音聊天]" ForMessageType:QIMMessageType_WebRTC_Audio];
+    [[STIMKit sharedInstance] setMsgShowText:@"[语音聊天]" ForMessageType:STIMMessageType_WebRTC_Audio];
     
-    [[QIMKit sharedInstance] setMsgShowText:@"[视频聊天]" ForMessageType:QIMMessageType_WebRTC_Vedio];
+    [[STIMKit sharedInstance] setMsgShowText:@"[视频聊天]" ForMessageType:STIMMessageType_WebRTC_Vedio];
     
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Voice_Call_tip"] ForMessageType:QIMWebRTC_MsgType_Audio];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Voice_Call_tip"] ForMessageType:STIMWebRTC_MsgType_Audio];
     
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Video_Call_tip"] ForMessageType:QIMWebRTC_MsgType_Video];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Video_Call_tip"] ForMessageType:STIMWebRTC_MsgType_Video];
 #endif
-#if __has_include("QIMWebRTCClient.h")
+#if __has_include("STIMWebRTCClient.h")
     //视频会议
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMRTCChatCell" ForMessageType:STIMMessageTypeWebRtcMsgTypeVideoMeeting];
 
 
-    [[QIMKit sharedInstance] setMsgShowText:@"[视频会议]" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+    [[STIMKit sharedInstance] setMsgShowText:@"[视频会议]" ForMessageType:STIMMessageTypeWebRtcMsgTypeVideoMeeting];
     
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoGroup];
-    [[QIMKit sharedInstance] setMsgShowText:@"[视频会议]" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoGroup];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMRTCChatCell" ForMessageType:STIMMessageTypeWebRtcMsgTypeVideoGroup];
+    [[STIMKit sharedInstance] setMsgShowText:@"[视频会议]" ForMessageType:STIMMessageTypeWebRtcMsgTypeVideoGroup];
     
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Video_Conference_tip"] ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Video_Conference_tip"] ForMessageType:STIMMessageTypeWebRtcMsgTypeVideoMeeting];
     
 #endif
     // 窗口抖动
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMShockMsgCell" ForMessageType:QIMMessageType_Shock];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Shake_Screen_tip"] ForMessageType:QIMMessageType_Shock];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMShockMsgCell" ForMessageType:STIMMessageType_Shock];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Shake_Screen_tip"] ForMessageType:STIMMessageType_Shock];
 
     //问题列表
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRobotQuestionCell" ForMessageType:QIMMessageTypeRobotQuestionList];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Problem_List_tip"] ForMessageType:QIMMessageTypeRobotQuestionList];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMRobotQuestionCell" ForMessageType:STIMMessageTypeRobotQuestionList];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Problem_List_tip"] ForMessageType:STIMMessageTypeRobotQuestionList];
     
     //机器人答案
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRobotAnswerCell" ForMessageType:QIMMessageType_RobotAnswer];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Robot_Answer_tip"] ForMessageType:QIMMessageType_RobotAnswer];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMRobotAnswerCell" ForMessageType:STIMMessageType_RobotAnswer];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Robot_Answer_tip"] ForMessageType:STIMMessageType_RobotAnswer];
     
     // 第三方通用Cell
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMCommonTrdInfoCell" ForMessageType:QIMMessageType_CommonTrdInfo];
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMCommonTrdInfoCell" ForMessageType:QIMMessageType_CommonTrdInfoPer];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMCommonTrdInfoCell" ForMessageType:STIMMessageType_CommonTrdInfo];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMCommonTrdInfoCell" ForMessageType:STIMMessageType_CommonTrdInfoPer];
     //加密消息Cell
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMEncryptChatCell" ForMessageType:QIMMessageType_Encrypt];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Encrypted_Message_tip"] ForMessageType:QIMMessageType_Encrypt];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMEncryptChatCell" ForMessageType:STIMMessageType_Encrypt];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Encrypted_Message_tip"] ForMessageType:STIMMessageType_Encrypt];
     
     //会议室提醒
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMMeetingRemindCell" ForMessageType:QIMMessageTypeMeetingRemind];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Meeting_Room_Notification"] ForMessageType:QIMMessageTypeMeetingRemind];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMMeetingRemindCell" ForMessageType:STIMMessageTypeMeetingRemind];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Meeting_Room_Notification"] ForMessageType:STIMMessageTypeMeetingRemind];
     
     //驼圈提醒
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMWorkMomentRemindCell" ForMessageType:QIMMessageTypeWorkMomentRemind];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Moments_Notification"] ForMessageType:QIMMessageTypeWorkMomentRemind];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMWorkMomentRemindCell" ForMessageType:STIMMessageTypeWorkMomentRemind];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"Moments_Notification"] ForMessageType:STIMMessageTypeWorkMomentRemind];
     
     //勋章提醒
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMUserMedalRemindCell" ForMessageType:QIMMessageTypeUserMedalRemind];
-    [[QIMKit sharedInstance] setMsgShowText:@"勋章提醒" ForMessageType:QIMMessageTypeUserMedalRemind];
+    [[STIMKit sharedInstance] registerMsgCellClassName:@"STIMUserMedalRemindCell" ForMessageType:STIMMessageTypeUserMedalRemind];
+    [[STIMKit sharedInstance] setMsgShowText:@"勋章提醒" ForMessageType:STIMMessageTypeUserMedalRemind];
 
-    [[QIMKit sharedInstance] setMsgShowText:@"收到一条消息" ForMessageType:QIMMessageType_GroupNotify];
-    [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"received_message"] ForMessageType:QIMMessageType_GroupNotify];
+    [[STIMKit sharedInstance] setMsgShowText:@"收到一条消息" ForMessageType:STIMMessageType_GroupNotify];
+    [[STIMKit sharedInstance] setMsgShowText:[NSBundle stimDB_localizedStringForKey:@"received_message"] ForMessageType:STIMMessageType_GroupNotify];
 }
 
 @end

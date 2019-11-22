@@ -1,14 +1,14 @@
 //
 //  loginUnSettingNavView.m
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by qitmac000645 on 2019/7/10.
 //
 
 #import "loginUnSettingNavView.h"
-#import "UIColor+QIMUtility.h"
-#import "QIMIconInfo.h"
-#import "UIImage+QIMIconFont.h"
+#import "UIColor+STIMUtility.h"
+#import "STIMIconInfo.h"
+#import "UIImage+STIMIconFont.h"
 #import "Masonry.h"
 
 @interface loginUnSettingNavView()
@@ -24,7 +24,7 @@
 -(UIView *)grayBgView{
     if (!_grayBgView) {
         _grayBgView = [[UIView alloc]init];
-        _grayBgView.backgroundColor = [UIColor qim_colorWithHex:0x242730 alpha:0.5];
+        _grayBgView.backgroundColor = [UIColor stimDB_colorWithHex:0x242730 alpha:0.5];
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hiddenMyGrayView)];
         [_grayBgView addGestureRecognizer:tap];
     }
@@ -56,7 +56,7 @@
         _settingNavByhandLabel = [[UILabel alloc] init];
         _settingNavByhandLabel.numberOfLines = 0;
         _settingNavByhandLabel.userInteractionEnabled = YES;
-        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:[NSBundle qim_localizedStringForKey:@"Configure_Navigation"] attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFang-SC-Regular" size: 14],NSForegroundColorAttributeName: [UIColor colorWithRed:136/255.0 green:136/255.0 blue:136/255.0 alpha:1.0]}];
+        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:[NSBundle stimDB_localizedStringForKey:@"Configure_Navigation"] attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFang-SC-Regular" size: 14],NSForegroundColorAttributeName: [UIColor colorWithRed:136/255.0 green:136/255.0 blue:136/255.0 alpha:1.0]}];
         _settingNavByhandLabel.tag = 123112234452;
         _settingNavByhandLabel.attributedText = string;
         _settingNavByhandLabel.textAlignment = NSTextAlignmentLeft;
@@ -70,12 +70,12 @@
 - (UIButton *)scanSettingNavBtn{
     if (!_scanSettingNavBtn) {
         _scanSettingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _scanSettingNavBtn.backgroundColor = [UIColor qim_colorWithHex:0x00CABE];
-        [_scanSettingNavBtn setTitle:[NSBundle qim_localizedStringForKey:@"nav_scan_Configure_Navigation"] forState:UIControlStateNormal];
-        [_scanSettingNavBtn setTitleColor:[UIColor qim_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
+        _scanSettingNavBtn.backgroundColor = [UIColor stimDB_colorWithHex:0x00CABE];
+        [_scanSettingNavBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"nav_scan_Configure_Navigation"] forState:UIControlStateNormal];
+        [_scanSettingNavBtn setTitleColor:[UIColor stimDB_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
         _scanSettingNavBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:4];
-        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateNormal];
-        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor qim_colorWithHex:0xFFFFFF]]] forState:UIControlStateSelected];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[STIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor stimDB_colorWithHex:0xFFFFFF]]] forState:UIControlStateNormal];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[STIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor stimDB_colorWithHex:0xFFFFFF]]] forState:UIControlStateSelected];
         [_scanSettingNavBtn addTarget:self action:@selector(scanCodeSettingBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         _scanSettingNavBtn.layer.masksToBounds = YES;
         _scanSettingNavBtn.layer.cornerRadius = 4;

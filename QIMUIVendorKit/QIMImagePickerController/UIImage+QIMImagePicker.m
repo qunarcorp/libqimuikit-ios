@@ -1,17 +1,17 @@
 //
-//  UIImage+QIMImagePicker.m
-//  QIMUIKit
+//  UIImage+STIMImagePicker.m
+//  STIMUIKit
 //
 //  Created by lilu on 2019/4/24.
 //  Copyright © 2019 QIM. All rights reserved.
 //
 
-#import "UIImage+QIMImagePicker.h"
-#import "NSBundle+QIMImagePicker.h"
+#import "UIImage+STIMImagePicker.h"
+#import "NSBundle+STIMImagePicker.h"
 
-@implementation UIImage (QIMImagePicker)
+@implementation UIImage (STIMImagePicker)
 
-+ (UIImage *)qim_imageNamedFromQIMImagePickerBundle:(NSString *)name {
++ (UIImage *)qim_imageNamedFromSTIMImagePickerBundle:(NSString *)name {
     NSBundle *imageBundle = [NSBundle qim_imagePickerBundle];
     name = [name stringByAppendingString:@"@2x"];
     NSString *imagePath = [imageBundle pathForResource:name ofType:@"png"];

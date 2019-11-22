@@ -6,7 +6,7 @@
 //  Copyright (c) 2013年 ivan. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @protocol QRadioButtonDelegate;
 

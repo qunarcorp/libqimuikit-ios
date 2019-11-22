@@ -6,9 +6,9 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
-@class QIMMainVC;
+@class STIMMainVC;
 
 @interface QTalkSessionView : UIView
 
@@ -22,7 +22,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame;
 
-- (instancetype)initWithFrame:(CGRect)frame withRootViewController:(QIMMainVC *)rootVc;
+- (instancetype)initWithFrame:(CGRect)frame withRootViewController:(STIMMainVC *)rootVc;
 
 - (void)prepareNotReaderIndexPathList;
 

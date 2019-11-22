@@ -6,15 +6,15 @@
 //  Copyright (c) 2013年 songjian. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <AMapSearchKit/AMapSearchKit.h>
 #import <AMapFoundationKit/AMapFoundationKit.h>
 #import <MAMapKit/MAMapKit.h>
 #import <AMapLocationKit/AMapLocationKit.h>
 #import <MapKit/MapKit.h>
-#import "QIMMsgBaseVC.h"
+#import "STIMMsgBaseVC.h"
 
-@interface BaseMapViewController : QIMMsgBaseVC <MAMapViewDelegate, MKMapViewDelegate,AMapSearchDelegate>
+@interface BaseMapViewController : STIMMsgBaseVC <MAMapViewDelegate, MKMapViewDelegate,AMapSearchDelegate>
 
 @property (nonatomic, strong) MAMapView *mapView;
 

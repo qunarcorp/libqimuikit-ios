@@ -6,7 +6,7 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 typedef enum {
     QRNSearchGroupPriorityUserList = 0,                 //联系人列表

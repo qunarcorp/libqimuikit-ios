@@ -6,7 +6,7 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import "ModuleEventHandler.h"
 
 @implementation ModuleEventHandler

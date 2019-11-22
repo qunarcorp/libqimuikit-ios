@@ -9,10 +9,10 @@
 #import <React/RCTRootView.h>
 #import <React/RCTBridge.h>
 #import <React/RCTEventDispatcher.h>
-#import "NSBundle+QIMLibrary.h"
+#import "NSBundle+STIMLibrary.h"
 
-#if defined (QIMLogEnable) && QIMLogEnable == 1
-#import "QIMLocalLog.h"
+#if defined (STIMLogEnable) && STIMLogEnable == 1
+#import "STIMLocalLog.h"
 #endif
 
 #import "QTalkSearchRNView.h"
@@ -68,7 +68,7 @@ static RCTBridge *bridge = nil;
 
 - (NSDictionary *)getNewSearchInitialProps {
     NSMutableDictionary *initialProps = [NSMutableDictionary dictionaryWithCapacity:1];
-    [initialProps setQIMSafeObject:[[QIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"server"];
+    [initialProps setSTIMSafeObject:[[STIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"server"];
     return initialProps;
 }
 
@@ -120,12 +120,12 @@ static RCTBridge *bridge = nil;
 - (NSURL *)getJSCodeLocation {
     // For production use, this `NSURL` could instead point to a pre-bundled file on disk:
 //    return [NSURL URLWithString:@"http://ip:8081/index.ios.bundle?platform=ios&dev=true"];
-    NSString *appDebugOpsSearchRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkSearchRNDebugUrl"];
+    NSString *appDebugOpsSearchRNDebugUrlStr = [[STIMKit sharedInstance] userObjectForKey:@"qtalkSearchRNDebugUrl"];
     if (appDebugOpsSearchRNDebugUrlStr.length > 0) {
         NSURL *appDebugOpsSearchRNDebugUrl = [NSURL URLWithString:appDebugOpsSearchRNDebugUrlStr];
         return appDebugOpsSearchRNDebugUrl;
     } else {
-        NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QTalkSearchRNView getInnerBundleName] ofType:@"jsbundle"];
+        NSString *innerJsCodeLocation = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"STIMRNKit" BundleName:@"STIMRNKit" pathForResource:[QTalkSearchRNView getInnerBundleName] ofType:@"jsbundle"];
         NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
         // load jsbundle from cacheqtalk_temp_features
         NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
@@ -134,13 +134,13 @@ static RCTBridge *bridge = nil;
 
         NSURL *_latestJSCodeLocation;
         if (latestJSCodeURLString && [[NSFileManager defaultManager] fileExistsAtPath:latestJSCodeURLString]) {
-            QIMVerboseLog(@"Search JsBundle本地缓存文件存在%@", latestJSCodeURLString);
+            STIMVerboseLog(@"Search JsBundle本地缓存文件存在%@", latestJSCodeURLString);
             _latestJSCodeLocation = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@", latestJSCodeURLString]];
             jsCodeLocation = _latestJSCodeLocation;
         } else {
             //内置包
         }
-        QIMVerboseLog(@"jsCodeLocation : %@", jsCodeLocation);
+        STIMVerboseLog(@"jsCodeLocation : %@", jsCodeLocation);
 
         // debug
         _jsCodeLocation = jsCodeLocation;

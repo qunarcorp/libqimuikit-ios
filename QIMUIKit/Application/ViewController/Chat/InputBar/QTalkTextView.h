@@ -1,5 +1,5 @@
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @class QTalkTextView;
 @protocol QTalkTextViewDelegate <UITextViewDelegate>

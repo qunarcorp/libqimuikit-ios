@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 
-@class QIMNoteModel;
+@class STIMNoteModel;
 @interface TodoListSearchTableViewCell : UITableViewCell
 
-- (void)setTodoListModel:(QIMNoteModel *)model;
+- (void)setTodoListModel:(STIMNoteModel *)model;
 
 @end
 #endif

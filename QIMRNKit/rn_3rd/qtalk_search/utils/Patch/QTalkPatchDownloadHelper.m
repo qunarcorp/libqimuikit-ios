@@ -11,7 +11,7 @@
 #import "ZipArchive.h"
 #import "QTalkPatchDownloadHelper.h"
 #import "ASIHTTPRequest.h"
-#import "QIMUUIDTools.h"
+#import "STIMUUIDTools.h"
 
 @implementation QTalkPatchDownloadHelper
 
@@ -34,9 +34,9 @@
         
         @try {
             // check package md5
-            NSString* md5 =[QIMKit getFileDataMD5WithFileData: [request responseData]];
+            NSString* md5 =[STIMKit getFileDataMD5WithFileData: [request responseData]];
             if(![md5 isEqualToString:md5]){
-                // QIMVerboseLog(@"md5 check error");
+                // STIMVerboseLog(@"md5 check error");
                 errorMsg = @"md5 check error";
                 
                 return is_ok;
@@ -56,7 +56,7 @@
             
             is_ok = @YES;
         } @catch (NSException *exception) {
-            QIMVerboseLog(@"main: Caught %@: %@", [exception name], [exception reason]);
+            STIMVerboseLog(@"main: Caught %@: %@", [exception name], [exception reason]);
             is_ok = 0;
             errorMsg = [exception reason];
         } @finally {
@@ -86,9 +86,9 @@
         
         @try {
             // TODO check patch md5
-            NSString* md5 =[QIMKit getFileDataMD5WithFileData: [request responseData]];
+            NSString* md5 =[STIMKit getFileDataMD5WithFileData: [request responseData]];
             if(![patchMd5 isEqualToString:md5]){
-                // QIMVerboseLog(@"md5 check error");
+                // STIMVerboseLog(@"md5 check error");
                 errorMsg = @"md5 check error";
                 
                 return is_ok;
@@ -96,7 +96,7 @@
             
             NSString *patchPath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];
             // append patch name 随机生成patch存储文件名
-            patchPath = [patchPath stringByAppendingPathComponent: [QIMUUIDTools UUID]];
+            patchPath = [patchPath stringByAppendingPathComponent: [STIMUUIDTools UUID]];
             // save patch file
             [[request responseData] writeToFile:patchPath atomically:YES];
             
@@ -112,7 +112,7 @@
                 // check full md5 with after patch md5
                 
                 
-                NSString* md5 =[QIMKit getFileMD5WithPath: destPath];
+                NSString* md5 =[STIMKit getFileMD5WithPath: destPath];
                 if([fullMd5 isEqualToString:md5]){
                     // rename jsbundle filename
                     NSString *filePath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];
@@ -127,7 +127,7 @@
             }
             
         } @catch (NSException *exception) {
-            QIMVerboseLog(@"main: Caught %@: %@", [exception name], [exception reason]);
+            STIMVerboseLog(@"main: Caught %@: %@", [exception name], [exception reason]);
             is_ok = 0;
             errorMsg = [exception reason];
         } @finally {

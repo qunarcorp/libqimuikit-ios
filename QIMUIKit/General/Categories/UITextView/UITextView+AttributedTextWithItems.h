@@ -6,10 +6,10 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface UITextView (AttributedTextWithItems)
 
-- (void)setQIMAttributedTextWithItems:(NSArray *)items;
+- (void)setSTIMAttributedTextWithItems:(NSArray *)items;
 
 @end

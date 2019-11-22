@@ -14,11 +14,11 @@ typedef enum {
 } MapLocationStatus;
 
 #import "UserLocationViewController.h"
-#import "QIMLocationCell.h"
+#import "STIMLocationCell.h"
 #import <MapKit/MapKit.h>
-#import "QIMAnnotation.h"
-#import "QIMUUIDTools.h"
-#import "NSBundle+QIMLibrary.h"
+#import "STIMAnnotation.h"
+#import "STIMUUIDTools.h"
+#import "NSBundle+STIMLibrary.h"
 #import "UserLocationCoordinate2DTransform.h"
 @interface MapAdressInfo : NSObject
 
@@ -70,7 +70,7 @@ typedef enum {
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationLandscapeLeft == toInterfaceOrientation || UIInterfaceOrientationLandscapeRight == toInterfaceOrientation;
     }else{
         return YES;
@@ -93,7 +93,7 @@ typedef enum {
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationMaskLandscape;
     }else{
         return UIInterfaceOrientationMaskPortrait;
@@ -103,7 +103,7 @@ typedef enum {
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationLandscapeLeft;
     }else{
         UIInterfaceOrientation orientation;
@@ -228,7 +228,7 @@ typedef enum {
     [self.appleMapView setRegion:region animated:YES];
     _hasLocation = YES;
     // 创建标注
-    QIMAnnotation *annotation = [[QIMAnnotation alloc] initWithCoordinates:coords title:@"I am Here" subTitle:@""];
+    STIMAnnotation *annotation = [[STIMAnnotation alloc] initWithCoordinates:coords title:@"I am Here" subTitle:@""];
     [self.appleMapView addAnnotation:annotation];
     //自动显示标注的layout
     [self.appleMapView selectAnnotation:annotation animated:YES];
@@ -238,7 +238,7 @@ typedef enum {
     
 }
 - (void)mapView:(MAMapView *)mapView didFailToLocateUserWithError:(NSError *)error{
-    QIMVerboseLog(@"%@",error.description);
+    STIMVerboseLog(@"%@",error.description);
 }
 
 -(void)mapView:(MAMapView *)mapView regionDidChangeAnimated:(BOOL)animated
@@ -304,7 +304,7 @@ typedef enum {
 - (void)setUpNavbar
 {
     UIView * bottomBarBack = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.mapView.width, 64)];
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         bottomBarBack.frame = CGRectMake(0, 0, [[UIScreen mainScreen] width], 64);
     }
     bottomBarBack.backgroundColor = [UIColor spectralColorBlueColor];
@@ -312,7 +312,7 @@ typedef enum {
     
     UIButton * cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     cancelBtn.frame = CGRectMake(-22, 20, self.view.width / 3, 43);
-    [cancelBtn setTitle:[NSBundle qim_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
+    [cancelBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"Cancel"] forState:UIControlStateNormal];
     [cancelBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     cancelBtn.backgroundColor = [UIColor spectralColorBlueColor];
     [cancelBtn addTarget:self action:@selector(cancelBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
@@ -322,7 +322,7 @@ typedef enum {
     if (!_isNotSend) {
         sendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         sendBtn.frame = CGRectMake(self.view.width - self.view.width / 3 + 22, 20, self.view.width / 3, 43);
-        [sendBtn setTitle:[NSBundle qim_localizedStringForKey:@"Send"] forState:UIControlStateNormal];
+        [sendBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"Send"] forState:UIControlStateNormal];
         [sendBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         sendBtn.backgroundColor = [UIColor spectralColorBlueColor];
         [sendBtn addTarget:self action:@selector(sendBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
@@ -347,12 +347,12 @@ typedef enum {
 - (void)setUpTableView
 {
     _mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.mapView.bottom, CGRectGetWidth([UIScreen mainScreen].bounds), CGRectGetHeight([UIScreen mainScreen].bounds) - self.mapView.bottom) style:UITableViewStylePlain];
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         _mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.mapView.right, 64, [[UIScreen mainScreen] width] - self.mapView.right, [[UIScreen mainScreen] height]) style:UITableViewStylePlain];
     }
     _mainTableView.dataSource = self;
     _mainTableView.delegate = self;
-    _mainTableView.backgroundColor = [UIColor qim_colorWithHex:0xf9f9f9 alpha:1.0];
+    _mainTableView.backgroundColor = [UIColor stimDB_colorWithHex:0xf9f9f9 alpha:1.0];
     _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     _mainTableView.separatorColor = [UIColor qtalkSplitLineColor];
     [self.view addSubview:_mainTableView];
@@ -430,12 +430,12 @@ typedef enum {
     _isFirstRegion = YES;
     
     self.mapView.frame = CGRectMake(0, 64, CGRectGetWidth([UIScreen mainScreen].bounds), self.view.width * 3 / 4);
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         self.mapView.frame = CGRectMake(0, 64, [[UIScreen mainScreen] height] - 64, [[UIScreen mainScreen] height] - 64);
     }
     if (_isNotSend) {
         self.mapView.frame = CGRectMake(0, 64, CGRectGetWidth([UIScreen mainScreen].bounds), CGRectGetHeight([UIScreen mainScreen].bounds) - 64);
-        if ([[QIMKit sharedInstance] getIsIpad]) {
+        if ([[STIMKit sharedInstance] getIsIpad]) {
             self.mapView.frame = CGRectMake(0, 64, [[UIScreen mainScreen] width], [[UIScreen mainScreen] height] - 64);
         }
     }
@@ -451,12 +451,12 @@ typedef enum {
     if (!_isNotSend) {
         
         _myAddressBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_myAddressBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"location_my"] forState:UIControlStateNormal];
-        [_myAddressBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"location_my_HL"] forState:UIControlStateHighlighted];
-        [_myAddressBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"location_my_current"] forState:UIControlStateSelected];
+        [_myAddressBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"location_my"] forState:UIControlStateNormal];
+        [_myAddressBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"location_my_HL"] forState:UIControlStateHighlighted];
+        [_myAddressBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"location_my_current"] forState:UIControlStateSelected];
         [_myAddressBtn addTarget:self action:@selector(currentBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
         _myAddressBtn.frame = CGRectMake(self.mapView.width - 70 , self.mapView.height - 70, 50, 50);
-        if ([[QIMKit sharedInstance] getIsIpad]) {
+        if ([[STIMKit sharedInstance] getIsIpad]) {
             _myAddressBtn.frame = CGRectMake(self.mapView.left + 20, self.mapView.height - 70, 50, 50);
         }
         [self.mapView addSubview:_myAddressBtn];
@@ -464,12 +464,12 @@ typedef enum {
     } else {
         
         _otherMapBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_otherMapBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_navigate_icon_new"] forState:UIControlStateNormal];
-        [_otherMapBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_navigate_icon_HL_new"] forState:UIControlStateHighlighted];
-        [_otherMapBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_navigate_icon_HL_new"] forState:UIControlStateSelected];
+        [_otherMapBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_navigate_icon_new"] forState:UIControlStateNormal];
+        [_otherMapBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_navigate_icon_HL_new"] forState:UIControlStateHighlighted];
+        [_otherMapBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_navigate_icon_HL_new"] forState:UIControlStateSelected];
         [_otherMapBtn addTarget:self action:@selector(openWithOtherApplication:) forControlEvents:UIControlEventTouchUpInside];
         _otherMapBtn.frame = CGRectMake(self.mapView.width - 70 , self.mapView.height - 70, 50, 50);
-        if ([[QIMKit sharedInstance] getIsIpad]) {
+        if ([[STIMKit sharedInstance] getIsIpad]) {
             _otherMapBtn.frame = CGRectMake(self.mapView.left + 20, self.mapView.height - 70, 50, 50);
         }
         [self.mapView addSubview:_otherMapBtn];
@@ -520,13 +520,13 @@ typedef enum {
             
             CLAuthorizationStatus newStatus = [CLLocationManager authorizationStatus];
             if (newStatus == kCLAuthorizationStatusDenied  || newStatus == kCLAuthorizationStatusRestricted) {
-                UIAlertController *locationNotifyAlertVc = [UIAlertController alertControllerWithTitle:nil message:[NSBundle qim_localizedStringForKey:@"QTalk Privacy Location Message"] preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                UIAlertController *locationNotifyAlertVc = [UIAlertController alertControllerWithTitle:nil message:[NSBundle stimDB_localizedStringForKey:@"QTalk Privacy Location Message"] preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                     [self dismissViewControllerAnimated:YES completion:nil];
                 }];
                 [locationNotifyAlertVc addAction:okAction];
-                if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
-                    locationNotifyAlertVc.message = [NSBundle qim_localizedStringForKey:@"QChat Privacy Location Message"];
+                if ([STIMKit getSTIMProjectType] == STIMProjectTypeQChat) {
+                    locationNotifyAlertVc.message = [NSBundle stimDB_localizedStringForKey:@"QChat Privacy Location Message"];
                 }
                 [self presentViewController:locationNotifyAlertVc animated:YES completion:nil];
             }
@@ -566,9 +566,9 @@ typedef enum {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString * cellIdentifier = @"cell";
-    QIMLocationCell * cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    STIMLocationCell * cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
-        cell = [[QIMLocationCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+        cell = [[STIMLocationCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
         cell.textLabel.numberOfLines = 0;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
@@ -653,45 +653,45 @@ typedef enum {
 //    "iosamap" = "Navigate by AutoNavi Maps";
 //    "appleMap" = "Navigate by Apple Maps";
     UIAlertController *otherMapSheetVc = [UIAlertController alertControllerWithTitle:nil message:@"尝试使用其他Map应用打开" preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction *tencentMap = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"tencentMap"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *tencentMap = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"tencentMap"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"qqmap://"]]) {
             NSString *urlString = [[NSString stringWithFormat:@"qqmap://map/routeplan?from=我的位置&type=drive&tocoord=%f,%f&to=终点&coord_type=1&policy=0",_coordinate.latitude, _coordinate.longitude] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             if ([[[UIDevice currentDevice] systemName] floatValue] > 10.0) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:^(BOOL success) {
-                    QIMVerboseLog(@"scheme调用结束");
+                    STIMVerboseLog(@"scheme调用结束");
                 }];
             } else {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
             }
         }
     }];
-    UIAlertAction *badiuMap = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"baiduMap"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *badiuMap = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"baiduMap"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"baidumap://"]]) {
             CLLocationCoordinate2D baiduCoordinate = [[UserLocationCoordinate2DTransform sharedInstanced] getBaiduFromGaodeForLocationCoordinate:_coordinate];
             NSString *urlString = [[NSString stringWithFormat:@"baidumap://map/direction?origin={{我的位置}}&destination=latlng:%f,%f|name=目的地&mode=driving&coord_type=gcj02",baiduCoordinate.latitude, baiduCoordinate.longitude] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             if ([[[UIDevice currentDevice] systemName] floatValue] > 10.0) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:^(BOOL success) {
-                    QIMVerboseLog(@"scheme调用结束");
+                    STIMVerboseLog(@"scheme调用结束");
                 }];
             } else {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
             }
         }
     }];
-    UIAlertAction *gaodeMap = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"iosamap"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *gaodeMap = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"iosamap"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"iosamap://"]]) {
             NSString *urlString = [NSString stringWithFormat:@"iosamap://path?sourceApplication=%@&sid=BGVIS1&did=BGVIS2&dlat=%f&dlon=%f&dev=0&t=0", @"QTalk", _coordinate.latitude, _coordinate.longitude];
             if ([[[UIDevice currentDevice] systemName] floatValue] > 10.0) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:^(BOOL success) {
-                    QIMVerboseLog(@"scheme调用结束");
+                    STIMVerboseLog(@"scheme调用结束");
                 }];
             } else {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
             }
         }
     }];
-    UIAlertAction *AppleMap = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"appleMap"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *AppleMap = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"appleMap"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         CLLocationCoordinate2D loc = CLLocationCoordinate2DMake(_coordinate.latitude, _coordinate.longitude);
         //当前位置
         MKMapItem *currentLocation = [MKMapItem mapItemForCurrentLocation];
@@ -705,7 +705,7 @@ typedef enum {
     }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        QIMVerboseLog(@"Cancel");
+        STIMVerboseLog(@"Cancel");
     }];
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"qqmap://"]]) {
         [otherMapSheetVc addAction:tencentMap];
@@ -749,17 +749,17 @@ typedef enum {
             UIImage *screenshotImage = nil;
             if (!_isAbroadLocation) {
                 screenshotImage = [self.mapView takeSnapshotInRect:inRect];
-                [[QIMKit sharedInstance] setUserObject:UIImagePNGRepresentation(screenshotImage) forKey:@"userLocationScreenshotImage"];
+                [[STIMKit sharedInstance] setUserObject:UIImagePNGRepresentation(screenshotImage) forKey:@"userLocationScreenshotImage"];
             } else {
                 UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.appleMapView.width, self.appleMapView.height / 2.0f)];
                 view.center = self.appleMapView.center;
                 UIImage *image = [UserLocationViewController imageWithUIView:self.appleMapView];
 //                screenshotImage = [image getSubImage:view.frame];
                 screenshotImage = image;
-                [[QIMKit sharedInstance] setUserObject:UIImagePNGRepresentation(screenshotImage) forKey:@"userLocationScreenshotImage"];
+                [[STIMKit sharedInstance] setUserObject:UIImagePNGRepresentation(screenshotImage) forKey:@"userLocationScreenshotImage"];
             }
             NSData *screenshotImageData =  UIImagePNGRepresentation(screenshotImage);            
-            NSString *localScreenImagePath = [[QIMImageManager sharedInstance] defaultCachePathForKey:[NSString stringWithFormat:@"%@.png", [QIMUUIDTools UUID]]];
+            NSString *localScreenImagePath = [[STIMImageManager sharedInstance] defaultCachePathForKey:[NSString stringWithFormat:@"%@.png", [STIMUUIDTools UUID]]];
 
             [screenshotImageData writeToFile:localScreenImagePath atomically:YES];
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -775,8 +775,8 @@ typedef enum {
                     NSString *message = [NSString stringWithFormat:@"我在这里，点击查看: [obj type=\"url\" value=\"%@\"] (%@)", [NSString stringWithFormat:@"http://api.map.baidu.com/marker?location=%lf,%lf&title=我的位置&content=%@&output=html",bdCoordinate.latitude,bdCoordinate.longitude,address],address];
                     NSString *info = [NSString stringWithFormat:@"{\"name\":\"%@\",\"adress\":\"%@\",\"latitude\":\"%lf\",\"longitude\":\"%lf\", \"LocalScreenShotImagePath\":\"%@\"}",poi.name,address,bdCoordinate.latitude,bdCoordinate.longitude, localScreenImagePath];
                     
-                    [self.delegate sendMessage:message WithInfo:info ForMsgType:QIMMessageType_LocalShare];
-//                    [self.delegate sendMessage:[NSString stringWithFormat:@"我在这里，点击查看：[obj type=\"url\" value=\"%@\"] (%@)",[NSString stringWithFormat:@"http://api.map.baidu.com/marker?location=%lf,%lf&title=我的位置&content=%@&output=html",bdCoordinate.latitude,bdCoordinate.longitude,address],address] WithInfo:[NSString stringWithFormat:@"{\"name\":\"%@\",\"adress\":\"%@\",\"latitude\":\"%lf\",\"longitude\":\"%lf\"}",poi.name,address,bdCoordinate.latitude,bdCoordinate.longitude] ForMsgType:QIMMessageType_LocalShare];
+                    [self.delegate sendMessage:message WithInfo:info ForMsgType:STIMMessageType_LocalShare];
+//                    [self.delegate sendMessage:[NSString stringWithFormat:@"我在这里，点击查看：[obj type=\"url\" value=\"%@\"] (%@)",[NSString stringWithFormat:@"http://api.map.baidu.com/marker?location=%lf,%lf&title=我的位置&content=%@&output=html",bdCoordinate.latitude,bdCoordinate.longitude,address],address] WithInfo:[NSString stringWithFormat:@"{\"name\":\"%@\",\"adress\":\"%@\",\"latitude\":\"%lf\",\"longitude\":\"%lf\"}",poi.name,address,bdCoordinate.latitude,bdCoordinate.longitude] ForMsgType:STIMMessageType_LocalShare];
                     [self dismissViewControllerAnimated:YES completion:nil];
                 });
 //            });
@@ -788,10 +788,10 @@ typedef enum {
 - (void)showAlertViewWithTitle:(NSString *)title message:(NSString *)message
 {
     UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"cancel"] style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"cancel"] style:UIAlertActionStyleCancel handler:nil];
     [alertVc addAction:cancelAction];
     [alertVc addAction:okAction];
     [self presentViewController:alertVc animated:YES completion:nil];

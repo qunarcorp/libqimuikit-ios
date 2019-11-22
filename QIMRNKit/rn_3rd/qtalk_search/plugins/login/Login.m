@@ -19,20 +19,20 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(getLoginInfo:(RCTResponseSenderBlock)success:(RCTResponseSenderBlock)error) {
  
-    NSString *userName = [QIMKit getLastUserName];
+    NSString *userName = [STIMKit getLastUserName];
     userName = userName.length ? userName : @"";
-    NSString *qtalkToken = [[QIMKit sharedInstance] myRemotelogginKey];
+    NSString *qtalkToken = [[STIMKit sharedInstance] myRemotelogginKey];
     qtalkToken = qtalkToken.length ? qtalkToken : @"";
     
-    NSString *key = [[QIMKit sharedInstance] thirdpartKeywithValue];
+    NSString *key = [[STIMKit sharedInstance] thirdpartKeywithValue];
     key = key.length ? key : @"";
 
-    NSString *httpHost = [[QIMKit sharedInstance] qimNav_HttpHost];
+    NSString *httpHost = [[STIMKit sharedInstance] qimNav_HttpHost];
     httpHost = httpHost.length ? httpHost : @"";
 
     if ([userName.lowercaseString isEqualToString:@"appstore"] == NO) {
-        NSDictionary *responseData = @{@"userid" : userName, @"q_auth" : qtalkToken, @"c_key" : key, @"checkUserKeyHost" : httpHost, @"showOA":@([[QIMKit sharedInstance] qimNav_ShowOA])};
-        QIMVerboseLog(@"%@ 登录骆驼帮OA : %@", userName.lowercaseString, responseData);
+        NSDictionary *responseData = @{@"userid" : userName, @"q_auth" : qtalkToken, @"c_key" : key, @"checkUserKeyHost" : httpHost, @"showOA":@([[STIMKit sharedInstance] qimNav_ShowOA])};
+        STIMVerboseLog(@"%@ 登录骆驼帮OA : %@", userName.lowercaseString, responseData);
         success(@[responseData]);
     }
 }
@@ -44,7 +44,7 @@ RCT_EXPORT_METHOD(updateCkey:(RCTPromiseResolveBlock)resolve
     NSString *errorMsg = @"";
     
     @try {
-        [[QIMKit sharedInstance] updateRemoteLoginKey];
+        [[STIMKit sharedInstance] updateRemoteLoginKey];
         is_ok = @YES;
     } @catch (NSException *exception) {
         is_ok = @NO;

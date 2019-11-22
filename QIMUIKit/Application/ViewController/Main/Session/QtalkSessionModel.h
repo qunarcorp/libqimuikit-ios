@@ -5,7 +5,7 @@
 //  Created by qitmac000645 on 2019/5/27.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

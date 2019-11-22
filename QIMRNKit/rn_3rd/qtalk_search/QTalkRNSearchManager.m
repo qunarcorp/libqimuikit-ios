@@ -43,103 +43,103 @@
 
 + (NSDictionary *)rnSearchLocalUserChatResultWithSearchKey:(NSString *)key limit:(NSInteger)limit offset:(NSInteger)offset  {
     
-    NSArray *localUserList = [[QIMKit sharedInstance] searchUserListBySearchStr:key WithLimit:limit WithOffset:offset];
-    NSInteger totalCount = [[QIMKit sharedInstance] searchUserListTotalCountBySearchStr:key];
+    NSArray *localUserList = [[STIMKit sharedInstance] searchUserListBySearchStr:key WithLimit:limit WithOffset:offset];
+    NSInteger totalCount = [[STIMKit sharedInstance] searchUserListTotalCountBySearchStr:key];
     NSMutableDictionary *localUserDict = [NSMutableDictionary dictionary];
     if (localUserList.count) {
-        [localUserDict setQIMSafeObject:localUserList forKey:@"info"];
+        [localUserDict setSTIMSafeObject:localUserList forKey:@"info"];
     } else {
         return nil;
     }
-    [localUserDict setQIMSafeObject:@"本地用户" forKey:@"groupLabel"];
-    [localUserDict setQIMSafeObject:@"Q08" forKey:@"groupId"];
-    [localUserDict setQIMSafeObject:@(QRNSearchGroupPriorityLocalUserList) forKey:@"groupPriority"];
-    [localUserDict setQIMSafeObject:@(0) forKey:@"todoType"];
-    [localUserDict setQIMSafeObject:@"https://qt.qunar.com/file/v2/download/perm/ff1a003aa731b0d4e2dd3d39687c8a54.png" forKey:@"defaultportrait"];
+    [localUserDict setSTIMSafeObject:@"本地用户" forKey:@"groupLabel"];
+    [localUserDict setSTIMSafeObject:@"Q08" forKey:@"groupId"];
+    [localUserDict setSTIMSafeObject:@(QRNSearchGroupPriorityLocalUserList) forKey:@"groupPriority"];
+    [localUserDict setSTIMSafeObject:@(0) forKey:@"todoType"];
+    [localUserDict setSTIMSafeObject:@"https://qt.qunar.com/file/v2/download/perm/ff1a003aa731b0d4e2dd3d39687c8a54.png" forKey:@"defaultportrait"];
     if (limit + offset < totalCount) {
-        [localUserDict setQIMSafeObject:@(true) forKey:@"hasMore"];
+        [localUserDict setSTIMSafeObject:@(true) forKey:@"hasMore"];
     } else {
-        [localUserDict setQIMSafeObject:@(false) forKey:@"hasMore"];
+        [localUserDict setSTIMSafeObject:@(false) forKey:@"hasMore"];
     }
-    [localUserDict setQIMSafeObject:@(true) forKey:@"isLoaclData"];
+    [localUserDict setSTIMSafeObject:@(true) forKey:@"isLoaclData"];
     return localUserDict;
 }
 
 + (NSDictionary *)rnSearchLocalGroupChatResultWithSearchKey:(NSString *)key limit:(NSInteger)limit offset:(NSInteger)offset  {
     
-    NSArray *localGroupList = [[QIMKit sharedInstance] searchGroupBySearchStr:key WithLimit:limit WithOffset:offset];
-    NSInteger totalCount = [[QIMKit sharedInstance] searchGroupTotalCountBySearchStr:key];
+    NSArray *localGroupList = [[STIMKit sharedInstance] searchGroupBySearchStr:key WithLimit:limit WithOffset:offset];
+    NSInteger totalCount = [[STIMKit sharedInstance] searchGroupTotalCountBySearchStr:key];
     NSMutableDictionary *localGroupChatDict = [NSMutableDictionary dictionary];
     if (localGroupList.count) {
-        [localGroupChatDict setQIMSafeObject:localGroupList forKey:@"info"];
+        [localGroupChatDict setSTIMSafeObject:localGroupList forKey:@"info"];
     } else {
         return nil;
     }
-    [localGroupChatDict setQIMSafeObject:@"本地群组" forKey:@"groupLabel"];
-    [localGroupChatDict setQIMSafeObject:@"Q09" forKey:@"groupId"];
-    [localGroupChatDict setQIMSafeObject:@(QRNSearchGroupPriorityLocalGroupList) forKey:@"groupPriority"];
-    [localGroupChatDict setQIMSafeObject:@(1) forKey:@"todoType"];
-    [localGroupChatDict setQIMSafeObject:@"https://qt.qunar.com/file/v2/download/perm/bc0fca9b398a0e4a1f981a21e7425c7a.png" forKey:@"defaultportrait"];
+    [localGroupChatDict setSTIMSafeObject:@"本地群组" forKey:@"groupLabel"];
+    [localGroupChatDict setSTIMSafeObject:@"Q09" forKey:@"groupId"];
+    [localGroupChatDict setSTIMSafeObject:@(QRNSearchGroupPriorityLocalGroupList) forKey:@"groupPriority"];
+    [localGroupChatDict setSTIMSafeObject:@(1) forKey:@"todoType"];
+    [localGroupChatDict setSTIMSafeObject:@"https://qt.qunar.com/file/v2/download/perm/bc0fca9b398a0e4a1f981a21e7425c7a.png" forKey:@"defaultportrait"];
     if (limit + offset < totalCount) {
-        [localGroupChatDict setQIMSafeObject:@(true) forKey:@"hasMore"];
+        [localGroupChatDict setSTIMSafeObject:@(true) forKey:@"hasMore"];
     } else {
-        [localGroupChatDict setQIMSafeObject:@(false) forKey:@"hasMore"];
+        [localGroupChatDict setSTIMSafeObject:@(false) forKey:@"hasMore"];
     }
-    [localGroupChatDict setQIMSafeObject:@(true) forKey:@"isLoaclData"];
+    [localGroupChatDict setSTIMSafeObject:@(true) forKey:@"isLoaclData"];
     return localGroupChatDict;
 }
 
 + (NSDictionary *)rnSearchEjabhost2GroupChatResultWithSearchKey:(NSString *)key limit:(NSInteger)limit offset:(NSInteger)offset  {
     
-    NSArray *ejabhost2GroupChatList = [[QIMKit sharedInstance] rnSearchEjabHost2GroupChatListByKeyStr:key limit:limit offset:offset];
-    NSInteger totalCount = [[QIMKit sharedInstance] getRNSearchEjabHost2GroupChatListByKeyStr:key];
+    NSArray *ejabhost2GroupChatList = [[STIMKit sharedInstance] rnSearchEjabHost2GroupChatListByKeyStr:key limit:limit offset:offset];
+    NSInteger totalCount = [[STIMKit sharedInstance] getRNSearchEjabHost2GroupChatListByKeyStr:key];
     NSMutableDictionary *ejabhost2GroupChatDict = [NSMutableDictionary dictionary];
     if (ejabhost2GroupChatList.count) {
-        [ejabhost2GroupChatDict setQIMSafeObject:ejabhost2GroupChatList forKey:@"info"];
+        [ejabhost2GroupChatDict setSTIMSafeObject:ejabhost2GroupChatList forKey:@"info"];
     } else {
         return nil;
     }
-    [ejabhost2GroupChatDict setQIMSafeObject:@"外域群组" forKey:@"groupLabel"];
-    [ejabhost2GroupChatDict setQIMSafeObject:@"Q04" forKey:@"groupId"];
-    [ejabhost2GroupChatDict setQIMSafeObject:@(QRNSearchGroupPriorityGroupOutDomainGroupList) forKey:@"groupPriority"];
-    [ejabhost2GroupChatDict setQIMSafeObject:@(1) forKey:@"todoType"];
-    [ejabhost2GroupChatDict setQIMSafeObject:@"https://qt.qunar.com/file/v2/download/perm/bc0fca9b398a0e4a1f981a21e7425c7a.png" forKey:@"defaultportrait"];
+    [ejabhost2GroupChatDict setSTIMSafeObject:@"外域群组" forKey:@"groupLabel"];
+    [ejabhost2GroupChatDict setSTIMSafeObject:@"Q04" forKey:@"groupId"];
+    [ejabhost2GroupChatDict setSTIMSafeObject:@(QRNSearchGroupPriorityGroupOutDomainGroupList) forKey:@"groupPriority"];
+    [ejabhost2GroupChatDict setSTIMSafeObject:@(1) forKey:@"todoType"];
+    [ejabhost2GroupChatDict setSTIMSafeObject:@"https://qt.qunar.com/file/v2/download/perm/bc0fca9b398a0e4a1f981a21e7425c7a.png" forKey:@"defaultportrait"];
     if (limit + offset < totalCount) {
-        [ejabhost2GroupChatDict setQIMSafeObject:@(true) forKey:@"hasMore"];
+        [ejabhost2GroupChatDict setSTIMSafeObject:@(true) forKey:@"hasMore"];
     } else {
-        [ejabhost2GroupChatDict setQIMSafeObject:@(false) forKey:@"hasMore"];
+        [ejabhost2GroupChatDict setSTIMSafeObject:@(false) forKey:@"hasMore"];
     }
-    [ejabhost2GroupChatDict setQIMSafeObject:@(true) forKey:@"isLoaclData"];
+    [ejabhost2GroupChatDict setSTIMSafeObject:@(true) forKey:@"isLoaclData"];
 
     return ejabhost2GroupChatDict;
 }
 
 + (NSDictionary *)rnSearchPublicNumberResultWithSearchKey:(NSString *)key limit:(NSInteger)limit offset:(NSInteger)offset {
-    NSArray *publicNumberList = [[QIMKit sharedInstance] rnSearchPublicNumberListByKeyStr:key limit:limit offset:offset];
-    NSInteger totalCount = [[QIMKit sharedInstance] getRnSearchPublicNumberListByKeyStr:key];
+    NSArray *publicNumberList = [[STIMKit sharedInstance] rnSearchPublicNumberListByKeyStr:key limit:limit offset:offset];
+    NSInteger totalCount = [[STIMKit sharedInstance] getRnSearchPublicNumberListByKeyStr:key];
     NSMutableDictionary *publicNumberDict = [NSMutableDictionary dictionary];
     if (publicNumberList.count) {
-        [publicNumberDict setQIMSafeObject:publicNumberList forKey:@"info"];
+        [publicNumberDict setSTIMSafeObject:publicNumberList forKey:@"info"];
     } else {
         return nil;
     }
-    [publicNumberDict setQIMSafeObject:@"公众号列表" forKey:@"groupLabel"];
-    [publicNumberDict setQIMSafeObject:@"Q03" forKey:@"groupId"];
-    [publicNumberDict setQIMSafeObject:@(QRNSearchGroupPriorityGroupLocalPublicNumberList) forKey:@"groupPriority"];
-    [publicNumberDict setQIMSafeObject:@(8) forKey:@"todoType"];
-    [publicNumberDict setQIMSafeObject:@"https://qt.qunar.com/file/v2/download/perm/612752b6f60c3379077f71493d4e02ae.png" forKey:@"defaultportrait"];
+    [publicNumberDict setSTIMSafeObject:@"公众号列表" forKey:@"groupLabel"];
+    [publicNumberDict setSTIMSafeObject:@"Q03" forKey:@"groupId"];
+    [publicNumberDict setSTIMSafeObject:@(QRNSearchGroupPriorityGroupLocalPublicNumberList) forKey:@"groupPriority"];
+    [publicNumberDict setSTIMSafeObject:@(8) forKey:@"todoType"];
+    [publicNumberDict setSTIMSafeObject:@"https://qt.qunar.com/file/v2/download/perm/612752b6f60c3379077f71493d4e02ae.png" forKey:@"defaultportrait"];
     if (limit + offset < totalCount) {
-        [publicNumberDict setQIMSafeObject:@(true) forKey:@"hasMore"];
+        [publicNumberDict setSTIMSafeObject:@(true) forKey:@"hasMore"];
     } else {
-        [publicNumberDict setQIMSafeObject:@(false) forKey:@"hasMore"];
+        [publicNumberDict setSTIMSafeObject:@(false) forKey:@"hasMore"];
     }
-    [publicNumberDict setQIMSafeObject:@(true) forKey:@"isLoaclData"];
+    [publicNumberDict setSTIMSafeObject:@(true) forKey:@"isLoaclData"];
  
     return publicNumberDict;
 }
 
 + (NSString *)searchUrl {
-    return [[QIMKit sharedInstance] qimNav_SearchUrl];
+    return [[STIMKit sharedInstance] qimNav_SearchUrl];
 }
 
 @end

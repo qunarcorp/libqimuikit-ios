@@ -14,7 +14,7 @@
 #import "UIColor-Expanded.h"
 #import "KZColorPickerSwatchView.h"
 #import "KZColorCompareView.h"
-#import "UIView+QIMExtension.h"
+#import "UIView+STIMExtension.h"
 
 @interface KZColorPicker()
 @property (nonatomic, retain) KZColorPickerHSWheel *colorWheel;

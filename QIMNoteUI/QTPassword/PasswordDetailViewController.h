@@ -6,12 +6,12 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
-#if __has_include("QIMNoteManager.h")
-@class QIMNoteModel;
+#import "STIMCommonUIFramework.h"
+#if __has_include("STIMNoteManager.h")
+@class STIMNoteModel;
 @interface PasswordDetailViewController : UIViewController
 
-- (void)setQIMNoteModel:(QIMNoteModel *)noteModel;
+- (void)setSTIMNoteModel:(STIMNoteModel *)noteModel;
 
 @property (nonatomic, copy) NSString *pk;
 

@@ -5,27 +5,27 @@
 //  Created by 李露 on 2017/7/31.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "TodoListTableViewCell.h"
-#import "QIMNoteModel.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteModel.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface TodoListTableViewCell ()
 
-@property (nonatomic, strong) QIMNoteModel *model;
+@property (nonatomic, strong) STIMNoteModel *model;
 @property (nonatomic, assign) NSTimeInterval completeTime;
 
 @end
 
 @implementation TodoListTableViewCell
 
-- (void)setTodoListModel:(QIMNoteModel *)model {
+- (void)setTodoListModel:(STIMNoteModel *)model {
     if (model) {
         _model = model;
         NSString *content = model.q_content;
         if (content.length) {
             NSData *data = [content dataUsingEncoding:NSUTF8StringEncoding];
-            NSDictionary *dict = [[QIMJSONSerializer sharedInstance] deserializeObject:data error:nil];
+            NSDictionary *dict = [[STIMJSONSerializer sharedInstance] deserializeObject:data error:nil];
             _completeTime = [[dict objectForKey:@"completeTime"] integerValue];
         }
         [self refreshUI];
@@ -56,7 +56,7 @@
         self.textLabel.attributedText = title;
     }
     if (self.completeTime > 0) {
-        NSString *timeStr = [[NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:self.completeTime] qim_formattedDateDescription];
+        NSString *timeStr = [[NSDate stimDB_dateWithTimeIntervalInMilliSecondSince1970:self.completeTime] stimDB_formattedDateDescription];
         if (self.unFinished) {
             self.detailTextLabel.text = timeStr;
             self.detailTextLabel.textColor = [UIColor lightGrayColor];

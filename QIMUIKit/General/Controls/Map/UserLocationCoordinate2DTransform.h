@@ -6,7 +6,7 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <CoreLocation/CoreLocation.h>
 
 @interface UserLocationCoordinate2DTransform : NSObject

@@ -9,9 +9,9 @@
 #import <CoreMotion/CoreMotion.h>
 
 #import "CameraViewController.h"
-#import "QIMImageUtil.h"
-//#import "UIImage+QIMMultiFormat.h"
-#import "UIImage+QIMUIKit.h"
+#import "STIMImageUtil.h"
+//#import "UIImage+STIMMultiFormat.h"
+#import "UIImage+STIMUIKit.h"
 
 typedef void(^PropertyChangeBlock)(AVCaptureDevice *captureDevice);
 
@@ -76,7 +76,7 @@ typedef enum {
         _cmManager = [[CMMotionManager alloc] init];
         if (!_cmManager.accelerometerAvailable) {
             
-                QIMVerboseLog(@"CMMotionManager unavailable");
+                STIMVerboseLog(@"CMMotionManager unavailable");
         }
         _cmManager.accelerometerUpdateInterval = 0.1f;
     }
@@ -87,7 +87,7 @@ typedef enum {
     
     if (!_takePhotoViewContainer) {
         
-        _takePhotoViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 60, self.view.width, self.view.height - 60 - 110 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
+        _takePhotoViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 60, self.view.width, self.view.height - 60 - 110 - [[STIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT])];
     }
     return _takePhotoViewContainer;
 }
@@ -107,7 +107,7 @@ typedef enum {
     
     if (!_markViewBottom) {
         
-        _markViewBottom = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - 100 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], self.view.width, 100)];
+        _markViewBottom = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - 100 - [[STIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], self.view.width, 100)];
         _markViewBottom.backgroundColor = [UIColor blackColor];
         _markViewBottom.alpha = 0.5;
     }
@@ -119,7 +119,7 @@ typedef enum {
     if (!_point) {
         
         _point = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 7)];
-        _point.backgroundColor = [UIColor qim_colorWithHex:0xfcd109 alpha:1.0];
+        _point.backgroundColor = [UIColor stimDB_colorWithHex:0xfcd109 alpha:1.0];
         _point.layer.cornerRadius = 3.5;
         _point.center = CGPointMake( self.view.width / 2, self.takePhotoViewContainer.bottom + 5);
     }
@@ -134,7 +134,7 @@ typedef enum {
         _videoBtn.frame = CGRectMake(0, 5, 30, 20);
         [_videoBtn setTitle:@"视频" forState:UIControlStateNormal];
         [_videoBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_videoBtn setTitleColor:[UIColor qim_colorWithHex:0xfcd109 alpha:1.0] forState:UIControlStateSelected];
+        [_videoBtn setTitleColor:[UIColor stimDB_colorWithHex:0xfcd109 alpha:1.0] forState:UIControlStateSelected];
         _videoBtn.backgroundColor = [UIColor clearColor];
         _videoBtn.titleLabel.font = [UIFont boldSystemFontOfSize:14];
         [_videoBtn addTarget:self action:@selector(videoButtonClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -148,9 +148,9 @@ typedef enum {
         
         _photoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _photoBtn.frame = CGRectMake(0, 5, 30, 20);
-        [_photoBtn setTitle:[NSBundle qim_localizedStringForKey:@"Photos"] forState:UIControlStateNormal];
+        [_photoBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"Photos"] forState:UIControlStateNormal];
         [_photoBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_photoBtn setTitleColor:[UIColor qim_colorWithHex:0xfcd109 alpha:1.0] forState:UIControlStateSelected];
+        [_photoBtn setTitleColor:[UIColor stimDB_colorWithHex:0xfcd109 alpha:1.0] forState:UIControlStateSelected];
         _photoBtn.backgroundColor = [UIColor clearColor];
         _photoBtn.titleLabel.font = [UIFont boldSystemFontOfSize:14];
         [_photoBtn addTarget:self action:@selector(photoButtonClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -163,7 +163,7 @@ typedef enum {
     
     if (!_focusCursor) {
         
-        _focusCursor = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_focus"]];
+        _focusCursor = [[UIImageView alloc] initWithImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"camera_focus"]];
         _focusCursor.frame = CGRectMake(0, 0, 50, 50);
         _focusCursor.alpha = 0;
         
@@ -177,7 +177,7 @@ typedef enum {
         
         _flashButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _flashButton.frame = CGRectMake(10, 5, 50, 50);
-        [_flashButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_flash_auto_a"] forState:UIControlStateNormal];
+        [_flashButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"camera_flash_auto_a"] forState:UIControlStateNormal];
         [_flashButton addTarget:self action:@selector(flashButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _flashButton;
@@ -189,7 +189,7 @@ typedef enum {
         
         _changeDeviceBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _changeDeviceBtn.frame = CGRectMake(self.view.width - 60, 5, 50, 50);
-        [_changeDeviceBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_camera_flip_a"] forState:UIControlStateNormal];
+        [_changeDeviceBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"icon_camera_flip_a"] forState:UIControlStateNormal];
         [_changeDeviceBtn addTarget:self action:@selector(toggleButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _changeDeviceBtn;
@@ -201,9 +201,9 @@ typedef enum {
         
         _takeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_takeButton setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleWidth];
-        _takeButton.frame = CGRectMake((self.view.width - 65) / 2, self.view.height - 70 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], 65, 65);
-        [_takeButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"btn_camera_takephoto"] forState:UIControlStateNormal];
-        [_takeButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_camera_photo"] forState:UIControlStateNormal];
+        _takeButton.frame = CGRectMake((self.view.width - 65) / 2, self.view.height - 70 - [[STIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], 65, 65);
+        [_takeButton setBackgroundImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"btn_camera_takephoto"] forState:UIControlStateNormal];
+        [_takeButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"icon_camera_photo"] forState:UIControlStateNormal];
         [_takeButton addTarget:self action:@selector(takeButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _takeButton;
@@ -214,9 +214,9 @@ typedef enum {
     if (!_recordingButton) {
         
         _recordingButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _recordingButton.frame = CGRectMake((self.view.width - 65) / 2, self.view.height - 70 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], 65, 65);
-        [_recordingButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"mqz_v_record_start"] forState:UIControlStateNormal];
-        [_recordingButton setBackgroundImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"mqz_v_record_stop"] forState:UIControlStateSelected];
+        _recordingButton.frame = CGRectMake((self.view.width - 65) / 2, self.view.height - 70 - [[STIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], 65, 65);
+        [_recordingButton setBackgroundImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"mqz_v_record_start"] forState:UIControlStateNormal];
+        [_recordingButton setBackgroundImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"mqz_v_record_stop"] forState:UIControlStateSelected];
         [_recordingButton addTarget:self action:@selector(recordingButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         _recordingButton.hidden = YES;
     }
@@ -228,8 +228,8 @@ typedef enum {
     if (!_cancelBtn) {
         
         _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _cancelBtn.frame = CGRectMake(15, self.view.height - 70 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], 70, 70);
-        [_cancelBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"icon_cancel_white"] forState:UIControlStateNormal];
+        _cancelBtn.frame = CGRectMake(15, self.view.height - 70 - [[STIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT], 70, 70);
+        [_cancelBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"icon_cancel_white"] forState:UIControlStateNormal];
         [_cancelBtn addTarget:self action:@selector(cancelHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _cancelBtn;
@@ -239,7 +239,7 @@ typedef enum {
     
     if (!_timeDisplayLabel) {
         
-        _timeDisplayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, [[QIMDeviceManager sharedInstance] getSTATUS_BAR_HEIGHT] - 20, self.view.width, 40)];
+        _timeDisplayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, [[STIMDeviceManager sharedInstance] getSTATUS_BAR_HEIGHT] - 20, self.view.width, 40)];
         _timeDisplayLabel.textColor = [UIColor whiteColor];
         _timeDisplayLabel.textAlignment = NSTextAlignmentCenter;
         _timeDisplayLabel.backgroundColor = [UIColor clearColor];
@@ -260,7 +260,7 @@ typedef enum {
     
     _cmManager = [[CMMotionManager alloc]init];
     if (!_cmManager.accelerometerAvailable) {
-        QIMVerboseLog(@"CMMotionManager unavailable");
+        STIMVerboseLog(@"CMMotionManager unavailable");
     }
     _cmManager.accelerometerUpdateInterval =0.1f;
     [_cmManager startAccelerometerUpdates];
@@ -297,11 +297,11 @@ typedef enum {
     //获得输入设备
     AVCaptureDevice *captureDevice=[self getCameraDeviceWithPosition:AVCaptureDevicePositionBack];//取得后置摄像头
     if (!captureDevice) {
-        QIMVerboseLog(@"取得后置摄像头时出现问题.");
+        STIMVerboseLog(@"取得后置摄像头时出现问题.");
         captureDevice=[self getCameraDeviceWithPosition:AVCaptureDevicePositionFront];//取得前置摄像头
     }
     if (!captureDevice) {
-        QIMVerboseLog(@"取得后置摄像头时出现问题.");
+        STIMVerboseLog(@"取得后置摄像头时出现问题.");
         return;
     }
     
@@ -309,7 +309,7 @@ typedef enum {
     //根据输入设备初始化设备输入对象，用于获得输入数据
     _captureDeviceInput=[[AVCaptureDeviceInput alloc]initWithDevice:captureDevice error:&error];
     if (error) {
-        QIMVerboseLog(@"取得设备输入对象时出错，错误原因：%@",error.localizedDescription);
+        STIMVerboseLog(@"取得设备输入对象时出错，错误原因：%@",error.localizedDescription);
         return;
     }
     //初始化设备输出对象，用于获得输出数据
@@ -377,7 +377,7 @@ typedef enum {
 //    layer.masksToBounds=YES;
 //    
     
-    self.takePhotoViewContainer.frame = CGRectMake(0, 60, self.view.width, self.view.height - 64 - 100 - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]);
+    self.takePhotoViewContainer.frame = CGRectMake(0, 60, self.view.width, self.view.height - 64 - 100 - [[STIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]);
     CALayer *layer=self.takePhotoViewContainer.layer;
     _captureVideoPreviewLayer.frame=layer.bounds;
 //    _captureVideoPreviewLayer.videoGravity=AVLayerVideoGravityResizeAspectFill;//填充模式
@@ -413,7 +413,7 @@ typedef enum {
         AVCaptureDevice *audioCaptureDevice=[[AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio] firstObject];
         _audioCaptureDeviceInput=[[AVCaptureDeviceInput alloc]initWithDevice:audioCaptureDevice error:&error];
         if (error) {
-            QIMVerboseLog(@"取得设备输入对象时出错，错误原因：%@",error.localizedDescription);
+            STIMVerboseLog(@"取得设备输入对象时出错，错误原因：%@",error.localizedDescription);
             return;
         }
     }
@@ -636,7 +636,7 @@ typedef enum {
     
     if (!destination) {
         
-        QIMVerboseLog(@"error");
+        STIMVerboseLog(@"error");
         
         return data;
         
@@ -650,7 +650,7 @@ typedef enum {
     
     if (!check) {
         
-        QIMVerboseLog(@"error");
+        STIMVerboseLog(@"error");
         
         return data;
         
@@ -756,9 +756,9 @@ typedef enum {
         //预览图层和视频方向保持一致
         captureConnection.videoOrientation=[self.captureVideoPreviewLayer connection].videoOrientation;
         NSString *outputFielPath=[NSTemporaryDirectory() stringByAppendingString:@"myMovie.mov"];
-        QIMVerboseLog(@"save path is :%@",outputFielPath);
+        STIMVerboseLog(@"save path is :%@",outputFielPath);
         NSURL *fileUrl=[NSURL fileURLWithPath:outputFielPath];
-        QIMVerboseLog(@"fileUrl:%@",fileUrl);
+        STIMVerboseLog(@"fileUrl:%@",fileUrl);
         [self.captureMovieFileOutput startRecordingToOutputFileURL:fileUrl recordingDelegate:self];
     }
     else{
@@ -807,17 +807,17 @@ typedef enum {
     switch (_flashMode) {
         case AVCaptureFlashModeAuto:
         {
-            [_flashButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_flash_auto_a"] forState:UIControlStateNormal];
+            [_flashButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"camera_flash_auto_a"] forState:UIControlStateNormal];
         }
             break;
         case AVCaptureFlashModeOn:
         {
-            [_flashButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_flash_on_a"] forState:UIControlStateNormal];
+            [_flashButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"camera_flash_on_a"] forState:UIControlStateNormal];
         }
             break;
         case AVCaptureFlashModeOff:
         {
-            [_flashButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"camera_flash_off_a"] forState:UIControlStateNormal];
+            [_flashButton setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"camera_flash_off_a"] forState:UIControlStateNormal];
         }
             break;
             
@@ -845,7 +845,7 @@ typedef enum {
 #pragma mark - AVCaptureFileOutputRecordingDelegate
 
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections{
-    QIMVerboseLog(@"开始录制...");
+    STIMVerboseLog(@"开始录制...");
     _recordingButton.selected = YES;
     if (!_timer) {
         _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerHandle:) userInfo:nil repeats:YES];
@@ -853,7 +853,7 @@ typedef enum {
     [_timer fire];
 }
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error{
-    QIMVerboseLog(@"视频录制完成.");
+    STIMVerboseLog(@"视频录制完成.");
     _recordingButton.selected = NO;
     //视频录入完成之后在后台将视频存储到相簿
     self.enableRotation=YES;
@@ -870,14 +870,14 @@ typedef enum {
 //    ALAssetsLibrary *assetsLibrary=[[ALAssetsLibrary alloc]init];
 //    [assetsLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
 //        if (error) {
-//            QIMVerboseLog(@"保存视频到相簿过程中发生错误，错误信息：%@",error.localizedDescription);
+//            STIMVerboseLog(@"保存视频到相簿过程中发生错误，错误信息：%@",error.localizedDescription);
 //        }
-//        QIMVerboseLog(@"outputUrl:%@",outputFileURL);
+//        STIMVerboseLog(@"outputUrl:%@",outputFileURL);
 //        [[NSFileManager defaultManager] removeItemAtURL:outputFileURL error:nil];
 //        if (lastBackgroundTaskIdentifier!=UIBackgroundTaskInvalid) {
 //            [[UIApplication sharedApplication] endBackgroundTask:lastBackgroundTaskIdentifier];
 //        }
-//        QIMVerboseLog(@"成功保存视频到相簿.");
+//        STIMVerboseLog(@"成功保存视频到相簿.");
 //    }];
     
 }
@@ -937,7 +937,7 @@ typedef enum {
  *  @param notification 通知对象
  */
 -(void)deviceConnected:(NSNotification *)notification{
-    QIMVerboseLog(@"设备已连接...");
+    STIMVerboseLog(@"设备已连接...");
 }
 /**
  *  设备连接断开
@@ -945,7 +945,7 @@ typedef enum {
  *  @param notification 通知对象
  */
 -(void)deviceDisconnected:(NSNotification *)notification{
-    QIMVerboseLog(@"设备已断开.");
+    STIMVerboseLog(@"设备已断开.");
 }
 /**
  *  捕获区域改变
@@ -953,7 +953,7 @@ typedef enum {
  *  @param notification 通知对象
  */
 -(void)areaChange:(NSNotification *)notification{
-    QIMVerboseLog(@"捕获区域改变...");
+    STIMVerboseLog(@"捕获区域改变...");
 }
 
 /**
@@ -962,7 +962,7 @@ typedef enum {
  *  @param notification 通知对象
  */
 -(void)sessionRuntimeError:(NSNotification *)notification{
-    QIMVerboseLog(@"会话发生错误.");
+    STIMVerboseLog(@"会话发生错误.");
 }
 
 #pragma mark - 私有方法
@@ -997,7 +997,7 @@ typedef enum {
         propertyChange(captureDevice);
         [captureDevice unlockForConfiguration];
     }else{
-        QIMVerboseLog(@"设置设备属性过程发生错误，错误信息：%@",error.localizedDescription);
+        STIMVerboseLog(@"设置设备属性过程发生错误，错误信息：%@",error.localizedDescription);
     }
 }
 
@@ -1085,13 +1085,13 @@ typedef enum {
 - (void)swipeHandle:(UISwipeGestureRecognizer *)swipeGesture
 {
     if (swipeGesture.direction == UISwipeGestureRecognizerDirectionLeft) {
-        QIMVerboseLog(@"left");
+        STIMVerboseLog(@"left");
         if (_cameraType == cameraTypeTakePhoto) {
             return;
         }
         [self setToTakePhoto];
     }else if (swipeGesture.direction == UISwipeGestureRecognizerDirectionRight) {
-        QIMVerboseLog(@"right");
+        STIMVerboseLog(@"right");
         if (_cameraType == cameraTypeRecording) {
             return;
         }

@@ -5,10 +5,10 @@
 //  Created by 李露 on 2017/7/20.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "PwdBoxSecuritySettingVc.h"
-#import "QIMPwdBoxSecuritySettingCell.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMPwdBoxSecuritySettingCell.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface PwdBoxSecuritySettingVc () <UITableViewDelegate, UITableViewDataSource>
 
@@ -24,13 +24,13 @@
 
 - (NSArray *)securityNumbers {
     if (!_securityNumbers) {
-        NSDictionary *oneM = @{@"intro":[NSBundle qim_localizedStringForKey:[NSBundle qim_localizedStringForKey:@"1 min"]], @"value":@(1 * 60)};
-        NSDictionary *twoM = @{@"intro":[NSBundle qim_localizedStringForKey:@"2分钟"], @"value":@(2 * 60)};
-        NSDictionary *fiveM = @{@"intro":[NSBundle qim_localizedStringForKey:@"5分钟"], @"value":@(5 * 60)};
-        NSDictionary *tenM = @{@"intro":[NSBundle qim_localizedStringForKey:@"10分钟"], @"value":@(10 * 60)};
-        NSDictionary *M15 = @{@"intro":[NSBundle qim_localizedStringForKey:@"15分钟"], @"value":@(15 * 60)};
-        NSDictionary *M30 = @{@"intro":[NSBundle qim_localizedStringForKey:@"30分钟"], @"value":@(30 * 60)};
-        NSDictionary *M60 = @{@"intro":[NSBundle qim_localizedStringForKey:@"60分钟"], @"value":@(60 * 60)};
+        NSDictionary *oneM = @{@"intro":[NSBundle stimDB_localizedStringForKey:[NSBundle stimDB_localizedStringForKey:@"1 min"]], @"value":@(1 * 60)};
+        NSDictionary *twoM = @{@"intro":[NSBundle stimDB_localizedStringForKey:@"2分钟"], @"value":@(2 * 60)};
+        NSDictionary *fiveM = @{@"intro":[NSBundle stimDB_localizedStringForKey:@"5分钟"], @"value":@(5 * 60)};
+        NSDictionary *tenM = @{@"intro":[NSBundle stimDB_localizedStringForKey:@"10分钟"], @"value":@(10 * 60)};
+        NSDictionary *M15 = @{@"intro":[NSBundle stimDB_localizedStringForKey:@"15分钟"], @"value":@(15 * 60)};
+        NSDictionary *M30 = @{@"intro":[NSBundle stimDB_localizedStringForKey:@"30分钟"], @"value":@(30 * 60)};
+        NSDictionary *M60 = @{@"intro":[NSBundle stimDB_localizedStringForKey:@"60分钟"], @"value":@(60 * 60)};
         _securityNumbers = @[oneM, twoM, fiveM, tenM, M15, M30, M60];
     }
     return _securityNumbers;
@@ -49,7 +49,7 @@
 
 - (void)setUpNavBar {
     
-    self.title = [NSBundle qim_localizedStringForKey:@"password_box_security"];
+    self.title = [NSBundle stimDB_localizedStringForKey:@"password_box_security"];
 }
 
 - (UILabel *)promptLabel {
@@ -57,7 +57,7 @@
     if (!_promptLabel) {
         
         _promptLabel = [[UILabel alloc] initWithFrame:CGRectMake(18, 0, self.view.width, 60)];
-        _promptLabel.text = [NSBundle qim_localizedStringForKey:@"password_box_securityIntro"];
+        _promptLabel.text = [NSBundle stimDB_localizedStringForKey:@"password_box_securityIntro"];
         _promptLabel.font = [UIFont systemFontOfSize:14];
         _promptLabel.numberOfLines = 4;
         [_promptLabel sizeToFit];
@@ -90,12 +90,12 @@
         statusCellId = [minuteDict objectForKey:@"intro"];
         value = [[[self.securityNumbers objectAtIndex:indexPath.row] objectForKey:@"value"] intValue];
     }
-    QIMPwdBoxSecuritySettingCell *cell = [tableView dequeueReusableCellWithIdentifier:statusCellId];
+    STIMPwdBoxSecuritySettingCell *cell = [tableView dequeueReusableCellWithIdentifier:statusCellId];
     if (!cell) {
-        cell = [[QIMPwdBoxSecuritySettingCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:statusCellId];
+        cell = [[STIMPwdBoxSecuritySettingCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:statusCellId];
     }
     [cell setServiceStatusTitle:statusCellId];
-    if (value == [[[QIMKit sharedInstance] userObjectForKey:@"securityMinute"] integerValue]) {
+    if (value == [[[STIMKit sharedInstance] userObjectForKey:@"securityMinute"] integerValue]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
@@ -110,7 +110,7 @@
     if (minuteDict) {
         value = [[[self.securityNumbers objectAtIndex:indexPath.row] objectForKey:@"value"] intValue];
     }
-    [[QIMKit sharedInstance] setUserObject:@(value) forKey:@"securityMinute"];
+    [[STIMKit sharedInstance] setUserObject:@(value) forKey:@"securityMinute"];
     [self.mainTableView reloadData];
 }
 

@@ -5,21 +5,21 @@
 //  Created by 李露 on 2017/7/11.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "NewAddPasswordViewController.h"
-#import "QIMPasswordGenerate.h"
-#import "QIMNoteManager.h"
+#import "STIMPasswordGenerate.h"
+#import "STIMNoteManager.h"
 #import "AESCrypt.h"
-#import "QIMAES256.h"
-#import "QIMNoteModel.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMAES256.h"
+#import "STIMNoteModel.h"
+#import "STIMNoteUICommonFramework.h"
 
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
-@interface NewAddPasswordViewController () <QIMPasswordModelUpdateDelegate, UITextFieldDelegate>
+@interface NewAddPasswordViewController () <STIMPasswordModelUpdateDelegate, UITextFieldDelegate>
 
-@property (nonatomic, strong) QIMNoteModel *noteModel;
+@property (nonatomic, strong) STIMNoteModel *noteModel;
 
 @property (nonatomic, strong) UIScrollView *mainScrollView;
 
@@ -135,17 +135,17 @@
 
 @implementation NewAddPasswordViewController
 
-- (void)setQIMNoteModel:(QIMNoteModel *)noteModel {
+- (void)setSTIMNoteModel:(STIMNoteModel *)noteModel {
     
     if (noteModel != nil) {
         _noteModel = noteModel;
         _noteModel.pwdDelegate = self;
-        NSString *pwd = [[QIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id];
+        NSString *pwd = [[STIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id];
         NSString *contentJson = [AESCrypt decrypt:_noteModel.qs_content password:pwd];
         if (!contentJson) {
-            contentJson = [QIMAES256 decryptForBase64:_noteModel.qs_content password:pwd];
+            contentJson = [STIMAES256 decryptForBase64:_noteModel.qs_content password:pwd];
         }
-        NSDictionary *contentDic = [[QIMJSONSerializer sharedInstance] deserializeObject:contentJson error:nil];
+        NSDictionary *contentDic = [[STIMJSONSerializer sharedInstance] deserializeObject:contentJson error:nil];
         self.contentDic = [NSMutableDictionary dictionaryWithDictionary:contentDic];
         self.passwordValue = [self.contentDic objectForKey:@"P"];
         self.accountValue = [self.contentDic objectForKey:@"U"];
@@ -173,14 +173,14 @@
         
         UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 50, 50)];
         iconView.contentMode = UIViewContentModeScaleAspectFit;
-        iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
+        iconView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"explore_tab_password"];
         [_headerView addSubview:iconView];
         iconView.centerY = _headerView.centerY;
         
         _titleTextField = [[UITextField alloc] initWithFrame:CGRectMake(iconView.right + 15, iconView.top + 15, SCREEN_WIDTH - iconView.right - 15, 30)];
         _titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        _titleTextField.placeholder = [NSBundle qim_localizedStringForKey:@"password_tab_textPlaceholder"];
-        _titleTextField.text = self.noteModel.qs_title ? self.noteModel.qs_title : [NSBundle qim_localizedStringForKey:@"Password"];
+        _titleTextField.placeholder = [NSBundle stimDB_localizedStringForKey:@"password_tab_textPlaceholder"];
+        _titleTextField.text = self.noteModel.qs_title ? self.noteModel.qs_title : [NSBundle stimDB_localizedStringForKey:@"Password"];
         _titleTextField.delegate = self;
         _titleTextField.tag = 1;
         [_headerView addSubview:_titleTextField];
@@ -203,13 +203,13 @@
         UILabel *accountLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 8, 42, 21)];
         accountLabel.font = [UIFont systemFontOfSize:14];
         accountLabel.textColor = [UIColor qtalkTextLightColor];
-        accountLabel.text = [NSBundle qim_localizedStringForKey:@"account"];
+        accountLabel.text = [NSBundle stimDB_localizedStringForKey:@"account"];
         [accountLabel sizeToFit];
         [_passwordView addSubview:accountLabel];
         
         UITextField *accountTextField = [[UITextField alloc] initWithFrame:CGRectMake(accountLabel.left, accountLabel.bottom + 8, SCREEN_WIDTH - accountLabel.left, 21)];
         accountTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        accountTextField.placeholder = [NSBundle qim_localizedStringForKey:@"account"];
+        accountTextField.placeholder = [NSBundle stimDB_localizedStringForKey:@"account"];
         accountTextField.delegate = self;
         
         accountTextField.text = self.accountValue ? self.accountValue : @"";
@@ -225,13 +225,13 @@
         UILabel *pwdLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, accountlineView.bottom + 8, 42, 21)];
         pwdLabel.font = [UIFont systemFontOfSize:14];
         pwdLabel.textColor = [UIColor qtalkTextLightColor];
-        pwdLabel.text = [NSBundle qim_localizedStringForKey:@"password"];
+        pwdLabel.text = [NSBundle stimDB_localizedStringForKey:@"password"];
         [pwdLabel sizeToFit];
         [_passwordView addSubview:pwdLabel];
         
         UITextField *pwdTextField = [[UITextField alloc] initWithFrame:CGRectMake(pwdLabel.left, pwdLabel.bottom + 8, SCREEN_WIDTH - pwdLabel.left, 21)];
         pwdTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        pwdTextField.placeholder = [NSBundle qim_localizedStringForKey:@"password"];
+        pwdTextField.placeholder = [NSBundle stimDB_localizedStringForKey:@"password"];
         pwdTextField.secureTextEntry = YES;
         pwdTextField.delegate = self;
         pwdTextField.text = self.passwordValue ? self.passwordValue : @"";
@@ -243,10 +243,10 @@
         lineView1.backgroundColor = [UIColor lightGrayColor];
         [_passwordView addSubview:lineView1];
         
-        self.showPasswordBtn = [self addPasswordButtonWithTitle:[NSBundle qim_localizedStringForKey:@"password_tab_show"] selector:@selector(showPassword:) BaseView:_passwordView lastLineView:lineView1];
+        self.showPasswordBtn = [self addPasswordButtonWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_tab_show"] selector:@selector(showPassword:) BaseView:_passwordView lastLineView:lineView1];
         UIView *lineView2 = [self addLineViewWithLastView:self.showPasswordBtn BaseView:_passwordView bottomMargin:2];
         
-        self.gengerateNewPasswordBtn = [self addPasswordButtonWithTitle:[NSBundle qim_localizedStringForKey:@"password_tab_new"]  selector:@selector(gengerateNewPassword:) BaseView:_passwordView lastLineView:lineView2];
+        self.gengerateNewPasswordBtn = [self addPasswordButtonWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_tab_new"]  selector:@selector(gengerateNewPassword:) BaseView:_passwordView lastLineView:lineView2];
         UIView *lineView3 = [self addLineViewWithLastView:self.gengerateNewPasswordBtn BaseView:_passwordView bottomMargin:2];
 
         _passwordView.height = lineView3.bottom + 20;
@@ -262,7 +262,7 @@
         _gengeratePasswordView.layer.borderColor = [UIColor grayColor].CGColor;
         
         UILabel *characterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 8, 0, 0)];
-        characterLabel.text = [NSBundle qim_localizedStringForKey:@"password_slider_characters"];
+        characterLabel.text = [NSBundle stimDB_localizedStringForKey:@"password_slider_characters"];
         characterLabel.textColor = [UIColor qtalkTextLightColor];
         characterLabel.font = [UIFont systemFontOfSize:10];
         [characterLabel sizeToFit];
@@ -273,11 +273,11 @@
         lineView1.backgroundColor = [UIColor lightGrayColor];
         [_gengeratePasswordView addSubview:lineView1];
         
-        self.resetPasswordBtn = [self addPasswordButtonWithTitle:[NSBundle qim_localizedStringForKey:@"password_tab_reset"] selector:@selector(gengerateNewPassword:) BaseView:_gengeratePasswordView lastLineView:lineView1];
+        self.resetPasswordBtn = [self addPasswordButtonWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_tab_reset"] selector:@selector(gengerateNewPassword:) BaseView:_gengeratePasswordView lastLineView:lineView1];
         UIView *lineView2 = [self addLineViewWithLastView:self.resetPasswordBtn BaseView:_gengeratePasswordView bottomMargin:2];
         
         //长度滑块
-        UILabel *label1 = [self addPasswordRuleLabelWithTitle:[NSBundle qim_localizedStringForKey:@"password_slider_length"] BaseView:_gengeratePasswordView lastLineView:lineView2];
+        UILabel *label1 = [self addPasswordRuleLabelWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_slider_length"] BaseView:_gengeratePasswordView lastLineView:lineView2];
         self.passwordLenghtSlider = [self addPasswordRulesSliderWithMaximumValue:64 minimumValue:4 selector:@selector(updatePasswordLength:) RuleTitleLabel:label1 BaseView:_gengeratePasswordView lastLineView:lineView2];
         self.plSliderValueLable = [self addPasswordRulesSliderLabelWithSlider:self.passwordLenghtSlider BaseView:_gengeratePasswordView lastLineView:lineView2];
         //滑块宽度更新
@@ -285,14 +285,14 @@
         UIView *lineView3 = [self addSliderLineViewWithLastView:label1 BaseView:_gengeratePasswordView bottomMargin:8];
 
         //数字滑块
-        UILabel *label2 = [self addPasswordRuleLabelWithTitle:[NSBundle qim_localizedStringForKey:@"password_slider_digits"] BaseView:_gengeratePasswordView lastLineView:lineView3];
+        UILabel *label2 = [self addPasswordRuleLabelWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_slider_digits"] BaseView:_gengeratePasswordView lastLineView:lineView3];
         self.passwordNumberSlider = [self addPasswordRulesSliderWithMaximumValue:10 minimumValue:0 selector:@selector(updatePasswordNumber:) RuleTitleLabel:label2 BaseView:_gengeratePasswordView lastLineView:lineView3];
         self.pnSliderValueLable = [self addPasswordRulesSliderLabelWithSlider:self.passwordNumberSlider BaseView:_gengeratePasswordView lastLineView:lineView3];
         self.passwordNumberSlider.width = self.plSliderValueLable.left - 8 - label2.right - 8;
 //        UIView *lineView4 = [self addSliderLineViewWithLastView:label2 BaseView:_gengeratePasswordView bottomMargin:8];
         
         //符号滑块
-        UILabel *label3 = [self addPasswordRuleLabelWithTitle:[NSBundle qim_localizedStringForKey:@"password_slider_symbols"] BaseView:_gengeratePasswordView lastLineView:label2];
+        UILabel *label3 = [self addPasswordRuleLabelWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_slider_symbols"] BaseView:_gengeratePasswordView lastLineView:label2];
         self.passwordSymbolSlider = [self addPasswordRulesSliderWithMaximumValue:10 minimumValue:0 selector:@selector(updatePasswordSymbol:) RuleTitleLabel:label3 BaseView:_gengeratePasswordView lastLineView:label2];
         self.psSliderValueLable = [self addPasswordRulesSliderLabelWithSlider:self.passwordSymbolSlider BaseView:_gengeratePasswordView lastLineView:label2];
         self.passwordSymbolSlider.width = self.plSliderValueLable.left - 8 - label3.right - 8;
@@ -300,7 +300,7 @@
         
         float upperMaximumValue = self.passwordLenghtSlider.value - self.passwordNumberSlider.value - self.passwordSymbolSlider.value;
         //大写滑块
-        UILabel *label4 = [self addPasswordRuleLabelWithTitle:[NSBundle qim_localizedStringForKey:@"password_slider_upper"] BaseView:_gengeratePasswordView lastLineView:label3];
+        UILabel *label4 = [self addPasswordRuleLabelWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_slider_upper"] BaseView:_gengeratePasswordView lastLineView:label3];
         self.passwordUpWordSlider = [self addPasswordRulesSliderWithMaximumValue:upperMaximumValue minimumValue:0 selector:@selector(updatePasswordUpper:) RuleTitleLabel:label4 BaseView:_gengeratePasswordView lastLineView:label3];
         self.pUSliderValueLable = [self addPasswordRulesSliderLabelWithSlider:self.passwordUpWordSlider BaseView:_gengeratePasswordView lastLineView:label3];
         self.passwordUpWordSlider.width = self.pUSliderValueLable.left - 8 - label4.right - 8;
@@ -333,7 +333,7 @@
 
 - (UISlider *)addPasswordRulesSliderWithMaximumValue:(float)maximumValue minimumValue:(float)minimumValue selector:(SEL)sel RuleTitleLabel:(UILabel *)label BaseView:(UIView *)baseView lastLineView:(UIView *)lineView {
     //滑块
-    UIImage *image = [self OriginImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"dynamicfontprogress"] scaleToSize:CGSizeMake(24, 24)];
+    UIImage *image = [self OriginImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"dynamicfontprogress"] scaleToSize:CGSizeMake(24, 24)];
     UISlider *newSlider = [[UISlider alloc] initWithFrame:CGRectMake(label.right + 5, lineView.bottom + 8, 60, 45)];
     [newSlider setMinimumValue:maximumValue];
     [newSlider setMinimumValue:minimumValue];
@@ -387,8 +387,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     if (!self.edited) {
-        self.noteModel = [[QIMNoteModel alloc] init];
-        self.noteModel.qs_type = QIMPasswordTypeText;
+        self.noteModel = [[STIMNoteModel alloc] init];
+        self.noteModel.qs_type = STIMPasswordTypeText;
         self.noteModel.q_id = self.QID;
         self.noteModel.c_id = self.CID;
         self.noteModel.pwdDelegate = self;
@@ -407,7 +407,7 @@
 }
 
 - (void)setupNav {
-    UIBarButtonItem *saveBtnItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Save"] style:UIBarButtonItemStyleDone target:self action:@selector(savePassword)];
+    UIBarButtonItem *saveBtnItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Save"] style:UIBarButtonItemStyleDone target:self action:@selector(savePassword)];
     [self.navigationItem setRightBarButtonItem:saveBtnItem];
 }
 
@@ -419,7 +419,7 @@
         if (btn.selected) {
             [sender setTitle:self.passwordValue forState:UIControlStateSelected];
         } else {
-            [sender setTitle:[NSBundle qim_localizedStringForKey:@"password_tab_show"] forState:UIControlStateNormal];
+            [sender setTitle:[NSBundle stimDB_localizedStringForKey:@"password_tab_show"] forState:UIControlStateNormal];
         }
     }
 }
@@ -434,8 +434,8 @@
         lower = 0;
     }
     
-    NSString *newPwd = [[QIMPasswordGenerate sharedInstance] createPasswordWithBit:bitNum WithNumber:number WithUpperCase:upper WithLowerCase:lower WithSpecialCharacters:symbol WithAllowRepeat:YES];
-    QIMVerboseLog(@"%@", newPwd);
+    NSString *newPwd = [[STIMPasswordGenerate sharedInstance] createPasswordWithBit:bitNum WithNumber:number WithUpperCase:upper WithLowerCase:lower WithSpecialCharacters:symbol WithAllowRepeat:YES];
+    STIMVerboseLog(@"%@", newPwd);
     self.passwordValue = newPwd;
     self.passwordTextField.text = newPwd;
     [self updatePasswordModel];
@@ -516,18 +516,18 @@
 //    [self.contentDic setObject:self.passwordValue ? self.passwordValue : @"" forKey:@"T"];
 //    [self.contentDic setObject:self.passwordValue ? self.passwordValue : @"" forKey:@"P"];
 //    [self.contentDic setObject:self.passwordValue ? self.passwordValue : @"" forKey:@"P"];
-    NSString *contentJson = [[QIMJSONSerializer sharedInstance] serializeObject:self.contentDic];
-//    NSString *content = [AESCrypt encrypt:contentJson password:[[QIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id]];
-    NSString *content = [QIMAES256 encryptForBase64:contentJson password:[[QIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id]];
+    NSString *contentJson = [[STIMJSONSerializer sharedInstance] serializeObject:self.contentDic];
+//    NSString *content = [AESCrypt encrypt:contentJson password:[[STIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id]];
+    NSString *content = [STIMAES256 encryptForBase64:contentJson password:[[STIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id]];
     if (!self.noteModel.qs_title) {
-        self.noteModel.qs_title = [NSBundle qim_localizedStringForKey:@"Password"];
+        self.noteModel.qs_title = [NSBundle stimDB_localizedStringForKey:@"Password"];
     }
     self.noteModel.qs_content = content;
     if (!self.noteModel.qs_time) {
         self.noteModel.qs_time = [[NSDate date] timeIntervalSince1970] * 1000;
     }
     if (self.noteModel.cs_id < 1) {
-        self.noteModel.cs_id = [[QIMNoteManager sharedInstance] getMaxQTNoteSubItemCSid] + 1;
+        self.noteModel.cs_id = [[STIMNoteManager sharedInstance] getMaxQTNoteSubItemCSid] + 1;
     }
     if (!self.noteModel.q_id) {
         self.noteModel.q_id = self.QID;
@@ -536,11 +536,11 @@
         self.noteModel.c_id = self.CID;
     }
     if (self.edited == YES) {
-        self.noteModel.qs_state = QIMNoteStateNormal;
-        [[QIMNoteManager sharedInstance] updateQTNoteSubItemWithQSModel:self.noteModel];
+        self.noteModel.qs_state = STIMNoteStateNormal;
+        [[STIMNoteManager sharedInstance] updateQTNoteSubItemWithQSModel:self.noteModel];
     } else {
-        self.noteModel.qs_state = QIMNoteStateNormal;
-        [[QIMNoteManager sharedInstance] saveNewQTNoteSubItem:self.noteModel];
+        self.noteModel.qs_state = STIMNoteStateNormal;
+        [[STIMNoteManager sharedInstance] saveNewQTNoteSubItem:self.noteModel];
     }
     [self.navigationController popViewControllerAnimated:YES];
 }

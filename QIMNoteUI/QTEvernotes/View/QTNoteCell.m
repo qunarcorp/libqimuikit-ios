@@ -5,10 +5,10 @@
 //  Created by lihuaqi on 2017/9/21.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "QTNoteCell.h"
-#import "QIMNoteModel.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteModel.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface QTNoteCell()
 @property (nonatomic,strong) UIImageView *iconImgV;
@@ -50,8 +50,8 @@
     [self.contentView addSubview:_desLb];
 }
 
--(void)refreshCellWithModel:(QIMNoteModel *)model {
-    _iconImgV.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"evernote_note"];
+-(void)refreshCellWithModel:(STIMNoteModel *)model {
+    _iconImgV.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"evernote_note"];
 //    _titleLb.text = [NSString stringWithFormat:@"%ld & %ld---%@",(long)model.q_id,(long)model.qs_id,model.qs_title? model.qs_title:@""];
 //    _desLb.text =  [NSString stringWithFormat:@"%ld & %ld---%@",(long)model.c_id,(long)model.cs_id,model.qs_introduce?model.qs_introduce:@""];
     _titleLb.text = [NSString stringWithFormat:@"%@",model.qs_title? model.qs_title:@""];

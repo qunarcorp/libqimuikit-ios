@@ -6,8 +6,8 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
-#if __has_include("QIMNoteManager.h")
+#import "STIMCommonUIFramework.h"
+#if __has_include("STIMNoteManager.h")
 @interface PasswordHistoryViewController : UIViewController
 
 - (void)setHistoryModels:(NSArray *)models;

@@ -7,7 +7,7 @@
 //
 
 #import "KZColorPickerAlphaSlider.h"
-#import "UIImage+QIMUIKit.h"
+#import "UIImage+STIMUIKit.h"
 
 @implementation KZColorPickerAlphaSlider
 
@@ -21,7 +21,7 @@
                                                                 horizontal ? 6 : 18,
                                                                 frame.size.width - (horizontal ? 36 : 12),
                                                                 frame.size.height - (horizontal ? 12 : 36))];
-        checkerboard.backgroundColor = [UIColor colorWithPatternImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkerboard"]];
+        checkerboard.backgroundColor = [UIColor colorWithPatternImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"checkerboard"]];
         checkerboard.layer.cornerRadius = 6.0;
         checkerboard.clipsToBounds = YES;
         checkerboard.userInteractionEnabled = NO;

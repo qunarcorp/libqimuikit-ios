@@ -58,7 +58,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     // Buttons
     NSDictionary* barButtonItemAttributes = @{NSFontAttributeName: [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontHeaderSize]};
 
-    NSString *cancelTitle = [NSBundle qim_localizedStringForKey:@"Cancel"];
+    NSString *cancelTitle = [NSBundle stimDB_localizedStringForKey:@"Cancel"];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:cancelTitle
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self.picker
@@ -87,7 +87,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     // Title
     if (!self.picker.title) {
-        self.title = [NSBundle qim_localizedStringForKey:@"Photos"];
+        self.title = [NSBundle stimDB_localizedStringForKey:@"Photos"];
     } else {
         self.title = self.picker.title;
     }
@@ -105,7 +105,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     }
     
     self.collectionsFetchResults = tempArr;
-    self.collectionsLocalizedTitles = @[[NSBundle qim_localizedStringForKey:@"All Photos"],[NSBundle qim_localizedStringForKey:@"Custon Album"],[NSBundle qim_localizedStringForKey:@"Intelligent Album"]];
+    self.collectionsLocalizedTitles = @[[NSBundle stimDB_localizedStringForKey:@"All Photos"],[NSBundle stimDB_localizedStringForKey:@"Custon Album"],[NSBundle stimDB_localizedStringForKey:@"Intelligent Album"]];
     
     [self updateFetchResults];
     
@@ -165,7 +165,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:options];
         [allFetchResultArray addObject:assetsFetchResult];
-        [allFetchResultLabel addObject:[NSBundle qim_localizedStringForKey:@"All Photos"]];
+        [allFetchResultLabel addObject:[NSBundle stimDB_localizedStringForKey:@"All Photos"]];
     }
     
     //User albums:
@@ -234,7 +234,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationLandscapeLeft == toInterfaceOrientation || UIInterfaceOrientationLandscapeRight == toInterfaceOrientation;
     }else{
         return YES;
@@ -248,7 +248,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationMaskLandscape;
     }else{
         return UIInterfaceOrientationMaskPortrait;
@@ -259,7 +259,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
     UIInterfaceOrientation statusOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return statusOrientation;
     }else{
         UIInterfaceOrientation orientation;
@@ -407,9 +407,9 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         }
     } else {
         [cell setVideoLayout:NO];
-        cell.imageView3.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTPHEmptyFolder"];
-        cell.imageView2.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTPHEmptyFolder"];
-        cell.imageView1.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTPHEmptyFolder"];
+        cell.imageView3.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"QTPHEmptyFolder"];
+        cell.imageView2.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"QTPHEmptyFolder"];
+        cell.imageView1.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"QTPHEmptyFolder"];
     }
     
     return cell;

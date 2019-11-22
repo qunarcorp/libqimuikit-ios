@@ -10,7 +10,7 @@
 #define ModuleEventHandler_h
 
 #import <React/RCTBridgeModule.h>
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface ModuleEventHandler : NSObject <RCTBridgeModule>
 

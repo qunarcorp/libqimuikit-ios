@@ -9,7 +9,7 @@
 #ifndef QTalkCardRNViewManager_h
 #define QTalkCardRNViewManager_h
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface QTalkSearchViewManager : QTalkViewController
 

@@ -91,7 +91,7 @@
              lineBreakMode:NSLineBreakByTruncatingTail
         baselineAdjustment:UIBaselineAdjustmentAlignCenters];
     
-    UIImage *videoIcon=[UIImage qim_imageNamedFromQIMUIKitBundle:@"video_icon"];
+    UIImage *videoIcon=[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"video_icon"];
     
     [videoIcon drawAtPoint:CGPointMake(2, (height - videoIcon.size.height) / 2)];
     

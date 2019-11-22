@@ -6,7 +6,7 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #define kColoumn    4

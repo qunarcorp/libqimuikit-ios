@@ -18,28 +18,28 @@ RCT_EXPORT_METHOD(getProjectType:(RCTResponseSenderBlock)success:(RCTResponseSen
     
     NSDictionary *responseData = nil;
     
-    NSString *key = [[QIMKit sharedInstance] thirdpartKeywithValue];
-    NSString *lastJid = [[QIMKit sharedInstance] getLastJid];
-    NSString *myNickName = [[QIMKit sharedInstance] getMyNickName];
+    NSString *key = [[STIMKit sharedInstance] thirdpartKeywithValue];
+    NSString *lastJid = [[STIMKit sharedInstance] getLastJid];
+    NSString *myNickName = [[STIMKit sharedInstance] getMyNickName];
     NSString *realKey = key.length ? key : @"";
     NSString *realLastJid = lastJid.length ? lastJid : @"";
     NSString *realMyNickName = myNickName.length ? myNickName : @"";
-    if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+    if ([STIMKit getSTIMProjectType] == STIMProjectTypeQTalk) {
         // qtalk
-        NSNumber *WorkFeedEntrance = [[QIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"];
+        NSNumber *WorkFeedEntrance = [[STIMKit sharedInstance] userObjectForKey:@"kUserWorkFeedEntrance"];
         if (WorkFeedEntrance == nil) {
             WorkFeedEntrance = @(NO);
         }
         NSLog(@"WorkFeedEntrance : %@", WorkFeedEntrance);
-        responseData = @{@"isQTalk": @YES, @"domain": realLastJid, @"fullname": realMyNickName, @"c_key": realKey, @"checkUserKeyHost":[[QIMKit sharedInstance] qimNav_HttpHost], @"showOA":@([[QIMKit sharedInstance] qimNav_ShowOA]), @"isShowWorkWorld":WorkFeedEntrance};
+        responseData = @{@"isQTalk": @YES, @"domain": realLastJid, @"fullname": realMyNickName, @"c_key": realKey, @"checkUserKeyHost":[[STIMKit sharedInstance] qimNav_HttpHost], @"showOA":@([[STIMKit sharedInstance] qimNav_ShowOA]), @"isShowWorkWorld":WorkFeedEntrance};
     } else {
         // qchat
-        BOOL is = [[QIMKit sharedInstance] isMerchant];
+        BOOL is = [[STIMKit sharedInstance] isMerchant];
         NSNumber *isSupplier = is == YES ? @YES : @NO;
         
         responseData = @{@"isQTalk": @NO, @"domain": realLastJid, @"fullname": realMyNickName, @"c_key": realKey, @"isSupplier": isSupplier};
     }
-    QIMVerboseLog(@"getProjectType : %@", responseData);
+    STIMVerboseLog(@"getProjectType : %@", responseData);
     success(@[responseData]);
 }
 

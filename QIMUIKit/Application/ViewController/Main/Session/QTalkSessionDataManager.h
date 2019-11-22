@@ -1,11 +1,11 @@
 //
 //  QTalkSessionDataManager.h
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by qitmac000645 on 2019/5/27.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @class QtalkSessionModel;
 NS_ASSUME_NONNULL_BEGIN

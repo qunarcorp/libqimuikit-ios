@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
 //
 
-//#import "QIMCommonUIFramework.h"
-#import "QIMCommonUIFramework.h"
+//#import "STIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 // Measuring IOS8 Photos APP at @2x (iPhone5s):
 //   The rows are 180px/90pts

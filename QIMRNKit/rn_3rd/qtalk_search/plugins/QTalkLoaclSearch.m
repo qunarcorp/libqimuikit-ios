@@ -16,7 +16,7 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(exportRNLog:(NSString *)message) {
-    QIMVerboseLog(@"RN日志 : \n<   %@   > \n", message);
+    STIMVerboseLog(@"RN日志 : \n<   %@   > \n", message);
 }
 
 RCT_EXPORT_METHOD(search:(NSString *)key
@@ -28,25 +28,25 @@ RCT_EXPORT_METHOD(search:(NSString *)key
 
     NSMutableArray *data = [QTalkRNSearchManager localSearch:key limit:limit offset:offset groupId:groupId];
     NSDictionary *resp1 = @{@"is_ok" : @YES, @"data" : data ? data : @[], @"errorMsg" : @""};
-    QIMVerboseLog(@"本地搜索记录结果 : %@", resp1);
+    STIMVerboseLog(@"本地搜索记录结果 : %@", resp1);
     resolve(resp1);
 }
 
 RCT_EXPORT_METHOD(searchUrl:(NSString *)MSG
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    NSString *searchUrl = [[QIMKit sharedInstance] qimNav_SearchUrl];
+    NSString *searchUrl = [[STIMKit sharedInstance] qimNav_SearchUrl];
     NSDictionary *resp1 = @{@"is_ok" : @YES, @"data" : searchUrl ? searchUrl : @"", @"Msg" : MSG};
-    QIMVerboseLog(@"本地搜索获取搜索URL : %@", resp1);
+    STIMVerboseLog(@"本地搜索获取搜索URL : %@", resp1);
     resolve(resp1);
 }
 
 RCT_EXPORT_METHOD(getVersion:(NSString *)MSG
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    NSString *appBuildVersion = [[QIMKit sharedInstance] AppBuildVersion];
+    NSString *appBuildVersion = [[STIMKit sharedInstance] AppBuildVersion];
     NSDictionary *resp1 = @{@"is_ok" : @YES, @"data" : appBuildVersion ? appBuildVersion : @"", @"Msg" : MSG};
-    QIMVerboseLog(@"本地搜索获取版本号 : %@", resp1);
+    STIMVerboseLog(@"本地搜索获取版本号 : %@", resp1);
     resolve(resp1);
 }
 @end

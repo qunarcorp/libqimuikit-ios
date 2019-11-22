@@ -25,8 +25,8 @@ Pod::Spec.new do |s|
   $beta = ENV['beta']
 
   s.subspec 'PublicUIHeader'  do |ph|
-    ph.public_header_files = "QIMUIKit/QIMNotificationManager*.{h}", "QIMUIKit/QIMJumpURLHandle*.{h}", "QIMUIKit/QIMFastEntrance*.{h}", "QIMUIKit/QIMAppWindowManager*.{h}", "QIMUIKit/QIMCommonUIFramework*.*{h}", "QIMUIKit/QIMRemoteNotificationManager*.{h}"
-    ph.source_files = "QIMUIKit/QIMNotificationManager*.{h,m,c,mm}", "QIMUIKit/QIMJumpURLHandle*.{h,m,c,mm}", "QIMUIKit/QIMFastEntrance*.{h,m,c,mm}", "QIMUIKit/QIMAppWindowManager*.{h,m,c,mm}", "QIMUIKit/QIMCommonUIFramework*.*{h,m,c,mm}", "QIMUIKit/QIMRemoteNotificationManager*.{h,m,c,mm}"
+    ph.public_header_files = "QIMUIKit/STIMNotificationManager*.{h}", "QIMUIKit/STIMJumpURLHandle*.{h}", "QIMUIKit/STIMFastEntrance*.{h}", "QIMUIKit/STIMAppWindowManager*.{h}", "QIMUIKit/STIMCommonUIFramework*.*{h}", "QIMUIKit/STIMRemoteNotificationManager*.{h}"
+    ph.source_files = "QIMUIKit/STIMNotificationManager*.{h,m,c,mm}", "QIMUIKit/STIMJumpURLHandle*.{h,m,c,mm}", "QIMUIKit/STIMFastEntrance*.{h,m,c,mm}", "QIMUIKit/STIMAppWindowManager*.{h,m,c,mm}", "QIMUIKit/STIMCommonUIFramework*.*{h,m,c,mm}", "QIMUIKit/STIMRemoteNotificationManager*.{h,m,c,mm}"
   end
 
   s.subspec 'QIMAppUIConfig' do |config|

@@ -1,6 +1,6 @@
 //
 //  loginUnSettingNavView.h
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by qitmac000645 on 2019/7/10.
 //

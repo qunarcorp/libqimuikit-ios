@@ -1,20 +1,20 @@
 //
 //  QTalkNewSessionTableViewCell.m
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by qitmac000645 on 2019/6/10.
 //
 
 #import "QTalkNewSessionTableViewCell.h"
 #import "UILabel+AttributedTextWithItems.h"
-#import "QIMBadgeButton.h"
-#import "QIMJSONSerializer.h"
-#import "QIMCommonFont.h"
-#import "NSBundle+QIMLibrary.h"
+#import "STIMBadgeButton.h"
+#import "STIMJSONSerializer.h"
+#import "STIMCommonFont.h"
+#import "NSBundle+STIMLibrary.h"
 
 static NSDateFormatter  *__global_dateformatter;
-#define NAME_LABEL_FONT     ([[QIMCommonFont sharedInstance] currentFontSize] )  //名字字体
-#define CONTENT_LABEL_FONT  ([[QIMCommonFont sharedInstance] currentFontSize] - 4)  //新消息字体,时间字体
+#define NAME_LABEL_FONT     ([[STIMCommonFont sharedInstance] currentFontSize] )  //名字字体
+#define CONTENT_LABEL_FONT  ([[STIMCommonFont sharedInstance] currentFontSize] - 4)  //新消息字体,时间字体
 #define COLOR_TIME_LABEL [UIColor blueColor] //时间颜色;
 
 #define kUtilityButtonsWidthMax 260
@@ -38,7 +38,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 @property (nonatomic, strong) UILabel *timeLabel;           //消息时间戳
 
-@property (nonatomic, strong) QIMBadgeButton *notReadNumButton;   //未读数拖拽按钮
+@property (nonatomic, strong) STIMBadgeButton *notReadNumButton;   //未读数拖拽按钮
 
 @property (nonatomic, strong) UIImageView *muteView;            //消息免打扰
 
@@ -48,11 +48,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 #pragma mark - infoDic
 
-@property (nonatomic, assign) QIMMessageType msgType;
+@property (nonatomic, assign) STIMMessageType msgType;
 
-@property (nonatomic, assign) QIMMessageSendState msgState;
+@property (nonatomic, assign) STIMMessageSendState msgState;
 
-@property (nonatomic, assign) QIMMessageDirection msgDirection;
+@property (nonatomic, assign) STIMMessageDirection msgDirection;
 
 @property (nonatomic, assign) long long msgDateTime;
 
@@ -68,7 +68,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 @property (nonatomic, copy) NSString *markUpName;
 
-@property (nonatomic, strong)QIMMessageModel *currentMsg;          //当前消息
+@property (nonatomic, strong)STIMMessageModel *currentMsg;          //当前消息
 
 
 @end
@@ -98,13 +98,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             self.isReminded = [[infoDic objectForKey:@"Reminded"] boolValue];
             self.msgFrom = [infoDic objectForKey:@"MsgFrom"];
             /*
-             NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:self.nickName];
+             NSDictionary *userInfo = [[STIMKit sharedInstance] getUserInfoByUserId:self.nickName];
              NSString *userName = [userInfo objectForKey:@"Name"];
              if (!userName || userName.length <= 0) {
              userName = [[self.nickName componentsSeparatedByString:@"@"] firstObject];
              }
              //备注
-             NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userInfo[@"XmppId"]];
+             NSString *remarkName = [[STIMKit sharedInstance] getUserMarkupNameWithUserId:userInfo[@"XmppId"]];
              self.nickName = (remarkName.length > 0) ? remarkName : userName;
              */
             [self generateCombineJidWithChatType:self.chatType];
@@ -163,7 +163,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (UIImageView *)stickView {
     if (!_stickView) {
         _stickView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 11, 11)];
-        _stickView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"qim_sessionlist_sticky"];
+        _stickView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"stimDB_sessionlist_sticky"];
     }
     return _stickView;
 }
@@ -171,8 +171,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (UIImageView *)muteNotReadView {
     if (!_muteNotReadView) {
         
-        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 20, self.timeLabel.bottom + 15, 8, 8)];
-        _muteNotReadView.backgroundColor = [UIColor qim_colorWithHex:0xEB524A];
+        _muteNotReadView = [[UIImageView alloc] initWithFrame:CGRectMake([[STIMWindowManager shareInstance] getPrimaryWidth] - 20, self.timeLabel.bottom + 15, 8, 8)];
+        _muteNotReadView.backgroundColor = [UIColor stimDB_colorWithHex:0xEB524A];
         _muteNotReadView.layer.cornerRadius  = _muteNotReadView.width / 2.0;
         _muteNotReadView.clipsToBounds = YES;
         _muteNotReadView.centerY = self.muteView.centerY;
@@ -185,7 +185,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (!_prefrenceImageView) {
         
         _prefrenceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.headerView.right - 18, self.headerView.bottom - 15, 15, 15)];
-        [_prefrenceImageView setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"hotline"]];
+        [_prefrenceImageView setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"hotline"]];
         [_prefrenceImageView setBackgroundColor:[UIColor whiteColor]];
         _prefrenceImageView.layer.masksToBounds = YES;
     }
@@ -196,9 +196,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_nameLabel) {
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 17, [[QIMWindowManager shareInstance] getPrimaryWidth] - 145, qim_sessionViewNameLabelSize)];
-        _nameLabel.font = [UIFont boldSystemFontOfSize:qim_sessionViewNameLabelSize];
-        _nameLabel.textColor = qim_sessionCellNameTextColor;
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 17, [[STIMWindowManager shareInstance] getPrimaryWidth] - 145, stimDB_sessionViewNameLabelSize)];
+        _nameLabel.font = [UIFont boldSystemFontOfSize:stimDB_sessionViewNameLabelSize];
+        _nameLabel.textColor = stimDB_sessionCellNameTextColor;
         _nameLabel.backgroundColor = [UIColor clearColor];
     }
     return _nameLabel;
@@ -210,9 +210,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         
         CGFloat timeLabelMaxX = CGRectGetMaxX(self.timeLabel.frame);
         CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 35;
-        _contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, qim_sessionViewContentLabelSize)];
-        _contentLabel.font = [UIFont systemFontOfSize:qim_sessionViewContentLabelSize];
-        _contentLabel.textColor = qim_sessionCellContentTextColor;
+        _contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLabel.left, self.nameLabel.bottom + 7, contentLabelWidth, stimDB_sessionViewContentLabelSize)];
+        _contentLabel.font = [UIFont systemFontOfSize:stimDB_sessionViewContentLabelSize];
+        _contentLabel.textColor = stimDB_sessionCellContentTextColor;
         _contentLabel.backgroundColor = [UIColor clearColor];
     }
     return _contentLabel;
@@ -222,9 +222,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_timeLabel) {
         
-        _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 85, self.nameLabel.bottom - 16, 75, 12)];
-        _timeLabel.font = [UIFont systemFontOfSize:qim_sessionViewTimeLabelSize];
-        _timeLabel.textColor = qim_sessionCellTimeTextColor;
+        _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake([[STIMWindowManager shareInstance] getPrimaryWidth] - 85, self.nameLabel.bottom - 16, 75, 12)];
+        _timeLabel.font = [UIFont systemFontOfSize:stimDB_sessionViewTimeLabelSize];
+        _timeLabel.textColor = stimDB_sessionCellTimeTextColor;
         _timeLabel.backgroundColor = [UIColor clearColor];
         _timeLabel.textAlignment = NSTextAlignmentRight;
     }
@@ -236,11 +236,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_muteView) {
         
-        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 40, self.timeLabel.bottom + 15, 15, 15)];
+        _muteView = [[UIImageView alloc] initWithFrame:CGRectMake([[STIMWindowManager shareInstance] getPrimaryWidth] - 40, self.timeLabel.bottom + 15, 15, 15)];
         _muteView.layer.cornerRadius = _muteView.width / 2.0;
         _muteView.clipsToBounds = YES;
         _muteView.backgroundColor = self.backgroundColor;
-        _muteView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_sessionViewMute_font size:15 color:qim_sessionViewMuteColor]];
+        _muteView.image = [UIImage qimIconWithInfo:[STIMIconInfo iconInfoWithText:stimDB_sessionViewMute_font size:15 color:stimDB_sessionViewMuteColor]];
         _muteView.centerY = self.contentLabel.centerY;
     }
     return _muteView;
@@ -250,7 +250,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (!CGRectEqualToRect(frame, self.notReadNumButton.frame) && !CGRectEqualToRect(frame, CGRectZero)) {
         [self.notReadNumButton removeFromSuperview];
         self.notReadNumButton = nil;
-        _notReadNumButton = [[QIMBadgeButton alloc] initWithFrame:frame];
+        _notReadNumButton = [[STIMBadgeButton alloc] initWithFrame:frame];
         [_notReadNumButton setBadgeFont:[UIFont systemFontOfSize:14]];
         _notReadNumButton.isShowSpringAnimation = YES;
         _notReadNumButton.isShowBomAnimation = YES;
@@ -259,7 +259,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         [self.contentView insertSubview:_notReadNumButton atIndex:0];
     } else {
         if (!_notReadNumButton) {
-            _notReadNumButton = [[QIMBadgeButton alloc] initWithFrame:CGRectMake(self.timeLabel.right - 35, 11, 35, 20)];
+            _notReadNumButton = [[STIMBadgeButton alloc] initWithFrame:CGRectMake(self.timeLabel.right - 35, 11, 35, 20)];
             [_notReadNumButton setBadgeFont:[UIFont systemFontOfSize:14]];
             _notReadNumButton.isShowSpringAnimation = YES;
             _notReadNumButton.isShowBomAnimation = YES;
@@ -269,18 +269,18 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         }
     }
     self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
-    [self.notReadNumButton setBadgeColor:qim_sessionViewNotReadNumButtonColor];
+    [self.notReadNumButton setBadgeColor:stimDB_sessionViewNotReadNumButtonColor];
     [self.notReadNumButton setBadgeString:badgeString];
     __weak typeof(self) weakSelf = self;
-    [self.notReadNumButton setDidClickBlock:^(QIMBadgeButton * badgeButton) {
+    [self.notReadNumButton setDidClickBlock:^(STIMBadgeButton * badgeButton) {
         [weakSelf clearNotRead];
     }];
-    [self.notReadNumButton setDidDisappearBlock:^(QIMBadgeButton * badgeButton) {
+    [self.notReadNumButton setDidDisappearBlock:^(STIMBadgeButton * badgeButton) {
         [weakSelf clearNotRead];
     }];
     __block BOOL groupState = NO;
     if (self.isReminded == NO) {
-        [self.notReadNumButton setBadgeColor:qim_sessionViewNotReadNumButtonColor];
+        [self.notReadNumButton setBadgeColor:stimDB_sessionViewNotReadNumButtonColor];
     } else {
         [self.notReadNumButton hiddenBadgeButton:YES];
         [self.contentView addSubview:self.muteNotReadView];
@@ -291,7 +291,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     if (!_deleteBtn) {
         
-        _deleteBtn = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:[NSBundle qim_localizedStringForKey:@"Remove"] handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        _deleteBtn = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:[NSBundle stimDB_localizedStringForKey:@"Remove"] handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
             
             if (self.sessionScrollDelegate && [self.sessionScrollDelegate respondsToSelector:@selector(qimDeleteSession:)]) {
                 
@@ -306,7 +306,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (UITableViewRowAction *)stickyBtn {
     
-    NSString *title = self.isStick ? [NSBundle qim_localizedStringForKey:@"chat_remove_sticky"] : [NSBundle qim_localizedStringForKey:@"chat_Sticky_Top"];
+    NSString *title = self.isStick ? [NSBundle stimDB_localizedStringForKey:@"chat_remove_sticky"] : [NSBundle stimDB_localizedStringForKey:@"chat_Sticky_Top"];
     
     _stickyBtn = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:title handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
         
@@ -316,7 +316,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         }
         [self.containingTableView setEditing:NO animated:YES];
     }];
-    _stickyBtn.backgroundColor = [UIColor qim_colorWithHex:0xC8C9CB];
+    _stickyBtn.backgroundColor = [UIColor stimDB_colorWithHex:0xC8C9CB];
     
     return _stickyBtn;
 }
@@ -326,7 +326,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (void)initUI {
     
     self.selectedBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
-    self.selectedBackgroundView.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
+    self.selectedBackgroundView.backgroundColor = [UIColor stimDB_colorWithHex:0xEEEEEE];
     [self.contentView addSubview:self.headerView];
     [self.contentView addSubview:self.nameLabel];
     [self.contentView addSubview:self.contentLabel];
@@ -350,31 +350,31 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (!self.bindId) {
         if (self.chatType == ChatType_GroupChat) {
             
-            [[QIMKit sharedInstance] clearNotReadMsgByGroupId:self.jid];
+            [[STIMKit sharedInstance] clearNotReadMsgByGroupId:self.jid];
         } else if (self.chatType == ChatType_SingleChat) {
             
-            [[QIMKit sharedInstance] clearNotReadMsgByJid:self.jid];
+            [[STIMKit sharedInstance] clearNotReadMsgByJid:self.jid];
         } else if (self.chatType == ChatType_System) {
             
-            [[QIMKit sharedInstance] clearSystemMsgNotReadWithJid:self.jid];
+            [[STIMKit sharedInstance] clearSystemMsgNotReadWithJid:self.jid];
         } else if (self.chatType == ChatType_PublicNumber) {
-            [[QIMKit sharedInstance] clearNotReadMsgByPublicNumberId:self.jid];
+            [[STIMKit sharedInstance] clearNotReadMsgByPublicNumberId:self.jid];
         } else if (self.chatType == ChatType_ConsultServer) {
             NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
             NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
-            [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:realJid];
+            [[STIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:realJid];
         } else if (self.chatType == ChatType_Consult) {
             NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
-            [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:xmppId];
+            [[STIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:xmppId];
         } else if (self.chatType == ChatType_CollectionChat) {
             NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
-            [[QIMKit sharedInstance] clearNotReadCollectionMsgByJid:xmppId];
+            [[STIMKit sharedInstance] clearNotReadCollectionMsgByJid:xmppId];
         } else {
             
             return;
         }
     } else {
-        [[QIMKit sharedInstance] clearNotReadCollectionMsgByBindId:self.bindId WithUserId:self.jid];
+        [[STIMKit sharedInstance] clearNotReadCollectionMsgByBindId:self.bindId WithUserId:self.jid];
     }
 }
 
@@ -383,24 +383,24 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (NSString *)refreshContentWithMessage:(NSString *)message {
     NSString *content = nil;
     if (!self) {
-        QIMVerboseLog(@"sessionCell为nil了");
+        STIMVerboseLog(@"sessionCell为nil了");
         return nil;
     }
-    self.nickName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.msgFrom];
+    self.nickName = [[STIMKit sharedInstance] getUserMarkupNameWithUserId:self.msgFrom];
     switch (self.msgType) {
-        case QIMMessageType_Text:
-        case QIMMessageType_NewAt:
-        case QIMMessageType_Shock: {
-            if (self.msgDirection == QIMMessageDirection_Received && self.chatType != ChatType_SingleChat && self.chatType != ChatType_System && self.chatType != ChatType_ConsultServer && self.chatType != ChatType_Consult && self.nickName.length > 0) {
+        case STIMMessageType_Text:
+        case STIMMessageType_NewAt:
+        case STIMMessageType_Shock: {
+            if (self.msgDirection == STIMMessageDirection_Received && self.chatType != ChatType_SingleChat && self.chatType != ChatType_System && self.chatType != ChatType_ConsultServer && self.chatType != ChatType_Consult && self.nickName.length > 0) {
                 content = [NSString stringWithFormat:@"%@:%@", self.nickName, message];
             } else {
                 content = message;
             }
         }
             break;
-        case QIMMessageType_Revoke: {
-            content = [[QIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
-            if (self.msgDirection == QIMMessageDirection_Received && self.nickName.length > 0) {
+        case STIMMessageType_Revoke: {
+            content = [[STIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
+            if (self.msgDirection == STIMMessageDirection_Received && self.nickName.length > 0) {
                 content = [NSString stringWithFormat:@"\"%@\"%@", self.nickName, content];
             } else {
                 content = [NSString stringWithFormat:@"你%@", content];
@@ -409,7 +409,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             break;
         case PublicNumberMsgType_Notice:
         case PublicNumberMsgType_OrderNotify: {
-            NSDictionary *dic = [[QIMJSONSerializer sharedInstance] deserializeObject:message error:nil];
+            NSDictionary *dic = [[STIMJSONSerializer sharedInstance] deserializeObject:message error:nil];
             NSString *title = [dic objectForKey:@"title"];
             if (title.length > 0) {
                 
@@ -420,23 +420,23 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             }
         }
             break;
-        case QIMMessageType_Consult: {
+        case STIMMessageType_Consult: {
             
-            NSDictionary *msgDic = [[QIMJSONSerializer sharedInstance] deserializeObject:message error:nil];
+            NSDictionary *msgDic = [[STIMJSONSerializer sharedInstance] deserializeObject:message error:nil];
             NSString *tagStr = [msgDic objectForKey:@"source"];
             NSString *msgStr = [msgDic objectForKey:@"detail"];
             content = [NSString stringWithFormat:@"%@:%@",tagStr?tagStr:@"",msgStr];
         }
             break;
-        case QIMMessageType_CNote: {
+        case STIMMessageType_CNote: {
             if (message.length > 0) {
                 
-                content = [[QIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
+                content = [[STIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
                 if (content.length <= 0) {
                     
                     content = @"发送了一条消息。";
                 }
-                if (self.msgDirection == QIMMessageDirection_Received) {
+                if (self.msgDirection == STIMMessageDirection_Received) {
                     content = @"接收到一条消息。";
                 } else {
                     content = @"发送了一条消息。";
@@ -447,12 +447,12 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         default: {
             if (message.length > 0) {
                 
-                content = [[QIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
+                content = [[STIMKit sharedInstance] getMsgShowTextForMessageType:self.msgType];
                 if (content.length <= 0) {
                     
                     content = @"发送了一条消息。";
                 }
-                if (self.msgDirection == QIMMessageDirection_Received && (self.chatType == ChatType_GroupChat || self.chatType == ChatType_CollectionChat) && self.nickName.length > 0) {
+                if (self.msgDirection == STIMMessageDirection_Received && (self.chatType == ChatType_GroupChat || self.chatType == ChatType_CollectionChat) && self.nickName.length > 0) {
                     content = [NSString stringWithFormat:@"%@:%@", self.nickName, content];
                 } else {
                     
@@ -461,15 +461,15 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         }
             break;
     }
-    if (self.msgDirection == QIMMessageDirection_Sent) {
-        if (self.msgState == QIMMessageSendState_Faild) {
+    if (self.msgDirection == STIMMessageDirection_Sent) {
+        if (self.msgState == STIMMessageSendState_Faild) {
             content = [NSString stringWithFormat:@"[obj type=\"faild\" value=\"\"]%@", content];
-        } else if (self.msgState == QIMMessageSendState_Waiting) {
+        } else if (self.msgState == STIMMessageSendState_Waiting) {
             content = [NSString stringWithFormat:@"[obj type=\"waiting\" value=\"\"]%@", content];
         }
     }
     
-    NSDictionary *notSendDic = [[QIMKit sharedInstance] getNotSendTextByJid:self.jid];
+    NSDictionary *notSendDic = [[STIMKit sharedInstance] getNotSendTextByJid:self.jid];
     NSString *draftStr = notSendDic[@"text"];
     if (draftStr.length > 0) {
         content = [NSString stringWithFormat:@"[obj type=\"draft\" value=\"\"]%@", draftStr];
@@ -489,19 +489,19 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (self.bindId) {
         
         self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
-        [self.headerView qim_setCollectionImageWithJid:self.jid WithChatType:self.chatType];
+        [self.headerView stimDB_setCollectionImageWithJid:self.jid WithChatType:self.chatType];
     } else {
         NSString *headerUrl = [self.infoDic objectForKey:@"HeaderSrc"];
         self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
         if (headerUrl.length > 0) {
-            if (![headerUrl qim_hasPrefixHttpHeader]) {
-                headerUrl = [NSString stringWithFormat:@"%@/%@", [[QIMKit sharedInstance] qimNav_InnerFileHttpHost], headerUrl];
+            if (![headerUrl stimDB_hasPrefixHttpHeader]) {
+                headerUrl = [NSString stringWithFormat:@"%@/%@", [[STIMKit sharedInstance] qimNav_InnerFileHttpHost], headerUrl];
             }
-            [self.headerView qim_setImageWithURL:[NSURL URLWithString:headerUrl] WithChatType:self.chatType];
+            [self.headerView stimDB_setImageWithURL:[NSURL URLWithString:headerUrl] WithChatType:self.chatType];
         } else {
             self.chatType = [[self.infoDic objectForKey:@"ChatType"] integerValue];
             NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
-            [self.headerView qim_setImageWithJid:self.jid WithRealJid:realJid WithChatType:self.chatType];
+            [self.headerView stimDB_setImageWithJid:self.jid WithRealJid:realJid WithChatType:self.chatType];
         }
     }
 }
@@ -512,7 +512,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     CGFloat timeLabelMaxX = CGRectGetMaxX(self.timeLabel.frame);
     CGFloat contentLabelWidth = timeLabelMaxX - self.nameLabel.left - 35;
     if (self.bindId) {
-        self.notReadCount = [[QIMKit sharedInstance] getNotReadCollectionMsgCountByBindId:self.bindId WithUserId:self.jid];
+        self.notReadCount = [[STIMKit sharedInstance] getNotReadCollectionMsgCountByBindId:self.bindId WithUserId:self.jid];
     }
     __block NSString *countStr = nil;
     if (self.notReadCount > 0) {
@@ -548,12 +548,12 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if (self.isReminded == YES && countStr.length > 0) {//接收不提醒
         self.muteView.hidden = NO;
         [self refeshContent];
-        self.muteView.frame = CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 40, self.timeLabel.bottom + 15, 15, 15);
+        self.muteView.frame = CGRectMake([[STIMWindowManager shareInstance] getPrimaryWidth] - 40, self.timeLabel.bottom + 15, 15, 15);
         self.muteView.centerY = self.contentLabel.centerY;
     } else if (self.isReminded == YES && countStr.length <= 0) {//接收不提醒
         self.muteView.hidden = NO;
         [self refeshContent];
-        self.muteView.frame = CGRectMake([[QIMWindowManager shareInstance] getPrimaryWidth] - 25, self.timeLabel.bottom + 15, 15, 15);
+        self.muteView.frame = CGRectMake([[STIMWindowManager shareInstance] getPrimaryWidth] - 25, self.timeLabel.bottom + 15, 15, 15);
         self.muteView.centerY = self.contentLabel.centerY;
     } else {
         self.muteView.hidden = YES;
@@ -574,7 +574,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         switch (self.chatType) {
             case ChatType_GroupChat: {
                 if (!self.bindId) {
-                    NSDictionary *groupVcard = [[QIMKit sharedInstance] getGroupCardByGroupId:self.jid];
+                    NSDictionary *groupVcard = [[STIMKit sharedInstance] getGroupCardByGroupId:self.jid];
                     if (groupVcard.count > 0) {
                         NSString *groupName = [groupVcard objectForKey:@"Name"];
                         NSInteger groupUpdateTime = [[groupVcard objectForKey:@"LastUpdateTime"] integerValue];
@@ -582,13 +582,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                             self.showName = groupName;
                         } else {
                             [self reloadPlaceHolderName];
-                            [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid withCache:YES];
+                            [[STIMKit sharedInstance] updateGroupCardByGroupId:self.jid withCache:YES];
                         }
                     } else {
-                        [[QIMKit sharedInstance] updateGroupCardByGroupId:self.jid withCache:YES];
+                        [[STIMKit sharedInstance] updateGroupCardByGroupId:self.jid withCache:YES];
                     }
                 } else {
-                    NSDictionary *cardDic = [[QIMKit sharedInstance] getCollectionGroupCardByGroupId:self.jid];
+                    NSDictionary *cardDic = [[STIMKit sharedInstance] getCollectionGroupCardByGroupId:self.jid];
                     NSString *collectionGroupName = [cardDic objectForKey:@"Name"];
                     if (collectionGroupName.length > 0) {
                         self.showName = collectionGroupName;
@@ -612,7 +612,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                         self.showName = @"抢单";
                     } else {
                         
-                        self.showName = [NSBundle qim_localizedStringForKey:@"System Messages"];//@"系统消息";
+                        self.showName = [NSBundle stimDB_localizedStringForKey:@"System Messages"];//@"系统消息";
                     }
                 }
             }
@@ -624,7 +624,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             case ChatType_SingleChat: {
                 if (!self.bindId) {
                     //备注
-                    NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:self.jid];
+                    NSString *remarkName = [[STIMKit sharedInstance] getUserMarkupNameWithUserId:self.jid];
                     if (remarkName.length > 0) {
                         
                         self.showName = remarkName;
@@ -632,7 +632,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                         
                     }
                 } else {
-                    NSDictionary *userInfo = [[QIMKit sharedInstance] getCollectionUserInfoByUserId:self.jid];
+                    NSDictionary *userInfo = [[STIMKit sharedInstance] getCollectionUserInfoByUserId:self.jid];
                     NSString *userName = [userInfo objectForKey:@"Name"];
                     if (userName.length > 0) {
                         self.showName = userName;
@@ -643,7 +643,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             }
                 break;
             case ChatType_PublicNumber: {
-                self.showName = [NSBundle qim_localizedStringForKey:@"contact_tab_public_number"];
+                self.showName = [NSBundle stimDB_localizedStringForKey:@"contact_tab_public_number"];
             }
                 break;
             case ChatType_ConsultServer: {
@@ -653,13 +653,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
                 NSString *realJid = [self.infoDic objectForKey:@"RealJid"];
                 
-                NSDictionary *virtualInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
+                NSDictionary *virtualInfo = [[STIMKit sharedInstance] getUserInfoByUserId:xmppId];
                 NSString *virtualName = [virtualInfo objectForKey:@"Name"];
                 if (virtualName.length <= 0) {
                     virtualName = [xmppId componentsSeparatedByString:@"@"].firstObject;
                 }
                 
-                NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:realJid];
+                NSDictionary *userInfo = [[STIMKit sharedInstance] getUserInfoByUserId:realJid];
                 NSString *realName = [userInfo objectForKey:@"Name"];
                 if (realName.length <= 0) {
                     realName = [realJid componentsSeparatedByString:@"@"].firstObject;
@@ -669,7 +669,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 break;
             case ChatType_Consult: {
                 NSString *xmppId = [self.infoDic objectForKey:@"XmppId"];
-                NSDictionary * virtualInfo = [[QIMKit sharedInstance] getUserInfoByUserId:xmppId];
+                NSDictionary * virtualInfo = [[STIMKit sharedInstance] getUserInfoByUserId:xmppId];
                 NSString *virtualName = [virtualInfo objectForKey:@"Name"];
                 if (virtualName.length <= 0) {
                     virtualName = [xmppId componentsSeparatedByString:@"@"].firstObject;
@@ -701,7 +701,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     __block NSString *timeStr = nil;
         if (msgDate > 0) {
             
-            NSDate *senddate = [NSDate qim_dateWithTimeIntervalInMilliSecondSince1970:msgDate];
+            NSDate *senddate = [NSDate stimDB_dateWithTimeIntervalInMilliSecondSince1970:msgDate];
             
             if (__global_dateformatter == nil) {
                 
@@ -709,7 +709,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 [__global_dateformatter setDateFormat:@"MM-dd HH:mm"];
             }
             
-            BOOL isToday = [senddate qim_isToday];
+            BOOL isToday = [senddate stimDB_isToday];
             if (isToday) {
                 
                 NSString *locationString = [__global_dateformatter stringFromDate:senddate];
@@ -771,14 +771,14 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     __block NSString *content = @"";
     __weak __typeof(self) weakSelf = self;
     if (message.length > 0) {
-        dispatch_async([[QIMKit sharedInstance] getLoadSessionContentQueue], ^{
+        dispatch_async([[STIMKit sharedInstance] getLoadSessionContentQueue], ^{
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (!strongSelf) {
                 return;
             }
-            NSArray *atMeMessages = [[QIMKit sharedInstance] getHasAtMeByJid:strongSelf.jid];
+            NSArray *atMeMessages = [[STIMKit sharedInstance] getHasAtMeByJid:strongSelf.jid];
             if (atMeMessages.count > 0) {
-                NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor qim_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
+                NSDictionary * titleDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor stimDB_colorWithHex:0xEB524A alpha:1], NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
                 NSAttributedString *atStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"[有人@我]"] attributes:titleDic];
                 [str appendAttributedString:atStr];
             }
@@ -822,13 +822,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
             [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:tStr]];
             if ([type isEqualToString:@"image"]) {
                 
-                [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:[NSBundle qim_localizedStringForKey:@"[Photo]"]]];
+                [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:[NSBundle stimDB_localizedStringForKey:@"[Photo]"]]];
             } else if ([type isEqualToString:@"emoticon"]) {
                 
                 [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"[表情]"]];
             } else if ([type isEqualToString:@"url"]){
                 
-                NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:value attributes:@{NSForegroundColorAttributeName:qim_sessionCellContentTextColor}];
+                NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:value attributes:@{NSForegroundColorAttributeName:stimDB_sessionCellContentTextColor}];
                 [attStr appendAttributedString:attStr1];
             } else if ([type isEqualToString:@"draft"]) {
                 NSAttributedString *attStr1 = [[NSAttributedString alloc] initWithString:@"[草稿]" attributes:@{NSForegroundColorAttributeName:[UIColor redColor]}];
@@ -851,7 +851,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                 lastStr = [[msg substringFromIndex:(match.range.location + match.range.length)] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
                 if ([lastStr length] > 0) {
                     UIFont *font = [UIFont systemFontOfSize:15];
-                    NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999]}];
+                    NSMutableDictionary *attributed = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor stimDB_colorWithHex:0x999999]}];
                     [attStr appendAttributedString:[[NSAttributedString alloc] initWithString:lastStr attributes:attributed]];
                 }
             }

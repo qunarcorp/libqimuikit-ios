@@ -1,6 +1,6 @@
 //
 //  NSMutableAttributedString+QC.m
-//  QIMAttributedLabelDemo
+//  STIMAttributedLabelDemo
 //
 //  Created by chenjie on 16/7/7.
 //  Copyright (c) 2016年 chenjie. All rights reserved.

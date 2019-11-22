@@ -4,7 +4,7 @@
 #else
 #import <React/RCTBridgeModule.h>
 #endif
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface RNCookieManagerIOS : NSObject <RCTBridgeModule>
 

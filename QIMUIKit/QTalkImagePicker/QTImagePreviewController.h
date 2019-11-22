@@ -6,7 +6,7 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface QTImagePreviewController : QTalkViewController
 @property (nonatomic, strong) NSArray *photoArray;

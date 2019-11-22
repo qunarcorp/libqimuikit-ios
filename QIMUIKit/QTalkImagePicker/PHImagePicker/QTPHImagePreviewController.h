@@ -6,8 +6,8 @@
 //
 //
 
-//#import "QIMCommonUIFramework.h"
-#import "QIMCommonUIFramework.h"
+//#import "STIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @class QTPHImagePickerController;
 @class QTPHGridViewController;

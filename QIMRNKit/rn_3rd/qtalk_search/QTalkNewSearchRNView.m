@@ -1,18 +1,18 @@
 //
 //  QTalkNewSearchRNView.m
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by lilu on 2019/7/1.
-//  Copyright © 2019 QIM. All rights reserved.
+//  Copyright © 2019 STIM. All rights reserved.
 //
 
 #import <React/RCTRootView.h>
 #import <React/RCTBridge.h>
 #import <React/RCTEventDispatcher.h>
-#import "NSBundle+QIMLibrary.h"
+#import "NSBundle+STIMLibrary.h"
 
-#if defined (QIMLogEnable) && QIMLogEnable == 1
-#import "QIMLocalLog.h"
+#if defined (STIMLogEnable) && STIMLogEnable == 1
+#import "STIMLocalLog.h"
 #endif
 
 #import "MBProgressHUD.h"
@@ -69,14 +69,14 @@ static RCTBridge *bridge = nil;
 
 - (NSDictionary *)getNewSearchInitialProps {
     NSMutableDictionary *initialProps = [NSMutableDictionary dictionaryWithCapacity:4];
-    [initialProps setQIMSafeObject:[[QIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"server"];
-    [initialProps setQIMSafeObject:[[QIMKit sharedInstance] qimNav_New_SearchUrl] forKey:@"searchUrl"];
-    [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/avatar/new/e059510ea07afacc424640b2e71af997.jpg" forKey:@"singleDefaultPic"];
-    [initialProps setQIMSafeObject:@"https://qim.qunar.com/file/v2/download/temp/new/9c74475153c716728fc486255f9546f1.png" forKey:@"mucDefaultDic"];
-    [initialProps setQIMSafeObject:[[QIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"imageHost"];
-    [initialProps setQIMSafeObject:[[QIMKit sharedInstance] getLastJid] forKey:@"MyUserId"];
-    NSArray *searchKeyHistory = [[QIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:QIMSearchTypeAll withLimit:5];
-    [initialProps setQIMSafeObject:searchKeyHistory ? searchKeyHistory : @[] forKey:@"searchKeyHistory"];
+    [initialProps setSTIMSafeObject:[[STIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"server"];
+    [initialProps setSTIMSafeObject:[[STIMKit sharedInstance] qimNav_New_SearchUrl] forKey:@"searchUrl"];
+    [initialProps setSTIMSafeObject:@"https://qim.qunar.com/file/v2/download/avatar/new/e059510ea07afacc424640b2e71af997.jpg" forKey:@"singleDefaultPic"];
+    [initialProps setSTIMSafeObject:@"https://qim.qunar.com/file/v2/download/temp/new/9c74475153c716728fc486255f9546f1.png" forKey:@"mucDefaultDic"];
+    [initialProps setSTIMSafeObject:[[STIMKit sharedInstance] qimNav_InnerFileHttpHost] forKey:@"imageHost"];
+    [initialProps setSTIMSafeObject:[[STIMKit sharedInstance] getLastJid] forKey:@"MyUserId"];
+    NSArray *searchKeyHistory = [[STIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:STIMSearchTypeAll withLimit:5];
+    [initialProps setSTIMSafeObject:searchKeyHistory ? searchKeyHistory : @[] forKey:@"searchKeyHistory"];
     return initialProps;
 }
 
@@ -128,12 +128,12 @@ static RCTBridge *bridge = nil;
 - (NSURL *)getJSCodeLocation {
     // For production use, this `NSURL` could instead point to a pre-bundled file on disk:
     //
-    NSString *appDebugOpsSearchRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkSearchRNDebugUrl"];
+    NSString *appDebugOpsSearchRNDebugUrlStr = [[STIMKit sharedInstance] userObjectForKey:@"qtalkSearchRNDebugUrl"];
     if (appDebugOpsSearchRNDebugUrlStr.length > 0) {
         NSURL *appDebugOpsSearchRNDebugUrl = [NSURL URLWithString:appDebugOpsSearchRNDebugUrlStr];
         return appDebugOpsSearchRNDebugUrl;
     } else {
-        NSString *innerJsCodeLocation = [NSBundle qim_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QTalkNewSearchRNView getInnerBundleName] ofType:@"jsbundle"];
+        NSString *innerJsCodeLocation = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"STIMRNKit" BundleName:@"STIMRNKit" pathForResource:[QTalkNewSearchRNView getInnerBundleName] ofType:@"jsbundle"];
         NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
         // load jsbundle from cacheqtalk_temp_features
         NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
@@ -142,13 +142,13 @@ static RCTBridge *bridge = nil;
 
         NSURL *_latestJSCodeLocation;
         if (latestJSCodeURLString && [[NSFileManager defaultManager] fileExistsAtPath:latestJSCodeURLString]) {
-            QIMVerboseLog(@"Search JsBundle本地缓存文件存在%@", latestJSCodeURLString);
+            STIMVerboseLog(@"Search JsBundle本地缓存文件存在%@", latestJSCodeURLString);
             _latestJSCodeLocation = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@", latestJSCodeURLString]];
             jsCodeLocation = _latestJSCodeLocation;
         } else {
             //内置包
         }
-        QIMVerboseLog(@"jsCodeLocation : %@", jsCodeLocation);
+        STIMVerboseLog(@"jsCodeLocation : %@", jsCodeLocation);
 
         // debug
         _jsCodeLocation = jsCodeLocation;

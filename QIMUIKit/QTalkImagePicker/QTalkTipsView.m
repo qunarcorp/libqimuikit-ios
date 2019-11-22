@@ -26,11 +26,11 @@
     self = [super initWithFrame:frame];
     if (self) {
         
-        [self setBackgroundColor:[UIColor qim_colorWithHex:0x0 alpha:0.85]];
+        [self setBackgroundColor:[UIColor stimDB_colorWithHex:0x0 alpha:0.85]];
         
         [self.layer setCornerRadius:10];
         
-        _iconImageView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"tips_failed"]];
+        _iconImageView = [[UIImageView alloc] initWithImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"tips_failed"]];
         [_iconImageView setOrigin:CGPointMake((self.width - _iconImageView.width) / 2.0,10)];
         [self addSubview:_iconImageView];
         

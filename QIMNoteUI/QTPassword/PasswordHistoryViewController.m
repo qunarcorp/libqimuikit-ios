@@ -5,12 +5,12 @@
 //  Created by 李露 on 2017/7/20.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "PasswordHistoryViewController.h"
-#import "QIMNoteModel.h"
+#import "STIMNoteModel.h"
 #import "AESCrypt.h"
-#import "QIMAES256.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMAES256.h"
+#import "STIMNoteUICommonFramework.h"
 
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
@@ -49,7 +49,7 @@
     return _mainTableView;
 }
 
-- (UIView *)setUpModelViewWithQIMNoteModel:(QIMNoteModel *)noteModel ContentView:(UIView *)contentView {
+- (UIView *)setUpModelViewWithSTIMNoteModel:(STIMNoteModel *)noteModel ContentView:(UIView *)contentView {
     
     UIView *backView = [[UIView alloc] initWithFrame:contentView.bounds];
     backView.backgroundColor = [UIColor clearColor];
@@ -60,17 +60,17 @@
     
     UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 50, 50)];
     iconView.contentMode = UIViewContentModeScaleAspectFit;
-    iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
+    iconView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"explore_tab_password"];
     [headerView addSubview:iconView];
     iconView.centerY = headerView.centerY;
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconView.right + 15, iconView.top, SCREEN_WIDTH - iconView.right - 15, 30)];
-    titleLabel.text = noteModel.qs_title ? noteModel.qs_title : [NSBundle qim_localizedStringForKey:@"Password"];
+    titleLabel.text = noteModel.qs_title ? noteModel.qs_title : [NSBundle stimDB_localizedStringForKey:@"Password"];
     titleLabel.tag = 1;
     [headerView addSubview:titleLabel];
     
     UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabel.left, titleLabel.bottom + 2, titleLabel.width, 20)];
-    categoryLabel.text = [NSBundle qim_localizedStringForKey:@"Password"];
+    categoryLabel.text = [NSBundle stimDB_localizedStringForKey:@"Password"];
     categoryLabel.textColor = [UIColor qtalkTextLightColor];
     categoryLabel.font = [UIFont systemFontOfSize:12];
     [headerView addSubview:categoryLabel];
@@ -90,7 +90,7 @@
     UILabel *pwdLabel = [[UILabel alloc] initWithFrame:CGRectMake(originX, maxHeight + topMargin, originWidth, originHeight)];
     pwdLabel.font = [UIFont systemFontOfSize:14];
     pwdLabel.textColor = [UIColor systemBlueColor];
-    pwdLabel.text = [NSBundle qim_localizedStringForKey:@"password"];
+    pwdLabel.text = [NSBundle stimDB_localizedStringForKey:@"password"];
     [pwdLabel sizeToFit];
     [showPwdView addSubview:pwdLabel];
     
@@ -98,7 +98,7 @@
     UITextView *showPwdTextView = [[UITextView alloc] initWithFrame:CGRectMake(originX, pwdLabel.bottom + topMargin, originWidth, originHeight + 15)];
     NSString *content = [AESCrypt decrypt:noteModel.qs_content password:self.pk];
     if (!content) {
-        content = [QIMAES256 decryptForBase64:noteModel.qs_content password:self.pk];
+        content = [STIMAES256 decryptForBase64:noteModel.qs_content password:self.pk];
     }
     showPwdTextView.text = content;
     showPwdTextView.textColor = [UIColor qtalkTextLightColor];
@@ -120,13 +120,13 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *model = [self.models objectAtIndex:indexPath.row];
+    STIMNoteModel *model = [self.models objectAtIndex:indexPath.row];
     NSString *cellId = [NSString stringWithFormat:@"%@", model.qs_content];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
     }
-    UIView *headerView = [self setUpModelViewWithQIMNoteModel:model ContentView:cell.contentView];
+    UIView *headerView = [self setUpModelViewWithSTIMNoteModel:model ContentView:cell.contentView];
     [cell.contentView addSubview:headerView];
     return cell;
 }

@@ -131,15 +131,15 @@
 
 - (void)setupNavigationController
 {
-    if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] qim_rightWidth], [[UIScreen mainScreen] height])];
+    if ([[STIMKit sharedInstance] getIsIpad] == YES) {
+        [self.view setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] stimDB_rightWidth], [[UIScreen mainScreen] height])];
     }
     QTPHAlbumsViewController *albumsViewController = [[QTPHAlbumsViewController alloc] init];
     _navigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
     _navigationController.delegate = self;
     
     _navigationController.navigationBar.translucent = YES;
-    [_navigationController.navigationBar setBackgroundImage:[UIImage qim_imageFromColor:_navigationBarBackgroundColor] forBarMetrics:UIBarMetricsDefault];
+    [_navigationController.navigationBar setBackgroundImage:[UIImage stimDB_imageFromColor:_navigationBarBackgroundColor] forBarMetrics:UIBarMetricsDefault];
     _navigationController.navigationBar.shadowImage = [UIImage new];
     
     [_navigationController willMoveToParentViewController:self];
@@ -412,7 +412,7 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationLandscapeLeft == toInterfaceOrientation || UIInterfaceOrientationLandscapeRight == toInterfaceOrientation;
     }else{
         return YES;
@@ -426,7 +426,7 @@
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationMaskLandscape;
     }else{
         return UIInterfaceOrientationMaskPortrait;
@@ -436,7 +436,7 @@
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationLandscapeLeft;
     }else{
         UIInterfaceOrientation orientation;

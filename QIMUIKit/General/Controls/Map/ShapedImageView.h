@@ -6,7 +6,7 @@
 //  Copyright © 2016年 chenjie. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 typedef enum {
     ShapedImageViewDirectionLeft,

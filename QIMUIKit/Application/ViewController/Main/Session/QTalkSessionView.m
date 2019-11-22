@@ -7,29 +7,29 @@
 //
 
 #import "QTalkSessionView.h"
-#import "QIMChatVC.h"
-#import "QIMMainVC.h"
-#import "UIApplication+QIMApplication.h"
-#import "QIMJSONSerializer.h"
-#import "QIMGroupChatVC.h"
-#import "QIMIconInfo.h"
-#import "QIMPublicNumberVC.h"
-#import "QIMFriendNotifyViewController.h"
-#import "QIMWebView.h"
+#import "STIMChatVC.h"
+#import "STIMMainVC.h"
+#import "UIApplication+STIMApplication.h"
+#import "STIMJSONSerializer.h"
+#import "STIMGroupChatVC.h"
+#import "STIMIconInfo.h"
+#import "STIMPublicNumberVC.h"
+#import "STIMFriendNotifyViewController.h"
+#import "STIMWebView.h"
 #import <CoreText/CoreText.h>
-#import "QIMCollectionChatViewController.h"
-#import "QIMContactSelectionViewController.h"
-#import "QIMArrowTableView.h"
-#import "QIMContactSelectVC.h"
-#import "QIMZBarViewController.h"
-#import "QIMJumpURLHandle.h"
+#import "STIMCollectionChatViewController.h"
+#import "STIMContactSelectionViewController.h"
+#import "STIMArrowTableView.h"
+#import "STIMContactSelectVC.h"
+#import "STIMZBarViewController.h"
+#import "STIMJumpURLHandle.h"
 #import "MBProgressHUD.h"
-#import "QIMCustomPopViewController.h"
-#import "QIMCustomPresentationController.h"
-#import "QIMCustomPopManager.h"
-#import "QIMSearchBar.h"
+#import "STIMCustomPopViewController.h"
+#import "STIMCustomPresentationController.h"
+#import "STIMCustomPopManager.h"
+#import "STIMSearchBar.h"
 #import "YYModel.h"
-#import "QIMUpdateAlertView.h"
+#import "STIMUpdateAlertView.h"
 #import "QTalkNewSessionTableViewCell.h"
 #import "QTalkSessionDataManager.h"
 #import "QtalkSessionModel.h"
@@ -37,34 +37,34 @@
 
 #define cellReuseID @"QtalkNewSessionCellIdentifier"
 
-#if __has_include("QIMIPadWindowManager.h")
+#if __has_include("STIMIPadWindowManager.h")
 
-#import "QIMIPadWindowManager.h"
-
-#endif
-
-#if __has_include("QIMNotifyManager.h")
-
-#import "QIMNotifyManager.h"
+#import "STIMIPadWindowManager.h"
 
 #endif
-#if __has_include("QIMAutoTracker.h")
 
-#import "QIMAutoTracker.h"
+#if __has_include("STIMNotifyManager.h")
+
+#import "STIMNotifyManager.h"
+
+#endif
+#if __has_include("STIMAutoTracker.h")
+
+#import "STIMAutoTracker.h"
 
 #endif
 
 #define kClearAllNotReadMsg 1002
 
-#if __has_include("QIMNotifyManager.h")
+#if __has_include("STIMNotifyManager.h")
 
-@interface QTalkSessionView () <QIMNotifyManagerDelegate>
+@interface QTalkSessionView () <STIMNotifyManagerDelegate>
 
 @end
 
 #endif
 
-@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, QIMNewSessionScrollDelegate, UIViewControllerPreviewingDelegate, QIMSearchBarDelegate>
+@interface QTalkSessionView () <UITableViewDelegate, UITableViewDataSource, STIMNewSessionScrollDelegate, UIViewControllerPreviewingDelegate, STIMSearchBarDelegate>
 
 @property(nonatomic, strong) QTalkSessionDataManager *dataManager;
 
@@ -82,7 +82,7 @@
 
 @property(nonatomic, assign) BOOL scrollTop;        //是否滚动置顶
 
-@property(nonatomic, strong) QIMSearchBar *searchBar;   //搜索条
+@property(nonatomic, strong) STIMSearchBar *searchBar;   //搜索条
 
 @property(nonatomic, strong) UIView *connectionAlertView;   //网络连接提示条
 
@@ -90,7 +90,7 @@
 
 @property(nonatomic, strong) NSMutableArray *appendHeaderViews;
 
-@property(nonatomic, strong) QIMMainVC *rootViewController;
+@property(nonatomic, strong) STIMMainVC *rootViewController;
 
 @end
 
@@ -108,14 +108,14 @@
 - (UIView *)connectionAlertView {
     if (!_connectionAlertView) {
         _connectionAlertView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 45)];
-        _connectionAlertView.backgroundColor = qim_sessionViewConnectionErrorViewBgColor;
+        _connectionAlertView.backgroundColor = stimDB_sessionViewConnectionErrorViewBgColor;
 
-        UIImageView *alertView = [[UIImageView alloc] initWithImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"connect_alert_error"]];
+        UIImageView *alertView = [[UIImageView alloc] initWithImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"connect_alert_error"]];
         alertView.frame = CGRectMake(20, (CGRectGetHeight(_connectionAlertView.frame) - 28) / 2, 28, 28);
         [_connectionAlertView addSubview:alertView];
 
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(alertView.frame) + 12, 0, 300, 45)];
-        label.textColor = qim_sessionViewConnectionErrorTextColor;
+        label.textColor = stimDB_sessionViewConnectionErrorTextColor;
         label.font = [UIFont systemFontOfSize:14];
         label.textAlignment = NSTextAlignmentLeft;
         label.text = @"当前网络不可用，请检查你的网络设置";
@@ -132,34 +132,34 @@
 - (UIView *)otherPlatformView {
     if (!_otherPlatformView) {
         _otherPlatformView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, 49)];
-        _otherPlatformView.backgroundColor = qim_otherPlatformViewBgColor;
+        _otherPlatformView.backgroundColor = stimDB_otherPlatformViewBgColor;
         UIImageView *pcIconView = [[UIImageView alloc] initWithFrame:CGRectMake(18, 12, 24, 24)];
-        pcIconView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_otherPlatformViewIcon_font size:20 color:qim_otherPlatformViewIconColor]];
+        pcIconView.image = [UIImage qimIconWithInfo:[STIMIconInfo iconInfoWithText:stimDB_otherPlatformViewIcon_font size:20 color:stimDB_otherPlatformViewIconColor]];
         [_otherPlatformView addSubview:pcIconView];
         UILabel *pcTipLabel = [[UILabel alloc] initWithFrame:CGRectMake(pcIconView.right + 15, 12, 300, 20)];
         NSString *platTitle = @"QTalk";
-        if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+        if ([STIMKit getSTIMProjectType] == STIMProjectTypeQTalk) {
             platTitle = @"QTalk";
-        } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+        } else if ([STIMKit getSTIMProjectType] == STIMProjectTypeQChat) {
             platTitle = @"QChat";
         } else {
-            platTitle = [QIMKit getQIMProjectTitleName];
+            platTitle = [STIMKit getSTIMProjectTitleName];
         }
-        pcTipLabel.text = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"Logged in to %@ on computer"], platTitle];
-        pcTipLabel.textColor = qim_otherPlatformViewTextColor;
+        pcTipLabel.text = [NSString stringWithFormat:[NSBundle stimDB_localizedStringForKey:@"Logged in to %@ on computer"], platTitle];
+        pcTipLabel.textColor = stimDB_otherPlatformViewTextColor;
         pcTipLabel.font = [UIFont systemFontOfSize:14];
         [_otherPlatformView addSubview:pcTipLabel];
         pcTipLabel.centerY = pcIconView.centerY;
 
         UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(self.right - 5 - 34, 7.5, 34, 34)];
-        arrowView.image = [UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_otherPlatformViewArrow_font size:34 color:qim_otherPlatformViewRightArrowColor]];
+        arrowView.image = [UIImage qimIconWithInfo:[STIMIconInfo iconInfoWithText:stimDB_otherPlatformViewArrow_font size:34 color:stimDB_otherPlatformViewRightArrowColor]];
         [_otherPlatformView addSubview:arrowView];
         arrowView.centerY = pcTipLabel.centerY;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFileTrans)];
         [_otherPlatformView addGestureRecognizer:tap];
 
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _otherPlatformView.height - 0.5f, _otherPlatformView.width, 0.5f)];
-        lineView.backgroundColor = [UIColor qim_colorWithHex:0xEAEAEA];
+        lineView.backgroundColor = [UIColor stimDB_colorWithHex:0xEAEAEA];
         [_otherPlatformView addSubview:lineView];
     }
     return _otherPlatformView;
@@ -177,9 +177,9 @@
 
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, self.searchBar.height + appendHeight)];
 //        UIView *logoView = [[UIView alloc] initWithFrame:CGRectMake(0, -self.tableView.height, self.tableView.width, self.tableView.height)];
-//        [logoView setBackgroundColor:[UIColor qim_colorWithHex:0xEEEEEE alpha:1]];
+//        [logoView setBackgroundColor:[UIColor stimDB_colorWithHex:0xEEEEEE alpha:1]];
 //        [headerView addSubview:logoView];
-//        if ([self.rootViewController isKindOfClass:[QIMMainVC class]] && [[QIMKit sharedInstance] getIsIpad] == NO) {
+//        if ([self.rootViewController isKindOfClass:[STIMMainVC class]] && [[STIMKit sharedInstance] getIsIpad] == NO) {
 //            [headerView addSubview:self.searchBar];
 //        } else {
 //            [headerView addSubview:self.searchBar];
@@ -200,7 +200,7 @@
     if (!_tableView) {
 
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.width, self.height) style:UITableViewStylePlain];
-        _tableView.backgroundColor = qim_sessionViewBgColor;
+        _tableView.backgroundColor = stimDB_sessionViewBgColor;
         _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.showsVerticalScrollIndicator = YES;
@@ -213,7 +213,7 @@
         _tableView.estimatedSectionFooterHeight = 0;
         _tableView.separatorInset = UIEdgeInsetsMake(0, 70, 0, 0.5);           //top left bottom right 左右边距相同
         _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        _tableView.separatorColor = [UIColor qim_colorWithHex:0xEAEAEA];
+        _tableView.separatorColor = [UIColor stimDB_colorWithHex:0xEAEAEA];
         _tableView.tableFooterView = [UIView new];
         if (@available(iOS 11.0, *)) {
             _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
@@ -225,9 +225,9 @@
     return _tableView;
 }
 
-- (QIMSearchBar *)searchBar {
+- (STIMSearchBar *)searchBar {
     if (!_searchBar) {
-        _searchBar = [[QIMSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.width, 56)];
+        _searchBar = [[STIMSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.width, 56)];
         _searchBar.delegate = self;
     }
     return _searchBar;
@@ -266,7 +266,7 @@
 }
 
 - (void)showFileTrans {
-    [[QIMFastEntrance sharedInstance] openFileTransMiddleVC];
+    [[STIMFastEntrance sharedInstance] openFileTransMiddleVC];
 }
 
 - (void)setSessionViewHeader:(UIView *)headerView {
@@ -295,8 +295,8 @@
     self = [self initWithFrame:frame];
     if (self) {
         [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
-        if ([rootVc isKindOfClass:[QIMMainVC class]]) {
-            QIMMainVC *mainVc = (QIMMainVC *) rootVc;
+        if ([rootVc isKindOfClass:[STIMMainVC class]]) {
+            STIMMainVC *mainVc = (STIMMainVC *) rootVc;
             _rootViewController = mainVc;
         } else {
 
@@ -341,9 +341,9 @@
 - (void)sessionViewWillAppear {
     [self refreshTableView];
     [self.dataManager registCellNotification];
-#if __has_include("QIMNotifyManager.h")
+#if __has_include("STIMNotifyManager.h")
 
-    [[QIMNotifyManager shareNotifyManager] setNotifyManagerGlobalDelegate:self];
+    [[STIMNotifyManager shareNotifyManager] setNotifyManagerGlobalDelegate:self];
 #endif
 }
 
@@ -357,9 +357,9 @@
 
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *currentVc = [UIApplication sharedApplication].visibleViewController;
-        Class mainVC = NSClassFromString(@"QIMMainVC");
-        Class helperVC = NSClassFromString(@"QIMMessageHelperVC");
-//        if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]] || [[QIMKit sharedInstance] getIsIpad] == YES) {
+        Class mainVC = NSClassFromString(@"STIMMainVC");
+        Class helperVC = NSClassFromString(@"STIMMessageHelperVC");
+//        if ([currentVc isKindOfClass:[mainVC class]] || [currentVc isKindOfClass:[helperVC class]] || [[STIMKit sharedInstance] getIsIpad] == YES) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadTableView) object:nil];
                 [self performSelector:@selector(reloadTableView) withObject:nil afterDelay:0.1];
@@ -378,16 +378,16 @@
 
     dispatch_async(self.reloadListViewQueue, ^{
         @autoreleasepool {
-            QIMVerboseLog(@"啊啊啊你倒是刷新呀");
-            NSDictionary *friendDic = [[QIMKit sharedInstance] getLastFriendNotify];
-            NSInteger friendNotifyCount = [[QIMKit sharedInstance] getFriendNotifyCount];
+            STIMVerboseLog(@"啊啊啊你倒是刷新呀");
+            NSDictionary *friendDic = [[STIMKit sharedInstance] getLastFriendNotify];
+            NSInteger friendNotifyCount = [[STIMKit sharedInstance] getFriendNotifyCount];
             NSArray *temp = nil;
             if (self.showNotReadList == YES) {
-                temp = [[QIMKit sharedInstance] getNotReadSessionList];
+                temp = [[STIMKit sharedInstance] getNotReadSessionList];
             } else {
-                temp = [[QIMKit sharedInstance] getSessionList];
+                temp = [[STIMKit sharedInstance] getSessionList];
             }
-//            QIMVerboseLog(@"从数据库中获取的列表页数据 : %@", temp);
+//            STIMVerboseLog(@"从数据库中获取的列表页数据 : %@", temp);
             NSMutableArray *normalList = [NSMutableArray array];
             BOOL isAddFN = NO;
             long long fnTime = 0;
@@ -451,10 +451,10 @@
                     if ((NSDictionary *) obj) {
                         [weakSelf.dataManager addDataModel:obj];
                     } else {
-                        QIMVerboseLog(@"列表空数据了！");
+                        STIMVerboseLog(@"列表空数据了！");
                     }
                 }];
-//                QIMVerboseLog(@"拼接完成的列表页数据 : %@", weakSelf.dataManager.dataSource);
+//                STIMVerboseLog(@"拼接完成的列表页数据 : %@", weakSelf.dataManager.dataSource);
                 [weakSelf lazyReloadTableview];
             });
         }
@@ -465,7 +465,7 @@
 
     NSString *htmlPath = [[NSBundle mainBundle] pathForResource:@"NetWorkSetting" ofType:@"html"];
     NSString *htmlString = [NSString stringWithContentsOfFile:htmlPath encoding:NSUTF8StringEncoding error:nil];
-    [QIMFastEntrance openWebViewWithHtmlStr:htmlString showNavBar:YES];
+    [STIMFastEntrance openWebViewWithHtmlStr:htmlString showNavBar:YES];
 }
 
 #pragma mark - life ctyle
@@ -493,7 +493,7 @@
     [self.tableView performSelector:@selector(reloadData)
                          withObject:nil
                          afterDelay:0.1];
-    QIMVerboseLog(@"列表页终于刷新了！！！");
+    STIMVerboseLog(@"列表页终于刷新了！！！");
 }
 
 #pragma mark - UITableViewDelegate Method
@@ -521,20 +521,20 @@
         NSDictionary *infoDic = [model yy_modelToJSONObject];
         QTalkNewSessionTableViewCell *cell = (QTalkNewSessionTableViewCell *) [_tableView cellForRowAtIndexPath:indexPath];
         QTalkViewController *pushVc = [self sessionViewDidSelectRowAtIndexPath:indexPath infoDic:infoDic];
-        if ([self.rootViewController isKindOfClass:[QIMMainVC class]]) {
+        if ([self.rootViewController isKindOfClass:[STIMMainVC class]]) {
             [self.rootViewController.navigationController pushViewController:pushVc animated:YES];
         } else {
             UINavigationController *rootNav = [[UIApplication sharedApplication] visibleNavigationController];
             NSLog(@"跳转的RootVc1 ：%@ ", rootNav);
             if (!rootNav) {
-                rootNav = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+                rootNav = [[STIMFastEntrance sharedInstance] getSTIMFastEntranceRootNav];
                 NSLog(@"跳转的RootVc2 ：%@ ", rootNav);
             }
             NSLog(@"跳转的RootVc3 ：%@ ", rootNav);
             NSLog(@"跳转的PushVc : %@", pushVc);
-            if ([[QIMKit sharedInstance] getIsIpad] == YES) {
-#if __has_include("QIMIPadWindowManager.h")
-                [[QIMIPadWindowManager sharedInstance] showDetailViewController:pushVc];
+            if ([[STIMKit sharedInstance] getIsIpad] == YES) {
+#if __has_include("STIMIPadWindowManager.h")
+                [[STIMIPadWindowManager sharedInstance] showDetailViewController:pushVc];
 #endif
             } else {
                 pushVc.hidesBottomBarWhenPushed = YES;
@@ -594,16 +594,16 @@
 
             case ChatType_GroupChat: {
 //                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-//                    [[QIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
+//                    [[STIMKit sharedInstance] clearNotReadMsgByGroupId:jid];
 //                });
-                QIMGroupChatVC *chatGroupVC = (QIMGroupChatVC *) [[QIMFastEntrance sharedInstance] getGroupChatVCByGroupId:jid];
+                STIMGroupChatVC *chatGroupVC = (STIMGroupChatVC *) [[STIMFastEntrance sharedInstance] getGroupChatVCByGroupId:jid];
                 [chatGroupVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatGroupVC setNotReadCount:notReadCount];
                 [chatGroupVC setReadedMsgTimeStamp:-1];
 //                if (chatGroupVC.needShowNewMsgTagCell) {
 //
 //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-//                       chatGroupVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WithRealJid:chatGroupVC.chatId WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
+//                       chatGroupVC.readedMsgTimeStamp = [[STIMKit sharedInstance] getReadedTimeStampForUserId:chatGroupVC.chatId WithRealJid:chatGroupVC.chatId WithMsgDirection:STIMMessageDirection_Received withUnReadCount:notReadCount];
 //                    });
 //                }
                 return chatGroupVC;
@@ -611,32 +611,32 @@
                 break;
             case ChatType_System: {
 //                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-//                    [[QIMKit sharedInstance] clearNotReadMsgByJid:jid];
+//                    [[STIMKit sharedInstance] clearNotReadMsgByJid:jid];
 //                });
                 if ([jid hasPrefix:@"FriendNotify"]) {
 
-                    QIMFriendNotifyViewController *friendVC = [[QIMFriendNotifyViewController alloc] init];
+                    STIMFriendNotifyViewController *friendVC = [[STIMFriendNotifyViewController alloc] init];
                     return friendVC;
                 } else if ([jid hasPrefix:@"rbt-qiangdan"]) {
-                    QIMWebView *webView = [[QIMWebView alloc] init];
+                    STIMWebView *webView = [[STIMWebView alloc] init];
                     webView.needAuth = YES;
                     webView.fromOrderManager = YES;
                     webView.navBarHidden = YES;
-                    webView.url = [[QIMKit sharedInstance] qimNav_QcGrabOrder];
+                    webView.url = [[STIMKit sharedInstance] qimNav_QcGrabOrder];
                     return webView;
                 } else if ([jid hasPrefix:@"rbt-zhongbao"]) {
-                    QIMWebView *webView = [[QIMWebView alloc] init];
+                    STIMWebView *webView = [[STIMWebView alloc] init];
                     webView.needAuth = YES;
                     webView.navBarHidden = YES;
-                    [[QIMKit sharedInstance] clearNotReadMsgByJid:jid];
-                    webView.url = [[QIMKit sharedInstance] qimNav_QcOrderManager];
+                    [[STIMKit sharedInstance] clearNotReadMsgByJid:jid];
+                    webView.url = [[STIMKit sharedInstance] qimNav_QcOrderManager];
                     return webView;
                 } else {
 
-                    QIMChatVC *chatSystemVC = [[QIMChatVC alloc] init];
+                    STIMChatVC *chatSystemVC = [[STIMChatVC alloc] init];
                     [chatSystemVC setChatType:ChatType_System];
                     [chatSystemVC setChatId:jid];
-                    if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+                    if ([STIMKit getSTIMProjectType] == STIMProjectTypeQChat) {
 
                         if ([jid hasPrefix:@"rbt-notice"]) {
                             [chatSystemVC setTitle:@"公告通知"];
@@ -645,19 +645,19 @@
                         } else if ([jid hasPrefix:@"rbt-zhongbao"]) {
                             [chatSystemVC setTitle:@"抢单"];
                         } else {
-                            [chatSystemVC setTitle:[NSBundle qim_localizedStringForKey:@"System Messages"]];//@"系统消息"];
+                            [chatSystemVC setTitle:[NSBundle stimDB_localizedStringForKey:@"System Messages"]];//@"系统消息"];
                         }
                     } else {
 
-                        [chatSystemVC setTitle:[NSBundle qim_localizedStringForKey:@"System Messages"]];//@"系统消息"];
+                        [chatSystemVC setTitle:[NSBundle stimDB_localizedStringForKey:@"System Messages"]];//@"系统消息"];
                     }
                     return chatSystemVC;
                 }
             }
                 break;
             case ChatType_SingleChat: {
-                QIMChatVC *chatSingleVC = (QIMChatVC *) [[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
-                NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
+                STIMChatVC *chatSingleVC = (STIMChatVC *) [[STIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
+                NSString *remarkName = [[STIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
                 [chatSingleVC setTitle:remarkName ? remarkName : name];
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatSingleVC setReadedMsgTimeStamp:-1];
@@ -665,7 +665,7 @@
 //                if (chatSingleVC.needShowNewMsgTagCell) {
 //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 //
-//                        chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
+//                        chatSingleVC.readedMsgTimeStamp = [[STIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:STIMMessageDirection_Received withUnReadCount:notReadCount];
 //                    });
 //                }
                 return chatSingleVC;
@@ -673,9 +673,9 @@
                 break;
             case ChatType_Consult: {
                 NSString *xmppId = [infoDic objectForKey:@"XmppId"];
-                QIMChatVC *chatSingleVC = (QIMChatVC *) [[QIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
+                STIMChatVC *chatSingleVC = (STIMChatVC *) [[STIMFastEntrance sharedInstance] getSingleChatVCByUserId:jid];
                 //备注
-                NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
+                NSString *remarkName = [[STIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
                 [chatSingleVC setTitle:remarkName ? remarkName : name];
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatSingleVC setReadedMsgTimeStamp:-1];
@@ -684,11 +684,11 @@
 //
 //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 //
-//                        chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
+//                        chatSingleVC.readedMsgTimeStamp = [[STIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:jid WithMsgDirection:STIMMessageDirection_Received withUnReadCount:notReadCount];
 //                    });
 //                }
 //                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-//                    [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:xmppId];
+//                    [[STIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:xmppId];
 //                });
                 return chatSingleVC;
             }
@@ -696,13 +696,13 @@
             case ChatType_ConsultServer: {
                 NSString *realJid = [infoDic objectForKey:@"RealJid"];
                 NSString *xmppId = [infoDic objectForKey:@"XmppId"];
-                QIMChatVC *chatSingleVC = [[QIMChatVC alloc] init];
+                STIMChatVC *chatSingleVC = [[STIMChatVC alloc] init];
                 [chatSingleVC setChatId:realJid];
                 [chatSingleVC setVirtualJid:xmppId];
                 [chatSingleVC setChatInfoDict:infoDic];
                 [chatSingleVC setChatType:chatType];
                 //备注
-                NSString *remarkName = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
+                NSString *remarkName = [[STIMKit sharedInstance] getUserMarkupNameWithUserId:jid];
                 [chatSingleVC setTitle:remarkName ? remarkName : name];
                 [chatSingleVC setNeedShowNewMsgTagCell:notReadCount > 10];
                 [chatSingleVC setReadedMsgTimeStamp:-1];
@@ -710,23 +710,23 @@
 //                if (chatSingleVC.needShowNewMsgTagCell) {
 //
 //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-//                        chatSingleVC.readedMsgTimeStamp = [[QIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:realJid WithMsgDirection:QIMMessageDirection_Received withUnReadCount:notReadCount];
+//                        chatSingleVC.readedMsgTimeStamp = [[STIMKit sharedInstance] getReadedTimeStampForUserId:jid WithRealJid:realJid WithMsgDirection:STIMMessageDirection_Received withUnReadCount:notReadCount];
 //                    });
 //                }
 //                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-//                    [[QIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:realJid];
+//                    [[STIMKit sharedInstance] clearNotReadMsgByJid:xmppId ByRealJid:realJid];
 //                });
                 return chatSingleVC;
             }
                 break;
             case ChatType_PublicNumber: {
-                QIMPublicNumberVC *chatPublicNumVC = [[QIMPublicNumberVC alloc] init];
+                STIMPublicNumberVC *chatPublicNumVC = [[STIMPublicNumberVC alloc] init];
                 return chatPublicNumVC;
             }
                 break;
             case ChatType_CollectionChat: {
 #warning 代收消息
-                QIMCollectionChatViewController *chatPublicNumVC = [[QIMCollectionChatViewController alloc] init];
+                STIMCollectionChatViewController *chatPublicNumVC = [[STIMCollectionChatViewController alloc] init];
                 return chatPublicNumVC;
             }
                 break;
@@ -744,7 +744,7 @@
     if (name) {
         return name;
     } else {
-        return [NSBundle qim_localizedStringForKey:@"System Messages"];//@"系统消息";
+        return [NSBundle stimDB_localizedStringForKey:@"System Messages"];//@"系统消息";
     }
 }
 
@@ -755,7 +755,7 @@
 #pragma mark - UITableViewDataSource Method
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    QIMVerboseLog(@"确实刷新了");
+    STIMVerboseLog(@"确实刷新了");
     return 1;
 }
 
@@ -795,13 +795,13 @@
             ChatType chatType = [[infoDic objectForKey:@"ChatType"] longValue];
             if (jid && (chatType != ChatType_Consult || chatType != ChatType_ConsultServer)) {
 
-                [[QIMKit sharedInstance] removeSessionById:jid];
+                [[STIMKit sharedInstance] removeSessionById:jid];
                 [self.dataManager deleteModelFromSessionListWithIndex:index];
 
                 [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];//移除tableView中的数据
             } else {
                 NSString *realJid = [infoDic objectForKey:@"RealJid"];
-                [[QIMKit sharedInstance] removeConsultSessionById:jid RealId:realJid];
+                [[STIMKit sharedInstance] removeConsultSessionById:jid RealId:realJid];
                 [self.dataManager deleteModelFromSessionListWithIndex:indexPath.row];
                 [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];//移除tableView中的数据
             }
@@ -883,10 +883,10 @@
     });
 }
 
-#if __has_include("QIMNotifyManager.h")
+#if __has_include("STIMNotifyManager.h")
 
-- (void)showGloablNotifyWithView:(QIMNotifyView *)view {
-    QIMVerboseLog(@"showGloablNotifyWithViewDelegate :%@", view);
+- (void)showGloablNotifyWithView:(STIMNotifyView *)view {
+    STIMVerboseLog(@"showGloablNotifyWithViewDelegate :%@", view);
     if ([self.appendHeaderViews containsObject:view]) {
         [self.appendHeaderViews removeObject:view];
     }
@@ -896,7 +896,7 @@
 
 - (void)closeNotifyView:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
-        QIMNotifyView *notifyView = notify.object;
+        STIMNotifyView *notifyView = notify.object;
         [self.appendHeaderViews removeObject:notifyView];
         [self updateTableViewHeaderView];
     });
@@ -908,16 +908,16 @@
     [self.tableView setTableHeaderView:[self tableViewHeaderView]];
 }
 
-#pragma mark - QIMSearchBarDelegate
+#pragma mark - STIMSearchBarDelegate
 
-- (void)qim_searchBarBecomeFirstResponder {
+- (void)stimDB_searchBarBecomeFirstResponder {
 
 #if __has_include("QTalkSearchViewManager.h")
-#if __has_include("QIMAutoTracker.h")
+#if __has_include("STIMAutoTracker.h")
 
-    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"search" withDescription:@"搜索"];
+    [[STIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"search" withDescription:@"搜索"];
 #endif
-    [QIMFastEntrance openRNSearchVC];
+    [STIMFastEntrance openRNSearchVC];
 #endif
 }
 

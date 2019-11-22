@@ -22,7 +22,7 @@ RCT_EXPORT_METHOD(handleEvent
                   :(NSString *)uri
                   :(RCTResponseSenderBlock)success
                   :(RCTResponseSenderBlock)error) {
-    QIMVerboseLog(@"handleEvent param: tyep: %@ key: %@", type, uri);
+    STIMVerboseLog(@"handleEvent param: tyep: %@ key: %@", type, uri);
     
     NSNumber *is_ok = @YES;
     NSString *errorMsg = @"";
@@ -105,52 +105,52 @@ RCT_EXPORT_METHOD(openWebPage
 
 -(void) goUserCard:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openUserCardVCByUserId:uri];
+        [STIMFastEntrance openUserCardVCByUserId:uri];
     });
 }
 -(void) goGroupChat:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openGroupChatVCByGroupId:uri];
+        [STIMFastEntrance openGroupChatVCByGroupId:uri];
     });
 }
 
 -(void) goFriends:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openUserFriendsVC];
+        [STIMFastEntrance openUserFriendsVC];
     });
 }
 -(void) goGroups:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openQIMGroupListVC];
+        [STIMFastEntrance openSTIMGroupListVC];
     });
 }
 -(void) goUnreadMessages:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openNotReadMessageVC];
+        [STIMFastEntrance openNotReadMessageVC];
     });
 }
 -(void) goPublicAccounts:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openQIMPublicNumberVC];
+        [STIMFastEntrance openSTIMPublicNumberVC];
     });
 }
 
 -(void) goWebView:(NSString*) uri
        showNavBar:(BOOL)showNavBar;{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openWebViewForUrl:uri showNavBar:showNavBar];
+        [STIMFastEntrance openWebViewForUrl:uri showNavBar:showNavBar];
     });
 }
 
 -(void) goSingleChat:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openSingleChatVCByUserId:uri];
+        [STIMFastEntrance openSingleChatVCByUserId:uri];
     });
 }
 
 -(void) goRobotCard:(NSString *)uri {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openRobotCard:uri];
+        [STIMFastEntrance openRobotCard:uri];
     });
 }
 
@@ -180,7 +180,7 @@ RCT_EXPORT_METHOD(openWebPage
 
 - (void) goQTalkNotesVC:(NSString *)uri {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openQTalkNotesVC];
+        [STIMFastEntrance openQTalkNotesVC];
     });
 }
 

@@ -5,12 +5,12 @@
 //  Created by 李露 on 2017/7/17.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "NewPasswordBoxVc.h"
-#import "QIMNoteModel.h"
+#import "STIMNoteModel.h"
 #import "AESCrypt.h"
-#import "QIMAES256.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMAES256.h"
+#import "STIMNoteUICommonFramework.h"
 
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
@@ -65,8 +65,8 @@
     if (!_agreeBtn) {
         _agreeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _agreeBtn.frame = CGRectMake(self.nameTextField.left, self.repeatPwdBoxField.bottom + 80, 18, 18);
-        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_normal"] forState:UIControlStateNormal];
-        [_agreeBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"checkbox_click"] forState:UIControlStateSelected];
+        [_agreeBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"checkbox_normal"] forState:UIControlStateNormal];
+        [_agreeBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"checkbox_click"] forState:UIControlStateSelected];
         _agreeBtn.selected = NO;
         [_agreeBtn addTarget:self action:@selector(agreeBtnHandle:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -123,18 +123,18 @@
 
 - (void)createNewPassBox:(id)sender {
     if ([self checkNameAndPassword]) {
-        QIMVerboseLog(@"创建新的密码箱");
-        QIMNoteModel *model = [[QIMNoteModel alloc] init];
-        model.c_id = [[QIMNoteManager sharedInstance] getMaxQTNoteMainItemCid] + 1;
+        STIMVerboseLog(@"创建新的密码箱");
+        STIMNoteModel *model = [[STIMNoteModel alloc] init];
+        model.c_id = [[STIMNoteManager sharedInstance] getMaxQTNoteMainItemCid] + 1;
         model.q_title = self.nameTextField.text;
         model.privateKey = self.pwdBoxField.text;
-        model.q_type = QIMNoteTypePassword;
-        model.q_state = QIMNoteStateNormal;
+        model.q_type = STIMNoteTypePassword;
+        model.q_state = STIMNoteStateNormal;
 //        NSString *encryptStr = [AESCrypt encrypt:model.q_title password:model.privateKey];
-        NSString *encryptStr = [QIMAES256 encryptForBase64:model.q_title password:model.privateKey];
+        NSString *encryptStr = [STIMAES256 encryptForBase64:model.q_title password:model.privateKey];
         model.q_content = encryptStr;
         model.q_time = [[NSDate date] timeIntervalSince1970] * 1000;
-        [[QIMNoteManager sharedInstance] saveNewQTNoteMainItem:model];
+        [[STIMNoteManager sharedInstance] saveNewQTNoteMainItem:model];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
@@ -144,8 +144,8 @@
     NSString *pwd = self.pwdBoxField.text;
     NSString *repeatPwd = self.repeatPwdBoxField.text;
     if (name.length <= 0) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"密码箱名称不能为空" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:@"密码箱名称不能为空" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.pwdBoxField resignFirstResponder];
             [self.repeatPwdBoxField resignFirstResponder];
             [self.nameTextField becomeFirstResponder];
@@ -155,8 +155,8 @@
         return NO;
     }
     if (pwd.length <= 0) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"密码箱主密码不能为空" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:@"密码箱主密码不能为空" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.nameTextField resignFirstResponder];
             [self.repeatPwdBoxField resignFirstResponder];
             [self.pwdBoxField becomeFirstResponder];
@@ -166,8 +166,8 @@
         return NO;
     }
     if (repeatPwd.length <= 0) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请确认密码箱主密码" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:@"请确认密码箱主密码" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.nameTextField resignFirstResponder];
             [self.pwdBoxField resignFirstResponder];
             [self.repeatPwdBoxField becomeFirstResponder];
@@ -177,8 +177,8 @@
         return NO;
     }
     if (![pwd isEqualToString:repeatPwd]) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"密码箱主密码不一致" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:@"密码箱主密码不一致" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.nameTextField resignFirstResponder];
             [self.pwdBoxField resignFirstResponder];
             [self.repeatPwdBoxField becomeFirstResponder];
@@ -188,8 +188,8 @@
         return NO;
     }
     if (!self.agreeBtn.selected) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"请仔细阅读注意事项，同意后勾选选项" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:@"请仔细阅读注意事项，同意后勾选选项" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.nameTextField resignFirstResponder];
             [self.pwdBoxField resignFirstResponder];
             [self.repeatPwdBoxField becomeFirstResponder];

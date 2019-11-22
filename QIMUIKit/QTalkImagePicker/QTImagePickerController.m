@@ -26,7 +26,7 @@
         
         [self.navigationBar setBarStyle:UIBarStyleBlack];
         [self.navigationBar setTintColor:[UIColor whiteColor]];
-        [self.navigationBar setBackgroundImage:[UIImage qim_imageFromColor:[UIColor spectralColorBlueColor]] forBarMetrics:UIBarMetricsDefault];
+        [self.navigationBar setBackgroundImage:[UIImage stimDB_imageFromColor:[UIColor spectralColorBlueColor]] forBarMetrics:UIBarMetricsDefault];
         
         _maximumNumberOfSelection      = 9;
         _minimumNumberOfSelection      = 0;
@@ -81,7 +81,7 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationLandscapeLeft == toInterfaceOrientation || UIInterfaceOrientationLandscapeRight == toInterfaceOrientation;
     }else{
         return YES;
@@ -95,7 +95,7 @@
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return UIInterfaceOrientationMaskLandscape;
     }else{
         return UIInterfaceOrientationMaskPortrait;
@@ -106,7 +106,7 @@
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
     UIInterfaceOrientation statusBarOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if ([[QIMKit sharedInstance] getIsIpad]) {
+    if ([[STIMKit sharedInstance] getIsIpad]) {
         return statusBarOrientation;
     }else{
         UIInterfaceOrientation orientation;

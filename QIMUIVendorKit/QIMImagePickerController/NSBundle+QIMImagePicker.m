@@ -1,19 +1,19 @@
 //
-//  NSBundle+QIMImagePicker.m
-//  QIMImagePickerController
+//  NSBundle+STIMImagePicker.m
+//  STIMImagePickerController
 //
 //  Created by 谭真 on 16/08/18.
 //  Copyright © 2016年 谭真. All rights reserved.
 //
 
-#import "NSBundle+QIMImagePicker.h"
-#import "QIMImagePickerController.h"
+#import "NSBundle+STIMImagePicker.h"
+#import "STIMImagePickerController.h"
 
-@implementation NSBundle (QIMImagePicker)
+@implementation NSBundle (STIMImagePicker)
 
 + (NSBundle *)qim_imagePickerBundle {
-    NSBundle *bundle = [NSBundle bundleForClass:[QIMImagePickerController class]];
-    NSURL *url = [bundle URLForResource:@"QIMImagePickerController" withExtension:@"bundle"];
+    NSBundle *bundle = [NSBundle bundleForClass:[STIMImagePickerController class]];
+    NSURL *url = [bundle URLForResource:@"STIMImagePickerController" withExtension:@"bundle"];
     bundle = [NSBundle bundleWithURL:url];
     return bundle;
 }
@@ -23,7 +23,7 @@
 }
 
 + (NSString *)qim_localizedStringForKey:(NSString *)key value:(NSString *)value {
-    NSBundle *bundle = [QIMImagePickerConfig sharedInstance].languageBundle;
+    NSBundle *bundle = [STIMImagePickerConfig sharedInstance].languageBundle;
     NSString *value1 = [bundle localizedStringForKey:key value:value table:nil];
     return value1;
 }

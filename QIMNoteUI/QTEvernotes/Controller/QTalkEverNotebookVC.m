@@ -5,14 +5,14 @@
 //  Created by lihuaqi on 2017/9/19.
 //  Copyright © 2017年 lihuaqi. All rights reserved.
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "QTalkEverNotebookVC.h"
 #import "QTalkEverNoteListVC.h"
 #import <SCLAlertView-Objective-C/SCLAlertView.h>
-#import "QIMNoteManager.h"
-#import "QIMNoteModel.h"
+#import "STIMNoteManager.h"
+#import "STIMNoteModel.h"
 #import "QTNotebookCell.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteUICommonFramework.h"
 
 typedef enum {
     ENUM_Notebook_OptionTypeNew = 0,//新建操作
@@ -29,14 +29,14 @@ typedef enum {
 @implementation QTalkEverNotebookVC
 - (void)getLocalEverNotes {
     self.dataSource = [NSMutableArray arrayWithCapacity:1];
-    NSArray *array = [[QIMNoteManager sharedInstance] getMainItemWithType:QIMNoteTypeEverNote WithExceptState:QIMNoteStateDelete];
+    NSArray *array = [[STIMNoteManager sharedInstance] getMainItemWithType:STIMNoteTypeEverNote WithExceptState:STIMNoteStateDelete];
     [self.dataSource addObjectsFromArray:array];
     [self.tableView reloadData];
 }
 
 - (void)getRemoteEverNotes {
-    NSInteger version = [[QIMNoteManager sharedInstance] getQTNoteMainItemMaxTimeWithType:QIMNoteTypeEverNote];
-    [[QIMNoteManager sharedInstance] getCloudRemoteMainWithVersion:version WithType:QIMNoteTypeEverNote];
+    NSInteger version = [[STIMNoteManager sharedInstance] getQTNoteMainItemMaxTimeWithType:STIMNoteTypeEverNote];
+    [[STIMNoteManager sharedInstance] getCloudRemoteMainWithVersion:version WithType:STIMNoteTypeEverNote];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -99,7 +99,7 @@ typedef enum {
 }
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    QIMNoteModel *evernoteModel = self.dataSource[indexPath.row];
+    STIMNoteModel *evernoteModel = self.dataSource[indexPath.row];
     QTNotebookCell *cell = [QTNotebookCell cellWithTableView:tableView];
     [cell refreshCellWithModel:evernoteModel];
     return cell;
@@ -110,7 +110,7 @@ typedef enum {
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *evernoteModel = self.dataSource[indexPath.row];
+    STIMNoteModel *evernoteModel = self.dataSource[indexPath.row];
     QTalkEverNoteListVC *vc = [[QTalkEverNoteListVC alloc] init];
     vc.evernoteModel = evernoteModel;
     [self.navigationController pushViewController:vc animated:YES];
@@ -120,13 +120,13 @@ typedef enum {
  *  左滑cell时出现什么按钮
  */
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QIMNoteModel *evernoteModel = self.dataSource[indexPath.row];
+    STIMNoteModel *evernoteModel = self.dataSource[indexPath.row];
     
-    UITableViewRowAction *action0 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:[NSBundle qim_localizedStringForKey:@"Edit"] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+    UITableViewRowAction *action0 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:[NSBundle stimDB_localizedStringForKey:@"Edit"] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         [self alertViewWithNotebookOptionType:ENUM_Notebook_OptionTypeEdit evernoteModel:evernoteModel];
     }];
     
-    UITableViewRowAction *action1 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:[NSBundle qim_localizedStringForKey:@"Delete"] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+    UITableViewRowAction *action1 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:[NSBundle stimDB_localizedStringForKey:@"Delete"] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         [self alertViewWithNotebookOptionType:ENUM_Notebook_OptionTypeDelete evernoteModel:evernoteModel];
     }];
     
@@ -134,14 +134,14 @@ typedef enum {
 }
 
 //新建,编辑或者删除笔记本
-- (void)alertViewWithNotebookOptionType:(ENUM_Notebook_OptionType)optionType evernoteModel:(QIMNoteModel *)model{
+- (void)alertViewWithNotebookOptionType:(ENUM_Notebook_OptionType)optionType evernoteModel:(STIMNoteModel *)model{
     
     SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindow];
     alert.horizontalButtons = YES;
     alert.shouldDismissOnTapOutside = YES;
-    alert.customViewColor = [UIColor qim_colorWithHex:0x22B573 alpha:1.0];
+    alert.customViewColor = [UIColor stimDB_colorWithHex:0x22B573 alpha:1.0];
     
-    SCLButton *cancelBtn = [alert addButton:[NSBundle qim_localizedStringForKey:@"Cancel"] actionBlock:^(void) {}];
+    SCLButton *cancelBtn = [alert addButton:[NSBundle stimDB_localizedStringForKey:@"Cancel"] actionBlock:^(void) {}];
     cancelBtn.buttonFormatBlock = ^NSDictionary* (void) {
         NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
         buttonConfig[@"backgroundColor"] = [UIColor redColor];
@@ -163,26 +163,26 @@ typedef enum {
             }
             return passedValidation;
         } actionBlock:^{
-            QIMVerboseLog(@"新建笔记本：%@--%@",nameTF.text,descriptionTF.text);
-            QIMNoteModel *evernoteModel = [[QIMNoteModel alloc] init];
-            evernoteModel.c_id = ((evernoteModel.c_id > 0) && evernoteModel.c_id) ? evernoteModel.c_id : [[QIMNoteManager sharedInstance] getMaxQTNoteMainItemCid] + 1;
+            STIMVerboseLog(@"新建笔记本：%@--%@",nameTF.text,descriptionTF.text);
+            STIMNoteModel *evernoteModel = [[STIMNoteModel alloc] init];
+            evernoteModel.c_id = ((evernoteModel.c_id > 0) && evernoteModel.c_id) ? evernoteModel.c_id : [[STIMNoteManager sharedInstance] getMaxQTNoteMainItemCid] + 1;
             evernoteModel.q_title = nameTF.text;
             evernoteModel.q_introduce = descriptionTF.text?descriptionTF.text:@"";
-            evernoteModel.q_type = QIMNoteTypeEverNote;
-            evernoteModel.q_state = QIMNoteStateNormal;
-            if (evernoteModel.q_ExtendedFlag == QIMNoteExtendedFlagStateLocalCreated) {
-                evernoteModel.q_ExtendedFlag = QIMNoteExtendedFlagStateLocalModify;
+            evernoteModel.q_type = STIMNoteTypeEverNote;
+            evernoteModel.q_state = STIMNoteStateNormal;
+            if (evernoteModel.q_ExtendedFlag == STIMNoteExtendedFlagStateLocalCreated) {
+                evernoteModel.q_ExtendedFlag = STIMNoteExtendedFlagStateLocalModify;
             } else {
-                evernoteModel.q_ExtendedFlag = QIMNoteExtendedFlagStateLocalCreated;
+                evernoteModel.q_ExtendedFlag = STIMNoteExtendedFlagStateLocalCreated;
             }
             if (!evernoteModel.q_time) {
                 evernoteModel.q_time = [[NSDate date] timeIntervalSince1970];
             }
-            [[QIMNoteManager sharedInstance] saveNewQTNoteMainItem:evernoteModel];
+            [[STIMNoteManager sharedInstance] saveNewQTNoteMainItem:evernoteModel];
             
             [self getLocalEverNotes];
         }];
-        [alert showEdit:self title:[NSBundle qim_localizedStringForKey:@"Reminder"] subTitle:@"新建笔记本" closeButtonTitle:nil duration:0.0f];
+        [alert showEdit:self title:[NSBundle stimDB_localizedStringForKey:@"Reminder"] subTitle:@"新建笔记本" closeButtonTitle:nil duration:0.0f];
         
     }else if (optionType == ENUM_Notebook_OptionTypeEdit) {
         if (model) {
@@ -202,24 +202,24 @@ typedef enum {
                 }
                 return passedValidation;
             } actionBlock:^{
-                QIMVerboseLog(@"编辑笔记本：%@--%@",nameTF.text,descriptionTF.text);
+                STIMVerboseLog(@"编辑笔记本：%@--%@",nameTF.text,descriptionTF.text);
                 if ( model.q_title != nameTF.text || model.q_introduce != descriptionTF.text) {
                     model.q_title = nameTF.text;
                     model.q_introduce = descriptionTF.text;
-                    [[QIMNoteManager sharedInstance] updateQTNoteMainItemWithModel:model];
+                    [[STIMNoteManager sharedInstance] updateQTNoteMainItemWithModel:model];
                 }
                 [self getLocalEverNotes];
             }];
-            [alert showEdit:self title:[NSBundle qim_localizedStringForKey:@"Reminder"] subTitle:@"编辑笔记本" closeButtonTitle:nil duration:0.0f];
+            [alert showEdit:self title:[NSBundle stimDB_localizedStringForKey:@"Reminder"] subTitle:@"编辑笔记本" closeButtonTitle:nil duration:0.0f];
         }
     }else if (optionType == ENUM_Notebook_OptionTypeDelete) {
         if (model) {
             SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindow];
             alert.horizontalButtons = YES;
             alert.shouldDismissOnTapOutside = YES;
-            alert.customViewColor = [UIColor qim_colorWithHex:0x22B573 alpha:1.0];
+            alert.customViewColor = [UIColor stimDB_colorWithHex:0x22B573 alpha:1.0];
             
-            SCLButton *cancelBtn = [alert addButton:[NSBundle qim_localizedStringForKey:@"Cancel"] actionBlock:^(void) {}];
+            SCLButton *cancelBtn = [alert addButton:[NSBundle stimDB_localizedStringForKey:@"Cancel"] actionBlock:^(void) {}];
             cancelBtn.buttonFormatBlock = ^NSDictionary* (void) {
                 NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
                 buttonConfig[@"backgroundColor"] = [UIColor redColor];
@@ -227,11 +227,11 @@ typedef enum {
                 return buttonConfig;
             };
             
-            [alert addButton:[NSBundle qim_localizedStringForKey:@"Confirm"] actionBlock:^(void) {
-                [[QIMNoteManager sharedInstance] deleteQTNoteMainItemWithModel:model];
+            [alert addButton:[NSBundle stimDB_localizedStringForKey:@"Confirm"] actionBlock:^(void) {
+                [[STIMNoteManager sharedInstance] deleteQTNoteMainItemWithModel:model];
                 [self getLocalEverNotes];
             }];
-            [alert showWarning:[NSBundle qim_localizedStringForKey:@"Reminder"] subTitle:@"确定要删除此笔记本吗？此笔记本中的任何笔记都将被删除" closeButtonTitle:nil duration:0.0f];
+            [alert showWarning:[NSBundle stimDB_localizedStringForKey:@"Reminder"] subTitle:@"确定要删除此笔记本吗？此笔记本中的任何笔记都将被删除" closeButtonTitle:nil duration:0.0f];
         }
     }
 }

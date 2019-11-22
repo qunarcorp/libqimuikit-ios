@@ -5,10 +5,10 @@
 //  Created by 李露 on 2017/7/27.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "NewAddTodoListVc.h"
-#import "QIMWSDatePickerView.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMWSDatePickerView.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface NewAddTodoListVc () <UITextFieldDelegate>
 
@@ -16,7 +16,7 @@
 
 @property (nonatomic, strong) UIButton *clockBtn;
 
-@property (nonatomic, strong) QIMNoteModel *todoListModel;
+@property (nonatomic, strong) STIMNoteModel *todoListModel;
 
 @property (nonatomic, strong) NSMutableArray *randomTexts;
 
@@ -30,7 +30,7 @@
     _Edited = edited;
 }
 
-- (void)setTodoListModel:(QIMNoteModel *)model {
+- (void)setTodoListModel:(STIMNoteModel *)model {
     if (model) {
         _todoListModel = model;
     }
@@ -43,13 +43,13 @@
         NSArray *randomDicts = [[NSArray alloc] initWithContentsOfFile:bundlePath];
         for (NSDictionary *dict in randomDicts) {
             NSString *randomTextStr = @"";
-            if ([[[QIMKit sharedInstance] currentLanguage] containsString:@"zh-Hant"]) {
+            if ([[[STIMKit sharedInstance] currentLanguage] containsString:@"zh-Hant"]) {
                 randomTextStr = [dict objectForKey:@"zh-Hant"];
                 [_randomTexts addObject:randomTextStr];
-            } else if ([[[QIMKit sharedInstance] currentLanguage] containsString:@"en"]) {
+            } else if ([[[STIMKit sharedInstance] currentLanguage] containsString:@"en"]) {
                 randomTextStr = [dict objectForKey:@"en"];
                 [_randomTexts addObject:randomTextStr];
-            } else if ([[[QIMKit sharedInstance] currentLanguage] containsString:@"zh-Hans"]) {
+            } else if ([[[STIMKit sharedInstance] currentLanguage] containsString:@"zh-Hans"]) {
                 randomTextStr = [dict objectForKey:@"zh-Hans"];
                 [_randomTexts addObject:randomTextStr];
             }
@@ -62,7 +62,7 @@
     if (!_addNewTodoListField) {
         _addNewTodoListField = [[UITextField alloc] initWithFrame:CGRectMake(20, 30, self.view.width - 80, 30)];
         NSDictionary *attributedPlaceholderDict = @{NSForegroundColorAttributeName : [UIColor qunarTextGrayColor]};
-        _addNewTodoListField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:[NSBundle qim_localizedStringForKey:@"todolist_think"] attributes:attributedPlaceholderDict];
+        _addNewTodoListField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:[NSBundle stimDB_localizedStringForKey:@"todolist_think"] attributes:attributedPlaceholderDict];
         _addNewTodoListField.borderStyle = UITextBorderStyleRoundedRect;
         _addNewTodoListField.font = [UIFont systemFontOfSize:14];
         _addNewTodoListField.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -86,9 +86,9 @@
     self.clockBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.clockBtn.frame = CGRectMake(_addNewTodoListField.right + 2, 20, 40, 40);
     if (_Edited) {
-        [self.clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"clock_16x14_"] forState:UIControlStateNormal];
+        [self.clockBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"clock_16x14_"] forState:UIControlStateNormal];
     } else {
-        [self.clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"随机_13x12_"] forState:UIControlStateNormal];
+        [self.clockBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"随机_13x12_"] forState:UIControlStateNormal];
     }
     self.clockBtn.centerY = self.addNewTodoListField.centerY;
     [self.clockBtn addTarget:self action:@selector(randomTextField:) forControlEvents:UIControlEventTouchUpInside];
@@ -109,9 +109,9 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     if (self.addNewTodoListField.text.length > 0) {
         if (!self.todoListModel) {
-            self.todoListModel = [[QIMNoteModel alloc] init];
+            self.todoListModel = [[STIMNoteModel alloc] init];
         }
-        QIMVerboseLog(@"saveTodoList");
+        STIMVerboseLog(@"saveTodoList");
         [self saveTodoList];
     }
     [UIView animateWithDuration:0.3 animations:^{
@@ -128,11 +128,11 @@
 
 - (void)updateClockBtnAction {
     if (self.addNewTodoListField.text.length > 0) {
-        [self.clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"clock_16x14_"] forState:UIControlStateNormal];
+        [self.clockBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"clock_16x14_"] forState:UIControlStateNormal];
         [self.clockBtn removeTarget:self action:@selector(randomTextField:) forControlEvents:UIControlEventTouchUpInside];
         [self.clockBtn addTarget:self action:@selector(setRemindTime:) forControlEvents:UIControlEventTouchUpInside];
     } else {
-        [self.clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"随机_13x12_"] forState:UIControlStateNormal];
+        [self.clockBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"随机_13x12_"] forState:UIControlStateNormal];
         [self.clockBtn removeTarget:self action:@selector(setRemindTime:) forControlEvents:UIControlEventTouchUpInside];
         [self.clockBtn addTarget:self action:@selector(randomTextField:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -152,13 +152,13 @@
 - (void)setRemindTime:(id)sender {
     [self.addNewTodoListField resignFirstResponder];
     __weak typeof(self) weakSelf = self;
-    QIMWSDatePickerView *datePicker = [[QIMWSDatePickerView alloc] initWithDateStyle:DateStyleShowYearMonthDayHourMinute CompleteBlock:^(NSDate *completeDate) {
+    STIMWSDatePickerView *datePicker = [[STIMWSDatePickerView alloc] initWithDateStyle:DateStyleShowYearMonthDayHourMinute CompleteBlock:^(NSDate *completeDate) {
         NSTimeInterval completeTime = [completeDate timeIntervalSince1970];
         if (!weakSelf.todoListModel) {
-            weakSelf.todoListModel = [[QIMNoteModel alloc] init];
+            weakSelf.todoListModel = [[STIMNoteModel alloc] init];
         }
         NSDictionary *dict = @{@"completeTime":@(completeTime)};
-        NSString *str = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
+        NSString *str = [[STIMJSONSerializer sharedInstance] serializeObject:dict];
         weakSelf.todoListModel.q_content = str;
         weakSelf.todoListModel.q_time = [[NSDate date] timeIntervalSince1970];
         [weakSelf saveTodoList];
@@ -173,19 +173,19 @@
  */
 - (void)saveTodoList {
     
-    self.todoListModel.c_id = ((self.todoListModel.c_id > 0) && self.todoListModel.c_id) ? self.todoListModel.c_id : [[QIMNoteManager sharedInstance] getMaxQTNoteSubItemCSid] + 1;
-    self.todoListModel.q_title = self.addNewTodoListField.text ? self.addNewTodoListField.text : [NSBundle qim_localizedStringForKey:@"todolist_think"];
-    self.todoListModel.q_type = QIMNoteTypeTodoList;
-    self.todoListModel.q_state = QIMNoteStateNormal;
-    if (self.todoListModel.q_ExtendedFlag == QIMNoteExtendedFlagStateLocalCreated) {
-        self.todoListModel.q_ExtendedFlag = QIMNoteExtendedFlagStateLocalModify;
+    self.todoListModel.c_id = ((self.todoListModel.c_id > 0) && self.todoListModel.c_id) ? self.todoListModel.c_id : [[STIMNoteManager sharedInstance] getMaxQTNoteSubItemCSid] + 1;
+    self.todoListModel.q_title = self.addNewTodoListField.text ? self.addNewTodoListField.text : [NSBundle stimDB_localizedStringForKey:@"todolist_think"];
+    self.todoListModel.q_type = STIMNoteTypeTodoList;
+    self.todoListModel.q_state = STIMNoteStateNormal;
+    if (self.todoListModel.q_ExtendedFlag == STIMNoteExtendedFlagStateLocalCreated) {
+        self.todoListModel.q_ExtendedFlag = STIMNoteExtendedFlagStateLocalModify;
     } else {
-        self.todoListModel.q_ExtendedFlag = QIMNoteExtendedFlagStateLocalCreated;
+        self.todoListModel.q_ExtendedFlag = STIMNoteExtendedFlagStateLocalCreated;
     }
     if (!self.todoListModel.q_time) {
         self.todoListModel.q_time = [[NSDate date] timeIntervalSince1970];
     }
-    [[QIMNoteManager sharedInstance] saveNewQTNoteMainItem:self.todoListModel];
+    [[STIMNoteManager sharedInstance] saveNewQTNoteMainItem:self.todoListModel];
 }
 
 @end

@@ -6,15 +6,15 @@
 //
 //
 
-#import "QIMCommonUIFramework.h"
-#if __has_include("QIMNoteManager.h")
-#import "QIMNoteModel.h"
+#import "STIMCommonUIFramework.h"
+#if __has_include("STIMNoteManager.h")
+#import "STIMNoteModel.h"
 
 @interface NewAddPasswordViewController : UIViewController
 
 @property (nonatomic, assign) BOOL edited;
 
-- (void)setQIMNoteModel:(QIMNoteModel *)model;
+- (void)setSTIMNoteModel:(STIMNoteModel *)model;
 
 @property (nonatomic, assign) NSInteger CID;
 

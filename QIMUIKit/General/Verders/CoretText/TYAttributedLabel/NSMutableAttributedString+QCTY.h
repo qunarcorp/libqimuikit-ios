@@ -1,12 +1,12 @@
 //
 //  NSMutableAttributedString+QC.h
-//  QIMAttributedLabelDemo
+//  STIMAttributedLabelDemo
 //
 //  Created by chenjie on 16/7/7.
 //  Copyright (c) 2016年 chenjie. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <CoreText/CoreText.h>
 
 @interface NSMutableAttributedString (QCTY)

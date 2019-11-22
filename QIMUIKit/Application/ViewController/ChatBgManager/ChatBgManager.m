@@ -1,6 +1,6 @@
 //
 //  ChatBgManager.m
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by admin on 2019/4/25.
 //

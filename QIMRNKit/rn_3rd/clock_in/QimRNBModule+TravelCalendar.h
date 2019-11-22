@@ -1,13 +1,13 @@
 //
 //  QimRNBModule+TravelCalendar.h
-//  QIMRNKit
+//  STIMRNKit
 //
 //  Created by 李露 on 2018/9/7.
-//  Copyright © 2018年 QIM. All rights reserved.
+//  Copyright © 2018年 STIM. All rights reserved.
 //
 
 #import "QimRNBModule.h"
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface QimRNBModule (TravelCalendar)
 

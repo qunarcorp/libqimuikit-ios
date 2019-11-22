@@ -7,7 +7,7 @@
 //
 
 #import "TodoListDownArrowHeader.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface TodoListDownArrowHeader ()
 
@@ -33,7 +33,7 @@
     
     self.downArrowIconView.frame = CGRectMake(0, 5, 35, 35);
     self.downArrowIconView.centerX = self.centerX;
-    self.downArrowIconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"chat_bottom_arrowdown_nor@2x"];
+    self.downArrowIconView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"chat_bottom_arrowdown_nor@2x"];
 }
 
 - (void)setState:(MJRefreshState)state

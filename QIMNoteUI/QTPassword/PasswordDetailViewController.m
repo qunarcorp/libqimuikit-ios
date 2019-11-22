@@ -5,17 +5,17 @@
 //  Created by 李露 on 2017/7/11.
 //
 //
-#if __has_include("QIMNoteManager.h")
+#if __has_include("STIMNoteManager.h")
 #import "PasswordDetailViewController.h"
 #import "NewAddPasswordViewController.h"
 #import "PasswordHistoryViewController.h"
 #import <MessageUI/MFMailComposeViewController.h>
-#import "QIMNoteModel.h"
-//#import "QIMMenuImageView.h"
-#import "UIImage+QIMUIKit.h"
+#import "STIMNoteModel.h"
+//#import "STIMMenuImageView.h"
+#import "UIImage+STIMUIKit.h"
 #import "AESCrypt.h"
-#import "QIMAES256.h"
-#import "QIMMenuView.h"
+#import "STIMAES256.h"
+#import "STIMMenuView.h"
 
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
@@ -28,7 +28,7 @@
 
 @property (nonatomic, strong) NSMutableArray *detailExpandSource;
 
-@property (nonatomic, strong) QIMNoteModel *noteModel;
+@property (nonatomic, strong) STIMNoteModel *noteModel;
 
 @property (nonatomic, strong) UIView *headerView;
 
@@ -54,15 +54,15 @@
 
 @implementation PasswordDetailViewController
 
-- (void)setQIMNoteModel:(QIMNoteModel *)noteModel {
+- (void)setSTIMNoteModel:(STIMNoteModel *)noteModel {
     if (noteModel != nil) {
         self.noteModel = noteModel;
-        NSString *pwd = [[QIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id];
+        NSString *pwd = [[STIMNoteManager sharedInstance] getPasswordWithCid:self.noteModel.c_id];
         NSString *contentJson = [AESCrypt decrypt:self.noteModel.qs_content password:pwd];
         if (!contentJson) {
-            contentJson = [QIMAES256 decryptForBase64:self.noteModel.qs_content password:pwd];
+            contentJson = [STIMAES256 decryptForBase64:self.noteModel.qs_content password:pwd];
         }
-        NSDictionary *contentDic = [[QIMJSONSerializer sharedInstance] deserializeObject:contentJson error:nil];
+        NSDictionary *contentDic = [[STIMJSONSerializer sharedInstance] deserializeObject:contentJson error:nil];
         self.pwdValue = [contentDic objectForKey:@"P"];
         self.accountValue = [contentDic objectForKey:@"U"];
     }
@@ -88,17 +88,17 @@
         
         UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 50, 50)];
         iconView.contentMode = UIViewContentModeScaleAspectFit;
-        iconView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"explore_tab_password"];
+        iconView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"explore_tab_password"];
         [_headerView addSubview:iconView];
         iconView.centerY = _headerView.centerY;
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconView.right + 15, iconView.top, SCREEN_WIDTH - iconView.right - 15, 30)];
-        _titleLabel.text = self.noteModel.qs_title ? self.noteModel.qs_title : [NSBundle qim_localizedStringForKey:@"Password"];
+        _titleLabel.text = self.noteModel.qs_title ? self.noteModel.qs_title : [NSBundle stimDB_localizedStringForKey:@"Password"];
         _titleLabel.tag = 1;
         [_headerView addSubview:_titleLabel];
         
         UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(_titleLabel.left, _titleLabel.bottom + 2, _titleLabel.width, 20)];
-        categoryLabel.text = [NSBundle qim_localizedStringForKey:@"Password"];
+        categoryLabel.text = [NSBundle stimDB_localizedStringForKey:@"Password"];
         categoryLabel.textColor = [UIColor qtalkTextLightColor];
         categoryLabel.font = [UIFont systemFontOfSize:12];
         [_headerView addSubview:categoryLabel];
@@ -122,7 +122,7 @@
         UILabel *accountLabel = [[UILabel alloc] initWithFrame:CGRectMake(originX, maxHeight + topMargin, originWidth, originHeight)];
         accountLabel.font = [UIFont systemFontOfSize:14];
         accountLabel.textColor = [UIColor systemBlueColor];
-        accountLabel.text = [NSBundle qim_localizedStringForKey:@"account"];
+        accountLabel.text = [NSBundle stimDB_localizedStringForKey:@"account"];
         [accountLabel sizeToFit];
         [_showPwdView addSubview:accountLabel];
         
@@ -139,7 +139,7 @@
         UILabel *pwdLabel = [[UILabel alloc] initWithFrame:CGRectMake(originX, showAccountLabel.bottom + topMargin, originWidth, originHeight)];
         pwdLabel.font = [UIFont systemFontOfSize:14];
         pwdLabel.textColor = [UIColor systemBlueColor];
-        pwdLabel.text = [NSBundle qim_localizedStringForKey:@"password"];
+        pwdLabel.text = [NSBundle stimDB_localizedStringForKey:@"password"];
         [pwdLabel sizeToFit];
         [_showPwdView addSubview:pwdLabel];
 
@@ -163,7 +163,7 @@
         UIButton *newPwdBtn = [UIButton buttonWithType:UIButtonTypeSystem];
         newPwdBtn.frame = CGRectMake(lineView.left, lineView.bottom + 8, lineView.width, 30);
         newPwdBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        [newPwdBtn setTitle:[NSBundle qim_localizedStringForKey:@"password_tab_history"] forState:UIControlStateNormal];
+        [newPwdBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"password_tab_history"] forState:UIControlStateNormal];
         [newPwdBtn setTitleColor:[UIColor qtalkTextBlackColor] forState:UIControlStateSelected];
         [newPwdBtn addTarget:self action:@selector(showMorePasswordHistory:) forControlEvents:UIControlEventTouchUpInside];
         [_showPwdView addSubview:newPwdBtn];
@@ -179,8 +179,8 @@
 }
 
 - (void)showMorePasswordHistory:(id)sender {
-    QIMVerboseLog(@"查看密码更改记录");
-    NSArray *historyModels = [[QIMNoteManager sharedInstance] getCloudRemoteSubHistoryWithQSid:self.noteModel.qs_id];
+    STIMVerboseLog(@"查看密码更改记录");
+    NSArray *historyModels = [[STIMNoteManager sharedInstance] getCloudRemoteSubHistoryWithQSid:self.noteModel.qs_id];
     if (historyModels.count) {
         PasswordHistoryViewController *pwdHistoryVc = [[PasswordHistoryViewController alloc] init];
 //        [pwdHistoryVc setPk:self.noteModel.privateKey];
@@ -189,7 +189,7 @@
     }
 }
 
-- (CGFloat)addShowPwdViewWithTitles:(NSArray *)titles passwordModel:(QIMNoteModel *)model baseView:(UIView *)baseView {
+- (CGFloat)addShowPwdViewWithTitles:(NSArray *)titles passwordModel:(STIMNoteModel *)model baseView:(UIView *)baseView {
     
     CGFloat originX = 15;
     CGFloat topMargin = 8;
@@ -200,7 +200,7 @@
         //密码提示Label
         UILabel *pwdLabel = [[UILabel alloc] initWithFrame:CGRectMake(originX, maxHeight + topMargin, originWidth, originHeight)];
         pwdLabel.font = [UIFont systemFontOfSize:14];
-        pwdLabel.textColor = [UIColor qim_colorWithHex:0x1296db alpha:1.0];
+        pwdLabel.textColor = [UIColor stimDB_colorWithHex:0x1296db alpha:1.0];
         pwdLabel.text = titles[i];
         [pwdLabel sizeToFit];
         [_showPwdView addSubview:pwdLabel];
@@ -231,7 +231,7 @@
 
 - (void)setUpUI {
     self.view.backgroundColor = [UIColor qtalkTableDefaultColor];
-    UIBarButtonItem *editBtnItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Edit"] style:UIBarButtonItemStyleDone target:self action:@selector(editPassword)];
+    UIBarButtonItem *editBtnItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Edit"] style:UIBarButtonItemStyleDone target:self action:@selector(editPassword)];
     [self.navigationItem setRightBarButtonItem:editBtnItem];
     [self.view addSubview:self.detailScrollView];
     [self.detailScrollView addSubview:self.headerView];
@@ -292,15 +292,15 @@
 }
 
 - (void)updateMenuItems2 {
-    UIMenuItem *copyAccount = [[UIMenuItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"password_tab_copy"] action:@selector(copyAccount:)];
+    UIMenuItem *copyAccount = [[UIMenuItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_tab_copy"] action:@selector(copyAccount:)];
     [_accountMenuVc setMenuItems:[NSArray arrayWithObjects:copyAccount, nil]];
 }
 
 - (void)updateMenuItems {
-    UIMenuItem *copyPasswd = [[UIMenuItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"password_tab_copy"] action:@selector(copyPassword:)];
-    UIMenuItem *showPasswd = [[UIMenuItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"password_menu_reveal"] action:@selector(showPassword:)];
-    UIMenuItem *hidePasswd = [[UIMenuItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"password_menu_conceal"]  action:@selector(hidePassword:)];
-    UIMenuItem *bigShowPasswd = [[UIMenuItem alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"password_menu_large"] action:@selector(bigShowPassword:)];
+    UIMenuItem *copyPasswd = [[UIMenuItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_tab_copy"] action:@selector(copyPassword:)];
+    UIMenuItem *showPasswd = [[UIMenuItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_menu_reveal"] action:@selector(showPassword:)];
+    UIMenuItem *hidePasswd = [[UIMenuItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_menu_conceal"]  action:@selector(hidePassword:)];
+    UIMenuItem *bigShowPasswd = [[UIMenuItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_menu_large"] action:@selector(bigShowPassword:)];
     if ([self.showLastPwdLabel.text isEqualToString:self.pwdValue]) {
         [_menuVc setMenuItems:[NSArray arrayWithObjects:copyPasswd, hidePasswd,/* bigShowPasswd,*/ nil]];
     } else {
@@ -390,21 +390,21 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
     }
     if ([item isEqualToString:@"Copy"]) {
-        cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_copy"];
-        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"Password_copy"];
+        cell.textLabel.text = [NSBundle stimDB_localizedStringForKey:@"password_tab_copy"];
+        cell.imageView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"Password_copy"];
     } else if ([item isEqualToString:@"Share"]) {
-        cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_share"];
-        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"Password_share"];
+        cell.textLabel.text = [NSBundle stimDB_localizedStringForKey:@"password_tab_share"];
+        cell.imageView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"Password_share"];
     } else if ([item isEqualToString:@"Export"]) {
-        cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_export"];
-        cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"Password_export"];
+        cell.textLabel.text = [NSBundle stimDB_localizedStringForKey:@"password_tab_export"];
+        cell.imageView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"Password_export"];
     } else if ([item isEqualToString:@"Favorite"]) {
-        if (self.noteModel.qs_state == QIMNoteStateFavorite) {
-            cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_removeFavorite"];
-            cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"PasswordBox_favorite_selected"];
+        if (self.noteModel.qs_state == STIMNoteStateFavorite) {
+            cell.textLabel.text = [NSBundle stimDB_localizedStringForKey:@"password_tab_removeFavorite"];
+            cell.imageView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"PasswordBox_favorite_selected"];
         } else {
-            cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"password_tab_favorite"];
-            cell.imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"PasswordBox_favorite_normal"];
+            cell.textLabel.text = [NSBundle stimDB_localizedStringForKey:@"password_tab_favorite"];
+            cell.imageView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"PasswordBox_favorite_normal"];
         }
     }
     cell.textLabel.textColor = [UIColor systemBlueColor];
@@ -419,8 +419,8 @@
         [[UIPasteboard generalPasteboard] setString:self.pwdValue?self.pwdValue:@""];
     } else if ([item isEqualToString:@"Share"]) {
         __weak __typeof(self) weakSelf = self;
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"password_share_title"] message:[NSBundle qim_localizedStringForKey:@"password_share_message"] preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"password_share_undestand"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_share_title"] message:[NSBundle stimDB_localizedStringForKey:@"password_share_message"] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"password_share_undestand"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [weakSelf sendMail];
         }];
         [alert addAction:action];
@@ -430,12 +430,12 @@
     } else if ([item isEqualToString:@"Export"]) {
         
     } else if ([item isEqualToString:@"Favorite"]) {
-        if (self.noteModel.qs_state == QIMNoteStateFavorite) {
-            self.noteModel.qs_state = QIMNoteStateNormal;
+        if (self.noteModel.qs_state == STIMNoteStateFavorite) {
+            self.noteModel.qs_state = STIMNoteStateNormal;
         } else {
-            self.noteModel.qs_state = QIMNoteStateFavorite;
+            self.noteModel.qs_state = STIMNoteStateFavorite;
         }
-        [[QIMNoteManager sharedInstance] updateQTNoteSubItemStateWithQSModel:self.noteModel];
+        [[STIMNoteManager sharedInstance] updateQTNoteSubItemStateWithQSModel:self.noteModel];
         [self.detailExpandTableView reloadData];
     }
 }
@@ -447,13 +447,13 @@
         NSString *modelTitle = self.noteModel.qs_title;
         NSString *modelPwd = self.pwdValue;
         NSString *body = [NSString stringWithFormat:@"Password\%@\r\r\r password: %@\r From Iphone QTalk.", modelTitle, modelPwd];
-        [controller setToRecipients:@[[NSString stringWithFormat:@"%@@qunar.com",[QIMKit getLastUserName]]]];
-        [controller setSubject:[NSString stringWithFormat:@"From %@",[[QIMKit sharedInstance] getMyNickName]]];
+        [controller setToRecipients:@[[NSString stringWithFormat:@"%@@qunar.com",[STIMKit getLastUserName]]]];
+        [controller setSubject:[NSString stringWithFormat:@"From %@",[[STIMKit sharedInstance] getMyNickName]]];
         [controller setMessageBody:body isHTML:NO];
         [self presentViewController:controller animated:YES completion:nil];
         _mailControlle = controller;
     } else {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSBundle qim_localizedStringForKey:@"Please configure email account first, or you are unable to send emails with this device"] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:[NSBundle stimDB_localizedStringForKey:@"Please configure email account first, or you are unable to send emails with this device"] delegate:nil cancelButtonTitle:[NSBundle stimDB_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -464,7 +464,7 @@
             
         } else {
             if (error) {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[error description] delegate:nil cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Reminder"] message:[error description] delegate:nil cancelButtonTitle:[NSBundle stimDB_localizedStringForKey:@"Confirm"] otherButtonTitles:nil];
                 [alertView show];
             }
         }
@@ -475,7 +475,7 @@
 - (void)editPassword {
     NewAddPasswordViewController *editPasswordVc = [[NewAddPasswordViewController alloc] init];
     editPasswordVc.edited = YES;
-    [editPasswordVc setQIMNoteModel:self.noteModel];
+    [editPasswordVc setSTIMNoteModel:self.noteModel];
     [self.navigationController pushViewController:editPasswordVc animated:YES];
 }
 

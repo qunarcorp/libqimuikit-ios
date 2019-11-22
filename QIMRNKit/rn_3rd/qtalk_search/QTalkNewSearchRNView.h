@@ -1,13 +1,13 @@
 //
 //  QTalkNewSearchRNView.h
-//  QIMUIKit
+//  STIMUIKit
 //
 //  Created by lilu on 2019/7/1.
-//  Copyright © 2019 QIM. All rights reserved.
+//  Copyright © 2019 STIM. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 #import <React/RCTBridge.h>
 #import "MBProgressHUD.h"
 

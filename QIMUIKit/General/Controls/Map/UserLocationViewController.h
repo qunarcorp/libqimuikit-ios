@@ -7,8 +7,8 @@
 //
 
 #import "BaseMapViewController.h"
-#import "QIMMsgBaseVC.h"
-#import "QIMCommonUIFramework.h"
+#import "STIMMsgBaseVC.h"
+#import "STIMCommonUIFramework.h"
 
 @class MapAdressInfo;
 @class UserLocationViewController;
@@ -23,7 +23,7 @@
 @property (nonatomic,copy)NSString      * dispalyAdr;
 @property (nonatomic,copy)NSString      * dispalyName;
 
-@property (weak,nonatomic) id<UserLocationViewControllerDelegate,QIMMsgBaseVCDelegate> delegate;
+@property (weak,nonatomic) id<UserLocationViewControllerDelegate,STIMMsgBaseVCDelegate> delegate;
 
 -(instancetype)initWithCoordinate:(CLLocationCoordinate2D)coordinate;
 

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 c. All rights reserved.
 //
 
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface QCDepartmentModel : NSObject
 

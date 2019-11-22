@@ -7,7 +7,7 @@
 //
 
 #import "CamelLoadingView.h"
-#import "UIImage+QIMUIKit.h"
+#import "UIImage+STIMUIKit.h"
 
 @interface CamelLoadingView ()
 
@@ -35,7 +35,7 @@
         _loadingView.contentMode = UIViewContentModeScaleAspectFit;
         NSString *path = [[NSBundle mainBundle] pathForResource:@"camel" ofType:@"gif"];
         NSURL *url = [NSURL fileURLWithPath:path];
-        _loadingView.image = [UIImage qim_animatedImageWithAnimatedGIFURL:url];
+        _loadingView.image = [UIImage stimDB_animatedImageWithAnimatedGIFURL:url];
     }
     return _loadingView;
 }
@@ -46,7 +46,7 @@
         
         _backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.width * 0.7, self.width * 0.7)];
         _backView.center = CGPointMake(self.centerX, self.centerY + 20);
-        _backView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"background"];
+        _backView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"background"];
         CABasicAnimation* rotationAnimation;
         rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
         rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0 ];

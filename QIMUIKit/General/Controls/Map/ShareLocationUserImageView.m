@@ -12,7 +12,7 @@
 #define kUserLoactionDirectionWidth  18.0f
 
 #import "ShareLocationUserImageView.h"
-#import "UIImage+QIMUIKit.h"
+#import "UIImage+STIMUIKit.h"
 
 @interface ShareLocationUserImageView()
 {
@@ -40,7 +40,7 @@
 - (void)initUI{
     if (_userHeadBgImgView == nil) {
         _userHeadBgImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kUserHeadBgWidth, kUserHeadBgWidth)];
-        _userHeadBgImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Member_bg"];
+        _userHeadBgImgView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_Member_bg"];
         [self addSubview:_userHeadBgImgView];
     }
     if (_userHeadImgView == nil) {
@@ -48,8 +48,8 @@
         _userHeadImgView.center = CGPointMake(kUserHeadBgWidth / 2 - 1, kUserHeadBgWidth / 2 - 3.5);
         _userHeadImgView.layer.cornerRadius = kUserHeadWidth / 2;
         _userHeadImgView.clipsToBounds = YES;
-//        _userHeadImgView.image = [[QIMKit sharedInstance] getUserHeaderImageByUserId:_userId];
-        [_userHeadImgView qim_setImageWithJid:_userId];
+//        _userHeadImgView.image = [[STIMKit sharedInstance] getUserHeaderImageByUserId:_userId];
+        [_userHeadImgView stimDB_setImageWithJid:_userId];
         [_userHeadBgImgView addSubview:_userHeadImgView];
     }
     
@@ -61,20 +61,20 @@
     
     if (_userLctImgView == nil) {
         _userLctImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, _userLctBgView.height - kUserLocationWith, kUserLocationWith, kUserLocationWith)];
-        if ([_userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-            _userLctImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_MySelf"];
+        if ([_userId isEqualToString:[[STIMKit sharedInstance] getLastJid]]) {
+            _userLctImgView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_Icon_MySelf"];
         }else{
-            _userLctImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_Friend"];
+            _userLctImgView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_Icon_Friend"];
         }
         [_userLctBgView addSubview:_userLctImgView];
     }
     
     if (_userLctDrctImgView == nil) {
         _userLctDrctImgView = [[UIImageView alloc] initWithFrame:CGRectMake((kUserLocationWith - kUserLoactionDirectionWidth) / 2, 0, kUserLoactionDirectionWidth, kUserLoactionDirectionWidth)];
-        if ([_userId isEqualToString:[[QIMKit sharedInstance] getLastJid]]) {
-            _userLctDrctImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_Myself_Heading"];
+        if ([_userId isEqualToString:[[STIMKit sharedInstance] getLastJid]]) {
+            _userLctDrctImgView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_Icon_Myself_Heading"];
         }else{
-            _userLctDrctImgView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"locationSharing_Icon_Friend_Heading"];
+            _userLctDrctImgView.image = [UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"locationSharing_Icon_Friend_Heading"];
         }
         [_userLctBgView insertSubview:_userLctDrctImgView aboveSubview:_userLctImgView];
     }

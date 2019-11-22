@@ -7,7 +7,7 @@
 //
 
 #import "TODOListDIYHeader.h"
-#import "QIMNoteUICommonFramework.h"
+#import "STIMNoteUICommonFramework.h"
 
 @interface TODOListDIYHeader ()
 
@@ -30,13 +30,13 @@
     self.mj_h = 37.5 + 20;
     
     UILabel *titleLabel = [[UILabel alloc] init];
-    titleLabel.text = [NSBundle qim_localizedStringForKey:@"todolist_pull_add"];
+    titleLabel.text = [NSBundle stimDB_localizedStringForKey:@"todolist_pull_add"];
     titleLabel.textColor = [UIColor orangeColor];
     [self addSubview:titleLabel];
     self.titleLabel = titleLabel;
 
     UIButton *clockBtn = [[UIButton alloc] init];
-    [clockBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"随机_13x12_"] forState:UIControlStateNormal];
+    [clockBtn setImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"随机_13x12_"] forState:UIControlStateNormal];
     clockBtn.centerY = titleLabel.centerY;
     [self addSubview:clockBtn];
     self.clockBtn = clockBtn;

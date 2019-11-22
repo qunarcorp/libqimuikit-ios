@@ -10,7 +10,7 @@
 #define QTalkSearchCheckUpdate_h
 
 #import <React/RCTBridgeModule.h>
-#import "QIMCommonUIFramework.h"
+#import "STIMCommonUIFramework.h"
 
 @interface QTalkSearchCheckUpdate : NSObject <RCTBridgeModule>
 

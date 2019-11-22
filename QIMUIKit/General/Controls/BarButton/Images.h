@@ -56,30 +56,30 @@
 #define kIcon_Sort_icon_File                    (@"sortIcon")
 
 // 进度条
-#define kIcon_Progressbar                       ([UIImage qim_imageNamedFromQIMUIKitBundle:@"circle_outline"])
+#define kIcon_Progressbar                       ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"circle_outline"])
 
 // 列表背景图
-#define kIcon_TableView_Background              ([UIImage qim_imageNamedFromQIMUIKitBundle:@"bg"])
+#define kIcon_TableView_Background              ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"bg"])
 
 // Tab Icon
-#define kIcon_Tab_UGC                           ([UIImage qim_imageNamedFromQIMUIKitBundle:@"tabUGC"])
-#define kIcon_Tab_UGC_Selected                  ([UIImage qim_imageNamedFromQIMUIKitBundle:@"tabUGCSelected"])
-#define kIcon_Tab_Destination                   ([UIImage qim_imageNamedFromQIMUIKitBundle:@"tabDest"])
-#define kIcon_Tab_Destination_Selected          ([UIImage qim_imageNamedFromQIMUIKitBundle:@"tabDestSelected"])
-#define kIcon_Tab_TravelNotes                   ([UIImage qim_imageNamedFromQIMUIKitBundle:@"tabTravel"])
-#define kIcon_Tab_TravelNotes_Selected          ([UIImage qim_imageNamedFromQIMUIKitBundle:@"tabTravelSelected"])
-#define kIcon_Tab_Choice                        ([UIImage qim_imageNamedFromQIMUIKitBundle:@"tabChoice"])
-#define kIcon_Tab_Choice_Selected               ([UIImage qim_imageNamedFromQIMUIKitBundle:@"tabChoiceSelected"])
-#define kIcon_Tab_Camera                        ([UIImage qim_imageNamedFromQIMUIKitBundle:@"camera"])
-#define kIcon_Tab_Camera_Press                  ([UIImage qim_imageNamedFromQIMUIKitBundle:@"cameraPress"])
+#define kIcon_Tab_UGC                           ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"tabUGC"])
+#define kIcon_Tab_UGC_Selected                  ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"tabUGCSelected"])
+#define kIcon_Tab_Destination                   ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"tabDest"])
+#define kIcon_Tab_Destination_Selected          ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"tabDestSelected"])
+#define kIcon_Tab_TravelNotes                   ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"tabTravel"])
+#define kIcon_Tab_TravelNotes_Selected          ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"tabTravelSelected"])
+#define kIcon_Tab_Choice                        ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"tabChoice"])
+#define kIcon_Tab_Choice_Selected               ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"tabChoiceSelected"])
+#define kIcon_Tab_Camera                        ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"camera"])
+#define kIcon_Tab_Camera_Press                  ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"cameraPress"])
 
 // 导航栏 按钮图片
-#define kIcon_NavButton                         ([UIImage qim_imageNamedFromQIMUIKitBundle:@"normalButton"])
-#define kIcon_NavButton_Press                   ([UIImage qim_imageNamedFromQIMUIKitBundle:@"normalButtonDown"])
-#define kIcon_NavSetting                        ([UIImage qim_imageNamedFromQIMUIKitBundle:@"setting"])
-#define kIcon_NavSetting_Press                  ([UIImage qim_imageNamedFromQIMUIKitBundle:@"setting"])
-#define kIcon_NavBack                           ([UIImage qim_imageNamedFromQIMUIKitBundle:@"backButton"])
-#define kIcon_NavNext                           ([UIImage qim_imageNamedFromQIMUIKitBundle:@"rightButton"])
+#define kIcon_NavButton                         ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"normalButton"])
+#define kIcon_NavButton_Press                   ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"normalButtonDown"])
+#define kIcon_NavSetting                        ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"setting"])
+#define kIcon_NavSetting_Press                  ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"setting"])
+#define kIcon_NavBack                           ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"backButton"])
+#define kIcon_NavNext                           ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"rightButton"])
 
 #define kIcon_NavButton_File                    (@"normalButton")
 #define kIcon_NavButton_Press_File              (@"normalButtonDown")
@@ -91,22 +91,22 @@
 #define kIcon_NavNext_Down_File                 (@"rightButtonDown")
 
 //  POI Type Icon
-#define kIcon_POI_Entertainment                 ([UIImage qim_imageNamedFromQIMUIKitBundle:@"POI_Entertainment"]) //没有
-#define kIcon_POI_Catering                      ([UIImage qim_imageNamedFromQIMUIKitBundle:@"POI_Catering"])
-#define kIcon_POI_Road                          ([UIImage qim_imageNamedFromQIMUIKitBundle:@"POI_Road"])
-#define kIcon_POI_Shopping                      ([UIImage qim_imageNamedFromQIMUIKitBundle:@"POI_Shopping"])
-#define kIcon_POI_Building                      ([UIImage qim_imageNamedFromQIMUIKitBundle:@"POI_Building"])
-#define kIcon_POI_Traffic                       ([UIImage qim_imageNamedFromQIMUIKitBundle:@"POI_Traffic"])
-#define kIcon_POI_Sights                        ([UIImage qim_imageNamedFromQIMUIKitBundle:@"POI_POI"])
-#define kIcon_POI_Hotel                         ([UIImage qim_imageNamedFromQIMUIKitBundle:@"POI_Hotel"])
-#define kIcon_POI_Other                         ([UIImage qim_imageNamedFromQIMUIKitBundle:@"POI_Other"])
+#define kIcon_POI_Entertainment                 ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"POI_Entertainment"]) //没有
+#define kIcon_POI_Catering                      ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"POI_Catering"])
+#define kIcon_POI_Road                          ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"POI_Road"])
+#define kIcon_POI_Shopping                      ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"POI_Shopping"])
+#define kIcon_POI_Building                      ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"POI_Building"])
+#define kIcon_POI_Traffic                       ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"POI_Traffic"])
+#define kIcon_POI_Sights                        ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"POI_POI"])
+#define kIcon_POI_Hotel                         ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"POI_Hotel"])
+#define kIcon_POI_Other                         ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"POI_Other"])
 
 // 旅图 Tab 城市背景图
-#define kIcon_LTCity_Background                 ([UIImage qim_imageNamedFromQIMUIKitBundle:@"albumBg"])
-#define kIcon_NextButtonImage                   ([UIImage qim_imageNamedFromQIMUIKitBundle:@"nextButton"])
-#define kIcon_SelectedMask                      ([UIImage qim_imageNamedFromQIMUIKitBundle:@"photoSelected"])
-#define kIcon_NoAllSelectedMask                 ([UIImage qim_imageNamedFromQIMUIKitBundle:@"noAllPhotoSelected"])
-#define kIcon_UnSelectedMask                    ([UIImage qim_imageNamedFromQIMUIKitBundle:@"unPhotoSelected"])
+#define kIcon_LTCity_Background                 ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"albumBg"])
+#define kIcon_NextButtonImage                   ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"nextButton"])
+#define kIcon_SelectedMask                      ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"photoSelected"])
+#define kIcon_NoAllSelectedMask                 ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"noAllPhotoSelected"])
+#define kIcon_UnSelectedMask                    ([UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"unPhotoSelected"])
 
 // Common
 #define kLeftQuotesImageFile                    @"LeftQuotes"

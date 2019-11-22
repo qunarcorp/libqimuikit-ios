@@ -10,17 +10,17 @@
 #define QTalkAuth_h
 
 #import <React/RCTBridgeModule.h>
-#import "QIMRnCheckUpdate.h"
-#import "QIMCommonUIFramework.h"
+#import "STIMRnCheckUpdate.h"
+#import "STIMCommonUIFramework.h"
 
-#define kNotify_QIMRN_BUNDLE_UPDATE @"kNotify_QIMRN_BUNDLE_UPDATE"
+#define kNotify_STIMRN_BUNDLE_UPDATE @"kNotify_STIMRN_BUNDLE_UPDATE"
 #define kNotifyVCClose @"kNotifyVCClose"
 
 typedef enum {
-    QIMAppTypeInner = 1,    //内部应用
-    QIMAppExternal = 2, //外部App
-    QIMAppTypeH5 = 3,   //H5 App
-} QIMAppType;
+    STIMAppTypeInner = 1,    //内部应用
+    STIMAppExternal = 2, //外部App
+    STIMAppTypeH5 = 3,   //H5 App
+} STIMAppType;
 
 static RCTBridge *__innerCacheBridge = nil;
 
@@ -41,10 +41,10 @@ static RCTBridge *__innerCacheBridge = nil;
 
 + (id)TOTPVC;
 
-+ (void)sendQIMRNWillShow;
++ (void)sendSTIMRNWillShow;
 
-+ (id)createQIMRNVCWithParam:(NSDictionary *)param;
-+ (id)createQIMRNVCWithBundleName:(NSString *)bundleName
++ (id)createSTIMRNVCWithParam:(NSDictionary *)param;
++ (id)createSTIMRNVCWithBundleName:(NSString *)bundleName
                        WithModule:(NSString *)module
                    WithProperties:(NSDictionary *)properties;
 
@@ -60,7 +60,7 @@ static RCTBridge *__innerCacheBridge = nil;
                                WithModule:(NSString *)module
                            WithProperties:(NSDictionary *)properties;
 
-+ (void)openQIMRNVCWithParam:(NSDictionary *)param;
++ (void)openSTIMRNVCWithParam:(NSDictionary *)param;
 + (void)openVCWithNavigation:(UINavigationController *)navVC
                WithHiddenNav:(BOOL)hiddenNav
               WithBundleName:(NSString *)bundleName
