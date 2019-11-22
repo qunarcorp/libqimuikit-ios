@@ -1,0 +1,21 @@
+//
+//  STIMCommonUserInfoCell.h
+//  LLWeChat
+//
+//  Created by GYJZH on 9/8/16.
+//  Copyright © 2016 GYJZH. All rights reserved.
+//
+
+#import "STIMCommonUIFramework.h"
+
+@interface STIMCommonUserInfoCell : UITableViewCell
+
+@property (nonatomic, strong) UIImageView *avatarImage;       //用户头像
+
+@property (nonatomic, strong) UILabel *nickNameLabel;         //昵称
+
+@property (nonatomic, strong) UILabel *signatureLabel;      //个性签名
+
+@property (nonatomic, assign) BOOL showQRCode;
+
+@end
