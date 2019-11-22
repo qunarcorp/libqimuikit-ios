@@ -71,7 +71,7 @@ static STIMImageManager *__manager = nil;
             
         }
     } else {
-        headerUrl = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"STIMRNKit" BundleName:@"STIMRNKit" pathForResource:@"singleHeaderDefault" ofType:@"png"];
+        headerUrl = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:@"singleHeaderDefault" ofType:@"png"];
     }
     NSString *path = [[SDImageCache sharedImageCache] cachePathForKey:headerUrl];
     if ([[NSFileManager defaultManager] fileExistsAtPath:path] && path.length > 0) {

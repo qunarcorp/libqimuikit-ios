@@ -428,7 +428,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
         NSURL *qtalkFoundRNDebugUrlStrUrl = [NSURL URLWithString:qtalkFoundRNDebugUrlStr];
         return qtalkFoundRNDebugUrlStrUrl;
     } else {
-        NSString *innerJsCodeLocation = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"STIMRNKit" BundleName:@"STIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
+        NSString *innerJsCodeLocation = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QimRNBModule getInnerBundleName] ofType:@"jsbundle"];
         NSString *localJSCodeFileStr = [[UserCachesPath stringByAppendingPathComponent: [QimRNBModule getCachePath]] stringByAppendingPathComponent: [QimRNBModule getAssetBundleName]];
         if (localJSCodeFileStr && [[NSFileManager defaultManager] fileExistsAtPath:localJSCodeFileStr]) {
             STIMVerboseLog(@"本地缓存的更新包地址 : %@", localJSCodeFileStr);

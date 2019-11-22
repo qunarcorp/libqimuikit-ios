@@ -133,7 +133,7 @@ static RCTBridge *bridge = nil;
         NSURL *appDebugOpsSearchRNDebugUrl = [NSURL URLWithString:appDebugOpsSearchRNDebugUrlStr];
         return appDebugOpsSearchRNDebugUrl;
     } else {
-        NSString *innerJsCodeLocation = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"STIMRNKit" BundleName:@"STIMRNKit" pathForResource:[QTalkNewSearchRNView getInnerBundleName] ofType:@"jsbundle"];
+        NSString *innerJsCodeLocation = [NSBundle stimDB_myLibraryResourcePathWithClassName:@"QIMRNKit" BundleName:@"QIMRNKit" pathForResource:[QTalkNewSearchRNView getInnerBundleName] ofType:@"jsbundle"];
         NSURL *jsCodeLocation = [NSURL URLWithString:innerJsCodeLocation];
         // load jsbundle from cacheqtalk_temp_features
         NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
