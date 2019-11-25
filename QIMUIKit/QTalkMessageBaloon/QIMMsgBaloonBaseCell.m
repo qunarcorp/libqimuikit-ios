@@ -388,6 +388,9 @@ static UIImage *__rightBallocImage = nil;
                     marginLeft += (18+5);
                     [self.medalListView addSubview:medalIconView];
                 }
+                if (![self.contentView.subviews containsObject:self.medalListView]) {
+                    [self.contentView addSubview:self.medalListView];
+                }
                 [self.medalListView mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.left.mas_equalTo(self.nameLabel.mas_right).mas_offset(MEDAL_SUPER_LEFT);
                     make.top.mas_equalTo(0);
