@@ -749,14 +749,12 @@ typedef enum {
             UIImage *screenshotImage = nil;
             if (!_isAbroadLocation) {
                 screenshotImage = [self.mapView takeSnapshotInRect:inRect];
-                [[QIMKit sharedInstance] setUserObject:UIImagePNGRepresentation(screenshotImage) forKey:@"userLocationScreenshotImage"];
             } else {
                 UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.appleMapView.width, self.appleMapView.height / 2.0f)];
                 view.center = self.appleMapView.center;
                 UIImage *image = [UserLocationViewController imageWithUIView:self.appleMapView];
 //                screenshotImage = [image getSubImage:view.frame];
                 screenshotImage = image;
-                [[QIMKit sharedInstance] setUserObject:UIImagePNGRepresentation(screenshotImage) forKey:@"userLocationScreenshotImage"];
             }
             NSData *screenshotImageData =  UIImagePNGRepresentation(screenshotImage);            
             NSString *localScreenImagePath = [[QIMImageManager sharedInstance] defaultCachePathForKey:[NSString stringWithFormat:@"%@.png", [QIMUUIDTools UUID]]];

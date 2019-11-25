@@ -2343,8 +2343,7 @@ static CGPoint tableOffsetPoint;
     if (msgType == QIMMessageType_LocalShare) {
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:info error:nil];
         NSString *localPath = [infoDic objectForKey:@"LocalScreenShotImagePath"];
-        NSData *imageData = [[QIMKit sharedInstance] userObjectForKey:@"userLocationScreenshotImage"];
-       QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:message extenddInfo:info userId:self.chatId userType:ChatType_GroupChat msgType:QIMMessageType_LocalShare forMsgId:_resendMsg.messageId];
+        QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:message extenddInfo:info userId:self.chatId userType:ChatType_GroupChat msgType:QIMMessageType_LocalShare forMsgId:_resendMsg.messageId];
         [msg setOriginalMessage:[msg message]];
         [msg setOriginalExtendedInfo:[msg extendInformation]];
         
@@ -2358,10 +2357,9 @@ static CGPoint tableOffsetPoint;
         [self scrollToBottomWithCheck:YES];
 
         [[QIMKit sharedInstance] qim_uploadImageWithImageKey:localPath forMessage:msg];
-//        [[QIMKit sharedInstance] uploadFileForData:imageData forMessage:msg withJid:self.chatId isFile:NO];
     } else {
         
-       QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:message extenddInfo:info userId:self.chatId userType:ChatType_GroupChat msgType:msgType forMsgId:_resendMsg.messageId];
+        QIMMessageModel *msg = [[QIMKit sharedInstance] createMessageWithMsg:message extenddInfo:info userId:self.chatId userType:ChatType_GroupChat msgType:msgType forMsgId:_resendMsg.messageId];
         [self.messageManager.dataSource addObject:msg];
         [self updateGroupUsersHeadImgForMsgs:@[msg]];
         [self.tableView beginUpdates];
