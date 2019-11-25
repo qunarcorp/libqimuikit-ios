@@ -2402,8 +2402,6 @@
 
         NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:info error:nil];
         NSString *localPath = [infoDic objectForKey:@"LocalScreenShotImagePath"];
-
-        NSData *imageData = [[QIMKit sharedInstance] userObjectForKey:@"userLocationScreenshotImage"];
         QIMMessageModel *msg = nil;
         if (self.chatType == ChatType_Consult || self.chatType == ChatType_ConsultServer) {
             msg = [[QIMKit sharedInstance] createMessageWithMsg:message extenddInfo:info userId:self.virtualJid realJid:self.chatId userType:self.chatType msgType:QIMMessageType_LocalShare forMsgId:[QIMUUIDTools UUID] willSave:YES];
