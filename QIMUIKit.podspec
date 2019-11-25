@@ -172,18 +172,17 @@ Pod::Spec.new do |s|
   
   s.subspec 'QIMFlutter' do |flutter|
     
-    flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
-#    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
-    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
-#    flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
+    flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}', 'QIMFlutterFramework/PluginClasses/**/*.{h,m,c}']
 
+    # 如果需要调试flutter，需要注释掉'QIMFlutterFramework/PluginClasses/**/*.{h,m,c}'，flutter.ios.vendored_frameworks=，然后再打开下面一行
+    # flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
+    flutter.vendored_frameworks = ['QIMFlutterFramework/App.framework', 'QIMFlutterFramework/Flutter.framework']
+    
     if $debug
 #      flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
-#      flutter.dependency 'QIMFlutterFramework', '~> 4.0.7'
-#      flutter.dependency 'QIMFlutterFramework', '~> 0.0.1-beta.qtalk-flutter.19'
     else
-      flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
-      flutter.dependency 'QIMFlutterFramework', '~> 4.0'
+      # flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
+      # flutter.dependency 'QIMFlutterFramework', '~> 4.0'
     end
     
   end
