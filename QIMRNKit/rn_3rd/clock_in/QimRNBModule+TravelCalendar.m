@@ -1,6 +1,6 @@
 //
 //  QimRNBModule+TravelCalendar.m
-//  STIMRNKit
+//  QIMRNKit
 //
 //  Created by 李露 on 2018/9/7.
 //  Copyright © 2018年 STIM. All rights reserved.

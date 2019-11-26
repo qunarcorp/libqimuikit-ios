@@ -286,7 +286,7 @@
              @(MA_Delete) : @{@"MenuTitle" : [NSBundle stimDB_localizedStringForKey:@"Delete"], @"MenuAction" : @"deleteMsg:"},
              @(MA_ReplyMsg) : @{@"MenuTitle" : [NSBundle stimDB_localizedStringForKey:@"Reply"], @"MenuAction" : @"replyMsg:"},
              @(MA_ToWithdraw) : @{@"MenuTitle" : [NSBundle stimDB_localizedStringForKey:@"Recall"], @"MenuAction" : @"toWithdrawMsg:"},
-             @(MA_Forward) : @{@"MenuTitle" : [NSBundle stimDB_localizedStringForKey:@"Delete"], @"MenuAction" : @"forwardMsgs:"},
+             @(MA_Forward) : @{@"MenuTitle" : [NSBundle stimDB_localizedStringForKey:@"More"], @"MenuAction" : @"forwardMsgs:"},
              @(MA_Refer) : @{@"MenuTitle" : [NSBundle stimDB_localizedStringForKey:@"Quote"], @"MenuAction" : @"referMsgs:"},
              @(MA_CopyOriginMsg) : @{@"MenuTitle" : [NSBundle stimDB_localizedStringForKey:@"Original_Message"], @"MenuAction" : @"copyOriginMsg:"},
              };
