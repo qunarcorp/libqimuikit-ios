@@ -17,13 +17,13 @@
 #import "UIView+QIMToast.h"
 #import "NSBundle+QIMLibrary.h"
 
-#if __has_include(<Flutter/Flutter.h>)
 @interface QIMFlutterViewController ()
 
 @end
 
 @implementation QIMFlutterViewController
 
+#if __has_include(<Flutter/Flutter.h>)
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -75,7 +75,7 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
+#endif
 /*
 #pragma mark - Navigation
 
@@ -87,4 +87,4 @@
 */
 
 @end
-#endif
+
