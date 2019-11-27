@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'DEBUGLOG=1'}
   s.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Private/QIMUIKit/**\" \"${PODS_ROOT}/Headers/Public/**\""}
   $debug = ENV['debug']
-  $beta = ENV['beta']
+  $internal = ENV['internal']
 
   s.subspec 'PublicUIHeader'  do |ph|
     ph.public_header_files = "QIMUIKit/QIMNotificationManager*.{h}", "QIMUIKit/QIMJumpURLHandle*.{h}", "QIMUIKit/QIMFastEntrance*.{h}", "QIMUIKit/QIMAppWindowManager*.{h}", "QIMUIKit/QIMCommonUIFramework*.*{h}", "QIMUIKit/QIMRemoteNotificationManager*.{h}"
@@ -157,10 +157,10 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'QIMRN' do |rn|
-    rn.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMRNEnable=1', "HEADER_SEARCH_PATHS" => "$(PROJECT_DIR)/node_modules/react-native"}
+    rn.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMRNEnable=1'}
     rn.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
     rn.source_files = ['QIMRNKit/rn_3rd/**/*{h,m,c}']
-    rn.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Public/QIMRNKit/**\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/../node_modules\" \"$(PODS_ROOT)/../node_modules/react-native/ReactCommon/yoga\""}
+    rn.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Public/QIMRNKit/**\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\""}
     rn.resource = 'QIMRNKit/QIMRNKit.bundle'
     rn.frameworks = 'UIKit', 'Foundation'
      if $debug
@@ -173,18 +173,15 @@ Pod::Spec.new do |s|
   s.subspec 'QIMFlutter' do |flutter|
     
     flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
-
-    # 如果需要调试flutter，需要注释掉'QIMFlutterFramework/PluginClasses/**/*.{h,m,c}'，flutter.ios.vendored_frameworks=，然后再打开下面一行
-    # flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
-#    flutter.vendored_frameworks = ['QIMFlutterFramework/App.framework', 'QIMFlutterFramework/Flutter.framework']
-
+    #    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
     if $debug
       flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
-    else
+    else if $internal
+      flutter.dependency 'QIMFlutterFramework', '~> 4.0'
       flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
-      # flutter.dependency 'QIMFlutterFramework', '~> 4.0'
-    end
-    
+    else
+      
+    end    
   end
   
   s.subspec 'QIMUIKit-NORN' do |norn|
