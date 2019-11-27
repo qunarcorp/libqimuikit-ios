@@ -176,11 +176,11 @@ Pod::Spec.new do |s|
     #    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
     if $debug
       flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
-    else if $internal
+    elsif $internal
       flutter.dependency 'QIMFlutterFramework', '~> 4.0'
       flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
     else
-      
+
     end    
   end
   
@@ -239,7 +239,7 @@ Pod::Spec.new do |s|
   s.dependency 'AMap3DMap'
   s.dependency 'SCLAlertView-Objective-C'
   s.dependency 'MMMarkdown'
-#  s.dependency 'Toast' 
+#  s.dependency 'Toast'
   s.dependency 'YYKeyboardManager'
   s.dependency 'RTLabel'
 #  s.dependency 'SuperPlayer'
