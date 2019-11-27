@@ -10,16 +10,22 @@
 #import "QIMFlutterViewController.h"
 #import "QIMFastEntrance.h"
 #import "UIApplication+QIMApplication.h"
+
+#if __has_include(<Flutter/Flutter.h>)
 #import <Flutter/Flutter.h>
+#endif
+
 #if __has_include("QIMAutoTracker.h")
 #import "QIMAutoTracker.h"
 #endif
 
 @interface QIMFlutterModule ()
 
+#if __has_include(<Flutter/Flutter.h>)
 @property (nonatomic, strong) FlutterMethodChannel *medalChannel;
 
 @property (nonatomic, strong) QIMFlutterViewController *flutterVc;
+#endif
 
 @end
 
@@ -34,6 +40,7 @@ static QIMFlutterModule *_flutterModule = nil;
     return _flutterModule;
 }
 
+#if __has_include(<Flutter/Flutter.h>)
 - (QIMFlutterViewController *)flutterVc {
     if (!_flutterVc) {
         _flutterVc = [QIMFlutterViewController new];
@@ -118,6 +125,7 @@ static QIMFlutterModule *_flutterModule = nil;
     }
     return _medalChannel;
 }
+#endif
 
 - (NSString *)getNickInfoWithUserXmppId:(NSString *)userId {
     NSDictionary *dic = [[QIMKit sharedInstance] getUserInfoByUserId:userId];
@@ -131,6 +139,7 @@ static QIMFlutterModule *_flutterModule = nil;
 }
 
 - (void)openUserMedalFlutterWithUserId:(NSString *)userId {
+#if __has_include(<Flutter/Flutter.h>)
     self.flutterVc = nil;
     self.medalChannel;
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -144,6 +153,7 @@ static QIMFlutterModule *_flutterModule = nil;
         }
         [navVC pushViewController:self.flutterVc animated:YES];
     });
+#endif
 }
 
 @end

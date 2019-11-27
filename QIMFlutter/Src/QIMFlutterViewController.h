@@ -6,7 +6,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#if __has_include(<Flutter/Flutter.h>)
 #import <Flutter/Flutter.h>
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,3 +17,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif

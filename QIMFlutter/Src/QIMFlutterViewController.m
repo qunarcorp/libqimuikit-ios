@@ -10,16 +10,20 @@
 #if __has_include(<FlutterPluginRegistrant/GeneratedPluginRegistrant.h>)
 #import <FlutterPluginRegistrant/GeneratedPluginRegistrant.h> // Only if you have Flutter Plugins
 #else
+#if __has_include("GeneratedPluginRegistrant.h")
 #import "GeneratedPluginRegistrant.h" // Only if you have Flutter Plugins
+#endif
 #endif
 #import "UIView+QIMToast.h"
 #import "NSBundle+QIMLibrary.h"
 
+#if __has_include(<Flutter/Flutter.h>)
 @interface QIMFlutterViewController ()
 
 @end
 
 @implementation QIMFlutterViewController
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -83,3 +87,4 @@
 */
 
 @end
+#endif
