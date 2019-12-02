@@ -640,7 +640,7 @@
         //接收消息但不提醒
         state = NO;
     }
-    [[QIMKit sharedInstance] updatePushState:self.groupId withOn:state];
+    [[QIMKit sharedInstance] updatePushState:self.groupId withOn:state withCallback:nil];
     [_tableView reloadData];
 }
 

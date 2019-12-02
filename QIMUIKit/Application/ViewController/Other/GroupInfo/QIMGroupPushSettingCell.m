@@ -62,7 +62,7 @@
 
 - (void)onSwitchClicked:(UISwitch *) sender {
     BOOL swicthOn = [[QIMKit sharedInstance] groupPushState:self.groupId];
-    [[QIMKit sharedInstance] updatePushState:self.groupId withOn:!swicthOn];
+    [[QIMKit sharedInstance] updatePushState:self.groupId withOn:!swicthOn withCallback:nil];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

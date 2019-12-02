@@ -1045,8 +1045,9 @@ RCT_EXPORT_METHOD(syncPushState:(NSString *)groupId :(RCTResponseSenderBlock)cal
 
 // 更新群PushState
 RCT_EXPORT_METHOD(updatePushState:(NSString *)groupId :(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL isSuccess = [[QIMKit sharedInstance] updatePushState:groupId withOn:state];
-    callback(@[@{@"ok" : @(isSuccess)}]);
+    [[QIMKit sharedInstance] updatePushState:groupId withOn:state withCallback:^(BOOL isSuccess) {
+       callback(@[@{@"ok" : @(isSuccess)}]);
+    }];
 }
 
 //获取群置顶stickyState

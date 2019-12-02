@@ -567,7 +567,7 @@
         }
             break;
         case QIMCommonTableViewCellDataTypeGroupPush: {
-            [[QIMKit sharedInstance] updatePushState:self.groupModel.groupId withOn:sender.on];
+            [[QIMKit sharedInstance] updatePushState:self.groupModel.groupId withOn:sender.on withCallback:nil];
         }
             break;
         default:
