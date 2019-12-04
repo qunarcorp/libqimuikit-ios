@@ -91,7 +91,12 @@ static QIMImageManager *__manager = nil;
 }
 
 - (UIImage *)getUserHeaderImageByUserId:(NSString *)jid {
-    return [UIImage imageWithData:[NSData dataWithContentsOfFile:[self qim_getHeaderCachePathWithJid:jid]]];
+    NSString *path = [self qim_getHeaderCachePathWithJid:jid];
+    if (path.length > 0 && [[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        return [UIImage imageWithData:[NSData dataWithContentsOfFile:path]];
+    } else {
+        return [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
+    }
 }
 
 - (NSInteger)qim_imageFormatForImageData:(nullable NSData *)data {
