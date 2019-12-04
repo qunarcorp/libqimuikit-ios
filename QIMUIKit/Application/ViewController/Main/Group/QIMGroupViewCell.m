@@ -101,6 +101,7 @@
     _nameLabel.frame = CGRectMake(_headerView.right + 10, 0, [UIScreen mainScreen].bounds.size.width - _headerView.right - 10 - 10, [self.class getCellHeightForGroupName:self.userName]);
     _nameLabel.font = [UIFont fontWithName:FONT_NAME size:[[QIMCommonFont sharedInstance] currentFontSize]];
     [_nameLabel setText:(self.userName.length > 0) ? self.userName : [[self.groupID componentsSeparatedByString:@"@"] firstObject]];
+    [_headerView qim_setImageWithJid:self.groupID WithChatType:ChatType_GroupChat];
 //    UIImage * headImage = [[QIMKit sharedInstance] getGroupImageFromLocalByGroupId:self.groupID];
 //    [_headerView setImage:headImage];
 }
