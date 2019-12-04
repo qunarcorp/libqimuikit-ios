@@ -912,13 +912,9 @@ static QIMFastEntrance *_sharedInstance = nil;
             [navVC presentViewController:reactNav animated:NO completion:nil];
         }
 #else
-        [navVC.view.layer addAnimation:animation forKey:@"animation"];
         UIViewController *reactVC = [[QIMFastEntrance sharedInstance] getRNSearchVC];
-        [navVC.view.layer addAnimation:animation forKey:nil];
-        navVC.delegate = self;
-        [navVC presentViewController:reactVC animated:YES completion:nil];
-        [navVC setNavigationBarHidden:YES animated:YES];
-        navVC.delegate = nil;
+        UINavigationController *reactNav = [[UINavigationController alloc] initWithRootViewController:reactVC];
+        [navVC presentViewController:reactNav animated:NO completion:nil];
 #endif
     });
 #endif
