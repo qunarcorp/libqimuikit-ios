@@ -129,7 +129,7 @@
             _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Call"];
         }
         else{
-            _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"QTalkRTCChatCell_Video"];
+            _imageView.image = [UIImage qim_imageNamedFromQIMUIKitBundle:@"rtc_video_left"];
         }
     } else if (self.message.messageType == QIMMessageTypeWebRtcMsgTypeVideoMeeting) {
         titleLabel.text = [NSBundle qim_localizedStringForKey:@"atom_rtc_video_conference"];//@"视频会议";
@@ -148,7 +148,7 @@
         case QIMMessageDirection_Received: {
             titleLabel.textColor = [UIColor blackColor];
             _imageView.frame = CGRectMake(self.backView.left + 16, self.backView.top + 5, 24, 24);
-            _imageView.backgroundColor = [UIColor blackColor];
+//            _imageView.backgroundColor = [UIColor whiteColor];
             titleLabel.frame = CGRectMake(_imageView.right + 5, self.backView.top + (self.backView.height - 20)/2, titleLabel.width, 20);
 //            _titleLabel.centerY = self.backView.centerY;
             titleLabel.textColor = [UIColor qim_leftBallocFontColor];
