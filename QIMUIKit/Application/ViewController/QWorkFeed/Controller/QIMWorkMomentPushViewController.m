@@ -37,6 +37,7 @@
 #import "QIMATGroupMemberTextAttachment.h"
 #import "YYKeyboardManager.h"
 #import "QIMVideoModel.h"
+#import  "QIMWorkMomentTagViewController.h"
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
@@ -352,6 +353,18 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         make.top.mas_equalTo(topView.mas_bottom).mas_offset(12);
     }];
     
+    
+    UIButton *addTag = [UIButton buttonWithType:UIButtonTypeCustom];
+    [addTag setBackgroundColor:[UIColor whiteColor]];
+    [addTag setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_at size:28 color:qim_moment_at_btnColor]] forState:UIControlStateNormal];
+    [addTag addTarget:self action:@selector(addTagView) forControlEvents:UIControlEventTouchUpInside];
+    [self.keyboardToolView addSubview:addTag];
+    [addTag mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(atBtn.mas_right).mas_offset(24);
+        make.width.height.mas_equalTo(28);
+        make.top.mas_equalTo(topView.mas_bottom).mas_offset(12);
+    }];
+    
     [self.keyboardToolView addSubview:self.identiView];
     [self.identiView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(topView.mas_bottom).mas_offset(10);
@@ -359,8 +372,24 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         make.width.mas_equalTo(120);
         make.right.mas_offset(-15);
     }];
+    
 }
 
+- (void)addTagView{
+    
+    QIMWorkMomentTagViewController * vc = [[QIMWorkMomentTagViewController alloc] init];
+    __weak  typeof(self) weakSelf = self;
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        vc.modalPresentationStyle = UIModalPresentationCurrentContext;
+        QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:vc];
+        qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+        [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
+    } else {
+        [weakSelf.navigationController pushViewController:vc animated:YES];
+    }
+}
 - (QIMWorkMomentContentLinkModel *)getLinkModelWithLinkDic:(NSDictionary *)linkDic {
     return [QIMWorkMomentContentLinkModel yy_modelWithDictionary:linkDic];
 }
