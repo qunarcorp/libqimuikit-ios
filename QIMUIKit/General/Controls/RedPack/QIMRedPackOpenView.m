@@ -28,6 +28,8 @@
 
 @property (nonatomic, strong) UILabel *gongxiLabel;
 
+@property (nonatomic, copy) NSString *chatId;
+
 @property (nonatomic, copy) NSString *userJid;
 
 @property (nonatomic, copy) NSString *redId;
@@ -42,7 +44,7 @@
 
 }
 
-- (instancetype)initWithUserId:(NSString *)userId withRedId:(NSString *)redId withISRoom:(BOOL)isRoom withRedPackInfoDic:(NSDictionary *)redPackInfoDic {
+- (instancetype)initWithChatId:(NSString *)chatId withUserId:(NSString *)userId withRedId:(NSString *)redId withISRoom:(BOOL)isRoom withRedPackInfoDic:(NSDictionary *)redPackInfoDic {
     self = [super initWithFrame:[[[UIApplication sharedApplication] visibleViewController] view].bounds];
     if (self) {
         /*
@@ -54,6 +56,7 @@
             url = 52;
         }
          */
+        self.chatId = chatId;
         self.userJid = userId;
         self.redId = redId;
         self.isRoom = isRoom;
@@ -195,10 +198,10 @@
 
 - (void)openRedPack:(id)sender {
     __weak __typeof(self)weakSelf = self;
-    [[QIMKit sharedInstance] grapRedEnvelop:self.userJid RedRid:self.redId IsChatRoom:self.isRoom withCallBack:^(NSString *rid) {
+    [[QIMKit sharedInstance] grapRedEnvelop:self.chatId RedRid:self.redId IsChatRoom:self.isRoom withCallBack:^(NSString *rid) {
         __strong __typeof(weakSelf) strongSelf = weakSelf;
 
-        if (rid.length > 0 && [rid isEqualToString:strongSelf.userJid]) {
+        if (rid.length > 0 && [rid isEqualToString:strongSelf.redId]) {
             if (strongSelf.openCallBack) {
                 strongSelf.openCallBack(YES);
             }

@@ -10,6 +10,6 @@ typedef void(^QIMKitOpenRedPackBlock)(BOOL successed);
 
 @property (nonatomic, copy) QIMKitOpenRedPackBlock openCallBack;
 
-- (instancetype)initWithUserId:(NSString *)userId withRedId:(NSString *)redId withISRoom:(BOOL)isRoom withRedPackInfoDic:(NSDictionary *)redPackInfoDic;
+- (instancetype)initWithChatId:(NSString *)chatId withUserId:(NSString *)userId withRedId:(NSString *)redId withISRoom:(BOOL)isRoom withRedPackInfoDic:(NSDictionary *)redPackInfoDic;
 
 @end

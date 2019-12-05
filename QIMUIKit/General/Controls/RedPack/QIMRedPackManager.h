@@ -10,6 +10,6 @@ typedef void(^QIMKitOpenRedPackCallManagerBack)(BOOL successed);
 
 + (instancetype)sharedInstance;
 
-- (void)showRedPackWithUserId:(NSString *)userId withRedId:(NSString *)redId withISRoom:(BOOL)isRoom withRedPackInfoDic:(NSDictionary *)redPackInfoDic withCallManagerBack:(QIMKitOpenRedPackCallManagerBack)callback;
+- (void)showRedPackWithChatId:(NSString *)chatId withRedPackFromId:(NSString *)userId withRedId:(NSString *)redId withISRoom:(BOOL)isRoom withRedPackInfoDic:(NSDictionary *)redPackInfoDic withCallManagerBack:(QIMKitOpenRedPackCallManagerBack)callback;
 
 @end

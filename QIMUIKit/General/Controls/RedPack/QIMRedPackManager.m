@@ -25,9 +25,9 @@
     return _redPackManager;
 }
 
-- (void)showRedPackWithUserId:(NSString *)userId withRedId:(NSString *)redId withISRoom:(BOOL)isRoom withRedPackInfoDic:(NSDictionary *)redPackInfoDic withCallManagerBack:(QIMKitOpenRedPackCallManagerBack)callback {
+- (void)showRedPackWithChatId:(NSString *)chatId withRedPackFromId:(NSString *)userId withRedId:(NSString *)redId withISRoom:(BOOL)isRoom withRedPackInfoDic:(NSDictionary *)redPackInfoDic withCallManagerBack:(QIMKitOpenRedPackCallManagerBack)callback {
     dispatch_async(dispatch_get_main_queue(), ^{
-        QIMRedPackOpenView *openView = [[QIMRedPackOpenView alloc] initWithUserId:userId withRedId:redId withISRoom:isRoom withRedPackInfoDic:redPackInfoDic];
+        __block QIMRedPackOpenView *openView = [[QIMRedPackOpenView alloc] initWithChatId:chatId withUserId:userId withRedId:redId withISRoom:isRoom withRedPackInfoDic:redPackInfoDic];
         [openView setOpenCallBack:^(BOOL successed) {
             if (successed == YES) {
                 NSLog(@"打开红包成功");
@@ -37,6 +37,9 @@
             if (callback) {
                 callback(successed);
             }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [openView removeFromSuperview];
+            })
         }];
         [[[[UIApplication sharedApplication] visibleViewController] view] addSubview:openView];
     });

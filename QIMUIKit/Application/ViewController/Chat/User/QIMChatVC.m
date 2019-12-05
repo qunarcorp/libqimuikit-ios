@@ -1972,21 +1972,27 @@
             }];
         } else if ([trId isEqualToString:QIMTextBarExpandViewItem_RedPack]) {
             QIMVerboseLog(@"我是 单人红包，点我 干哈？");
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[QIMKit sharedInstance] getBindPayAccount:[QIMKit getLastUserName] withCallBack:^(BOOL successed){
-                    if(successed){
-                        [QIMFastEntrance openSendRedPacket:self.chatId isRoom:false];
-                    }else{
-                        
-                    }
-                }];
-            });
-            return;
-            QIMWebView *webView = [[QIMWebView alloc] init];
-            webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
-            //        webView.navBarHidden = YES;
-            [webView setFromRegPackage:YES];
-            [self.navigationController pushViewController:webView animated:YES];
+            if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk || (![[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"] && ![[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost2"])) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [[QIMKit sharedInstance] getBindPayAccount:[QIMKit getLastUserName] withCallBack:^(BOOL successed){
+                        if(successed){
+                            [QIMFastEntrance openSendRedPacket:self.chatId isRoom:false];
+                        }else{
+                            
+                        }
+                    }];
+                });
+            } else {
+                if ([[QIMKit sharedInstance] redPackageUrlHost]) {
+                    QIMWebView *webView = [[QIMWebView alloc] init];
+                    webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] redPackageUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
+                    //        webView.navBarHidden = YES;
+                    [webView setFromRegPackage:YES];
+                    [self.navigationController pushViewController:webView animated:YES];
+                } else {
+                    QIMVerboseLog(@"当前红包URLHost为空，不支持该功能");
+                }
+            }
         } else if ([trId isEqualToString:QIMTextBarExpandViewItem_AACollection]) {
             QIMWebView *webView = [[QIMWebView alloc] init];
             webView.url = [NSString stringWithFormat:@"%@?username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", [[QIMKit sharedInstance] aaCollectionUrlHost], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]];
