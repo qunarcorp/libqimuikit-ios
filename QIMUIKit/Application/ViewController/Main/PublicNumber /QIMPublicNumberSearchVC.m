@@ -159,8 +159,13 @@
 #pragma mark UISearchBar and UISearchDisplayController Delegate Methods
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     QIMVerboseLog(@"search text :%@",[searchBar text]);
-    _searchDataSource = [[QIMKit sharedInstance] searchRobotByKeyStr:[searchBar text]];
-    [_mySearchDisplayController.searchResultsTableView reloadData];
+//    _searchDataSource = [[QIMKit sharedInstance] searchRobotByKeyStr:[searchBar text]];
+    [[QIMKit sharedInstance] searchRobotByKeyStr:[searchBar text] withCallBack:^(NSArray *list) {
+        _searchDataSource = list;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_mySearchDisplayController.searchResultsTableView reloadData];
+        });
+    }];
 }
 
 -(BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{

@@ -8,6 +8,10 @@
 
 
 #import "QimRNBModule.h"
+#if __has_include("QIMFlutterModule.h")
+#import "QIMFlutterModule.h"
+#endif
+
 #import "QIMMainVC.h"
 #import "QIMKitPublicHeader.h"
 #import "UIApplication+QIMApplication.h"
@@ -52,7 +56,7 @@
 #import "QIMSwitchAccountView.h"
 #import "SCLAlertView.h"
 #import "NSDate+Extension.h"
-#import "Toast.h"
+#import "UIView+QIMToast.h"
 #import "QIMPublicRedefineHeader.h"
 #import "QIMAddIndexViewController.h"
 #import "QIMUserCacheManager.h"
@@ -71,6 +75,7 @@
 #define BalanceInquiry @"BalanceInquiry"
 #define AccountInfo @"AccountInfo"
 #define MyFile @"MyFile"
+#define MyMedal @"MyMedal"
 
 @interface QIMRCTRootView : RCTRootView
 @property (nonatomic, weak) UIViewController *ownerVC;
@@ -224,33 +229,33 @@ RCT_EXPORT_METHOD(openRNPage:(NSDictionary *)params :(RCTResponseSenderBlock)suc
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"正在下载/更新应用"];
                     });
-                    BOOL updateSuccess = [[QIMRNExternalAppManager sharedInstance] downloadQIMRNExternalAppWithBundleParams:params];
-                    if (updateSuccess) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[QIMProgressHUD sharedInstance] closeHUD];
-                        });
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
-                            if (!navVC) {
-                                navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
-                            }
-                            NSDictionary *rnProperties = [[QIMJSONSerializer sharedInstance] deserializeObject:properties error:nil];
-                            @try {
-                                [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:properties];
-                            } @catch (NSException *exception) {
-                                QIMVerboseLog(@"exception2 - %@", exception);
-                            } @finally {
-                                QIMVerboseLog(@"finally");
-                            }
-                            
-                        });
-                    } else {
-                        QIMVerboseLog(@"更新失败");
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"打开应用失败，请移步网络状态良好的地方打开"];
-                            [[QIMProgressHUD sharedInstance] closeHUD];
-                        });
-                    }
+                    [[QIMRNExternalAppManager sharedInstance] downloadQIMRNExternalAppWithBundleParams:params withCallBack:^(BOOL updateSuccess) {
+                        if (updateSuccess) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[QIMProgressHUD sharedInstance] closeHUD];
+                            });
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+                                if (!navVC) {
+                                    navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+                                }
+                                NSDictionary *rnProperties = [[QIMJSONSerializer sharedInstance] deserializeObject:properties error:nil];
+                                @try {
+                                    [QimRNBModule openVCWithNavigation:navVC WithHiddenNav:showNativeNav WithBundleName:bundleMd5Name WithModule:moduleName WithProperties:properties];
+                                } @catch (NSException *exception) {
+                                    QIMVerboseLog(@"exception2 - %@", exception);
+                                } @finally {
+                                    QIMVerboseLog(@"finally");
+                                }
+                            });
+                        } else {
+                            QIMVerboseLog(@"更新失败");
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[QIMProgressHUD sharedInstance] showProgressHUDWithTest:@"打开应用失败，请移步网络状态良好的地方打开"];
+                                [[QIMProgressHUD sharedInstance] closeHUD];
+                            });
+                        }
+                    }];
                 }
             }
         }
@@ -295,6 +300,10 @@ RCT_EXPORT_METHOD(openNativePage:(NSDictionary *)params){
     } else if ([nativeName isEqualToString:MyFile]) {
        
         [QIMFastEntrance openMyFileVC];
+    } else if ([nativeName isEqualToString:MyMedal]) {
+        //打开我的勋章
+        NSString *userId = [params objectForKey:@"userId"];
+        [QIMFastEntrance openUserMedalFlutterWithUserId:userId];
     } else if ([nativeName isEqualToString:@"NotReadMsg"]){
         
         [QIMFastEntrance openNotReadMessageVC];
@@ -413,7 +422,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
  内嵌应用JSLocation
  */
 + (NSURL *)getJsCodeLocation {
-    return [NSURL URLWithString:@"http://ip:8081/index.ios.bundle?platform=ios&dev=true"];
+//    return [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
 
     NSString *qtalkFoundRNDebugUrlStr = [[QIMKit sharedInstance] userObjectForKey:@"qtalkFoundRNDebugUrl"];
     if (qtalkFoundRNDebugUrlStr.length > 0) {
@@ -628,7 +637,9 @@ RCT_EXPORT_METHOD(getUserInfoByUserCard:(NSString *)userId :(RCTResponseSenderBl
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[QIMKit sharedInstance] updateUserCard:userId withCache:NO];
     });
-    callback(@[@{@"UserInfo" : properties ? properties : @{}}]);
+    NSArray *userMedallist = [QimRNBModule qimrn_getNewUserHaveMedalByUserId:userId];
+
+    callback(@[@{@"UserInfo" : properties ? properties : @{}, @"medalList": userMedallist ? userMedallist : @[]}]);
 }
 
 //获取单人会话置顶状态
@@ -651,11 +662,13 @@ RCT_EXPORT_METHOD(updateUserChatStickyState:(NSDictionary *)params :(RCTResponse
         combineJid = [NSString stringWithFormat:@"%@<>%@", userId, userId];
     }
     if ([[QIMKit sharedInstance] isStickWithCombineJid:combineJid]) {
-        BOOL success = [[QIMKit sharedInstance] removeStickWithCombineJid:combineJid WithChatType:ChatType_SingleChat];
-        callback(@[@{@"ok" : @(success)}]);
+        [[QIMKit sharedInstance] removeStickWithCombineJid:combineJid WithChatType:ChatType_SingleChat withCallback:^(BOOL successed) {
+           callback(@[@{@"ok" : @(successed)}]);
+        }];
     } else {
-        BOOL success = [[QIMKit sharedInstance] setStickWithCombineJid:combineJid WithChatType:ChatType_SingleChat];
-        callback(@[@{@"ok" : @(success)}]);
+        [[QIMKit sharedInstance] setStickWithCombineJid:combineJid WithChatType:ChatType_SingleChat withCallback:^(BOOL success) {
+           callback(@[@{@"ok" : @(success)}]);
+        }];
     }
 }
 
@@ -988,14 +1001,14 @@ RCT_EXPORT_METHOD(kickGroupMember:(NSDictionary *)param :(RCTResponseSenderBlock
         NSString *str = @"踢出群成员成功";
         dispatch_async(dispatch_get_main_queue(), ^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
-                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:str];
             });
         });
     } else {
         NSString *str = @"踢出群成员失败";
         dispatch_async(dispatch_get_main_queue(), ^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(),^{
-                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:str];
+                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:str];
             });
         });
     }
@@ -1033,8 +1046,9 @@ RCT_EXPORT_METHOD(syncPushState:(NSString *)groupId :(RCTResponseSenderBlock)cal
 
 // 更新群PushState
 RCT_EXPORT_METHOD(updatePushState:(NSString *)groupId :(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL isSuccess = [[QIMKit sharedInstance] updatePushState:groupId withOn:state];
-    callback(@[@{@"ok" : @(isSuccess)}]);
+    [[QIMKit sharedInstance] updatePushState:groupId withOn:state withCallback:^(BOOL isSuccess) {
+       callback(@[@{@"ok" : @(isSuccess)}]);
+    }];
 }
 
 //获取群置顶stickyState
@@ -1048,11 +1062,13 @@ RCT_EXPORT_METHOD(syncGroupStickyState:(NSString *)groupId :(RCTResponseSenderBl
 RCT_EXPORT_METHOD(updateGroupStickyState:(NSString *)groupId :(RCTResponseSenderBlock)callback) {
     if (groupId.length > 0) {
         if ([[QIMKit sharedInstance] isStickWithCombineJid:[NSString stringWithFormat:@"%@<>%@", groupId, groupId]]) {
-            BOOL isSuccess = [[QIMKit sharedInstance] removeStickWithCombineJid:[NSString stringWithFormat:@"%@<>%@", groupId, groupId] WithChatType:ChatType_GroupChat];
-            callback(@[@{@"ok" : @(isSuccess)}]);
+            [[QIMKit sharedInstance] removeStickWithCombineJid:[NSString stringWithFormat:@"%@<>%@", groupId, groupId] WithChatType:ChatType_GroupChat withCallback:^(BOOL isSuccess) {
+               callback(@[@{@"ok" : @(isSuccess)}]);
+            }];
         } else {
-            BOOL isSuccess = [[QIMKit sharedInstance] setStickWithCombineJid:[NSString stringWithFormat:@"%@<>%@", groupId, groupId] WithChatType:ChatType_GroupChat];
-            callback(@[@{@"ok" : @(isSuccess)}]);
+            [[QIMKit sharedInstance] setStickWithCombineJid:[NSString stringWithFormat:@"%@<>%@", groupId, groupId] WithChatType:ChatType_GroupChat withCallback:^(BOOL isSuccess) {
+               callback(@[@{@"ok" : @(isSuccess)}]);
+            }];
         }
     }
 }
@@ -1176,7 +1192,7 @@ RCT_EXPORT_METHOD(quitGroup:(NSString *)groupId :(RCTResponseSenderBlock)callbac
         if (result) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSString *combineGroupId = [NSString stringWithFormat:@"%@<>%@", groupId, groupId];
-                [[QIMKit sharedInstance] removeStickWithCombineJid:combineGroupId WithChatType:ChatType_GroupChat];
+                [[QIMKit sharedInstance] removeStickWithCombineJid:combineGroupId WithChatType:ChatType_GroupChat withCallback:nil];
                 UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
                 if (!navVC) {
                     navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
@@ -1195,7 +1211,7 @@ RCT_EXPORT_METHOD(destructionGroup:(NSString *)groupId :(RCTResponseSenderBlock)
         if (result) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSString *combineGroupId = [NSString stringWithFormat:@"%@<>%@", groupId, groupId];
-                [[QIMKit sharedInstance] removeStickWithCombineJid:combineGroupId WithChatType:ChatType_GroupChat];
+                [[QIMKit sharedInstance] removeStickWithCombineJid:combineGroupId WithChatType:ChatType_GroupChat withCallback:nil];
                 UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
                 if (!navVC) {
                     navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
@@ -1250,7 +1266,9 @@ RCT_EXPORT_METHOD(getMyInfo:(RCTResponseSenderBlock)callback) {
     [info setObject:department ? department : @"" forKey:@"Department"];
     [info setObject:userId ? userId : @"" forKey:@"UserId"];
     
-    callback(@[@{@"MyInfo":info?info:@{}}]);
+    NSArray *medals = [QimRNBModule qimrn_getNewUserMedalByUserId:userId];
+
+    callback(@[@{@"MyInfo":info?info:@{}, @"medalList": medals?medals:@[]}]);
 }
 
 //获取自己的个性签名
@@ -1352,7 +1370,15 @@ RCT_EXPORT_METHOD(takePhoto) {
 // 打开开发人员会话窗口
 RCT_EXPORT_METHOD(openDeveloperChat) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [QIMFastEntrance openSingleChatVCByUserId:@"lilulucas.li@ejabhost1"];
+        NSString *userId = @"lilulucas.li@ejabhost1";
+        if ([QIMKit getQIMProjectType] == QIMProjectTypeQChat) {
+            userId = @"qcxjfu@ejabhost1";
+        } else if ([QIMKit getQIMProjectType] == QIMProjectTypeQTalk) {
+            userId = @"lilulucas.li@ejabhost1";
+        } else {
+            userId = @"lilulucas.li@ejabhost1";
+        }
+        [QIMFastEntrance openSingleChatVCByUserId:userId];
     });
 }
 
@@ -1529,13 +1555,15 @@ RCT_EXPORT_METHOD(isStarOrBlackContact:(NSString *) xmppid ConfigKey:(NSString *
 }
 //设置取消星标&黑名单
 RCT_EXPORT_METHOD(setStarOrblackContact:(NSString *)xmppid ConfigKey:(NSString *)pkey :(BOOL)value :(RCTResponseSenderBlock)callback){
-    BOOL flag = [[QIMKit sharedInstance] setStarOrblackContact:xmppid ConfigKey:pkey Flag:value];
-    callback(@[@{@"ok" : @(flag)}]);
+    [[QIMKit sharedInstance] setStarOrblackContact:xmppid ConfigKey:pkey Flag:value withCallback:^(BOOL flag) {
+       callback(@[@{@"ok" : @(flag)}]);
+    }];
 }
 //设置取消星标&黑名单(多个)
 RCT_EXPORT_METHOD(setStarOrBlackContacts:(NSDictionary*)map ConfigKey:(NSString *)pkey :(BOOL)value :(RCTResponseSenderBlock)callback){
-    BOOL flag = [[QIMKit sharedInstance] setStarOrblackContacts:map ConfigKey:pkey Flag:value];
-    callback(@[@{@"ok" : @(flag)}]);
+    [[QIMKit sharedInstance] setStarOrblackContacts:map ConfigKey:pkey Flag:value withCallback:^(BOOL flag) {
+       callback(@[@{@"ok" : @(flag)}]);
+    }];
 }
 
 //获取用户在线也收通知状态
@@ -1547,8 +1575,9 @@ RCT_EXPORT_METHOD(syncOnLineNotifyState:(RCTResponseSenderBlock)callback) {
 
 //设置在线也收通知状态
 RCT_EXPORT_METHOD(updateOnLineNotifyState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_ONLINE WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_ONLINE WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+        callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取用户通知声音状态
@@ -1560,8 +1589,9 @@ RCT_EXPORT_METHOD(getNotifySoundState:(RCTResponseSenderBlock)callback) {
 
 //设置用户通知声音状态
 RCT_EXPORT_METHOD(updateNotifySoundState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGSOUND_INAPP WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGSOUND_INAPP WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+       callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取消息推送状态
@@ -1572,8 +1602,9 @@ RCT_EXPORT_METHOD(getStartPushState:(RCTResponseSenderBlock)callback) {
 
 //设置开启消息推送状态
 RCT_EXPORT_METHOD(updateStartNotifyState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_SWITCH WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGPUSH_SWITCH WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+       callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取用户通知震动状态
@@ -1584,8 +1615,9 @@ RCT_EXPORT_METHOD(getNotifyVibrationState:(RCTResponseSenderBlock)callback) {
 
 //设置用户通知震动状态
 RCT_EXPORT_METHOD(updateNotifyVibrationState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGVIBRATE_INAPP WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGVIBRATE_INAPP WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+       callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取用户是否显示通知详情
@@ -1596,8 +1628,9 @@ RCT_EXPORT_METHOD(getNotifyPushDetailsState:(RCTResponseSenderBlock)callback) {
 
 //设置用户通知是否显示详情
 RCT_EXPORT_METHOD(updateNotifyPushDetailsState:(BOOL)state :(RCTResponseSenderBlock)callback) {
-    BOOL updateSuccess = [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGSHOW_CONTENT WithSwitchOn:state];
-    callback(@[@{@"ok" : @(updateSuccess)}]);
+    [[QIMKit sharedInstance] setMsgNotifySettingWithIndex:QIMMSGSETTINGSHOW_CONTENT WithSwitchOn:state withCallBack:^(BOOL updateSuccess) {
+       callback(@[@{@"ok" : @(updateSuccess)}]);
+    }];
 }
 
 //获取显示用户签名状态
@@ -1640,8 +1673,9 @@ RCT_EXPORT_METHOD(updateWorkWorldRemind:(BOOL)state :(RCTResponseSenderBlock)cal
 //获取客服服务模式
 RCT_EXPORT_METHOD(getServiceState:(RCTResponseSenderBlock)callback) {
     
-    NSArray *array = [[QIMKit sharedInstance] getSeatSeStatus];
-    callback(@[@{@"JsonData" : array ? array : @[]}]);
+    [[QIMKit sharedInstance] getSeatSeStatusWithCallback:^(NSArray *list) {
+        callback(@[@{@"JsonData" : list ? list : @[]}]);
+    }];
 }
 
 //设置客服服务模式
@@ -1652,8 +1686,9 @@ RCT_EXPORT_METHOD(setServiceState:(NSDictionary *)param :(RCTResponseSenderBlock
     NSInteger st = [[param objectForKey:@"state"] integerValue];
     NSInteger sid = [[param objectForKey:@"sid"] integerValue];
     if (sid) {
-        BOOL success = [[QIMKit sharedInstance] updateSeatSeStatusWithShopId:sid WithStatus:st];
-        callback(@[@{@"result" : @(success)}]);
+        [[QIMKit sharedInstance] updateSeatSeStatusWithShopId:sid WithStatus:st withCallBack:^(BOOL res) {
+            callback(@[@{@"result" : @(res)}]);
+        }];
     }
 }
 
@@ -1669,8 +1704,9 @@ RCT_EXPORT_METHOD(changeConfigAlertStatus:(BOOL)state :(RCTResponseSenderBlock)c
     } else {
         soundName = @"msg.wav";
     }
-    BOOL success = [[QIMKit sharedInstance] setClientNotificationSound:soundName];
-    callback(@[@{@"ok" : @(success)}]);
+    [[QIMKit sharedInstance] setClientNotificationSound:soundName withCallback:^(BOOL success) {
+        callback(@[@{@"ok" : @(success)}]);
+    }];
 }
 
 //获取App版本信息
@@ -1778,8 +1814,7 @@ RCT_EXPORT_METHOD(openSwitchAccount) {
                 [[QIMKit sharedInstance] clearcache];
                 [[QIMKit sharedInstance] clearLogginUser];
                 [[QIMKit sharedInstance] quitLogin];
-                [[QIMKit sharedInstance] removeUserObjectForKey:@"userToken"];
-                [[QIMKit sharedInstance] removeUserObjectForKey:@"kTempUserToken"];
+                [[QIMKit sharedInstance] clearUserToken];
                 [[QIMKit sharedInstance] setCacheName:userFullJid];
                 [[QIMKit sharedInstance] qimNav_swicthLocalNavConfigWithNavDict:navDict];
                 [[QIMKit sharedInstance] loginWithUserName:userId WithPassWord:pwd WithLoginNavDict:navDict];
@@ -2090,7 +2125,7 @@ RCT_EXPORT_METHOD(redEnvelopeGet:(NSString *)rid :(NSString *)xmppid :(NSInteger
             NSString* red_type = [result objectForKey:@"red_type"];
             NSString* over_time = [result objectForKey:@"over_time"];
             NSString* red_number = [result objectForKey:@"red_number"];
-            
+
             NSArray* items = [result objectForKey:@"draw_record"];
             NSMutableArray *lists = [NSMutableArray arrayWithCapacity:3];
             for (NSDictionary *itemDic in items) {
@@ -2109,10 +2144,10 @@ RCT_EXPORT_METHOD(redEnvelopeGet:(NSString *)rid :(NSString *)xmppid :(NSInteger
                 [item setQIMSafeObject:(rank == 1 ? @"手气最佳" :@"") forKey:@"Rank"];
                 [item setQIMSafeObject:name forKey:@"Name"];
                 [item setQIMSafeObject:headerUri forKey:@"HeaderUri"];
-                
+
                 [lists addObject:item];
             }
-            
+
             callback(@[@{@"ok" : @(YES),@"credit" :credit,@"user_name" :user_name,@"user_img" :user_img,@"red_content" :red_content,@"red_type" :red_type,@"over_time" :over_time,@"red_number" :red_number,@"redPackList":lists}]);
         }else{
              callback(@[@{@"ok" : @(FALSE)}]);
@@ -2130,7 +2165,7 @@ RCT_EXPORT_METHOD(redEnvelopeReceive:(NSInteger)page :(NSInteger)pagesie :(NSInt
             NSDictionary *countDic = [result objectForKey:@"count"];
             NSString* total_credit = [countDic objectForKey:@"total_credit"];
             NSString* count = [countDic objectForKey:@"count"];
-            
+
             NSArray* items = [result objectForKey:@"list"];
             NSMutableArray *lists = [NSMutableArray arrayWithCapacity:3];
             for (NSDictionary *itemDic in items) {
@@ -2141,16 +2176,16 @@ RCT_EXPORT_METHOD(redEnvelopeReceive:(NSInteger)page :(NSInteger)pagesie :(NSInt
                 NSString *type = [itemDic objectForKey:@"red_type"];
                 NSString *name = [itemDic objectForKey:@"realname"];
                 NSString *headerUri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:host_user_id];
-                
+
                 [item setQIMSafeObject:credit forKey:@"Credit"];
                 [item setQIMSafeObject:time forKey:@"Time"];
                 [item setQIMSafeObject:name forKey:@"Name"];
                 [item setQIMSafeObject:headerUri forKey:@"HeaderUri"];
                 [item setQIMSafeObject:type forKey:@"Type"];
-                
+
                 [lists addObject:item];
             }
-            
+
             callback(@[@{@"ok" : @(YES),@"total_credit" :total_credit,@"user_img" :user_img,@"count" :count,@"redPackList":lists}]);
         }else{
             callback(@[@{@"ok" : @(FALSE)}]);
@@ -2166,11 +2201,11 @@ RCT_EXPORT_METHOD(redEnvelopeSend:(NSInteger)page :(NSInteger)pagesie :(NSIntege
             if(ret){
                 NSDictionary* result = [data objectForKey:@"data"];
                 NSString* user_img = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:[[QIMKit sharedInstance] getLastJid]];
-                
+
                 NSDictionary *countDic = [result objectForKey:@"count"];
                 NSString* total_credit = [countDic objectForKey:@"total_credit"];
                 NSString* count = [countDic objectForKey:@"count"];
-                
+
                 NSArray* items = [result objectForKey:@"list"];
                 NSMutableArray *lists = [NSMutableArray arrayWithCapacity:3];
                 for (NSDictionary *itemDic in items) {
@@ -2184,7 +2219,7 @@ RCT_EXPORT_METHOD(redEnvelopeSend:(NSInteger)page :(NSInteger)pagesie :(NSIntege
                     NSInteger expire = [[itemDic objectForKey:@"is_expire"] intValue];
                     NSInteger number = [[itemDic objectForKey:@"red_number"] intValue];
                     NSInteger draw = [[itemDic objectForKey:@"draw_number"] intValue];
-                    
+
                     [item setQIMSafeObject:credit forKey:@"Credit"];
                     [item setQIMSafeObject:time forKey:@"Time"];
                     [item setQIMSafeObject:name forKey:@"Name"];
@@ -2193,10 +2228,10 @@ RCT_EXPORT_METHOD(redEnvelopeSend:(NSInteger)page :(NSInteger)pagesie :(NSIntege
                     [item setQIMSafeObject:@(expire) forKey:@"Expire"];
                     [item setQIMSafeObject:@(number) forKey:@"Number"];
                     [item setQIMSafeObject:@(draw) forKey:@"Draw"];
-                    
+
                     [lists addObject:item];
                 }
-                
+
                 callback(@[@{@"ok" : @(YES),@"total_credit" :total_credit,@"user_img" :user_img,@"count" :count,@"redPackList":lists}]);
             }else{
                 callback(@[@{@"ok" : @(FALSE)}]);

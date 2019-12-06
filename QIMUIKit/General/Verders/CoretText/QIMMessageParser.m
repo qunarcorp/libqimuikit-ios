@@ -165,13 +165,6 @@ typedef void (^QCParseCompleteBlock)(NSDictionary *info);
                 width = [widthStr floatValue];
                 height = [heightStr floatValue];
             }
-            /*
-            if (width == 0 || height == 0) {
-                UIImage * image = [YLGIFImage imageWithData:[[QIMKit sharedInstance] getFileDataFromUrl:httpUrl forCacheType:QIMFileCacheTypeColoction]];
-                width = image.size.width;
-                height = image.size.height;
-            }
-            */
             if (height > SCREEN_HEIGHT * 3 && height / width >= 5) {
                 width = 50;
                 height = 100;
@@ -352,7 +345,7 @@ typedef void (^QCParseCompleteBlock)(NSDictionary *info);
 
 + (id <QIMDrawStorageProtocol>)parseEmotionFromDictinary:(NSDictionary *)dic {
     QIMImageStorage *imageStorage = [[QIMImageStorage alloc] init];
-    imageStorage.image = dic[@"image"];
+    imageStorage.emotionImage = dic[@"image"];
     imageStorage.imageAlignment = QCImageAlignmentRight;
     imageStorage.size = CGSizeMake([dic[@"width"] floatValue], [dic[@"height"] floatValue]);
     imageStorage.infoDic = dic[@"infoDic"];

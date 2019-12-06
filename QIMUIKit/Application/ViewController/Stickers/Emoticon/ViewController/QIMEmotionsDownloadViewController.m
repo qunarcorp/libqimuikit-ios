@@ -108,6 +108,7 @@ static NSString *cellID = @"QIMEmotionsDownloadCell";
 
 - (void)emotionListUpdate:(NSNotification *)notify{
     dispatch_async(dispatch_get_main_queue(), ^{
+       _dataList = nil;
        [self.mainTableView reloadData];
     });
 }

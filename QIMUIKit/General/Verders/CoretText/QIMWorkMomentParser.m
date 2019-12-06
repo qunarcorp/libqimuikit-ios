@@ -104,13 +104,6 @@
                 width = [widthStr floatValue];
                 height = [heightStr floatValue];
             }
-            /*
-             if (width == 0 || height == 0) {
-             UIImage * image = [YLGIFImage imageWithData:[[QIMKit sharedInstance] getFileDataFromUrl:httpUrl forCacheType:QIMFileCacheTypeColoction]];
-             width = image.size.width;
-             height = image.size.height;
-             }
-             */
             if (height > SCREEN_HEIGHT * 3 && height / width >= 5) {
                 width = 50;
                 height = 100;
@@ -309,7 +302,7 @@
 + (id<QIMDrawStorageProtocol>)parseEmotionFromDictinary:(NSDictionary *)dic
 {
     QIMImageStorage *imageStorage = [[QIMImageStorage alloc]init];
-    imageStorage.image = dic[@"image"];
+    imageStorage.emotionImage = dic[@"image"];
     imageStorage.imageAlignment = QCImageAlignmentRight;
     imageStorage.size = CGSizeMake([dic[@"width"] floatValue], [dic[@"height"] floatValue]);
     imageStorage.infoDic = dic[@"infoDic"];
@@ -370,62 +363,6 @@
     }else{
         return str;
     }
-}
-
-+ (QIMMessageModel *)reductionMessageForMessage:(QIMMessageModel *)message {
-   QIMMessageModel * newMsg = message;
-    NSString * parseStr = message.extendInformation.length ? message.extendInformation : message.message;
-    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:parseStr error:nil];
-    switch (message.messageType) {
-        case QIMMessageType_LocalShare:
-        {
-            //@"{\"name\":\"%@\",\"adress\":\"%@\",\"latitude\":\"%lf\",\"longitude\":\"%lf\"}"
-            double latitude = [infoDic[@"latitude"] doubleValue];
-            double longitude = [infoDic[@"longitude"] doubleValue];
-            NSString * adress = infoDic[@"adress"];
-            newMsg.message = [NSString stringWithFormat:@"我在这里，点击查看：[obj type=\"url\" value=\"%@\"] (%@)",[NSString stringWithFormat:@"http://api.map.baidu.com/marker?location=%lf,%lf&title=我的位置&content=%@&output=html",latitude,longitude,adress],adress];
-            newMsg.extendInformation = parseStr;
-        }
-            break;
-        case QIMMessageType_CommonTrdInfo:
-        {
-            //{"title" : "c10k问题", "linkurl" : "http:\/\/www.360doc.cn\/article\/1542811_287328391.html"}
-            NSString * title = infoDic[@"title"];
-            NSString * linkurl = infoDic[@"linkurl"];
-            NSString * msgStr = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:[title stringByAppendingString:linkurl]];
-            newMsg.message = msgStr;
-            newMsg.extendInformation = parseStr;
-        }
-            break;
-        case QIMMessageType_ExProduct:
-        {
-            NSString * msgStr = infoDic[@"titletxt"];
-            msgStr = [msgStr stringByAppendingString:@"\n"];
-            msgStr = [msgStr stringByAppendingString:infoDic[@"detailurl"]];
-            for (NSDictionary * dic in infoDic[@"descs"]) {
-                msgStr = [msgStr stringByAppendingString:@"\n"];
-                msgStr = [msgStr stringByAppendingString:dic[@"k"]];
-                msgStr = [msgStr stringByAppendingString:@" : "];
-                msgStr = [msgStr stringByAppendingString:dic[@"v"]];
-            }
-            msgStr = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:msgStr];
-            newMsg.message = msgStr;
-            newMsg.extendInformation = parseStr;
-        }
-            break;
-        case QIMMessageType_product:
-        {
-            NSString * title = infoDic[@"title"];
-            NSString * linkurl = infoDic[@"touchDtlUrl"];
-            NSString * msgStr = [[QIMEmotionManager sharedInstance] decodeHtmlUrlForText:[title stringByAppendingString:linkurl]];
-            newMsg.message = msgStr;
-            newMsg.extendInformation = parseStr;
-        }
-            break;
-        default:
-            break;
-    }
-    return newMsg;
 }
 
 @end

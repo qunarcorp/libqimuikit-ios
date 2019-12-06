@@ -34,7 +34,7 @@
         //文件字节数
         NSNumber *theFileSize = [logFileAttribute objectForKey:NSFileSize];
         //文件大小 MB
-        NSString *fileSizeStr = [QIMStringTransformTools CapacityTransformStrWithSize:theFileSize.longLongValue];
+        NSString *fileSizeStr = [QIMStringTransformTools qim_CapacityTransformStrWithSize:theFileSize.longLongValue];
         //文件名
         NSString *fileName = [logFilePath lastPathComponent];        
         [self.nameLabel setText:fileName];

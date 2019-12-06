@@ -454,10 +454,12 @@
     if (self.ExternalForward) {
        
         NSDictionary * msgExtendInfo =[[QIMJSONSerializer sharedInstance]deserializeObject:self.message.extendInformation error:nil];
-        if ([msgExtendInfo objectForKey:@"HttpUrl"] && [[msgExtendInfo objectForKey:@"HttpUrl"] hasPrefix:@"file"]) {
-                QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
-        }
-        else{
+        BOOL Uploading = [[msgExtendInfo objectForKey:@"Uploading"] boolValue];
+        if (Uploading == YES) {
+            NSString *IPLocalPath = [msgExtendInfo objectForKey:@"IPLocalPath"];
+            QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
+            [[QIMKit sharedInstance] qim_uploadFileWithFilePath:IPLocalPath forMessage:newMsg];
+        } else {
             QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_SingleChat msgType:self.message.messageType backinfo:nil];
             [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
         }
@@ -531,15 +533,16 @@
     _selectInfoDic = @{@"userId":jid,@"isGroup":@(YES)};
     if (self.ExternalForward) {
         NSDictionary * msgExtendInfo =[[QIMJSONSerializer sharedInstance]deserializeObject:self.message.extendInformation error:nil];
-        if ([msgExtendInfo objectForKey:@"HttpUrl"] && [[msgExtendInfo objectForKey:@"HttpUrl"] hasPrefix:@"file"]) {
+        BOOL Uploading = [[msgExtendInfo objectForKey:@"Uploading"] boolValue];
+        if (Uploading == YES) {
             QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
-        }
-        else{
+            NSString *IPLocalPath = [msgExtendInfo objectForKey:@"IPLocalPath"];
+            [[QIMKit sharedInstance] qim_uploadFileWithFilePath:IPLocalPath forMessage:newMsg];
+        } else {
             QIMMessageModel *newMsg = [[QIMKit sharedInstance] createMessageWithMsg:self.message.message extenddInfo:self.message.extendInformation userId:jid userType:ChatType_GroupChat msgType:self.message.messageType backinfo:nil];
             QIMMessageModel *tempMsg = [[QIMKit sharedInstance] sendMessage:newMsg ToUserId:jid];
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationMessageUpdate object:jid userInfo:@{@"message":tempMsg}];
         }
-       
     } else {
         if (self.message) {
             NSString *msgContent = self.message.message;

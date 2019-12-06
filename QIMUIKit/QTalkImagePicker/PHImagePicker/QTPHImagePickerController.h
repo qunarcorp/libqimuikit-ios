@@ -184,6 +184,7 @@ static CGSize const kPopoverContentSize = {480, 720};
  */
 - (void)dismiss:(id)sender;
 - (void)finishPickingAssets:(id)sender;
+- (void)finishPickingVideoFile:(NSString *)filePath;
 - (void)finishEditWithImage:(UIImage *)image;
 
 @end
@@ -205,6 +206,14 @@ static CGSize const kPopoverContentSize = {480, 720};
 
 - (void)assetsPickerController:(QTPHImagePickerController *)picker didFinishPickingAssets:(NSArray *)assets;
 
+
+/**
+ 视频转文件发送
+
+ @param picker
+ @param videoFile 视频文件
+ */
+- (void)assetsPickerController:(QTPHImagePickerController *)picker didFinishPickingVideoFile:(NSString *)videoFileName;
 
 @optional
 

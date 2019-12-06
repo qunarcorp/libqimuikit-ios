@@ -56,6 +56,7 @@ static UIImage *__rightBallocImage = nil;
     _message = message;
     [self updateNameLabel];
     [self refreshHeaderView];
+    [self updateMedalListView];
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -125,6 +126,7 @@ static UIImage *__rightBallocImage = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self updateNameLabel];
             [self refreshHeaderView];
+            [self updateMedalListView];
         });
     }
 }
@@ -140,6 +142,13 @@ static UIImage *__rightBallocImage = nil;
     
     [self.contentView addSubview:self.HeadView];
     [self.contentView addSubview:self.nameLabel];
+    [self.contentView addSubview:self.medalListView];
+    [self.medalListView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.nameLabel.mas_right).mas_offset(MEDAL_SUPER_LEFT);
+        make.top.mas_equalTo(0);
+        make.width.mas_equalTo(MEDAL_SUPER_WIDTH);
+        make.height.mas_equalTo(MEDAL_SUPER_HEIGHT);
+    }];
 }
 
 - (UIImageView *)HeadView {
@@ -161,6 +170,13 @@ static UIImage *__rightBallocImage = nil;
         _nameLabel.textColor = [UIColor colorWithRed:140/255.0 green:140/255.0 blue:140/255.0 alpha:1/1.0];
     }
     return _nameLabel;
+}
+
+- (UIView *)medalListView {
+    if (!_medalListView) {
+        _medalListView = [[UIView alloc] init];
+    }
+    return _medalListView;
 }
 
 - (UIButton *)statusButton {
@@ -227,6 +243,11 @@ static UIImage *__rightBallocImage = nil;
     tapHead.numberOfTouchesRequired = 1;
     [self.HeadView addGestureRecognizer:tapHead];
     
+    UITapGestureRecognizer *medalTapHead = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onMedalViewClick:)];
+    medalTapHead.numberOfTapsRequired = 1;
+    medalTapHead.numberOfTouchesRequired = 1;
+    [self.medalListView addGestureRecognizer:medalTapHead];
+    
     UILongPressGestureRecognizer *longGes = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(atSomeOne:)];
     longGes.minimumPressDuration = 0.6;
     longGes.allowableMovement = 1000;
@@ -247,12 +268,16 @@ static UIImage *__rightBallocImage = nil;
             if (self.chatType == ChatType_System) {
                 self.HeadView.hidden = YES;
                 self.nameLabel.hidden = YES;
+                self.medalListView.hidden = YES;
             } else if (self.chatType == ChatType_SingleChat) {
                 self.nameLabel.hidden = YES;
+                self.medalListView.hidden = YES;
             } else if (self.chatType == ChatType_Consult) {
                 self.nameLabel.hidden = YES;
+                self.medalListView.hidden = YES;
             } else if (self.chatType == ChatType_ConsultServer) {
                 self.nameLabel.hidden = YES;
+                self.medalListView.hidden = YES;
             }  else {
             }
         }
@@ -261,6 +286,7 @@ static UIImage *__rightBallocImage = nil;
             CGFloat selectOffset = self.editing ? (CELL_EDIT_OFFSET + AVATAR_SUPER_LEFT) : AVATAR_SUPER_LEFT;
             CGRect headViewFrame = {{self.frameWidth - AVATAR_WIDTH - selectOffset, AVATAR_SUPER_TOP},{AVATAR_WIDTH,AVATAR_HEIGHT}};
             self.HeadView.frame = headViewFrame;
+            self.medalListView.hidden = YES;
         }
             break;
         default:
@@ -338,8 +364,39 @@ static UIImage *__rightBallocImage = nil;
             }
             nickName = [[nickName componentsSeparatedByString:@"@"] firstObject];
             dispatch_async(dispatch_get_main_queue(), ^{
+                UIFont *userNameFont = [UIFont systemFontOfSize:13];
+                // 根据字体得到NSString的尺寸
+                CGSize userNameSize = [nickName sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:userNameFont,NSFontAttributeName,nil]];
                 self.nameLabel.text = nickName;
+                self.nameLabel.width = userNameSize.width + 5;
                 self.nameLabel.textColor = [UIColor qim_colorWithHex:0x888888];
+            });
+        });
+    }
+}
+
+- (void)updateMedalListView {
+    if (self.message.messageDirection == QIMMessageDirection_Received) {
+        dispatch_async([[QIMKit sharedInstance] getLoadMsgMedalListQueue], ^{
+           
+            NSArray *medals = [[QIMKit sharedInstance] getUserWearMedalSmallIconListByUserid:self.message.from];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CGFloat marginLeft = 0;
+                for (NSInteger i = 0; i < medals.count; i++) {
+                    UIImageView *medalIconView = [[UIImageView alloc] initWithFrame:CGRectMake(marginLeft, 0, 18, 18)];
+                    [medalIconView qim_setImageWithURL:[NSURL URLWithString:medals[i]] placeholderImage:[UIImage new]];
+                    marginLeft += (18+5);
+                    [self.medalListView addSubview:medalIconView];
+                }
+                if (![self.contentView.subviews containsObject:self.medalListView]) {
+                    [self.contentView addSubview:self.medalListView];
+                }
+                [self.medalListView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                    make.left.mas_equalTo(self.nameLabel.mas_right).mas_offset(MEDAL_SUPER_LEFT);
+                    make.top.mas_equalTo(0);
+                    make.height.mas_equalTo(MEDAL_SUPER_HEIGHT);
+                    make.width.mas_equalTo(marginLeft);
+                }];
             });
         });
     }
@@ -505,6 +562,20 @@ static UIImage *__rightBallocImage = nil;
     }
 }
 
+- (void)onMedalViewClick:(UITapGestureRecognizer *)tap {
+    if (self.message.from.length > 0 && self.chatType != ChatType_CollectionChat && self.chatType != ChatType_Consult) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [QIMFastEntrance openUserMedalFlutterWithUserId:self.message.from];
+        });
+    } else if (self.message.xmppId.length > 0 && self.chatType == ChatType_Consult && self.message.messageDirection == QIMMessageDirection_Received) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [QIMFastEntrance openUserMedalFlutterWithUserId:self.message.xmppId];
+        });
+    } else {
+        
+    }
+}
+
 - (void)resendMessage:(id)sender {
     if (self.message.messageSendState == QIMMessageSendState_Faild) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kXmppStreamReSendMessage object:self.message];
@@ -602,6 +673,7 @@ static UIImage *__rightBallocImage = nil;
     if (self.message.messageType == QIMMessageType_GroupNotify || self.message.messageType == QIMMessageType_Time || self.message.messageType == QIMMessageType_Revoke || self.message.messageType == QIMMessageTypeRobotQuestionList) {
         self.HeadView.hidden = YES;
         self.nameLabel.hidden = YES;
+        self.medalListView.hidden = YES;
         return;
     }
     dispatch_async([[QIMKit sharedInstance] getLoad_msgHeaderImageQueue], ^{

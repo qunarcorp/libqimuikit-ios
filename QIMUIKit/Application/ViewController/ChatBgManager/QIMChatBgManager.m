@@ -9,29 +9,68 @@
 #import "UIColor+QIMUtility.h"
 #import <CommonCrypto/CommonDigest.h>
 
+#define kChatBgHashSalt       @"kChatBgHashSalt"
+
+@interface QIMChatBgManager ()
+
+@property (nonatomic, strong) NSString *chatBgCachePath;
+
+@end
+
 @implementation QIMChatBgManager
 
-+ (NSString *)getMD5ByData:(NSData *)data {
-    unsigned char result[CC_MD5_DIGEST_LENGTH];
-    CC_MD5([data bytes], (unsigned int) [data length], result);
-    NSString *imageHash = [NSString stringWithFormat:
-                           @"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
-                           result[0], result[1], result[2], result[3],
-                           result[4], result[5], result[6], result[7],
-                           result[8], result[9], result[10], result[11],
-                           result[12], result[13], result[14], result[15]
-                           ];
-    return imageHash;
+static QIMChatBgManager *_chatBgManager = nil;
++ (instancetype)sharedInstance {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _chatBgManager = [[QIMChatBgManager alloc] init];
+        _chatBgManager.chatBgCachePath = [UserCachesPath stringByAppendingPathComponent:@"ChatBg"];
+        BOOL isDir;
+        if (![[NSFileManager defaultManager] fileExistsAtPath:_chatBgManager.chatBgCachePath isDirectory:&isDir]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:_chatBgManager.chatBgCachePath withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+    });
+    return _chatBgManager;
 }
 
-+ (void)getChatBgById:(NSString *)userId ByName:(NSString *)name WithReset:(BOOL)reset Complete:(void(^)(UIImage *bgImage)) complete {
-    NSString *fileName = [self getMD5ByData:[[NSString stringWithFormat:@"%@_%@_%@",userId,name?name:userId, [[QIMKit sharedInstance] AppBuildVersion]] dataUsingEncoding:NSUTF8StringEncoding]];
-    NSString *chatBgCacheDirectory = [UserCachesPath stringByAppendingPathComponent:@"ChatBg"];
-    BOOL isDir;
-    if (![[NSFileManager defaultManager] fileExistsAtPath:chatBgCacheDirectory isDirectory:&isDir]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:chatBgCacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+- (NSString *)getChatBgSourcePath:(NSString *)fileName {
+    fileName  = [NSString qim_hashString:fileName withSalt:kChatBgHashSalt];
+
+    if (nil == fileName || [fileName length] == 0)
+    {
+        return nil;
     }
-    NSString *filePath = [chatBgCacheDirectory stringByAppendingPathComponent:fileName];
+    // 获取resource文件路径
+    NSString *resourcePath = [self.chatBgCachePath stringByAppendingPathComponent:fileName];
+
+    return resourcePath;
+}
+
+- (void)deleteChatBgImageWithFileName:(NSString *)fileName {
+    fileName = [NSString qim_hashString:fileName withSalt:kChatBgHashSalt];
+
+    if (nil == fileName || [fileName length] == 0) {
+        return;
+    }
+    // 获取resource文件路径
+    NSString *resourcePath = [self.chatBgCachePath stringByAppendingPathComponent:fileName];
+    [[NSFileManager defaultManager] removeItemAtPath:resourcePath error:nil];
+}
+
+- (void)saveChatBgImageWithFileName:(NSString *)fileName imageData:(NSData *)data {
+    fileName = [NSString qim_hashString:fileName withSalt:kChatBgHashSalt];
+
+    if (nil == fileName || [fileName length] == 0) {
+        return;
+    }
+    // 获取resource文件路径
+    NSString *resourcePath = [self.chatBgCachePath stringByAppendingPathComponent:fileName];
+    [data writeToFile:resourcePath atomically:YES];
+}
+
+- (void)getChatBgById:(NSString *)userId ByName:(NSString *)name WithReset:(BOOL)reset Complete:(void(^)(UIImage *bgImage)) complete {
+    NSString *fileName = [[[NSString stringWithFormat:@"%@_%@_%@",userId,name?name:userId, [[QIMKit sharedInstance] AppBuildVersion]] dataUsingEncoding:NSUTF8StringEncoding] qim_md5String];
+    NSString *filePath = [self.chatBgCachePath stringByAppendingPathComponent:fileName];
     if (reset == NO) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
             UIImage *rstImage = [UIImage imageWithContentsOfFile:filePath];

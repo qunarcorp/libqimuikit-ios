@@ -1,6 +1,5 @@
 //
 //  QIMWorkOwnerCamalNoDataView.h
-//  ASIHTTPRequest
 //
 //  Created by Kamil on 2019/5/17.
 //

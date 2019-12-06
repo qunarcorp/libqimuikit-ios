@@ -39,7 +39,6 @@ static NSArray *_sentImageArray = nil;
 {
     UIImageView *_voiceImageView;
     UILabel *_timeLabel;
-    UIButton *_errorButton;
     NSInteger _minute;
     UIView * _unreadView;
     UILabel *_dateLabel;
@@ -96,14 +95,7 @@ static NSArray *_sentImageArray = nil;
         _unreadView.centerY = _timeLabel.centerY;
         _unreadView.hidden = YES;
         [self.contentView addSubview:_unreadView];
-        
-        
-        _errorButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 17, 17)];
-        [_errorButton setHidden:YES];
-        [_errorButton setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"SignUpError"] forState:UIControlStateNormal];
-        [_errorButton addTarget:self action:@selector(resendMessage) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:_errorButton];
-        
+
         _dateLabel = [[UILabel alloc] init];
         [self.contentView addSubview:_dateLabel];
 
@@ -152,8 +144,6 @@ static NSArray *_sentImageArray = nil;
     
     NSString *msgId = notifi.object;
     if ([msgId isEqual:self.message.messageId]) {
-        //Mark By DB
-//        self.message.readTag = 1;
         [self refreshUI];
     }
 }
@@ -162,8 +152,6 @@ static NSArray *_sentImageArray = nil;
     
     NSString *msgId = notification.object;
     if ([msgId isEqual:self.message.messageId]) {
-        //Mark By DB
-//        self.message.readTag = 1;
         [self refreshUI];
         [_voiceImageView stopAnimating];
     }
@@ -183,8 +171,6 @@ static NSArray *_sentImageArray = nil;
         if (self.message.messageDirection == QIMMessageDirection_Received) {
             //如果语音未读，mssageID落地
             [[QIMVoiceNoReadStateManager sharedVoiceNoReadStateManager] setVoiceNoReadStateWithMsgId:self.message.messageId ChatId:self.chatId withState:YES];
-            //Mark By DB
-//            self.message.readTag = 1;
             [self refreshUI];
         }
     }
@@ -209,9 +195,7 @@ static NSArray *_sentImageArray = nil;
     [super refreshUI];
 }
 
-- (void)doChatVCRefresh
-{
-//    NSDictionary *infoDic = [self.message getMsgInfoDic];
+- (void)doChatVCRefresh {
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
     int voiceLength = [[infoDic objectForKey:@"Seconds"] intValue];
     int minute = voiceLength / 60 ;
@@ -244,8 +228,7 @@ static NSArray *_sentImageArray = nil;
             
             CGRect timeFrame = CGRectMake(kBackViewCap+frameWeight+4+45, kCellHeightCap / 2.0, KTimeLabelWeight, kBackViewHeight);
             [_timeLabel setFrame:timeFrame];
-            
-            [_errorButton setHidden:YES];
+
             _unreadView.frame = CGRectMake(CGRectGetMinX(_timeLabel.frame), kCellHeightCap / 2.0, 8, 8);
             _unreadView.centerY = _timeLabel.centerY;
             
@@ -270,28 +253,12 @@ static NSArray *_sentImageArray = nil;
             
             CGRect timeFrame = CGRectMake(self.backView.frame.origin.x-4-KTimeLabelWeight, kBackViewCap, KTimeLabelWeight, kBackViewHeight);
             [_timeLabel setFrame:timeFrame];
-            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
-            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
-            CGRect errorFrame = _errorButton.frame;
-            errorFrame.origin.x = _timeLabel.frame.origin.x - kBackViewCap - errorFrame.size.width;
-            errorFrame.origin.y = _timeLabel.frame.origin.y;
-            errorFrame.size.width = kBackViewWidth + 17 + kBackViewCap;
-            errorFrame.size.height = _timeLabel.height;
-            [_errorButton setFrame:errorFrame];
         }
     }
     int duration = 0;
     if ([self.delegate playingVoiceWithMsgId:self.message.messageId]) {
         [_voiceImageView startAnimating];
         duration = [self.delegate playCurrentTime];
-        //        double progress = [self.delegate getCurrentDownloadProgress];
-        //        if (progress >= 1) {
-        //            [_progressView setProgress:0];
-        //            [_progressView setHidden:YES];
-        //        } else {
-        //            [_progressView setProgress:progress];
-        //            [_progressView setHidden:NO];
-        //        }
     } else {
         [_voiceImageView stopAnimating];
     }
@@ -304,10 +271,8 @@ static NSArray *_sentImageArray = nil;
     }
 }
 
-- (void)doGroupChatVCRefresh
-{
+- (void)doGroupChatVCRefresh {
     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:self.message.message error:nil];
-//    [self.message getMsgInfoDic];
     int voiceLength = [[infoDic objectForKey:@"Seconds"] intValue];
     int minute = voiceLength / 60;
     int sec = voiceLength % 60;
@@ -345,7 +310,6 @@ static NSArray *_sentImageArray = nil;
             CGRect timeFrame = CGRectMake(kBackViewCap+frameWeight+4+45, kCellHeightCap / 2.0+20, KTimeLabelWeight, kBackViewHeight);
             [_timeLabel setFrame:timeFrame];
             [_timeLabel setTextColor:[UIColor qtalkTextBlackColor]];
-            [_errorButton setHidden:YES];
             _unreadView.frame = CGRectMake(CGRectGetMinX(_timeLabel.frame), kCellHeightCap / 2.0, 8, 8);
             _unreadView.centerY = _timeLabel.centerY;
             //如果未读， 小红点显示
@@ -368,15 +332,6 @@ static NSArray *_sentImageArray = nil;
             CGRect timeFrame = CGRectMake(self.backView.frame.origin.x-4-KTimeLabelWeight, kBackViewCap, KTimeLabelWeight, kBackViewHeight);
             [_timeLabel setFrame:timeFrame];
             [_timeLabel setTextColor:[UIColor qtalkTextBlackColor]];
-            
-            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
-            [_errorButton setHidden:self.message.messageSendState != QIMMessageSendState_Faild];
-            CGRect errorFrame = _errorButton.frame;
-            errorFrame.origin.x = self.backView.frame.origin.x - kBackViewCap - errorFrame.size.width;
-            errorFrame.origin.y = self.backView.frame.origin.y;
-            errorFrame.size.width = kBackViewWidth + 17 + kBackViewCap;
-            errorFrame.size.height = _timeLabel.height;
-            [_errorButton setFrame:errorFrame];
         }
     }
     int duration = 0;

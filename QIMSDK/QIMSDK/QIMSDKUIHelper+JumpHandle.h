@@ -34,6 +34,7 @@
 
 + (void)openWebViewWithHtmlStr:(NSString *)htmlStr showNavBar:(BOOL)showNavBar;
 + (void)openWebViewForUrl:(NSString *)url showNavBar:(BOOL)showNavBar;
++ (void)openUserMedalFlutterWithUserId:(NSString *)userId;
 
 + (void)openRNSearchVC;
 

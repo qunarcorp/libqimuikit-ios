@@ -296,7 +296,8 @@ static const int companyTag = 10001;
     
     [self setupUI];
     NSString *lastUserName = [QIMKit getLastUserName];
-    NSString * userToken = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+    NSString * userToken = [[QIMKit sharedInstance] getLastUserToken];
+//    [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
     if (userToken && lastUserName) {
         
         [self autoLogin];
@@ -392,14 +393,14 @@ static const int companyTag = 10001;
     UIFont *fnt = [UIFont systemFontOfSize:14];
     // 根据字体得到NSString的尺寸
     CGSize size = [[NSBundle qim_localizedStringForKey:@"not_have_company"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:fnt,NSFontAttributeName,nil]];
-    
+
     [self.registerNewCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.view.mas_centerX);
         make.bottom.mas_offset(-30);
         make.width.mas_equalTo(size.width + 30);
         make.height.mas_equalTo(21);
     }];
-    
+
     [self.view addSubview:self.scanSettingNavBtn];
     [self.scanSettingNavBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo((56 + 38/2) - 30/2);
@@ -623,13 +624,17 @@ static const int companyTag = 10001;
     
     if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
         NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
-        [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:lastUserName Check:YES WithForcedUpdate:YES];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
-            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
-        });
+        [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:lastUserName Check:YES WithForcedUpdate:YES withCallBack:^(BOOL success) {
+            if (success) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [[QIMKit sharedInstance] updateLastTempUserToken:@"appstore"];
+                    [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
+                });
+            }
+        }];
+
     } else {
-        NSString *token = [[QIMKit sharedInstance] userObjectForKey:@"userToken"];
+        NSString *token = [[QIMKit sharedInstance] getLastUserToken];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:token];
         });
@@ -655,21 +660,82 @@ static const int companyTag = 10001;
         [[QIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
         if ([[userName lowercaseString] isEqualToString:@"appstore"]) {
             NSDictionary *testQTalkNav = @{QIMNavNameKey:@"Startalk", QIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
-            [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:userName];
-            });
+            [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES withCallBack:^(BOOL success) {
+                if (success) {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:userName];
+                    });
+                }
+            }];
+
         } else {
-            NSDictionary *publicQTalkNav = @{QIMNavNameKey:(self.companyModel.name.length > 0) ? self.companyModel.name : self.companyModel.domain, QIMNavUrlKey:self.companyModel.nav};
-            [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:publicQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
-            __weak id weakSelf = self;
-            NSString *pwd = self.userPwdTextField.text;
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[QIMKit sharedInstance] setUserObject:pwd forKey:@"kTempUserToken"];
-                [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
-            });
+            if ([[QIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeNewPwd) {
+                
+                NSDictionary *publicQTalkNav = @{QIMNavNameKey:(self.companyModel.name.length > 0) ? self.companyModel.name : self.companyModel.domain, QIMNavUrlKey:self.companyModel.nav};
+                __weak id weakSelf = self;
+                [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:publicQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES withCallBack:^(BOOL success) {
+                    NSString *pwd = self.userPwdTextField.text;
+                    [[QIMKit sharedInstance] getNewUserTokenWithUserName:userName WithPassword:pwd withCallback:^(NSDictionary *result) {
+                        if (result) {
+                            BOOL ret = [[result objectForKey:@"ret"] boolValue];
+                            NSInteger errcode = [[result objectForKey:@"errcode"] integerValue];
+                            if (ret && errcode == 0) {
+                                NSDictionary *data = [result objectForKey:@"data"];
+                                NSString *newUserName = [data objectForKey:@"u"];
+                                NSString *newToken = [data objectForKey:@"t"];
+                                if (newUserName.length && newToken.length) {
+                                    [[QIMKit sharedInstance] updateLastTempUserToken:newToken];
+                                    [[QIMKit sharedInstance] loginWithUserName:newUserName WithPassWord:newToken];
+                                }
+                            } else {
+                                NSString *errmsg = [result objectForKey:@"data"];
+                                if (!errmsg.length) {
+                                    errmsg = @"验证失败";
+                                }
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:errmsg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                                    [alertView show];
+                                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                                });
+                            }
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [weakSelf showNetWorkUnableAlert];
+                            });
+                        }
+                    }];
+                }];
+            } else {
+                NSDictionary *publicQTalkNav = @{QIMNavNameKey:(self.companyModel.name.length > 0) ? self.companyModel.name : self.companyModel.domain, QIMNavUrlKey:self.companyModel.nav};
+                __weak id weakSelf = self;
+                [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:publicQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES withCallBack:^(BOOL success) {
+                    NSString *pwd = self.userPwdTextField.text;
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        [[QIMKit sharedInstance] updateLastTempUserToken:pwd];
+                        [[QIMKit sharedInstance] loginWithUserName:userName WithPassWord:pwd];
+                    });
+                }];
+            }
         }
     }
+}
+
+- (void)showNetWorkUnableAlert {
+    
+    __weak id weakSelf = self;
+    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle qim_localizedStringForKey:@"common_prompt"] message:[NSBundle qim_localizedStringForKey:@"network_unavailable_tip"] preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"ok"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//        [weakSelf stopLoginAnimation];
+    }];
+    UIAlertAction *helpAction = [UIAlertAction actionWithTitle:[NSBundle qim_localizedStringForKey:@"Help"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+//        [weakSelf stopLoginAnimation];
+        NSString *netHelperPath = [[NSBundle mainBundle] pathForResource:@"NetWorkSetting" ofType:@"html"];
+        NSString *netHelperString = [NSString stringWithContentsOfFile:netHelperPath encoding:NSUTF8StringEncoding error:nil];
+        [QIMFastEntrance openWebViewWithHtmlStr:netHelperString showNavBar:YES];
+    }];
+    [alertVc addAction:okAction];
+    [alertVc addAction:helpAction];
+    [weakSelf presentViewController:alertVc animated:YES completion:nil];
 }
 
 - (void)agreeBtnHandle:(UIButton *)sender {
@@ -925,21 +991,22 @@ static const int companyTag = 10001;
         __block NSDictionary *userWillsaveNavDict = @{QIMNavNameKey:(navHttpName.length > 0) ? navHttpName : [[navUrl.lastPathComponent componentsSeparatedByString:@"="] lastObject], QIMNavUrlKey:navUrl};
         [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_UserWillSaveNavDict"];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            BOOL success = [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithCheck:YES];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                if (success) {
-                    [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_CurrentNavDict"];
-                    [self setupUI];
-                } else {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
-                                                                        message:[NSBundle qim_localizedStringForKey:@"nav_no_available_Navigation"]
-                                                                       delegate:nil
-                                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
-                                                              otherButtonTitles:nil];
-                    [alertView show];
-                }
-            });
+            [[QIMKit sharedInstance] qimNav_updateNavigationConfigWithCheck:YES withCallBack:^(BOOL success) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                    if (success) {
+                        [[QIMKit sharedInstance] setUserObject:userWillsaveNavDict forKey:@"QC_CurrentNavDict"];
+                        [self setupUI];
+                    } else {
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                                            message:[NSBundle qim_localizedStringForKey:@"nav_no_available_Navigation"]
+                                                                           delegate:nil
+                                                                  cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
+                                                                  otherButtonTitles:nil];
+                        [alertView show];
+                    }
+                });
+            }];
         });
     } else {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""

@@ -32,6 +32,7 @@
 #import "QIMHintTableViewCell.h"
 #import "QIMChatRobotQuestionListTableViewCell.h"
 
+#import "QIMUserMedalRemindCell.h"
 //#import "TransferInfoCell.h"
 #import "QIMGroupChatCell.h"
 #import "QIMPublicNumberNoticeCell.h"
@@ -55,6 +56,7 @@
 #import "QIMRedPackManager.h"
 #import "Toast.h"
 #import "UIApplication+QIMApplication.h"
+#import "QIMRTCChatCell.h"
 
 @interface QIMMessageTableViewManager () 
 
@@ -254,6 +256,13 @@
                 return [QIMHintTableViewCell getCellHeightWihtMessage:temp chatType:self.chatType] + 15;
             }
                 break;
+            case QIMMessageTypeUserMedalRemind: {
+                return [QIMUserMedalRemindCell getCellHeightWithMessage:temp chatType:self.chatType] + 45;
+            }
+                break;
+//            case QIMMessageTypeWebRtcMsgTypeVideoMeeting:{
+//                return [QIMRTCChatCell]
+//            }
             default: {
                 
                 Class someClass = [[QIMKit sharedInstance] getRegisterMsgCellClassForMessageType:message.messageType];
@@ -401,7 +410,7 @@
             } else {
                 NSString *infoStr = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
                 if (infoStr.length > 0) {
-                    
+
                     NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
                     if ([[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"appstore"] || [[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"ctrip"]) {
                         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
@@ -544,6 +553,25 @@
 #endif
         }
             break;
+        case QIMMessageTypeWebRtcMsgTypeVideoGroup: {
+#if __has_include("QIMWebRTCClient.h")
+
+            [[QIMWebRTCMeetingClient sharedInstance] setGroupId:self.chatId];
+            NSDictionary *groupCardDic = [[QIMKit sharedInstance] getGroupCardByGroupId:self.chatId];
+            NSString *groupName = [groupCardDic objectForKey:@"Name"];
+            [[QIMWebRTCMeetingClient sharedInstance] joinRoomById:self.chatId WithRoomName:groupName];
+
+//            NSString *infoStr = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
+//            if (infoStr.length > 0) {
+//                NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
+//                if (infoDic.count) {
+////                    [[QIMWebRTCMeetingClient sharedInstance] joinRoomByMessage:infoDic];
+//
+//                }
+//            }
+#endif
+        }
+            break;
         case QIMWebRTC_MsgType_Video: {
 #if __has_include("QIMWebRTCClient.h")
             [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
@@ -552,7 +580,21 @@
 #endif
         }
             break;
-            
+        case QIMMessageType_WebRTC_Vedio:{
+#if __has_include("QIMWebRTCClient.h")
+            [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
+            //            [[QIMWebRTCClient sharedInstance] setHeaderImage:[[QIMKit sharedInstance] getUserHeaderImageByUserId:self.chatId]];
+            [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:YES isCaller:YES];
+#endif
+        }
+            break;
+        case QIMMessageType_WebRTC_Audio:{
+            [[QIMWebRTCClient sharedInstance] setRemoteJID:self.chatId];
+            //            [[QIMWebRTCClient sharedInstance] setHeaderImage:[[QIMKit sharedInstance] getUserHeaderImageByUserId:self.chatId]];
+            [[QIMWebRTCClient sharedInstance] showRTCViewByXmppId:self.chatId isVideo:NO isCaller:YES];
+        }
+            break;
+
         default:
             break;
     }
@@ -599,7 +641,7 @@
     }
     BOOL isvisable = [[tableView indexPathsForVisibleRows] containsObject:indexPath];
     id temp = [self.dataSource objectAtIndex:row];
-    
+
    QIMMessageModel *message = temp;
 //    QIMVerboseLog(@"解密会话状态 : %lu,   %d", (unsigned long)[[QIMEncryptChat sharedInstance] getEncryptChatStateWithUserId:self.chatId], message.messageType);
 #if __has_include("QIMNoteManager.h")

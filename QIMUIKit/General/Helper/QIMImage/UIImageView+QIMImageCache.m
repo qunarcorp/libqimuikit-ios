@@ -135,7 +135,7 @@
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self qim_setImageWithURL:headerUrl placeholderImage:placeholderImage completed:nil];
+            [self qim_setImageWithURL:[NSURL URLWithString:headerUrl] placeholderImage:placeholderImage completed:nil];
         });
     });
 }
@@ -194,7 +194,7 @@
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self qim_setImageWithURL:headerUrl placeholderImage:placeholderImage completed:nil];
+            [self qim_setImageWithURL:[NSURL URLWithString:headerUrl] placeholderImage:placeholderImage completed:nil];
         });
     });
 }
@@ -234,8 +234,7 @@
 }
 
 - (void)qim_setImageWithURL:(nullable NSURL *)url placeholderImage:(nullable UIImage *)placeholder options:(SDWebImageOptions)options progress:(nullable SDImageLoaderProgressBlock)progressBlock completed:(nullable SDExternalCompletionBlock)completedBlock {
-    [self sd_setImageWithURL:url placeholderImage:placeholder options:options progress:nil completed:completedBlock];
+    [self sd_setImageWithURL:url placeholderImage:placeholder options:options progress:progressBlock completed:completedBlock];
 }
-
 
 @end

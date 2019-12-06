@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'DEBUGLOG=1'}
   s.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Private/QIMUIKit/**\" \"${PODS_ROOT}/Headers/Public/**\""}
   $debug = ENV['debug']
-  $beta = ENV['beta']
+  $internal = ENV['internal']
 
   s.subspec 'PublicUIHeader'  do |ph|
     ph.public_header_files = "QIMUIKit/QIMNotificationManager*.{h}", "QIMUIKit/QIMJumpURLHandle*.{h}", "QIMUIKit/QIMFastEntrance*.{h}", "QIMUIKit/QIMAppWindowManager*.{h}", "QIMUIKit/QIMCommonUIFramework*.*{h}", "QIMUIKit/QIMRemoteNotificationManager*.{h}"
@@ -141,7 +141,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'QIMUIVendorKit' do |vendorkit|
-    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMUpdateView/**/*{h,m}']
+    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMUpdateView/**/*{h,m}', 'QIMUIVendorKit/QIMToast/**/*{h,m}']
 #    vendorkit.source_files = ['QIMUIVendorKit/QIMButton/**/*{h,m}', 'QIMUIVendorKit/QIMArrowView/**/*{h,m}', 'QIMUIVendorKit/QIMColorPicker/**/*{h,m,c}', 'QIMUIVendorKit/QIMDaePickerView/**/*{h,m}', 'QIMUIVendorKit/QIMGDPerformanceView/**/*{h,m}', 'QIMUIVendorKit/QIMXMenu/**/*{h,m}', 'QIMUIVendorKit/QIMPopVC/**/*{h,m}', 'QIMUIVendorKit/QIMPickerView/**/*{h,m}', 'QIMUIVendorKit/QIMImagePickerController/**/*{h,m}']
     vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib']
 #    vendorkit.resource = ['QIMUIVendorKit/QIMArrowView/QIMArrowCellTableViewCell.xib', 'QIMUIVendorKit/QIMDaePickerView/QIMWSDatePickerView.xib', 'QIMUIVendorKit/QIMImagePickerController/**/*.{bundle}']
@@ -160,10 +160,10 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'QIMRN' do |rn|
-    rn.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMRNEnable=1', "HEADER_SEARCH_PATHS" => "$(PROJECT_DIR)/node_modules/react-native"}
+    rn.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'QIMRNEnable=1'}
     rn.pod_target_xcconfig = {'OTHER_LDFLAGS' => '$(inherited)'}
     rn.source_files = ['QIMRNKit/rn_3rd/**/*{h,m,c}']
-    rn.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Public/QIMRNKit/**\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/../node_modules\" \"$(PODS_ROOT)/../node_modules/react-native/ReactCommon/yoga\""}
+    rn.pod_target_xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"${PODS_ROOT}/Headers/Public/QIMRNKit/**\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\""}
     rn.resource = 'QIMRNKit/QIMRNKit.bundle'
     rn.frameworks = 'UIKit', 'Foundation'
      if $debug
@@ -171,6 +171,20 @@ Pod::Spec.new do |s|
      else
         rn.dependency 'QIMReactNativeLibrary', '~> 4.0'
      end
+  end
+  
+  s.subspec 'QIMFlutter' do |flutter|
+    
+    flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
+    #    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
+    if $debug
+      flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
+    elsif $internal
+      flutter.dependency 'QIMFlutterFramework', '~> 4.0'
+      flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
+    else
+
+    end    
   end
   
   s.subspec 'QIMUIKit-NORN' do |norn|
@@ -189,6 +203,8 @@ Pod::Spec.new do |s|
     norn.dependency 'QIMUIKit/QIMSuperPlayer'
     norn.dependency 'QIMUIKit/QIMUIVendorKit'
     norn.dependency 'QIMUIKit/QIMNote'
+    norn.dependency 'QIMUIKit/QIMFlutter'
+
   end
   
   s.subspec 'QIMUIKit-FULL' do |full|
@@ -208,6 +224,8 @@ Pod::Spec.new do |s|
     full.dependency 'QIMUIKit/QIMUIVendorKit'
     full.dependency 'QIMUIKit/QIMNote'
     full.dependency 'QIMUIKit/QIMRN'
+    full.dependency 'QIMUIKit/QIMFlutter'
+
   end
   
   s.dependency 'MJRefresh'
@@ -224,7 +242,7 @@ Pod::Spec.new do |s|
   s.dependency 'AMap3DMap'
   s.dependency 'SCLAlertView-Objective-C'
   s.dependency 'MMMarkdown'
-  s.dependency 'Toast' 
+#  s.dependency 'Toast'
   s.dependency 'YYKeyboardManager'
   s.dependency 'RTLabel'
 #  s.dependency 'SuperPlayer'

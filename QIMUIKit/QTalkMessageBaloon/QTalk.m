@@ -136,9 +136,13 @@ static QTalk *__global_qtalk = nil;
     
 #if __has_include("QIMWebRTCClient.h")
     //语音聊天
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMWebRTC_MsgType_Audio];
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageType_WebRTC_Audio];
     //视频聊天
-    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMWebRTC_MsgType_Video];
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageType_WebRTC_Vedio];
+    
+    [[QIMKit sharedInstance] setMsgShowText:@"[语音聊天]" ForMessageType:QIMMessageType_WebRTC_Audio];
+    
+    [[QIMKit sharedInstance] setMsgShowText:@"[视频聊天]" ForMessageType:QIMMessageType_WebRTC_Vedio];
     
     [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Voice_Call_tip"] ForMessageType:QIMWebRTC_MsgType_Audio];
     
@@ -148,7 +152,14 @@ static QTalk *__global_qtalk = nil;
     //视频会议
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
 
+
+    [[QIMKit sharedInstance] setMsgShowText:@"[视频会议]" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+    
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMRTCChatCell" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoGroup];
+    [[QIMKit sharedInstance] setMsgShowText:@"[视频会议]" ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoGroup];
+    
     [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Video_Conference_tip"] ForMessageType:QIMMessageTypeWebRtcMsgTypeVideoMeeting];
+    
 #endif
     // 窗口抖动
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMShockMsgCell" ForMessageType:QIMMessageType_Shock];
@@ -177,6 +188,11 @@ static QTalk *__global_qtalk = nil;
     [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMWorkMomentRemindCell" ForMessageType:QIMMessageTypeWorkMomentRemind];
     [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"Moments_Notification"] ForMessageType:QIMMessageTypeWorkMomentRemind];
     
+    //勋章提醒
+    [[QIMKit sharedInstance] registerMsgCellClassName:@"QIMUserMedalRemindCell" ForMessageType:QIMMessageTypeUserMedalRemind];
+    [[QIMKit sharedInstance] setMsgShowText:@"勋章提醒" ForMessageType:QIMMessageTypeUserMedalRemind];
+
+    [[QIMKit sharedInstance] setMsgShowText:@"收到一条消息" ForMessageType:QIMMessageType_GroupNotify];
     [[QIMKit sharedInstance] setMsgShowText:[NSBundle qim_localizedStringForKey:@"received_message"] ForMessageType:QIMMessageType_GroupNotify];
 }
 

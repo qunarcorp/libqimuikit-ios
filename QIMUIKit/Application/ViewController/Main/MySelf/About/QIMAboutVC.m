@@ -19,7 +19,6 @@
 #import "QIMDataController.h"
 #if __has_include("QIMLocalLog.h")
 
-#import "QIMLocalLogViewController.h"
 #import "QIMLocalLog.h"
 #endif
 
@@ -104,6 +103,7 @@
       }
 #endif
     [_dataSource addObject:@"DataFile"];
+    [_dataSource addObject:@"DataWALFile"];
     return _dataSource;
 }
 
@@ -326,6 +326,13 @@
         
     } else if ([value isEqualToString:@"Instruments"]) {
         
+    } else if ([value isEqualToString:@"DataWALFile"]) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        [[QIMKit sharedInstance] qimDB_dbCheckpoint];
+        NSIndexPath *lastIndexPath = [NSIndexPath indexPathForRow:indexPath.row - 1 inSection:indexPath.section];  //更新 第一个section的第4行
+        [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:lastIndexPath, indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+    } else {
+        
     }
 }
 
@@ -389,6 +396,13 @@
         cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"About_tab_storage_space"];
         cell.accessoryType = UITableViewCellAccessoryNone;
         cell.detailTextLabel.text = [self dataFileSize];
+    } else if ([value isEqualToString:@"DataWALFile"]) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier];
+        cell.textLabel.text = [NSBundle qim_localizedStringForKey:@"About_tab_storage_wal_space"];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.detailTextLabel.text = [self dataWalFileSize];
+    } else {
+        
     }
     return cell;
 }
@@ -409,4 +423,11 @@
     return str;
 }
 
+- (NSString *)dataWalFileSize {
+    long long totalSize = [[QIMDataController getInstance] sizeOfDBWALPath];
+    NSString *str = [[QIMDataController getInstance] transfromTotalSize:totalSize];
+    return str;
+}
+
+    
 @end

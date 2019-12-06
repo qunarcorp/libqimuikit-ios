@@ -238,7 +238,7 @@
     NSString *combineJid = [self gsswithCHatType:chatType WithXmppId:xmppJid withRealJid:realJid];
     NSDictionary *dict = @{@"topType": @(![[QIMKit sharedInstance] isStickWithCombineJid:combineJid]), @"chatType": @(chatType)};
     NSString *value = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
-    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:[[QIMKit sharedInstance] isStickWithCombineJid:combineJid]];
+    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:[[QIMKit sharedInstance] isStickWithCombineJid:combineJid] withCallback:nil];
 }
 
 - (void)deleteStick:(NSIndexPath *)indexPath {
@@ -250,7 +250,7 @@
 
     NSDictionary *dict = @{@"topType": @(NO), @"chatType": @(chatType)};
     NSString *value = [[QIMJSONSerializer sharedInstance] serializeObject:dict];
-    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:YES];
+    [[QIMKit sharedInstance] updateRemoteClientConfigWithType:QIMClientConfigTypeKStickJidDic WithSubKey:combineJid WithConfigValue:value WithDel:YES withCallback:nil];
 }
 
 //删除会话

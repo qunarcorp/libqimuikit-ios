@@ -17,7 +17,7 @@
 #import "QIMFastEntrance.h"
 #import "QIMWindowManager.h"
 #import "QIMAppWindowManager.h"
-#import "ASIHTTPRequest.h"
+//#import "ASIHTTPRequest.h"
 
 #import "UIImageView+QIMImageCache.h"
 #import "UIImage+QIMUIKit.h"

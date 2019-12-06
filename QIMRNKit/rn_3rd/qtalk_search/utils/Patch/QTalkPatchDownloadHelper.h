@@ -13,20 +13,22 @@
 
 @interface  QTalkPatchDownloadHelper : NSObject
 
-+ (BOOL) downloadFullPackageAndCheck:(NSString *)url
++ (void) downloadFullPackageAndCheck:(NSString *)url
                                  md5:(NSString *)md5
                           bundleName:(NSString *)bundleName
                             zipName:(NSString *)zipName
                            cachePath:(NSString *)cachePath
-                       destAssetName:(NSString *)destAssetName;
+                       destAssetName:(NSString *)destAssetName
+                        withCallBack:(QIMKitOPSRNBundlePatchDownloadHelperHandle)callback;
 
 
-+ (BOOL) downloadPatchAndCheck:(NSString *)url
++ (void) downloadPatchAndCheck:(NSString *)url
                       patchMd5:(NSString *)patchMd5
                        fullMd5:(NSString *)fullMd5
                      cachePath:(NSString *)cachePath
                  destAssetName:(NSString *)destAssetName
-               innerBundleName:(NSString *)innerBundleName;
+               innerBundleName:(NSString *)innerBundleName
+                  withCallBack:(QIMKitOPSRNBundlePatchDownloadHelperHandle)callback;
 
 @end
 

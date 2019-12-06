@@ -1,10 +1,10 @@
 /*
- Localizable.strings
- qunarChatIphone
- 
- Created by admin on 16/1/21.
- 
- */
+  Localizable.strings
+  qunarChatIphone
+
+  Created by admin on 16/1/21.
+
+*/
 //
 "ok" = "确定";
 "cancel" = "取消";
@@ -139,6 +139,7 @@
 "About_tab_recordLog" = "记录本地日志";
 "About_tab_instruments" = "监测App数据";
 "About_tab_storage_space" = "聊天记录存储空间";
+"About_tab_storage_wal_space" = "聊天记录Wal文件存储空间";
 
 //Group
 "group_name" = "群聊名称";
@@ -399,7 +400,7 @@
 //消息/ Chat
 "Connecting…" = "连接中...";
 
-"Loading…" = "接受中...";
+"Loading…" = "接收中...";
 
 "Chat" = "消息";
 
@@ -913,3 +914,17 @@
 "%ldn mentioned"="我被@%ld次";
 "New_Messages_Below" = "下面有新消息";
 "All_Messages_Above" = "以上为所有消息";
+"Declined" = "已拒绝";
+"atom_rtc_deny_other" = "对方已拒绝";
+"atom_rtc_canceled" = "已取消";
+"atom_rtc_canceled_by_caller" = "对方已取消";
+"atom_rtc_duration" = "通话时长：%@";
+"atom_rtc_avcall"= "视频通话";
+"atom_rtc_acall" = "音频通话";
+"atom_rtc_video_conference" = "视频会议";
+"atom_rtc_video_no_answer" = "对方无人接听";
+
+"wear_Already_worn" = "已佩戴";
+"wear_Already_removed" = "已卸下";
+"wear_failure" = "佩戴失败";
+"remove_failure" = "卸下失败";

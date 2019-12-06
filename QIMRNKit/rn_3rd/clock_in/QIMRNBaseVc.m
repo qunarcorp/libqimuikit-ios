@@ -15,8 +15,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTEventDispatcher.h>
-#import "Toast.h"
-
+//#import "UIView+Toast.h"
 #import "QIMChatVC.h"
 #import "QIMPhotoBrowserNavController.h"
 
@@ -95,6 +94,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(delMuc:) name:kChatRoomLeave object:nil];
     //更新用户勋章列表
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserMedal:) name:kUpdateUserMedal object:nil];
+    
+    //更新新版本的用户勋章列表
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserMedalList:) name:kUpdateNewUserMedalList object:nil];
     
     //更新用户Leader
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLeaderCard:) name:kUpdateUserLeaderCard object:nil];
@@ -177,6 +179,15 @@
     if (userId.length > 0 && notifyDic.count > 0) {
         [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateMedal" body:notifyDic];
     }
+}
+
+//更新新版本勋章列表
+- (void)updateUserMedalList:(NSNotification *)notify {
+    
+    NSString *userId = notify.object;
+    NSArray *userMedallist = [QimRNBModule qimrn_getNewUserMedalByUserId:userId];
+    NSDictionary *userMedalListDic = @{@"UserId" : [[QIMKit sharedInstance] getLastJid], @"medalList": userMedallist ? userMedallist : @[]};
+    [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"updateMedalList" body:userMedalListDic];
 }
 
 - (void)updateUserLeaderCard:(NSNotification *)notify {

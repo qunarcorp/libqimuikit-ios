@@ -86,6 +86,8 @@
 
 + (void)openWebViewForUrl:(NSString *)url showNavBar:(BOOL)showNavBar;
 
++ (void)openUserMedalFlutterWithUserId:(NSString *)userId;
+
 + (void)openVideoPlayerForUrl:(NSString *)videoUrl LocalOutPath:(NSString *)localOutPath CoverImageUrl:(NSString *)coverImageUrl;
 
 + (void)openVideoPlayerForVideoModel:(QIMVideoModel *)videoModel;
