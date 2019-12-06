@@ -326,14 +326,8 @@
                                         [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
                                     } else {
                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
-                                            });
-                                        });
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"打开红包失败"];
-                                            });
+                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"打开红包失败" delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                            [alert show];
                                         });
                                     }
                                 }];
@@ -344,14 +338,8 @@
                                         [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
                                     } else {
                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
-                                            });
-                                        });
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"打开红包失败"];
-                                            });
+                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"打开红包失败" delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                            [alert show];
                                         });
                                     }
                                 }];
@@ -364,28 +352,16 @@
                                         [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
                                     } else {
                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
-                                            });
-                                        });
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"打开红包失败"];
-                                            });
+                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"打开红包失败" delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                            [alert show];
                                         });
                                     }
                                 }];
                             }else if(today_has_power){
                                 //展示toast，提示该用户的红包已达到上线
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                        [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
-                                    });
-                                });
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                        [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:[NSString stringWithFormat:@"今日领取%@的红包次数已到上线！", [userInfo objectForKey:@"Name"]]];
-                                    });
+                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"今日领取%@的红包次数已到上线！", [userInfo objectForKey:@"Name"]] delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                    [alert show];
                                 });
                             }
                         }else if(errcode == 4300){//开红包的人未绑定支付账户，需去绑定
@@ -395,14 +371,8 @@
                         }else{//打开失败
                             //展示toast，打开失败
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
-                                });
-                            });
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"打开红包失败"];
-                                });
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"打开红包失败" delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                [alert show];
                             });
                         }
                     }];
