@@ -2101,6 +2101,11 @@ static CGPoint tableOffsetPoint;
         NSURL *url = [NSURL fileURLWithPath:[imageHttpUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
     } else {
+        if (![imageHttpUrl containsString:@"?"]) {
+            imageHttpUrl = [imageHttpUrl stringByAppendingString:@"?"];
+        } else {
+
+        }
         if (![imageHttpUrl containsString:@"platform"]) {
             imageHttpUrl = [imageHttpUrl stringByAppendingString:@"&platform=touch"];
         }

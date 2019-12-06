@@ -3075,6 +3075,12 @@ static CGPoint tableOffsetPoint;
 - (id <QIMMWPhoto>)photoBrowser:(QIMMWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
     if (self.fixedImageArray.count > 0) {
         NSString *imageUrl = [self.fixedImageArray[0] absoluteString];
+        if (![imageUrl containsString:@"?"]) {
+            imageUrl = [imageUrl stringByAppendingString:@"?"];
+        } else {
+
+        }
+        
         if (![imageUrl containsString:@"platform"]) {
             imageUrl = [imageUrl stringByAppendingString:@"&platform=touch"];
         }
@@ -3100,6 +3106,11 @@ static CGPoint tableOffsetPoint;
         NSURL *url = [NSURL fileURLWithPath:[imageHttpUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         return url ? [[QIMMWPhoto alloc] initWithURL:url] : nil;
     } else {
+        if (![imageHttpUrl containsString:@"?"]) {
+            imageHttpUrl = [imageHttpUrl stringByAppendingString:@"?"];
+        } else {
+
+        }
         if (![imageHttpUrl containsString:@"platform"]) {
             imageHttpUrl = [imageHttpUrl stringByAppendingString:@"&platform=touch"];
         }
