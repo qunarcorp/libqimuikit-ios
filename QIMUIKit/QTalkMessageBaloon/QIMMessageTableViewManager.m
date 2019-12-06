@@ -54,7 +54,7 @@
 
 #import "QIMFileCell.h"
 #import "QIMRedPackManager.h"
-#import "Toast.h"
+#import "UIView+QIMToast.h"
 #import "UIApplication+QIMApplication.h"
 #import "QIMRTCChatCell.h"
 
@@ -327,12 +327,12 @@
                                     } else {
                                         dispatch_async(dispatch_get_main_queue(), ^{
                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
                                             });
                                         });
                                         dispatch_async(dispatch_get_main_queue(), ^{
                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"打开红包失败"];
+                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"打开红包失败"];
                                             });
                                         });
                                     }
@@ -345,12 +345,12 @@
                                     } else {
                                         dispatch_async(dispatch_get_main_queue(), ^{
                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
                                             });
                                         });
                                         dispatch_async(dispatch_get_main_queue(), ^{
                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"打开红包失败"];
+                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"打开红包失败"];
                                             });
                                         });
                                     }
@@ -365,12 +365,12 @@
                                     } else {
                                         dispatch_async(dispatch_get_main_queue(), ^{
                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
                                             });
                                         });
                                         dispatch_async(dispatch_get_main_queue(), ^{
                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"打开红包失败"];
+                                                [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"打开红包失败"];
                                             });
                                         });
                                     }
@@ -379,12 +379,12 @@
                                 //展示toast，提示该用户的红包已达到上线
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                        [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                                        [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
                                     });
                                 });
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                        [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:[NSString stringWithFormat:@"今日领取%@的红包次数已到上线！", [userInfo objectForKey:@"Name"]]];
+                                        [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:[NSString stringWithFormat:@"今日领取%@的红包次数已到上线！", [userInfo objectForKey:@"Name"]]];
                                     });
                                 });
                             }
@@ -396,12 +396,12 @@
                             //展示toast，打开失败
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject hideAllToasts];
+                                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_hideAllToasts];
                                 });
                             });
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject makeToast:@"打开红包失败"];
+                                    [[[UIApplication sharedApplication] visibleViewController].view.subviews.firstObject qim_makeToast:@"打开红包失败"];
                                 });
                             });
                         }
