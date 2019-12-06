@@ -39,7 +39,7 @@
             }
             dispatch_async(dispatch_get_main_queue(), ^{
                 [openView removeFromSuperview];
-            })
+            });
         }];
         [[[[UIApplication sharedApplication] visibleViewController] view] addSubview:openView];
     });
