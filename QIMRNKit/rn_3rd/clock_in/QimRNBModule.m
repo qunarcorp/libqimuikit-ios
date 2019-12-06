@@ -13,6 +13,7 @@
 #endif
 
 #import "QIMMainVC.h"
+#import "QIMKitPublicHeader.h"
 #import "UIApplication+QIMApplication.h"
 #import "QimRNBModule+TravelCalendar.h"
 #import "QimRNBModule+QIMLocalSearch.h"
@@ -637,7 +638,7 @@ RCT_EXPORT_METHOD(getUserInfoByUserCard:(NSString *)userId :(RCTResponseSenderBl
         [[QIMKit sharedInstance] updateUserCard:userId withCache:NO];
     });
     NSArray *userMedallist = [QimRNBModule qimrn_getNewUserHaveMedalByUserId:userId];
-    
+
     callback(@[@{@"UserInfo" : properties ? properties : @{}, @"medalList": userMedallist ? userMedallist : @[]}]);
 }
 
@@ -1266,7 +1267,7 @@ RCT_EXPORT_METHOD(getMyInfo:(RCTResponseSenderBlock)callback) {
     [info setObject:userId ? userId : @"" forKey:@"UserId"];
     
     NSArray *medals = [QimRNBModule qimrn_getNewUserMedalByUserId:userId];
-    
+
     callback(@[@{@"MyInfo":info?info:@{}, @"medalList": medals?medals:@[]}]);
 }
 
@@ -2093,6 +2094,149 @@ RCT_EXPORT_METHOD(createTrip:(NSDictionary *)params :(RCTResponseSenderBlock)cal
     [newParam setObject:[[QIMKit sharedInstance] getLastJid] forKey:@"tripInviter"];
     [[QIMKit sharedInstance] createTrip:newParam callBack:^(BOOL success, NSString *errMsg) {
         callback(@[@{@"ok" : @(success), @"errMsg":errMsg?errMsg:@""}]);
+    }];
+}
+
+@end
+
+//支付
+@implementation QimRNBModule (Pay)
+
+RCT_EXPORT_METHOD(createRedEnvelope:(NSDictionary *)params :(RCTResponseSenderBlock)callback) {
+    [[QIMKit sharedInstance] sendRedEnvelop:params withCallBack:^(BOOL successed,NSString *payParams) {
+        callback(@[@{@"ok" : @(successed)}]);
+    }];
+}
+
+//红包详情
+RCT_EXPORT_METHOD(redEnvelopeGet:(NSString *)rid :(NSString *)xmppid :(NSInteger) isChatRoom :(RCTResponseSenderBlock)callback){
+    [[QIMKit sharedInstance] getRedEnvelopDetail:xmppid RedRid:rid IsChatRoom:isChatRoom withCallBack:^(NSDictionary* data){
+        BOOL ret = [[data objectForKey:@"ret"] boolValue];
+        if(ret){
+            NSDictionary* result = [data objectForKey:@"data"];
+            NSString* userId = [result objectForKey:@"host_user_id"];
+            NSString* user_name = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:userId];
+            NSString* user_img = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:userId];
+            if(!user_img){
+                user_img = [QIMKit defaultUserHeaderImagePath];
+            }
+            NSString* credit = [result objectForKey:@"credit"];
+            NSString* red_content = [result objectForKey:@"red_content"];
+            NSString* red_type = [result objectForKey:@"red_type"];
+            NSString* over_time = [result objectForKey:@"over_time"];
+            NSString* red_number = [result objectForKey:@"red_number"];
+
+            NSArray* items = [result objectForKey:@"draw_record"];
+            NSMutableArray *lists = [NSMutableArray arrayWithCapacity:3];
+            for (NSDictionary *itemDic in items) {
+                NSMutableDictionary *item = [NSMutableDictionary dictionaryWithCapacity:2];
+                NSString *host_user_id = [itemDic objectForKey:@"host_user_id"];
+                NSString *credit = [itemDic objectForKey:@"credit"];
+                NSString *time = [itemDic objectForKey:@"draw_time"];
+                NSInteger rank = [[itemDic objectForKey:@"rank"] integerValue];
+                NSString *name = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:host_user_id];
+                NSString *headerUri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:host_user_id];
+                if(!headerUri){
+                    headerUri = [QIMKit defaultUserHeaderImagePath];
+                }
+                [item setQIMSafeObject:credit forKey:@"Credit"];
+                [item setQIMSafeObject:time forKey:@"Time"];
+                [item setQIMSafeObject:(rank == 1 ? @"手气最佳" :@"") forKey:@"Rank"];
+                [item setQIMSafeObject:name forKey:@"Name"];
+                [item setQIMSafeObject:headerUri forKey:@"HeaderUri"];
+
+                [lists addObject:item];
+            }
+
+            callback(@[@{@"ok" : @(YES),@"credit" :credit,@"user_name" :user_name,@"user_img" :user_img,@"red_content" :red_content,@"red_type" :red_type,@"over_time" :over_time,@"red_number" :red_number,@"redPackList":lists}]);
+        }else{
+             callback(@[@{@"ok" : @(FALSE)}]);
+        }
+    }];
+}
+
+//我收到的红包
+RCT_EXPORT_METHOD(redEnvelopeReceive:(NSInteger)page :(NSInteger)pagesie :(NSInteger)year :(RCTResponseSenderBlock)callback){
+    [[QIMKit sharedInstance] redEnvelopReceive:page PageSize:pagesie WithYear:year withCallBack:^(NSDictionary* data){
+        BOOL ret = [[data objectForKey:@"ret"] boolValue];
+        if(ret){
+            NSDictionary* result = [data objectForKey:@"data"];
+            NSString* user_img = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:[[QIMKit sharedInstance] getLastJid]];
+            NSDictionary *countDic = [result objectForKey:@"count"];
+            NSString* total_credit = [countDic objectForKey:@"total_credit"];
+            NSString* count = [countDic objectForKey:@"count"];
+
+            NSArray* items = [result objectForKey:@"list"];
+            NSMutableArray *lists = [NSMutableArray arrayWithCapacity:3];
+            for (NSDictionary *itemDic in items) {
+                NSMutableDictionary *item = [NSMutableDictionary dictionaryWithCapacity:2];
+                NSString *host_user_id = [itemDic objectForKey:@"host_user_id"];
+                NSString *credit = [itemDic objectForKey:@"credit"];
+                NSString *time = [itemDic objectForKey:@"draw_time"];
+                NSString *type = [itemDic objectForKey:@"red_type"];
+                NSString *name = [itemDic objectForKey:@"realname"];
+                NSString *headerUri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:host_user_id];
+
+                [item setQIMSafeObject:credit forKey:@"Credit"];
+                [item setQIMSafeObject:time forKey:@"Time"];
+                [item setQIMSafeObject:name forKey:@"Name"];
+                [item setQIMSafeObject:headerUri forKey:@"HeaderUri"];
+                [item setQIMSafeObject:type forKey:@"Type"];
+
+                [lists addObject:item];
+            }
+
+            callback(@[@{@"ok" : @(YES),@"total_credit" :total_credit,@"user_img" :user_img,@"count" :count,@"redPackList":lists}]);
+        }else{
+            callback(@[@{@"ok" : @(FALSE)}]);
+        }
+    }];
+}
+
+//我发出去的红包
+RCT_EXPORT_METHOD(redEnvelopeSend:(NSInteger)page :(NSInteger)pagesie :(NSInteger)year :(RCTResponseSenderBlock)callback){
+    [[QIMKit sharedInstance] redEnvelopSend:page PageSize:pagesie WithYear:year withCallBack:^(NSDictionary* data){
+        [[QIMKit sharedInstance] redEnvelopSend:page PageSize:pagesie WithYear:year withCallBack:^(NSDictionary* data){
+            BOOL ret = [[data objectForKey:@"ret"] boolValue];
+            if(ret){
+                NSDictionary* result = [data objectForKey:@"data"];
+                NSString* user_img = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:[[QIMKit sharedInstance] getLastJid]];
+
+                NSDictionary *countDic = [result objectForKey:@"count"];
+                NSString* total_credit = [countDic objectForKey:@"total_credit"];
+                NSString* count = [countDic objectForKey:@"count"];
+
+                NSArray* items = [result objectForKey:@"list"];
+                NSMutableArray *lists = [NSMutableArray arrayWithCapacity:3];
+                for (NSDictionary *itemDic in items) {
+                    NSMutableDictionary *item = [NSMutableDictionary dictionaryWithCapacity:2];
+                    NSString *host_user_id = [itemDic objectForKey:@"host_user_id"];
+                    NSString *credit = [itemDic objectForKey:@"credit"];
+                    NSString *time = [itemDic objectForKey:@"create_time"];
+                    NSString *type = [itemDic objectForKey:@"red_type"];
+                    NSString *name = [[QIMKit sharedInstance] getUserMarkupNameWithUserId:host_user_id];
+                    NSString *headerUri = [[QIMImageManager sharedInstance] qim_getHeaderCachePathWithJid:host_user_id];
+                    NSInteger expire = [[itemDic objectForKey:@"is_expire"] intValue];
+                    NSInteger number = [[itemDic objectForKey:@"red_number"] intValue];
+                    NSInteger draw = [[itemDic objectForKey:@"draw_number"] intValue];
+
+                    [item setQIMSafeObject:credit forKey:@"Credit"];
+                    [item setQIMSafeObject:time forKey:@"Time"];
+                    [item setQIMSafeObject:name forKey:@"Name"];
+                    [item setQIMSafeObject:headerUri forKey:@"HeaderUri"];
+                    [item setQIMSafeObject:type forKey:@"Type"];
+                    [item setQIMSafeObject:@(expire) forKey:@"Expire"];
+                    [item setQIMSafeObject:@(number) forKey:@"Number"];
+                    [item setQIMSafeObject:@(draw) forKey:@"Draw"];
+
+                    [lists addObject:item];
+                }
+
+                callback(@[@{@"ok" : @(YES),@"total_credit" :total_credit,@"user_img" :user_img,@"count" :count,@"redPackList":lists}]);
+            }else{
+                callback(@[@{@"ok" : @(FALSE)}]);
+            }
+        }];
     }];
 }
 

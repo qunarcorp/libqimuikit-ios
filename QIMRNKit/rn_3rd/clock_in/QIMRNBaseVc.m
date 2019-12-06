@@ -100,6 +100,9 @@
     
     //更新用户Leader
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLeaderCard:) name:kUpdateUserLeaderCard object:nil];
+    
+    //关闭发送红包页面
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectorcloseSendRedPacket:) name:kAlipaySuccess object:nil];
 }
 
 - (void)updateBundle:(NSNotification *)notify {
@@ -163,6 +166,10 @@
     if (groupId) {
         [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"Del_Destory_Muc" body:@{@"groupId":groupId}];
     }
+}
+
+- (void)closeSendRedPacket:(NSNotification *)notify {
+    [[QimRNBModule getStaticCacheBridge].eventDispatcher sendAppEventWithName:@"paySuccessNotify" body:@""];
 }
 
 - (void)updateUserMedal:(NSNotification *)notify {
