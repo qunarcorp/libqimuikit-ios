@@ -42,6 +42,9 @@
 #import "UIView+STIMToast.h"
 #import "STIMUpdateAlertView.h"
 
+// 替换下STIMMainVC
+#import "STIMGridMainVC.h"
+
 #define kTabBarHeight   49
 
 @interface STIMMainVC () <STIMCustomTabBarDelegate, UISearchControllerDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIViewControllerPreviewingDelegate, UINavigationControllerDelegate, UISearchResultsUpdating, STIMUpdateAlertViewDelegate, SelectIndexPathDelegate> {
@@ -136,17 +139,21 @@ static BOOL _mainVCReShow = YES;
 }
 
 + (BOOL)checkMainVC {
-    return __mainVc != nil;
+    return __gridMainVC != nil;
+//    return __mainVc != nil;
 }
 
 static STIMMainVC *__mainVc = nil;
+static STIMGridMainVC *__gridMainVC = nil;
 static dispatch_once_t __onceMainToken;
 + (instancetype)sharedInstanceWithSkipLogin:(BOOL)skipLogin {
     dispatch_once(&__onceMainToken, ^{
-        __mainVc = [[STIMMainVC alloc] init];
+//        __mainVc = [[STIMMainVC alloc] init];
+        __gridMainVC = [[STIMGridMainVC alloc] init];
     });
-    __mainVc.skipLogin = skipLogin;
-    return __mainVc;
+    __gridMainVC.skipLogin = skipLogin;
+//    __mainVc.skipLogin = skipLogin;
+    return __gridMainVC;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
