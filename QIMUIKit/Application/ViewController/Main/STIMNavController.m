@@ -69,9 +69,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationBar setTintColor: [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]];
-//    [self.navigationBar setBackgroundImage:[UIImage stimDB_imageWithColor:[UIColor whiteColor]] forBarMetrics:UIBarMetricsDefault];
-    [self.navigationBar setBackgroundImage:[UIImage stimDB_imageWithColor:[UIColor whiteColor]] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    //TODO Startalk start
+//    [self.navigationBar setTintColor: [UIColor colorWithRed:33/255.0 green:33/255.0 blue:33/255.0 alpha:1/1.0]];
+//    [self.navigationBar setBackgroundImage:[UIImage stimDB_imageWithColor:[UIColor whiteColor]] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    [self.navigationBar setTintColor: [UIColor spectralColorWhiteColor]];
+    [self.navigationBar setBackgroundImage:[UIImage stimDB_imageWithColor:[UIColor stimDB_colorWithHex:0x00CABE]] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    //TODO Startalk end
+    
     self.navigationController.navigationBar.shadowImage = [[UIImage alloc] init];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self becomeFirstResponder];

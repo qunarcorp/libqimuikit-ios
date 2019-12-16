@@ -162,7 +162,7 @@
     
     UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 24, footerView.width - 20, 40)];
     [doneButton.titleLabel setFont:[UIFont fontWithName:FONT_NAME size:FONT_SIZE]];
-    [doneButton setBackgroundColor:[UIColor qtalkIconSelectColor]];
+    [doneButton setBackgroundColor:[UIColor starTalkPrimyBlue]];
     [doneButton setTitle:@"发起群聊" forState:UIControlStateNormal];
     [doneButton addTarget:self action:@selector(onDoneButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [STIMViewHelper setRadiusToView:doneButton];

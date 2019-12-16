@@ -1257,12 +1257,14 @@ static NSMutableDictionary *__checkGroupMembersCardDic = nil;
         _chatBGImageView.contentMode = UIViewContentModeScaleAspectFill;
         _chatBGImageView.clipsToBounds = YES;
     }
-    if ([[STIMKit sharedInstance] waterMarkState] == YES) {
-        [STIMChatBgManager getChatBgById:[STIMKit getLastUserName] ByName:[[STIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
-            _chatBGImageView.image = bgImage;
-            _tableView.backgroundView = _chatBGImageView;
-        }];
-    }
+    //TODO Startalk start
+//    if ([[STIMKit sharedInstance] waterMarkState] == YES) {
+//        [STIMChatBgManager getChatBgById:[STIMKit getLastUserName] ByName:[[STIMKit sharedInstance] getMyNickName] WithReset:NO Complete:^(UIImage * _Nonnull bgImage) {
+//            _chatBGImageView.image = bgImage;
+//            _tableView.backgroundView = _chatBGImageView;
+//        }];
+//    }
+    //TODO Startalk end
     /*
      //老版本带个性装扮时候的会话背景
     NSMutableDictionary *chatBGImageDic = [[STIMKit sharedInstance] userObjectForKey:@"chatBGImageDic"];

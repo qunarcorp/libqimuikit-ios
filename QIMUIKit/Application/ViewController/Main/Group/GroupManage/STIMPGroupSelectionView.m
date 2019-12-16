@@ -363,8 +363,12 @@
     _joinToGroupBtn = [[UIButton alloc] initWithFrame:CGRectMake(0,0,size.width,30)];
     [_joinToGroupBtn.titleLabel setFont:[UIFont systemFontOfSize:16]];
     [_joinToGroupBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"Confirm"] forState:UIControlStateNormal];
-    [_joinToGroupBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
-    [_joinToGroupBtn setTitleColor:[UIColor stimDB_colorWithHex:0xc1c1c1 alpha:1] forState:UIControlStateDisabled];
+    //TODO Startalk start
+//    [_joinToGroupBtn setTitleColor:[UIColor qtalkIconSelectColor] forState:UIControlStateNormal];
+//    [_joinToGroupBtn setTitleColor:[UIColor stimDB_colorWithHex:0xc1c1c1 alpha:1] forState:UIControlStateDisabled];
+    [_joinToGroupBtn setTitleColor:[UIColor spectralColorWhiteColor] forState:UIControlStateNormal];
+    [_joinToGroupBtn setTitleColor:[UIColor stimDB_colorWithHex:0xDDDDDD alpha:1] forState:UIControlStateDisabled];
+    //TODO Startalk end
     [_joinToGroupBtn addTarget:self action:@selector(joinGroupById:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:_joinToGroupBtn];
     [self.navigationItem setRightBarButtonItem:rightItem];

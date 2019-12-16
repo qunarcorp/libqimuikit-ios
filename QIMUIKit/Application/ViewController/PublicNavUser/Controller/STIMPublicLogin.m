@@ -23,7 +23,73 @@
 
 static const int companyTag = 10001;
 
+@interface STIMPublicLoginHeader : UIView
+
+@end
+
+@implementation STIMPublicLoginHeader
+
++ (Class)layerClass {
+    return [CAGradientLayer class];
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        ((CAGradientLayer *)self.layer).startPoint = CGPointMake(0, 0);
+        ((CAGradientLayer *)self.layer).endPoint = CGPointMake(1, 0);
+        ((CAGradientLayer *)self.layer).colors = @[(__bridge id)[UIColor stimDB_colorWithHex:0x2EFFD7].CGColor,(__bridge id)[UIColor stimDB_colorWithHex:0x0BE5D3].CGColor,(__bridge id)[UIColor stimDB_colorWithHex:0x0ED6C8].CGColor];
+        ((CAGradientLayer *)self.layer).locations = @[@(0), @(0.3), @(1.0f)];
+    }
+    return self;
+}
+
+@end
+
+@interface STIMPublicLoginButton : UIButton
+
+@end
+
+@implementation STIMPublicLoginButton
+@synthesize enabled = _enabled;
++ (Class)layerClass {
+    return [CAGradientLayer class];
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        ((CAGradientLayer *)self.layer).startPoint = CGPointMake(0, 0);
+        ((CAGradientLayer *)self.layer).endPoint = CGPointMake(1, 0);
+        ((CAGradientLayer *)self.layer).colors = @[(__bridge id)[UIColor stimDB_colorWithHex:0x2EFFD7].CGColor,(__bridge id)[UIColor stimDB_colorWithHex:0x0BE5D3].CGColor,(__bridge id)[UIColor stimDB_colorWithHex:0x0ED6C8].CGColor];
+        ((CAGradientLayer *)self.layer).locations = @[@(0), @(0.3), @(1.0f)];
+    }
+    return self;
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    _enabled = enabled;
+    if (enabled) {
+        ((CAGradientLayer *)self.layer).startPoint = CGPointMake(0, 0);
+        ((CAGradientLayer *)self.layer).endPoint = CGPointMake(1, 0);
+        ((CAGradientLayer *)self.layer).colors = @[(__bridge id)[UIColor stimDB_colorWithHex:0x2EFFD7].CGColor,(__bridge id)[UIColor stimDB_colorWithHex:0x0BE5D3].CGColor,(__bridge id)[UIColor stimDB_colorWithHex:0x0ED6C8].CGColor];
+        ((CAGradientLayer *)self.layer).locations = @[@(0), @(0.3), @(1.0f)];
+    } else {
+        ((CAGradientLayer *)self.layer).startPoint = CGPointMake(0, 0);
+        ((CAGradientLayer *)self.layer).endPoint = CGPointMake(1, 0);
+        ((CAGradientLayer *)self.layer).colors =nil;
+        ((CAGradientLayer *)self.layer).locations = @[@(0), @(0.3), @(1.0f)];
+    }
+}
+
+@end
+
+
 @interface STIMPublicLogin () <UITextFieldDelegate, YYKeyboardObserver, UITableViewDelegate, UITableViewDataSource,loginUnSettingNavViewDelegate,NSURLSessionTaskDelegate>
+
+@property (nonatomic, strong) STIMPublicLoginHeader *headerView;
+@property (nonatomic, strong) UIImageView *iconView;
+@property (nonatomic, strong) UILabel *headerLabel;
 
 @property (nonatomic, strong) UILabel *loginTitleLabel;  //登录Label
 
@@ -37,13 +103,14 @@ static const int companyTag = 10001;
 
 @property (nonatomic, strong) UIButton *switchCompanyBtn; //二次登录公司切换名按钮
 
+@property (nonatomic, strong) UIView *userNameBgView;         //用户名LineView
+@property (nonatomic, strong) UIImageView *userNameIcon;
 @property (nonatomic, strong) UITextField *userNameTextField;   //用户名TextField
 
-@property (nonatomic, strong) UIView *userNameLineView;         //用户名LineView
-
+@property (nonatomic, strong) UIView *userPwdBgView;         //用户密码LineView
+@property (nonatomic, strong) UIImageView *userPwdIcon;
 @property (nonatomic, strong) UITextField *userPwdTextField;    //用户密码TextField
 
-@property (nonatomic, strong) UIView *userPwdLineView;         //用户密码LineView
 
 //@property (nonatomic, strong) UITextField *companyTextField;    //公司名TextField
 
@@ -89,8 +156,8 @@ static const int companyTag = 10001;
     if (!_registerNewCompanyBtn) {
         _registerNewCompanyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_registerNewCompanyBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"not_have_company"] forState:UIControlStateNormal];
-        _registerNewCompanyBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-        [_registerNewCompanyBtn setTitleColor:[UIColor stimDB_colorWithHex:0x888888] forState:UIControlStateNormal];
+        _registerNewCompanyBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+        [_registerNewCompanyBtn setTitleColor:[UIColor stimDB_colorWithHex:0x999999] forState:UIControlStateNormal];
         [_registerNewCompanyBtn addTarget:self action:@selector(registerNew:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _registerNewCompanyBtn;
@@ -101,7 +168,7 @@ static const int companyTag = 10001;
         _registerUserBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_registerUserBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"login_sign_Up"] forState:UIControlStateNormal];
         [_registerUserBtn setTitleColor:[UIColor stimDB_colorWithHex:0x00CABE] forState:UIControlStateNormal];
-        _registerUserBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+        _registerUserBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         [_registerUserBtn addTarget:self action:@selector(registerNewUserBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _registerUserBtn;
@@ -127,22 +194,39 @@ static const int companyTag = 10001;
     return _switchCompanyBtn;
 }
 
+- (UIImageView *)userNameIcon {
+    if (_userNameIcon == nil) {
+        _userNameIcon = [[UIImageView alloc] initWithImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"user_icon"]];
+    }
+    return _userNameIcon;
+}
+
 - (UITextField *)userNameTextField {
     if (!_userNameTextField) {
         _userNameTextField = [[UITextField alloc] init];
         _userNameTextField.placeholder = [NSBundle stimDB_localizedStringForKey:@"Login_name"];
         _userNameTextField.delegate = self;
-        _userNameTextField.backgroundColor = [UIColor whiteColor];
+        _userNameTextField.backgroundColor = [UIColor clearColor];
+        _userNameTextField.textColor = [UIColor stimDB_colorWithHex:0x666666];
     }
     return _userNameTextField;
 }
 
-- (UIView *)userNameLineView {
-    if (!_userNameLineView) {
-        _userNameLineView = [[UIView alloc] init];
-        _userNameLineView.backgroundColor = [UIColor stimDB_colorWithHex:0xDDDDDD];
+- (UIView *)userNameBgView {
+    if (_userNameBgView == nil) {
+        _userNameBgView = [[UIView alloc] init];
+        _userNameBgView.backgroundColor = [UIColor stimDB_colorWithHex:0xEEEEEE];
+        _userNameBgView.clipsToBounds = YES;
+        _userNameBgView.layer.cornerRadius = 8;
     }
-    return _userNameLineView;
+    return _userNameBgView;
+}
+
+- (UIImageView *)userPwdIcon {
+    if (_userPwdIcon == nil) {
+        _userPwdIcon = [[UIImageView alloc] initWithImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"pwd_icon"]];
+    }
+    return _userPwdIcon;
 }
 
 - (UITextField *)userPwdTextField {
@@ -154,7 +238,7 @@ static const int companyTag = 10001;
         _userPwdTextField.secureTextEntry = YES;
         _userPwdTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         _userPwdTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        _userPwdTextField.backgroundColor = [UIColor whiteColor];
+        _userPwdTextField.backgroundColor = [UIColor clearColor];
     }
     if (self.companyModel) {
         _userPwdTextField.returnKeyType = UIReturnKeyGo;
@@ -164,12 +248,14 @@ static const int companyTag = 10001;
     return _userPwdTextField;
 }
 
-- (UIView *)userPwdLineView {
-    if (!_userPwdLineView) {
-        _userPwdLineView = [[UIView alloc] init];
-        _userPwdLineView.backgroundColor = [UIColor stimDB_colorWithHex:0xDDDDDD];
+- (UIView *)userPwdBgView {
+    if (_userPwdBgView == nil) {
+        _userPwdBgView = [[UIView alloc] init];
+        _userPwdBgView.backgroundColor = [UIColor stimDB_colorWithHex:0xEEEEEE];
+        _userPwdBgView.clipsToBounds = YES;
+        _userPwdBgView.layer.cornerRadius = 8;
     }
-    return _userPwdLineView;
+    return _userPwdBgView;
 }
 
 //- (UITextField *)companyTextField {
@@ -187,12 +273,12 @@ static const int companyTag = 10001;
 - (UIButton *)scanSettingNavBtn{
     if (!_scanSettingNavBtn) {
         _scanSettingNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _scanSettingNavBtn.backgroundColor = [UIColor stimDB_colorWithHex:0x00CABE];
+        _scanSettingNavBtn.backgroundColor = [UIColor clearColor];
         [_scanSettingNavBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"login_scan"] forState:UIControlStateNormal];
-        [_scanSettingNavBtn setTitleColor:[UIColor stimDB_colorWithHex:0xFFFFFF] forState:UIControlStateNormal];
+        [_scanSettingNavBtn setTitleColor:[UIColor stimDB_colorWithHex:0x0BB7AB] forState:UIControlStateNormal];
         _scanSettingNavBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:4];
-        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[STIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor stimDB_colorWithHex:0xFFFFFF]]] forState:UIControlStateNormal];
-        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[STIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor stimDB_colorWithHex:0xFFFFFF]]] forState:UIControlStateSelected];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[STIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor stimDB_colorWithHex:0x0BB7AB]]] forState:UIControlStateNormal];
+        [_scanSettingNavBtn setImage:[UIImage qimIconWithInfo:[STIMIconInfo iconInfoWithText:@"\U0000f0f5" size:20 color:[UIColor stimDB_colorWithHex:0x0BB7AB]]] forState:UIControlStateSelected];
         [_scanSettingNavBtn addTarget:self action:@selector(scanCodeSettingBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         _scanSettingNavBtn.layer.masksToBounds = YES;
         _scanSettingNavBtn.layer.cornerRadius = 4;
@@ -253,14 +339,14 @@ static const int companyTag = 10001;
 
 - (UIButton *)loginBtn {
     if (!_loginBtn) {
-        _loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _loginBtn = [[STIMPublicLoginButton alloc] init];
         [_loginBtn setTitle:[NSBundle stimDB_localizedStringForKey:@"login"] forState:UIControlStateNormal];
-        UIImage *disableImage = [UIImage stimDB_imageWithColor:[UIColor stimDB_colorWithHex:0xABE9E5]];
+        UIImage *disableImage = [UIImage stimDB_imageWithColor:[UIColor stimDB_colorWithHex:0x0EDBCC alpha:0.5]];
         [_loginBtn setBackgroundImage:disableImage forState:UIControlStateDisabled];
-        UIImage *normalImage = [UIImage stimDB_imageWithColor:[UIColor stimDB_colorWithHex:0x00CABE]];
-        [_loginBtn setBackgroundImage:normalImage forState:UIControlStateNormal];
+        //        UIImage *normalImage = [UIImage stimDB_imageWithColor:[UIColor stimDB_colorWithHex:0x00CABE]];
+        [_loginBtn setBackgroundImage:nil forState:UIControlStateNormal];
         [_loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        _loginBtn.layer.cornerRadius = 24.0f;
+        _loginBtn.layer.cornerRadius = 16.0f;
         _loginBtn.layer.masksToBounds = YES;
         [_loginBtn addTarget:self action:@selector(clickLogin:) forControlEvents:UIControlEventTouchUpInside];
         _loginBtn.enabled = NO;
@@ -284,6 +370,11 @@ static const int companyTag = 10001;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
 }
 
 - (void)viewDidLoad {
@@ -297,7 +388,7 @@ static const int companyTag = 10001;
     [self setupUI];
     NSString *lastUserName = [STIMKit getLastUserName];
     NSString * userToken = [[STIMKit sharedInstance] getLastUserToken];
-//    [[STIMKit sharedInstance] userObjectForKey:@"userToken"];
+    //    [[STIMKit sharedInstance] userObjectForKey:@"userToken"];
     if (userToken && lastUserName) {
         
         [self autoLogin];
@@ -369,7 +460,44 @@ static const int companyTag = 10001;
     }
 }
 
+- (void)initHeaderView {
+    self.headerView = [[STIMPublicLoginHeader alloc] init];
+    [self.headerView setClipsToBounds:YES];
+    [self.headerView.layer setCornerRadius:20];
+    [self.view addSubview:self.headerView];
+    [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(0);
+        make.top.mas_equalTo(self.view).offset(-25);
+        make.height.mas_equalTo(220);
+    }];
+    
+    self.headerLabel = [[UILabel alloc] init];
+    [self.headerLabel setBackgroundColor:[UIColor clearColor]];
+    [self.headerLabel setFont:[UIFont systemFontOfSize:16]];
+    [self.headerLabel setTextColor:[UIColor whiteColor]];
+    [self.headerLabel setTextAlignment:NSTextAlignmentCenter];
+    [self.headerLabel setText:@"Hi，欢迎到来！"];
+    [self.headerView addSubview:self.headerLabel];
+    [self.headerLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.mas_equalTo(self.headerView).offset(-40);
+        make.left.right.mas_equalTo(self.headerView);
+        make.height.mas_equalTo(20);
+    }];
+    
+    self.iconView = [[UIImageView alloc] initWithImage:[UIImage stimDB_imageNamedFromSTIMUIKitBundle:@"login_icon"]];
+    [self.iconView setContentMode:UIViewContentModeScaleToFill];
+    [self.headerView addSubview:self.iconView];
+    [self.iconView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.height.mas_equalTo(60);
+        make.bottom.mas_equalTo(self.headerLabel.mas_top).offset(-10);
+        make.centerX.mas_equalTo(self.headerView);
+    }];
+}
+
 - (void)setupUI {
+    
+    [self initHeaderView];
+    
     NSMutableDictionary *oldNavConfigUrlDict = [[STIMKit sharedInstance] userObjectForKey:@"QC_CurrentNavDict"];
     STIMVerboseLog(@"本地找到的oldNavConfigUrlDict : %@", oldNavConfigUrlDict);
     if (oldNavConfigUrlDict.count) {
@@ -383,36 +511,33 @@ static const int companyTag = 10001;
         self.multipleLogin = NO;
     }
     
-    [self.view addSubview:self.loginTitleLabel];
-    [self.loginTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_offset(33);
-        make.top.mas_offset(56);
-        make.width.mas_equalTo(150);
-        make.height.mas_equalTo(38);
+    UIView *settingView = [UIView new];
+    [self.view addSubview:settingView];
+    [settingView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.headerView.mas_bottom).offset(40);
+        make.height.mas_equalTo(30);
+        make.centerX.mas_equalTo(self.view);
+    }];
+    
+    [settingView addSubview:self.scanSettingNavBtn];
+    [self.scanSettingNavBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(settingView);
+        make.height.mas_equalTo(@(30));
+        make.width.mas_equalTo(@(126));
     }];
     
     [self.view addSubview:self.registerNewCompanyBtn];
-    UIFont *fnt = [UIFont systemFontOfSize:14];
-    // 根据字体得到NSString的尺寸
+    UIFont *fnt = [UIFont systemFontOfSize:12];
     CGSize size = [[NSBundle stimDB_localizedStringForKey:@"not_have_company"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:fnt,NSFontAttributeName,nil]];
-
     [self.registerNewCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.view.mas_centerX);
         make.bottom.mas_offset(-30);
         make.width.mas_equalTo(size.width + 30);
         make.height.mas_equalTo(21);
     }];
-
-    [self.view addSubview:self.scanSettingNavBtn];
-    [self.scanSettingNavBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo((56 + 38/2) - 30/2);
-        make.height.mas_equalTo(@(30));
-        make.width.mas_equalTo(@(126));
-        make.right.mas_equalTo(@(-24));
-    }];
     
-    UIFont *registerUserBtnFont = [UIFont systemFontOfSize:17];
-    // 根据字体得到NSString的尺寸
+    
+    UIFont *registerUserBtnFont = [UIFont systemFontOfSize:12];
     CGSize registerUserBtnSize = [[NSBundle stimDB_localizedStringForKey:@"login_sign_Up"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:registerUserBtnFont,NSFontAttributeName,nil]];
     [self.view addSubview:self.registerUserBtn];
     [self.registerUserBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -422,6 +547,61 @@ static const int companyTag = 10001;
         make.right.mas_equalTo(@(-16));
     }];
     self.registerUserBtn.hidden = YES;
+    
+    if ([[STIMKit sharedInstance] qimNav_isToC]) {
+        self.registerUserBtn.hidden = NO;
+        self.scanSettingNavBtn.hidden = YES;
+    }
+    else{
+        self.registerUserBtn.hidden = YES;
+        self.scanSettingNavBtn.hidden = NO;
+    }
+    
+    [self.view addSubview:self.userNameBgView];
+    [self.userNameBgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(settingView.mas_bottom).mas_offset(30);
+        make.left.mas_offset(33);
+        make.right.mas_offset(-33);
+        make.height.mas_equalTo(50);
+    }];
+    
+    [self.userNameBgView addSubview:self.userNameIcon];
+    [self.userNameIcon mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.userNameBgView);
+        make.left.mas_equalTo(self.userNameBgView).offset(12);
+        make.width.height.mas_equalTo(15);
+    }];
+    
+    [self.userNameBgView addSubview:self.userNameTextField];
+    [self.userNameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.userNameBgView);
+        make.left.mas_equalTo(self.userNameBgView.mas_left).offset(40);
+        make.right.mas_equalTo(self.userNameBgView.mas_right).offset(-12);
+        make.height.mas_equalTo(35);
+    }];
+    
+    [self.view addSubview:self.userPwdBgView];
+    [self.userPwdBgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.userNameBgView.mas_bottom).mas_offset(30);
+        make.left.mas_offset(33);
+        make.right.mas_offset(-33);
+        make.height.mas_equalTo(50);
+    }];
+    
+    [self.userPwdBgView addSubview:self.userPwdIcon];
+    [self.userPwdIcon mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.userPwdBgView);
+        make.left.mas_equalTo(self.userPwdBgView).offset(12);
+        make.width.height.mas_equalTo(15);
+    }];
+    
+    [self.userPwdBgView addSubview:self.userPwdTextField];
+    [self.userPwdTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.userPwdBgView);
+        make.left.mas_equalTo(self.userPwdBgView.mas_left).offset(40);
+        make.right.mas_equalTo(self.userPwdBgView.mas_right).offset(-12);
+        make.height.mas_equalTo(35);
+    }];
     
     if (self.multipleLogin) {
         //多次登录，展示切换公司按钮，不展示公司TextField
@@ -433,103 +613,54 @@ static const int companyTag = 10001;
         UIFont *navTitleFont = [UIFont systemFontOfSize:14];
         // 根据字体得到NSString的尺寸
         CGSize navTitleSize = [navTitle sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:navTitleFont,NSFontAttributeName,nil]];
-
-        [self.view addSubview:self.companyShowLabel];
+        
+        [settingView addSubview:self.switchCompanyBtn];
+        [self.switchCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.scanSettingNavBtn.mas_right).mas_offset(30);
+            make.width.mas_equalTo(12);
+            make.height.mas_equalTo(12);
+            make.centerY.mas_equalTo(self.scanSettingNavBtn.mas_centerY);
+        }];
+        
+        [settingView addSubview:self.companyShowLabel];
         [self.companyShowLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self.loginTitleLabel.mas_left);
+            make.left.mas_equalTo(self.switchCompanyBtn.mas_right).offset(5);
             make.height.mas_equalTo(18);
             if (navTitleSize.width>220) {
                 make.width.mas_equalTo(220);
             } else {
                 make.width.mas_equalTo(navTitleSize.width + 10);
             }
-            make.top.mas_equalTo(self.loginTitleLabel.mas_bottom).mas_offset(16);
+            make.centerY.mas_equalTo(self.scanSettingNavBtn);
+            make.right.mas_equalTo(settingView);
         }];
         
-        [self.view addSubview:self.switchCompanyBtn];
-        [self.switchCompanyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self.companyShowLabel.mas_right).mas_offset(5);
-            make.width.mas_equalTo(12);
-            make.height.mas_equalTo(12);
-            make.centerY.mas_equalTo(self.companyShowLabel.mas_centerY);
-        }];
-        
-        [self.view addSubview:self.userNameTextField];
-        [self.userNameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.companyShowLabel.mas_bottom).offset(50);
-            make.left.mas_offset(33);
-            make.right.mas_offset(-33);
-            make.height.mas_equalTo(35);
-        }];
-        [self.view addSubview:self.userNameLineView];
-        [self.userNameLineView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.userNameTextField.mas_bottom).mas_offset(5);
-            make.left.mas_equalTo(self.userNameTextField.mas_left);
-            make.right.mas_equalTo(self.userNameTextField.mas_right);
-            make.height.mas_equalTo(1);
-        }];
         
         [self updateLoginUI];
     } else {
-        
         //第一次登录，展示公司TextField，不展示切换公司按钮
-        [self.view addSubview:self.userNameTextField];
-        [self.userNameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(_loginTitleLabel.mas_bottom).offset(50);
-            make.left.mas_offset(33);
-            make.right.mas_offset(-33);
-            make.height.mas_equalTo(35);
-        }];
-        [self.view addSubview:self.userNameLineView];
-        [self.userNameLineView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.userNameTextField.mas_bottom).mas_offset(5);
-            make.left.mas_equalTo(self.userNameTextField.mas_left);
-            make.right.mas_equalTo(self.userNameTextField.mas_right);
-            make.height.mas_equalTo(1);
+        [self.scanSettingNavBtn mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.right.mas_equalTo(settingView);
         }];
     }
-    if ([[STIMKit sharedInstance] qimNav_isToC]) {
-        self.registerUserBtn.hidden = NO;
-        self.scanSettingNavBtn.hidden = YES;
-    }
-    else{
-        self.registerUserBtn.hidden = YES;
-        self.scanSettingNavBtn.hidden = NO;
-    }
-    
-    
-    [self.view addSubview:self.userPwdTextField];
-    [self.userPwdTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.userNameLineView.mas_bottom).mas_offset(30);
-        make.left.mas_equalTo(self.userNameLineView.mas_left);
-        make.right.mas_equalTo(self.userNameLineView.mas_right);
-        make.height.mas_equalTo(35);
-    }];
-    [self.view addSubview:self.userPwdLineView];
-    [self.userPwdLineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.userPwdTextField.mas_bottom).mas_offset(5);
-        make.left.mas_equalTo(self.userPwdTextField.mas_left);
-        make.right.mas_equalTo(self.userPwdTextField.mas_right);
-        make.height.mas_equalTo(1);
-    }];
     
     if (self.multipleLogin) {
         
-//        [self.view addSubview:self.companyTextField];
-//        [self.companyTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(30);
-//            make.left.mas_equalTo(self.userPwdLineView.mas_left);
-//            make.right.mas_equalTo(self.userPwdLineView.mas_right);
-//            make.height.mas_equalTo(35);
-//        }];
+        //        [self.view addSubview:self.companyTextField];
+        //        [self.companyTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        //            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(30);
+        //            make.left.mas_equalTo(self.userPwdLineView.mas_left);
+        //            make.right.mas_equalTo(self.userPwdLineView.mas_right);
+        //            make.height.mas_equalTo(35);
+        //        }];
         
         [self.view addSubview:self.forgotBtn];
         UIFont *forgotBtnFont = [UIFont systemFontOfSize:14];
         // 根据字体得到NSString的尺寸
         CGSize forgotBtnSize = [[NSBundle stimDB_localizedStringForKey:@"login_forget_password"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:forgotBtnFont,NSFontAttributeName,nil]];
         [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(31);
-            make.right.mas_equalTo(self.userPwdLineView.mas_right);
+            make.top.mas_equalTo(self.userPwdBgView.mas_bottom).mas_offset(12);
+            make.right.mas_equalTo(self.userPwdBgView.mas_right);
             make.height.mas_equalTo(16);
             make.width.mas_equalTo(forgotBtnSize.width+30);
         }];
@@ -537,8 +668,8 @@ static const int companyTag = 10001;
         
         [self.view addSubview:self.checkBtn];
         [self.checkBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(31);
-            make.left.mas_equalTo(self.userPwdTextField.mas_left);
+            make.top.mas_equalTo(self.userPwdBgView.mas_bottom).mas_offset(12);
+            make.left.mas_equalTo(self.userPwdBgView.mas_left);
             make.height.mas_equalTo(17);
             make.width.mas_equalTo(17);
         }];
@@ -549,8 +680,8 @@ static const int companyTag = 10001;
         CGSize forgotBtnSize = [[NSBundle stimDB_localizedStringForKey:@"login_forget_password"] sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:forgotBtnFont,NSFontAttributeName,nil]];
         [self.view addSubview:self.forgotBtn];
         [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(45);
-            make.right.mas_equalTo(self.userPwdLineView.mas_right);
+            make.top.mas_equalTo(self.userPwdBgView.mas_bottom).mas_offset(12);
+            make.right.mas_equalTo(self.userPwdBgView.mas_right);
             make.height.mas_equalTo(16);
             make.width.mas_equalTo(forgotBtnSize.width+30);
         }];
@@ -558,8 +689,8 @@ static const int companyTag = 10001;
         
         [self.view addSubview:self.checkBtn];
         [self.checkBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.userPwdLineView.mas_bottom).mas_offset(45);
-            make.left.mas_equalTo(self.userPwdLineView.mas_left);
+            make.top.mas_equalTo(self.userPwdBgView.mas_bottom).mas_offset(12);
+            make.left.mas_equalTo(self.userPwdBgView.mas_left);
             make.height.mas_equalTo(17);
             make.width.mas_equalTo(17);
         }];
@@ -576,18 +707,18 @@ static const int companyTag = 10001;
     
     [self.view addSubview:self.loginBtn];
     [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.forgotBtn.mas_bottom).mas_offset(56);
-        make.left.mas_offset(40);
-        make.right.mas_offset(-40);
-        make.height.mas_equalTo(48);
+        make.top.mas_equalTo(self.forgotBtn.mas_bottom).mas_offset(30);
+        make.left.mas_equalTo(self.userPwdBgView.mas_left);
+        make.right.mas_equalTo(self.userNameBgView.mas_right);
+        make.height.mas_equalTo(50);
     }];
     
-//    [self.view addSubview:self.settingBtn];
-//    [self.settingBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.right.mas_equalTo(0);
-//        make.bottom.mas_equalTo(-30);
-//        make.height.mas_equalTo(24);
-//    }];
+    //    [self.view addSubview:self.settingBtn];
+    //    [self.settingBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.left.right.mas_equalTo(0);
+    //        make.bottom.mas_equalTo(-30);
+    //        make.height.mas_equalTo(24);
+    //    }];
 }
 
 - (void)keyboardChangedWithTransition:(YYKeyboardTransition)transition {
@@ -599,7 +730,7 @@ static const int companyTag = 10001;
 #pragma mark - Action
 
 - (void)registerNew:(id)sender {
-    [STIMFastEntrance openWebViewForUrl:@"http://im.qunar.com/new/#/register" showNavBar:YES];
+    [STIMFastEntrance openWebViewForUrl:@"https://i.startalk.im/home/#/register" showNavBar:YES];
 }
 
 - (void)forgotPWD:(id)sender {
@@ -717,10 +848,10 @@ static const int companyTag = 10001;
     __weak id weakSelf = self;
     UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:[NSBundle stimDB_localizedStringForKey:@"common_prompt"] message:[NSBundle stimDB_localizedStringForKey:@"network_unavailable_tip"] preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@"ok"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-//        [weakSelf stopLoginAnimation];
+        //        [weakSelf stopLoginAnimation];
     }];
     UIAlertAction *helpAction = [UIAlertAction actionWithTitle:[NSBundle stimDB_localizedStringForKey:@""] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-//        [weakSelf stopLoginAnimation];
+        //        [weakSelf stopLoginAnimation];
         NSString *netHelperPath = [[NSBundle mainBundle] pathForResource:@"NetWorkSetting" ofType:@"html"];
         NSString *netHelperString = [NSString stringWithContentsOfFile:netHelperPath encoding:NSUTF8StringEncoding error:nil];
         [STIMFastEntrance openWebViewWithHtmlStr:netHelperString showNavBar:YES];
@@ -741,23 +872,23 @@ static const int companyTag = 10001;
 }
 
 - (void)gotoSelectCompany:(UITapGestureRecognizer *)tap {
-//    STIMSelectComponyViewController *companyVC = [[STIMSelectComponyViewController alloc] init];
-//    __weak __typeof(self) weakSelf = self;
-//    [companyVC setCompanyBlock:^(STIMPublicCompanyModel * _Nonnull companyModel) {
-//        weakSelf.companyModel = companyModel;
-//        NSString *companyName = companyModel.name;
-//        STIMVerboseLog(@"companyName : %@", companyName);
-//        if (companyName.length > 0) {
-////            [self.companyTextField setText:companyName];
-//            [self.companyShowLabel setText:companyName];
-//        } else {
-//            NSString *companyDomain = companyModel.domain;
-////            [self.companyTextField setText:companyDomain];
-//            [self.companyShowLabel setText:companyDomain];
-//        }
-//        [self updateLoginUI];
-//    }];
-//    [self.navigationController pushViewController:companyVC animated:YES];
+    //    STIMSelectComponyViewController *companyVC = [[STIMSelectComponyViewController alloc] init];
+    //    __weak __typeof(self) weakSelf = self;
+    //    [companyVC setCompanyBlock:^(STIMPublicCompanyModel * _Nonnull companyModel) {
+    //        weakSelf.companyModel = companyModel;
+    //        NSString *companyName = companyModel.name;
+    //        STIMVerboseLog(@"companyName : %@", companyName);
+    //        if (companyName.length > 0) {
+    ////            [self.companyTextField setText:companyName];
+    //            [self.companyShowLabel setText:companyName];
+    //        } else {
+    //            NSString *companyDomain = companyModel.domain;
+    ////            [self.companyTextField setText:companyDomain];
+    //            [self.companyShowLabel setText:companyDomain];
+    //        }
+    //        [self updateLoginUI];
+    //    }];
+    //    [self.navigationController pushViewController:companyVC animated:YES];
     [self showSettingNavViewController];
 }
 
@@ -767,7 +898,7 @@ static const int companyTag = 10001;
     dispatch_async(dispatch_get_main_queue(), ^{
         [[STIMProgressHUD sharedInstance] closeHUD];
         if ([notify.object boolValue]) {
-
+            
             NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
             [[STIMKit sharedInstance] setUserObject:[infoDictionary objectForKey:@"CFBundleVersion"] forKey:@"QTalkApplicationLastVersion"];
             [STIMFastEntrance showMainVc];
@@ -845,29 +976,29 @@ static const int companyTag = 10001;
                 [self requestByURLSessionWithUrl:str];
             }
             
-//            if ([str containsString:@"publicnav?c="]) {
-//                str = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
-//                navUrl = str;
-//                navAddress = str;
-//                [self onSaveWith:navAddress navUrl:navUrl];
-//            } else if ([str containsString:@"confignavigation?configurl="]) {
-//                NSString *base64NavUrl = [[str componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
-//                str = [base64NavUrl stimDB_base64DecodedString];
-//                navUrl = str;
-//                navAddress = str;
-//                if ([str containsString:@"publicnav?c="]) {
-//                    navAddress = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
-//                }
-//                [self onSaveWith:navAddress navUrl:navUrl];
-//            } else if ([str containsString:@"startalk_nav"]){
-//                navUrl = str;
-//                [self requestByURLSessionWithUrl:str];
-//            }
-//            else{
-//                navUrl = str;
-//                navAddress = str;
-//                [self requestByURLSessionWithUrl:str];
-//            }
+            //            if ([str containsString:@"publicnav?c="]) {
+            //                str = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
+            //                navUrl = str;
+            //                navAddress = str;
+            //                [self onSaveWith:navAddress navUrl:navUrl];
+            //            } else if ([str containsString:@"confignavigation?configurl="]) {
+            //                NSString *base64NavUrl = [[str componentsSeparatedByString:@"confignavigation?configurl="] lastObject];
+            //                str = [base64NavUrl stimDB_base64DecodedString];
+            //                navUrl = str;
+            //                navAddress = str;
+            //                if ([str containsString:@"publicnav?c="]) {
+            //                    navAddress = [[str componentsSeparatedByString:@"publicnav?c="] lastObject];
+            //                }
+            //                [self onSaveWith:navAddress navUrl:navUrl];
+            //            } else if ([str containsString:@"startalk_nav"]){
+            //                navUrl = str;
+            //                [self requestByURLSessionWithUrl:str];
+            //            }
+            //            else{
+            //                navUrl = str;
+            //                navAddress = str;
+            //                [self requestByURLSessionWithUrl:str];
+            //            }
         }
     }];
     vc.isSettingNav = YES;
@@ -934,9 +1065,9 @@ static const int companyTag = 10001;
                                                                       [self onSaveWith:navAddress navUrl:navUrl];
                                                                   }
                                                                   else{
-//                                                                      navUrl = configUrl.absoluteString;
-//                                                                      navAddress =configUrl.absoluteString;
-//                                                                      [self onSaveWith:navAddress navUrl:navUrl];
+                                                                      //                                                                      navUrl = configUrl.absoluteString;
+                                                                      //                                                                      navAddress =configUrl.absoluteString;
+                                                                      //                                                                      [self onSaveWith:navAddress navUrl:navUrl];
                                                                   }
                                                               }
                                                           }
