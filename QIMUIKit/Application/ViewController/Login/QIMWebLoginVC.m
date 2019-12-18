@@ -132,7 +132,7 @@
         } else {
             //      切换成Token登录模式
             NSString *buName = @"app";
-            [[QIMKit sharedInstance] getQChatTokenWithBusinessLineName:buName withCallBack:^(NSDictionary *qchatToken) {
+            [[QIMKit sharedInstance] getQChatTokenWithBusinessLineName:buName qcookie:q  vcookie:v tcookie:t withCallBack:^(NSDictionary *qchatToken) {
                 if (qchatToken.count) {
                     NSString *userNameToken = [qchatToken objectForKey:@"username"];
                     NSString *pwdToken = [qchatToken objectForKey:@"token"];
