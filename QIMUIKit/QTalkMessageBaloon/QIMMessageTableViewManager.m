@@ -53,6 +53,9 @@
 #endif
 
 #import "QIMFileCell.h"
+#import "QIMRedPackManager.h"
+#import "UIView+QIMToast.h"
+#import "UIApplication+QIMApplication.h"
 #import "QIMRTCChatCell.h"
 
 @interface QIMMessageTableViewManager () 
@@ -296,30 +299,110 @@
         case QIMMessageType_RedPackInfo:
         case QIMMessageType_AA:
         case QIMMessageType_AAInfo: {
-            NSString *infoStr = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
-            if (infoStr.length > 0) {
-                
-                NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
-                if ([[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"appstore"] || [[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"ctrip"]) {
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
-                                                                        message:@"该消息已过期。"
-                                                                       delegate:nil
-                                                              cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
-                                                              otherButtonTitles:nil];
-                    [alertView show];
-                } else {
-                    if (self.chatType == ChatType_GroupChat) {
-#pragma mark 00d8c4642c688fd6bfa9a41b523bdb6b PHP那边加的key
-                        if (msg.messageType == QIMMessageType_RedPack || msg.messageType == QIMMessageType_AA) {
-                            [QIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&group_"@"id=%@&rk=%@&q_d=%@", infoDic[@"url"], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey], [[QIMKit sharedInstance] getDomain]]];
-                        } else if (msg.messageType == QIMMessageType_RedPackInfo || msg.messageType == QIMMessageType_AAInfo) {
-                            [QIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&group_"@"id=%@&rk=%@&q_d=%@", infoDic[@"Url"], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b",                                                                                                                    [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey], [[QIMKit sharedInstance] getDomain]]];
+            if ([QIMKit getQIMProjectType] == QIMProjectTypeStartalk || (![[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost1"] && ![[[QIMKit sharedInstance] getDomain] isEqualToString:@"ejabhost2"])) {
+                NSString *infoRed = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
+                if (infoRed.length > 0) {
+                    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoRed error:nil];
+                    NSString* rid = [[infoDic objectForKey:@"rid"] stringValue];
+                    NSDictionary *userInfo = [[QIMKit sharedInstance] getUserInfoByUserId:msg.from];
+                    __weak __typeof(self)weakSelf = self;
+                    [[QIMKit sharedInstance] openRedEnvelop:[self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] RedRid:rid IsChatRoom:(self.chatType == ChatType_GroupChat) withCallBack:^(NSDictionary *status,NSInteger errcode) {
+                        __strong __typeof(weakSelf) strongSelf = weakSelf;
+                        if(errcode == 0 && status){//获取状态成功
+                            //是否可以拆红包
+                            BOOL has_power = [[status objectForKey:@"has_power"] boolValue];
+                            //是否过期
+                            BOOL is_expired = [[status objectForKey:@"is_expired"] boolValue];
+                            //是否拆过
+                            BOOL is_grab = [[status objectForKey:@"is_grab"] boolValue];
+                            //是否已抢光
+                            BOOL is_out = [[status objectForKey:@"is_out"] boolValue];
+                            //今天是否还可以抢
+                            BOOL today_has_power = [[status objectForKey:@"today_has_power"] boolValue];
+                            if(has_power){
+                                //展示拆红包，点击拆红包按钮调用grapRedEnvelop:
+                                [[QIMRedPackManager sharedInstance] showRedPackWithChatId:self.chatId withRedPackFromId:msg.from withRedId:rid withISRoom:(strongSelf.chatType == ChatType_GroupChat) withRedPackInfoDic:infoDic withCallManagerBack:^(BOOL successed) {
+                                    if (successed == YES) {
+                                        [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
+                                    } else {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"打开红包失败" delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                            [alert show];
+                                        });
+                                    }
+                                }];
+                            }else if(is_expired){
+                                //红包已过期，展示拆红包
+                                [[QIMRedPackManager sharedInstance] showRedPackWithChatId:self.chatId withRedPackFromId:msg.from withRedId:rid withISRoom:(strongSelf.chatType == ChatType_GroupChat) withRedPackInfoDic:infoDic withCallManagerBack:^(BOOL successed) {
+                                    if (successed == YES) {
+                                        [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
+                                    } else {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"打开红包失败" delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                            [alert show];
+                                        });
+                                    }
+                                }];
+                            }else if(is_grab){//跳转到红包详情
+                                [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
+                            }else if(is_out){
+                                //展示拆红包
+                                [[QIMRedPackManager sharedInstance] showRedPackWithChatId:self.chatId withRedPackFromId:msg.from withRedId:rid withISRoom:(strongSelf.chatType == ChatType_GroupChat) withRedPackInfoDic:infoDic withCallManagerBack:^(BOOL successed) {
+                                    if (successed == YES) {
+                                        [QIMFastEntrance openRedPacketDetail:strongSelf.chatId isRoom:(strongSelf.chatType == ChatType_GroupChat) redRid:rid];
+                                    } else {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"打开红包失败" delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                            [alert show];
+                                        });
+                                    }
+                                }];
+                            }else if(today_has_power){
+                                //展示toast，提示该用户的红包已达到上线
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:[NSString stringWithFormat:@"今日领取%@的红包次数已到上线！", [userInfo objectForKey:@"Name"]] delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                    [alert show];
+                                });
+                            }
+                        }else if(errcode == 4300){//开红包的人未绑定支付账户，需去绑定
+                            //调用一个接口去绑定支付宝
+    //                        getAlipayLoginParams，接收通知之后，会自动呼起支付宝
+                            [[QIMKit sharedInstance] getAlipayLoginParams];
+                        }else{//打开失败
+                            //展示toast，打开失败
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSBundle qim_localizedStringForKey:@"Reminder"] message:@"打开红包失败" delegate:self cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                                [alert show];
+                            });
                         }
+                    }];
+                }
+            } else {
+                NSString *infoStr = msg.extendInformation.length <= 0 ? msg.message : msg.extendInformation;
+                if (infoStr.length > 0) {
+
+                    NSDictionary *infoDic = [[QIMJSONSerializer sharedInstance] deserializeObject:infoStr error:nil];
+                    if ([[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"appstore"] || [[[QIMKit getLastUserName] lowercaseString] isEqualToString:@"ctrip"]) {
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                                            message:@"该消息已过期。"
+                                                                           delegate:nil
+                                                                  cancelButtonTitle:[NSBundle qim_localizedStringForKey:@"Confirm"]
+                                                                  otherButtonTitles:nil];
+                        [alertView show];
                     } else {
-                        if (msg.messageType == QIMMessageType_RedPack || msg.messageType == QIMMessageType_AA) {
-                            [QIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", infoDic[@"url"], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey], [[QIMKit sharedInstance] getDomain]]];
+                        if (self.chatType == ChatType_GroupChat) {
+    #pragma mark 00d8c4642c688fd6bfa9a41b523bdb6b PHP那边加的key
+                            if (msg.messageType == QIMMessageType_RedPack || msg.messageType == QIMMessageType_AA) {
+                                [QIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&group_"@"id=%@&rk=%@&q_d=%@", infoDic[@"url"], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey], [[QIMKit sharedInstance] getDomain]]];
+                            } else if (msg.messageType == QIMMessageType_RedPackInfo || msg.messageType == QIMMessageType_AAInfo) {
+                                [QIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&group_"@"id=%@&rk=%@&q_d=%@", infoDic[@"Url"], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b",                                                                                                                    [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey], [[QIMKit sharedInstance] getDomain]]];
+                            }
                         } else {
-                            [QIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", infoDic[@"Url"], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]]];
+                            if (msg.messageType == QIMMessageType_RedPack || msg.messageType == QIMMessageType_AA) {
+                                [QIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", infoDic[@"url"], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey], [[QIMKit sharedInstance] getDomain]]];
+                            } else {
+                                [QIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", infoDic[@"Url"], [QIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [QIMKit getLastUserName]] qim_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[QIMKit sharedInstance] myRemotelogginKey],  [[QIMKit sharedInstance] getDomain]]];
+                            }
                         }
                     }
                 }

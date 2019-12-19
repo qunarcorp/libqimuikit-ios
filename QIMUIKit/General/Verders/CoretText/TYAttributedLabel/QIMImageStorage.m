@@ -196,7 +196,7 @@
                 _loadingIndicator.trackTintColor = [UIColor grayColor];
                 _loadingIndicator.roundedCorners = NO;
                 _loadingIndicator.progress = (CGFloat)((CGFloat)receivedSize / (CGFloat)expectedSize);
-                [self.ownerView addSubview:_loadingIndicator];
+                //[self.ownerView addSubview:_loadingIndicator];
             });
         } completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             CGRect fitRect = rect;

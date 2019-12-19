@@ -1254,6 +1254,40 @@ static QIMFastEntrance *_sharedInstance = nil;
     });
 }
 
++ (void)openSendRedPacket:(NSString *)xmppid isRoom:(BOOL)isChatRoom{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+#if __has_include("QimRNBModule.h")
+        Class RunC = NSClassFromString(@"QimRNBModule");
+        SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
+        if ([RunC respondsToSelector:sel]) {
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"Pay", @"properties": @{@"Screen": @"SendRedPack", @"xmppid": xmppid, @"isChatRoom": @(isChatRoom)}};
+            [RunC performSelector:sel withObject:param];
+        }
+#endif
+    });
+}
+
++ (void)openRedPacketDetail:(NSString *)xmppid isRoom:(BOOL)isChatRoom redRid:(NSString *)rid{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
+        if (!navVC) {
+            navVC = [[QIMFastEntrance sharedInstance] getQIMFastEntranceRootNav];
+        }
+#if __has_include("QimRNBModule.h")
+        Class RunC = NSClassFromString(@"QimRNBModule");
+        SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
+        if ([RunC respondsToSelector:sel]) {
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"Pay", @"properties": @{@"Screen": @"RedPackDetail", @"xmppid": xmppid,@"rid":rid, @"isChatRoom": @(isChatRoom)}};
+            [RunC performSelector:sel withObject:param];
+        }
+#endif
+    });
+}
+
 + (void)openMyAccountInfo {
     dispatch_async(dispatch_get_main_queue(), ^{
 #if __has_include("RNSchemaParse.h")

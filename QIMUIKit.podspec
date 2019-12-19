@@ -39,6 +39,9 @@ Pod::Spec.new do |s|
     app.source_files = "QIMUIKit/Application/**/*.{h,m,c,mm}"
     app.dependency 'QIMUIKit/PublicUIHeader'
     app.dependency 'QIMUIKit/QIMAppUIConfig'
+    app.dependency  'AlipaySDK-iOS'
+    app.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/AlipaySDK-iOS\""}
+
   end
 
   s.subspec 'QIMGeneralUI' do |generalUI|
@@ -175,7 +178,7 @@ Pod::Spec.new do |s|
     flutter.source_files = ['QIMFlutter/Src/**/*{h,m,c}']
     #    flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../flutter_service/.ios/Flutter/engine\""}
     if $debug
-      flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
+#      flutter.xcconfig = {"FRAMEWORK_SEARCH_PATHS" => "\"${PODS_ROOT}/../libQIMFlutterLibrary/libQIMFlutterFramework/\""}
     elsif $internal
       flutter.dependency 'QIMFlutterFramework', '~> 4.0'
       flutter.xcconfig = {"HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Private/**\" \"$(PODS_ROOT)/QIMFlutterFramework\""}
