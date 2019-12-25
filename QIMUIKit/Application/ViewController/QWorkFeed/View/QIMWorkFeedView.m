@@ -99,16 +99,16 @@
 
 - (UITableView *)mainTableView {
     if (!_mainTableView) {
-        _mainTableView = [[UITableView alloc] initWithFrame:self.bounds style:UITableViewStyleGrouped];
+        _mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.width, self.height) style:UITableViewStyleGrouped];
         _mainTableView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _mainTableView.delegate = self;
         _mainTableView.dataSource = self;
-        _mainTableView.estimatedRowHeight = 0;
-        _mainTableView.estimatedSectionHeaderHeight = 0;
+//        _mainTableView.estimatedRowHeight = 0;
+//        _mainTableView.estimatedSectionHeaderHeight = 0;
 //        CGRect tableHeaderViewFrame = CGRectMake(0, 0, 0, 0.0001f);
 //        _mainTableView.tableHeaderView = [[UIView alloc] initWithFrame:tableHeaderViewFrame];
         _mainTableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);           //top left bottom right 左右边距相同
-        _mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _mainTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _mainTableView.separatorColor = [UIColor qim_colorWithHex:0xdddddd];
         
         _mainTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(reloadRemoteRecenteMomentsWithNeedScrollTop:)];
@@ -157,7 +157,7 @@
             }];
             weakSelf.hotTagView.backgroundColor = [UIColor whiteColor];
             [weakSelf.mainTableView reloadData];
-            });
+        });
     }];
 }
 - (UIView *)loadFaildView {
@@ -456,7 +456,8 @@
                             [weakSelf.mainTableView reloadData];
                             [weakSelf.mainTableView.mj_header endRefreshing];
                             if (flag) {
-                                [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                                [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
+//                                [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                             }
                             if (weakSelf.noDataView.hidden == NO && self.userId.length > 0) {
                                 //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
@@ -486,7 +487,8 @@
                         [weakSelf.mainTableView reloadData];
                         [weakSelf.mainTableView.mj_header endRefreshing];
                         if (flag) {
-                            [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                            [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
+//                            [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                         }
                         if (weakSelf.noDataView.hidden == NO && self.userId.length > 0) {
                             //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
@@ -589,10 +591,11 @@
             }
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.mainTableView reloadData];
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
-                [UIView animateWithDuration:0.2 animations:^{
-                    [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-                } completion:nil];
+//                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+//                [UIView animateWithDuration:0.2 animations:^{
+                    [self.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
+//                    [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+//                } completion:nil];
             });
         }
     });

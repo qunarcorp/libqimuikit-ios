@@ -455,6 +455,9 @@
     } else {
         _moment.rowHeight = _commentBtn.bottom + 18;
     }
+    UIView * sepLine = [[UIView alloc]initWithFrame:CGRectMake(0, _commentBtn.bottom + 18, SCREEN_WIDTH, 0.5)];
+    sepLine.backgroundColor = [UIColor qim_colorWithHex:0xEAEAEA];
+    [self.contentView addSubview:sepLine];
 }
 
 - (void)setTagViewUI:(NSArray *)tagData withBottom:(CGFloat)bottom{
