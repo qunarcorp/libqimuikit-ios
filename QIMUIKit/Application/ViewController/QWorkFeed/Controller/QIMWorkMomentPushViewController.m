@@ -38,6 +38,8 @@
 #import "YYKeyboardManager.h"
 #import "QIMVideoModel.h"
 #import  "QIMWorkMomentTagViewController.h"
+#import "QIMWorkMomentTagView.h"
+#import "QIMWorkMomentTagModel.h"
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
@@ -177,6 +179,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
 @property(nonatomic, strong) UIView *keyboardToolView;
 
+@property(nonatomic, strong) UIView * tagSelectedView;
+
 @property (nonatomic, strong) UITextView *textView;
 
 @property (nonatomic, strong) UILabel *remainingLabel;
@@ -204,6 +208,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 @property (nonatomic, assign) QIMWorkMomentMediaType currentSelectMediaType;
 
 @property (nonatomic, assign) QIMWorkFeedContentType workFeedContentType;
+
+@property (nonatomic, strong) NSMutableArray * selectTagArr;
 
 @end
 
@@ -266,6 +272,14 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     return _keyboardToolView;
 }
 
+- (UIView *)tagSelectedView{
+    if (!_tagSelectedView) {
+        _tagSelectedView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]- 80 - 70, self.view.width, 70)];
+        _tagSelectedView.backgroundColor = [UIColor clearColor];
+    }
+    return _tagSelectedView;
+}
+
 - (UILabel *)remainingLabel {
     if (!_remainingLabel) {
         _remainingLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -292,6 +306,56 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     }
     _identiView.momentId = self.momentId;
     return _identiView;
+}
+
+#pragma mark -设置学则标签的tag
+- (void)setUpSelectTagView {
+    
+    [self.tagSelectedView removeAllSubviews];
+    CGFloat yFloat = 0;
+    CGFloat xFloat = 0;
+    NSInteger lastWidth = 0;
+    for (NSInteger i = 0; i< self.selectTagArr.count; i++) {
+        
+        QIMWorkMomentTagModel * selectModel = self.selectTagArr[i];
+        QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]init];
+        
+        __weak typeof(self) weakSelf = self;
+        
+        __weak typeof(view) weakView = view;
+        [view setCloseBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
+            [weakSelf.selectTagArr removeObject:model];
+            [weakSelf setUpSelectTagView];
+        }];
+        
+        [view setTagDidClickedBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
+            
+        }];
+        
+        view.canChangeColor = YES;
+        view.canDelete = YES;
+        view.model = selectModel;
+        if (i==0) {
+            xFloat = 15;
+            yFloat = 0;
+        }
+        else{
+            if (SCREEN_WIDTH - (xFloat + lastWidth + view.width +15 + 30  +15)< 0) {
+                yFloat = yFloat + 37;
+                xFloat = 15;
+            }
+            else{
+                xFloat = xFloat + lastWidth + 15;
+            }
+        }
+        view.frame = CGRectMake(xFloat, yFloat, view.width, 27);
+        lastWidth = view.width;
+        [self.tagSelectedView addSubview:view];
+    }
+//    self.tagSelectedView.height = Float + 15.5;
+    [self.tagSelectedView setFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]- 80 - yFloat - 15.5 , SCREEN_WIDTH, yFloat + 20)];
+//    self.tagBgView.frame = CGRectMake(25, self.headerLabel.bottom +15, self.width + 25, 10 + yFloat + 27);
+//    _model.cellHeight = self.headerLabel.height + self.tagBgView.height + 15 + 10;
 }
 
 - (void)setupKeyBoardTools {
@@ -356,7 +420,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     
     UIButton *addTag = [UIButton buttonWithType:UIButtonTypeCustom];
     [addTag setBackgroundColor:[UIColor whiteColor]];
-    [addTag setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_at size:28 color:qim_moment_at_btnColor]] forState:UIControlStateNormal];
+    [addTag setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_pushTag size:28 color:qim_moment_at_btnColor]] forState:UIControlStateNormal];
     [addTag addTarget:self action:@selector(addTagView) forControlEvents:UIControlEventTouchUpInside];
     [self.keyboardToolView addSubview:addTag];
     [addTag mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -374,11 +438,22 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     }];
     
 }
-
+#pragma mark-设置tagView的地方
 - (void)addTagView{
     
     QIMWorkMomentTagViewController * vc = [[QIMWorkMomentTagViewController alloc] init];
-    __weak  typeof(self) weakSelf = self;
+    vc.canMutiSelected = YES;
+    __weak typeof(self) weakSelf = self;
+    [vc setBlock:^(NSArray * _Nonnull selectTags) {
+        if (selectTags.count > 0) {
+            [weakSelf.selectTagArr removeAllObjects];
+        }
+        for (QIMWorkMomentTagModel * model in selectTags) {
+            [weakSelf.selectTagArr addObject:model];
+        }
+        [weakSelf setUpSelectTagView];
+    }];
+    [vc setSelectArrFromPushView:self.selectTagArr];
     if ([[QIMKit sharedInstance] getIsIpad]) {
         vc.modalPresentationStyle = UIModalPresentationCurrentContext;
         QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:vc];
@@ -599,11 +674,13 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 - (void)setupUI {
     [self.view addSubview:self.photoCollectionView];
     [self.view addSubview:self.keyboardToolView];
+    [self.view addSubview:self.tagSelectedView];
     [self setupKeyBoardTools];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.selectTagArr = [NSMutableArray array];
     [self.photoCollectionView addSubview:_progressHUD];
     _progressHUD.hidden = YES;
     [[YYKeyboardManager defaultManager] addObserver:self];
@@ -636,11 +713,13 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         [UIView animateWithDuration:0.25 animations:^{
             //键盘落下
             self.keyboardToolView.frame = CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 80, self.view.width, 80);
+            self.tagSelectedView.frame = CGRectMake(0, self.view.height - self.tagSelectedView.height -[[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]- 80, self.view.width, self.tagSelectedView.height);
         } completion:nil];
     } else {
         //键盘弹起
         [UIView animateWithDuration:0.25 animations:^{
             self.keyboardToolView.frame = CGRectMake(0, kbFrameOriginY - 80, self.view.width, 80);
+            self.tagSelectedView.frame = CGRectMake(0, kbFrameOriginY - self.tagSelectedView.height - self.keyboardToolView.height , self.view.width, self.tagSelectedView.height);
         }];
     }
 }
@@ -982,6 +1061,13 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                     NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
                     [momentDic setQIMSafeObject:momentContent forKey:@"content"];
                     [momentDic setQIMSafeObject:outATInfoArray forKey:@"atList"];
+                    if (self.selectTagArr.count > 0) {
+                        NSMutableArray * tagIdArr = [NSMutableArray array];
+                        for (QIMWorkMomentTagModel * model in self.selectTagArr) {
+                            [tagIdArr addObject:model.tagId];
+                        }
+                        [momentDic setQIMSafeObject:tagIdArr forKey:@"tagIdList"];
+                    }
                     QIMVerboseLog(@"outATInfoArray: %@", outATInfoArray);
                     QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
                     QIMVerboseLog(@"momentDic: %@", momentDic);

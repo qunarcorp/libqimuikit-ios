@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy) NSString * topicTitle;
 @property (nonatomic,strong) NSArray <QIMWorkMomentTagModel *> * tagList;
 @property (nonatomic,assign) CGFloat cellHeight;
+@property (nonatomic,copy) NSString * topicBGColor;
 @property (nonatomic,strong) NSMutableArray * selectArr;
 @end
 

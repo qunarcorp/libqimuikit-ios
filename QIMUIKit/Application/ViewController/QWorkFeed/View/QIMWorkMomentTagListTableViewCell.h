@@ -12,6 +12,7 @@
 typedef void(^QIMSelectTagBlock)(QIMWorkMomentTagModel * model);
 NS_ASSUME_NONNULL_BEGIN
 @interface QIMWorkMomentTagListTableViewCell : UITableViewCell
+@property (nonatomic, assign) BOOL canMutiSelected;
 @property (nonatomic,strong) QIMWorkMomentTopicListModel * model;
 @property (nonatomic , copy) QIMSelectTagBlock selectBlock;
 @end

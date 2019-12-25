@@ -17,7 +17,9 @@ typedef void(^QIMWorkMomentDidClickedCloseBtnBlock)(QIMWorkMomentTagModel * mode
 @property (nonatomic,copy) QIMWorkMomentTagClickedBlock addTagBlock;
 @property (nonatomic, copy) QIMWorkMomentTagClickedBlock removeBlock;
 @property (nonatomic,copy) QIMWorkMomentDidClickedCloseBtnBlock closeBlock;
-
+@property (nonatomic ,assign) BOOL canChangeColor;
+@property (nonatomic,copy) QIMWorkMomentTagClickedBlock tagDidClickedBlock;
+@property (nonatomic , assign) BOOL selected;
 - (void)resetTagViewStatus;
 @end
 

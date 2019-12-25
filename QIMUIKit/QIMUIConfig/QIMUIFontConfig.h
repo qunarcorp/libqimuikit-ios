@@ -64,5 +64,12 @@
 #define qim_moment_at                     @"\U0000e89a"       //驼圈艾特按钮
 #define qim_moment_useridentify_arrow     @"\U0000e7e0"       //驼圈Arrow
 
+#define qim_moment_tag_pushTag            @"\U0000e936"
+
+#define qim_moment_tag_jinghao            @"\U0000e937"
+
+#define qim_moment_tag_delete             @"\U0000e939"
+
+#define qim_moment_tag_more_down          @"\U0000f3cb"
 
 #endif /* QIMUIFontConfig_h */

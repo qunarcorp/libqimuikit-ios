@@ -16,10 +16,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) UIViewController *rootVC;
 
+@property (nonatomic, copy) NSNumber * tagID;
+
 -(instancetype)initWithFrame:(CGRect)frame
                       userId:(NSString *)userId
             showNewMomentBtn:(BOOL)showBtn
                showNoticView:(BOOL)showNtc;
+
+-(instancetype)initWithFrame:(CGRect)frame
+                       tagID:(NSString *)tagId
+            showNewMomentBtn:(BOOL)showBtn
+               showNoticView:(BOOL)showNtc
+           showHeaderTagView:(BOOL)showTag;
+
+-(instancetype)initWithFrame:(CGRect)frame
+                      userId:(NSString *)userId
+            showNewMomentBtn:(BOOL)showBtn
+               showNoticView:(BOOL)showNtc
+          showheaderEntrence:(BOOL)showheaderEntrence;
+
+
 
 - (void)updateMomentView;
 

@@ -7,12 +7,13 @@
 
 #import "QIMWorkMomentTagView.h"
 #import "QIMWorkMomentTagModel.h"
+#import "QIMImageUtil.h"
+#import "UIImage+QIMIconFont.h"
 @interface QIMWorkMomentTagView()
 @property (nonatomic , strong) UIView * tagBGView;
 @property (nonatomic , strong) UIImageView * leftImageView;
 @property (nonatomic , strong) UILabel * titleLabel;
-@property (nonatomic , strong) UIImageView * closeBtn;
-@property (nonatomic , assign) BOOL selected;
+@property (nonatomic , strong) UIButton * closeBtn;
 @end
 
 @implementation QIMWorkMomentTagView
@@ -22,6 +23,7 @@
     self = [super init];
     if (self) {
         self.selected = NO;
+        self.canChangeColor = YES;
         [self initViews];
     }
     return self;
@@ -34,25 +36,52 @@
     
     self.tagBGView.layer.cornerRadius = 27/2.f;
     self.tagBGView.layer.masksToBounds = YES;
-    self.leftImageView = [[UIImageView alloc]initWithFrame:CGRectMake(5.5, (self.height - 15)/2, 15, 15)];
     
+    self.leftImageView = [[UIImageView alloc]initWithFrame:CGRectMake(5.5, (self.height - 15)/2, 15, 15)];
+    [self.leftImageView setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_jinghao size:15 color:[UIColor qim_colorWithHexString:self.model.tagColor.length >0 ? [self.model.tagColor stringByReplacingOccurrencesOfString:@"#" withString:@""]:@""]]]];
     
     self.titleLabel = [[UILabel alloc]init];
     self.titleLabel.textColor = [UIColor qim_colorWithHex:0x333333];
     self.titleLabel.font = [UIFont systemFontOfSize:14];
     self.titleLabel.textAlignment = NSTextAlignmentLeft;
     
-    
-    self.closeBtn = [[UIImageView alloc]init];
-    
-    
     [self.tagBGView addSubview:self.leftImageView];
     [self.tagBGView addSubview:self.titleLabel];
-    [self.tagBGView addSubview:self.closeBtn];
     [self addSubview:self.tagBGView];
 }
 
+- (void)addCanDeleteBtnWithWidth:(CGRect)backViewRect{
+    UILabel * line = [[UILabel alloc]initWithFrame:CGRectMake(backViewRect.size.width - 28.5, 0, 0.5, 27)];
+    line.backgroundColor = [UIColor qim_colorWithHex:0xDADADA];
+    
+    self.closeBtn = [[UIButton alloc]initWithFrame:CGRectMake(backViewRect.size.width - 29, 0, 29, 27)];
+    [self.closeBtn addTarget:self action:@selector(deleteTagBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIImageView * closeBtnView = [[UIImageView alloc]init];
+    [closeBtnView setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_delete size:8.5 color:[UIColor qim_colorWithHex:0xCE5F5F]]]];
+    
+    [closeBtnView setFrame:CGRectMake(9, 9, 8.5, 8.5)];
+    [self.closeBtn addSubview:closeBtnView];
+    
+    [self.tagBGView addSubview:line];
+    [self.tagBGView addSubview:self.closeBtn];
+    
+    
+}
+
+- (void)deleteTagBtnClick:(id)btn{
+    if (self.closeBlock) {
+        self.closeBlock(self.model);
+    }
+}
+
 - (void)tagTaped{
+    if (!self.canChangeColor || self.closeBtn) {
+        if (self.tagDidClickedBlock) {
+            self.tagDidClickedBlock(self.model);
+        }
+        return;
+    }
     if (self.selected == NO) {
         self.model.selected = YES;
         self.selected =YES;
@@ -79,25 +108,43 @@
     if (model) {
         _model = model;
     }
-    [self normalStatus];
+    if (model.selected == YES) {
+        self.selected = YES;
+        [self selectStatus];
+    }
+    else{
+        self.selected = NO;
+        [self normalStatus];
+    }
+    
     [self refreshView];
 }
 
 - (void)refreshView{
+    [self.leftImageView setFrame:CGRectMake(5.5, (27 - 15)/2, 15, 15)];
     self.titleLabel.text = self.model.tagTitle;
     [self.titleLabel sizeToFit];
     [self.titleLabel setFrame:CGRectMake(self.leftImageView.right + 8, 0, self.titleLabel.width, 27)];
-    [self.tagBGView setFrame:CGRectMake(0, 0,5.5+self.leftImageView.width + 8 + self.titleLabel.width +15, 27)];
+    if (self.canDelete) {
+        [self.tagBGView setFrame:CGRectMake(0, 0,5.5+self.leftImageView.width + 8 + self.titleLabel.width +12 + 29, 27)];
+        [self addCanDeleteBtnWithWidth:self.tagBGView.frame];
+    }
+    else{
+        [self.tagBGView setFrame:CGRectMake(0, 0,5.5+self.leftImageView.width + 8 + self.titleLabel.width +15, 27)];
+    }
     self.frame = self.tagBGView.frame;
 }
 
 - (void)normalStatus{
+    [self.leftImageView setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_jinghao size:15 color:[UIColor qim_colorWithHexString:self.model.tagColor.length >0 ? [self.model.tagColor stringByReplacingOccurrencesOfString:@"#" withString:@""]:@""]]]];
+    
     self.tagBGView.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
     self.titleLabel.textColor = [UIColor qim_colorWithHex:0x333333];
 }
 
 - (void)selectStatus{
-    self.tagBGView.backgroundColor = [UIColor qim_colorWithHex:0x54C993];
+    [self.leftImageView setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_jinghao size:15 color:[UIColor qim_colorWithHex:0xFFFFFF]]]];
+    self.tagBGView.backgroundColor = [UIColor qim_colorWithHexString:self.model.tagColor.length >0 ? [self.model.tagColor stringByReplacingOccurrencesOfString:@"#" withString:@""]:@""];
     self.titleLabel.textColor = [UIColor qim_colorWithHex:0xFFFFFF];
 }
 

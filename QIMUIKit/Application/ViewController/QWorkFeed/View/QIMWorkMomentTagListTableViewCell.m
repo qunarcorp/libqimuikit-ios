@@ -27,6 +27,7 @@
         self.backgroundColor = [UIColor whiteColor];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.selectedBackgroundView = nil;
+        self.canMutiSelected = YES;
         [self setupUI];
     }
     return self;
@@ -75,11 +76,12 @@
     
     CGFloat yFloat = 0;
     CGFloat xFloat = 0;
+    NSInteger lastWidth = 0;
     for (NSInteger i = 0; i< self.model.tagList.count; i++) {
         
         QIMWorkMomentTagModel * model = self.model.tagList[i];
         QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]init];
-        
+        view.canChangeColor = self.canMutiSelected;
         __weak typeof(self) weakSelf = self;
         
         __weak typeof(view) weakView = view;
@@ -97,20 +99,29 @@
             [weakSelf.model.selectArr removeObject:model];
         }];
         
+        [view setTagDidClickedBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
+            if (weakSelf.selectBlock) {
+                weakSelf.selectBlock(model);
+            }
+        }];
+        
         view.canDelete = NO;
         view.model = model;
-        yFloat = i/2 * 37;
-        if(i%2==0){
+        if (i==0) {
             xFloat = 0;
+            yFloat = 0;
         }
         else{
-            xFloat = view.width + 15;
-        }
-        
-        if (view.width + 25 > SCREEN_WIDTH/2) {
-            xFloat = view.width + 15;
+            if (SCREEN_WIDTH - (xFloat + lastWidth + view.width +15 + 30)< 0) {
+                yFloat = yFloat + 37;
+                xFloat = 0;
+            }
+            else{
+                xFloat = xFloat + lastWidth + 15;
+            }
         }
         view.frame = CGRectMake(xFloat, yFloat, view.width, 27);
+        lastWidth = view.width;
         [self.tagBgView addSubview:view];
     }
     self.tagBgView.frame = CGRectMake(25, self.headerLabel.bottom +15, self.width + 25, 10 + yFloat + 27);
@@ -123,26 +134,8 @@
 }
 
 - (void)showSelectedMessage{
-//    UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake((SCREEN_WIDTH - 180)/2, SCREEN_HEIGHT - 109, 180, 60)];
-//    label.text = @"一个帖子最多可选5个话题";
-//    label.font = [UIFont systemFontOfSize:15];
-//    label.textColor = [UIColor whiteColor];
-//    label.textAlignment = NSTextAlignmentCenter;
-//    label.numberOfLines = 0;
-//    label.backgroundColor = [UIColor qim_colorWithHex:0x333333];
-//    label.layer.masksToBounds = YES;
-//    label.layer.cornerRadius = 4;
-//    label.layer.shadowOpacity = 1;
-//    label.layer.shadowRadius = 10;
-//    label.layer.shadowOffset = CGSizeMake(0,3);
-//    label.layer.shadowColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2].CGColor;
-//    [[UIApplication sharedApplication].keyWindow addSubview:label];
-//    [UIView animateWithDuration:0.2 animations:^{
-//        label.alpha = 1;
-//        [label removeFromSuperview];
-//    }];
+
     [QTalkTipsView showTips:[NSString stringWithFormat:@"评论不可以超过200个字哦～"] InView:[[[[UIApplication sharedApplication] keyWindow] rootViewController] view]];
-    return;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
