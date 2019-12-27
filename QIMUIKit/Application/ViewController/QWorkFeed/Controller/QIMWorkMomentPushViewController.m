@@ -6,6 +6,7 @@
 //  Copyright © 2019 QIM. All rights reserved.
 //
 
+
 #import "QIMWorkMomentPushViewController.h"
 #import "QTImagePickerController.h"
 #import "QIMAuthorizationManager.h"
@@ -29,6 +30,7 @@
 #import "QIMWorkMomentModel.h"
 #import "QIMUUIDTools.h"
 #import "YYModel.h"
+#import "UIColor+QIMUtility.h"
 #import "MBProgressHUD.h"
 #import "QIMProgressHUD.h"
 #import "QIMEmotionManager.h"
@@ -43,6 +45,8 @@
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
+
+#import "CustomPopOverView.h"
 
 static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
@@ -318,7 +322,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     for (NSInteger i = 0; i< self.selectTagArr.count; i++) {
         
         QIMWorkMomentTagModel * selectModel = self.selectTagArr[i];
-        QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]init];
+        selectModel.selected = NO;
+        QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]initWitHeight:27];
         
         __weak typeof(self) weakSelf = self;
         
@@ -420,7 +425,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     
     UIButton *addTag = [UIButton buttonWithType:UIButtonTypeCustom];
     [addTag setBackgroundColor:[UIColor whiteColor]];
-    [addTag setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_pushTag size:28 color:qim_moment_at_btnColor]] forState:UIControlStateNormal];
+    [addTag setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_pushTag size:28 color:[UIColor qim_colorWithHex:0x7F91FD]]] forState:UIControlStateNormal];
     [addTag addTarget:self action:@selector(addTagView) forControlEvents:UIControlEventTouchUpInside];
     [self.keyboardToolView addSubview:addTag];
     [addTag mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -437,11 +442,21 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         make.right.mas_offset(-15);
     }];
     
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    NSString * str = [defaults objectForKey:@"showTagTip"];
+    if (str && str.length > 0) {
+        
+    }
+    else{
+        [defaults setObject:@"YES" forKey:@"showTagTip"];
+        [self showTagTipsViewWithSender:addTag];
+    }
+    [defaults synchronize];
 }
 #pragma mark-设置tagView的地方
 - (void)addTagView{
     
-    QIMWorkMomentTagViewController * vc = [[QIMWorkMomentTagViewController alloc] init];
+    QIMWorkMomentTagViewController * vc = [[QIMWorkMomentTagViewController alloc] initWithSelectArr:self.selectTagArr];
     vc.canMutiSelected = YES;
     __weak typeof(self) weakSelf = self;
     [vc setBlock:^(NSArray * _Nonnull selectTags) {
@@ -453,7 +468,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         }
         [weakSelf setUpSelectTagView];
     }];
-    [vc setSelectArrFromPushView:self.selectTagArr];
+//    [vc setSelectArrFromPushView:self.selectTagArr];
     if ([[QIMKit sharedInstance] getIsIpad]) {
         vc.modalPresentationStyle = UIModalPresentationCurrentContext;
         QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:vc];
@@ -1058,6 +1073,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         });
                     });
                 } else {
+                    
                     NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
                     [momentDic setQIMSafeObject:momentContent forKey:@"content"];
                     [momentDic setQIMSafeObject:outATInfoArray forKey:@"atList"];
@@ -1642,6 +1658,25 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     QIMWorkMomentUserIdentityVC *identityVc = [[QIMWorkMomentUserIdentityVC alloc] init];
     identityVc.momentId = self.momentId;
     [self.navigationController pushViewController:identityVc animated:YES];
+}
+
+- (void)showTagTipsViewWithSender:(UIView *)sender{
+    CustomPopOverView *view = [CustomPopOverView popOverView];
+    UILabel *label = [[UILabel alloc] init];
+    label.frame = CGRectMake(0 ,0 ,200,43);
+    label.numberOfLines = 0;
+    
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"标签功能上线啦~ 快来给你的帖子打个标签吧！"attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFangSC" size: 15],NSForegroundColorAttributeName: [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0]}];
+
+    label.attributedText = string;
+    label.textAlignment = NSTextAlignmentLeft;
+    label.alpha = 1.0;
+    label.backgroundColor = [UIColor qim_colorWithHex:0x00cabe];
+    view.content = label;
+//    [view.content setFrame:CGRectMake(0, 0, 200, 43)];
+    view.style.containerBackgroudColor = [UIColor qim_colorWithHex:0x00cabe];
+    view.backgroundColor = [UIColor clearColor];//[UIColor qim_colorWithHex:0x00cabe];
+    [view showFrom:sender alignStyle:CPAlignStyleLeft];
 }
 
 @end

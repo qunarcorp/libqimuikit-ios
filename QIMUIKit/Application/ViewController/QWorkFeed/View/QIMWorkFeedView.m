@@ -148,14 +148,13 @@
             QIMWorkMomentHeaderTagInfoModel * model = [QIMWorkMomentHeaderTagInfoModel yy_modelWithDictionary:dic];
             weakSelf.hotTagView = [[QIMWorkMomentHotTagHeaderView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 88+93)];
             [weakSelf.hotTagView setHeaderModel:model];
-            _mainTableView.tableHeaderView = weakSelf.hotTagView;
+            weakSelf.mainTableView.tableHeaderView = weakSelf.hotTagView;
             [weakSelf.hotTagView setChangeHeightBolck:^(CGFloat height) {
                 [weakSelf.hotTagView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, height)];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.mainTableView reloadData];
                 });
             }];
-            weakSelf.hotTagView.backgroundColor = [UIColor whiteColor];
             [weakSelf.mainTableView reloadData];
         });
     }];

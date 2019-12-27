@@ -19,8 +19,10 @@ typedef void(^QIMWorkMomentDidClickedCloseBtnBlock)(QIMWorkMomentTagModel * mode
 @property (nonatomic,copy) QIMWorkMomentDidClickedCloseBtnBlock closeBlock;
 @property (nonatomic ,assign) BOOL canChangeColor;
 @property (nonatomic,copy) QIMWorkMomentTagClickedBlock tagDidClickedBlock;
-@property (nonatomic , assign) BOOL selected;
+
 - (void)resetTagViewStatus;
+- (instancetype)initWitHeight:(CGFloat)height;
+
 @end
 
 NS_ASSUME_NONNULL_END

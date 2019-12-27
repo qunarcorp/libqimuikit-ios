@@ -10,6 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkMomentHotTopicModel : NSObject
 
+@property (nonatomic, copy) NSNumber * headerNub;
 @property (nonatomic, copy) NSNumber * hotPostId;
 
 @property (nonatomic, copy) NSNumber * weight;
@@ -31,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *postTotal;
 
 @property (nonatomic, assign) CGFloat  height;
+@property (nonatomic, assign) BOOL showNumber;
+@property (nonatomic, assign) BOOL showImg;
 @end
 
 NS_ASSUME_NONNULL_END

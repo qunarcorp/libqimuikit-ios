@@ -41,16 +41,14 @@
 }
 
 - (void)refreshCell{
-    self.headerLabel.text = self.model.topicTitle;
+    
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:(self.model.topicTitle.length >0 && self.model.topicTitle)?self.model.topicTitle:@"" attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFangSC" size: 16],NSForegroundColorAttributeName: [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1.0]}];
+    self.headerLabel.attributedText = string;
     [self setSubTagViews];
 }
 
 - (void)setupUI{
     self.headerLabel = [[UILabel alloc]initWithFrame:CGRectMake(25, 10, self.width - 25, 19)];
-    self.headerLabel.textColor = [UIColor qim_colorWithHex:0x333333];
-    self.headerLabel.font = [UIFont systemFontOfSize:16];
-    self.headerLabel.textAlignment = NSTextAlignmentLeft;
-    self.headerLabel.backgroundColor = [UIColor qim_colorWithHex:0xFFFFFF];
     
     self.tagBgView = [[UIView alloc]initWithFrame:CGRectMake(25, self.headerLabel.bottom + 15, self.width - 25, 10)];
     self.tagBgView.backgroundColor = [UIColor qim_colorWithHex:0xFFFFFF];
@@ -73,30 +71,39 @@
 }
 
 - (void)setSubTagViews{
-    
+    [self.tagBgView removeAllSubviews];
     CGFloat yFloat = 0;
     CGFloat xFloat = 0;
     NSInteger lastWidth = 0;
     for (NSInteger i = 0; i< self.model.tagList.count; i++) {
         
         QIMWorkMomentTagModel * model = self.model.tagList[i];
-        QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]init];
+        QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]initWitHeight:27];
         view.canChangeColor = self.canMutiSelected;
         __weak typeof(self) weakSelf = self;
         
         __weak typeof(view) weakView = view;
         [view setAddTagBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
-            if (weakSelf.model.selectArr.count >= 2) {
-                [weakView resetTagViewStatus];
-                [weakSelf showSelectedMessage];
-            }
-            else{
+            if (weakSelf.canMutiSelected == YES) {
                 [weakSelf.model.selectArr addObject:model];
+                if (weakSelf.selectBlock) {
+                    weakSelf.selectBlock(model);
+                }
             }
         }];
         
         [view setRemoveBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
-            [weakSelf.model.selectArr removeObject:model];
+            for (QIMWorkMomentTagModel * tmodel in self.model.selectArr) {
+                if (tmodel.tagId.intValue == model.tagId.intValue) {
+                    [weakSelf.model.selectArr removeObject:model];
+                    break;
+                }
+            }
+            if (weakSelf.canMutiSelected == YES) {
+                if (weakSelf.removeBlock) {
+                    weakSelf.removeBlock(model);
+                }
+            }
         }];
         
         [view setTagDidClickedBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
@@ -133,10 +140,7 @@
     // Initialization code
 }
 
-- (void)showSelectedMessage{
 
-    [QTalkTipsView showTips:[NSString stringWithFormat:@"评论不可以超过200个字哦～"] InView:[[[[UIApplication sharedApplication] keyWindow] rootViewController] view]];
-}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];

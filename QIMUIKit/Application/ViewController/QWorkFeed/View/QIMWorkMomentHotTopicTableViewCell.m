@@ -33,15 +33,16 @@
 - (void)setUpViews{
     
     self.backgroundColor = [UIColor whiteColor];
-//    self.numberLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 25, 25)];
-//    self.numberLabel.textAlignment = NSTextAlignmentCenter;
-//    self.numberLabel.font = [UIFont systemFontOfSize:19];
-//
-//    [self addSubview:self.numberLabel];
+    self.numberLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 25, 25)];
+    self.numberLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberLabel.font = [UIFont systemFontOfSize:19];
+//    originLeft = self.numberLabel.right + 6;
+    [self addSubview:self.numberLabel];
     
-    self.titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 11.5, SCREEN_WIDTH - 20-105, 45)];
+    self.titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 12.5, SCREEN_WIDTH - 20 - 105, 45)];
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.textAlignment = NSTextAlignmentLeft;
+    self.titleLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
     self.titleLabel.textColor = [UIColor qim_colorWithHex:0x333333];
     self.titleLabel.font = [UIFont systemFontOfSize:16];
     [self addSubview:self.titleLabel];
@@ -62,31 +63,62 @@
     [self addSubview:self.myImageView];
 }
 
-- (void)reLayoutViews{
-    [self.commitLabel sizeToFit];
-    [self.likeLabel sizeToFit];
-    if (self.myImageView.hidden == YES) {
-        [self.titleLabel setFrame:CGRectMake(self.titleLabel.x, self.titleLabel.y, SCREEN_WIDTH - 40, 44)];
+- (void)reLayoutViewsWithModel:(QIMWorkMomentHotTopicModel *)model{
+    
+    CGFloat originLeft = 20;
+    if (model.showNumber) {
+        self.numberLabel.hidden = NO;
+        [self.numberLabel setFrame:CGRectMake(10, 10, 25, 25)];
+        self.numberLabel.textAlignment = NSTextAlignmentCenter;
+        self.numberLabel.font = [UIFont systemFontOfSize:19];
+        originLeft = self.numberLabel.right + 6;
     }
     else{
-         [self.titleLabel setFrame:CGRectMake(self.titleLabel.x, self.titleLabel.y, SCREEN_WIDTH - 20 - 105 , 44)];
+        self.numberLabel.hidden = YES;
     }
-    [self.commitLabel setFrame:CGRectMake(self.commitLabel.x, self.commitLabel.y, self.commitLabel.width, self.commitLabel.height)];
-    [self.likeLabel setFrame:CGRectMake(self.commitLabel.right + 15, self.commitLabel.y, self.likeLabel.width, self.likeLabel.height)];
+    
+    [self.commitLabel sizeToFit];
+    [self.likeLabel sizeToFit];
+    if (model.showImg == NO) {
+        [self.titleLabel sizeToFit];
+        if (_titleLabel.height <= 44/2) {
+             [self.titleLabel setFrame:CGRectMake(originLeft, self.titleLabel.y, SCREEN_WIDTH - 20 - originLeft, self.titleLabel.height)];
+        }
+        else{
+             [self.titleLabel setFrame:CGRectMake(originLeft, self.titleLabel.y, SCREEN_WIDTH - 20 - originLeft, 44)];
+        }
+        [self.commitLabel setFrame:CGRectMake(originLeft, self.titleLabel.bottom + 14, self.commitLabel.width, self.commitLabel.height)];
+        [self.likeLabel setFrame:CGRectMake(self.commitLabel.right + 15, self.commitLabel.y, self.likeLabel.width, self.likeLabel.height)];
+        self.myImageView.hidden = YES;
+    }
+    else{
+        [self.titleLabel sizeToFit];
+        [self.titleLabel setFrame:CGRectMake(originLeft, self.titleLabel.y, SCREEN_WIDTH - originLeft - 105 , self.titleLabel.height>44?44:self.titleLabel.height)];
+        
+        [self.commitLabel setFrame:CGRectMake(originLeft, 95 - 27, self.commitLabel.width, self.commitLabel.height)];
+        [self.likeLabel setFrame:CGRectMake(self.commitLabel.right + 15, self.commitLabel.y, self.likeLabel.width, self.likeLabel.height)];
+        self.myImageView.hidden = NO;
+    }
+    
 }
 
 -(void)setHotTopicModel:(QIMWorkMomentHotTopicModel *)model{
-    self.numberLabel.text = [NSString stringWithFormat:@"%zd",model.hotPostId.integerValue];
+    
+    if (model.showNumber) {
+        self.numberLabel.text = [NSString stringWithFormat:@"%zd",model.headerNub.integerValue];
+    }
+    else{
+        self.numberLabel.text = @"";
+    }
+    NSArray * color = @[@"#D54A45",@"#E98730",@"#F5B64F",@"#B3B3B3",@"#B3B3B3"];
+    self.numberLabel.textColor = [UIColor qim_colorWithHexString:[color[model.headerNub.intValue - 1] stringByReplacingOccurrencesOfString:@"#" withString:@""]];
     self.titleLabel.text = model.showTitle;
     self.commitLabel.text = [NSString stringWithFormat:@"评论%zd",model.commentNum.integerValue];
     self.likeLabel.text = [NSString stringWithFormat:@"点赞%zd",model.likeNum.integerValue];
     if (model.headImg && model.headImg.length > 0) {
         [self.myImageView qim_setImageWithURL:[NSURL URLWithString:model.headImg]];
     }
-    else{
-        self.myImageView.hidden = YES;
-    }
-    [self reLayoutViews];
+    [self reLayoutViewsWithModel:model];
     model.height = self.likeLabel.bottom + 13;
 }
 

@@ -21,6 +21,7 @@
 @property (nonatomic,strong) UIButton * moreBtn;
 @property (nonatomic,assign) BOOL isExpand;
 @property (nonatomic,strong) UICollectionView * collectionView;
+@property (nonatomic,strong) UIView * underLineView;
 @property (nonatomic,strong) NSMutableArray * dataArr;
 @end
 @implementation QIMWorkMomentHotTagHeaderView
@@ -55,7 +56,7 @@
     [self.backGroundView addSubview:iconView];
     
     
-    self.headerTitle = [[UILabel alloc]initWithFrame:CGRectMake(iconView.right + 12, 20, 200, 23)];
+    self.headerTitle = [[UILabel alloc]initWithFrame:CGRectMake(iconView.right + 12, 20, 300, 23)];
     self.headerTitle.text = @"产品讨论";
     self.headerTitle.textColor = [UIColor whiteColor];
     self.headerTitle.font = [UIFont systemFontOfSize:22];
@@ -121,49 +122,78 @@
     [self addSubview:self.backGroundView];
     [self addSubview:self.containerView];
     [self addSubview:self.collectionView];
+    
+    self.underLineView = [[UIView alloc]initWithFrame:CGRectMake(0, self.collectionView.bottom, SCREEN_WIDTH, 0.5)];
+    self.underLineView.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
+    [self addSubview:self.underLineView];
 }
 
 -(void)setHeaderModel:(QIMWorkMomentHeaderTagInfoModel *)model{
-    dispatch_async(dispatch_get_main_queue(), ^{
+//    dispatch_async(dispatch_get_main_queue(), ^{
 //        self.backGroundView.backgroundColor = [UIColor whiteColor];
-        NSArray * colors = [model.topicBGColor componentsSeparatedByString:@","];
-        if (colors && colors.count >0) {
-            NSString * colorOneStr = colors.firstObject;
-            NSString * colorTwoStr = colors.lastObject;
-            UIColor * colorOne = [UIColor qim_colorWithHexString:colorOneStr.length>0 ? [colorOneStr stringByReplacingOccurrencesOfString:@"#" withString:@""]:@""];
-            
-            UIColor * colorTwo = [UIColor qim_colorWithHexString:colorOneStr.length>0 ? [colorOneStr stringByReplacingOccurrencesOfString:@"#" withString:@""]:@""];
-            
-            self.gl.colors = @[(__bridge id)colorOne.CGColor, (__bridge id)colorTwo.CGColor];
-            self.gl.locations = @[@(0), @(1.0f)];
-        }
-        self.headerTitle.text = model.tagTitle;
-        self.tieziLabel.text = [NSString stringWithFormat:@"%zd个帖子",model.postTotal.intValue];
-        self.hudongLabel.text = [NSString stringWithFormat:@"%zd人互动",model.postTotal.intValue];
-        self.ctnlabel.text = model.descriptionString;
+    NSArray * colors = [model.topicBGColor componentsSeparatedByString:@","];
+    if (colors && colors.count >0) {
+        NSString * colorOneStr = colors.firstObject;
+        NSString * colorTwoStr = colors.lastObject;
+        UIColor * colorOne = [UIColor qim_colorWithHexString:colorOneStr.length>0 ? [colorOneStr stringByReplacingOccurrencesOfString:@"#" withString:@""]:@""];
+        
+        UIColor * colorTwo = [UIColor qim_colorWithHexString:colorOneStr.length>0 ? [colorOneStr stringByReplacingOccurrencesOfString:@"#" withString:@""]:@""];
+        
+        self.gl.colors = @[(__bridge id)colorOne.CGColor, (__bridge id)colorTwo.CGColor];
+        self.gl.locations = @[@(0), @(1.0f)];
+    }
+    self.headerTitle.text = model.tagTitle;
+    self.tieziLabel.text = [NSString stringWithFormat:@"%zd个帖子",model.postTotal.intValue];
+    self.hudongLabel.text = [NSString stringWithFormat:@"%zd人互动",model.activeUserTotal.intValue];
+    self.ctnlabel.text = model.descriptionString;
+    if (model.users && model.users.count >0) {
         [self.dataArr addObjectsFromArray:[model.users mutableCopy]];
-        [self resizeSubViews];
-    });
+    }
+    else{
+        self.collectionView.hidden = YES;
+    }
+    [self resizeSubViews];
+//    });
 }
 - (void)resizeSubViews{
     if (self.isExpand == NO) {
         [self.tieziLabel sizeToFit];
         [self.hudongLabel sizeToFit];
+        [self.ctnlabel sizeToFit];
+        CGRect tempFrame = self.ctnlabel.frame;
+        [self.ctnlabel setFrame:CGRectMake(self.ctnlabel.x, self.ctnlabel.y, self.ctnlabel.width, self.ctnlabel.height<48?self.ctnlabel.height:48)];
         self.tieziLabel.frame = CGRectMake(self.tieziLabel.x, self.tieziLabel.y, self.tieziLabel.width, self.tieziLabel.height);
         self.hudongLabel.frame = CGRectMake(self.tieziLabel.right + 17, self.hudongLabel.y, self.hudongLabel.width, self.hudongLabel.height);
-        [self.ctnlabel setFrame:CGRectMake(18, 14, self.containerView.width-36, 48)];
-        [self.moreBtn setFrame:CGRectMake(0, self.ctnlabel.bottom + 2, self.containerView.width, 30)];
-        [self.containerView setFrame:CGRectMake(self.containerView.x, self.containerView.y, self.containerView.width, self.ctnlabel.height + 14 + 30.5)];
-        _collectionView.frame = CGRectMake(0, self.containerView.bottom + 28, SCREEN_WIDTH, 46);
+        if (tempFrame.size.height <= 48) {
+            self.moreBtn.hidden = YES;
+            [self.moreBtn setFrame:CGRectMake(0, self.ctnlabel.bottom + 2, self.containerView.width, 0)];
+            [self.containerView setFrame:CGRectMake(self.containerView.x, self.containerView.y, self.containerView.width, self.ctnlabel.height + 14 + 14)];
+        }
+        else{
+            self.moreBtn.hidden = NO;
+            [self.moreBtn setFrame:CGRectMake(0, self.ctnlabel.bottom + 2, self.containerView.width, 30)];
+            [self.containerView setFrame:CGRectMake(self.containerView.x, self.containerView.y, self.containerView.width, self.ctnlabel.height + 14 + 30.5)];
+        }
+        
     }
     else{
         [self.ctnlabel sizeToFit];
         [self.ctnlabel setFrame:CGRectMake(self.ctnlabel.x, self.ctnlabel.y, self.ctnlabel.width, self.ctnlabel.height)];
         [self.moreBtn setFrame:CGRectMake(0, self.ctnlabel.bottom + 2, self.containerView.width, 30)];
         [self.containerView setFrame:CGRectMake(self.containerView.x, self.containerView.y, self.containerView.width, self.ctnlabel.height + 14 + 30.5)];
-        _collectionView.frame = CGRectMake(0, self.containerView.bottom + 28, SCREEN_WIDTH, 46);
+       
     }
-    self.frame = CGRectMake(0, 0, SCREEN_WIDTH, self.collectionView.bottom + 15);
+    if (self.collectionView.hidden == YES) {
+        self.frame = CGRectMake(0, 0, SCREEN_WIDTH, self.collectionView.bottom + 15);
+        self.frame = CGRectMake(0, 0, SCREEN_WIDTH, self.containerView.bottom + 30);
+    }
+    else{
+         _collectionView.frame = CGRectMake(0, self.containerView.bottom + 28, SCREEN_WIDTH, 46);
+        self.frame = CGRectMake(0, 0, SCREEN_WIDTH, self.collectionView.bottom + 15);
+    }
+    
+    [self.underLineView setFrame:CGRectMake(0, self.frame.size.height - 0.5, SCREEN_WIDTH, 0.5)];
+    
     [_collectionView reloadData];
     if (self.changeHeightBolck) {
         self.changeHeightBolck(self.collectionView.bottom + 5);

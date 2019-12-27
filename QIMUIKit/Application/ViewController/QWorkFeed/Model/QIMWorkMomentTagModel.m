@@ -12,7 +12,6 @@
 {
     self = [super init];
     if (self) {
-        self.selected = NO;
     }
     return self;
 }

@@ -15,8 +15,7 @@ typedef void(^momentSelectedMomentTagsBlock)(NSArray * selectTags);
 @property (nonatomic , copy) NSString * title;
 @property (nonatomic, assign) BOOL canMutiSelected;
 @property (nonatomic, copy) momentSelectedMomentTagsBlock block;
-//-(id)initWithSelectArr:(NSMutableArray *)arr;
-- (void)setSelectArrFromPushView:(NSMutableArray *)arr;
+-(instancetype)initWithSelectArr:(NSMutableArray *)arr;
 @end
 
 NS_ASSUME_NONNULL_END

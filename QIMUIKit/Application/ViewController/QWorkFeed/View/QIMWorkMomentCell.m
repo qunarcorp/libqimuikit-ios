@@ -469,7 +469,7 @@
         for (NSInteger i = 0; i< tagData.count; i++) {
             
             QIMWorkMomentTagModel * selectModel = [QIMWorkMomentTagModel yy_modelWithDictionary:tagData[i]];
-            QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]init];
+            QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]initWitHeight:23];
             
             __weak typeof(self) weakSelf = self;
             

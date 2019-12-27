@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL canMutiSelected;
 @property (nonatomic,strong) QIMWorkMomentTopicListModel * model;
 @property (nonatomic , copy) QIMSelectTagBlock selectBlock;
+@property (nonatomic , copy) QIMSelectTagBlock removeBlock;
+
 @end
 
 NS_ASSUME_NONNULL_END

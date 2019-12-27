@@ -11,10 +11,13 @@
 #import <YYModel/YYModel.h>
 #import "QIMWorkMomentTagModel.h"
 #import "QIMWorkFeedTagCirrleViewController.h"
+#import "QTalkTipsView.h"
 
 @interface QIMWorkMomentTagViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic , strong) NSMutableArray * dataArr;
 @property (nonatomic , strong) NSMutableArray * wulalalla;
+
+@property (nonatomic , strong) NSMutableArray * mySelectArr;
 @property (nonatomic , strong) UITableView * tableView;
 @property (nonatomic , strong) UIButton * pushBtn;
 @end
@@ -22,11 +25,18 @@
 @implementation QIMWorkMomentTagViewController
 
 
+-(instancetype)initWithSelectArr:(NSMutableArray *)arr{
+    if (self=[super init]) {
+        self.mySelectArr = [NSMutableArray array];
+        [self.mySelectArr addObjectsFromArray:[arr mutableCopy]];
+    }
+    return self;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.wulalalla =  [NSMutableArray array];
-//    [self.wulalalla addObjectsFromArray:arr];
     self.dataArr = [NSMutableArray array];
+    
     
     [self setUpNav];
     [self initUI];
@@ -46,12 +56,12 @@
 }
 
 - (void)finishSelectTagClicked:(UIButton *)btn{
-    NSMutableArray * selectedArr = [NSMutableArray array];
-    for (QIMWorkMomentTopicListModel * listModel in self.dataArr) {
-        [selectedArr addObjectsFromArray:listModel.selectArr];
-    }
+//    NSMutableArray * selectedArr = [NSMutableArray array];
+//    for (QIMWorkMomentTopicListModel * listModel in self.dataArr) {
+//        [selectedArr addObjectsFromArray:listModel.selectArr];
+//    }
     if (self.block) {
-        self.block(selectedArr);
+        self.block(self.mySelectArr);
     }
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -87,26 +97,48 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     QIMWorkMomentTopicListModel * model = [self.dataArr objectAtIndex:indexPath.row];
-    for (QIMWorkMomentTagModel * tagModel in model.selectArr) {
-        for (QIMWorkMomentTagModel * selectModel in self.wulalalla) {
+    [model.selectArr removeAllObjects];
+
+    for (QIMWorkMomentTagModel * tagModel in model.tagList) {
+        for (QIMWorkMomentTagModel * selectModel in self.mySelectArr) {
             if (tagModel.tagId.integerValue == selectModel.tagId.integerValue) {
-                tagModel.selected = YES;
+                selectModel.selected = YES;
+                [model.selectArr addObject:tagModel];
             }
             else{
-                tagModel.selected = NO;
+                selectModel.selected = NO;
             }
         }
     }
-    QIMWorkMomentTagListTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"lalalal"];
-#pragma mark- 跳到带颜色的vc
-    
-    if (cell == nil) {
-        cell = [[QIMWorkMomentTagListTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"lalalal"];
-    }
+    QIMWorkMomentTagListTableViewCell * cell =  [[QIMWorkMomentTagListTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"lalalal"];
+//    }
     [cell setSelectBlock:^(QIMWorkMomentTagModel *model) {
-        QIMWorkFeedTagCirrleViewController * vc = [[QIMWorkFeedTagCirrleViewController alloc]init];
-        vc.tagId = model.tagId;
-        [self.navigationController pushViewController:vc animated:YES];
+        if (self.canMutiSelected == YES) {
+            
+            if (self.mySelectArr.count >=5) {
+                model.selected = NO;
+                [self showSelectedMessage];
+                [self.tableView reloadData];
+            }
+            else{
+                model.selected = YES;
+                [self.mySelectArr addObject:model];
+            }
+        }
+        else{
+            QIMWorkFeedTagCirrleViewController * vc = [[QIMWorkFeedTagCirrleViewController alloc]init];
+            vc.tagId = model.tagId;
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+    }];
+    
+    [cell setRemoveBlock:^(QIMWorkMomentTagModel *model) {
+        for (QIMWorkMomentTagModel * tmodel in self.mySelectArr) {
+            if (tmodel.tagId.intValue == model.tagId.intValue) {
+                [self.mySelectArr removeObject:tmodel];
+                break;
+            }
+        }
     }];
     cell.canMutiSelected = self.canMutiSelected;
     [cell setModel:model];
@@ -131,7 +163,12 @@
 }
 
 - (void)setSelectArrFromPushView:(NSMutableArray *)arr{
-    [self.wulalalla addObjectsFromArray:arr];
+    [self.mySelectArr addObjectsFromArray:arr];
+}
+
+- (void)showSelectedMessage{
+
+    [QTalkTipsView showTips:[NSString stringWithFormat:@"一个帖子最多可选5个话题"] InView:self.view];
 }
 /*
 #pragma mark - Navigation
