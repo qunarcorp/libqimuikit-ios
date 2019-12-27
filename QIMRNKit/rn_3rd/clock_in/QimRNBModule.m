@@ -2001,6 +2001,7 @@ RCT_EXPORT_METHOD(getTripAreaAvailableRoom:(NSDictionary *)params :(RCTResponseS
     __block NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:1];
     [[QIMKit sharedInstance] getTripAreaAvailableRoom:params callBack:^(NSArray *availableRooms) {
         QIMVerboseLog(@"callBack : %@", availableRooms);
+        NSInteger index = 1;
         for (NSDictionary *roomInfo in availableRooms) {
             NSInteger roomId = [[roomInfo objectForKey:@"roomId"] integerValue];
             NSString *roomName = [roomInfo objectForKey:@"roomName"];
@@ -2013,10 +2014,13 @@ RCT_EXPORT_METHOD(getTripAreaAvailableRoom:(NSDictionary *)params :(RCTResponseS
             [dic setQIMSafeObject:@(roomId) forKey:@"RoomNumber"];
             [dic setQIMSafeObject:description forKey:@"RoomDetails"];
             [dic setQIMSafeObject:@(capacity) forKey:@"RoomCapacity"];
-            if (canUse == 0) {
-//                "canUse": 0//是否可用0:可用;1:不可用
-                [result addObject:dic];
-            }
+            NSInteger avaliableIndex = (canUse == 0 ? 0 : index++);
+            [dic setQIMSafeObject:@(avaliableIndex) forKey:@"RoomAvailable"];
+//            if (canUse == 0) {
+////                "canUse": 0//是否可用0:可用;1:不可用
+//                [result addObject:dic];
+//            }
+            [result addObject:dic];
         }
         if (result.count) {
             callback(@[@{@"ok" : @(YES), @"roomList" : result ? result : @[]}]);
