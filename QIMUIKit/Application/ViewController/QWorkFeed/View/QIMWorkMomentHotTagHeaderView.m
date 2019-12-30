@@ -155,7 +155,7 @@
         self.collectionView.hidden = YES;
     }
     [self resizeSubViews];
-//    });
+    [_collectionView reloadData];
 }
 - (void)resizeSubViews{
     if (self.isExpand == NO) {
@@ -190,13 +190,13 @@
         self.frame = CGRectMake(0, 0, SCREEN_WIDTH, self.containerView.bottom + 30);
     }
     else{
-         _collectionView.frame = CGRectMake(0, self.containerView.bottom + 28, SCREEN_WIDTH, 46);
+         _collectionView.frame = CGRectMake(0, self.containerView.bottom + 28, SCREEN_WIDTH, 57);
         self.frame = CGRectMake(0, 0, SCREEN_WIDTH, self.collectionView.bottom + 15);
     }
     
     [self.underLineView setFrame:CGRectMake(0, self.frame.size.height - 0.5, SCREEN_WIDTH, 0.5)];
     
-    [_collectionView reloadData];
+
     if (self.changeHeightBolck) {
         self.changeHeightBolck(self.collectionView.bottom + 5);
     }
@@ -237,7 +237,7 @@
  // 使用UICollectionView必须设置UICollectionViewLayout属性
  self.collectionView = ({
   UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-     collectionView.frame = CGRectMake(0, self.containerView.bottom + 28, SCREEN_WIDTH, 46);
+     collectionView.frame = CGRectMake(0, self.containerView.bottom + 28, SCREEN_WIDTH, 57);
   collectionView.backgroundColor = [UIColor clearColor];
   // 这里千万记得在interface哪里写<UICollectionViewDataSource>！！！
   collectionView.dataSource  = self;
@@ -274,14 +274,22 @@
     else{
          [cell.imageView qim_setImageWithJid:headerStr placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
     }
-   
     return cell;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CGFloat width = 49;
-    CGSize size = CGSizeMake(49, width);
-    return size;
+    
+    if (indexPath.row == 0) {
+        return CGSizeMake(57, 57);
+        
+    }
+    else if (indexPath.row == 1){
+        return CGSizeMake(45, 45);
+    }
+    else{
+        return CGSizeMake(42, 42);
+    }
+    
 }
 
 

@@ -12,6 +12,7 @@
 #import "QIMWorkMomentTagModel.h"
 #import "QIMWorkFeedTagCirrleViewController.h"
 #import "QTalkTipsView.h"
+#import "QIMUserCacheManager.h"
 
 @interface QIMWorkMomentTagViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic , strong) NSMutableArray * dataArr;
@@ -153,15 +154,25 @@
 }
 
 - (void)beginRequest{
-    [[QIMKit sharedInstance] getMomentTagListWithCompleteCallBack:^(NSArray *moments) {
-        for (NSDictionary * dic in moments) {
+    
+    if ([[QIMUserCacheManager sharedInstance] containsObjectForKey:@"workMomentTag"]) {
+        NSArray * arr = [[QIMUserCacheManager sharedInstance] userObjectForKey:@"workMomentTag"];
+        for (NSDictionary * dic in arr) {
              QIMWorkMomentTopicListModel * model = [QIMWorkMomentTopicListModel yy_modelWithDictionary:dic];
             [self.dataArr addObject:model];
         }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    }];
+    }
+    else{
+        [[QIMKit sharedInstance] getMomentTagListWithCompleteCallBack:^(NSArray *moments) {
+            for (NSDictionary * dic in moments) {
+                 QIMWorkMomentTopicListModel * model = [QIMWorkMomentTopicListModel yy_modelWithDictionary:dic];
+                [self.dataArr addObject:model];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+        }];
+    }
 }
 
 - (void)setSelectArrFromPushView:(NSMutableArray *)arr{

@@ -88,7 +88,7 @@
         return;
     }
     if (self.model.selected == NO) {
-//        self.selected =YES;
+        self.model.selected =YES;
         [self selectStatus];
         if (self.addTagBlock) {
             self.addTagBlock(self.model);
@@ -97,7 +97,7 @@
     }
     else
     {
-//        self.selected =NO;
+        self.model.selected =NO;
         [self normalStatus];
         if (self.removeBlock) {
             self.removeBlock(self.model);
