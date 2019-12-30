@@ -13,12 +13,16 @@
 #import "QIMWorkMomentHotTopicTableViewCell.h"
 #import "QIMWorkMomentHotTopicModel.h"
 #import "QIMWorkFeedDetailViewController.h"
+#import "QIMWorkOwnerCamalNoDataView.h"
+
 
 @interface QIMWorkMomentHotTopicViewController () <UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic ,strong) UITableView * tableView;
 @property (nonatomic ,strong) NSMutableArray * dataArr;
 @property (nonatomic , assign) NSInteger  page;
 @property (nonatomic , strong) UIButton * moreHotPageBtn;
+@property (nonatomic , strong) QIMWorkOwnerCamalNoDataView * noDataView;
+
 
 @end
 
@@ -61,8 +65,8 @@
     UIView * footerBGView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 300)];
     footerBGView.backgroundColor = [UIColor whiteColor];
     self.moreHotPageBtn = [[UIButton alloc]initWithFrame:CGRectMake((SCREEN_WIDTH -113)/2, 12, 113, 24)];
-    [self.moreHotPageBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"showAllhotpage"] forState:UIControlStateNormal];
-    self.moreHotPageBtn.backgroundColor = [UIColor redColor];
+    [self.moreHotPageBtn setImage:[UIImage qim_imageNamedFromQIMUIKitBundle:@"showLoadMore"] forState:UIControlStateNormal];
+//    self.moreHotPageBtn.backgroundColor = [UIColor redColor];
     [self.moreHotPageBtn addTarget:self action:@selector(showMoreBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [footerBGView addSubview:self.moreHotPageBtn];
     self.tableView.tableFooterView = footerBGView;
@@ -162,5 +166,14 @@
     vc.momentId = model.postUid;
     [self.navigationController pushViewController:vc animated:YES];
 }
+
+//-(QIMWorkOwnerCamalNoDataView *)noDataView{
+//    if (!_noDataView) {
+//        _noDataView = [[QIMWorkOwnerCamalNoDataView alloc]initWithFrame:CGRectMake(0, 0, self.iFrame.size.width, self.iFrame.size.height)];
+//        _noDataView.hidden = YES;
+//    }
+//    return _noDataView;
+//}
+
 
 @end

@@ -30,6 +30,7 @@
     UILabel *_showMoreLabel;
 }
 @property (nonatomic , strong) UIView * tagView;
+@property (nonatomic , strong) UIView * sepLine;
 
 @end
 
@@ -255,6 +256,10 @@
     _showMoreLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _showMoreLabel.textColor = [UIColor qim_colorWithHex:0x00CABE];
     _showMoreLabel.font = [UIFont systemFontOfSize:14];
+    
+    self.sepLine = [[UIView alloc]initWithFrame:CGRectZero];
+    self.sepLine.backgroundColor = [UIColor qim_colorWithHex:0xEAEAEA];
+    [self.contentView addSubview:self.sepLine];
 }
 
 - (void)setMoment:(QIMWorkMomentModel *)moment {
@@ -455,9 +460,8 @@
     } else {
         _moment.rowHeight = _commentBtn.bottom + 18;
     }
-    UIView * sepLine = [[UIView alloc]initWithFrame:CGRectMake(0, _commentBtn.bottom + 18, SCREEN_WIDTH, 0.5)];
-    sepLine.backgroundColor = [UIColor qim_colorWithHex:0xEAEAEA];
-    [self.contentView addSubview:sepLine];
+    [self.sepLine setFrame:CGRectMake(0, _moment.rowHeight + 2, SCREEN_WIDTH, 0.5)];
+    
 }
 
 - (void)setTagViewUI:(NSArray *)tagData withBottom:(CGFloat)bottom{

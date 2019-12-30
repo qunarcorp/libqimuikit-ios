@@ -44,6 +44,7 @@
     
     NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:(self.model.topicTitle.length >0 && self.model.topicTitle)?self.model.topicTitle:@"" attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFangSC" size: 16],NSForegroundColorAttributeName: [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1.0]}];
     self.headerLabel.attributedText = string;
+    self.headerLabel.font = [UIFont systemFontOfSize:16 weight:10];
     [self setSubTagViews];
 }
 
@@ -113,7 +114,16 @@
         }];
         
         view.canDelete = NO;
-        view.model = model;
+        BOOL selectedModelb = NO;
+        for (QIMWorkMomentTagModel * sModel  in self.model.selectArr) {
+            if (sModel.tagId.intValue == model.tagId.intValue) {
+                selectedModelb = YES;
+                view.model = sModel;
+            }
+        }
+        if (selectedModelb != YES) {
+            view.model = model;
+        }
         if (i==0) {
             xFloat = 0;
             yFloat = 0;

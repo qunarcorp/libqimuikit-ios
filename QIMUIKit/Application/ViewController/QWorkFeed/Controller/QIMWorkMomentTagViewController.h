@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void(^momentSelectedMomentTagsBlock)(NSArray * selectTags);
 
 @interface QIMWorkMomentTagViewController : QTalkViewController
-@property (nonatomic , copy) NSString * title;
+@property (nonatomic , copy) NSString * headerTitle;
 @property (nonatomic, assign) BOOL canMutiSelected;
 @property (nonatomic, copy) momentSelectedMomentTagsBlock block;
 -(instancetype)initWithSelectArr:(NSMutableArray *)arr;

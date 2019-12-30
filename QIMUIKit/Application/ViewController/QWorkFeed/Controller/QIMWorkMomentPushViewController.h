@@ -7,8 +7,9 @@
 //
 
 #import "QIMCommonUIFramework.h"
-
+#import "QIMWorkMomentTagModel.h"
 NS_ASSUME_NONNULL_BEGIN
+
 
 @interface QIMWorkMomentPushViewController : QTalkViewController
 
@@ -19,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSDictionary *shareLinkUrlDic; //分享链接
 
 @property (nonatomic, strong) NSDictionary *shareVideoDic; //分享视频
+
+- (void)setTagModel:(QIMWorkMomentTagModel *)model;
 
 @end
 

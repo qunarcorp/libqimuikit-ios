@@ -37,6 +37,8 @@
 }
 
 - (void)setSubViews{
+    
+    
     self.backgroundColor = [UIColor qim_colorWithHex:0xFFFFFF];
 
     self.backGroundView = [[UIView alloc] init];
@@ -116,7 +118,6 @@
     
     [self.containerView addSubview:self.moreBtn];
     
-    
     [self setupCollectionView];
     
     [self addSubview:self.backGroundView];
@@ -126,6 +127,7 @@
     self.underLineView = [[UIView alloc]initWithFrame:CGRectMake(0, self.collectionView.bottom, SCREEN_WIDTH, 0.5)];
     self.underLineView.backgroundColor = [UIColor qim_colorWithHex:0xEEEEEE];
     [self addSubview:self.underLineView];
+    
 }
 
 -(void)setHeaderModel:(QIMWorkMomentHeaderTagInfoModel *)model{

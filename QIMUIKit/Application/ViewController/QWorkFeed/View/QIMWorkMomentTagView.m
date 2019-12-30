@@ -88,7 +88,6 @@
         return;
     }
     if (self.model.selected == NO) {
-        self.model.selected = YES;
 //        self.selected =YES;
         [self selectStatus];
         if (self.addTagBlock) {
@@ -98,7 +97,6 @@
     }
     else
     {
-        self.model.selected = NO;
 //        self.selected =NO;
         [self normalStatus];
         if (self.removeBlock) {
@@ -114,11 +112,9 @@
         _model = model;
     }
     if (model.selected == YES) {
-        self.model.selected = YES;
         [self selectStatus];
     }
     else{
-        self.model.selected = NO;
         [self normalStatus];
     }
     [self refreshView];
@@ -141,6 +137,7 @@
 }
 
 - (void)normalStatus{
+//    self.model.selected = NO;
     [self.leftImageView setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_jinghao size:15 color:[UIColor qim_colorWithHexString:self.model.tagColor.length >0 ? [self.model.tagColor stringByReplacingOccurrencesOfString:@"#" withString:@""]:@""]]]];
     
     self.tagBGView.backgroundColor = [UIColor qim_colorWithHex:0xF3F3F5];
@@ -148,6 +145,7 @@
 }
 
 - (void)selectStatus{
+//    self.model.selected = YES;
     [self.leftImageView setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_jinghao size:15 color:[UIColor qim_colorWithHex:0xFFFFFF]]]];
     self.tagBGView.backgroundColor = [UIColor qim_colorWithHexString:self.model.tagColor.length >0 ? [self.model.tagColor stringByReplacingOccurrencesOfString:@"#" withString:@""]:@""];
     self.titleLabel.textColor = [UIColor qim_colorWithHex:0xFFFFFF];

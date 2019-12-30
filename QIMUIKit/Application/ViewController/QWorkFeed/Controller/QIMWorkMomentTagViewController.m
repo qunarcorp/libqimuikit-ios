@@ -37,7 +37,6 @@
     self.wulalalla =  [NSMutableArray array];
     self.dataArr = [NSMutableArray array];
     
-    
     [self setUpNav];
     [self initUI];
     [self beginRequest];
@@ -67,16 +66,15 @@
 }
 
 - (void)setUpNav{
-    if (self.title && self.title.length>0) {
-        self.navigationItem.title = self.title;
+    if (self.headerTitle && self.headerTitle.length>0) {
+        self.navigationItem.title = self.headerTitle;
     }
     else{
         self.navigationItem.title = @"选择标签";
+        UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.pushBtn];
+           [[self navigationItem] setRightBarButtonItem:newMomentBtn];
     }
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x333333]}];
-    
-    UIBarButtonItem *newMomentBtn = [[UIBarButtonItem alloc] initWithCustomView:self.pushBtn];
-    [[self navigationItem] setRightBarButtonItem:newMomentBtn];
 }
 
 - (void)initUI{
@@ -102,8 +100,12 @@
     for (QIMWorkMomentTagModel * tagModel in model.tagList) {
         for (QIMWorkMomentTagModel * selectModel in self.mySelectArr) {
             if (tagModel.tagId.integerValue == selectModel.tagId.integerValue) {
-                selectModel.selected = YES;
-                [model.selectArr addObject:tagModel];
+                QIMWorkMomentTagModel * sModel = [[QIMWorkMomentTagModel alloc]init];
+                sModel.tagId = selectModel.tagId;
+                sModel.tagTitle = selectModel.tagTitle;
+                sModel.tagColor = selectModel.tagColor;
+                sModel.selected = YES;
+                [model.selectArr addObject:sModel];
             }
             else{
                 selectModel.selected = NO;

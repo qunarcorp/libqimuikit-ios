@@ -64,6 +64,8 @@
 
 @property (nonatomic, assign) BOOL isShowHeaderEntrence;
 
+@property (nonatomic, strong) QIMWorkMomentTagModel * tagModel;
+
 @end
 
 @implementation QIMWorkFeedView
@@ -116,7 +118,11 @@
         _mainTableView.mj_footer.automaticallyHidden = YES;
         
 #pragma mark -设置脱圈头部展示的逻辑，热点
-        self.isShowHeaderEntrence = YES;
+        if ([[QIMKit sharedInstance]getTopicFlagMomentNotifyConfig] == NO && [[QIMKit sharedInstance] getHotPostMomentNotifyConfig] ==NO) {
+            self.isShowHeaderEntrence = NO;
+        }
+        else{
+        }
         if (self.isShowDetailTag == YES) {
             [self requestTopicHeaderNetWork];
         }
@@ -132,7 +138,7 @@
                 }
                 else{
                     QIMWorkMomentTagViewController * tpVC = [[QIMWorkMomentTagViewController alloc]init];
-                    
+                    tpVC.headerTitle = @"话题池";
                      [self.rootVC.navigationController pushViewController:tpVC animated:YES];
                 }
             }];
@@ -148,6 +154,16 @@
             QIMWorkMomentHeaderTagInfoModel * model = [QIMWorkMomentHeaderTagInfoModel yy_modelWithDictionary:dic];
             weakSelf.hotTagView = [[QIMWorkMomentHotTagHeaderView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 88+93)];
             [weakSelf.hotTagView setHeaderModel:model];
+            
+            if (self.isShowDetailTag) {
+                QIMWorkMomentTagModel * aTagModel = [[QIMWorkMomentTagModel alloc]init];
+                aTagModel.tagId = model.tagId;
+                aTagModel.tagColor = model.topicColor;
+                aTagModel.selected = YES;
+                aTagModel.tagTitle = model.tagTitle;
+                self.tagModel = aTagModel;
+            }
+            
             weakSelf.mainTableView.tableHeaderView = weakSelf.hotTagView;
             [weakSelf.hotTagView setChangeHeightBolck:^(CGFloat height) {
                 [weakSelf.hotTagView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, height)];
@@ -528,9 +544,13 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.mainTableView.mj_footer endRefreshing];
                     weakSelf.mainTableView.mj_footer = nil;
-                    weakSelf.mainTableView.tableFooterView = [self loadFaildView];
+                    
                     if (weakSelf.workMomentList.count == 0 && self.noDataView.hidden == YES) {
+                        
                         self.noDataView.hidden = NO;
+                    }
+                    else{
+                        weakSelf.mainTableView.tableFooterView = [self loadFaildView];
                     }
                 });
             }
@@ -551,9 +571,12 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.mainTableView.mj_footer endRefreshing];
                     weakSelf.mainTableView.mj_footer = nil;
-                    weakSelf.mainTableView.tableFooterView = [self loadFaildView];
+                    
                     if (weakSelf.workMomentList.count == 0 && self.noDataView.hidden == YES) {
                         self.noDataView.hidden = NO;
+                    }
+                    else{
+                        weakSelf.mainTableView.tableFooterView = [self loadFaildView];
                     }
                 });
             }
@@ -617,6 +640,9 @@
 - (void)jumpToAddNewMomentVc {
     
     QIMWorkMomentPushViewController *newMomentVc = [[QIMWorkMomentPushViewController alloc] init];
+    if (self.tagModel) {
+        [newMomentVc setTagModel:self.tagModel];
+    }
     if ([[QIMKit sharedInstance] getIsIpad] == YES) {
         QIMNavController *newMomentNav = [[QIMNavController alloc] initWithRootViewController:newMomentVc];
         newMomentNav.modalPresentationStyle = UIModalPresentationCurrentContext;

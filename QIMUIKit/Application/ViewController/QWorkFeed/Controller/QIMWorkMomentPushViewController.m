@@ -215,10 +215,23 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
 @property (nonatomic, strong) NSMutableArray * selectTagArr;
 
+@property (nonatomic, strong) UIButton *addTag;
+
 @end
 
 @implementation QIMWorkMomentPushViewController
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.selectTagArr = [NSMutableArray array];
+    }
+    return self;
+}
+- (void)setTagModel:(QIMWorkMomentTagModel *)model{
+    [self.selectTagArr addObject:model];
+}
 - (MBProgressHUD *)progressHUD {
     if (!_progressHUD) {
         _progressHUD = [[MBProgressHUD alloc] initWithView:self.photoCollectionView];
@@ -423,12 +436,12 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     }];
     
     
-    UIButton *addTag = [UIButton buttonWithType:UIButtonTypeCustom];
-    [addTag setBackgroundColor:[UIColor whiteColor]];
-    [addTag setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_pushTag size:28 color:[UIColor qim_colorWithHex:0x7F91FD]]] forState:UIControlStateNormal];
-    [addTag addTarget:self action:@selector(addTagView) forControlEvents:UIControlEventTouchUpInside];
-    [self.keyboardToolView addSubview:addTag];
-    [addTag mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.addTag = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.addTag setBackgroundColor:[UIColor whiteColor]];
+    [self.addTag setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_pushTag size:28 color:[UIColor qim_colorWithHex:0x7F91FD]]] forState:UIControlStateNormal];
+    [self.addTag addTarget:self action:@selector(addTagView) forControlEvents:UIControlEventTouchUpInside];
+    [self.keyboardToolView addSubview:self.addTag];
+    [self.addTag mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(atBtn.mas_right).mas_offset(24);
         make.width.height.mas_equalTo(28);
         make.top.mas_equalTo(topView.mas_bottom).mas_offset(12);
@@ -441,17 +454,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         make.width.mas_equalTo(120);
         make.right.mas_offset(-15);
     }];
-    
-    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-    NSString * str = [defaults objectForKey:@"showTagTip"];
-    if (str && str.length > 0) {
-        
-    }
-    else{
-        [defaults setObject:@"YES" forKey:@"showTagTip"];
-        [self showTagTipsViewWithSender:addTag];
-    }
-    [defaults synchronize];
 }
 #pragma mark-设置tagView的地方
 - (void)addTagView{
@@ -460,7 +462,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     vc.canMutiSelected = YES;
     __weak typeof(self) weakSelf = self;
     [vc setBlock:^(NSArray * _Nonnull selectTags) {
-        if (selectTags.count > 0) {
+        if (selectTags.count >= 0) {
             [weakSelf.selectTagArr removeAllObjects];
         }
         for (QIMWorkMomentTagModel * model in selectTags) {
@@ -695,7 +697,6 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.selectTagArr = [NSMutableArray array];
     [self.photoCollectionView addSubview:_progressHUD];
     _progressHUD.hidden = YES;
     [[YYKeyboardManager defaultManager] addObserver:self];
@@ -716,6 +717,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         self.workFeedContentType = QIMWorkFeedContentTypeVideo;
         [self updateSelectPhotos];
     }
+    [self setUpSelectTagView];
 }
 
 - (void)keyboardChangedWithTransition:(YYKeyboardTransition)transition {
@@ -735,7 +737,19 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         [UIView animateWithDuration:0.25 animations:^{
             self.keyboardToolView.frame = CGRectMake(0, kbFrameOriginY - 80, self.view.width, 80);
             self.tagSelectedView.frame = CGRectMake(0, kbFrameOriginY - self.tagSelectedView.height - self.keyboardToolView.height , self.view.width, self.tagSelectedView.height);
+        } completion:^(BOOL finished) {
+            [self showTagTipsViewWithSender:self.addTag];
         }];
+//        NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+//           NSString * str = [defaults objectForKey:@"showTagTip"];
+//           if (str && str.length > 0) {
+//
+//           }
+//           else{
+//               [defaults setObject:@"YES" forKey:@"showTagTip"];
+               
+//           }
+//           [defaults synchronize];
     }
 }
 
@@ -1676,7 +1690,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 //    [view.content setFrame:CGRectMake(0, 0, 200, 43)];
     view.style.containerBackgroudColor = [UIColor qim_colorWithHex:0x00cabe];
     view.backgroundColor = [UIColor clearColor];//[UIColor qim_colorWithHex:0x00cabe];
-    [view showFrom:sender alignStyle:CPAlignStyleLeft];
+    [view showFrom:sender alignStyle:CPAlignStyleLeft relativePosition:CPContentPositionAlwaysUp];
 }
 
 @end
