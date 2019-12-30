@@ -738,18 +738,18 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
             self.keyboardToolView.frame = CGRectMake(0, kbFrameOriginY - 80, self.view.width, 80);
             self.tagSelectedView.frame = CGRectMake(0, kbFrameOriginY - self.tagSelectedView.height - self.keyboardToolView.height , self.view.width, self.tagSelectedView.height);
         } completion:^(BOOL finished) {
-            [self showTagTipsViewWithSender:self.addTag];
+            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+               NSString * str = [defaults objectForKey:@"showTagTipOo"];
+               if (str && str.length > 0) {
+
+               }
+               else{
+                   [self showTagTipsViewWithSender:self.addTag];
+                   [defaults setObject:@"YES" forKey:@"showTagTipOo"];
+               }
+               [defaults synchronize];
         }];
-//        NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-//           NSString * str = [defaults objectForKey:@"showTagTip"];
-//           if (str && str.length > 0) {
-//
-//           }
-//           else{
-//               [defaults setObject:@"YES" forKey:@"showTagTip"];
-               
-//           }
-//           [defaults synchronize];
+
     }
 }
 
