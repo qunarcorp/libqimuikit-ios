@@ -56,7 +56,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor qim_colorWithHex:0xF8F8F8];
-    self.myMomentView = [[QIMWorkFeedView alloc]initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen]qim_rightWidth], self.view.height) tagID:self.tagId showNewMomentBtn:YES showNoticView:NO showHeaderTagView:YES];
+    self.myMomentView = [[QIMWorkFeedView alloc]initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen]qim_rightWidth], self.view.height) tagID:self.tagId showNewMomentBtn:NO showNoticView:NO showHeaderTagView:YES];
     self.myMomentView.rootVC = self;
     self.myMomentView.tagID = self.tagId;
     [self.view addSubview:self.myMomentView];

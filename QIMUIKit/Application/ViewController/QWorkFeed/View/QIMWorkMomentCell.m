@@ -460,8 +460,9 @@
     } else {
         _moment.rowHeight = _commentBtn.bottom + 18;
     }
-    [self.sepLine setFrame:CGRectMake(0, _moment.rowHeight + 2, SCREEN_WIDTH, 0.5)];
-    
+    if (self.showLine == YES) {
+        [self.sepLine setFrame:CGRectMake(0, _moment.rowHeight + 2, SCREEN_WIDTH, 0.5)];
+    }
 }
 
 - (void)setTagViewUI:(NSArray *)tagData withBottom:(CGFloat)bottom{
@@ -474,7 +475,8 @@
             
             QIMWorkMomentTagModel * selectModel = [QIMWorkMomentTagModel yy_modelWithDictionary:tagData[i]];
             QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]initWitHeight:23];
-            
+            view.textBGColor = [UIColor qim_colorWithHex:0x686868];
+            view.textSize = 13;
             __weak typeof(self) weakSelf = self;
             
             __weak typeof(view) weakView = view;

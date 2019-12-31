@@ -122,6 +122,12 @@
 
 
 - (void)refreshView{
+    if (self.textSize && self.textSize > 0) {
+        self.titleLabel.font = [UIFont systemFontOfSize:self.textSize];
+    }
+    if (self.textBGColor) {
+        self.titleLabel.textColor = self.textBGColor;
+    }
     [self.leftImageView setFrame:CGRectMake(5.5, (self.viewHeight - 15)/2, 15, 15)];
     self.titleLabel.text = self.model.tagTitle;
     [self.titleLabel sizeToFit];

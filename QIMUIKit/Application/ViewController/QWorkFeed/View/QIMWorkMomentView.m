@@ -348,7 +348,8 @@ CGFloat maxFullContentHeight = 0;
             
             __weak typeof(view) weakView = view;
             
-            
+            view.textBGColor = [UIColor qim_colorWithHex:0x686868];
+            view.textSize = 13;
             [view setTagDidClickedBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
                 if (weakSelf.tagSelectBlock) {
                     weakSelf.tagSelectBlock(model);

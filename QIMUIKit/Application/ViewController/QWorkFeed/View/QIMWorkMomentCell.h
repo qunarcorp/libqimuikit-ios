@@ -105,6 +105,8 @@ typedef void(^cellTagSelectBlock)(QIMWorkMomentTagModel * _Nonnull model);
 
 @property (nonatomic, copy) cellTagSelectBlock tagSelectBlock;
 
+@property (nonatomic, assign) BOOL showLine;
+
 @end
 
 NS_ASSUME_NONNULL_END

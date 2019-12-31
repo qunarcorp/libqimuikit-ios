@@ -20,6 +20,10 @@ typedef void(^QIMWorkMomentDidClickedCloseBtnBlock)(QIMWorkMomentTagModel * mode
 @property (nonatomic ,assign) BOOL canChangeColor;
 @property (nonatomic,copy) QIMWorkMomentTagClickedBlock tagDidClickedBlock;
 
+@property (nonatomic,assign) CGFloat textSize;
+
+@property (nonatomic,strong) UIColor * textBGColor;
+
 - (void)resetTagViewStatus;
 - (instancetype)initWitHeight:(CGFloat)height;
 

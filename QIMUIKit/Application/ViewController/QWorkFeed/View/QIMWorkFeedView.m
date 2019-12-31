@@ -73,6 +73,9 @@
 -(QIMWorkOwnerCamalNoDataView *)noDataView{
     if (!_noDataView) {
         _noDataView = [[QIMWorkOwnerCamalNoDataView alloc]initWithFrame:self.frame];
+        if (self.isShowDetailTag) {
+            _noDataView.frame = CGRectMake(0, 50, SCREEN_WIDTH, self.frame.size.height);
+        }
     }
     return _noDataView;
 }
@@ -427,7 +430,7 @@
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakSelf.mainTableView reloadData];
-                        [weakSelf.mainTableView setContentOffset:CGPointZero animated:YES];
+//                        [weakSelf.mainTableView setContentOffset:CGPointZero animated:YES];
                     });
                 }
             }];
@@ -445,7 +448,7 @@
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakSelf.mainTableView reloadData];
-                        [weakSelf.mainTableView setContentOffset:CGPointZero animated:YES];
+//                        [weakSelf.mainTableView setContentOffset:CGPointZero animated:YES];
                     });
                 }
             }];
@@ -460,6 +463,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (weakSelf.tagID && self.tagID.integerValue > 0) {
             [[QIMKit sharedInstance] getWorkMoreMomentWithLastMomentTime:0 withTagID:self.tagID WithLimit:20 WithOffset:0 withFirstLocalMoment:NO WithComplete:^(NSArray * _Nonnull moments) {
+                [weakSelf.mainTableView.mj_header endRefreshing];
                 if (moments.count > 0) {
                         [weakSelf.workMomentList removeAllObjects];
                         for (NSDictionary *momentDic in moments) {
@@ -471,7 +475,7 @@
                             [weakSelf.mainTableView reloadData];
                             [weakSelf.mainTableView.mj_header endRefreshing];
                             if (flag) {
-                                [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
+//                                [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
 //                                [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                             }
                             if (weakSelf.noDataView.hidden == NO && self.userId.length > 0) {
@@ -481,7 +485,7 @@
                         });
                     } else {
                         [weakSelf.mainTableView.mj_header endRefreshing];
-                        if (self.noDataView.hidden == YES && self.userId.length > 0 && self.workMomentList.count == 0) {
+                        if ((self.noDataView.hidden == YES && self.userId.length > 0 && self.workMomentList.count == 0)||(self.noDataView.hidden == YES && self.tagID.integerValue> 0 &&self.tagID && self.workMomentList.count == 0)) {
                             //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
                             self.noDataView.hidden = NO;
                         }
@@ -502,7 +506,7 @@
                         [weakSelf.mainTableView reloadData];
                         [weakSelf.mainTableView.mj_header endRefreshing];
                         if (flag) {
-                            [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
+//                            [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
 //                            [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                         }
                         if (weakSelf.noDataView.hidden == NO && self.userId.length > 0) {
@@ -512,7 +516,7 @@
                     });
                 } else {
                     [weakSelf.mainTableView.mj_header endRefreshing];
-                    if (self.noDataView.hidden == YES && self.userId.length > 0 && self.workMomentList.count == 0) {
+                    if ((self.noDataView.hidden == YES && self.userId.length > 0 && self.workMomentList.count == 0)||(self.noDataView.hidden == YES && self.tagID.integerValue> 0 &&self.tagID && self.workMomentList.count == 0)) {
                         //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
                         self.noDataView.hidden = NO;
                     }
@@ -615,7 +619,7 @@
                 [self.mainTableView reloadData];
 //                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
 //                [UIView animateWithDuration:0.2 animations:^{
-                    [self.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
+//                    [self.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
 //                    [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 //                } completion:nil];
             });
@@ -674,7 +678,7 @@
         cell.backgroundColor = [UIColor whiteColor];
     }
     __weak typeof(self) weakSelf = self;
-    
+    cell.showLine = YES;
     [cell setTagSelectBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
         QIMWorkFeedTagCirrleViewController * vc = [[QIMWorkFeedTagCirrleViewController alloc] init];
         vc.tagId = model.tagId;
@@ -703,7 +707,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
+    if (self.showNoticView && self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
         return 54.0f;
     }
     return 0.000001f;
@@ -711,7 +715,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (_showNoticView) {
-        if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
+        if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0 ) {
             return self.notifyView;
         }
         else{

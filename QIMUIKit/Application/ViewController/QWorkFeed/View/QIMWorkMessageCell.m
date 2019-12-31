@@ -25,6 +25,8 @@
 
 @property (nonatomic, strong) UILabel *contentPreLabel;
 
+//@property (nonatomic, strong) UIView * underLineView;
+
 @end
 
 @implementation QIMWorkMessageCell

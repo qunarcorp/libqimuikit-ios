@@ -35,7 +35,6 @@
     self.backgroundColor = [UIColor whiteColor];
     self.numberLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 25, 25)];
     self.numberLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberLabel.font = [UIFont systemFontOfSize:19];
 //    originLeft = self.numberLabel.right + 6;
     [self addSubview:self.numberLabel];
     
@@ -70,7 +69,7 @@
         self.numberLabel.hidden = NO;
         [self.numberLabel setFrame:CGRectMake(10, 10, 25, 25)];
         self.numberLabel.textAlignment = NSTextAlignmentCenter;
-        self.numberLabel.font = [UIFont systemFontOfSize:19];
+        self.numberLabel.font = [UIFont systemFontOfSize:19 weight:2];
         originLeft = self.numberLabel.right + 6;
     }
     else{

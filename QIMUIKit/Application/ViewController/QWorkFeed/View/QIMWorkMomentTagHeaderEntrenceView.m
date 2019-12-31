@@ -85,8 +85,9 @@
            label.attributedText = string;
            label.textAlignment = NSTextAlignmentLeft;
            label.alpha = 1.0;
+        label.font = [UIFont systemFontOfSize:15 weight:20];
            
-           UIImageView * image = [[UIImageView alloc]initWithFrame:CGRectMake(self.btnHotPageBtn.width - 40, 9, 29, 26)];
+           UIImageView * image = [[UIImageView alloc]initWithFrame:CGRectMake(self.btnHotPageBtn.width - 43, 9, 26, 26)];
             image.image = [UIImage qim_imageNamedFromQIMUIKitBundle:iArr[i]];
         if (i == 0) {
             [self.btnHotPageBtn addSubview:label];

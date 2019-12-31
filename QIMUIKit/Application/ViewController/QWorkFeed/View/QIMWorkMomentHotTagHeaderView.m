@@ -40,7 +40,7 @@
     
     
     self.backgroundColor = [UIColor qim_colorWithHex:0xFFFFFF];
-
+    
     self.backGroundView = [[UIView alloc] init];
     self.backGroundView.frame = CGRectMake(0,0,SCREEN_WIDTH,125);
     self.backGroundView.backgroundColor = [UIColor orangeColor];
@@ -163,7 +163,7 @@
         [self.hudongLabel sizeToFit];
         [self.ctnlabel sizeToFit];
         CGRect tempFrame = self.ctnlabel.frame;
-        [self.ctnlabel setFrame:CGRectMake(self.ctnlabel.x, self.ctnlabel.y, self.ctnlabel.width, self.ctnlabel.height<48?self.ctnlabel.height:48)];
+        [self.ctnlabel setFrame:CGRectMake(self.ctnlabel.x, self.ctnlabel.y, self.ctnlabel.width,48)];
         self.tieziLabel.frame = CGRectMake(self.tieziLabel.x, self.tieziLabel.y, self.tieziLabel.width, self.tieziLabel.height);
         self.hudongLabel.frame = CGRectMake(self.tieziLabel.right + 17, self.hudongLabel.y, self.hudongLabel.width, self.hudongLabel.height);
         if (tempFrame.size.height <= 48) {

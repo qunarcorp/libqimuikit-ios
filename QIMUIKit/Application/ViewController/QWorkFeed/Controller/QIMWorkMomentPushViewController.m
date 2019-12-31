@@ -47,6 +47,7 @@
 #endif
 
 #import "CustomPopOverView.h"
+#import "UIApplication+QIMApplication.h"
 
 static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
@@ -867,7 +868,21 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     if (self.shareWorkMoment) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:^{
+            
+        }];
+    }
+}
+- (void)goBackToRoot:(id)sender {
+//    [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:NO];
+    [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
+    [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
+    if (self.shareWorkMoment) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:^{
+            [[[UIApplication sharedApplication] visibleViewController].navigationController popToRootViewControllerAnimated:YES];
+        }];
     }
 }
 
@@ -1108,7 +1123,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [self hideProgressHUD:YES];
                             });
-                            [self goBack:nil];
+                            [self goBackToRoot:nil];
                         } else {
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [self hideProgressHUD:YES];
