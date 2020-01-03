@@ -14,6 +14,7 @@
 #import "QIMWorkMomentHotTopicModel.h"
 #import "QIMWorkFeedDetailViewController.h"
 #import "QIMWorkOwnerCamalNoDataView.h"
+#import "QIMAutoTracker.h"
 
 
 @interface QIMWorkMomentHotTopicViewController () <UITableViewDelegate,UITableViewDataSource>
@@ -73,6 +74,8 @@
 }
 
 - (void)showMoreBtnClick:(UIButton *)btn{
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"04010101" withDescription:@"查看更多热帖"];
+    
     self.page = 1;
     [self requestNetWorkWithpageSize:@(20)];
     _tableView.tableFooterView = nil;
