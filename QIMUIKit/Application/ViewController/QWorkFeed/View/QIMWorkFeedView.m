@@ -136,10 +136,12 @@
             self.headerEntrenceView = [[QIMWorkMomentTagHeaderEntrenceView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 72)];
             [self.headerEntrenceView setJumpBlock:^(NSInteger tag) {
                 if (tag==0) {
+                    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"04010100" withDescription:@"热帖榜"];
                     QIMWorkMomentHotTopicViewController * vc = [[QIMWorkMomentHotTopicViewController alloc]init];
                     [self.rootVC.navigationController pushViewController:vc animated:YES];
                 }
                 else{
+                    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"04010200" withDescription:@"话题池"];
                     QIMWorkMomentTagViewController * tpVC = [[QIMWorkMomentTagViewController alloc]init];
                     tpVC.headerTitle = @"话题池";
                      [self.rootVC.navigationController pushViewController:tpVC animated:YES];

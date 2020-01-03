@@ -48,6 +48,7 @@
 
 #import "CustomPopOverView.h"
 #import "UIApplication+QIMApplication.h"
+#import "QIMAutoTracker.h"
 
 static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
@@ -458,7 +459,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 }
 #pragma mark-设置tagView的地方
 - (void)addTagView{
-    
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"04030300" withDescription:@"添加标签"];
     QIMWorkMomentTagViewController * vc = [[QIMWorkMomentTagViewController alloc] initWithSelectArr:self.selectTagArr];
     vc.canMutiSelected = YES;
     __weak typeof(self) weakSelf = self;
@@ -764,6 +765,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 }
 
 - (void)atSomeone:(UITapGestureRecognizer *)tap {
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"04030200" withDescription:@"@"];
     QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
     __weak __typeof(&*self) weakSelf = self;
     
@@ -830,6 +832,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 }
 
 - (void)onPhotoButtonClick:(UIButton *)sender{
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"04030100" withDescription:@"发图片"];
     dispatch_async(dispatch_get_main_queue(), ^{
        [self.view endEditing:YES];
     });
