@@ -1783,7 +1783,7 @@ static QIMFastEntrance *_sharedInstance = nil;
         Class RunC = NSClassFromString(@"QimRNBModule");
         SEL sel = NSSelectorFromString(@"openQIMRNVCWithParam:");
         if ([RunC respondsToSelector:sel]) {
-            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(NO), @"module": @"TravelCalendar"};
+            NSDictionary *param = @{@"navVC": navVC, @"hiddenNav": @(YES), @"module": @"TravelCalendar"};
             [RunC performSelector:sel withObject:param];
         }
     });
