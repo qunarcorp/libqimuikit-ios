@@ -532,7 +532,7 @@ RCT_EXPORT_METHOD(exitApp:(NSString *)rnName) {
         [[QIMIPadWindowManager sharedInstance] showDetailViewController:vc];
 #endif
     } else {
-        [navVC pushViewController:vc animated:YES];
+        [navVC pushViewController:vc animated:NO];
     }
     /* mark by newipad
     [navVC pushViewController:vc animated:YES];
