@@ -785,7 +785,8 @@ static dispatch_once_t __onceMainToken;
 
 - (QIMWorkFeedView *)momentView {
     if (!_momentView) {
-        QIMWorkFeedView *workfeedView = [[QIMWorkFeedView alloc] initWithFrame:CGRectMake(0, 0, _contentView.width, _contentView.height)];
+//        QIMWorkFeedView *workfeedView = [[QIMWorkFeedView alloc] initWithFrame:CGRectMake(0, 0, _contentView.width, _contentView.height)];
+        QIMWorkFeedView * workfeedView = [[QIMWorkFeedView alloc]initWithFrame:CGRectMake(0, 0, _contentView.width, _contentView.height) userId:nil showNewMomentBtn:YES showNoticView:YES showheaderEntrence:YES];
         workfeedView.rootVC = self;
         _momentView = workfeedView;
     }

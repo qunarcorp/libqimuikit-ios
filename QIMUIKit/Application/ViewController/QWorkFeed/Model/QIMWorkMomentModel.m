@@ -8,11 +8,12 @@
 
 #import "QIMWorkMomentModel.h"
 #import "QIMWorkMomentContentModel.h"
-
+#import "QIMWorkMomentTagModel.h"
 @implementation QIMWorkMomentModel
 
 + (NSDictionary *)modelContainerPropertyGenericClass {
-    return @{@"attachCommentList" : @"QIMWorkCommentModel" };
+    return @{@"attachCommentList" : @"QIMWorkCommentModel",
+             @"tagData" : @"QIMWorkMomentTagModel"};
 }
 
 + (NSDictionary *)modelCustomPropertyMapper {

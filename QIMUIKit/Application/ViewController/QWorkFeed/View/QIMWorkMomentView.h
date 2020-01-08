@@ -10,6 +10,7 @@
 #import "QIMWorkMomentModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
+typedef void(^cellTagSelectBlock)(QIMWorkMomentTagModel * _Nonnull model);
 
 @protocol MomentViewDelegate <NSObject>
 
@@ -28,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithFrame:(CGRect)frame withMomentModel:(QIMWorkMomentModel *)model;
 
 @property (nonatomic, strong) QIMWorkMomentModel *momentModel;
-
+@property (nonatomic, copy) cellTagSelectBlock tagSelectBlock;
 @end
 
 NS_ASSUME_NONNULL_END

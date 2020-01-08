@@ -100,7 +100,7 @@
     
     [self.view addSubview:self.scrollview];
 
-    self.myMomentView = [[QIMWorkFeedView alloc]initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen]qim_rightWidth], self.scrollview.height) userId:self.userId showNewMomentBtn:NO showNoticView:NO];
+    self.myMomentView = [[QIMWorkFeedView alloc]initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen]qim_rightWidth], self.scrollview.height) userId:self.userId showNewMomentBtn:NO showNoticView:NO showheaderEntrence:NO];
     self.myMomentView.userId = self.userId;
     self.myMomentView.rootVC = self;
     [self.scrollview addSubview:self.myMomentView];

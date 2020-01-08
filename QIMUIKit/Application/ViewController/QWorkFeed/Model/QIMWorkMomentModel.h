@@ -10,6 +10,7 @@
 
 @class QIMWorkMomentContentModel;
 @class QIMWorkCommentModel;
+@class QIMWorkMomentTagModel;
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QIMWorkMomentModel : NSObject
@@ -53,6 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSNumber *postType;       //帖子状态，1：正常，2：置顶，4：置热
 
 @property (nonatomic, strong) NSNumber *reviewStatus;   //审核状态
+
+@property (nonatomic, strong) NSArray <QIMWorkMomentTagModel *> * tagList;
 
 @end
 

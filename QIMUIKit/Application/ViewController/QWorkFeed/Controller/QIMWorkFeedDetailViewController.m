@@ -26,6 +26,8 @@
     #import "QIMIPadWindowManager.h"
 #endif
 
+#import "QIMWorkMomentTagModel.h"
+#import "QIMWorkFeedTagCirrleViewController.h"
 
 @interface QIMWorkFeedDetailViewController () <UITableViewDelegate, UITableViewDataSource, QIMWorkCommentTableViewDelegate, QIMWorkCommentInputBarDelegate, UIGestureRecognizerDelegate, MomentCellDelegate, YYKeyboardObserver, MomentViewDelegate>
 
@@ -89,6 +91,12 @@
     if (!_momentView) {
         _momentView = [[QIMWorkMomentView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 20) withMomentModel:self.momentModel];
         _momentView.delegate = self;
+        __weak typeof(self) weakSelf = self;
+        [_momentView setTagSelectBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
+            QIMWorkFeedTagCirrleViewController * vc = [[QIMWorkFeedTagCirrleViewController alloc] init];
+            vc.tagId = model.tagId;
+            [weakSelf.navigationController pushViewController:vc animated:YES];
+        }];
     }
     return _momentView;
 }

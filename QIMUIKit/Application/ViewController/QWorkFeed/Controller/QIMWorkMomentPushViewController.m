@@ -6,6 +6,7 @@
 //  Copyright © 2019 QIM. All rights reserved.
 //
 
+
 #import "QIMWorkMomentPushViewController.h"
 #import "QTImagePickerController.h"
 #import "QIMAuthorizationManager.h"
@@ -29,6 +30,7 @@
 #import "QIMWorkMomentModel.h"
 #import "QIMUUIDTools.h"
 #import "YYModel.h"
+#import "UIColor+QIMUtility.h"
 #import "MBProgressHUD.h"
 #import "QIMProgressHUD.h"
 #import "QIMEmotionManager.h"
@@ -37,9 +39,16 @@
 #import "QIMATGroupMemberTextAttachment.h"
 #import "YYKeyboardManager.h"
 #import "QIMVideoModel.h"
+#import  "QIMWorkMomentTagViewController.h"
+#import "QIMWorkMomentTagView.h"
+#import "QIMWorkMomentTagModel.h"
 #if __has_include("QIMIPadWindowManager.h")
 #import "QIMIPadWindowManager.h"
 #endif
+
+#import "CustomPopOverView.h"
+#import "UIApplication+QIMApplication.h"
+#import "QIMAutoTracker.h"
 
 static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
@@ -176,6 +185,8 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
 @property(nonatomic, strong) UIView *keyboardToolView;
 
+@property(nonatomic, strong) UIView * tagSelectedView;
+
 @property (nonatomic, strong) UITextView *textView;
 
 @property (nonatomic, strong) UILabel *remainingLabel;
@@ -204,10 +215,25 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 
 @property (nonatomic, assign) QIMWorkFeedContentType workFeedContentType;
 
+@property (nonatomic, strong) NSMutableArray * selectTagArr;
+
+@property (nonatomic, strong) UIButton *addTag;
+
 @end
 
 @implementation QIMWorkMomentPushViewController
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.selectTagArr = [NSMutableArray array];
+    }
+    return self;
+}
+- (void)setTagModel:(QIMWorkMomentTagModel *)model{
+    [self.selectTagArr addObject:model];
+}
 - (MBProgressHUD *)progressHUD {
     if (!_progressHUD) {
         _progressHUD = [[MBProgressHUD alloc] initWithView:self.photoCollectionView];
@@ -265,6 +291,14 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     return _keyboardToolView;
 }
 
+- (UIView *)tagSelectedView{
+    if (!_tagSelectedView) {
+        _tagSelectedView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]- 80 - 70, self.view.width, 70)];
+        _tagSelectedView.backgroundColor = [UIColor clearColor];
+    }
+    return _tagSelectedView;
+}
+
 - (UILabel *)remainingLabel {
     if (!_remainingLabel) {
         _remainingLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -291,6 +325,57 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     }
     _identiView.momentId = self.momentId;
     return _identiView;
+}
+
+#pragma mark -设置学则标签的tag
+- (void)setUpSelectTagView {
+    
+    [self.tagSelectedView removeAllSubviews];
+    CGFloat yFloat = 0;
+    CGFloat xFloat = 0;
+    NSInteger lastWidth = 0;
+    for (NSInteger i = 0; i< self.selectTagArr.count; i++) {
+        
+        QIMWorkMomentTagModel * selectModel = self.selectTagArr[i];
+        selectModel.selected = NO;
+        QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]initWitHeight:27];
+        
+        __weak typeof(self) weakSelf = self;
+        
+        __weak typeof(view) weakView = view;
+        [view setCloseBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
+            [weakSelf.selectTagArr removeObject:model];
+            [weakSelf setUpSelectTagView];
+        }];
+        
+        [view setTagDidClickedBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
+            
+        }];
+        
+        view.canChangeColor = YES;
+        view.canDelete = YES;
+        view.model = selectModel;
+        if (i==0) {
+            xFloat = 15;
+            yFloat = 0;
+        }
+        else{
+            if (SCREEN_WIDTH - (xFloat + lastWidth + view.width +15 + 30  +15)< 0) {
+                yFloat = yFloat + 37;
+                xFloat = 15;
+            }
+            else{
+                xFloat = xFloat + lastWidth + 15;
+            }
+        }
+        view.frame = CGRectMake(xFloat, yFloat, view.width, 27);
+        lastWidth = view.width;
+        [self.tagSelectedView addSubview:view];
+    }
+//    self.tagSelectedView.height = Float + 15.5;
+    [self.tagSelectedView setFrame:CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]- 80 - yFloat - 15.5 , SCREEN_WIDTH, yFloat + 20)];
+//    self.tagBgView.frame = CGRectMake(25, self.headerLabel.bottom +15, self.width + 25, 10 + yFloat + 27);
+//    _model.cellHeight = self.headerLabel.height + self.tagBgView.height + 15 + 10;
 }
 
 - (void)setupKeyBoardTools {
@@ -352,6 +437,18 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         make.top.mas_equalTo(topView.mas_bottom).mas_offset(12);
     }];
     
+    
+    self.addTag = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.addTag setBackgroundColor:[UIColor whiteColor]];
+    [self.addTag setImage:[UIImage qimIconWithInfo:[QIMIconInfo iconInfoWithText:qim_moment_tag_pushTag size:28 color:[UIColor qim_colorWithHex:0x7F91FD]]] forState:UIControlStateNormal];
+    [self.addTag addTarget:self action:@selector(addTagView) forControlEvents:UIControlEventTouchUpInside];
+    [self.keyboardToolView addSubview:self.addTag];
+    [self.addTag mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(atBtn.mas_right).mas_offset(24);
+        make.width.height.mas_equalTo(28);
+        make.top.mas_equalTo(topView.mas_bottom).mas_offset(12);
+    }];
+    
     [self.keyboardToolView addSubview:self.identiView];
     [self.identiView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(topView.mas_bottom).mas_offset(10);
@@ -360,7 +457,33 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         make.right.mas_offset(-15);
     }];
 }
-
+#pragma mark-设置tagView的地方
+- (void)addTagView{
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"04030300" withDescription:@"添加标签"];
+    QIMWorkMomentTagViewController * vc = [[QIMWorkMomentTagViewController alloc] initWithSelectArr:self.selectTagArr];
+    vc.canMutiSelected = YES;
+    __weak typeof(self) weakSelf = self;
+    [vc setBlock:^(NSArray * _Nonnull selectTags) {
+        if (selectTags.count >= 0) {
+            [weakSelf.selectTagArr removeAllObjects];
+        }
+        for (QIMWorkMomentTagModel * model in selectTags) {
+            [weakSelf.selectTagArr addObject:model];
+        }
+        [weakSelf setUpSelectTagView];
+    }];
+//    [vc setSelectArrFromPushView:self.selectTagArr];
+    if ([[QIMKit sharedInstance] getIsIpad]) {
+        vc.modalPresentationStyle = UIModalPresentationCurrentContext;
+        QIMNavController *qtalNav = [[QIMNavController alloc] initWithRootViewController:vc];
+        qtalNav.modalPresentationStyle = UIModalPresentationCurrentContext;
+#if __has_include("QIMIPadWindowManager.h")
+        [[[QIMIPadWindowManager sharedInstance] detailVC] presentViewController:qtalNav animated:YES completion:nil];
+#endif
+    } else {
+        [weakSelf.navigationController pushViewController:vc animated:YES];
+    }
+}
 - (QIMWorkMomentContentLinkModel *)getLinkModelWithLinkDic:(NSDictionary *)linkDic {
     return [QIMWorkMomentContentLinkModel yy_modelWithDictionary:linkDic];
 }
@@ -570,6 +693,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 - (void)setupUI {
     [self.view addSubview:self.photoCollectionView];
     [self.view addSubview:self.keyboardToolView];
+    [self.view addSubview:self.tagSelectedView];
     [self setupKeyBoardTools];
 }
 
@@ -595,6 +719,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         self.workFeedContentType = QIMWorkFeedContentTypeVideo;
         [self updateSelectPhotos];
     }
+    [self setUpSelectTagView];
 }
 
 - (void)keyboardChangedWithTransition:(YYKeyboardTransition)transition {
@@ -607,12 +732,26 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
         [UIView animateWithDuration:0.25 animations:^{
             //键盘落下
             self.keyboardToolView.frame = CGRectMake(0, self.view.height - [[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT] - 80, self.view.width, 80);
+            self.tagSelectedView.frame = CGRectMake(0, self.view.height - self.tagSelectedView.height -[[QIMDeviceManager sharedInstance] getHOME_INDICATOR_HEIGHT]- 80, self.view.width, self.tagSelectedView.height);
         } completion:nil];
     } else {
         //键盘弹起
         [UIView animateWithDuration:0.25 animations:^{
             self.keyboardToolView.frame = CGRectMake(0, kbFrameOriginY - 80, self.view.width, 80);
+            self.tagSelectedView.frame = CGRectMake(0, kbFrameOriginY - self.tagSelectedView.height - self.keyboardToolView.height , self.view.width, self.tagSelectedView.height);
+        } completion:^(BOOL finished) {
+            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+               NSString * str = [defaults objectForKey:@"showTagTipOo"];
+               if (str && str.length > 0) {
+
+               }
+               else{
+                   [self showTagTipsViewWithSender:self.addTag];
+                   [defaults setObject:@"YES" forKey:@"showTagTipOo"];
+               }
+               [defaults synchronize];
         }];
+
     }
 }
 
@@ -626,6 +765,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 }
 
 - (void)atSomeone:(UITapGestureRecognizer *)tap {
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"04030200" withDescription:@"@"];
     QIMWorkFeedAtNotifyViewController * qNoticeVC = [[QIMWorkFeedAtNotifyViewController alloc] init];
     __weak __typeof(&*self) weakSelf = self;
     
@@ -692,6 +832,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
 }
 
 - (void)onPhotoButtonClick:(UIButton *)sender{
+    [[QIMAutoTrackerManager sharedInstance] addACTTrackerDataWithEventId:@"04030100" withDescription:@"发图片"];
     dispatch_async(dispatch_get_main_queue(), ^{
        [self.view endEditing:YES];
     });
@@ -730,7 +871,21 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     if (self.shareWorkMoment) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:^{
+            
+        }];
+    }
+}
+- (void)goBackToRoot:(id)sender {
+//    [[QTPHImagePickerManager sharedInstance] setNotAllowSelectVideo:NO];
+    [[QTPHImagePickerManager sharedInstance] setCanContinueSelectionVideo:YES];
+    [[QTPHImagePickerManager sharedInstance] setMixedSelection:YES];
+    if (self.shareWorkMoment) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:^{
+            [[[UIApplication sharedApplication] visibleViewController].navigationController popToRootViewControllerAnimated:YES];
+        }];
     }
 }
 
@@ -950,9 +1105,17 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                         });
                     });
                 } else {
+                    
                     NSString *momentContent = [[QIMJSONSerializer sharedInstance] serializeObject:momentContentDic];
                     [momentDic setQIMSafeObject:momentContent forKey:@"content"];
                     [momentDic setQIMSafeObject:outATInfoArray forKey:@"atList"];
+                    if (self.selectTagArr.count > 0) {
+                        NSMutableArray * tagIdArr = [NSMutableArray array];
+                        for (QIMWorkMomentTagModel * model in self.selectTagArr) {
+                            [tagIdArr addObject:model.tagId];
+                        }
+                        [momentDic setQIMSafeObject:tagIdArr forKey:@"tagIdList"];
+                    }
                     QIMVerboseLog(@"outATInfoArray: %@", outATInfoArray);
                     QIMVerboseLog(@"momentContentDic : %@", momentContentDic);
                     QIMVerboseLog(@"momentDic: %@", momentDic);
@@ -963,7 +1126,7 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [self hideProgressHUD:YES];
                             });
-                            [self goBack:nil];
+                            [self goBackToRoot:nil];
                         } else {
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [self hideProgressHUD:YES];
@@ -1527,6 +1690,25 @@ static const NSInteger QIMWORKMOMENTLIMITNUM = 1000;
     QIMWorkMomentUserIdentityVC *identityVc = [[QIMWorkMomentUserIdentityVC alloc] init];
     identityVc.momentId = self.momentId;
     [self.navigationController pushViewController:identityVc animated:YES];
+}
+
+- (void)showTagTipsViewWithSender:(UIView *)sender{
+    CustomPopOverView *view = [CustomPopOverView popOverView];
+    UILabel *label = [[UILabel alloc] init];
+    label.frame = CGRectMake(0 ,0 ,200,43);
+    label.numberOfLines = 0;
+    
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"标签功能上线啦~ 快来给你的帖子打个标签吧！"attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFangSC" size: 15],NSForegroundColorAttributeName: [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0]}];
+
+    label.attributedText = string;
+    label.textAlignment = NSTextAlignmentLeft;
+    label.alpha = 1.0;
+    label.backgroundColor = [UIColor qim_colorWithHex:0x00cabe];
+    view.content = label;
+//    [view.content setFrame:CGRectMake(0, 0, 200, 43)];
+    view.style.containerBackgroudColor = [UIColor qim_colorWithHex:0x00cabe];
+    view.backgroundColor = [UIColor clearColor];//[UIColor qim_colorWithHex:0x00cabe];
+    [view showFrom:sender alignStyle:CPAlignStyleLeft relativePosition:CPContentPositionAlwaysUp];
 }
 
 @end

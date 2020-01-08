@@ -11,6 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
+
 @class QIMWorkMomentCell;
 @class QIMWorkMomentModel;
 @class QIMWorkMomentLabel;
@@ -18,6 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 @class QIMWorkMomentLinkView;
 @class QIMWorkMomentVideoView;
 @class QIMWorkAttachCommentListView;
+@class QIMWorkMomentTagModel;
+
+typedef void(^cellTagSelectBlock)(QIMWorkMomentTagModel * _Nonnull model);
 
 @protocol MomentCellDelegate <NSObject>
 
@@ -97,6 +102,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL notShowAttachCommentList;    //不展示评论列表
 
 @property (nonatomic, assign) BOOL isSearch;                    //是否为搜索
+
+@property (nonatomic, copy) cellTagSelectBlock tagSelectBlock;
+
+@property (nonatomic, assign) BOOL showLine;
 
 @end
 

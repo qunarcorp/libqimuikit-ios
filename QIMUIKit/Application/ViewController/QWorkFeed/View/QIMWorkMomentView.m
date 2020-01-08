@@ -14,6 +14,9 @@
 #import "QIMMarginLabel.h"
 #import "QIMWorkMomentParser.h"
 #import "QIMEmotionManager.h"
+#import "QIMWorkMomentTagModel.h"
+#import "QIMWorkMomentTagView.h"
+#import <YYModel/YYModel.h>
 
 CGFloat maxFullContentHeight = 0;
 
@@ -44,6 +47,8 @@ CGFloat maxFullContentHeight = 0;
 @property (nonatomic, strong) QIMWorkMomentLabel *contentLabel;
 
 @property (nonatomic, strong) QIMWorkMomentModel *moment;
+
+@property (nonatomic , strong) UIView * tagView;
 
 @end
 
@@ -139,6 +144,11 @@ CGFloat maxFullContentHeight = 0;
     [_timeLab sizeToFit];
     [self addSubview:_timeLab];
     
+    //tagView
+    _tagView = [[UIView alloc]init];
+        _tagView.hidden = YES;
+    //    _tagView.backgroundColor = [UIColor redColor];
+    [self addSubview:_tagView];
     
     NSString *userId = [NSString stringWithFormat:@"%@@%@", self.moment.ownerId, self.moment.ownerHost];
     if (self.moment.isAnonymous == NO) {
@@ -239,6 +249,8 @@ CGFloat maxFullContentHeight = 0;
 
     [self refreshContentUIWithType:contentType withBottom:bottom];
     
+    [self setTagViewUI:self.moment.tagList withBottom:bottom];
+    
     NSDate *timeDate = [NSDate dateWithTimeIntervalSince1970:([self.moment.createTime longLongValue]/1000)];
     _timeLab.text = [timeDate qim_timeIntervalDescription];
     _timeLab.frame = CGRectMake(self.contentLabel.left, (_rowHeight > 0) ? _rowHeight + 15 : bottom + 15, 60, 12);
@@ -318,6 +330,53 @@ CGFloat maxFullContentHeight = 0;
             self.contentLabel.originContent = self.moment.content.content;
         }
             break;
+    }
+}
+
+- (void)setTagViewUI:(NSArray *)tagData withBottom:(CGFloat)bottom{
+    if (tagData && tagData.count > 0) {
+        self.tagView.hidden = NO;
+        CGFloat yFloat = 0;
+        CGFloat xFloat = 0;
+        NSInteger lastWidth = 0;
+        for (NSInteger i = 0; i< tagData.count; i++) {
+            
+            QIMWorkMomentTagModel * selectModel = [QIMWorkMomentTagModel yy_modelWithDictionary:tagData[i]];
+            QIMWorkMomentTagView * view = [[QIMWorkMomentTagView alloc]initWitHeight:23];
+            
+            __weak typeof(self) weakSelf = self;
+            
+            __weak typeof(view) weakView = view;
+            
+            view.textBGColor = [UIColor qim_colorWithHex:0x686868];
+            view.textSize = 13;
+            [view setTagDidClickedBlock:^(QIMWorkMomentTagModel * _Nonnull model) {
+                if (weakSelf.tagSelectBlock) {
+                    weakSelf.tagSelectBlock(model);
+                }
+            }];
+            
+            view.canChangeColor = NO;
+            view.model = selectModel;
+            if (i==0) {
+                xFloat = 0;
+                yFloat = 0;
+            }
+            else{
+                if (SCREEN_WIDTH - (xFloat + lastWidth + view.width +self.nameLab.left + 30  +15)< 0) {
+                    yFloat = yFloat + 32;
+                    xFloat = 0;
+                }
+                else{
+                    xFloat = xFloat + lastWidth + 15;
+                }
+            }
+            view.frame = CGRectMake(xFloat, yFloat, view.width, 23);
+            lastWidth = view.width;
+            [self.tagView addSubview:view];
+        }
+        [self.tagView setFrame:CGRectMake(self.nameLab.left,  (_rowHeight>0?_rowHeight: bottom) + 15.5, [[QIMWindowManager shareInstance] getPrimaryWidth], yFloat + 30)];
+        _rowHeight = self.tagView.bottom;
     }
 }
 
