@@ -141,9 +141,9 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     QIMWorkMomentHotTopicModel * model = self.dataArr[indexPath.row];
     QIMWorkMomentHotTopicTableViewCell * cell = [self.tableView dequeueReusableCellWithIdentifier:@"hottopic"];
-    cell.selectionStyle =  UITableViewCellSelectionStyleNone;
     if (!cell) {
         cell = [[QIMWorkMomentHotTopicTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"hottopic"];
+        cell.selectionStyle =  UITableViewCellSelectionStyleNone;
     }
     model.headerNub = @(indexPath.row + 1);
     if (indexPath.row <5) {
