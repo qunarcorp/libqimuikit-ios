@@ -519,7 +519,8 @@
                         [weakSelf.mainTableView reloadData];
                         [weakSelf.mainTableView.mj_header endRefreshing];
                         if (flag) {
-                            [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
+//                            [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
+                            [weakSelf.mainTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
 //                            [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                         }
                         if (weakSelf.noDataView.hidden == NO && self.userId.length > 0) {
