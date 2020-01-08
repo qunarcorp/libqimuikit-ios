@@ -108,17 +108,19 @@
         _mainTableView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _mainTableView.delegate = self;
         _mainTableView.dataSource = self;
-//        _mainTableView.estimatedRowHeight = 0;
-//        _mainTableView.estimatedSectionHeaderHeight = 0;
+        _mainTableView.estimatedRowHeight = 0;
+        _mainTableView.estimatedSectionHeaderHeight = 0;
+        _mainTableView.estimatedSectionFooterHeight = 0;
+        
+        if (@available(iOS 11.0, *)) {
+        _mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
+        
 //        CGRect tableHeaderViewFrame = CGRectMake(0, 0, 0, 0.0001f);
 //        _mainTableView.tableHeaderView = [[UIView alloc] initWithFrame:tableHeaderViewFrame];
         _mainTableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);           //top left bottom right 左右边距相同
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _mainTableView.separatorColor = [UIColor qim_colorWithHex:0xdddddd];
-        
-        _mainTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(reloadRemoteRecenteMomentsWithNeedScrollTop:)];
-        _mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreMoment)];
-        _mainTableView.mj_footer.automaticallyHidden = YES;
         
 #pragma mark -设置脱圈头部展示的逻辑，热点
         if ([[QIMKit sharedInstance]getTopicFlagMomentNotifyConfig] == NO && [[QIMKit sharedInstance] getHotPostMomentNotifyConfig] ==NO) {
@@ -150,6 +152,10 @@
             _mainTableView.tableHeaderView = self.headerEntrenceView;
         }
     }
+    _mainTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(reloadRemoteRecenteMomentsWithNeedScrollTop:)];
+    
+    _mainTableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreMoment)];
+           _mainTableView.mj_footer.automaticallyHidden = YES;
     return _mainTableView;
 }
 - (void)requestTopicHeaderNetWork{
@@ -432,7 +438,7 @@
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakSelf.mainTableView reloadData];
-//                        [weakSelf.mainTableView setContentOffset:CGPointZero animated:YES];
+                        [weakSelf.mainTableView setContentOffset:CGPointZero animated:YES];
                     });
                 }
             }];
@@ -450,7 +456,7 @@
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakSelf.mainTableView reloadData];
-//                        [weakSelf.mainTableView setContentOffset:CGPointZero animated:YES];
+                        [weakSelf.mainTableView setContentOffset:CGPointZero animated:YES];
                     });
                 }
             }];
@@ -478,7 +484,7 @@
                             [weakSelf.mainTableView.mj_header endRefreshing];
                             if (flag) {
 //                                [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
-//                                [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                                [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                             }
                             if (weakSelf.noDataView.hidden == NO && self.userId.length > 0) {
                                 //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
@@ -509,7 +515,7 @@
                         [weakSelf.mainTableView.mj_header endRefreshing];
                         if (flag) {
 //                            [weakSelf.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
-//                            [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                            [weakSelf.mainTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                         }
                         if (weakSelf.noDataView.hidden == NO && self.userId.length > 0) {
                             //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
@@ -621,7 +627,7 @@
                 [self.mainTableView reloadData];
 //                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
 //                [UIView animateWithDuration:0.2 animations:^{
-//                    [self.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
+                    [self.mainTableView setContentOffset:CGPointMake(0,0) animated:YES];
 //                    [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 //                } completion:nil];
             });
