@@ -310,8 +310,12 @@
     [self.mainTableView deselectRowAtIndexPath:indexPath animated:YES];
     NSString *value = [self.dataSource objectAtIndex:indexPath.row];
     if ([value isEqualToString:@"Rate QTalk"]) {
-        NSString *str = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/cn/app/qtalk/id1000198342?mt=8"];
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
+        // TODO: 添加必崩的测试代码，测试APM
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:8 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        });
+//        NSString *str = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/cn/app/qtalk/id1000198342?mt=8"];
+//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
     } else if ([value isEqualToString:@"Rate QChat"]) {
         NSString *str = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/cn/app/qchat/id994868843?mt=8"];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
