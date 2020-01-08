@@ -9,8 +9,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void(^clickActBlock)(void);
+
 @interface QIMWorkMomentHeaderListCollectionViewCell : UICollectionViewCell
 @property (nonatomic , strong) UIImageView * imageView;
+
+@property (nonatomic , copy) clickActBlock clickBlock;
 @end
 
 NS_ASSUME_NONNULL_END
