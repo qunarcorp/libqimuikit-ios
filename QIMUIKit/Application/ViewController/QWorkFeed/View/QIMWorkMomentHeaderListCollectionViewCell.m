@@ -22,8 +22,18 @@
 
 - (void)setViewWithFrame:(CGRect)frame{
     self.imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.width)];
+    self.imageView.userInteractionEnabled = YES;
     self.imageView.layer.masksToBounds = YES;
     self.imageView.layer.cornerRadius = frame.size.width/2;
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(picClicked)];
+    [self.imageView addGestureRecognizer:tap];
+    
     [self.contentView addSubview:self.imageView];
+}
+
+- (void)picClicked{
+    if (self.clickBlock) {
+        self.clickBlock();
+    }
 }
 @end

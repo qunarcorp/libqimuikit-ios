@@ -273,6 +273,9 @@
     }
     else{
          [cell.imageView qim_setImageWithJid:headerStr placeholderImage:[UIImage imageWithData:[QIMKit defaultUserHeaderImage]]];
+        [cell setClickBlock:^{
+            [QIMFastEntrance openUserCardVCByUserId:headerStr];
+        }];
     }
     return cell;
 }

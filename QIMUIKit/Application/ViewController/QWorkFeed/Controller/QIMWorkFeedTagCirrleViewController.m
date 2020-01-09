@@ -99,18 +99,18 @@
 }
 
 #pragma QIMWorkFeedMessageViewDataSource
-- (NSArray *)qImWorkFeedMessageViewOriginDataSourceWithViewTag:(NSInteger)viewTag {
-    if (viewTag == 0) {
-        return [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:20 WithOffset:0 eventTypes:@[@(QIMWorkFeedNotifyTypeMyComment)]];
-    } else {
-        
-        return [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:20 WithOffset:0 eventTypes:@[@(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
-    }
-}
-
-- (NSDictionary *)qImWorkFeedMessageViewModelWithMomentPostUUID:(NSString *)momentId viewTag:(NSInteger)viewTag{
-    return [[QIMKit sharedInstance] getWorkMomentWithMomentId:momentId];
-}
+//- (NSArray *)qImWorkFeedMessageViewOriginDataSourceWithViewTag:(NSInteger)viewTag {
+//    if (viewTag == 0) {
+//        return [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:20 WithOffset:0 eventTypes:@[@(QIMWorkFeedNotifyTypeMyComment)]];
+//    } else {
+//
+//        return [[QIMKit sharedInstance] getWorkNoticeMessagesWithLimit:20 WithOffset:0 eventTypes:@[@(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
+//    }
+//}
+//
+//- (NSDictionary *)qImWorkFeedMessageViewModelWithMomentPostUUID:(NSString *)momentId viewTag:(NSInteger)viewTag{
+//    return [[QIMKit sharedInstance] getWorkMomentWithMomentId:momentId];
+//}
 
 #pragma QIMWorkFeedMessageViewDelegate
 

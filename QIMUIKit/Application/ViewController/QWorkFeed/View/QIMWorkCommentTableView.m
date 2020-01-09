@@ -334,25 +334,54 @@ static CGPoint tableOffsetPoint;
         } else {
             if (self.commentNum > 0 && self.commentModels.count) {
                 NSString *commentNumStr = [NSString stringWithFormat:@"（%ld）", self.commentNum];
-                NSString *titleText = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"moment_comment"]];
+                NSString *titleText;
+                if (commentNumStr && commentNumStr.length >0) {
+                    titleText = [NSString stringWithFormat:@"%@%@",[NSBundle qim_localizedStringForKey:@"moment_comment"],commentNumStr];
+                }
+                else
+                {
+                    titleText = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"moment_comment"]];
+                }
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
                 [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:15]}
                                         range:[titleText rangeOfString:commentNumStr]];
                 [titleLabel setAttributedText:attributedText];
-            } else {
+            } else if(self.commentModels.count)  {
+                NSString * titleText = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"moment_comment"]];
+                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
+                [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                        range:[titleText rangeOfString:@""]];
+                [titleLabel setAttributedText:attributedText];
+            }
+            else{
                 
             }
         }
     } else {
         if (self.commentNum > 0 && self.commentModels.count) {
             NSString *commentNumStr = [NSString stringWithFormat:@"（%ld）", self.commentNum];
-            NSString *titleText = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"moment_comment"]];
+
+            NSString *titleText;
+            if (commentNumStr && commentNumStr.length >0) {
+                titleText = [NSString stringWithFormat:@"%@%@",[NSBundle qim_localizedStringForKey:@"moment_comment"],commentNumStr];
+            }
+            else
+            {
+                titleText = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"moment_comment"]];
+            }
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
             [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:15]}
                                     range:[titleText rangeOfString:commentNumStr]];
             [titleLabel setAttributedText:attributedText];
-        } else {
-
+        } else if(self.commentModels.count) {
+            NSString * titleText = [NSString stringWithFormat:[NSBundle qim_localizedStringForKey:@"moment_comment"]];
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:titleText];
+            [attributedText setAttributes:@{NSForegroundColorAttributeName:[UIColor qim_colorWithHex:0x999999], NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                    range:[titleText rangeOfString:@""]];
+            [titleLabel setAttributedText:attributedText];
+        }
+        else{
+            
         }
     }
 
