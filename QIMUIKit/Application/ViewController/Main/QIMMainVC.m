@@ -1029,7 +1029,7 @@ static dispatch_once_t __onceMainToken;
         if ([lastUserName isEqualToString:@"appstore"]) {
             [[QIMKit sharedInstance] updateLastTempUserToken:@"appstore"];
 //            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
-            [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
+            [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"194910"];
         } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
             [[QIMKit sharedInstance] updateLastTempUserToken:@"qtalktest123"];
 //            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
