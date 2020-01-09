@@ -133,7 +133,7 @@
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
+            [[QIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:@"app123(*)"];
         });
     } else {
         NSString *token = [[QIMKit sharedInstance] getLastUserToken];
@@ -141,7 +141,7 @@
         if ([lastUserName isEqualToString:@"appstore"]) {
             [[QIMKit sharedInstance] updateLastTempUserToken:@"appstore"];
 //            [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
-            [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
+            [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"app123(*)"];
         } else if ([[lastUserName lowercaseString] isEqualToString:@"qtalktest"]) {
             [[QIMKit sharedInstance] updateLastTempUserToken:@"qtalktest123"];
 //            [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
@@ -759,7 +759,7 @@
             if ([userName isEqualToString:@"appstore"]) {
                 [[QIMKit sharedInstance] updateLastTempUserToken:@"appstore"];
                 //        [[QIMKit sharedInstance] setUserObject:@"appstore" forKey:@"kTempUserToken"];
-                [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"appstore"];
+                [[QIMKit sharedInstance] loginWithUserName:@"appstore" WithPassWord:@"app123(*)"];
             } else if ([[userName lowercaseString] isEqualToString:@"qtalktest"]) {
                 [[QIMKit sharedInstance] updateLastTempUserToken:@"qtalktest123"];
                 //        [[QIMKit sharedInstance] setUserObject:@"qtalktest123" forKey:@"kTempUserToken"];
