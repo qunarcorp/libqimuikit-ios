@@ -1,8 +1,8 @@
 //
 //  STIMImageEditViewController.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 15/7/3.
+//  Created by haibin.li on 15/7/3.
 //
 //
 

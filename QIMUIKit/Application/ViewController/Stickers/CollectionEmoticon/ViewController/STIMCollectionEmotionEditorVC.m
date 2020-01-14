@@ -1,6 +1,6 @@
 //
 //  STIMCollectionEmotionEditorVC.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by qitmac000495 on 16/5/13.
 //

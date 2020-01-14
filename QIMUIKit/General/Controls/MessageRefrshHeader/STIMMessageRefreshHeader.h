@@ -1,8 +1,8 @@
 //
 //  STIMMessageRefreshHeader.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2018/3/21.
+//  Created by 李海彬 on 2018/3/21.
 //
 
 #import "STIMCommonUIFramework.h"

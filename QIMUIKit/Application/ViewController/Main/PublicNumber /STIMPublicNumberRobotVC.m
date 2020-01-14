@@ -2,7 +2,7 @@
 
 //  STIMChatVC.m
 
-//  qunarChatIphone
+//  STChatIphone
 
 //
 

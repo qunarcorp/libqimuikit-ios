@@ -1,8 +1,8 @@
 //
 //  STIMExportMsgManager.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 2016/08/26.
+//  Created by haibin.li on 2016/08/26.
 //
 //
 

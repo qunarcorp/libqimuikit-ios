@@ -1,6 +1,6 @@
 //
 //  STIMFastEntrance.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 16/6/15.
 //

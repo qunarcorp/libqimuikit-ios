@@ -2,7 +2,7 @@
 //  STIMWorkMomentModel.h
 //  STIMUIKit
 //
-//  Created by lilu on 2019/1/2.
+//  Created by lihaibin.li on 2019/1/2.
 //  Copyright © 2019 STIM. All rights reserved.
 //
 

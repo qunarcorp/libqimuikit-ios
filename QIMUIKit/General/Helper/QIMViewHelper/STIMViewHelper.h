@@ -1,6 +1,6 @@
 //
 //  STIMViewHelper.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by c on 15/5/6.
 //  Copyright (c) 2015年 ping.xue. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  STIMPNRichTextCell.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 15/9/6.
 //

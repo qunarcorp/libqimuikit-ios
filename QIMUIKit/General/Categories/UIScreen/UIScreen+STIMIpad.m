@@ -1,6 +1,6 @@
 //
 //  UIScreen+STIMIpad.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by 平 薛 on 15/6/16.
 //

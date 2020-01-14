@@ -1,6 +1,6 @@
 //
 //  STIMContactManager.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by Qunar-Lu on 2016/11/10.
 //

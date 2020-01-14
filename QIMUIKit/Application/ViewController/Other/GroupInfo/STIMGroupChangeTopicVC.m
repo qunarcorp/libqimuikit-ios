@@ -1,6 +1,6 @@
 //
 //  STIMGroupChangeTopicVC.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by xueping on 15/7/17.
 //

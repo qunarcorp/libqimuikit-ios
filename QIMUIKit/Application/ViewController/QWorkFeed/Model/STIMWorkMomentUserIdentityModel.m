@@ -2,7 +2,7 @@
 //  STIMWorkMomentUserIdentityModel.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/1/7.
+//  Created by lihaibin.li on 2019/1/7.
 //  Copyright © 2019 STIM. All rights reserved.
 //
 

@@ -1,8 +1,6 @@
 //
 //  STIMPreviewMsgVC.m
-//  qunarChatIphone
-//
-//  Created by admin on 15/8/13.
+//  STChatIphone
 //
 //
 
@@ -26,7 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    STIMVerboseLog(@"start");//TODO Startalk
     if (self.message.messageDirection == STIMMessageDirection_Received) {
         [self.view setBackgroundColor:[UIColor stimDB_leftBallocColor]];
     }else{
@@ -50,6 +48,7 @@
     [_scrollView addSubview:_msgLabel];
     [_scrollView setContentSize:CGSizeMake(_msgLabel.width, _msgLabel.height+20)];
     
+     STIMVerboseLog(@"viewDidLoad");//TODO Startalk
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onClose)];
     [self.view addGestureRecognizer:tap];
@@ -61,7 +60,6 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

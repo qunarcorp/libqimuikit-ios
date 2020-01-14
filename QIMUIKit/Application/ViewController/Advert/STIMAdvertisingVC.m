@@ -1,6 +1,6 @@
 //
 //  STIMAdvertisingVC.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 16/3/29.
 //

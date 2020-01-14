@@ -2,7 +2,7 @@
 //  STIMPublicLogin.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/2/14.
+//  Created by lihaibin.li on 2019/2/14.
 //  Copyright © 2019 STIM. All rights reserved.
 //
 
@@ -413,7 +413,7 @@ static const int companyTag = 10001;
     if (textField == self.userPwdTextField) {
         if (textField.text.length - range.length + string.length >= 1 && self.userNameTextField.text.length > 0 && self.companyModel.domain.length > 0) {
             [self updateLoginEnable:YES];
-        } else if([[self.userNameTextField.text lowercaseString] isEqualToString:@"appstore"]) {
+        } else if([[self.userNameTextField.text lowercaseString] isEqualToString:@"lihaibin.li"]) {
             [self updateLoginEnable:YES];
         } else {
             [self updateLoginEnable:NO];
@@ -755,11 +755,11 @@ static const int companyTag = 10001;
     _userNameTextField.text = lastUserName;
     _userPwdTextField.text = @"......";
     
-    if ([[lastUserName lowercaseString] isEqualToString:@"appstore"]) {
-        NSDictionary *testQTalkNav = @{STIMNavNameKey:@"Startalk", STIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
+    if ([[lastUserName lowercaseString] isEqualToString:@"lihaibin.li"]) {
+        NSDictionary *testQTalkNav = @{STIMNavNameKey:@"Startalk", STIMNavUrlKey:@"https://i.startalk.im/newapi/nck/qtalk_nav.qunar?c=startalk.im"};
         [[STIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:lastUserName Check:YES WithForcedUpdate:YES];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[STIMKit sharedInstance] updateLastTempUserToken:@"appstore"];
+            [[STIMKit sharedInstance] updateLastTempUserToken:@"lihaibin.li"];
             [[STIMKit sharedInstance] loginWithUserName:lastUserName WithPassWord:lastUserName];
         });
     } else {
@@ -787,12 +787,40 @@ static const int companyTag = 10001;
 #warning 报错即将登陆的用户名 并请求导航
         [[STIMProgressHUD sharedInstance] showProgressHUDWithTest:[NSBundle stimDB_localizedStringForKey:@"login_waiting"]];
         [[STIMKit sharedInstance] setUserObject:userName forKey:@"currentLoginUserName"];
-        if ([[userName lowercaseString] isEqualToString:@"appstore"]) {
-            NSDictionary *testQTalkNav = @{STIMNavNameKey:@"Startalk", STIMNavUrlKey:@"https://qt.qunar.com/package/static/qtalk/nav"};
+        if ([[userName lowercaseString] isEqualToString:@"lihaibin.li"]) {
+            NSDictionary *testQTalkNav = @{STIMNavNameKey:@"Startalk", STIMNavUrlKey:@"https://i.startalk.im/newapi/nck/qtalk_nav.qunar?c=startalk.im"};
             [[STIMKit sharedInstance] qimNav_updateNavigationConfigWithNavDict:testQTalkNav WithUserName:userName Check:YES WithForcedUpdate:YES];
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[STIMKit sharedInstance] loginWithUserName:userName WithPassWord:userName];
-            });
+            __weak id weakSelf = self;
+            NSString *pwd = self.userPwdTextField.text;
+            [[STIMKit sharedInstance] getNewUserTokenWithUserName:userName WithPassword:pwd withCallback:^(NSDictionary *result) {
+                if (result) {
+                    BOOL ret = [[result objectForKey:@"ret"] boolValue];
+                    NSInteger errcode = [[result objectForKey:@"errcode"] integerValue];
+                    if (ret && errcode == 0) {
+                        NSDictionary *data = [result objectForKey:@"data"];
+                        NSString *newUserName = [data objectForKey:@"u"];
+                        NSString *newToken = [data objectForKey:@"t"];
+                        if (newUserName.length && newToken.length) {
+                            [[STIMKit sharedInstance] updateLastTempUserToken:newToken];
+                            [[STIMKit sharedInstance] loginWithUserName:newUserName WithPassWord:newToken];
+                        }
+                    } else {
+                        NSString *errmsg = [result objectForKey:@"data"];
+                        if (!errmsg.length) {
+                            errmsg = @"验证失败";
+                        }
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"" message:errmsg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                            [alertView show];
+                            [MBProgressHUD hideHUDForView:self.view animated:YES];
+                        });
+                    }
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf showNetWorkUnableAlert];
+                    });
+                }
+            }];
         } else {
             if ([[STIMKit sharedInstance] qimNav_LoginType] == QTLoginTypeNewPwd) {
                 

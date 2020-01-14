@@ -2,7 +2,7 @@
 //  STIMWindowManager.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/7/29.
+//  Created by lihaibin.li on 2019/7/29.
 //
 
 #import "STIMWindowManager.h"

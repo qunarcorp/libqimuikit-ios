@@ -1,8 +1,8 @@
 //
 //  STIMCommonUserInfoHeaderCell.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2017/12/26.
+//  Created by 李海彬 on 2017/12/26.
 //
 
 #import "STIMCommonUIFramework.h"

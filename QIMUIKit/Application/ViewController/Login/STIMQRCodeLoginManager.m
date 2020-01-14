@@ -1,8 +1,8 @@
 //
 //  STIMQRCodeLoginManager.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2017/10/30.
+//  Created by 李海彬 on 2017/10/30.
 //
 
 #import "STIMQRCodeLoginManager.h"

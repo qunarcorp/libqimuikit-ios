@@ -1,6 +1,6 @@
 //
 //  QTalkEverNoteListVC.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by lihuaqi on 2017/9/20.
 //

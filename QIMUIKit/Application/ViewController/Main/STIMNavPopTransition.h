@@ -1,6 +1,6 @@
 //
 //  STIMNavPopTransition.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by Qunar-Lu on 2016/12/6.
 //

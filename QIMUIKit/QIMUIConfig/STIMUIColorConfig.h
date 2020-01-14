@@ -2,7 +2,7 @@
 //  STIMUIColorConfig.h
 //  STIMUIKit
 //
-//  Created by lilu on 2019/4/25.
+//  Created by lihaibin.li on 2019/4/25.
 //  Copyright © 2019 STIM. All rights reserved.
 //
 

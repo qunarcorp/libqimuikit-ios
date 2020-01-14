@@ -1,6 +1,6 @@
 //
 //  STIMLoginViewController.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by ping.xue on 14-3-4.
 //  Copyright (c) 2014年 ping.xue. All rights reserved.

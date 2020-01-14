@@ -1,8 +1,8 @@
 //
 //  STIMNotificationManager.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2018/5/17.
+//  Created by 李海彬 on 2018/5/17.
 //
 
 #import <Foundation/Foundation.h>

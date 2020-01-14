@@ -1,8 +1,8 @@
 //
 //  STIMRemoteNotificationManager.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 2016/09/14.
+//  Created by haibin.li on 2016/09/14.
 //
 //
 

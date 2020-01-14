@@ -1,6 +1,6 @@
 //
 //  STIMAddIndexViewController.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 16/2/1.
 //

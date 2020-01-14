@@ -1,6 +1,6 @@
 //
 //  STIMBusinessModleUpdate.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 16/5/20.
 //
@@ -10,6 +10,6 @@
 
 @interface STIMBusinessModleUpdate : NSObject
 
-+ (void)updateMicroTourModel;
++ (void)updateSTMicroTourModel;
 
 @end

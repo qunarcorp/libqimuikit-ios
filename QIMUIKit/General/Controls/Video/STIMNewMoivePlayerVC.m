@@ -2,7 +2,7 @@
 //  STIMNewMoivePlayerVC.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/8/7.
+//  Created by lihaibin.li on 2019/8/7.
 //
 
 #import "STIMNewMoivePlayerVC.h"

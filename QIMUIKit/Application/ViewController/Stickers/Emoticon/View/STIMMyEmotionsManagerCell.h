@@ -1,6 +1,6 @@
 //
 //  STIMMyEmotionsManagerCell.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by qitmac000495 on 16/6/3.
 //

@@ -2,7 +2,7 @@
 //  STIMWorkFeedAtNotifyViewController.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/2/27.
+//  Created by lihaibin.li on 2019/2/27.
 //  Copyright © 2019 STIM. All rights reserved.
 //
 

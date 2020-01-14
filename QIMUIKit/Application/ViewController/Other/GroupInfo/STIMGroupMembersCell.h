@@ -1,8 +1,8 @@
 //
 //  STIMGroupMembersCell.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 15/11/17.
+//  Created by haibin.li on 15/11/17.
 //
 //
 

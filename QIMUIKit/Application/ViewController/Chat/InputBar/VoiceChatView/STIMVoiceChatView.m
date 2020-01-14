@@ -1,8 +1,8 @@
 //
 //  STIMVoiceChatView.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 15/7/13.
+//  Created by haibin.li on 15/7/13.
 //
 //
 

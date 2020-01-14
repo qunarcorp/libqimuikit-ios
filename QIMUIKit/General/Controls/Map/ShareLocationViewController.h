@@ -1,8 +1,8 @@
 //
 //  ShareLocationViewController.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/1/28.
+//  Created by haibin.li on 16/1/28.
 //
 //
 

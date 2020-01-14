@@ -1,6 +1,6 @@
 //
 //  MenuCommonLabelCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 16/5/20.
 //

@@ -2,7 +2,7 @@
 //  STIMUpdateAlertView.h
 //  STIMUIKit
 //
-//  Created by lilu on 2019/6/25.
+//  Created by lihaibin.li on 2019/6/25.
 //
 
 #import <UIKit/UIKit.h>

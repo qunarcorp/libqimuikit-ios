@@ -1,8 +1,8 @@
 //
 //  STIMAgreementViewController.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 15/8/5.
+//  Created by haibin.li on 15/8/5.
 //
 //
 

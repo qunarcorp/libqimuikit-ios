@@ -2,7 +2,7 @@
 //  STIMUserMedalRemindCell.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/10/17.
+//  Created by lihaibin.li on 2019/10/17.
 //
 
 #import "STIMUserMedalRemindCell.h"

@@ -2,7 +2,7 @@
 //  STIMAtUserTableViewCell.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/4/8.
+//  Created by lihaibin.li on 2019/4/8.
 //
 
 #import "STIMAtUserTableViewCell.h"

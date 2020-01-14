@@ -1,6 +1,6 @@
 //
 //  QTalkSessionView.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by Qunar-Lu on 16/7/20.
 //

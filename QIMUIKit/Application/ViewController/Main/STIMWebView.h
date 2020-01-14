@@ -1,6 +1,6 @@
 //
 //  STIMWebView.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by xueping on 15/6/29.
 //

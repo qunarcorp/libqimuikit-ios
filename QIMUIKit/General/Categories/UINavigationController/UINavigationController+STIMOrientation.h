@@ -2,7 +2,7 @@
 //  UINavigationController+STIMOrientation.h
 //  STIMUIKit
 //
-//  Created by 李露 on 2018/9/3.
+//  Created by 李海彬 on 2018/9/3.
 //  Copyright © 2018年 STIM. All rights reserved.
 //
 

@@ -2,7 +2,7 @@
 //  STIMSDKUIHelper.h
 //  STIMSDK
 //
-//  Created by 李露 on 2018/9/29.
+//  Created by 李海彬 on 2018/9/29.
 //  Copyright © 2018年 STIM. All rights reserved.
 //
 
@@ -19,6 +19,6 @@
 - (void)checkUpNotifacationHandle;
 
 //QChat更新应用模版
-- (void)updateMicroTourModel;
+- (void)updateSTMicroTourModel;
 
 @end

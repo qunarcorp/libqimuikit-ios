@@ -2,7 +2,7 @@
 //  STIMRedMindView.h
 //  STIMUIKit
 //
-//  Created by lilu on 2018/12/17.
+//  Created by lihaibin.li on 2018/12/17.
 //  Copyright © 2018 STIM. All rights reserved.
 //
 

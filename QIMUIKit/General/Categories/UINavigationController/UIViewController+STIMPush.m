@@ -2,7 +2,7 @@
 //  UIViewController+STIMPush.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/8/18.
+//  Created by lihaibin.li on 2019/8/18.
 //
 
 #import "UIViewController+STIMPush.h"

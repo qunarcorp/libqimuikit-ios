@@ -1,8 +1,8 @@
 //
 //  TodoListSettingVC.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2017/7/28.
+//  Created by 李海彬 on 2017/7/28.
 //
 //
 

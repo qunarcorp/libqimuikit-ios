@@ -1,8 +1,8 @@
 //
 //  STIMCollectionFaceManager.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/1/6.
+//  Created by haibin.li on 16/1/6.
 //
 //
 

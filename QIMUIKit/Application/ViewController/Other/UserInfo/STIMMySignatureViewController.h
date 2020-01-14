@@ -1,8 +1,8 @@
 //
 //  STIMMySignatureViewController.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/2/2.
+//  Created by haibin.li on 16/2/2.
 //
 //
 

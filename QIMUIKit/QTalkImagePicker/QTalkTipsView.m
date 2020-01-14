@@ -1,6 +1,6 @@
 //
 //  QTalkTipsView.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 15/8/19.
 //

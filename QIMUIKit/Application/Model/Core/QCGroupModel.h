@@ -1,6 +1,6 @@
 //
 //  QCGroupModel.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by c on 15/5/12.
 //  Copyright (c) 2015年 c. All rights reserved.
@@ -21,9 +21,11 @@ typedef enum {
 @property (nonatomic, strong) NSString          * groupId;              //群Id
 @property (nonatomic, strong) NSString          * groupName;            //群Name
 @property (nonatomic, strong) NSString          * groupAnnouncement;    //群公告
-@property (nonatomic, strong) QCUserModel       * groupAdmin;           //群🐷
+@property (nonatomic, strong) QCUserModel       * groupAdmin;           //群主
 @property (nonatomic, assign) QCGroupPermission   groupPermission;      //群权限
 
 @property (nonatomic, strong) NSMutableArray    * members;              //群成员
+
+@property (nonatomic, strong) NSString          * groupModel;              //TODO Startalk
 
 @end

@@ -1,6 +1,6 @@
 //
 //  STIMMicroTourGuideCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 16/4/15.
 //

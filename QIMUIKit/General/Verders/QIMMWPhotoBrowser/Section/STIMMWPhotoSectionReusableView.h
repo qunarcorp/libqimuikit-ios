@@ -2,7 +2,7 @@
 //  STIMMWPhotoSectionReusableView.h
 //  STIMUIKit
 //
-//  Created by lilu on 2018/12/14.
+//  Created by lihaibin.li on 2018/12/14.
 //  Copyright © 2018 STIM. All rights reserved.
 //
 

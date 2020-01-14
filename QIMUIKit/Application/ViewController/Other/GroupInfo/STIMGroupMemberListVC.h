@@ -1,8 +1,8 @@
 //
 //  STIMGroupMemberListVC.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 15/11/19.
+//  Created by haibin.li on 15/11/19.
 //
 //
 

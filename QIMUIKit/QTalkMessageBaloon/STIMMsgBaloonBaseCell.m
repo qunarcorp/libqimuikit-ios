@@ -1,6 +1,6 @@
 //
 //  STIMMsgBaloonBaseCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by xueping on 15/7/9.
 //

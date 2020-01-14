@@ -1,6 +1,6 @@
 //
 //  STIMContactSelectionViewController.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by may on 15/7/7.
 //

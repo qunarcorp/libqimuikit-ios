@@ -1,8 +1,8 @@
 //
 //  STIMExtensibleProductCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/7/13.
+//  Created by haibin.li on 16/7/13.
 //
 //
 

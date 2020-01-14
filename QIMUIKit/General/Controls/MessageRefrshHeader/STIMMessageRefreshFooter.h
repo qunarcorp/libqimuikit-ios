@@ -2,7 +2,7 @@
 //  STIMMessageRefreshFooter.h
 //  STIMUIKit
 //
-//  Created by lilu on 2019/7/2.
+//  Created by lihaibin.li on 2019/7/2.
 //
 
 #import "STIMCommonUIFramework.h"

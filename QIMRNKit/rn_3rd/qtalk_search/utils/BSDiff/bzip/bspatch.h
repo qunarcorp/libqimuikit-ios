@@ -1,6 +1,6 @@
 //
 //  bspatch.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by wangyu.wang on 16/8/31.
 //

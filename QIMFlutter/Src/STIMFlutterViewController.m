@@ -2,7 +2,7 @@
 //  STIMFlutterViewController.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/9/20.
+//  Created by lihaibin.li on 2019/9/20.
 //
 
 #import "STIMFlutterViewController.h"

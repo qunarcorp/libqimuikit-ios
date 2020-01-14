@@ -1,6 +1,6 @@
 //
 //  STIMPhotoBrowserNavController.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by 平 薛 on 15/6/12.
 //

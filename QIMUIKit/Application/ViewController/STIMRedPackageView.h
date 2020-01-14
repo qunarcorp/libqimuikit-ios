@@ -3,6 +3,6 @@
 
 @interface STIMRedPackageView : UIView
 
-+ (void)showRedPackagerViewByUrl:(NSString *)url;
++ (void)showSTRedPackagerViewByUrl:(NSString *)url;
 
 @end

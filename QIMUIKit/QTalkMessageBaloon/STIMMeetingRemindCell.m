@@ -2,7 +2,7 @@
 //  STIMMeetingRemindCell.m
 //  STIMUIKit
 //
-//  Created by 李露 on 2018/7/17.
+//  Created by 李海彬 on 2018/7/17.
 //  Copyright © 2018年 STIM. All rights reserved.
 //
 

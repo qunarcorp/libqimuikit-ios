@@ -2,7 +2,7 @@
 //  STIMPwdBoxSecuritySettingCell.m
 //  STIMNoteUI
 //
-//  Created by 李露 on 10/12/18.
+//  Created by 李海彬 on 10/12/18.
 //  Copyright © 2018 STIM. All rights reserved.
 //
 #if __has_include("STIMNoteManager.h")

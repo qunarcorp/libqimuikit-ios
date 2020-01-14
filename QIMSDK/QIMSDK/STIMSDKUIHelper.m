@@ -2,7 +2,7 @@
 //  STIMSDKUIHelper.m
 //  STIMSDK
 //
-//  Created by 李露 on 2018/9/29.
+//  Created by 李海彬 on 2018/9/29.
 //  Copyright © 2018年 STIM. All rights reserved.
 //
 
@@ -55,8 +55,8 @@ static STIMSDKUIHelper *_uiHelper = nil;
     [STIMRemoteNotificationManager checkUpNotifacationHandle];
 }
 
-- (void)updateMicroTourModel {
-//    [STIMBusinessModleUpdate updateMicroTourModel];
+- (void)updateSTMicroTourModel {
+//    [STIMBusinessModleUpdate updateSTMicroTourModel];
 }
 
 @end

@@ -1,6 +1,6 @@
 //
 //  ValidationFriendVC.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 15/11/24.
 //

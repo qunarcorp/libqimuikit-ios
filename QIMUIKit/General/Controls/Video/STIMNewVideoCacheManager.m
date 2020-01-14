@@ -2,7 +2,7 @@
 //  STIMNewVideoCacheManager.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/8/9.
+//  Created by lihaibin.li on 2019/8/9.
 //
 
 #import "STIMNewVideoCacheManager.h"

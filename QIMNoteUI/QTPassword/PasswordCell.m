@@ -1,8 +1,8 @@
 //
 //  PasswordCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2017/7/11.
+//  Created by 李海彬 on 2017/7/11.
 //
 //
 #if __has_include("STIMNoteManager.h")

@@ -1,6 +1,6 @@
 //
 //  STIMVideoMsgCell.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by xueping on 15/7/13.
 //

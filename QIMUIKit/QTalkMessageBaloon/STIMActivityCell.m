@@ -1,8 +1,8 @@
 //
 //  STIMActivityCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/4/7.
+//  Created by haibin.li on 16/4/7.
 //
 //
 

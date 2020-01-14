@@ -1,8 +1,8 @@
 //
 //  STIMNavBackBtn.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2018/1/16.
+//  Created by 李海彬 on 2018/1/16.
 //
 
 #import "STIMCommonUIFramework.h"

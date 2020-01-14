@@ -1,8 +1,8 @@
 //
 //  STIMContactSelectVC.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 2016/09/20.
+//  Created by haibin.li on 2016/09/20.
 //
 //
 

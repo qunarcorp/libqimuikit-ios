@@ -1,6 +1,6 @@
 //
 //  ExitRNQTalkSearch.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by wangyu.wang on 2016/11/28.
 //

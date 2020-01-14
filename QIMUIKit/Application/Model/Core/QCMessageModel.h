@@ -1,6 +1,6 @@
 //
 //  QCMessageModel.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by c on 15/5/12.
 //  Copyright (c) 2015年 c. All rights reserved.
@@ -37,5 +37,7 @@ typedef enum {
 
 @property (nonatomic, strong) NSString        * from;                   //发送方
 @property (nonatomic, strong) NSString        * to;                     //接收方
+
+@property (nonatomic, strong) NSString        * messageModel;                     //TODO Startalk
 
 @end

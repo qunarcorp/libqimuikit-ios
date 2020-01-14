@@ -1,6 +1,6 @@
 //
 //  STIMBuddyTitleCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by wangshihai on 15/1/4.
 //  Copyright (c) 2015年 ping.xue. All rights reserved.

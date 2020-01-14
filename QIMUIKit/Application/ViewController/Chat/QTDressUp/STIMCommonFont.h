@@ -1,8 +1,8 @@
 //
 //  STIMCommonFont.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/3/7.
+//  Created by haibin.li on 16/3/7.
 //
 //
 

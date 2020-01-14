@@ -1,6 +1,6 @@
 //
 //  STIMRTCChatCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by Qunar-Lu on 2017/3/22.
 //

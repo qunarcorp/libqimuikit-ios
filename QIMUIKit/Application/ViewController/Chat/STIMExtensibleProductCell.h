@@ -1,11 +1,7 @@
 //
 //  STIMExtensibleProductCell.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/7/13.
-//
-//
-
 #import "STIMCommonUIFramework.h"
 
 @class STIMMsgBaloonBaseCell;

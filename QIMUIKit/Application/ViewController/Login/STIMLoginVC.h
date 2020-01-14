@@ -1,8 +1,8 @@
 //
 //  STIMLoginVC.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/8/1.
+//  Created by haibin.li on 16/8/1.
 //
 //
 

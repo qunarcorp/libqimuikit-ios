@@ -1,8 +1,8 @@
 //
 //  STIMDefalutMessageCell.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2018/2/2.
+//  Created by 李海彬 on 2018/2/2.
 //
 
 #import "STIMCommonUIFramework.h"

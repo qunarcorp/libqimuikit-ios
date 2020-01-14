@@ -2,7 +2,7 @@
 //  UINavigationController+STIMPush.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/8/4.
+//  Created by lihaibin.li on 2019/8/4.
 //
 
 #import "UINavigationController+STIMPush.h"

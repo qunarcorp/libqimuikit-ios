@@ -20,7 +20,7 @@ static UIViewController *__redPackageVC = nil;
     [_webView loadRequest:request];
 }
 
-+ (void)showRedPackagerViewByUrl:(NSString *)url{
++ (void)showSTRedPackagerViewByUrl:(NSString *)url{
     if (__redPackageWindow == nil) {
         __redPackageWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         if ([[STIMKit sharedInstance] getIsIpad]) {
@@ -32,7 +32,7 @@ static UIViewController *__redPackageVC = nil;
         __redPackageVC = [[QTalkViewController alloc] init];
         [__redPackageVC.view setBackgroundColor:[UIColor clearColor]];
         if ([[STIMKit sharedInstance] getIsIpad]) {
-            /*Comment by lilulucas.li
+            /*Comment by lihaibin.li
             IPAD_NAVViewController * nav = [[IPAD_NAVViewController alloc] initWithRootViewController:__redPackageVC];
             nav.navigationBarHidden = YES;
             [__redPackageWindow setRootViewController:nav];
@@ -47,6 +47,7 @@ static UIViewController *__redPackageVC = nil;
         redPackageView.tag = 9999;
         [__redPackageVC.view addSubview:redPackageView];
         [redPackageView loadUrl:url];
+        STIMVerboseLog(@"showSTRedPackagerViewByUrl");//TODO Startalk
     }
 }
 
@@ -55,11 +56,14 @@ static UIViewController *__redPackageVC = nil;
         [_webView reload];
     } else if (buttonIndex == 1) {
         [self close];
+    } else if(buttonIndex == 2){
+        STIMVerboseLog(@"alertView");//TODO Startalk
     }
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    STIMVerboseLog(@"start");//TODO Startalk
     NSString * urlStr = [[request URL] absoluteString];
     NSArray * components = [urlStr componentsSeparatedByString:@":"];
    if ([urlStr hasPrefix:@"qunartalk://"] && components.count > 1){
@@ -128,6 +132,7 @@ static UIViewController *__redPackageVC = nil;
        }
        return NO;
    }
+    STIMVerboseLog(@"end");//TODO Startalk
     return YES;
 }
 
@@ -139,7 +144,7 @@ static UIViewController *__redPackageVC = nil;
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        
+        STIMVerboseLog(@"start");//TODO Startalk
         [self setBackgroundColor:[UIColor clearColor]];
         
         if ([STIMKit getSTIMProjectType] != STIMProjectTypeQChat) {
@@ -159,6 +164,7 @@ static UIViewController *__redPackageVC = nil;
             [_webView setOpaque:NO];
             [_webView setBackgroundColor:[UIColor clearColor]];
             [self addSubview:_webView];
+        STIMVerboseLog(@"end");//TODO Startalk
     }
     return self;
 }

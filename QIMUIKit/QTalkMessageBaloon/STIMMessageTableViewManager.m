@@ -1,8 +1,8 @@
 //
 //  STIMMessageTableViewManager.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2018/2/5.
+//  Created by 李海彬 on 2018/2/5.
 //
 
 #import "STIMMessageTableViewManager.h"
@@ -311,15 +311,15 @@
                     if (self.chatType == ChatType_GroupChat) {
 #pragma mark 00d8c4642c688fd6bfa9a41b523bdb6b PHP那边加的key
                         if (msg.messageType == STIMMessageType_RedPack || msg.messageType == STIMMessageType_AA) {
-                            [STIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&group_"@"id=%@&rk=%@&q_d=%@", infoDic[@"url"], [STIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [STIMKit getLastUserName]] stimDB_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[STIMKit sharedInstance] myRemotelogginKey], [[STIMKit sharedInstance] getDomain]]];
+                            [STIMRedPackageView showSTRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&group_"@"id=%@&rk=%@&q_d=%@", infoDic[@"url"], [STIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [STIMKit getLastUserName]] stimDB_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[STIMKit sharedInstance] myRemotelogginKey], [[STIMKit sharedInstance] getDomain]]];
                         } else if (msg.messageType == STIMMessageType_RedPackInfo || msg.messageType == STIMMessageType_AAInfo) {
-                            [STIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&group_"@"id=%@&rk=%@&q_d=%@", infoDic[@"Url"], [STIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b",                                                                                                                    [STIMKit getLastUserName]] stimDB_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[STIMKit sharedInstance] myRemotelogginKey], [[STIMKit sharedInstance] getDomain]]];
+                            [STIMRedPackageView showSTRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&group_"@"id=%@&rk=%@&q_d=%@", infoDic[@"Url"], [STIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b",                                                                                                                    [STIMKit getLastUserName]] stimDB_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[STIMKit sharedInstance] myRemotelogginKey], [[STIMKit sharedInstance] getDomain]]];
                         }
                     } else {
                         if (msg.messageType == STIMMessageType_RedPack || msg.messageType == STIMMessageType_AA) {
-                            [STIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", infoDic[@"url"], [STIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [STIMKit getLastUserName]] stimDB_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[STIMKit sharedInstance] myRemotelogginKey], [[STIMKit sharedInstance] getDomain]]];
+                            [STIMRedPackageView showSTRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", infoDic[@"url"], [STIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [STIMKit getLastUserName]] stimDB_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[STIMKit sharedInstance] myRemotelogginKey], [[STIMKit sharedInstance] getDomain]]];
                         } else {
-                            [STIMRedPackageView showRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", infoDic[@"Url"], [STIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [STIMKit getLastUserName]] stimDB_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[STIMKit sharedInstance] myRemotelogginKey],  [[STIMKit sharedInstance] getDomain]]];
+                            [STIMRedPackageView showSTRedPackagerViewByUrl:[NSString stringWithFormat:@"%@&username=%@&sign=%@&company=qunar&user_id=%@&rk=%@&q_d=%@", infoDic[@"Url"], [STIMKit getLastUserName], [[NSString stringWithFormat:@"%@00d8c4642c688fd6bfa9a41b523bdb6b", [STIMKit getLastUserName]] stimDB_getMD5], [self.chatId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[STIMKit sharedInstance] myRemotelogginKey],  [[STIMKit sharedInstance] getDomain]]];
                         }
                     }
                 }

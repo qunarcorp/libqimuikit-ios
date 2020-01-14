@@ -1,6 +1,6 @@
 //
 //  STIMGroupViewCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by wangshihai on 14/12/10.
 //  Copyright (c) 2014年 ping.xue. All rights reserved.

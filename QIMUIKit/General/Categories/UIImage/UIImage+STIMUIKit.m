@@ -2,7 +2,7 @@
 //  UIImage+STIMUIKit.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/4/28.
+//  Created by lihaibin.li on 2019/4/28.
 //  Copyright © 2019 STIM. All rights reserved.
 //
 

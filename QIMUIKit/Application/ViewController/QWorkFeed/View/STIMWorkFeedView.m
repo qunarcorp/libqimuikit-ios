@@ -2,7 +2,7 @@
 //  STIMWorkFeedView.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/4/29.
+//  Created by lihaibin.li on 2019/4/29.
 //  Copyright © 2019 STIM. All rights reserved.
 //
 

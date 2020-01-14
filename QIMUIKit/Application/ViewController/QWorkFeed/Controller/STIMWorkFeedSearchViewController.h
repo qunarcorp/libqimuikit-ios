@@ -2,7 +2,7 @@
 //  STIMWorkFeedSearchViewController.h
 //  STIMUIKit
 //
-//  Created by lilu on 2019/7/16.
+//  Created by lihaibin.li on 2019/7/16.
 //
 
 #import "STIMCommonUIFramework.h"

@@ -1,8 +1,8 @@
 //
 //  FindDirectionsView.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/2/4.
+//  Created by haibin.li on 16/2/4.
 //
 //
 

@@ -1,8 +1,8 @@
 //
 //  STIMModifyRemarkViewController.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 16/5/11.
+//  Created by haibin.li on 16/5/11.
 //
 //
 

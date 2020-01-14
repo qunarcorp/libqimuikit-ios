@@ -1,8 +1,8 @@
 //
 //  STIMTextBarExpandView.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 15/7/9.
+//  Created by haibin.li on 15/7/9.
 //
 //
 

@@ -1,6 +1,6 @@
 //
 //  QTalkLoaclSearch.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by wangyu.wang on 2016/12/6.
 //

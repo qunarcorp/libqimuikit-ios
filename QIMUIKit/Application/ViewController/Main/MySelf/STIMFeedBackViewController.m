@@ -1,6 +1,6 @@
 //
 //  STIMFeedBackViewController.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by Qunar-Lu on 16/9/6.
 //

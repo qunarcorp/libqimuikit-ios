@@ -1,6 +1,6 @@
 //
 //  STIMProgressHUD.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by Qunar-Lu on 2017/1/14.
 //

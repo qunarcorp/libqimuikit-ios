@@ -1,8 +1,8 @@
 //
 //  STIMPlayVoiceManager.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by lilu on 16/6/21.
+//  Created by lihaibin.li on 16/6/21.
 //
 //
 #import "STIMCommonUIFramework.h"

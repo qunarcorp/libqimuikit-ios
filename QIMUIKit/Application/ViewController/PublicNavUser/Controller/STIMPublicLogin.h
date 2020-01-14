@@ -2,7 +2,7 @@
 //  STIMPublicLogin.h
 //  STIMUIKit
 //
-//  Created by lilu on 2019/2/14.
+//  Created by lihaibin.li on 2019/2/14.
 //  Copyright © 2019 STIM. All rights reserved.
 //
 

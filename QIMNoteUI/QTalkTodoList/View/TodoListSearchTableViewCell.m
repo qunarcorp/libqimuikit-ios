@@ -1,8 +1,8 @@
 //
 //  TodoListSearchTableViewCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2017/8/1.
+//  Created by 李海彬 on 2017/8/1.
 //
 //
 #if __has_include("STIMNoteManager.h")

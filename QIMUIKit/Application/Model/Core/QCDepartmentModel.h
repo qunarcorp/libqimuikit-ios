@@ -1,6 +1,6 @@
 //
 //  QCDepartmentModel.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by c on 15/5/12.
 //  Copyright (c) 2015年 c. All rights reserved.
@@ -16,5 +16,7 @@
 @property (nonatomic, assign) int              departmentMembersCount;  //部门人数
 
 @property (nonatomic, strong) NSMutableArray * members;                 //部门成员
+
+@property (nonatomic,strong) NSString        * remark;//TODO Startalk
 
 @end

@@ -1,8 +1,8 @@
 //
 //  STIMImageClipView.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 15/7/7.
+//  Created by haibin.li on 15/7/7.
 //
 //
 

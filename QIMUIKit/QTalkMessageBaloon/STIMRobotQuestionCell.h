@@ -2,7 +2,7 @@
 //  QCIMConsultCell.h
 //  IMSDK
 //
-//  Created by chenjie on 2017/08/08.
+//  Created by haibin.li on 2017/08/08.
 //  Copyright © 2017年 qunar. All rights reserved.
 //
 

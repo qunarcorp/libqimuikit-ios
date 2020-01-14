@@ -2,7 +2,7 @@
 //  STIMEmptyViewController.h
 //  STIMUIKit
 //
-//  Created by lilu on 2019/8/5.
+//  Created by lihaibin.li on 2019/8/5.
 //
 
 #import <UIKit/UIKit.h>

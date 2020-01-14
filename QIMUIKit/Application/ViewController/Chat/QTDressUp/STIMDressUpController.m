@@ -1,8 +1,8 @@
 //
 //  MyDressUpController.m
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 15/7/17.
+//  Created by haibin.li on 15/7/17.
 //
 //
 

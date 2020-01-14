@@ -1,8 +1,8 @@
 //
 //  STIMRedPackCell.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by chenjie on 15/12/24.
+//  Created by haibin.li on 15/12/24.
 //
 //
 

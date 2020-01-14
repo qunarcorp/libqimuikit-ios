@@ -2,7 +2,7 @@
 //  STIMWorkAttachCommentListView.h
 //  STIMUIKit
 //
-//  Created by lilu on 2019/3/11.
+//  Created by lihaibin.li on 2019/3/11.
 //
 
 #import "STIMCommonUIFramework.h"

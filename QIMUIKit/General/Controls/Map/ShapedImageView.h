@@ -2,7 +2,7 @@
 //  ShapedImageView.h
 //  JJTest
 //
-//  Created by chenjie on 16/1/4.
+//  Created by haibin.li on 16/1/4.
 //  Copyright © 2016年 chenjie. All rights reserved.
 //
 

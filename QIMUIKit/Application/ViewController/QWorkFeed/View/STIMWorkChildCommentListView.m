@@ -2,7 +2,7 @@
 //  STIMWorkChildCommentListView.m
 //  STIMUIKit
 //
-//  Created by lilu on 2019/3/12.
+//  Created by lihaibin.li on 2019/3/12.
 //
 
 #import "STIMWorkChildCommentListView.h"

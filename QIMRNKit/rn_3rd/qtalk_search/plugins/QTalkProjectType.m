@@ -1,6 +1,6 @@
 //
 //  QTalkProjectType.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by wangyu.wang on 16/9/12.
 //

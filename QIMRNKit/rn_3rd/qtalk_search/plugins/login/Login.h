@@ -1,6 +1,6 @@
 //
 //  QTalkAuth.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by wangyu.wang on 16/4/5.
 //

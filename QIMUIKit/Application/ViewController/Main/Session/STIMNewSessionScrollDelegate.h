@@ -2,7 +2,7 @@
 //  STIMNewSessionScrollDelegate.h
 //  STIMUIKit
 //
-//  Created by lilu on 2019/6/18.
+//  Created by lihaibin.li on 2019/6/18.
 //
 
 #import <Foundation/Foundation.h>

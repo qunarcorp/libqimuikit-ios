@@ -1,6 +1,6 @@
 //
 //  STIMOpenPlatformCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by admin on 16/4/18.
 //

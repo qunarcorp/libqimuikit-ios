@@ -1,6 +1,6 @@
 //
 //  STIMVoiceTimeRemindView.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by danzheng on 15/5/13.
 //  Copyright (c) 2015年 ping.xue. All rights reserved.

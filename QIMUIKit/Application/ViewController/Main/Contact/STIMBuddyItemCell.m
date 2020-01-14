@@ -1,6 +1,6 @@
 //
 //  STIMBuddyItemCell.m
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by May on 14/11/20.
 //  Copyright (c) 2014年 ping.xue. All rights reserved.

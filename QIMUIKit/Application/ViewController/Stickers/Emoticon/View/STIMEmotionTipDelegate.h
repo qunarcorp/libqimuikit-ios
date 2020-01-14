@@ -1,8 +1,8 @@
 //
 //  STIMEmotionTipDelegate.h
-//  qunarChatIphone
+//  STChatIphone
 //
-//  Created by 李露 on 2018/2/8.
+//  Created by 李海彬 on 2018/2/8.
 //
 
 #ifndef STIMEmotionTipDelegate_h

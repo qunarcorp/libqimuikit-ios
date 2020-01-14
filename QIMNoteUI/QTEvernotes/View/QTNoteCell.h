@@ -1,6 +1,6 @@
 //
 //  QTNoteCell.h
-//  qunarChatIphone
+//  STChatIphone
 //
 //  Created by lihuaqi on 2017/9/21.
 //
