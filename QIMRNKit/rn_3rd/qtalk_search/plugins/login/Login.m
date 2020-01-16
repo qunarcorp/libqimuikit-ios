@@ -13,12 +13,11 @@
 // The React Native bridge needs to know our module
 RCT_EXPORT_MODULE()
 
-- (NSDictionary *)constantsToExport {
-    return @{@"greeting": @"Welcome to the DevDactic\n React Native Tutorial!"};
-}
-
 RCT_EXPORT_METHOD(getLoginInfo:(RCTResponseSenderBlock)success:(RCTResponseSenderBlock)error) {
- 
+    
+    NSString *getLoginInfo = @"getLoginInfo";
+    NSLog(getLoginInfo);
+    
     NSString *userName = [STIMKit getLastUserName];
     userName = userName.length ? userName : @"";
     NSString *qtalkToken = [[STIMKit sharedInstance] myRemotelogginKey];
@@ -39,6 +38,9 @@ RCT_EXPORT_METHOD(getLoginInfo:(RCTResponseSenderBlock)success:(RCTResponseSende
 
 RCT_EXPORT_METHOD(updateCkey:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
+    
+    NSString *updateCkey = @"updateCkey";
+    NSLog(updateCkey);
     
     NSNumber *is_ok = @NO;
     NSString *errorMsg = @"";

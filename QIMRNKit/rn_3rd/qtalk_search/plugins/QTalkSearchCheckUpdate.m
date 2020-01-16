@@ -21,6 +21,9 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback) {
     
+    NSString *update = @"update";
+    NSLog(update);
+    
     BOOL updateResult = NO;
     
     // update param
@@ -76,5 +79,8 @@ RCT_EXPORT_METHOD(update:(NSDictionary *)param: (RCTResponseSenderBlock)callback
     
 }
 
++ (NSString *)getTestBundlePath{
+    return @"getTestBundlePath";
+}
 @end
 

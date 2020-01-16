@@ -23,15 +23,21 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(browseBigImage:(NSDictionary *)param :(RCTResponseSenderBlock)callback){
+    NSString *browseBigImage = @"browseBigImage";
+    NSLog(browseBigImage);
     [[STIMFastEntrance sharedInstance] browseBigHeader:param];
 }
 
 RCT_EXPORT_METHOD(openDownLoad:(NSDictionary *)param :(RCTResponseSenderBlock)callback){
+    NSString *openDownLoad = @"openDownLoad";
+    NSLog(openDownLoad);
     [[STIMFastEntrance sharedInstance] openSTIMFilePreviewVCWithParam:param];
 }
 
 RCT_EXPORT_METHOD(openNativeWebView:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *openNativeWebView = @"openNativeWebView";
+        NSLog(openNativeWebView);
         if ([STIMFastEntrance handleOpsasppSchema:param] == NO) {
             NSString *linkUrl = [param objectForKey:@"linkurl"];
             if (linkUrl.length > 0) {
@@ -50,6 +56,9 @@ RCT_EXPORT_METHOD(openNativeWebView:(NSDictionary *)param) {
 
 RCT_EXPORT_METHOD(gotoWiki:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *gotoWiki = @"gotoWiki";
+        NSLog(gotoWiki);
+        
         NSString *wikiUrl = [[STIMKit sharedInstance] qimNav_WikiUrl];
         if (wikiUrl.length > 0) {
             [STIMFastEntrance openWebViewForUrl:wikiUrl showNavBar:YES];
@@ -59,33 +68,15 @@ RCT_EXPORT_METHOD(gotoWiki:(NSDictionary *)param) {
 
 RCT_EXPORT_METHOD(gotoNote:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *gotoNote = @"gotoNote";
+        NSLog(gotoNote);
         [STIMFastEntrance openQTalkNotesVC];
     });
 }
 
 RCT_EXPORT_METHOD(getUserInfo:(RCTResponseSenderBlock)callback) {
-    /*
-    WritableNativeMap map = new WritableNativeMap();
-    map.putString("userId", CurrentPreference.getInstance().getUserid());
-    map.putString("clientIp", "192.168.0.1");
-    map.putString("domain", QtalkNavicationService.getInstance().getXmppdomain());
-    //            map.putString("token", CurrentPreference.getInstance().getToken());
-    //            map.putString("q_auth", CurrentPreference.getInstance().getVerifyKey() == null ? "404" : CurrentPreference.getInstance().getVerifyKey());
-    map.putString("ckey", getCKey());
-    map.putString("httpHost", QtalkNavicationService.getInstance().getJavaUrl());
-    map.putString("fileUrl", QtalkNavicationService.getInstance().getInnerFiltHttpHost());
-    map.putString("qcAdminHost", QtalkNavicationService.getInstance().getQcadminHost());
-    //        if (!("ejabhost1".equals(QtalkNavicationService.getInstance().getXmppdomain()))) {
-    //            map.putInt("showOrganizational", 1);
-    //        } else {
-    //            map.putInt("showOrganizational", 0);
-    //        }
-    map.putBoolean("showServiceState", CurrentPreference.getInstance().isMerchants());
-    map.putBoolean("isQtalk", CommonConfig.isQtalk);
-    
-    //            map.putDouble("timestamp", System.currentTimeMillis());
-    callback.invoke(map);
-    */
+    NSString *getUserInfo = @"getUserInfo";
+    NSLog(getUserInfo);
     NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:3];
     [map setObject:[[STIMKit sharedInstance] getLastJid] forKey:@"userId"];
     [map setObject:[[STIMKit sharedInstance] getDomain] forKey:@"domain"];
@@ -99,6 +90,8 @@ RCT_EXPORT_METHOD(getUserInfo:(RCTResponseSenderBlock)callback) {
 
 RCT_EXPORT_METHOD(sendEmail:(NSDictionary *)param) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *sendEmail = @"sendEmail";
+        NSLog(sendEmail);
         NSString *userId = [param objectForKey:@"UserId"];
         UINavigationController *navVC = [[UIApplication sharedApplication] visibleNavigationController];
         if (!navVC) {
@@ -109,6 +102,8 @@ RCT_EXPORT_METHOD(sendEmail:(NSDictionary *)param) {
 }
 
 RCT_EXPORT_METHOD(getWorkWorldItem:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
+    NSString *getWorkWorldItem = @"getWorkWorldItem";
+    NSLog(getWorkWorldItem);
     NSDictionary *momentDic = [[STIMKit sharedInstance] getLastWorkMoment];
     NSLog(@"getWorkWorldItem : %@", momentDic);
     callback(@[momentDic ? momentDic : @{}]);
@@ -118,6 +113,8 @@ RCT_EXPORT_METHOD(getWorkWorldItem:(NSDictionary *)param :(RCTResponseSenderBloc
 }
 
 RCT_EXPORT_METHOD(getWorkWorldNotRead:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
+    NSString *getWorkWorldNotRead = @"getWorkWorldNotRead";
+    NSLog(getWorkWorldNotRead);
     NSInteger notReadMsgCount = [[STIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(STIMWorkFeedNotifyTypeComment), @(STIMWorkFeedNotifyTypePOSTAt), @(STIMWorkFeedNotifyTypeCommentAt)]];
     BOOL showNewPOST = NO;
     NSLog(@"getWorkWorldNotRead : %d", notReadMsgCount);
@@ -127,32 +124,44 @@ RCT_EXPORT_METHOD(getWorkWorldNotRead:(NSDictionary *)param :(RCTResponseSenderB
 
 //打开驼圈
 RCT_EXPORT_METHOD(openWorkWorld:(NSDictionary *)param) {
+    NSString *openWorkWorld = @"openWorkWorld";
+    NSLog(openWorkWorld);
     [[STIMFastEntrance sharedInstance] openWorkFeedViewController];
 }
 
 //打开笔记本
 RCT_EXPORT_METHOD(openNoteBook:(NSDictionary *)param) {
+    NSString *openNoteBook = @"openNoteBook";
+    NSLog(openNoteBook);
     [STIMFastEntrance openQTalkNotesVC];
 }
 
 //打开文件助手
 RCT_EXPORT_METHOD(openFileTransfer:(NSDictionary *)param) {
+    NSString *openFileTransfer = @"openFileTransfer";
+    NSLog(openFileTransfer);
     NSString *xmppId = [NSString stringWithFormat:@"%@@%@", @"file-transfer", [[STIMKit sharedInstance] getDomain]];
     [STIMFastEntrance openSingleChatVCByUserId:xmppId];
 }
 
 //打开扫一扫
 RCT_EXPORT_METHOD(openScan:(NSDictionary *)param) {
+    NSString *openScan = @"openScan";
+    NSLog(openScan);
     [STIMFastEntrance openQRCodeVC];
 }
 
 //打开行程
 RCT_EXPORT_METHOD(openTravelCalendar:(NSDictionary *)param) {
+    NSString *openTravelCalendar = @"openTravelCalendar";
+    NSLog(openTravelCalendar);
     [STIMFastEntrance openTravelCalendarVc];
 }
 
 //获取发现页应用列表
 RCT_EXPORT_METHOD(getFoundInfo:(RCTResponseSenderBlock)callback) {
+    NSString *getFoundInfo = @"getFoundInfo";
+    NSLog(getFoundInfo);
     NSString *foundListStr = [[STIMKit sharedInstance] getLocalFoundNavigation];
     NSArray *foundList = [[STIMJSONSerializer sharedInstance] deserializeObject:foundListStr error:nil];
     NSMutableArray *mutableGroupItems = [NSMutableArray arrayWithCapacity:3];
@@ -216,6 +225,9 @@ RCT_EXPORT_METHOD(getFoundInfo:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(NSDictionary *)cookie :(RCTResponseSenderBlock)callback1 :(RCTResponseSenderBlock)callback2) {
+    NSString *getSearchInfo = @"getSearchInfo";
+    NSLog(getSearchInfo);
+    
     NSLog(@"searchUrl : %@", searchUrl);
     NSLog(@"params : %@", params);
     NSLog(@"Cookie : %@", cookie);
@@ -235,6 +247,8 @@ RCT_EXPORT_METHOD(getSearchInfo:(NSString *)searchUrl :(NSDictionary *)params :(
 }
 
 RCT_EXPORT_METHOD(openGroupChat:(NSDictionary *)params) {
+    NSString *openGroupChat = @"openGroupChat";
+    NSLog(openGroupChat);
     NSString *groupId = [params objectForKey:@"GroupId"];
     if (groupId.length > 0) {
         [STIMFastEntrance openGroupChatVCByGroupId:groupId];
@@ -242,6 +256,8 @@ RCT_EXPORT_METHOD(openGroupChat:(NSDictionary *)params) {
 }
 
 RCT_EXPORT_METHOD(openSignleChat:(NSDictionary *)params) {
+    NSString *openSignleChat = @"openSignleChat";
+    NSLog(openSignleChat);
     NSString *userId = [params objectForKey:@"UserId"];
     if (userId.length > 0) {
         [STIMFastEntrance openSingleChatVCByUserId:userId];
@@ -249,6 +265,8 @@ RCT_EXPORT_METHOD(openSignleChat:(NSDictionary *)params) {
 }
 
 RCT_EXPORT_METHOD(openUserCard:(NSDictionary *)params) {
+    NSString *openUserCard = @"openUserCard";
+    NSLog(openUserCard);
     NSString *userId = [params objectForKey:@"UserId"];
     if (userId.length > 0) {
         [STIMFastEntrance openUserCardVCByUserId:userId];
@@ -256,6 +274,9 @@ RCT_EXPORT_METHOD(openUserCard:(NSDictionary *)params) {
 }
 
 RCT_EXPORT_METHOD(showSearchHistoryResult:(NSDictionary *)params) {
+    NSString *showSearchHistoryResult = @"showSearchHistoryResult";
+    NSLog(showSearchHistoryResult);
+    
     NSString *userJid = [params objectForKey:@"to"];
     NSString *from = [params objectForKey:@"from"];
     NSString *realfrom = [params objectForKey:@"realfrom"];
@@ -271,8 +292,7 @@ RCT_EXPORT_METHOD(showSearchHistoryResult:(NSDictionary *)params) {
     } else {
         //单聊
         if([[[STIMKit sharedInstance] getLastJid] isEqualToString:from]){
-//            userJid = userJid;
-//            realJid = realto;
+
         }else{
             userJid = from;
             realJid = realfrom;
@@ -285,6 +305,8 @@ RCT_EXPORT_METHOD(showSearchHistoryResult:(NSDictionary *)params) {
 
 RCT_EXPORT_METHOD(exitSearchApp) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *exitSearchApp = @"exitSearchApp";
+        NSLog(exitSearchApp);
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotify_RN_QTALK_SEARCH_GO_BACK object:nil];
     });
 }
@@ -293,7 +315,8 @@ RCT_EXPORT_METHOD(exitSearchApp) {
 
 //获取本地搜索Key历史
 RCT_EXPORT_METHOD(getLocalSearchKeyHistory:(NSDictionary *)param :(RCTResponseSenderBlock)callback) {
-    
+    NSString *getLocalSearchKeyHistory = @"getLocalSearchKeyHistory";
+    NSLog(getLocalSearchKeyHistory);
     NSInteger limit = [[param objectForKey:@"limit"] integerValue];
     NSInteger searchType = [[param objectForKey:@"searchType"] integerValue];
     NSArray *searchKeys = [[STIMKit sharedInstance] getLocalSearchKeyHistoryWithSearchType:searchType withLimit:limit];
@@ -302,11 +325,15 @@ RCT_EXPORT_METHOD(getLocalSearchKeyHistory:(NSDictionary *)param :(RCTResponseSe
 
 //更新本地搜索Key历史
 RCT_EXPORT_METHOD(updateLocalSearchKeyHistory:(NSDictionary *)param) {
+    NSString *updateLocalSearchKeyHistory = @"updateLocalSearchKeyHistory";
+    NSLog(updateLocalSearchKeyHistory);
     [[STIMKit sharedInstance] updateLocalSearchKeyHistory:param];
 }
 
 //清空本地搜索历史Key
 RCT_EXPORT_METHOD(clearLocalSearchKeyHistory:(NSInteger)searchType) {
+    NSString *clearLocalSearchKeyHistory = @"clearLocalSearchKeyHistory";
+    NSLog(clearLocalSearchKeyHistory);
     [[STIMKit sharedInstance] deleteSearchKeyHistory];
 }
 

@@ -21,10 +21,14 @@
 @implementation QTImageAssetCell
 
 + (CGFloat)getCellHeight{
+    NSString *getCellHeight = @"getCellHeight";
+    NSLog(getCellHeight);
     return kImageCap + imageItemWidth;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
+    NSString *initWithStyle = @"initWithStyle";
+    NSLog(initWithStyle);
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
@@ -39,6 +43,8 @@
 }
 
 - (void)refreshUI{
+    NSString *refreshUI = @"refreshUI";
+    NSLog(refreshUI);
     for (int i = 0; i < kColoumn; i++) {
         QTImageAssetView *assetView = (QTImageAssetView *)[self.contentView viewWithTag:kAssetViewTagPriex+i];
         if (i < self.assets.count) {
@@ -55,6 +61,8 @@
 #pragma mark - ZYQAssetView Delegate
 
 -(BOOL)shouldSelectAsset:(ALAsset *)asset{
+    NSString *shouldSelectAsset = @"shouldSelectAsset";
+    NSLog(shouldSelectAsset);
     if (_delegate!=nil&&[_delegate respondsToSelector:@selector(shouldSelectAsset:)]) {
         return [_delegate shouldSelectAsset:asset];
     }
@@ -62,6 +70,8 @@
 }
 
 -(void)tapSelectHandle:(BOOL)select asset:(ALAsset *)asset{
+    NSString *tapSelectHandle = @"tapSelectHandle";
+    NSLog(tapSelectHandle);
     if (select) {
         if (_delegate!=nil&&[_delegate respondsToSelector:@selector(didSelectAsset:)]) {
             [_delegate didSelectAsset:asset];
@@ -74,5 +84,9 @@
     }
 }
 
+- (void)dismissUI{
+    NSString *dismissUI = @"dismissUI";
+    NSLog(dismissUI);
+}
 
 @end

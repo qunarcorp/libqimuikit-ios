@@ -29,6 +29,7 @@
 
 + (ALAssetsLibrary *)defaultAssetsLibrary
 {
+    static test_count = 0;//TODO Startalk
     static dispatch_once_t pred = 0;
     static ALAssetsLibrary *library = nil;
     dispatch_once(&pred, ^{
@@ -63,15 +64,21 @@
 #pragma makr - init
 
 - (void)initNavBar{
-
+    NSString *initNavBar = @"initNavBar";
+    NSLog(initNavBar);
+    
     [self.navigationItem setTitle:[NSBundle stimDB_localizedStringForKey:@"Photos"]];
 
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle stimDB_localizedStringForKey:@"Cancel"] style:UIBarButtonItemStylePlain target:self action:@selector(dismiss:)];
     [self.navigationItem setRightBarButtonItem:rightItem];
+
     
 }
 
 - (void)initTableView{
+    NSString *initTableView = @"initTableView";
+    NSLog(initTableView);
+    
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height) style:UITableViewStylePlain];
     [_tableView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
     [_tableView setDelegate:self];
@@ -84,6 +91,9 @@
 
 - (void)setupGroup
 {
+    NSString *setupGroup = @"setupGroup";
+    NSLog(setupGroup);
+    
     QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
     
     _assetsLibrary = [self.class defaultAssetsLibrary];
@@ -130,6 +140,9 @@
 
 - (void)dismiss:(id)sender
 {
+    NSString *dismiss = @"dismiss";
+    NSLog(dismiss);
+    
     QTImagePickerController *picker = (QTImagePickerController *)self.navigationController;
     
 //    if ([picker.delegate respondsToSelector:@selector(assetPickerControllerDidCancel:)]){
@@ -143,6 +156,9 @@
 
 - (void)showNotAllowed
 {
+    NSString *showNotAllowed = @"showNotAllowed";
+    NSLog(showNotAllowed);
+    
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
         [self setEdgesForExtendedLayout:UIRectEdgeLeft | UIRectEdgeRight | UIRectEdgeBottom];
     

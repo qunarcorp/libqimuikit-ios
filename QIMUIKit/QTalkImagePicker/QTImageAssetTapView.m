@@ -22,6 +22,8 @@
 
 
 -(id)initWithFrame:(CGRect)frame{
+    NSString *initWithFrame = @"initWithFrame";
+    NSLog(initWithFrame);
     if (self=[super initWithFrame:frame]) {
         //设置勾勾的位置
         
@@ -36,6 +38,8 @@
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    NSString *touchesEnded = @"touchesEnded";
+    NSLog(touchesEnded);
     if (_disabled) {
         return;
     }
@@ -60,6 +64,8 @@
 }
 
 -(void)setDisabled:(BOOL)disabled{
+    NSString *setDisabled = @"setDisabled";
+    NSLog(setDisabled);
     _disabled=disabled;
     if (_disabled) {
         self.backgroundColor=disabledColor;
@@ -70,6 +76,8 @@
 }
 
 -(void)setSelected:(BOOL)selected{
+    NSString *setSelected = @"setSelected";
+    NSLog(setSelected);
     if (_disabled) {
         self.backgroundColor=disabledColor;
         [_selectView setImage:nil];

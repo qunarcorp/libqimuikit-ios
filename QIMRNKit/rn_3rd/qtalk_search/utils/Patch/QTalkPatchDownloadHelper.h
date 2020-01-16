@@ -28,6 +28,14 @@
                  destAssetName:(NSString *)destAssetName
                innerBundleName:(NSString *)innerBundleName;
 
+
++ (BOOL) uploadPatchAndCheck:(NSString *)url
+                      patchMd5:(NSString *)patchMd5
+                       fullMd5:(NSString *)fullMd5
+                     cachePath:(NSString *)cachePath
+                 destAssetName:(NSString *)destAssetName
+               innerBundleName:(NSString *)innerBundleName;
+
 @end
 
 #endif /* QTalkPatchDownloadHelper_h */

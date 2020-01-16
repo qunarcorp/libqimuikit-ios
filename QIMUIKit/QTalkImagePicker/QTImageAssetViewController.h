@@ -16,5 +16,6 @@ extern CGFloat imageItemWidth;
 @interface QTImageAssetViewController : QTalkViewController
 @property (nonatomic, strong) ALAssetsGroup *assetsGroup;
 @property (nonatomic, assign) NSInteger number;     //新加的，选中的张数
+@property (nonatomic, assign) NSInteger numberUnSelect;     //TODO Startalk
 - (NSMutableArray *)indexPathsForSelectedItems;
 @end

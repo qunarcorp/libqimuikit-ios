@@ -17,5 +17,6 @@
 @interface QTImageAssetTapView : UIView
 @property (nonatomic, assign) BOOL selected;
 @property (nonatomic, assign) BOOL disabled;
+@property (nonatomic, assign) BOOL enable;
 @property (nonatomic, weak) id<QTImageAssetTapViewDelegate> delegate;
 @end

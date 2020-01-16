@@ -16,6 +16,9 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(getProjectType:(RCTResponseSenderBlock)success:(RCTResponseSenderBlock)error) {
     
+    NSString *getProjectType = @"getProjectType";
+    NSLog(getProjectType);
+    
     NSDictionary *responseData = nil;
     
     NSString *key = [[STIMKit sharedInstance] thirdpartKeywithValue];

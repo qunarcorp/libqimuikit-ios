@@ -13,16 +13,15 @@
 // The React Native bridge needs to know our module
 RCT_EXPORT_MODULE()
 
-- (NSDictionary *)constantsToExport {
-    return @{@"greeting": @"Welcome to the DevDactic\n React Native Tutorial!"};
-}
-
 RCT_EXPORT_METHOD(handleEvent
                   :(nonnull NSNumber *)type
                   :(NSString *)uri
                   :(RCTResponseSenderBlock)success
                   :(RCTResponseSenderBlock)error) {
     STIMVerboseLog(@"handleEvent param: tyep: %@ key: %@", type, uri);
+    
+    NSString *handleEvent = @"handleEvent";
+    NSLog(handleEvent);
     
     NSNumber *is_ok = @YES;
     NSString *errorMsg = @"";
@@ -83,7 +82,7 @@ RCT_EXPORT_METHOD(handleEvent
             errorMsg = @"未注册的事件处理";
             break;
     }
-    
+    STIMVerboseLog(@"handleEvent param: tyep: %@", type);
     NSDictionary *resp = @{@"is_ok": is_ok, @"errorMsg": errorMsg};
     success(@[resp]);
 }
@@ -92,6 +91,9 @@ RCT_EXPORT_METHOD(openWebPage
                   :(NSString *)uri
                   :(BOOL)showNavBar
                   :(RCTResponseSenderBlock)callback) {
+    
+    NSString *openWebPage = @"openWebPage";
+    NSLog(openWebPage);
     
     NSNumber *is_ok = @YES;
     NSString *errorMsg = @"";
@@ -105,32 +107,44 @@ RCT_EXPORT_METHOD(openWebPage
 
 -(void) goUserCard:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goUserCard = @"goUserCard";
+        NSLog(goUserCard);
         [STIMFastEntrance openUserCardVCByUserId:uri];
     });
 }
 -(void) goGroupChat:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goGroupChat = @"goGroupChat";
+        NSLog(goGroupChat);
         [STIMFastEntrance openGroupChatVCByGroupId:uri];
     });
 }
 
 -(void) goFriends:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goFriends = @"goFriends";
+        NSLog(goFriends);
         [STIMFastEntrance openUserFriendsVC];
     });
 }
 -(void) goGroups:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goGroups = @"goGroups";
+        NSLog(goGroups);
         [STIMFastEntrance openSTIMGroupListVC];
     });
 }
 -(void) goUnreadMessages:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goUnreadMessages = @"goUnreadMessages";
+        NSLog(goUnreadMessages);
         [STIMFastEntrance openNotReadMessageVC];
     });
 }
 -(void) goPublicAccounts:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goPublicAccounts = @"goPublicAccounts";
+        NSLog(goPublicAccounts);
         [STIMFastEntrance openSTIMPublicNumberVC];
     });
 }
@@ -138,18 +152,24 @@ RCT_EXPORT_METHOD(openWebPage
 -(void) goWebView:(NSString*) uri
        showNavBar:(BOOL)showNavBar;{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goWebView = @"goWebView";
+        NSLog(goWebView);
         [STIMFastEntrance openWebViewForUrl:uri showNavBar:showNavBar];
     });
 }
 
 -(void) goSingleChat:(NSString*) uri{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goSingleChat = @"goSingleChat";
+        NSLog(goSingleChat);
         [STIMFastEntrance openSingleChatVCByUserId:uri];
     });
 }
 
 -(void) goRobotCard:(NSString *)uri {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goRobotCard = @"goRobotCard";
+        NSLog(goRobotCard);
         [STIMFastEntrance openRobotCard:uri];
     });
 }
@@ -157,31 +177,30 @@ RCT_EXPORT_METHOD(openWebPage
 -(void) goLookBackVCSingle:(NSString *)uri{
     dispatch_async(dispatch_get_main_queue(), ^{
 
-        //TODO open lookback VC
-        // uri json字符串
-        // 转为对象后属性:
-        // jid 单人id, 有可能有domain，也可能不带，需要判断下
-        // t 10位时间戳 秒级
-        // B 原始xml消息体
+        NSString *goLookBackVCSingle = @"goLookBackVCSingle";
+        NSLog(goLookBackVCSingle);
     });
 }
 
 -(void) goLookBackVCGroup:(NSString *)uri{
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        //TODO open lookback VC
-        // uri json字符串
-        // 转为对象后属性:
-        // jid 群组id, 有可能有domain，也可能不带，需要判断下
-        // t 10位时间戳 秒级
-        // B 原始xml消息体
+        NSString *goLookBackVCGroup = @"goLookBackVCGroup";
+        NSLog(goLookBackVCGroup);
     });
 }
 
 - (void) goQTalkNotesVC:(NSString *)uri {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *goQTalkNotesVC = @"goQTalkNotesVC";
+        NSLog(goQTalkNotesVC);
         [STIMFastEntrance openQTalkNotesVC];
     });
+}
+
+- (void)goTest:(NSString *)uri{
+    NSString *goTest = @"goTest";
+    NSLog(goTest);
 }
 
 @end

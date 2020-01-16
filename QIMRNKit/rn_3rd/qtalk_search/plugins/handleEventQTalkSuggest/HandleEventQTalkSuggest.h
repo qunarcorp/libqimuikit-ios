@@ -24,8 +24,9 @@
 -(void) goSingleChat:(NSString*) uri;
 -(void) goLookBackVCSingle:(NSString *)uri;
 -(void) goLookBackVCGroup:(NSString *)uri;
+-(void) goTest:(NSString *)uri;
 
 
 @end
 
-#endif /* handleEventQTalkSuggest_h */
+#endif /* handleEventStartalkSuggest_h */

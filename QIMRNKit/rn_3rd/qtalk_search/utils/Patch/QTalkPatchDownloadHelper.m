@@ -15,6 +15,11 @@
 
 @implementation QTalkPatchDownloadHelper
 
++ (BOOL)uploadPatchAndCheck:(NSString *)url patchMd5:(NSString *)patchMd5 fullMd5:(NSString *)fullMd5 cachePath:(NSString *)cachePath destAssetName:(NSString *)destAssetName innerBundleName:(NSString *)innerBundleName{
+    NSString *uploadPatchAndCheck = @"uploadPatchAndCheck";
+    NSLog(uploadPatchAndCheck);
+}
+
 + (BOOL) downloadFullPackageAndCheck:(NSString *)url  // 资源下载路径 md5文件
                                  md5:(NSString *)md5  // zip 包md5
                           bundleName:(NSString *)bundleName // zip包中的bundle文件名
@@ -23,6 +28,8 @@
                        destAssetName:(NSString *)destAssetName // bundle 存储文件名 index.ios.jsbundle_v8
 {
     // download bundle
+    NSString *downloadFullPackageAndCheck = @"downloadFullPackageAndCheck";
+    NSLog(downloadFullPackageAndCheck);
     ASIHTTPRequest *request = [QTalkPatchDownloadHelper downloadJSBundleWithUrl:url];
     NSError *error = [request error];
     
@@ -75,6 +82,8 @@
                  innerBundleName:(NSString *)innerBundleName // 内置bundle 文件名 index.ios
 {
     // TODO download patch
+    NSString *downloadPatchAndCheck = @"downloadPatchAndCheck";
+    NSLog(downloadPatchAndCheck);
     ASIHTTPRequest *request = [QTalkPatchDownloadHelper downloadJSBundleWithUrl:url];
     NSError *error = [request error];
     
@@ -141,6 +150,9 @@
 
 +(NSString*) getDestCachePath:(NSString *)path{
     
+    NSString *getDestCachePath = @"getDestCachePath";
+    NSLog(getDestCachePath);
+    
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
                                                          NSUserDomainMask,
                                                          YES);
@@ -160,6 +172,9 @@
                  innerBundleName:(NSString *)innerBundleName
 {
     
+    NSString *getOriginBundlePath = @"getOriginBundlePath";
+    NSLog(getOriginBundlePath);
+    
     NSString *filePath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];
     NSString *assetBundle =[filePath stringByAppendingPathComponent: assetBundleName];
     
@@ -175,12 +190,17 @@
 
 
 +(NSString *)getAssetTempBundleName:(NSString *)filename{
+    NSString *getAssetTempBundleName = @"getAssetTempBundleName";
+    NSLog(getAssetTempBundleName);
     return [filename stringByAppendingString:@".tmp"];
 }
 
 
 +(NSString *)getDestBundlePath:(NSString *)cachePath
                assetBundleName:(NSString *)assetBundleName{
+    
+    NSString *getDestBundlePath = @"getDestBundlePath";
+    NSLog(getDestBundlePath);
     
     NSString *filePath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];
     
@@ -203,6 +223,10 @@
 +(void) saveBundleToCache:(NSData *) bundleInfo
                 cachePath:(NSString *)cachePath
                   zipName:(NSString *)zipName{
+    
+    NSString *saveBundleToCache = @"saveBundleToCache";
+    NSLog(saveBundleToCache);
+    
     // cache path
     NSString *filePath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];
     // append bundle name
@@ -215,6 +239,9 @@
 +(void) unzipBundle:(NSString *)cachePath
                     zipName:(NSString *)zipName
 {
+    NSString *unzipBundle = @"unzipBundle";
+    NSLog(unzipBundle);
+    
     // cache path
     NSString *filePath = [QTalkPatchDownloadHelper getDestCachePath:cachePath];
     NSString *zipFilePath =[filePath stringByAppendingPathComponent: zipName];
@@ -226,6 +253,9 @@
 
 
 +(ASIHTTPRequest *) downloadJSBundleWithUrl:(NSString *)url{
+    NSString *downloadJSBundleWithUrl = @"downloadJSBundleWithUrl";
+    NSLog(downloadJSBundleWithUrl);
+    
     NSURL *requestUrl = [[NSURL alloc] initWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:requestUrl];
     [request startSynchronous];
@@ -236,6 +266,9 @@
 
 +(void) renameFile:(NSString *)source
               dest:(NSString *)dest{
+    
+    NSString *renameFile = @"renameFile";
+    NSLog(renameFile);
     
     NSFileManager * manager = [NSFileManager defaultManager];
     

@@ -15,6 +15,7 @@
 @interface QTalkProjectType : NSObject <RCTBridgeModule>
 
 @property (nonatomic, strong) NSString *remoteKey;
+@property (nonatomic, strong) NSString *testKey;
 
 @end
 

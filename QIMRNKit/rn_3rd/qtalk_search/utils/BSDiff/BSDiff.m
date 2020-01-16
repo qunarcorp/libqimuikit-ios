@@ -34,4 +34,11 @@
     return YES;
 }
 
++ (BOOL)bsdiffPatchFile:(NSString *)patch
+             origin:(NSString *)origin
+      toDestination:(NSString *)destination
+{
+    return YES;
+}
+
 @end

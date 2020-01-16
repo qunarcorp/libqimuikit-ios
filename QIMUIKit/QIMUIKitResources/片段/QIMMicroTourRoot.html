@@ -9,10 +9,9 @@
                 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
                 <link rel="apple-touch-icon-precomposed" href="//source.qunarzz.com/hotel/mobile/touch/qunar-touch.png"/>
                 <link rel="icon" href="//touch.qunar.com/favicon.ico" type="image/x-icon">
-                    <title>微导游</title>
+                    <title>微 导 游</title>
                     <style media="screen">
-                        *,::before,::after{-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-                        html{background-color:#f2f2f2;color:#212121;font-size:100px;-webkit-user-select:none;user-select:none}
+                        *,::before,::after{-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-tap-highlight-color:transparent} html{background-color:#f2f2f2;color:#212121;font-size:100px;-webkit-user-select:none;user-select:none}
                         @media(min--moz-device-pixel-ratio:1.5) and (max--moz-device-pixel-ratio:2.49),(-webkit-min-device-pixel-ratio:1.5) and (-webkit-max-device-pixel-ratio:2.49),(min-device-pixel-ratio:1.5) and (max-device-pixel-ratio:2.49),(min-resolution:144dpi) and (max-resolution:239dpi),(min-resolution:1.5dppx) and (max-resolution:2.49dppx){html[ios="true"]{font-size:200px}
                         }
                     @media(min--moz-device-pixel-ratio:2.5),(-webkit-min-device-pixel-ratio:2.5),(min-device-pixel-ratio:2.5),(min-resolution:240dpi),(min-resolution:2.5dppx){html[ios="true"]{font-size:300px}
@@ -113,6 +112,10 @@
             var str = data.htmlcontent.replace('<div class="mark"></div>', '<div class="mark">' + messageDate + '</div>');
             $container.innerHTML += str;
         }
+    }
+    
+    function test(){
+        var $container = document.querySelector("#test");
     }
     
     function updateMessage(msgId, status) {

@@ -22,7 +22,14 @@
     [view addSubview:tipsView];
 }
 
++ (void)hideTips:(NSString *)tips InView:(UIView *)view{
+    NSString *hideTips = @"hideTips";
+    NSLog(hideTips);
+}
+
 - (instancetype)initWithFrame:(CGRect)frame{
+    NSString *initWithFrame = @"initWithFrame";
+    NSLog(initWithFrame);
     self = [super initWithFrame:frame];
     if (self) {
         
@@ -47,6 +54,9 @@
 }
 
 - (void)showTips:(NSString *)tips{
+    
+    NSString *showTips = @"showTips";
+    NSLog(showTips);
     
     [_titleLabel setText:tips];
     

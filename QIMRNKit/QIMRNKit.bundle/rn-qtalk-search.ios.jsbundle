@@ -425,3 +425,9 @@ __d(function(t,e,l,n,r){'use strict';Object.defineProperty(n,"__esModule",{value
 __d(function(e,t,r,a,n){'use strict';t(n[0]);var u=t(n[1]),c=babelHelpers.interopRequireDefault(u),p=t(n[2]),i=babelHelpers.interopRequireDefault(p),o=t(n[3]),l=babelHelpers.interopRequireDefault(o),s=t(n[4]),d=t(n[0]).NativeModules.QTalkSearchCheckUpdate,f='iOS';r.exports={check:function(e){var t,r,a,n;return regeneratorRuntime.async(function(u){for(;;)switch(u.prev=u.next){case 0:return t=c.default.getVersionInfo(),r=t.version,a=f,n=void 0,u.prev=4,u.next=7,regeneratorRuntime.awrap((0,l.default)(i.default.update.checkUpdate.replace('{VERSION}',r).replace('{PLATFORM}',a).replace('{APP}',s.app),{method:'GET'}));case 7:0===(n=u.sent).errorCode&&(n=n.data,e&&e(n)),u.next=13;break;case 11:u.prev=11,u.t0=u.catch(4);case 13:case"end":return u.stop()}},null,this,[[4,11]])},update:function(e,t){d.update(e,function(e){t&&t(e)})}}},424,[17,341,402,400,398]);
 require(50);
 require(11);
+
+
+
+
+
+

@@ -12,4 +12,6 @@
 
 + (void)showTips:(NSString *)tips InView:(UIView *)view;
 
++ (void)hideTips:(NSString *)tips InView:(UIView *)view;
+
 @end

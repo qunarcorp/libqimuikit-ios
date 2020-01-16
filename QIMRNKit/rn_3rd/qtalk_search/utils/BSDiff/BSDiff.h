@@ -16,6 +16,11 @@
 + (BOOL)bsdiffPatch:(NSString *)path
              origin:(NSString *)origin
       toDestination:(NSString *)destination;
+
++ (BOOL)bsdiffPatchFile:(NSString *)path
+             origin:(NSString *)origin
+      toDestination:(NSString *)destination;
+
 @end
 
 

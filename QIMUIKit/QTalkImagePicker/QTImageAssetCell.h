@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSArray *assets;
 @property (nonatomic, strong) NSPredicate *selectionFilter;
 + (CGFloat)getCellHeight;
-- (void)refreshUI; 
+- (void)refreshUI;
+- (void)dismissUI;
 
 @end

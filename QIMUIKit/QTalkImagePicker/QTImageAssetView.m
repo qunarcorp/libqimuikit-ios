@@ -23,6 +23,8 @@
 
 + (NSDateComponents *)componetsWithTimeInterval:(NSTimeInterval)timeInterval
 {
+    NSString *componetsWithTimeInterval = @"componetsWithTimeInterval";
+    NSLog(componetsWithTimeInterval);
     NSCalendar *calendar = [NSCalendar currentCalendar];
     
     NSDate *date1 = [[NSDate alloc] init];
@@ -40,6 +42,8 @@
 
 + (NSString *)timeDescriptionOfTimeInterval:(NSTimeInterval)timeInterval
 {
+    NSString *timeDescriptionOfTimeInterval = @"timeDescriptionOfTimeInterval";
+    NSLog(timeDescriptionOfTimeInterval);
     NSDateComponents *components = [self.class componetsWithTimeInterval:timeInterval];
     NSInteger roundedSeconds = lround(timeInterval - (components.hour * 60) - (components.minute * 60 * 60));
     
@@ -153,6 +157,8 @@ static UIColor *titleColor;
 
 - (void)bind:(ALAsset *)asset selectionFilter:(NSPredicate*)selectionFilter isSeleced:(BOOL)isSeleced
 {
+    NSString *bind = @"bind";
+    NSLog(bind);
     self.asset=asset;
     UIImage *image = [UIImage imageWithCGImage:asset.thumbnail];
     [_imageView setImage:image];
@@ -172,6 +178,8 @@ static UIColor *titleColor;
 #pragma mark - ZYQTapAssetView Delegate
 
 -(BOOL)shouldTap{
+    NSString *shouldTap = shouldTap;
+    NSLog(shouldTap);
     if (_delegate!=nil&&[_delegate respondsToSelector:@selector(shouldSelectAsset:)]) {
         return [_delegate shouldSelectAsset:_asset];
     }
@@ -179,9 +187,15 @@ static UIColor *titleColor;
 }
 
 -(void)touchSelect:(BOOL)select{
+    NSString *touchSelect = @"touchSelect";
+    NSLog(touchSelect);
     if (_delegate!=nil&&[_delegate respondsToSelector:@selector(tapSelectHandle:asset:)]) {
         [_delegate tapSelectHandle:select asset:_asset];
     }
+}
+
+- (void)unBind:(ALAsset *)asset selectionFilter:(NSPredicate *)selectionFilter isSeleced:(BOOL)isSeleced{
+    
 }
 
 @end

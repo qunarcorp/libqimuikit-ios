@@ -18,5 +18,6 @@
 @property (nonatomic, weak) id<QTImageAssetViewDelegate> delegate;
 
 - (void)bind:(ALAsset *)asset selectionFilter:(NSPredicate*)selectionFilter isSeleced:(BOOL)isSeleced;
+- (void)unBind:(ALAsset *)asset selectionFilter:(NSPredicate*)selectionFilter isSeleced:(BOOL)isSeleced;
 
 @end

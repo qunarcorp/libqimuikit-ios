@@ -2,8 +2,6 @@
 //  ModuleEventHandler.m
 //  STChatIphone
 //
-//  Created by wangyu.wang on 16/5/9.
-//
 //
 
 #import "STIMCommonUIFramework.h"
@@ -14,15 +12,11 @@
 // The React Native bridge needs to know our module
 RCT_EXPORT_MODULE()
 
-- (NSDictionary *)constantsToExport {
-    return @{@"greeting": @"Welcome to the DevDactic\n React Native Tutorial!"};
-}
-
 RCT_EXPORT_METHOD(handModuleEvent:(NSString *)module_name
                   :(NSDictionary *)initParam
                   :(RCTResponseSenderBlock)success
                   :(RCTResponseSenderBlock)error) {
-    
+    STIMVerboseLog(@"handModuleEvent");//TODO Startalk
     NSDictionary *responseData = @{};
     
     dispatch_async(dispatch_get_main_queue(), ^{

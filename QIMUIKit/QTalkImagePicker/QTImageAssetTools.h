@@ -12,5 +12,6 @@
 @interface QTImageAssetTools : NSObject
 
 + (NSData *)getCompressImageFromALAsset:(ALAsset *)asset;
++ (NSData *)getEnCompressImageFromALAsset:(ALAsset *)asset;
 
 @end

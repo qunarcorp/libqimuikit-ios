@@ -2,8 +2,6 @@
 //  QTalkAuth.h
 //  STChatIphone
 //
-//  Created by wangyu.wang on 16/4/5.
-//
 //
 
 #ifndef QTalkAuth_h
@@ -16,4 +14,4 @@
 
 @end
 
-#endif /* QTalkAuth_h */
+#endif /* StartalkAuth_h */

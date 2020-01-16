@@ -26,6 +26,8 @@
 
 + (NSString *)getDestBundlePath;
 
++ (NSString *)getTestBundlePath;
+
 @end
 
 #endif /* QTalkSearchCheckUpdate_h */
