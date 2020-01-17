@@ -122,6 +122,12 @@
         _mainTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _mainTableView.separatorColor = [UIColor qim_colorWithHex:0xdddddd];
         
+        
+        if (@available(iOS 11.0, *)) {
+            _mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            _mainTableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);//iPhoneX这里是88
+            _mainTableView.scrollIndicatorInsets = _mainTableView.contentInset;
+        }
 #pragma mark -设置脱圈头部展示的逻辑，热点
         if ([[QIMKit sharedInstance]getTopicFlagMomentNotifyConfig] == NO && [[QIMKit sharedInstance] getHotPostMomentNotifyConfig] ==NO) {
             self.isShowHeaderEntrence = NO;
@@ -296,7 +302,18 @@
 
 //主动更新驼圈未读数
 - (void)updateMomentView {
-    [self.mainTableView.mj_header beginRefreshing];
+    
+//    [self.mainTableView setContentOffset:CGPointMake(0, 0)];
+//    [self.mainTableView.mj_header setState:MJRefreshStateIdle];
+    
+//    self.mainTableView.adjustedContentInset = UIEdgeInsetsMake(0, 0, self.mainTableView.allowsMultipleSelection, 0);
+    
+    if (@available(iOS 11.0, *)) {
+        _mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        _mainTableView.contentInset = UIEdgeInsetsMake(0.5, 0, 0, 0);//iPhoneX这里是88
+        _mainTableView.scrollIndicatorInsets = _mainTableView.contentInset;
+    }
+    
     self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
     if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
         [self.mainTableView reloadData];
@@ -304,9 +321,20 @@
         
     }
     [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
-    });
+    if (![self.mainTableView.mj_header isRefreshing])
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.mainTableView.mj_header beginRefreshing];
+        });
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
+        });
+    }
+//    else{
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+//            [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
+//        });
+//    }
 }
 
 /*
@@ -470,12 +498,14 @@
 
 //加载远程最近的帖子
 - (void)reloadRemoteRecenteMomentsWithNeedScrollTop:(BOOL)flag {
-    
+   
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (weakSelf.tagID && self.tagID.integerValue > 0) {
             [[QIMKit sharedInstance] getWorkMoreMomentWithLastMomentTime:0 withTagID:self.tagID WithLimit:20 WithOffset:0 withFirstLocalMoment:NO WithComplete:^(NSArray * _Nonnull moments) {
-                [weakSelf.mainTableView.mj_header endRefreshing];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                     [weakSelf.mainTableView.mj_header endRefreshing];
+                });
                 if (moments.count > 0) {
                         [weakSelf.workMomentList removeAllObjects];
                         for (NSDictionary *momentDic in moments) {
@@ -497,7 +527,10 @@
                             }
                         });
                     } else {
-                        [weakSelf.mainTableView.mj_header endRefreshing];
+                       dispatch_async(dispatch_get_main_queue(), ^{
+                             [weakSelf.mainTableView.mj_header endRefreshing];
+                        });
+
                         if ((self.noDataView.hidden == YES && self.userId.length > 0 && self.workMomentList.count == 0)||(self.noDataView.hidden == YES && self.tagID.integerValue> 0 &&self.tagID && self.workMomentList.count == 0)) {
                             //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
                             self.noDataView.hidden = NO;
@@ -529,7 +562,10 @@
                         }
                     });
                 } else {
-                    [weakSelf.mainTableView.mj_header endRefreshing];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                         [weakSelf.mainTableView.mj_header endRefreshing];
+                    });
+
                     if ((self.noDataView.hidden == YES && self.userId.length > 0 && self.workMomentList.count == 0)||(self.noDataView.hidden == YES && self.tagID.integerValue> 0 &&self.tagID && self.workMomentList.count == 0)) {
                         //当且仅当打开的是用户驼圈页面时候才会展示没有新动态
                         self.noDataView.hidden = NO;
