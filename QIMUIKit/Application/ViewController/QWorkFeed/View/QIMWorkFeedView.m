@@ -316,13 +316,13 @@
     } else {
         
     }
+    [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
     
     if (![self.mainTableView.mj_header isRefreshing])
     {
-        [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.mainTableView.mj_header beginRefreshing];
-        });
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.mainTableView.mj_header beginRefreshing];
+//        });
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
         });
