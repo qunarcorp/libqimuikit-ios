@@ -308,21 +308,18 @@
     
 //    self.mainTableView.adjustedContentInset = UIEdgeInsetsMake(0, 0, self.mainTableView.allowsMultipleSelection, 0);
     
-    if (@available(iOS 11.0, *)) {
-        _mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-        _mainTableView.contentInset = UIEdgeInsetsMake(0.5, 0, 0, 0);//iPhoneX这里是88
-        _mainTableView.scrollIndicatorInsets = _mainTableView.contentInset;
-    }
     
+//    [self.mainTableView.mj_header endRefreshing];
     self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
     if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
         [self.mainTableView reloadData];
     } else {
         
     }
-    [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
+    
     if (![self.mainTableView.mj_header isRefreshing])
     {
+        [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.mainTableView.mj_header beginRefreshing];
         });
@@ -330,11 +327,15 @@
             [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
         });
     }
-//    else{
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-//            [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
-//        });
-//    }
+    else{
+        if (@available(iOS 11.0, *)) {
+            _mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            if (_mainTableView.contentInset.top > 40) {
+                _mainTableView.contentInset = UIEdgeInsetsMake(0.5, 0, 0, 0);//iPhoneX这里是88
+            }
+            _mainTableView.scrollIndicatorInsets = _mainTableView.contentInset;
+        }
+    }
 }
 
 /*
