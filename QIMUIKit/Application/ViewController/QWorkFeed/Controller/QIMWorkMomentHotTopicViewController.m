@@ -51,12 +51,15 @@
             QIMWorkMomentHotTopicModel * model = [QIMWorkMomentHotTopicModel yy_modelWithDictionary:dic];
             [self.dataArr addObject:model];
         }
+        
+        if (moments.count == 0 || moments == nil) {
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+        }
+        else{
+            [self.tableView.mj_footer endRefreshing];
+        }
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
-            if (pageSize.intValue == 5) {
-//                [weakSelf addLoadMorehotFooterPageView];
-            }
-             
         });
     }];
 }
@@ -80,7 +83,8 @@
     [self requestNetWorkWithpageSize:@(20)];
     _tableView.tableFooterView = nil;
     _tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreHotTopic)];
-    _tableView.mj_footer.automaticallyHidden = YES;
+    [_tableView reloadData];
+//    _tableView.mj_footer.automaticallyHidden = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -116,7 +120,6 @@
 - (void)loadMoreHotTopic{
     self.page ++;
     [self requestNetWorkWithpageSize:@(20)];
-    [self.tableView.mj_footer endRefreshingWithNoMoreData];
 }
 
 #pragma mark -TableViewDelegate
