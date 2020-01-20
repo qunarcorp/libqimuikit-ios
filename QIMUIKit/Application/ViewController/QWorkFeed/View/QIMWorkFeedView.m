@@ -108,10 +108,7 @@
         _mainTableView.backgroundColor = [UIColor qim_colorWithHex:0xf8f8f8];
         _mainTableView.delegate = self;
         _mainTableView.dataSource = self;
-//        _mainTableView.estimatedRowHeight = 0;
-//        _mainTableView.estimatedSectionHeaderHeight = 0;
-//        _mainTableView.estimatedSectionFooterHeight = 0;
-//
+        
 //        if (@available(iOS 11.0, *)) {
 //        _mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
 //        }
@@ -124,6 +121,9 @@
         
         
         if (@available(iOS 11.0, *)) {
+            _mainTableView.estimatedRowHeight = 0;
+            _mainTableView.estimatedSectionHeaderHeight = 0;
+            _mainTableView.estimatedSectionFooterHeight = 0;
             _mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
             _mainTableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);//iPhoneX这里是88
             _mainTableView.scrollIndicatorInsets = _mainTableView.contentInset;
@@ -248,13 +248,6 @@
         
         
         [self addSubview:self.mainTableView];
-        if (@available(iOS 11.0, *)) {
-            self.mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            self.mainTableView.contentInset = UIEdgeInsetsMake(0.1, 0, 0, 0);//iPhoneX这里是88
-            self.mainTableView.scrollIndicatorInsets = self.mainTableView.contentInset;
-        } else {
-            self.rootVC.automaticallyAdjustsScrollViewInsets=NO;
-        }
         
         self.mainTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(reloadRemoteRecenteMomentsWithNeedScrollTop:)];
         
@@ -262,6 +255,15 @@
               
         self.mainTableView.mj_footer.automaticallyHidden = YES;
         self.notReadNoticeMsgCount = [[QIMKit sharedInstance] getWorkNoticeMessagesCountWithEventType:@[@(QIMWorkFeedNotifyTypeComment), @(QIMWorkFeedNotifyTypePOSTAt), @(QIMWorkFeedNotifyTypeCommentAt)]];
+        
+        if (@available(iOS 11.0, *)) {
+            self.mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            self.mainTableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);//iPhoneX这里是88
+            self.mainTableView.scrollIndicatorInsets = self.mainTableView.contentInset;
+        } else {
+            self.rootVC.automaticallyAdjustsScrollViewInsets=NO;
+        }
+        
         if (self.notReadNoticeMsgCount > 0 && self.userId.length <= 0) {
             [self.mainTableView reloadData];
         } else {
@@ -325,24 +327,18 @@
     }
     [self reloadLocalRecenteMoments:self.notNeedReloadMomentView];
     
-    if (![self.mainTableView.mj_header isRefreshing])
-    {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.mainTableView.mj_header beginRefreshing];
-//        });
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-            [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
-        });
-    }
-    else{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        [self reloadRemoteRecenteMomentsWithNeedScrollTop:YES];
+    });
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (@available(iOS 11.0, *)) {
-            _mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            if (_mainTableView.contentInset.top > 40) {
-                _mainTableView.contentInset = UIEdgeInsetsMake(0.5, 0, 0, 0);//iPhoneX这里是88
+            self.mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            if (self.mainTableView.contentInset.top > 40) {
+                self.mainTableView.contentInset = UIEdgeInsetsMake(0.5, 0, 0, 0);//iPhoneX这里是88
             }
-            _mainTableView.scrollIndicatorInsets = _mainTableView.contentInset;
+            self.mainTableView.scrollIndicatorInsets = self.mainTableView.contentInset;
         }
-    }
+    });
 }
 
 /*
