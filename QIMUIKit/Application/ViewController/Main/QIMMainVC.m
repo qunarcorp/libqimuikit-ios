@@ -161,6 +161,7 @@ static dispatch_once_t __onceMainToken;
         [self changeIcon];
     }
     */
+    
     self.reloadCountQueue = dispatch_queue_create("Reload Main Read Count", DISPATCH_QUEUE_SERIAL);
     [self registerNSNotifications];
 //    self.view.width = [[QIMWindowManager shareInstance] getPrimaryWidth];
