@@ -248,6 +248,13 @@
         
         
         [self addSubview:self.mainTableView];
+        if (@available(iOS 11.0, *)) {
+            self.mainTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            self.mainTableView.contentInset = UIEdgeInsetsMake(0.1, 0, 0, 0);//iPhoneX这里是88
+            self.mainTableView.scrollIndicatorInsets = self.mainTableView.contentInset;
+        } else {
+            self.rootVC.automaticallyAdjustsScrollViewInsets=NO;
+        }
         
         self.mainTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(reloadRemoteRecenteMomentsWithNeedScrollTop:)];
         
