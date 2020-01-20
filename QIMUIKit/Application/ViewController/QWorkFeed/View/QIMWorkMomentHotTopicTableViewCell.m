@@ -33,8 +33,8 @@
 - (void)setUpViews{
     
     self.backgroundColor = [UIColor whiteColor];
-    self.numberLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 25, 25)];
-    self.numberLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 12.5, 25, 25)];
+    self.numberLabel.textAlignment = NSTextAlignmentLeft;
 //    originLeft = self.numberLabel.right + 6;
     [self addSubview:self.numberLabel];
     
@@ -67,8 +67,8 @@
     CGFloat originLeft = 20;
     if (model.showNumber) {
         self.numberLabel.hidden = NO;
-        [self.numberLabel setFrame:CGRectMake(10, 10, 25, 25)];
-        self.numberLabel.textAlignment = NSTextAlignmentCenter;
+        [self.numberLabel setFrame:CGRectMake(10, 12.5, 25, 25)];
+        self.numberLabel.textAlignment = NSTextAlignmentLeft;
         self.numberLabel.font = [UIFont systemFontOfSize:19 weight:2];
         originLeft = self.numberLabel.right + 6;
     }
@@ -79,8 +79,9 @@
     [self.commitLabel sizeToFit];
     [self.likeLabel sizeToFit];
     if (model.showImg == NO) {
+        [self.titleLabel setFrame:CGRectMake(originLeft, self.titleLabel.y, SCREEN_WIDTH - 20 - originLeft, self.titleLabel.height)];
         [self.titleLabel sizeToFit];
-        if (_titleLabel.height <= 44/2) {
+        if (_titleLabel.height <= 46/2) {
              [self.titleLabel setFrame:CGRectMake(originLeft, self.titleLabel.y, SCREEN_WIDTH - 20 - originLeft, self.titleLabel.height)];
         }
         else{
